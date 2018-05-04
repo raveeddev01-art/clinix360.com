@@ -5,8 +5,8 @@ import {
 
 const allFormatters = nonNestableFormatters.concat(nestableFormatters);
 
+// TODO: does this need to exist?
 const unmatchedNode = text => {
-  // TODO: does this need to exist?
   return text;
 };
 

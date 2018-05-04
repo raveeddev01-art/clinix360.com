@@ -81,13 +81,13 @@ const newline = {
 };
 
 // TODO:
-// - get size in getNode
 // - Properly get remaining
 // - Properly check if matches
 const emoji = {
-  getNode: (parsedContent, i) => (
-    <Emoji key={`emoji_${i}`} emoji={parsedContent} size={18} />
-  ),
+  getNode: (parsedContent, i, opts = {}) => {
+    const size = opts.allEmojis ? 32 : 18;
+    return <Emoji key={`emoji_${i}`} emoji={parsedContent} size={size} />;
+  },
   getWrappedContent: content =>
     stringMatchingRegex(content, emojiRegex).slice(1, -1),
   getRemainingContent: content => stringAfterRegex(content, emojiRegex),
