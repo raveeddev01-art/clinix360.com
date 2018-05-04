@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { hydrate } from "react-dom";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Emoji } from "emoji-mart";
@@ -15,13 +16,26 @@ import formatMessageText from "../../../../util/format_message_text";
 
 // TODO:
 // - React event handlers broken by the renderer
-// - Link parsing not working
+
+let hydrations = [];
 
 @inject("usersStore", "messageStore", "addonStore", "groupsStore")
 @observer
 class MessageContent extends Component {
+  componentDidMount() {
+    hydrations.forEach(fn => fn());
+  }
+
+  componentDidUpdate() {
+    hydrations.forEach(fn => fn());
+  }
+
   onToggle = emoji => {
     this.props.messageStore.toggleReaction(this.props.message.id, emoji);
+  };
+
+  setHydrateContainer = node => {
+    this.hydrateContiner = node;
   };
 
   toRenderableString(stringOrComponent) {
@@ -50,13 +64,29 @@ class MessageContent extends Component {
             </span>
           );
         } else if (part.type === "mention") {
+          hydrations = [
+            () => {
+              hydrate(
+                <UserMention
+                  key={`usermention_${i}`}
+                  user={usersById[part.content]}
+                  addonStore={this.props.addonStore}
+                  groupsStore={this.props.groupsStore}
+                />,
+                this.hydrateContiner
+              );
+            }
+          ];
+
           componentOrStirngForType = (
-            <UserMention
-              key={`usermention_${i}`}
-              user={usersById[part.content]}
-              addonStore={this.props.addonStore}
-              groupsStore={this.props.groupsStore}
-            />
+            <span ref={this.setHydrateContainer}>
+              <UserMention
+                key={`usermention_${i}`}
+                user={usersById[part.content]}
+                addonStore={this.props.addonStore}
+                groupsStore={this.props.groupsStore}
+              />
+            </span>
           );
         } else if (part.type === "emoji") {
           componentOrStirngForType = (
@@ -137,6 +167,7 @@ class MessageContent extends Component {
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
             <span
+              ref={this.setHydrateContainer}
               dangerouslySetInnerHTML={{
                 __html: formatMessageText(this.messageAsHTML())
               }}

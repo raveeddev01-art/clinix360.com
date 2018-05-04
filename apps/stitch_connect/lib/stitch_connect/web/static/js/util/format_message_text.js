@@ -183,7 +183,7 @@ const formatString = (alreadyFormatted, toFormat) => {
 // ==================
 
 const wrapResult = str => {
-  return `<span>${str}</span>`;
+  return `<div>${str}</div>`;
 };
 
 const replaceNewLines = str => {
