@@ -1,5 +1,6 @@
 import React from "react";
 import { Emoji } from "emoji-mart";
+import { getData as getEmoji } from "emoji-mart/dist/utils";
 import REGEX from "lib/regex";
 import Linkify from "linkifyjs/react";
 import UserMentionById from "../../common/components/messages/message-content/user-mention-by-id";
@@ -68,6 +69,13 @@ const standardTagRules = tagChars => string => {
   );
 };
 
+const hasEmoji = content => {
+  const emoji = getEmoji(content);
+  console.log("content", content);
+  console.log("emoji", emoji);
+  return emoji && emoji.name;
+};
+
 // ===============
 // ===============
 // FORMATTER RULES
@@ -79,6 +87,7 @@ const standardTagRules = tagChars => string => {
 // - multiline blockquote
 
 // OTHER TODOS:
+// - Emojis that match regex, but not an actual emoji do not match
 // - MOST IMPORTANT: add way to short circuit all of
 //   this logic for speed purposes (if the char)
 // - Blockquote ends at newline or end of content
@@ -177,7 +186,9 @@ const emoji = {
   getWrappedContent: content =>
     stringMatchingRegex(content, emojiRegex).slice(1, -1),
   getRemainingContent: getStringAfterRegex(emojiRegex),
-  isMatch: matchesAndStartsWithRegex(emojiRegex)
+  isMatch: content =>
+    matchesAndStartsWithRegex(emojiRegex)(content) &&
+    hasEmoji(stringMatchingRegex(content, emojiRegex).slice(1, -1))
 };
 
 const userMention = {

@@ -8,7 +8,6 @@ import { observable, action, computed, when, extendObservable } from "mobx";
 import moment from "moment";
 
 import debounce from "lodash/debounce";
-import flatten from "lodash/flatten";
 import flow from "lodash/flow";
 import last from "lodash/last";
 import memoize from "lodash/memoize";
@@ -30,7 +29,6 @@ import {
   MAX_MESSAGE_COUNT_PER_BATCH
 } from "lib/constants";
 import REGEX from "lib/regex";
-import { getData as getEmoji } from "emoji-mart/dist/utils";
 import TimeoutManager from "lib/TimeoutManager";
 
 function sortableDateFromMessage(message) {
