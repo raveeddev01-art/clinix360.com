@@ -91,7 +91,6 @@ const hasEmoji = content => {
 // OTHER TODOS:
 // - MOST IMPORTANT: add way to short circuit all of
 //   this logic for speed purposes (if the char)
-// - Coloring on codes/highlights
 // - Code block matches newline in first one (and trims its)
 
 const bold = {
