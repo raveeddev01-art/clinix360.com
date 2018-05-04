@@ -1270,65 +1270,6 @@ class MessageStore {
     );
   };
 
-  /**
-   * Decodes message to render in message content component
-   * @param {string} messageText
-   * @returns {Array<{type, content}>}
-   */
-  decodeMessage = (messageText = "") => {
-    const { usersById } = this.rootStore.usersStore;
-
-    const result = messageText
-      .split(REGEX.getSplitter())
-      .filter(p => p)
-      .map(part => {
-        // mention
-        const match = part.match(REGEX.getUserMentionDecode());
-        if (match && match[1] && usersById[match[1]]) {
-          return {
-            type: "mention",
-            content: match[1]
-          };
-        }
-
-        const groupMatch = part.match(REGEX.getGroupMentionDecode());
-        if (groupMatch && groupMatch[1]) {
-          return {
-            type: "group_mention",
-            content: groupMatch[1]
-          };
-        }
-
-        // emoji
-        if (REGEX.getEmoji().test(part)) {
-          const emojiParts = part.split(REGEX.getEmoji());
-          return emojiParts.filter(p => p).map(emojiPart => {
-            const emoji = getEmoji(emojiPart);
-            const hasEmoji = emoji && emoji.name;
-
-            if (hasEmoji) {
-              return {
-                type: "emoji",
-                content: emojiPart
-              };
-            }
-
-            return {
-              type: "text",
-              content: emojiPart
-            };
-          });
-        }
-
-        return {
-          type: "text",
-          content: part
-        };
-      });
-
-    return flatten(result);
-  };
-
   @action
   onReactionUpdate = payload => {
     this.updateMessageData(payload.message_id, {
