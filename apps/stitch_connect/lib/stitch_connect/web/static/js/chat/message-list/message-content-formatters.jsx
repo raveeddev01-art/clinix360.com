@@ -42,11 +42,15 @@ const matchesAndStartsWithRegex = regex => string => {
   return match && string.startsWith(match[0]);
 };
 
-const startsWithAndHasAnother = (tagChars, string) => {
+const startsWithAndHas = (startsWith, hasLater, string) => {
   return (
-    string.startsWith(tagChars) &&
-    string.slice(tagChars.length).includes(tagChars)
+    string.startsWith(startsWith) &&
+    string.slice(startsWith.length).includes(hasLater)
   );
+};
+
+const startsWithAndHasAnother = (tagChars, string) => {
+  return startsWithAndHas(tagChars, tagChars, string);
 };
 
 const stringBetweenOccurances = tagChars => string => {
@@ -54,6 +58,14 @@ const stringBetweenOccurances = tagChars => string => {
   return withoutStartingOccurance.slice(
     0,
     withoutStartingOccurance.indexOf(tagChars)
+  );
+};
+
+const stringBetweenMatches = (startMatch, endMatch) => string => {
+  const withoutStartingOccurance = string.slice(startMatch.length);
+  return withoutStartingOccurance.slice(
+    0,
+    withoutStartingOccurance.indexOf(endMatch)
   );
 };
 
@@ -88,10 +100,7 @@ const hasEmoji = content => {
 // ===============
 // ===============
 
-// OTHER TODOS:
-// - MOST IMPORTANT: add way to short circuit all of
-//   this logic for speed purposes (if the char)
-// - Code block matches newline in first one (and trims its)
+// TODOS: add way to short circuit all of this logic for speed purposes (if the char)
 
 const bold = {
   getNode: (parsedContent, i) => (
@@ -138,7 +147,6 @@ const strike = {
   isMatch: standardTagRules("~")
 };
 
-// TODO: breaks only at the end of the content
 const multilineHighlight = {
   getNode: (parsedContent, i) => (
     <pre>
@@ -151,11 +159,9 @@ const multilineHighlight = {
       </code>
     </pre>
   ),
-  getWrappedContent: stringBetweenOccurances("```"),
+  getWrappedContent: stringBetweenMatches("```\n", "\n```"),
   getRemainingContent: stringAfterSecondOccurance("```"),
-  isMatch: content =>
-    startsWithAndHasAnother("```", content) &&
-    newLineBetweenOccurances("```", content)
+  isMatch: content => startsWithAndHas("```\n", "\n```", content)
 };
 
 const highlight = {
