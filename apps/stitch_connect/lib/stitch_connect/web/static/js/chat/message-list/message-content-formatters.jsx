@@ -5,7 +5,7 @@ import UserMentionById from "../../common/components/messages/message-content/us
 import messageTextToComponents from "./message-text-to-components";
 
 const emojiRegex = REGEX.getEmoji();
-const userMentionRegex = REGEX.getUserMentionEncode();
+const userMentionRegex = REGEX.getUserMentionDecode();
 const groupMentionRegex = REGEX.getGroupMentionDecode();
 
 // ============================
@@ -18,16 +18,25 @@ const stringMatchingRegex = (string, regex) => {
   return string.match(regex)[0];
 };
 
-const stringAfterRegex = (string, regex) => {
+const stringAfterOccurance = (string, chars) => {
+  return string.slice(string.indexOf(chars) + chars.length);
+};
+
+const getStringAfterRegex = regex => string => {
   const substring = string.match(regex)[0];
   return string.slice(substring.length);
 };
 
-const startsWithAndHasAnother = (string, chars) => {
+const matchesAndStartsWithRegex = regex => string => {
+  const match = string.match(regex);
+  return match && string.startsWith(match[0]);
+};
+
+const startsWithAndHasAnother = chars => string => {
   return string.startsWith(chars) && string.slice(chars.length).includes(chars);
 };
 
-const stringBetweenOccurances = (string, chars) => {
+const stringBetweenOccurances = chars => string => {
   const withoutStartingOccurance = string.slice(chars.length);
   return withoutStartingOccurance.slice(
     0,
@@ -35,11 +44,7 @@ const stringBetweenOccurances = (string, chars) => {
   );
 };
 
-const stringAfterOccurance = (string, chars) => {
-  return string.slice(string.indexOf(chars) + chars.length);
-};
-
-const stringAfterSecondOccurance = (string, chars) => {
+const stringAfterSecondOccurance = chars => string => {
   return stringAfterOccurance(stringAfterOccurance(string, chars), chars);
 };
 
@@ -49,31 +54,48 @@ const stringAfterSecondOccurance = (string, chars) => {
 // ===============
 // ===============
 
+// MISSING FORMATTERS
+// - multiline quote (blue codeblock)
+// - multiline blockquote
+
+// OTHER TODOS:
+// - ``` does not match ` rules
+// - >>> does not match > rules
+// - stringBetweenOccurances breaks with a newline
+// - Empty content causes, no match on various formatters
+// - Implement isAllEmojis
+// - Blockquote ends at newline or end of content
+// - MOST IMPORTANT: add way to short circuit all of
+//   this logic for speed purposes (if the char)
+//   - will be done in message-text-to-components tho
+// - Maybe split out the getNode functions for style purposes
+// - Get links working
+
 const bold = {
   getNode: (parsedContent, i) => (
     <b key={i}> {messageTextToComponents(parsedContent, { nested: true })} </b>
   ),
-  getWrappedContent: content => stringBetweenOccurances(content, "*"),
-  getRemainingContent: content => stringAfterSecondOccurance(content, "*"),
-  isMatch: content => startsWithAndHasAnother(content, "*")
+  getWrappedContent: stringBetweenOccurances("*"),
+  getRemainingContent: stringAfterSecondOccurance("*"),
+  isMatch: startsWithAndHasAnother("*")
 };
 
 const italics = {
   getNode: (parsedContent, i) => (
     <i key={i}> {messageTextToComponents(parsedContent, { nested: true })} </i>
   ),
-  getWrappedContent: content => stringBetweenOccurances(content, "_"),
-  getRemainingContent: content => stringAfterSecondOccurance(content, "_"),
-  isMatch: content => startsWithAndHasAnother(content, "_")
+  getWrappedContent: stringBetweenOccurances("_"),
+  getRemainingContent: stringAfterSecondOccurance("_"),
+  isMatch: startsWithAndHasAnother("_")
 };
 
 const strike = {
   getNode: (parsedContent, i) => (
     <s key={i}> {messageTextToComponents(parsedContent, { nested: true })} </s>
   ),
-  getWrappedContent: content => stringBetweenOccurances(content, "~"),
-  getRemainingContent: content => stringAfterSecondOccurance(content, "~"),
-  isMatch: content => startsWithAndHasAnother(content, "~")
+  getWrappedContent: stringBetweenOccurances("~"),
+  getRemainingContent: stringAfterSecondOccurance("~"),
+  isMatch: startsWithAndHasAnother("~")
 };
 
 const highlight = {
@@ -83,11 +105,12 @@ const highlight = {
       {messageTextToComponents(parsedContent, { nested: true })}{" "}
     </code>
   ),
-  getWrappedContent: content => stringBetweenOccurances(content, "`"),
-  getRemainingContent: content => stringAfterSecondOccurance(content, "`"),
-  isMatch: content => startsWithAndHasAnother(content, "`")
+  getWrappedContent: stringBetweenOccurances("`"),
+  getRemainingContent: stringAfterSecondOccurance("`"),
+  isMatch: startsWithAndHasAnother("`")
 };
 
+// TODO: break at a newline OR at the end of the content
 const blockQuote = {
   getNode: (parsedContent, i) => (
     <blockquote key={i}>
@@ -95,7 +118,6 @@ const blockQuote = {
       {messageTextToComponents(parsedContent, { nested: true })}{" "}
     </blockquote>
   ),
-  // TODO: break at a newline (or at the end!)
   getWrappedContent: content => content.slice(1),
   getRemainingContent: () => "",
   isMatch: (content, opts) => opts.isFirstChar && content.startsWith(">")
@@ -108,37 +130,25 @@ const newline = {
   isMatch: content => content.startsWith("\n")
 };
 
-// TODO:
-// - Properly get remaining
-// - Properly check if matches
 const emoji = {
   getNode: (parsedContent, i, opts = {}) => {
-    const size = opts.allEmojis ? 32 : 18;
+    const size = opts.isAllEmojis ? 32 : 18;
     return <Emoji key={i} emoji={parsedContent} size={size} />;
   },
   getWrappedContent: content =>
     stringMatchingRegex(content, emojiRegex).slice(1, -1),
-  getRemainingContent: content => stringAfterRegex(content, emojiRegex),
-  isMatch: content => {
-    const match = content.match(emojiRegex);
-    return match && content.startsWith(match[0]);
-  }
+  getRemainingContent: getStringAfterRegex(emojiRegex),
+  isMatch: matchesAndStartsWithRegex(emojiRegex)
 };
 
-// TODO:
-// - Properly get remaining
-// - Properly check if matches
 const userMention = {
   getNode: (parsedContent, i) => {
     return <UserMentionById key={i} id={parseInt(parsedContent, 10)} />;
   },
   getWrappedContent: content =>
     stringMatchingRegex(content, userMentionRegex).slice(3, -1),
-  getRemainingContent: content => stringAfterRegex(content, userMentionRegex),
-  isMatch: content => {
-    const match = content.match(userMentionRegex);
-    return match && content.startsWith(match[0]);
-  }
+  getRemainingContent: getStringAfterRegex(userMentionRegex),
+  isMatch: matchesAndStartsWithRegex(userMentionRegex)
 };
 
 const groupMention = {
@@ -151,11 +161,8 @@ const groupMention = {
   },
   getWrappedContent: content =>
     stringMatchingRegex(content, groupMentionRegex).slice(3, -1),
-  getRemainingContent: content => stringAfterRegex(content, groupMentionRegex),
-  isMatch: content => {
-    const match = content.match(groupMentionRegex);
-    return match && content.startsWith(match[0]);
-  }
+  getRemainingContent: getStringAfterRegex(groupMentionRegex),
+  isMatch: matchesAndStartsWithRegex(groupMentionRegex)
 };
 
 // ===============
