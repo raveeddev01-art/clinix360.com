@@ -12,7 +12,7 @@ const unmatchedNode = text => {
 
 const getMatchingFormatter = (content, opts) => {
   const validFormatters = opts.nested ? nestableFormatters : allFormatters;
-  return validFormatters.find(formatter => formatter.matches(content));
+  return validFormatters.find(formatter => formatter.matches(content, opts));
 };
 
 const getNodesForRest = (
@@ -28,7 +28,12 @@ const getNodesForRest = (
     return currentNodeList.concat([nodeForUnmatchedChars]);
   }
 
-  const matchingFormatter = getMatchingFormatter(remainingMessageContent, opts);
+  const isFirstChar = !currentNodeList[0] && !unmatchedCharacters[0];
+
+  const matchingFormatter = getMatchingFormatter(
+    remainingMessageContent,
+    Object.assign({}, opts, { isFirstChar })
+  );
 
   // CASE 2: CURRENT SPOT IN STRING MATCHES A FORMATTER (CONTINUE RECURSION)
   if (matchingFormatter) {
