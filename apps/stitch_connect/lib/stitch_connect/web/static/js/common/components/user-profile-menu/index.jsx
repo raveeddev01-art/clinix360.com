@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import { inject, observer } from "mobx-react";
 import { Avatar, SmartDropdown, PortalDropdownMenu } from "common/components";
 
 @inject("addonStore", "groupsStore")
