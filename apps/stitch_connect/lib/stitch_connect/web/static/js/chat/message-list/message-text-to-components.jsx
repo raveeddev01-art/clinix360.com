@@ -1,18 +1,26 @@
 import {
   nestableFormatters,
-  nonNestableFormatters
+  nonNestableFormatters,
+  formatUnmatched
 } from "./message-content-formatters";
+import REGEX from "lib/regex";
+
+const emojiRegex = REGEX.getEmoji();
+
+const messageSolelyEmojis = messageContent => {
+  return !messageContent.replace(emojiRegex, "").trim();
+};
 
 const allFormatters = nonNestableFormatters.concat(nestableFormatters);
 
-const unmatchedNode = text => text;
+const unmatchedNode = (text, i) => formatUnmatched(text, i);
 
 const getMatchingFormatter = (content, opts) => {
   const validFormatters = opts.nested ? nestableFormatters : allFormatters;
   return validFormatters.find(formatter => formatter.matches(content, opts));
 };
 
-const getNodesForRest = (
+const getRemainingNodes = (
   currentNodeList,
   unmatchedCharacters,
   remainingMessageContent,
@@ -21,7 +29,7 @@ const getNodesForRest = (
 ) => {
   // CASE 1: END OF THE CHARACTER LIST (EXITS RECURSION)
   if (remainingMessageContent === "") {
-    const nodeForUnmatchedChars = unmatchedNode(unmatchedCharacters);
+    const nodeForUnmatchedChars = unmatchedNode(unmatchedCharacters, index + 1);
     return currentNodeList.concat([nodeForUnmatchedChars]);
   }
 
@@ -34,25 +42,25 @@ const getNodesForRest = (
 
   // CASE 2: CURRENT SPOT IN STRING MATCHES A FORMATTER (CONTINUE RECURSION)
   if (matchingFormatter) {
-    const nodeForUnmatchedChars = unmatchedNode(unmatchedCharacters);
+    const nodeForUnmatchedChars = unmatchedNode(unmatchedCharacters, index + 1);
     const newBlankUnmatchedChars = "";
 
     const [
       nodeForMatchingContent,
       newRemainingContent
-    ] = matchingFormatter.parseContent(remainingMessageContent, index);
+    ] = matchingFormatter.parseContent(remainingMessageContent, index, opts);
 
     const newNodeList = currentNodeList.concat([
       nodeForUnmatchedChars,
       nodeForMatchingContent
     ]);
 
-    return getNodesForRest(
+    return getRemainingNodes(
       newNodeList,
       newBlankUnmatchedChars,
       newRemainingContent,
       opts,
-      index + 1
+      index + 2
     );
   }
 
@@ -61,20 +69,29 @@ const getNodesForRest = (
     unmatchedCharacters + remainingMessageContent.slice(0, 1);
   const newRemainingContent = remainingMessageContent.slice(1);
 
-  return getNodesForRest(
+  return getRemainingNodes(
     currentNodeList,
     newUnmatchedCaracters,
     newRemainingContent,
     opts,
-    index + 1
+    index + 2
   );
 };
 
-const messageTextToComponents = messageContent => {
-  const listOfChildNodes = getNodesForRest([], "", messageContent, {
-    nested: false
-  });
-  return listOfChildNodes;
+const messageTextToComponents = (messageContent, opts) => {
+  const initialNodeList = [];
+  const initialUnmatchedChars = "";
+  const topLevelOpts = {
+    nested: false,
+    isAllEmojis: messageSolelyEmojis(messageContent)
+  };
+
+  return getRemainingNodes(
+    initialNodeList,
+    initialUnmatchedChars,
+    messageContent,
+    Object.assign({}, topLevelOpts, opts)
+  );
 };
 
 export default messageTextToComponents;

@@ -1,6 +1,7 @@
 import React from "react";
 import { Emoji } from "emoji-mart";
 import REGEX from "lib/regex";
+import Linkify from "linkifyjs/react";
 import UserMentionById from "../../common/components/messages/message-content/user-mention-by-id";
 import messageTextToComponents from "./message-text-to-components";
 
@@ -59,8 +60,6 @@ const stringAfterSecondOccurance = chars => string => {
 // - multiline blockquote
 
 // OTHER TODOS:
-// - ``` does not match ` rules
-// - >>> does not match > rules
 // - stringBetweenOccurances breaks with a newline
 // - Empty content causes, no match on various formatters
 // - Implement isAllEmojis
@@ -68,12 +67,18 @@ const stringAfterSecondOccurance = chars => string => {
 // - MOST IMPORTANT: add way to short circuit all of
 //   this logic for speed purposes (if the char)
 //   - will be done in message-text-to-components tho
-// - Maybe split out the getNode functions for style purposes
-// - Get links working
+// - ``` does not match ` rules
+// - >>> does not match > rules
 
 const bold = {
   getNode: (parsedContent, i) => (
-    <b key={i}> {messageTextToComponents(parsedContent, { nested: true })} </b>
+    <b key={i}>
+      {" "}
+      {messageTextToComponents(parsedContent, {
+        nested: true,
+        isAllEmojis: false
+      })}{" "}
+    </b>
   ),
   getWrappedContent: stringBetweenOccurances("*"),
   getRemainingContent: stringAfterSecondOccurance("*"),
@@ -82,7 +87,13 @@ const bold = {
 
 const italics = {
   getNode: (parsedContent, i) => (
-    <i key={i}> {messageTextToComponents(parsedContent, { nested: true })} </i>
+    <i key={i}>
+      {" "}
+      {messageTextToComponents(parsedContent, {
+        nested: true,
+        isAllEmojis: false
+      })}{" "}
+    </i>
   ),
   getWrappedContent: stringBetweenOccurances("_"),
   getRemainingContent: stringAfterSecondOccurance("_"),
@@ -91,7 +102,13 @@ const italics = {
 
 const strike = {
   getNode: (parsedContent, i) => (
-    <s key={i}> {messageTextToComponents(parsedContent, { nested: true })} </s>
+    <s key={i}>
+      {" "}
+      {messageTextToComponents(parsedContent, {
+        nested: true,
+        isAllEmojis: false
+      })}{" "}
+    </s>
   ),
   getWrappedContent: stringBetweenOccurances("~"),
   getRemainingContent: stringAfterSecondOccurance("~"),
@@ -102,7 +119,10 @@ const highlight = {
   getNode: (parsedContent, i) => (
     <code key={i}>
       {" "}
-      {messageTextToComponents(parsedContent, { nested: true })}{" "}
+      {messageTextToComponents(parsedContent, {
+        nested: true,
+        isAllEmojis: false
+      })}{" "}
     </code>
   ),
   getWrappedContent: stringBetweenOccurances("`"),
@@ -115,7 +135,10 @@ const blockQuote = {
   getNode: (parsedContent, i) => (
     <blockquote key={i}>
       {" "}
-      {messageTextToComponents(parsedContent, { nested: true })}{" "}
+      {messageTextToComponents(parsedContent, {
+        nested: true,
+        isAllEmojis: false
+      })}{" "}
     </blockquote>
   ),
   getWrappedContent: content => content.slice(1),
@@ -186,6 +209,10 @@ const makeFormatter = rules => {
 //    EXPORTS
 // =============
 // =============
+
+export const formatUnmatched = (content, i) => (
+  <Linkify key={`link_${i}`}>{content}</Linkify>
+);
 
 export const nestableFormatters = [
   emoji,
