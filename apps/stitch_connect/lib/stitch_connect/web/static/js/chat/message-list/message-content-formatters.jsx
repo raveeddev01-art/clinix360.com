@@ -29,6 +29,14 @@ const getStringAfterRegex = regex => string => {
   return string.slice(substring.length);
 };
 
+const getContentAfterNewline = string => {
+  return string.split("\n")[1] || "";
+};
+
+const getContentUntilNewline = string => {
+  return string.split("\n")[0];
+};
+
 const matchesAndStartsWithRegex = regex => string => {
   const match = string.match(regex);
   return match && string.startsWith(match[0]);
@@ -71,8 +79,6 @@ const standardTagRules = tagChars => string => {
 
 const hasEmoji = content => {
   const emoji = getEmoji(content);
-  console.log("content", content);
-  console.log("emoji", emoji);
   return emoji && emoji.name;
 };
 
@@ -82,18 +88,11 @@ const hasEmoji = content => {
 // ===============
 // ===============
 
-// MISSING FORMATTERS
-// - multiline quote (blue codeblock)
-// - multiline blockquote
-
 // OTHER TODOS:
-// - Emojis that match regex, but not an actual emoji do not match
 // - MOST IMPORTANT: add way to short circuit all of
 //   this logic for speed purposes (if the char)
-// - Blockquote ends at newline or end of content
-//   - will be done in message-text-to-components tho
-// - ``` does not match ` rules
-// - >>> does not match > rules
+// - Coloring on codes/highlights
+// - Code block matches newline in first one (and trims its)
 
 const bold = {
   getNode: (parsedContent, i) => (
@@ -140,6 +139,26 @@ const strike = {
   isMatch: standardTagRules("~")
 };
 
+// TODO: breaks only at the end of the content
+const multilineHighlight = {
+  getNode: (parsedContent, i) => (
+    <pre>
+      <code key={i}>
+        {" "}
+        {messageTextToComponents(parsedContent, {
+          nested: true,
+          isAllEmojis: false
+        })}{" "}
+      </code>
+    </pre>
+  ),
+  getWrappedContent: stringBetweenOccurances("```"),
+  getRemainingContent: stringAfterSecondOccurance("```"),
+  isMatch: content =>
+    startsWithAndHasAnother("```", content) &&
+    newLineBetweenOccurances("```", content)
+};
+
 const highlight = {
   getNode: (parsedContent, i) => (
     <code key={i}>
@@ -155,7 +174,22 @@ const highlight = {
   isMatch: standardTagRules("`")
 };
 
-// TODO: break at a newline OR at the end of the content
+// TODO: breaks only at the end of the content
+const multilineBlockquote = {
+  getNode: (parsedContent, i) => (
+    <blockquote key={i}>
+      {" "}
+      {messageTextToComponents(parsedContent, {
+        nested: true,
+        isAllEmojis: false
+      })}{" "}
+    </blockquote>
+  ),
+  getWrappedContent: content => content.slice(3),
+  getRemainingContent: () => "",
+  isMatch: (content, opts) => opts.isFirstChar && content.startsWith(">>>")
+};
+
 const blockQuote = {
   getNode: (parsedContent, i) => (
     <blockquote key={i}>
@@ -166,8 +200,8 @@ const blockQuote = {
       })}{" "}
     </blockquote>
   ),
-  getWrappedContent: content => content.slice(1),
-  getRemainingContent: () => "",
+  getWrappedContent: content => getContentUntilNewline(content).slice(1),
+  getRemainingContent: getContentAfterNewline,
   isMatch: (content, opts) => opts.isFirstChar && content.startsWith(">")
 };
 
@@ -248,7 +282,10 @@ export const nestableFormatters = [
   newline
 ].map(makeFormatter);
 
+// multilines must precede single-line versions
 export const nonNestableFormatters = [
+  multilineBlockquote,
+  multilineHighlight,
   bold,
   italics,
   strike,
