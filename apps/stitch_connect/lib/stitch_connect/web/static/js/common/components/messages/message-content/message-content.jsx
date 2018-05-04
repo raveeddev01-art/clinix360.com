@@ -19,6 +19,13 @@ import formatMessageText from "../../../../util/format_message_text";
 @inject("usersStore", "messageStore", "addonStore", "groupsStore")
 @observer
 class MessageContent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      renders: []
+    };
+  }
+
   onToggle = emoji => {
     this.props.messageStore.toggleReaction(this.props.message.id, emoji);
   };
@@ -41,15 +48,15 @@ class MessageContent extends Component {
 
     return parts
       .map((part, i) => {
-        let componentOrStirngForType;
+        let componentOrStringForType;
         if (part.type === "group_mention") {
-          componentOrStirngForType = (
+          componentOrStringForType = (
             <span key={`group_mention_${i}`} className="group-mention">
               @{part.content}
             </span>
           );
         } else if (part.type === "mention") {
-          componentOrStirngForType = (
+          componentOrStringForType = (
             <UserMention
               key={`usermention_${i}`}
               user={usersById[part.content]}
@@ -58,7 +65,7 @@ class MessageContent extends Component {
             />
           );
         } else if (part.type === "emoji") {
-          componentOrStirngForType = (
+          componentOrStringForType = (
             <Emoji
               key={`emoji_${i}`}
               emoji={part.content}
@@ -66,10 +73,10 @@ class MessageContent extends Component {
             />
           );
         } else {
-          componentOrStirngForType = part.content;
+          componentOrStringForType = part.content;
         }
 
-        return this.toRenderableString(componentOrStirngForType);
+        return this.toRenderableString(componentOrStringForType);
       })
       .join("");
   };
