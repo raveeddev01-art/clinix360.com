@@ -1,11 +1,19 @@
+import linkifyHtml from "linkifyjs/html";
+
 // takes plain message content
 // - applies pseudo-markdown formatting
-// - and converts it into renderable html
+// - converts it into renderable html
+// - converts links into anchor tags
+
+// =======================
+// Tag-specific formatters
+// and short circuits
+// =======================
 
 const hasNewlineBeforeClose = closingTag => str => {
   const rest = str.slice(1);
   const newLineIndex = rest.indexOf("\n");
-  return newLineIndex > -1 && newLineIndex < rest.indexOf("\n");
+  return newLineIndex > -1 && newLineIndex < rest.indexOf(closingTag);
 };
 
 const hasMultiLineBlock = str => {
@@ -20,6 +28,11 @@ const emptyBetweenTags = closingTag => str => {
   const rest = str.slice(1);
   return rest.replace(closingTag, "").trim() === "";
 };
+
+// ==================
+// Formatting tags &
+// associated rules
+// ==================
 
 const formattingTags = {
   "```\n": {
@@ -61,18 +74,15 @@ const formattingTags = {
   }
 };
 
+// ==================
+// Helpers for stirng
+// to HTML conversion
+// ==================
+
 const identity = str => str;
 
 const getClosingTag = tagStr => {
   return formattingTags[tagStr].closingTag || tagStr;
-};
-
-const wrapResult = str => {
-  return `<span>${str}</span>`;
-};
-
-const replaceNewLines = str => {
-  return str.replace(/\n/g, "<br />");
 };
 
 const containsTagAtFirstChar = substr => {
@@ -84,13 +94,22 @@ const getMatchingTagStr = substr => {
 };
 
 const getStringFormatter = tagStr => {
-  // certain may need to format the following substring
   return formattingTags[tagStr].stringFormatter || identity;
 };
 
 const getShortCircuits = tagStr => {
   return formattingTags[tagStr].shortCircuits || [];
 };
+
+// =======================
+// If a closing tag exists
+// and other conditions are met
+// (see rules)
+
+// applys transformation to substring
+// return transformedString, and new
+// starting point for the parent
+// =======================
 
 const applyFormatUntilClosingTag = initialString => {
   const tagStr = getMatchingTagStr(initialString);
@@ -122,6 +141,23 @@ const applyFormatUntilClosingTag = initialString => {
   return [tagStr, rest];
 };
 
+// ===========================
+// Recursively format strings
+// Iterate down the string
+
+// If current substring (toFormat)
+// begins with a tag-string, potentially
+// convert the rest of the string
+
+//   if conditions are met (has closing tag)
+//   and other rules are met
+//   then convert part of string
+//   and continue iteration
+
+// If does not begin with tag-string,
+// move on to next character
+// ===========================
+
 const formatString = (alreadyFormatted, toFormat) => {
   if (toFormat === "") {
     return alreadyFormatted;
@@ -141,8 +177,27 @@ const formatString = (alreadyFormatted, toFormat) => {
   return formatString(newAlreadyFormatted, newToFormat);
 };
 
+// ==================
+// Final tweaks to
+// make html-renderable
+// ==================
+
+const wrapResult = str => {
+  return `<span>${str}</span>`;
+};
+
+const replaceNewLines = str => {
+  return str.replace(/\n/g, "<br />");
+};
+
+// ==================
+// Public interface
+// ==================
+
 const formatMessageText = messageString => {
-  return replaceNewLines(wrapResult(formatString("", messageString)));
+  return linkifyHtml(
+    replaceNewLines(wrapResult(formatString("", messageString)))
+  );
 };
 
 export default formatMessageText;
