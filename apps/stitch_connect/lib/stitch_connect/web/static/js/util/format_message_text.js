@@ -1,203 +1,215 @@
-import linkifyHtml from "linkifyjs/html";
+// THIS IS NO LONGER USED
+// THIS IS NO LONGER USED
+//      IGNORE THIS
+// THIS IS NO LONGER USED
+// THIS IS NO LONGER USED
 
-// takes plain message content
-// - applies pseudo-markdown formatting
-// - converts it into renderable html
-// - converts links into anchor tags
+// import linkifyHtml from "linkifyjs/html";
 
-// =======================
-// Tag-specific formatters
-// and short circuits
-// =======================
+// // takes plain message content
+// // - applies pseudo-markdown formatting
+// // - converts it into renderable html
+// // - converts links into anchor tags
 
-const hasNewlineBeforeClose = closingTag => str => {
-  const rest = str.slice(1);
-  const newLineIndex = rest.indexOf("\n");
-  return newLineIndex > -1 && newLineIndex < rest.indexOf(closingTag);
-};
+// // =======================
+// // Tag-specific formatters
+// // and short circuits
+// // =======================
 
-const hasMultiLineBlock = str => {
-  return str.slice(0, 3) === "```";
-};
+// const hasNewlineBeforeClose = closingTag => str => {
+//   const rest = str.slice(1);
+//   const newLineIndex = rest.indexOf("\n");
+//   return newLineIndex > -1 && newLineIndex < rest.indexOf(closingTag);
+// };
 
-const addNewlineToEndIfNone = str => {
-  return str.slice(2).indexOf("\n") > -1 ? str : `${str}\n`;
-};
+// const hasMultiLineBlock = str => {
+//   return str.slice(0, 3) === "```";
+// };
 
-const emptyBetweenTags = closingTag => str => {
-  const rest = str.slice(1);
-  return rest.replace(closingTag, "").trim() === "";
-};
+// const addNewlineToEndIfNone = str => {
+//   return str.slice(2).indexOf("\n") > -1 ? str : `${str}\n`;
+// };
 
-// ==================
-// Formatting tags &
-// associated rules
-// ==================
+// const emptyBetweenTags = closingTag => str => {
+//   const rest = str.slice(1);
+//   return rest.replace(closingTag, "").trim() === "";
+// };
 
-const formattingTags = {
-  "```\n": {
-    open: '<pre><code class="codeblock">',
-    close: "</code></pre>",
-    closingTag: "```",
-    shortCircuits: []
-  },
-  ">": {
-    open: "<blockquote>",
-    close: "</blockquote> \n",
-    closingTag: "\n",
-    stringFormatter: addNewlineToEndIfNone,
-    shortCircuits: [emptyBetweenTags("\n")]
-  },
-  "*": {
-    open: "<b>",
-    close: "</b>",
-    shortCircuits: [hasNewlineBeforeClose("*"), emptyBetweenTags("*")]
-  },
-  _: {
-    open: "<i>",
-    close: "</i>",
-    shortCircuits: [hasNewlineBeforeClose("_"), emptyBetweenTags("_")]
-  },
-  "~": {
-    open: "<s>",
-    close: "</s>",
-    shortCircuits: [hasNewlineBeforeClose("~"), emptyBetweenTags("~")]
-  },
-  "`": {
-    open: "<code>",
-    close: "</code>",
-    shortCircuits: [
-      hasMultiLineBlock,
-      hasNewlineBeforeClose("`"),
-      emptyBetweenTags("`")
-    ]
-  }
-};
+// // ==================
+// // Formatting tags &
+// // associated rules
+// // ==================
 
-// ==================
-// Helpers for stirng
-// to HTML conversion
-// ==================
+// const formattingTags = {
+//   "```\n": {
+//     open: '<pre><code class="codeblock">',
+//     close: "</code></pre>",
+//     closingTag: "```",
+//     shortCircuits: []
+//   },
+//   ">": {
+//     open: "<blockquote>",
+//     close: "</blockquote> \n",
+//     closingTag: "\n",
+//     stringFormatter: addNewlineToEndIfNone,
+//     shortCircuits: [emptyBetweenTags("\n")]
+//   },
+//   "*": {
+//     open: "<b>",
+//     close: "</b>",
+//     shortCircuits: [hasNewlineBeforeClose("*"), emptyBetweenTags("*")]
+//   },
+//   _: {
+//     open: "<i>",
+//     close: "</i>",
+//     shortCircuits: [hasNewlineBeforeClose("_"), emptyBetweenTags("_")]
+//   },
+//   "~": {
+//     open: "<s>",
+//     close: "</s>",
+//     shortCircuits: [hasNewlineBeforeClose("~"), emptyBetweenTags("~")]
+//   },
+//   "`": {
+//     open: "<code>",
+//     close: "</code>",
+//     shortCircuits: [
+//       hasMultiLineBlock,
+//       hasNewlineBeforeClose("`"),
+//       emptyBetweenTags("`")
+//     ]
+//   }
+// };
 
-const identity = str => str;
+// // ==================
+// // Helpers for stirng
+// // to HTML conversion
+// // ==================
 
-const getClosingTag = tagStr => {
-  return formattingTags[tagStr].closingTag || tagStr;
-};
+// const identity = str => str;
 
-const containsTagAtFirstChar = substr => {
-  return Object.keys(formattingTags).some(tagStr => substr.startsWith(tagStr));
-};
+// const getClosingTag = tagStr => {
+//   return formattingTags[tagStr].closingTag || tagStr;
+// };
 
-const getMatchingTagStr = substr => {
-  return Object.keys(formattingTags).find(tagStr => substr.startsWith(tagStr));
-};
+// const containsTagAtFirstChar = substr => {
+//   return Object.keys(formattingTags).some(tagStr => substr.startsWith(tagStr));
+// };
 
-const getStringFormatter = tagStr => {
-  return formattingTags[tagStr].stringFormatter || identity;
-};
+// const getMatchingTagStr = substr => {
+//   return Object.keys(formattingTags).find(tagStr => substr.startsWith(tagStr));
+// };
 
-const getShortCircuits = tagStr => {
-  return formattingTags[tagStr].shortCircuits || [];
-};
+// const getStringFormatter = tagStr => {
+//   return formattingTags[tagStr].stringFormatter || identity;
+// };
 
-// =======================
-// If a closing tag exists
-// and other conditions are met
-// (see rules)
+// const getShortCircuits = tagStr => {
+//   return formattingTags[tagStr].shortCircuits || [];
+// };
 
-// applys transformation to substring
-// return transformedString, and new
-// starting point for the parent
-// =======================
+// // =======================
+// // If a closing tag exists
+// // and other conditions are met
+// // (see rules)
 
-const applyFormatUntilClosingTag = initialString => {
-  const tagStr = getMatchingTagStr(initialString);
-  const string = getStringFormatter(tagStr)(initialString);
-  const rest = string.slice(1);
+// // applys transformation to substring
+// // return transformedString, and new
+// // starting point for the parent
+// // =======================
 
-  if (getShortCircuits(tagStr).some(fn => fn(string))) {
-    return [tagStr, rest];
-  }
+// const applyFormatUntilClosingTag = initialString => {
+//   const tagStr = getMatchingTagStr(initialString);
+//   const string = getStringFormatter(tagStr)(initialString);
+//   const rest = string.slice(1);
 
-  const closingTag = getClosingTag(tagStr);
+//   if (getShortCircuits(tagStr).some(fn => fn(string))) {
+//     return [tagStr, rest];
+//   }
 
-  const closingTagIndex = rest.indexOf(closingTag) + 1;
-  const restIncludesClosingTag = closingTagIndex > 0;
+//   const closingTag = getClosingTag(tagStr);
 
-  if (restIncludesClosingTag) {
-    const opener = formattingTags[tagStr].open;
-    const closer = formattingTags[tagStr].close;
+//   const closingTagIndex = rest.indexOf(closingTag) + 1;
+//   const restIncludesClosingTag = closingTagIndex > 0;
 
-    const toFormat = string.slice(0, closingTagIndex + closingTag.length);
-    const unformattedRest = rest.slice(closingTagIndex + closingTag.length - 1);
+//   if (restIncludesClosingTag) {
+//     const opener = formattingTags[tagStr].open;
+//     const closer = formattingTags[tagStr].close;
 
-    const formattedStart =
-      toFormat.replace(tagStr, opener).slice(0, -closingTag.length) + closer;
+//     const toFormat = string.slice(0, closingTagIndex + closingTag.length);
+//     const unformattedRest = rest.slice(closingTagIndex + closingTag.length - 1);
 
-    return [formattedStart, unformattedRest];
-  }
+//     const formattedStart =
+//       toFormat.replace(tagStr, opener).slice(0, -closingTag.length) + closer;
 
-  return [tagStr, rest];
-};
+//     return [formattedStart, unformattedRest];
+//   }
 
-// ===========================
-// Recursively format strings
-// Iterate down the string
+//   return [tagStr, rest];
+// };
 
-// If current substring (toFormat)
-// begins with a tag-string, potentially
-// convert the rest of the string
+// // ===========================
+// // Recursively format strings
+// // Iterate down the string
 
-//   if conditions are met (has closing tag)
-//   and other rules are met
-//   then convert part of string
-//   and continue iteration
+// // If current substring (toFormat)
+// // begins with a tag-string, potentially
+// // convert the rest of the string
 
-// If does not begin with tag-string,
-// move on to next character
-// ===========================
+// //   if conditions are met (has closing tag)
+// //   and other rules are met
+// //   then convert part of string
+// //   and continue iteration
 
-const formatString = (alreadyFormatted, toFormat) => {
-  if (toFormat === "") {
-    return alreadyFormatted;
-  }
+// // If does not begin with tag-string,
+// // move on to next character
+// // ===========================
 
-  if (containsTagAtFirstChar(toFormat)) {
-    const [formattedBeginning, unformattedRest] = applyFormatUntilClosingTag(
-      toFormat
-    );
+// const formatString = (alreadyFormatted, toFormat) => {
+//   if (toFormat === "") {
+//     return alreadyFormatted;
+//   }
 
-    const newAlreadyFormatted = alreadyFormatted + formattedBeginning;
-    return formatString(newAlreadyFormatted, unformattedRest);
-  }
+//   if (containsTagAtFirstChar(toFormat)) {
+//     const [formattedBeginning, unformattedRest] = applyFormatUntilClosingTag(
+//       toFormat
+//     );
 
-  const newAlreadyFormatted = alreadyFormatted + toFormat[0];
-  const newToFormat = toFormat.slice(1);
-  return formatString(newAlreadyFormatted, newToFormat);
-};
+//     const newAlreadyFormatted = alreadyFormatted + formattedBeginning;
+//     return formatString(newAlreadyFormatted, unformattedRest);
+//   }
 
-// ==================
-// Final tweaks to
-// make html-renderable
-// ==================
+//   const newAlreadyFormatted = alreadyFormatted + toFormat[0];
+//   const newToFormat = toFormat.slice(1);
+//   return formatString(newAlreadyFormatted, newToFormat);
+// };
 
-const wrapResult = str => {
-  return `<div>${str}</div>`;
-};
+// // ==================
+// // Final tweaks to
+// // make html-renderable
+// // ==================
 
-const replaceNewLines = str => {
-  return str.replace(/\n/g, "<br />");
-};
+// const wrapResult = str => {
+//   return `<div>${str}</div>`;
+// };
 
-// ==================
-// Public interface
-// ==================
+// const replaceNewLines = str => {
+//   return str.replace(/\n/g, "<br />");
+// };
 
-const formatMessageText = messageString => {
-  return linkifyHtml(
-    replaceNewLines(wrapResult(formatString("", messageString)))
-  );
-};
+// // ==================
+// // Public interface
+// // ==================
 
-export default formatMessageText;
+// const formatMessageText = messageString => {
+//   return linkifyHtml(
+//     replaceNewLines(wrapResult(formatString("", messageString)))
+//   );
+// };
+
+// export default formatMessageText;
+
+// THIS IS NO LONGER USED
+// THIS IS NO LONGER USED
+//      IGNORE THIS
+// THIS IS NO LONGER USED
+// THIS IS NO LONGER USED
