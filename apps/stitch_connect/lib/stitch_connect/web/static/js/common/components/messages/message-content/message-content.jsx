@@ -4,9 +4,6 @@ import { inject, observer } from "mobx-react";
 import { Emoji } from "emoji-mart";
 import Remarkable from "remarkable";
 import ReactDOMServer from "react-dom/server";
-// import ReactMarkdown from "react-markdown";
-// import Markdown from "react-remarkable";
-// import Linkify from "linkifyjs/react";
 import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -14,8 +11,8 @@ import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
+import formatMessageText from "../../../../util/format_message_text";
 
-// this is gross :)
 @inject("usersStore", "messageStore", "addonStore", "groupsStore")
 @observer
 class MessageContent extends Component {
@@ -28,6 +25,7 @@ class MessageContent extends Component {
       return stringOrComponent;
     }
 
+    // - TODO: this breaks the handler - must hydrate the parent div (I think)
     return ReactDOMServer.renderToString(stringOrComponent);
   }
 
@@ -41,15 +39,15 @@ class MessageContent extends Component {
 
     return parts
       .map((part, i) => {
-        let p;
+        let componentOrStirngForType;
         if (part.type === "group_mention") {
-          p = (
+          componentOrStirngForType = (
             <span key={`group_mention_${i}`} className="group-mention">
               @{part.content}
             </span>
           );
         } else if (part.type === "mention") {
-          p = (
+          componentOrStirngForType = (
             <UserMention
               key={`usermention_${i}`}
               user={usersById[part.content]}
@@ -58,7 +56,7 @@ class MessageContent extends Component {
             />
           );
         } else if (part.type === "emoji") {
-          p = (
+          componentOrStirngForType = (
             <Emoji
               key={`emoji_${i}`}
               emoji={part.content}
@@ -66,12 +64,10 @@ class MessageContent extends Component {
             />
           );
         } else {
-          // console.log("CONTENT GOING IN", part.content);
-          p = this.renderMarkdownNode(part.content);
-          // console.log("CONTENT COMING OUT", p);
+          componentOrStirngForType = part.content;
         }
 
-        return this.toRenderableString(p);
+        return this.toRenderableString(componentOrStirngForType);
       })
       .join("");
   };
@@ -137,7 +133,11 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
-            <span dangerouslySetInnerHTML={{ __html: this.messageAsHTML() }} />
+            <span
+              dangerouslySetInnerHTML={{
+                __html: formatMessageText(this.messageAsHTML())
+              }}
+            />
           )}
 
           {this.renderLinkPreviews()}
