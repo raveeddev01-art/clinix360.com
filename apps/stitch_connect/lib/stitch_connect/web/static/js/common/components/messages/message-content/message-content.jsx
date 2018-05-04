@@ -13,6 +13,10 @@ import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
 import formatMessageText from "../../../../util/format_message_text";
 
+// TODO:
+// - React event handlers broken by the renderer
+// - Link parsing not working
+
 @inject("usersStore", "messageStore", "addonStore", "groupsStore")
 @observer
 class MessageContent extends Component {
@@ -25,7 +29,6 @@ class MessageContent extends Component {
       return stringOrComponent;
     }
 
-    // - TODO: this breaks the handler - must hydrate the parent div (I think)
     return ReactDOMServer.renderToString(stringOrComponent);
   }
 
