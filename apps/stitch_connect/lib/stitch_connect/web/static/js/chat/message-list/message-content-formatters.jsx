@@ -78,6 +78,13 @@ const highlight = {
   matchesBeginningOfContent: content => startsWithAndHasAnother(content, "`")
 };
 
+const newline = {
+  wrap: () => <br />,
+  getWrappedContent: content => content,
+  getRemainingContent: content => content.slice(1),
+  matchesBeginningOfContent: content => content.startsWith("\n")
+};
+
 // TODO:
 // - Wrap with key and size
 // - Properly get remaining
@@ -112,20 +119,21 @@ const userMention = {
   }
 };
 
+// TODO
+// get key passed in
 const groupMention = {
   wrap: parsedContent => {
     return (
-      <GroupMentionById
-        key={`usermention_1`}
-        id={parseInt(parsedContent, 10)}
-      />
+      <span key={`group_mention_1`} className="group-mention">
+        @{parsedContent}
+      </span>
     );
   },
   getWrappedContent: content =>
-    stringMatchingRegex(content, userMentionRegex).slice(3, -1),
-  getRemainingContent: content => stringAfterRegex(content, userMentionRegex),
+    stringMatchingRegex(content, groupMentionRegex).slice(3, -1),
+  getRemainingContent: content => stringAfterRegex(content, groupMentionRegex),
   matchesBeginningOfContent: content => {
-    const match = content.match(userMentionRegex);
+    const match = content.match(groupMentionRegex);
     return match && content.startsWith(match[0]);
   }
 };
@@ -140,7 +148,13 @@ const makeFormatter = rules => {
   };
 };
 
-export const nestableFormatters = [emoji, userMention].map(makeFormatter);
+export const nestableFormatters = [
+  emoji,
+  userMention,
+  groupMention,
+  newline
+].map(makeFormatter);
+
 export const nonNestableFormatters = [bold, italics, strike, highlight].map(
   makeFormatter
 );
