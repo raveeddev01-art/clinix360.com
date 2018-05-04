@@ -110,48 +110,4 @@ defmodule Stitch.Accounts.Email do
     ])
     |> Stitch.Mailer.deliver_later()
   end
-
-  def unread_messages_email([], _team), do: nil
-
-  def unread_messages_email(recipients, %Stitch.Team{name: team_name}) do
-    new_email()
-    |> template("Message Waiting - Offline Email (Connect)")
-    |> to(Enum.map(recipients, & &1.email))
-    |> from(@from_address)
-    |> subject("[Stitch Connect] Notifications from #{team_name} *|userTime|*")
-    |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
-    |> Stitch.Mailer.deliver_later()
-  end
-
-  defp unread_messages_for_recipient(%{
-         timezone: timezone,
-         email: email,
-         first_name: first_name,
-         message_count: message_count,
-         login_url: login_url
-       }) do
-    inflected_message = if message_count == 1, do: "message", else: "messages"
-
-    vars = [
-      %{name: "receiverFirstName", content: first_name},
-      %{name: "unreadTotal", content: "#{message_count}"},
-      %{name: "singularMessage", content: inflected_message},
-      %{name: "receiverEmail", content: email},
-      %{name: "loginUrl", content: login_url},
-      %{name: "userTime", content: format_datetime_subject(timezone)}
-    ]
-
-    %{rcpt: email, vars: vars}
-  end
-
-  defp format_datetime_subject(timezone) do
-    if timezone && Timex.Timezone.exists?(timezone) do
-      datetime = Timex.Timezone.convert(DateTime.utc_now(), timezone)
-      # September 13, 2017 at 08:03 PM"
-      time = Timex.format!(datetime, "{Mfull} {D}, {YYYY} at {0h12}:{m} {AM}")
-      "for #{time}"
-    else
-      ""
-    end
-  end
 end

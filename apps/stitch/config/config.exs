@@ -8,6 +8,11 @@ config :stitch,
   stripe_client: Stitch.Stripe.Client,
   stripe_publishable_key: System.get_env("STRIPE_PUBLISHABLE_KEY")
 
+config :stitch, Stitch.MailgunMailer,
+  adapter: Bamboo.MailgunAdapter,
+  api_key: System.get_env("MAILGUN_API_KEY"),
+  domain: System.get_env("MAILGUN_DOMAIN")
+
 config :stitch, :twilio, %{
   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
   auth_token: System.get_env("TWILIO_AUTH_TOKEN")

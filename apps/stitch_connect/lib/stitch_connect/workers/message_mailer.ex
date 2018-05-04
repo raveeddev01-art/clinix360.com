@@ -28,48 +28,17 @@ defmodule StitchConnect.MessageMailer do
   def deliver_for_users(users, team) do
     user_ids = Enum.map(users, & &1.id)
 
-    with_new_emails =
-      Stitch.EmailNotification.count(user_ids)
-      |> Enum.reduce(%{}, &Map.put(&2, &1.user_id, &1.message_count))
+    Enum.map(users, fn user ->
+      case Stitch.EmailNotification.for_user(user.id) do
+        [] ->
+          nil
 
-    recipients = prepare_recipients(users, team, with_new_emails)
-    Stitch.Accounts.Email.unread_messages_email(recipients, team)
-    Stitch.EmailNotification.clean_delivered(user_ids)
-  end
-
-  def prepare_recipients(users, team, with_new_emails) do
-    users
-    |> Enum.reduce([], fn user, acc ->
-      case Stitch.Mobile.badge_value(user, true) do
-        0 ->
-          acc
-
-        message_count ->
-          if with_new_emails[user.id],
-            do: [recipient(user, message_count, team) | acc],
-            else: acc
+        messages ->
+          StitchConnect.Web.Email.NewMessagesView.new_messages_email(user, messages, team)
       end
     end)
-  end
 
-  defp recipient(user, message_count, team) do
-    %{
-      first_name: user.first_name || "There",
-      email: user.email,
-      timezone: user.timezone[:tz],
-      id: user.id,
-      message_count: message_count,
-      login_url: login_url(team)
-    }
-  end
-
-  defp subdomain_url(subdomain) do
-    struct_url = StitchConnect.Web.Endpoint.struct_url()
-    %{struct_url | host: "#{subdomain}.#{struct_url.host}"}
-  end
-
-  defp login_url(%Team{slug: slug}) do
-    struct_url = subdomain_url(slug)
-    StitchConnect.Web.SubdomainRouter.Helpers.group_url(struct_url, :index, "general")
+    # TODO: uncomment
+    # Stitch.EmailNotification.clean_delivered(user_ids)
   end
 end

@@ -77,7 +77,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     end
   end
 
-  defp avatar_thumb(user) do
+  def avatar_thumb(user) do
     if user.is_bot do
       user.profile_image_thumb_url
     else

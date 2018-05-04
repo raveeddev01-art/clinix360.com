@@ -287,7 +287,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/admin/you/home", AdminController, :index)
     get("/admin/you/profile", AdminController, :index)
     get("/admin/you/account", AdminController, :index)
-    get("/admin/you/notifications", AdminController, :index)
+    get("/admin/you/notifications", AdminController, :index, as: :admin_notification_settings)
     get("/admin/members", AdminController, :index)
     get("/admin/billing", AdminController, :index)
     get("/admin/analytics", AdminController, :index)

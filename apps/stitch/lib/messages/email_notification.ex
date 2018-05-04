@@ -2,11 +2,11 @@ defmodule Stitch.EmailNotification do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Stitch.{Repo, EmailNotification}
+  alias Stitch.{Repo, EmailNotification, Message}
 
   schema "email_notifications" do
-    belongs_to :user, Stitch.Accounts.User
-    belongs_to :message, Stitch.Message
+    belongs_to(:user, Stitch.Accounts.User)
+    belongs_to(:message, Stitch.Message)
     timestamps(updated_at: false)
   end
 
@@ -18,7 +18,23 @@ defmodule Stitch.EmailNotification do
 
   def create(message_id, user_ids) do
     EmailNotification
-    |> Repo.insert_all(Enum.map(user_ids, & [user_id: &1, message_id: message_id, inserted_at: DateTime.utc_now()]))
+    |> Repo.insert_all(
+      Enum.map(user_ids, &[user_id: &1, message_id: message_id, inserted_at: DateTime.utc_now()])
+    )
+  end
+
+  def for_user(user_id) do
+    Message
+    |> join(
+      :inner,
+      [m],
+      en in EmailNotification,
+      m.id == en.message_id and en.user_id == ^user_id
+    )
+    |> join(:inner, [m, en], assoc(m, :user))
+    |> join(:inner, [m, en], assoc(m, :group))
+    |> preload([:group, :user])
+    |> Repo.all()
   end
 
   def count(user_ids) do
@@ -29,7 +45,7 @@ defmodule Stitch.EmailNotification do
       user_id: en.user_id,
       message_count: count(en.message_id)
     })
-    |> Repo.all
+    |> Repo.all()
   end
 
   def clean_delivered(user_ids) do
