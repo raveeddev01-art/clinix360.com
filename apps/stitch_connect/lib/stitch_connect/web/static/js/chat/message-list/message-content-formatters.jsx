@@ -1,23 +1,12 @@
 import React from "react";
 import { Emoji } from "emoji-mart";
+import REGEX from "lib/regex";
 import UserMentionById from "../../common/components/messages/message-content/user-mention-by-id";
 import messageTextToComponents from "./message-text-to-components";
 
-// FORMATTERS
-
-// public interface
-
-// IMPORTANT! - the render method of each formatter
-// passes its formatted message content into messageTextToComponents
-// but with nested == true!
-
-// render - renders the wrapper around
-// {messageTextToComponents(contentToChildContent(props.content), {nested: true})}
-
-// TODO: import this
-const emojiRegex = /((?::[^\s:]+:)(?::skin-tone-\d:)?)/g;
-const userMentionRegex = /<@U([0-9]+)>/;
-const groupMentionRegex = /<@G(everyone|room|here)>/;
+const emojiRegex = REGEX.getEmoji();
+const userMentionRegex = REGEX.getUserMentionEncode();
+const groupMentionRegex = REGEX.getGroupMentionDecode();
 
 const stringMatchingRegex = (string, regex) => {
   return string.match(regex)[0];
@@ -49,28 +38,34 @@ const stringAfterSecondOccurance = (string, chars) => {
 };
 
 const bold = {
-  wrap: toWrap => <b> {messageTextToComponents(toWrap, { nested: true })} </b>,
+  getNode: toWrap => (
+    <b> {messageTextToComponents(toWrap, { nested: true })} </b>
+  ),
   getWrappedContent: content => stringBetweenOccurances(content, "*"),
   getRemainingContent: content => stringAfterSecondOccurance(content, "*"),
   matchesBeginningOfContent: content => startsWithAndHasAnother(content, "*")
 };
 
 const italics = {
-  wrap: toWrap => <i> {messageTextToComponents(toWrap, { nested: true })} </i>,
+  getNode: toWrap => (
+    <i> {messageTextToComponents(toWrap, { nested: true })} </i>
+  ),
   getWrappedContent: content => stringBetweenOccurances(content, "_"),
   getRemainingContent: content => stringAfterSecondOccurance(content, "_"),
   matchesBeginningOfContent: content => startsWithAndHasAnother(content, "_")
 };
 
 const strike = {
-  wrap: toWrap => <s> {messageTextToComponents(toWrap, { nested: true })} </s>,
+  getNode: toWrap => (
+    <s> {messageTextToComponents(toWrap, { nested: true })} </s>
+  ),
   getWrappedContent: content => stringBetweenOccurances(content, "~"),
   getRemainingContent: content => stringAfterSecondOccurance(content, "~"),
   matchesBeginningOfContent: content => startsWithAndHasAnother(content, "~")
 };
 
 const highlight = {
-  wrap: toWrap => (
+  getNode: toWrap => (
     <code> {messageTextToComponents(toWrap, { nested: true })} </code>
   ),
   getWrappedContent: content => stringBetweenOccurances(content, "`"),
@@ -79,18 +74,20 @@ const highlight = {
 };
 
 const newline = {
-  wrap: () => <br />,
+  getNode: () => <br />,
   getWrappedContent: content => content,
   getRemainingContent: content => content.slice(1),
   matchesBeginningOfContent: content => content.startsWith("\n")
 };
 
 // TODO:
-// - Wrap with key and size
+// - get size in getNode
 // - Properly get remaining
 // - Properly check if matches
 const emoji = {
-  wrap: emojiName => <Emoji key={`emoji_1`} emoji={emojiName} size={18} />,
+  getNode: (parsedContent, i) => (
+    <Emoji key={`emoji_${i}`} emoji={parsedContent} size={18} />
+  ),
   getWrappedContent: content =>
     stringMatchingRegex(content, emojiRegex).slice(1, -1),
   getRemainingContent: content => stringAfterRegex(content, emojiRegex),
@@ -101,13 +98,15 @@ const emoji = {
 };
 
 // TODO:
-// - Wrap with key and size
 // - Properly get remaining
 // - Properly check if matches
 const userMention = {
-  wrap: parsedContent => {
+  getNode: (parsedContent, i) => {
     return (
-      <UserMentionById key={`usermention_1`} id={parseInt(parsedContent, 10)} />
+      <UserMentionById
+        key={`usermention_${i}`}
+        id={parseInt(parsedContent, 10)}
+      />
     );
   },
   getWrappedContent: content =>
@@ -119,12 +118,10 @@ const userMention = {
   }
 };
 
-// TODO
-// get key passed in
 const groupMention = {
-  wrap: parsedContent => {
+  getNode: (parsedContent, i) => {
     return (
-      <span key={`group_mention_1`} className="group-mention">
+      <span key={`group_mention_${i}`} className="group-mention">
         @{parsedContent}
       </span>
     );
@@ -141,8 +138,8 @@ const groupMention = {
 const makeFormatter = rules => {
   return {
     matches: rules.matchesBeginningOfContent,
-    parseContent: messageContent => [
-      rules.wrap(rules.getWrappedContent(messageContent)),
+    parseContent: (messageContent, i) => [
+      rules.getNode(rules.getWrappedContent(messageContent), i),
       rules.getRemainingContent(messageContent)
     ]
   };

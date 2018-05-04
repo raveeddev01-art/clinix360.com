@@ -6,8 +6,7 @@ import {
 const allFormatters = nonNestableFormatters.concat(nestableFormatters);
 
 const unmatchedNode = text => {
-  // return some react node
-  // make this its own "formatter?"
+  // TODO: does this need to exist?
   return text;
 };
 
@@ -20,7 +19,8 @@ const getNodesForRest = (
   currentNodeList,
   unmatchedCharacters,
   remainingMessageContent,
-  opts = {}
+  opts,
+  index = 0
 ) => {
   // CASE 1: END OF THE CHARACTER LIST (EXITS RECURSION)
   if (remainingMessageContent === "") {
@@ -38,7 +38,7 @@ const getNodesForRest = (
     const [
       nodeForMatchingContent,
       newRemainingContent
-    ] = matchingFormatter.parseContent(remainingMessageContent, opts);
+    ] = matchingFormatter.parseContent(remainingMessageContent, index);
 
     const newNodeList = currentNodeList.concat([
       nodeForUnmatchedChars,
@@ -49,7 +49,8 @@ const getNodesForRest = (
       newNodeList,
       newBlankUnmatchedChars,
       newRemainingContent,
-      opts
+      opts,
+      index + 1
     );
   }
 
@@ -62,7 +63,8 @@ const getNodesForRest = (
     currentNodeList,
     newUnmatchedCaracters,
     newRemainingContent,
-    opts
+    opts,
+    index + 1
   );
 };
 
