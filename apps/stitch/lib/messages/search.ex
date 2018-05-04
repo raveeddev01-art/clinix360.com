@@ -44,10 +44,38 @@ defmodule Stitch.Messages.Search do
       |> apply_search_terms(params[:search_terms])
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
+      |> apply_to_user_filters(params[:messages_to_terms])
+      |> apply_from_user_filters(params[:messages_from_terms])
       |> Repo.all()
 
     messages = MessageAction.apply_user_message_actions(user, messages)
     Message.Reaction.apply_reactions(messages)
+  end
+
+  def apply_to_user_filters(query, []), do: query
+
+  def apply_to_user_filters(query, to_users) do
+    Enum.reduce(to_users, query, fn term, query ->
+      user_id = String.split(term, ":") |> List.last()
+
+      from(
+        m in query,
+        or_where: ^user_id in m.mentioned_user_ids
+      )
+    end)
+  end
+
+  def apply_from_user_filters(query, []), do: query
+
+  def apply_from_user_filters(query, from_users) do
+    Enum.reduce(from_users, query, fn term, query ->
+      user_id = String.split(term, ":") |> List.last()
+
+      from(
+        m in query,
+        or_where: m.user_id == ^user_id
+      )
+    end)
   end
 
   def apply_room_filters(query, []), do: query
