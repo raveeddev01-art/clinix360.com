@@ -47,9 +47,9 @@ class MessageContent extends Component {
   //     let componentOrStringForType;
   //     if (part.type === "group_mention") {
   //       componentOrStringForType = (
-  //         <span key={`group_mention_${i}`} className="group-mention">
-  //           @{part.content}
-  //         </span>
+  // <span key={`group_mention_${i}`} className="group-mention">
+  //   @{part.content}
+  // </span>
   //       );
   //     } else if (part.type === "mention") {
   //       componentOrStringForType = (
