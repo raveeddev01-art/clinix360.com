@@ -33,20 +33,39 @@ const matchesAndStartsWithRegex = regex => string => {
   return match && string.startsWith(match[0]);
 };
 
-const startsWithAndHasAnother = chars => string => {
-  return string.startsWith(chars) && string.slice(chars.length).includes(chars);
-};
-
-const stringBetweenOccurances = chars => string => {
-  const withoutStartingOccurance = string.slice(chars.length);
-  return withoutStartingOccurance.slice(
-    0,
-    withoutStartingOccurance.indexOf(chars)
+const startsWithAndHasAnother = (tagChars, string) => {
+  return (
+    string.startsWith(tagChars) &&
+    string.slice(tagChars.length).includes(tagChars)
   );
 };
 
-const stringAfterSecondOccurance = chars => string => {
-  return stringAfterOccurance(stringAfterOccurance(string, chars), chars);
+const stringBetweenOccurances = tagChars => string => {
+  const withoutStartingOccurance = string.slice(tagChars.length);
+  return withoutStartingOccurance.slice(
+    0,
+    withoutStartingOccurance.indexOf(tagChars)
+  );
+};
+
+const newLineBetweenOccurances = (tagChars, string) => {
+  return stringBetweenOccurances(tagChars)(string).includes("\n");
+};
+
+const blankBetweenOccurances = (tagChars, string) => {
+  return !stringBetweenOccurances(tagChars)(string).trim();
+};
+
+const stringAfterSecondOccurance = tagChars => string => {
+  return stringAfterOccurance(stringAfterOccurance(string, tagChars), tagChars);
+};
+
+const standardTagRules = tagChars => string => {
+  return (
+    startsWithAndHasAnother(tagChars, string) &&
+    !newLineBetweenOccurances(tagChars, string) &&
+    !blankBetweenOccurances(tagChars, string)
+  );
 };
 
 // ===============
@@ -60,12 +79,9 @@ const stringAfterSecondOccurance = chars => string => {
 // - multiline blockquote
 
 // OTHER TODOS:
-// - stringBetweenOccurances breaks with a newline
-// - Empty content causes, no match on various formatters
-// - Implement isAllEmojis
-// - Blockquote ends at newline or end of content
 // - MOST IMPORTANT: add way to short circuit all of
 //   this logic for speed purposes (if the char)
+// - Blockquote ends at newline or end of content
 //   - will be done in message-text-to-components tho
 // - ``` does not match ` rules
 // - >>> does not match > rules
@@ -82,7 +98,7 @@ const bold = {
   ),
   getWrappedContent: stringBetweenOccurances("*"),
   getRemainingContent: stringAfterSecondOccurance("*"),
-  isMatch: startsWithAndHasAnother("*")
+  isMatch: standardTagRules("*")
 };
 
 const italics = {
@@ -97,7 +113,7 @@ const italics = {
   ),
   getWrappedContent: stringBetweenOccurances("_"),
   getRemainingContent: stringAfterSecondOccurance("_"),
-  isMatch: startsWithAndHasAnother("_")
+  isMatch: standardTagRules("_")
 };
 
 const strike = {
@@ -112,7 +128,7 @@ const strike = {
   ),
   getWrappedContent: stringBetweenOccurances("~"),
   getRemainingContent: stringAfterSecondOccurance("~"),
-  isMatch: startsWithAndHasAnother("~")
+  isMatch: standardTagRules("~")
 };
 
 const highlight = {
@@ -127,7 +143,7 @@ const highlight = {
   ),
   getWrappedContent: stringBetweenOccurances("`"),
   getRemainingContent: stringAfterSecondOccurance("`"),
-  isMatch: startsWithAndHasAnother("`")
+  isMatch: standardTagRules("`")
 };
 
 // TODO: break at a newline OR at the end of the content
