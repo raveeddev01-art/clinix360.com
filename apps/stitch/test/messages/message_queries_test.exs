@@ -134,7 +134,8 @@ defmodule Stitch.MessageQueriesTest do
       _public_message =
         insert(:message, user: author, group: public_group, text_content: "Hello, world!")
 
-      _public_message2 = insert(
+      _public_message2 =
+        insert(
           :message,
           user: author,
           group: public_group,
