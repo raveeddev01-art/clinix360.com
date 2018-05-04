@@ -74,5 +74,3 @@ const messageTextToComponents = messageContent => {
 };
 
 export default messageTextToComponents;
-
-messageTextToComponents("wrap me in bold");

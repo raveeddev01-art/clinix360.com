@@ -1,20 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import { Emoji } from "emoji-mart";
+// import { Emoji } from "emoji-mart";
 import Remarkable from "remarkable";
 import ReactDOMServer from "react-dom/server";
 import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-import UserMention from "./user-mention";
+// import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
-import formatMessageText from "../../../../util/format_message_text";
-
-// TODO:
-// - React event handlers broken by the renderer
+// import formatMessageText from "../../../../util/format_message_text";
+import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
 @inject("usersStore", "messageStore", "addonStore", "groupsStore")
 @observer
@@ -38,48 +36,49 @@ class MessageContent extends Component {
     return ReactDOMServer.renderToString(stringOrComponent);
   }
 
-  messageAsHTML = () => {
-    const { message, usersStore, messageStore } = this.props;
-    const { usersById } = usersStore;
+  // messageAsHTML = () => {
+  // const { message, usersStore, messageStore } = this.props;
+  // const { usersById } = usersStore;
+  // const parts = messageStore.decodeMessage(message.text_content || "");
+  // const isAllEmojis =
+  //   parts.filter(p => p.type === "emoji").length === parts.length;
+  // return parts
+  //   .map((part, i) => {
+  //     let componentOrStringForType;
+  //     if (part.type === "group_mention") {
+  //       componentOrStringForType = (
+  //         <span key={`group_mention_${i}`} className="group-mention">
+  //           @{part.content}
+  //         </span>
+  //       );
+  //     } else if (part.type === "mention") {
+  //       componentOrStringForType = (
+  //         <UserMention
+  //           key={`usermention_${i}`}
+  //           user={usersById[part.content]}
+  //           addonStore={this.props.addonStore}
+  //           groupsStore={this.props.groupsStore}
+  //         />
+  //       );
+  //     } else if (part.type === "emoji") {
+  //       componentOrStringForType = (
+  // <Emoji
+  //   key={`emoji_${i}`}
+  //   emoji={part.content}
+  //   size={isAllEmojis ? 32 : 18}
+  // />
+  //       );
+  //     } else {
+  //       componentOrStringForType = part.content;
+  //     }
+  //     return this.toRenderableString(componentOrStringForType);
+  //   })
+  //   .join("");
+  // };
 
-    const parts = messageStore.decodeMessage(message.text_content || "");
-    const isAllEmojis =
-      parts.filter(p => p.type === "emoji").length === parts.length;
-
-    return parts
-      .map((part, i) => {
-        let componentOrStringForType;
-        if (part.type === "group_mention") {
-          componentOrStringForType = (
-            <span key={`group_mention_${i}`} className="group-mention">
-              @{part.content}
-            </span>
-          );
-        } else if (part.type === "mention") {
-          componentOrStringForType = (
-            <UserMention
-              key={`usermention_${i}`}
-              user={usersById[part.content]}
-              addonStore={this.props.addonStore}
-              groupsStore={this.props.groupsStore}
-            />
-          );
-        } else if (part.type === "emoji") {
-          componentOrStringForType = (
-            <Emoji
-              key={`emoji_${i}`}
-              emoji={part.content}
-              size={isAllEmojis ? 32 : 18}
-            />
-          );
-        } else {
-          componentOrStringForType = part.content;
-        }
-
-        return this.toRenderableString(componentOrStringForType);
-      })
-      .join("");
-  };
+  formattedMessage() {
+    return messageTextToComponents(this.props.message.text_content || "");
+  }
 
   renderMarkdownNode(content) {
     const md = new Remarkable({ linkify: true, breaks: true });
@@ -142,11 +141,7 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
-            <span
-              dangerouslySetInnerHTML={{
-                __html: formatMessageText(this.messageAsHTML())
-              }}
-            />
+            this.formattedMessage()
           )}
 
           {this.renderLinkPreviews()}

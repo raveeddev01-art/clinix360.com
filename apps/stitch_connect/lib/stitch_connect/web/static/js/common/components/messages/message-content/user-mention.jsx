@@ -12,11 +12,7 @@ export default class UserMention extends Component {
     });
 
     return (
-      <UserProfileMenu
-        user={mentionedUser}
-        className={mentionClassName}
-        {...this.props}
-      >
+      <UserProfileMenu user={mentionedUser} className={mentionClassName}>
         {`@${mentionedUser.username}`}
       </UserProfileMenu>
     );
