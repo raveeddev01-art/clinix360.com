@@ -50,8 +50,8 @@ const stringAfterSecondOccurance = (string, chars) => {
 // ===============
 
 const bold = {
-  getNode: parsedContent => (
-    <b> {messageTextToComponents(parsedContent, { nested: true })} </b>
+  getNode: (parsedContent, i) => (
+    <b key={i}> {messageTextToComponents(parsedContent, { nested: true })} </b>
   ),
   getWrappedContent: content => stringBetweenOccurances(content, "*"),
   getRemainingContent: content => stringAfterSecondOccurance(content, "*"),
@@ -59,8 +59,8 @@ const bold = {
 };
 
 const italics = {
-  getNode: parsedContent => (
-    <i> {messageTextToComponents(parsedContent, { nested: true })} </i>
+  getNode: (parsedContent, i) => (
+    <i key={i}> {messageTextToComponents(parsedContent, { nested: true })} </i>
   ),
   getWrappedContent: content => stringBetweenOccurances(content, "_"),
   getRemainingContent: content => stringAfterSecondOccurance(content, "_"),
@@ -68,8 +68,8 @@ const italics = {
 };
 
 const strike = {
-  getNode: parsedContent => (
-    <s> {messageTextToComponents(parsedContent, { nested: true })} </s>
+  getNode: (parsedContent, i) => (
+    <s key={i}> {messageTextToComponents(parsedContent, { nested: true })} </s>
   ),
   getWrappedContent: content => stringBetweenOccurances(content, "~"),
   getRemainingContent: content => stringAfterSecondOccurance(content, "~"),
@@ -77,8 +77,11 @@ const strike = {
 };
 
 const highlight = {
-  getNode: parsedContent => (
-    <code> {messageTextToComponents(parsedContent, { nested: true })} </code>
+  getNode: (parsedContent, i) => (
+    <code key={i}>
+      {" "}
+      {messageTextToComponents(parsedContent, { nested: true })}{" "}
+    </code>
   ),
   getWrappedContent: content => stringBetweenOccurances(content, "`"),
   getRemainingContent: content => stringAfterSecondOccurance(content, "`"),
@@ -86,8 +89,8 @@ const highlight = {
 };
 
 const blockQuote = {
-  getNode: parsedContent => (
-    <blockquote>
+  getNode: (parsedContent, i) => (
+    <blockquote key={i}>
       {" "}
       {messageTextToComponents(parsedContent, { nested: true })}{" "}
     </blockquote>
@@ -99,7 +102,7 @@ const blockQuote = {
 };
 
 const newline = {
-  getNode: () => <br />,
+  getNode: (parsedContent, i) => <br key={i} />,
   getWrappedContent: content => content,
   getRemainingContent: content => content.slice(1),
   isMatch: content => content.startsWith("\n")
@@ -111,7 +114,7 @@ const newline = {
 const emoji = {
   getNode: (parsedContent, i, opts = {}) => {
     const size = opts.allEmojis ? 32 : 18;
-    return <Emoji key={`emoji_${i}`} emoji={parsedContent} size={size} />;
+    return <Emoji key={i} emoji={parsedContent} size={size} />;
   },
   getWrappedContent: content =>
     stringMatchingRegex(content, emojiRegex).slice(1, -1),
@@ -127,12 +130,7 @@ const emoji = {
 // - Properly check if matches
 const userMention = {
   getNode: (parsedContent, i) => {
-    return (
-      <UserMentionById
-        key={`usermention_${i}`}
-        id={parseInt(parsedContent, 10)}
-      />
-    );
+    return <UserMentionById key={i} id={parseInt(parsedContent, 10)} />;
   },
   getWrappedContent: content =>
     stringMatchingRegex(content, userMentionRegex).slice(3, -1),
@@ -146,7 +144,7 @@ const userMention = {
 const groupMention = {
   getNode: (parsedContent, i) => {
     return (
-      <span key={`group_mention_${i}`} className="group-mention">
+      <span key={i} className="group-mention">
         @{parsedContent}
       </span>
     );
