@@ -532,6 +532,10 @@
         justify-content: space-between;
         font-size: 85%;
 
+        kbd {
+          background: $brand-primary;
+        }
+
         & > div {
           height: 23px;
         }
