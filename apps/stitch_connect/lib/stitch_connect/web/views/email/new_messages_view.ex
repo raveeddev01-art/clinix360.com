@@ -1,9 +1,7 @@
 defmodule StitchConnect.Web.Email.NewMessagesView do
   use Bamboo.Phoenix, view: StitchConnect.Web.EmailView
 
-  # TODO: replace
-  @from_address "no-reply@sandboxc10b7d65c59645978179ee5cfb7ce891.mailgun.org"
-  # @from_address {"Stitch", "no-reply@teamstitch.com"}
+  @from_address {"Stitch", "no-reply@teamstitch.com"}
 
   def new_messages_email(user, messages, team) do
     recipient = recipient(user, messages, team)
@@ -86,7 +84,7 @@ defmodule StitchConnect.Web.Email.NewMessagesView do
   end
 
   def format_message_time(datetime, recipient_timezone) do
-    recipient_timezone = ensure_timezone(recipient_timezone) |> IO.inspect()
+    recipient_timezone = ensure_timezone(recipient_timezone)
     datetime = Timex.Timezone.convert(datetime, recipient_timezone)
     # 3:28 PM, May 4
     Timex.format!(datetime, "{0h12}:{m} {AM}, {Mfull} {D}")

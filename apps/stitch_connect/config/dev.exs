@@ -17,9 +17,16 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  force_ssl: [host: nil, rewrite_on: [:x_forwarded_proto]]
-
-# watchers: [node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--progress", "--color", cd: Path.expand("../", __DIR__)]]
+  force_ssl: [host: nil, rewrite_on: [:x_forwarded_proto]],
+  watchers: [
+    node: [
+      "node_modules/webpack/bin/webpack.js",
+      "--watch-stdin",
+      "--progress",
+      "--color",
+      cd: Path.expand("../", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #

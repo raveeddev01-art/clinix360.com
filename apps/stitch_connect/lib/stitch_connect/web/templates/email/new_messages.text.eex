@@ -6,10 +6,6 @@ Sign-in to Stitch Connect: @login_url
 
 Your sign-in email is: <%= @receiver_email %>
 
-<%= for group <- @groups do %>
-  - <%= group.group_name %>
-<% end %>
-
 If you need anything, we can help. Reply to this email or send a new one to us by clicking here. We're online 7 days a week and love to hear from you :)
 
 See you inside!

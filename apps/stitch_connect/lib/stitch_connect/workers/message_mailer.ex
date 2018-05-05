@@ -38,7 +38,6 @@ defmodule StitchConnect.MessageMailer do
       end
     end)
 
-    # TODO: uncomment
-    # Stitch.EmailNotification.clean_delivered(user_ids)
+    Stitch.EmailNotification.clean_delivered(user_ids)
   end
 end
