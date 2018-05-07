@@ -49,8 +49,9 @@ defmodule Stitch.Messages.Search do
       |> apply_highlight(params[:search_terms])
       |> Repo.all()
 
-    messages = MessageAction.apply_user_message_actions(user, messages)
-    Message.Reaction.apply_reactions(messages)
+    user
+    |> MessageAction.apply_user_message_actions(messages)
+    |> Message.Reaction.apply_reactions()
   end
 
   def apply_highlight(query, search_terms) do
@@ -69,9 +70,8 @@ defmodule Stitch.Messages.Search do
           type: message.type,
           inserted_at: message.inserted_at,
           updated_at: message.updated_at,
-          pinned_by_id: message.pinned_by_id,
           pinned: message.pinned,
-          pineed_by_id: message.pinned_by_id,
+          pinned_by_id: message.pinned_by_id,
           pinned_at: message.pinned_at,
           edited_at: message.edited_at,
           read_status: message.read_status,
@@ -84,7 +84,7 @@ defmodule Stitch.Messages.Search do
 
     from(
       message in subquery(query),
-      select: %{
+      select: %Message{
         id: message.id,
         user_id: message.user_id,
         group_id: message.group_id,
@@ -94,9 +94,8 @@ defmodule Stitch.Messages.Search do
         type: message.type,
         inserted_at: message.inserted_at,
         updated_at: message.updated_at,
-        pinned_by_id: message.pinned_by_id,
         pinned: message.pinned,
-        pineed_by_id: message.pinned_by_id,
+        pinned_by_id: message.pinned_by_id,
         pinned_at: message.pinned_at,
         edited_at: message.edited_at,
         read_status: message.read_status,

@@ -67,6 +67,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     }
   end
 
+  def user_info(nil), do: nil
+
   def user_info(%{user: %Ecto.Association.NotLoaded{}}), do: nil
 
   def user_info(%{user: user}) do
