@@ -1,0 +1,167 @@
+import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
+
+import Form from "react-bootstrap/lib/Form";
+import SearchInputDropdown from "./search-input-dropdown";
+import SearchInputDatepicker from "./search-input-datepicker";
+
+@inject("addonStore", "searchStore", "usersStore", "groupsStore")
+@observer
+class SearchInput extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      query: "",
+      isDropdownVisible: false,
+      isDatepickerVisible: false,
+      items: [],
+      keyword: "",
+      dateChunk: ""
+    };
+  }
+
+  onSearch = event => {
+    event.preventDefault();
+
+    const { addonStore, searchStore } = this.props;
+    const { query, isDatepickerVisible, isDropdownVisible } = this.state;
+
+    // Treat an empty query as a non-event
+    // Do not open panel or search
+    if (!query.trim() || isDropdownVisible || isDatepickerVisible) {
+      return;
+    }
+
+    searchStore.setQuery(this.state.query);
+    addonStore.setAddonPanel("Search Results");
+    addonStore.toggleAddons(true);
+  };
+
+  onSearchQueryChange = event => {
+    this.setState({ query: event.target.value }, () => {
+      this.checkCursor();
+    });
+  };
+
+  onKeyUp = event => {
+    switch (event.keyCode) {
+      case 27: // esc
+        this.clearSearch(event);
+        break;
+      default:
+    }
+  };
+
+  onSelect = value => {
+    this.replaceCurrentWord(`${this.state.keyword}${value}`);
+  };
+
+  getCurrentWord = () => {
+    const text = this.state.query;
+    const cursorPos = this.searchInput.selectionStart;
+    const preWord = text
+      .substring(0, cursorPos)
+      .match(/[:+\-@#A-Za-z0-9_,/]*$/)[0];
+    const postWord = text.substring(cursorPos).match(/^[:+\-A-Za-z0-9_,/]*/)[0];
+    return `${preWord}${postWord}`;
+  };
+
+  replaceCurrentWord = word => {
+    const cursorPos = this.searchInput.selectionStart;
+    const text = this.state.query;
+    const preWord = text
+      .substring(0, cursorPos)
+      .match(/[:+\-@#A-Za-z0-9_,/]*$/)[0];
+    const postWord = text.substring(cursorPos).match(/^[:+\-A-Za-z0-9_,/]*/)[0];
+    const query =
+      text.substring(0, cursorPos - preWord.length) +
+      word +
+      text.substring(cursorPos + postWord.length);
+
+    this.setState(
+      {
+        isDropdownVisible: false,
+        isDatepickerVisible: false,
+        query
+      },
+      () => {
+        // after replacing, the cursor pos should be persistent
+        const newPos = cursorPos - preWord.length + word.length;
+        this.searchInput.focus();
+        this.searchInput.setSelectionRange(newPos, newPos);
+      }
+    );
+  };
+
+  checkCursor = () => {
+    const word = this.getCurrentWord();
+
+    const result = this.props.searchStore.checkWord(word);
+
+    this.setState({
+      items: [],
+      dateChunk: '',
+      isDropdownVisible: false,
+      isDatepickerVisible: false,
+      ...result
+    });
+  };
+
+  clearSearch = event => {
+    const { searchStore } = this.props;
+
+    event.preventDefault();
+    this.setState({ query: "" }, () => {
+      this.checkCursor();
+    });
+    searchStore.reset();
+  };
+
+  render() {
+    const {
+      query,
+      items,
+      isDropdownVisible,
+      isDatepickerVisible,
+      dateChunk
+    } = this.state;
+
+    return (
+      <Form onSubmit={this.onSearch} className="search-input-form">
+        <i className="fa fa-search search-input-icon" />
+        <input
+          className="form-control"
+          type="text"
+          placeholder="Search"
+          ref={input => {
+            this.searchInput = input;
+          }}
+          onChange={this.onSearchQueryChange}
+          onMouseUp={this.checkCursor}
+          onKeyUp={this.onKeyUp}
+          value={query}
+        />
+        {query && (
+          <a role="link" onClick={this.clearSearch}>
+            <i className="fa fa-times-circle-o search-input-icon" />
+          </a>
+        )}
+        {isDropdownVisible && (
+          <SearchInputDropdown
+            items={items ? items.slice(0, 10) : null}
+            onSelect={this.onSelect}
+          />
+        )}
+        {isDatepickerVisible && (
+          <SearchInputDatepicker
+            dateChunk={dateChunk}
+            onSelect={this.onSelect}
+          />
+        )}
+      </Form>
+    );
+  }
+}
+
+export default SearchInput;

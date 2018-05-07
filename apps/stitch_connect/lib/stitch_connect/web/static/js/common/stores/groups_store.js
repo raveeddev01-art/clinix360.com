@@ -199,6 +199,13 @@ class GroupsStore {
       .join(", ");
   };
 
+  getMultiDMNameWithUsernames = group => {
+    return group.users
+      .filter(u => u.id !== currentUser.id)
+      .map(u => u.username)
+      .join(",");
+  };
+
   @action
   updateGroupData = (id, data) => {
     const group = this.getGroupById(id);
