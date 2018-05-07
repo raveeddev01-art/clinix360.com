@@ -48,9 +48,8 @@ defmodule Stitch.Messages.Search do
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
+      |> apply_highlight(params[:search_terms])
       |> Repo.all()
-
-    # |> apply_highlight(params[:search_terms])
 
     user
     |> MessageAction.apply_user_message_actions(messages)
@@ -58,7 +57,7 @@ defmodule Stitch.Messages.Search do
   end
 
   def apply_highlight(query, search_terms) do
-    search_term = Enum.join(search_terms, " ")
+    search_term = Enum.join(search_terms, " | ")
 
     query =
       from(
