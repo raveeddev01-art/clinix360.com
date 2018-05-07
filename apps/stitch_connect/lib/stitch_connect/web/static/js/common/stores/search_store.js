@@ -141,8 +141,11 @@ class SearchStore {
       .map(word => {
         const result = this.checkWord(word);
         if (result) {
-          if (result.items && result.items.length === 1 && word === `${result.keyword}${result.items[0].value}`) {
-            return `${result.keyword}${result.items[0].id}`;
+          if (result.items) {
+            const resultItem = result.items.find(item => word === `${result.keyword}${item.value}`);
+            if (resultItem) {
+              return `${result.keyword}${resultItem.id}`;
+            }
           }
         }
 
