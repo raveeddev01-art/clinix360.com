@@ -6,6 +6,30 @@ import Linkify from "linkifyjs/react";
 import UserMentionById from "../../common/components/messages/message-content/user-mention-by-id";
 import messageTextToComponents from "./message-text-to-components";
 
+// =====================================================
+// =====================================================
+// Message content formatters are given the a string of
+// content starting at some specific character. (not the
+// entire content string)
+
+// isMatch checks if the substring matches at that char
+// if so, they call parseContent on the substring
+
+// parseContent returns two things:
+// - a react node with the formatted content
+// - another substring with any remaining content
+//   that did not match the formatter
+
+// EXAMPLE USAGE:
+// const givenContent = "*this* is important"
+// boldFormatter.isMatch(givenContent)
+//   => true
+// boldFormatter.parseContent(givenContent)
+//   ==> [nodeForBoldedContent, " is important"]
+// =====================================================
+// =====================================================
+
+// GET CONSTANTS
 const emojiRegex = REGEX.getEmoji();
 const userMentionRegex = REGEX.getUserMentionDecode();
 const groupMentionRegex = REGEX.getGroupMentionDecode();
@@ -16,11 +40,13 @@ const groupMentionRegex = REGEX.getGroupMentionDecode();
 // ============================
 // ============================
 
-const stringMatchingRegex = (string, regex) => {
+// substring getters
+
+const getStringMatchingRegex = (string, regex) => {
   return string.match(regex)[0];
 };
 
-const stringAfterOccurance = (string, chars) => {
+const getStringAfterOccurance = (string, chars) => {
   return string.slice(string.indexOf(chars) + chars.length);
 };
 
@@ -37,55 +63,42 @@ const getContentUntilNewline = string => {
   return string.split("\n")[0];
 };
 
+const getStringBetweenOccurances = tag => string => {
+  const withoutStartingOccurance = string.slice(tag.length);
+  return withoutStartingOccurance.slice(
+    0,
+    withoutStartingOccurance.indexOf(tag)
+  );
+};
+
+const getStringAfterSecondOccurance = tag => string => {
+  return getStringAfterOccurance(getStringAfterOccurance(string, tag), tag);
+};
+
+// boolean checks
+
 const matchesAndStartsWithRegex = regex => string => {
   const match = string.match(regex);
   return match && string.startsWith(match[0]);
 };
 
-const startsWithAndHas = (startsWith, hasLater, string) => {
+const startsWithAndHasAnother = (tag, string) => {
+  return string.startsWith(tag) && string.slice(tag.length).includes(tag);
+};
+
+const newLineIsBetweenOccurances = (tag, string) => {
+  return getStringBetweenOccurances(tag)(string).includes("\n");
+};
+
+const blankIsBetweenOccurances = (tag, string) => {
+  return !getStringBetweenOccurances(tag)(string).trim();
+};
+
+const standardTagRules = tag => string => {
   return (
-    string.startsWith(startsWith) &&
-    string.slice(startsWith.length).includes(hasLater)
-  );
-};
-
-const startsWithAndHasAnother = (tagChars, string) => {
-  return startsWithAndHas(tagChars, tagChars, string);
-};
-
-const stringBetweenOccurances = tagChars => string => {
-  const withoutStartingOccurance = string.slice(tagChars.length);
-  return withoutStartingOccurance.slice(
-    0,
-    withoutStartingOccurance.indexOf(tagChars)
-  );
-};
-
-const stringBetweenMatches = (startMatch, endMatch) => string => {
-  const withoutStartingOccurance = string.slice(startMatch.length);
-  return withoutStartingOccurance.slice(
-    0,
-    withoutStartingOccurance.indexOf(endMatch)
-  );
-};
-
-const newLineBetweenOccurances = (tagChars, string) => {
-  return stringBetweenOccurances(tagChars)(string).includes("\n");
-};
-
-const blankBetweenOccurances = (tagChars, string) => {
-  return !stringBetweenOccurances(tagChars)(string).trim();
-};
-
-const stringAfterSecondOccurance = tagChars => string => {
-  return stringAfterOccurance(stringAfterOccurance(string, tagChars), tagChars);
-};
-
-const standardTagRules = tagChars => string => {
-  return (
-    startsWithAndHasAnother(tagChars, string) &&
-    !newLineBetweenOccurances(tagChars, string) &&
-    !blankBetweenOccurances(tagChars, string)
+    startsWithAndHasAnother(tag, string) &&
+    !newLineIsBetweenOccurances(tag, string) &&
+    !blankIsBetweenOccurances(tag, string)
   );
 };
 
@@ -94,121 +107,94 @@ const hasEmoji = content => {
   return emoji && emoji.name;
 };
 
+// recall the formatter on content within tags
+const renderNestedContent = content => {
+  const nestedOpts = {
+    nested: true,
+    isAllEmojis: false
+  };
+
+  return messageTextToComponents(content, nestedOpts);
+};
+
 // ===============
 // ===============
 // FORMATTER RULES
 // ===============
 // ===============
 
-// TODOS: add way to short circuit all of this logic for speed purposes (if the char)
+// Formatters with inner content
 
 const bold = {
   getNode: (parsedContent, i) => (
-    <b key={i}>
-      {" "}
-      {messageTextToComponents(parsedContent, {
-        nested: true,
-        isAllEmojis: false
-      })}{" "}
-    </b>
+    <b key={i}> {renderNestedContent(parsedContent)} </b>
   ),
-  getWrappedContent: stringBetweenOccurances("*"),
-  getRemainingContent: stringAfterSecondOccurance("*"),
+  getWrappedContent: getStringBetweenOccurances("*"),
+  getRemainingContent: getStringAfterSecondOccurance("*"),
   isMatch: standardTagRules("*")
 };
 
 const italics = {
   getNode: (parsedContent, i) => (
-    <i key={i}>
-      {" "}
-      {messageTextToComponents(parsedContent, {
-        nested: true,
-        isAllEmojis: false
-      })}{" "}
-    </i>
+    <i key={i}> {renderNestedContent(parsedContent)} </i>
   ),
-  getWrappedContent: stringBetweenOccurances("_"),
-  getRemainingContent: stringAfterSecondOccurance("_"),
+  getWrappedContent: getStringBetweenOccurances("_"),
+  getRemainingContent: getStringAfterSecondOccurance("_"),
   isMatch: standardTagRules("_")
 };
 
 const strike = {
   getNode: (parsedContent, i) => (
-    <s key={i}>
-      {" "}
-      {messageTextToComponents(parsedContent, {
-        nested: true,
-        isAllEmojis: false
-      })}{" "}
-    </s>
+    <s key={i}> {renderNestedContent(parsedContent)} </s>
   ),
-  getWrappedContent: stringBetweenOccurances("~"),
-  getRemainingContent: stringAfterSecondOccurance("~"),
+  getWrappedContent: getStringBetweenOccurances("~"),
+  getRemainingContent: getStringAfterSecondOccurance("~"),
   isMatch: standardTagRules("~")
 };
 
+// TODO: CHANGE THE RULES ON THIS ONE!
 const multilineHighlight = {
   getNode: (parsedContent, i) => (
-    <pre>
-      <code key={i}>
-        {" "}
-        {messageTextToComponents(parsedContent, {
-          nested: true,
-          isAllEmojis: false
-        })}{" "}
-      </code>
+    <pre key={i}>
+      <code> {renderNestedContent(parsedContent)} </code>
     </pre>
   ),
-  getWrappedContent: stringBetweenMatches("```\n", "\n```"),
-  getRemainingContent: stringAfterSecondOccurance("```"),
-  isMatch: content => startsWithAndHas("```\n", "\n```", content)
+  getWrappedContent: getStringBetweenOccurances("```"),
+  getRemainingContent: getStringAfterSecondOccurance("```"),
+  isMatch: content => startsWithAndHasAnother("```", content)
 };
 
 const highlight = {
   getNode: (parsedContent, i) => (
-    <code key={i}>
-      {" "}
-      {messageTextToComponents(parsedContent, {
-        nested: true,
-        isAllEmojis: false
-      })}{" "}
-    </code>
+    <code key={i}> {renderNestedContent(parsedContent)} </code>
   ),
-  getWrappedContent: stringBetweenOccurances("`"),
-  getRemainingContent: stringAfterSecondOccurance("`"),
+  getWrappedContent: getStringBetweenOccurances("`"),
+  getRemainingContent: getStringAfterSecondOccurance("`"),
   isMatch: standardTagRules("`")
 };
 
 // TODO: breaks only at the end of the content
+// TODO: Change Multiline rules
 const multilineBlockquote = {
   getNode: (parsedContent, i) => (
-    <blockquote key={i}>
-      {" "}
-      {messageTextToComponents(parsedContent, {
-        nested: true,
-        isAllEmojis: false
-      })}{" "}
-    </blockquote>
+    <blockquote key={i}> {renderNestedContent(parsedContent)} </blockquote>
   ),
   getWrappedContent: content => content.slice(3),
   getRemainingContent: () => "",
   isMatch: (content, opts) => opts.isFirstChar && content.startsWith(">>>")
 };
 
+// Allow beginning of any line?
 const blockQuote = {
   getNode: (parsedContent, i) => (
-    <blockquote key={i}>
-      {" "}
-      {messageTextToComponents(parsedContent, {
-        nested: true,
-        isAllEmojis: false
-      })}{" "}
-    </blockquote>
+    <blockquote key={i}> {renderNestedContent(parsedContent)} </blockquote>
   ),
   getWrappedContent: content => getContentUntilNewline(content).slice(1),
   getRemainingContent: getContentAfterNewline,
   isMatch: (content, opts) => opts.isFirstChar && content.startsWith(">")
 };
+
+// Formatters without inner content
 
 const newline = {
   getNode: (parsedContent, i) => <br key={i} />,
@@ -223,11 +209,11 @@ const emoji = {
     return <Emoji key={i} emoji={parsedContent} size={size} />;
   },
   getWrappedContent: content =>
-    stringMatchingRegex(content, emojiRegex).slice(1, -1),
+    getStringMatchingRegex(content, emojiRegex).slice(1, -1),
   getRemainingContent: getStringAfterRegex(emojiRegex),
   isMatch: content =>
     matchesAndStartsWithRegex(emojiRegex)(content) &&
-    hasEmoji(stringMatchingRegex(content, emojiRegex).slice(1, -1))
+    hasEmoji(getStringMatchingRegex(content, emojiRegex).slice(1, -1))
 };
 
 const userMention = {
@@ -235,7 +221,7 @@ const userMention = {
     return <UserMentionById key={i} id={parseInt(parsedContent, 10)} />;
   },
   getWrappedContent: content =>
-    stringMatchingRegex(content, userMentionRegex).slice(3, -1),
+    getStringMatchingRegex(content, userMentionRegex).slice(3, -1),
   getRemainingContent: getStringAfterRegex(userMentionRegex),
   isMatch: matchesAndStartsWithRegex(userMentionRegex)
 };
@@ -249,7 +235,7 @@ const groupMention = {
     );
   },
   getWrappedContent: content =>
-    stringMatchingRegex(content, groupMentionRegex).slice(3, -1),
+    getStringMatchingRegex(content, groupMentionRegex).slice(3, -1),
   getRemainingContent: getStringAfterRegex(groupMentionRegex),
   isMatch: matchesAndStartsWithRegex(groupMentionRegex)
 };
@@ -262,7 +248,7 @@ const groupMention = {
 
 const makeFormatter = rules => {
   return {
-    matches: rules.isMatch,
+    isMatch: rules.isMatch,
     parseContent: (messageContent, i, opts = {}) => [
       rules.getNode(rules.getWrappedContent(messageContent), i, opts),
       rules.getRemainingContent(messageContent)
@@ -276,6 +262,21 @@ const makeFormatter = rules => {
 // =============
 // =============
 
+// used to bypass all formatter checks for speed improvement
+const potentialFormatterChars = new Set([
+  "*",
+  "_",
+  "~",
+  "`",
+  "\n",
+  ">",
+  "<",
+  ":"
+]);
+export const potentialFormatterMatch = char => {
+  return potentialFormatterChars.has(char);
+};
+
 export const formatUnmatched = (content, i) => (
   <Linkify key={`link_${i}`}>{content}</Linkify>
 );
@@ -287,7 +288,7 @@ export const nestableFormatters = [
   newline
 ].map(makeFormatter);
 
-// multilines must precede single-line versions
+// note: multilines must precede single-line versions
 export const nonNestableFormatters = [
   multilineBlockquote,
   multilineHighlight,

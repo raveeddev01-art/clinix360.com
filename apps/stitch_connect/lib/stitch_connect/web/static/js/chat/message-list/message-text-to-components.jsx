@@ -1,35 +1,71 @@
+import REGEX from "lib/regex";
 import {
   nestableFormatters,
   nonNestableFormatters,
-  formatUnmatched
+  formatUnmatched,
+  potentialFormatterMatch
 } from "./message-content-formatters";
-import REGEX from "lib/regex";
 
+// =====================================================
+// =====================================================
+// Message Text to Components takes a basic string of
+// text and converts it to a list of react nodes.
+// It does this by iterating over each character, checking
+// for a formatter that matches the reamining content
+// starting from that character, and returning calling
+// the formatter to parse the content if so (returning
+// a formatted node).
+// =====================================================
+// =====================================================
+
+// GET CONSTANTS
+const allFormatters = nonNestableFormatters.concat(nestableFormatters);
 const emojiRegex = REGEX.getEmoji();
 
-const messageSolelyEmojis = messageContent => {
+const isSolelyEmojis = messageContent => {
   return !messageContent.replace(emojiRegex, "").trim();
 };
 
-const allFormatters = nonNestableFormatters.concat(nestableFormatters);
-
-const unmatchedNode = (text, i) => formatUnmatched(text, i);
-
 const getMatchingFormatter = (content, opts) => {
   const validFormatters = opts.nested ? nestableFormatters : allFormatters;
-  return validFormatters.find(formatter => formatter.matches(content, opts));
+
+  // If not specific char, move onto next char
+  if (!potentialFormatterMatch(content[0])) {
+    return null;
+  }
+
+  return validFormatters.find(formatter => formatter.isMatch(content, opts));
 };
 
+// =====================================================
+// getRemainingNodes EXAMPLE:
+// input: "this is *bold* and _italicized_ stuff"
+
+// HALF WAY THRU ITERATION (at the first "_"):
+// remainingMessageContent: "_italicized_ stuff"
+// currentNodeList: [unformattedNode, boldNode]
+// unmatchedCharacters: " and " <-- will eventually be an unformattedNode
+
+// END OF ITERATION:
+// remainingMessageContent: ""
+// currentNodeList:
+//   [unformattedNode1, boldNode, unformattedNode2, italicedNode, unformattedNode3]
+// unmatchedCharacters: ""
+// =====================================================
+
 const getRemainingNodes = (
-  currentNodeList,
-  unmatchedCharacters,
   remainingMessageContent,
-  opts,
-  index = 0
+  opts = {},
+  currentNodeList = [],
+  unmatchedCharacters = "",
+  keyIndex = 0
 ) => {
-  // CASE 1: END OF THE CHARACTER LIST (EXITS RECURSION)
+  // CASE 1: END OF THE CONTENT (EXITS)
   if (remainingMessageContent === "") {
-    const nodeForUnmatchedChars = unmatchedNode(unmatchedCharacters, index + 1);
+    const nodeForUnmatchedChars = formatUnmatched(
+      unmatchedCharacters,
+      keyIndex + 1
+    );
     return currentNodeList.concat([nodeForUnmatchedChars]);
   }
 
@@ -40,15 +76,19 @@ const getRemainingNodes = (
     Object.assign({}, opts, { isFirstChar })
   );
 
-  // CASE 2: CURRENT SPOT IN STRING MATCHES A FORMATTER (CONTINUE RECURSION)
+  // CASE 2: CURRENT SPOT IN STRING MATCHES A FORMATTER (CONTINUES)
+  // -> Add new nodes to list. Skip to content after the new node.
   if (matchingFormatter) {
-    const nodeForUnmatchedChars = unmatchedNode(unmatchedCharacters, index + 1);
+    const nodeForUnmatchedChars = formatUnmatched(
+      unmatchedCharacters,
+      keyIndex + 1
+    );
     const newBlankUnmatchedChars = "";
 
     const [
       nodeForMatchingContent,
       newRemainingContent
-    ] = matchingFormatter.parseContent(remainingMessageContent, index, opts);
+    ] = matchingFormatter.parseContent(remainingMessageContent, keyIndex, opts);
 
     const newNodeList = currentNodeList.concat([
       nodeForUnmatchedChars,
@@ -56,42 +96,37 @@ const getRemainingNodes = (
     ]);
 
     return getRemainingNodes(
-      newNodeList,
-      newBlankUnmatchedChars,
       newRemainingContent,
       opts,
-      index + 2
+      newNodeList,
+      newBlankUnmatchedChars,
+      keyIndex + 2
     );
   }
 
-  // CASE 3: CURRENT SPOT DOES NOT MATCH, BUT MORE CHARACTERS REMAIN (CONTINUE RECURSION)
+  // CASE 3: CURRENT SPOT DOES NOT MATCH,
+  // BUT MORE CHARACTERS REMAIN (CONTINUES)
   const newUnmatchedCaracters =
     unmatchedCharacters + remainingMessageContent.slice(0, 1);
   const newRemainingContent = remainingMessageContent.slice(1);
 
   return getRemainingNodes(
-    currentNodeList,
-    newUnmatchedCaracters,
     newRemainingContent,
     opts,
-    index + 2
+    currentNodeList,
+    newUnmatchedCaracters,
+    keyIndex + 2
   );
 };
 
 const messageTextToComponents = (messageContent, opts) => {
-  const initialNodeList = [];
-  const initialUnmatchedChars = "";
-  const topLevelOpts = {
+  const defaultOpts = {
     nested: false,
-    isAllEmojis: messageSolelyEmojis(messageContent)
+    isAllEmojis: isSolelyEmojis(messageContent)
   };
 
-  return getRemainingNodes(
-    initialNodeList,
-    initialUnmatchedChars,
-    messageContent,
-    Object.assign({}, topLevelOpts, opts)
-  );
+  const formattingOpts = Object.assign({}, defaultOpts, opts);
+  return getRemainingNodes(messageContent, formattingOpts);
 };
 
 export default messageTextToComponents;
