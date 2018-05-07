@@ -101,17 +101,24 @@ defmodule Stitch.Messages.SearchTest do
       group_a = insert(:group, team: team, name: "Example", slug: "example")
       insert(:group_user, group: group_a, user: user)
 
-      message_a =
-        insert(:message, user: user, group: group_a, text_content: "examples are for docs")
+      {:ok, target_datetime} = NaiveDateTime.new(2010, 1, 2, 0, 0, 0)
+      {:ok, future_target_datetime} = NaiveDateTime.new(2020, 1, 2, 0, 0, 0)
 
-      {:ok, target_datetime} = NaiveDateTime.new(2018, 1, 2, 0, 0, 0)
+      message_a =
+        insert(
+          :message,
+          user: user,
+          group: group_a,
+          text_content: "examples are for docs",
+          inserted_at: target_datetime
+        )
 
       insert(
         :message,
         user: user,
         group: group_a,
         text_content: "examples are for docs",
-        inserted_at: target_datetime
+        inserted_at: future_target_datetime
       )
 
       assert ids(Search.search(user, "example before:2019-06-06")) == ids([message_a])
@@ -123,20 +130,27 @@ defmodule Stitch.Messages.SearchTest do
       group_a = insert(:group, team: team, name: "Example", slug: "example")
       insert(:group_user, group: group_a, user: user)
 
-      message_a =
-        insert(:message, user: user, group: group_a, text_content: "examples are for docs")
+      {:ok, target_datetime} = NaiveDateTime.new(2018, 1, 2, 0, 0, 0)
+      {:ok, past_target_datetime} = NaiveDateTime.new(2010, 1, 2, 0, 0, 0)
 
-      {:ok, target_datetime} = NaiveDateTime.new(2017, 1, 2, 0, 0, 0)
+      message_a =
+        insert(
+          :message,
+          user: user,
+          group: group_a,
+          text_content: "examples are for docs",
+          inserted_at: target_datetime
+        )
 
       insert(
         :message,
         user: user,
         group: group_a,
         text_content: "examples are for docs",
-        inserted_at: target_datetime
+        inserted_at: past_target_datetime
       )
 
-      assert ids(Search.search(user, "example after:2018-06-06")) == ids([message_a])
+      assert ids(Search.search(user, "example after:2015-06-06")) == ids([message_a])
     end
   end
 
