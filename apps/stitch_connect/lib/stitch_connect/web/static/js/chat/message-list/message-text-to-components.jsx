@@ -11,10 +11,10 @@ import {
 // Message Text to Components takes a basic string of
 // text and converts it to a list of react nodes.
 // It does this by iterating over each character, checking
-// for a formatter that matches the reamining content
-// starting from that character, and returning calling
-// the formatter to parse the content if so (returning
-// a formatted node).
+// for a formatter that matches the remaining content
+// starting from that character, calling the formatter to
+// parse the content if so, and moving on to the remaining
+// unformatted content.
 // =====================================================
 // =====================================================
 

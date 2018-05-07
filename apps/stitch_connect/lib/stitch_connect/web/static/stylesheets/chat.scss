@@ -792,11 +792,7 @@
 
     pre {
       background-color: #f0f0f0;
-      code {
-        color: $brand-primary;
-        background-color: #f0f0f0;
-        border: none;
-      }
+      color: $brand-primary;
     }
 
     &:hover,
@@ -897,6 +893,10 @@
         .message-body {
           display: block;
           word-wrap: break-word;
+
+          b, i, s {
+            display: inline-block;
+          }
 
           span {
             white-space: pre-wrap;

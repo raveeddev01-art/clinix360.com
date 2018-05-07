@@ -161,9 +161,7 @@ const strike = {
 
 const multilineHighlight = {
   getNode: (parsedContent, i) => (
-    <pre key={i}>
-      <code> {renderNestedContent(parsedContent)} </code>
-    </pre>
+    <pre key={i}>{renderNestedContent(parsedContent)}</pre>
   ),
   getWrappedContent: getStringBetweenOccurances("```"),
   getRemainingContent: getStringAfterSecondOccurance("```"),
