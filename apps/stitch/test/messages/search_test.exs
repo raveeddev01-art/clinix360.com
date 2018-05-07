@@ -94,6 +94,50 @@ defmodule Stitch.Messages.SearchTest do
 
       assert ids(Search.search(user, "from:#{user.id}")) == ids([message_a])
     end
+
+    test "it searches for messages before a date" do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group_a = insert(:group, team: team, name: "Example", slug: "example")
+      insert(:group_user, group: group_a, user: user)
+
+      message_a =
+        insert(:message, user: user, group: group_a, text_content: "examples are for docs")
+
+      {:ok, target_datetime} = NaiveDateTime.new(2018, 1, 2, 0, 0, 0)
+
+      insert(
+        :message,
+        user: user,
+        group: group_a,
+        text_content: "examples are for docs",
+        inserted_at: target_datetime
+      )
+
+      assert ids(Search.search(user, "example before:2019-06-06")) == ids([message_a])
+    end
+
+    test "it searches for messages after a date" do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group_a = insert(:group, team: team, name: "Example", slug: "example")
+      insert(:group_user, group: group_a, user: user)
+
+      message_a =
+        insert(:message, user: user, group: group_a, text_content: "examples are for docs")
+
+      {:ok, target_datetime} = NaiveDateTime.new(2017, 1, 2, 0, 0, 0)
+
+      insert(
+        :message,
+        user: user,
+        group: group_a,
+        text_content: "examples are for docs",
+        inserted_at: target_datetime
+      )
+
+      assert ids(Search.search(user, "example after:2018-06-06")) == ids([message_a])
+    end
   end
 
   describe "Stitch.Messages.Search.parameterize/1" do

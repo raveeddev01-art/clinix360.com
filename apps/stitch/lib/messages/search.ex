@@ -46,6 +46,8 @@ defmodule Stitch.Messages.Search do
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
+      |> apply_date_before_terms(params[:date_before_terms])
+      |> apply_date_after_terms(params[:date_after_terms])
       |> apply_highlight(params[:search_terms])
       |> Repo.all()
 
@@ -110,6 +112,34 @@ defmodule Stitch.Messages.Search do
           )
       }
     )
+  end
+
+  def apply_date_before_terms(query, []), do: query
+
+  def apply_date_before_terms(query, date_before_terms) do
+    Enum.reduce(date_before_terms, query, fn term, query ->
+      date_string = String.split(term, ":") |> List.last()
+      date = Date.from_iso8601!(date_string)
+
+      from(
+        m in query,
+        where: m.inserted_at < ^date
+      )
+    end)
+  end
+
+  def apply_date_after_terms(query, []), do: query
+
+  def apply_date_after_terms(query, date_after_terms) do
+    Enum.reduce(date_after_terms, query, fn term, query ->
+      date_string = String.split(term, ":") |> List.last()
+      date = Date.from_iso8601!(date_string)
+
+      from(
+        m in query,
+        where: m.inserted_at > ^date
+      )
+    end)
   end
 
   def apply_to_user_filters(query, []), do: query
