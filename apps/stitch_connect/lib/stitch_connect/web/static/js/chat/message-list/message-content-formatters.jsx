@@ -172,7 +172,10 @@ const multilineHighlight = {
 
 const highlight = {
   getNode: (parsedContent, i) => (
-    <code key={i}> {renderNestedContent(parsedContent)} </code>
+    <span className="message-body-highlight" key={i}>
+      {" "}
+      {renderNestedContent(parsedContent)}{" "}
+    </span>
   ),
   getWrappedContent: getStringBetweenOccurances("`"),
   getRemainingContent: getStringAfterSecondOccurance("`"),

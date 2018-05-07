@@ -781,16 +781,21 @@
     position: relative;
     padding: 2px 40px 3px 0;
 
-    code {
+    .message-body-highlight {
+      background: #f0f0f0;
       color: $brand-primary;
-      background-color: lightblue;
+      border: 1px solid $border-color;
+      border-radius: 3px;
+      padding: 0 3px;
+      display: inline-block;
     }
 
     pre {
-      background-color: #eee;
+      background-color: #f0f0f0;
       code {
         color: $brand-primary;
-        background-color: #eee;
+        background-color: #f0f0f0;
+        border: none;
       }
     }
 
@@ -892,6 +897,10 @@
         .message-body {
           display: block;
           word-wrap: break-word;
+
+          span {
+            white-space: pre-wrap;
+          }
 
           .attachment-comment {
             position: relative;
