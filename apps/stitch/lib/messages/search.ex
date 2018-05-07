@@ -41,13 +41,13 @@ defmodule Stitch.Messages.Search do
 
     messages =
       from_users_groups(user.id, options)
+      |> apply_date_before_terms(params[:date_before_terms])
+      |> apply_date_after_terms(params[:date_after_terms])
       |> apply_search_terms(params[:search_terms])
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
-      |> apply_date_before_terms(params[:date_before_terms])
-      |> apply_date_after_terms(params[:date_after_terms])
       |> Repo.all()
 
     # |> apply_highlight(params[:search_terms])
