@@ -123,6 +123,13 @@ const renderNestedContent = content => {
 // ===============
 // ===============
 
+// getNode: return react node with formatted content
+// getWrappedContent: parse given content for interior
+// of formatted node (usually remove tag character, ie "*"s)
+// getRemainingContent: return the string after formatted content
+// isMatch: return true or false depending on whether string
+// should be formatted
+
 // Formatters with inner content
 
 const bold = {
@@ -152,7 +159,6 @@ const strike = {
   isMatch: standardTagRules("~")
 };
 
-// TODO: CHANGE THE RULES ON THIS ONE!
 const multilineHighlight = {
   getNode: (parsedContent, i) => (
     <pre key={i}>
@@ -173,8 +179,6 @@ const highlight = {
   isMatch: standardTagRules("`")
 };
 
-// TODO: breaks only at the end of the content
-// TODO: Change Multiline rules
 const multilineBlockquote = {
   getNode: (parsedContent, i) => (
     <blockquote key={i}> {renderNestedContent(parsedContent)} </blockquote>
