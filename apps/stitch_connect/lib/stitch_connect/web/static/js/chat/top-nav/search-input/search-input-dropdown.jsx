@@ -38,11 +38,15 @@ class SearchInputDropdown extends Component {
         this.setState({
           activeIndex: activeIndex - 1 >= 0 ? activeIndex - 1 : items.length - 1
         });
+        evt.preventDefault();
+        evt.stopPropagation();
         break;
       case 40: // arrow down
         this.setState({
           activeIndex: activeIndex + 1 >= items.length ? 0 : activeIndex + 1
         });
+        evt.preventDefault();
+        evt.stopPropagation();
         break;
       case 13: // return
       case 9: // tab
