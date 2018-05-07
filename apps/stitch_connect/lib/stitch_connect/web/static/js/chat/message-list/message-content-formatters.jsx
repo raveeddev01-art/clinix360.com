@@ -71,6 +71,15 @@ const getStringBetweenOccurances = tag => string => {
   );
 };
 
+const trimFirstCharIfNewline = string => {
+  return string[0] === "\n" ? string.slice(1) : string;
+};
+
+const getStringBetweenOccurancesAndTrimNewLines = tag => string => {
+  const contentBetweenTags = getStringBetweenOccurances(tag)(string);
+  return trimFirstCharIfNewline(contentBetweenTags);
+};
+
 const getStringAfterSecondOccurance = tag => string => {
   return getStringAfterOccurance(getStringAfterOccurance(string, tag), tag);
 };
@@ -94,11 +103,16 @@ const blankIsBetweenOccurances = (tag, string) => {
   return !getStringBetweenOccurances(tag)(string).trim();
 };
 
-const standardTagRules = tag => string => {
+const firstCharNotSpace = (tag, string) => {
+  return !!getStringBetweenOccurances(tag)(string)[0].trim();
+};
+
+const standardTagRules = (tag, allowInitialSpace = false) => string => {
   return (
     startsWithAndHasAnother(tag, string) &&
     !newLineIsBetweenOccurances(tag, string) &&
-    !blankIsBetweenOccurances(tag, string)
+    !blankIsBetweenOccurances(tag, string) &&
+    (allowInitialSpace || firstCharNotSpace(tag, string))
   );
 };
 
@@ -161,11 +175,18 @@ const strike = {
 
 const multilineHighlight = {
   getNode: (parsedContent, i) => (
-    <pre key={i}>{renderNestedContent(parsedContent)}</pre>
+    <div className="message-body-highlight full-width" key={i}>
+      {renderNestedContent(parsedContent)}
+    </div>
   ),
-  getWrappedContent: getStringBetweenOccurances("```"),
+  getWrappedContent: getStringBetweenOccurancesAndTrimNewLines("```"),
   getRemainingContent: getStringAfterSecondOccurance("```"),
-  isMatch: content => startsWithAndHasAnother("```", content)
+  isMatch: content => {
+    return (
+      startsWithAndHasAnother("```", content) &&
+      !blankIsBetweenOccurances("```", content)
+    );
+  }
 };
 
 const highlight = {
@@ -177,26 +198,35 @@ const highlight = {
   ),
   getWrappedContent: getStringBetweenOccurances("`"),
   getRemainingContent: getStringAfterSecondOccurance("`"),
-  isMatch: standardTagRules("`")
+  isMatch: standardTagRules("`", true)
 };
 
 const multilineBlockquote = {
   getNode: (parsedContent, i) => (
     <blockquote key={i}> {renderNestedContent(parsedContent)} </blockquote>
   ),
-  getWrappedContent: content => content.slice(3),
+  getWrappedContent: content => trimFirstCharIfNewline(content.slice(3)),
   getRemainingContent: () => "",
-  isMatch: (content, opts) => opts.isFirstChar && content.startsWith(">>>")
+  isMatch: (content, opts) => {
+    return (
+      opts.isFirstChar && content.startsWith(">>>") && !!content.slice(3).trim()
+    );
+  }
 };
 
-// Allow beginning of any line?
 const blockQuote = {
   getNode: (parsedContent, i) => (
     <blockquote key={i}> {renderNestedContent(parsedContent)} </blockquote>
   ),
   getWrappedContent: content => getContentUntilNewline(content).slice(1),
   getRemainingContent: getContentAfterNewline,
-  isMatch: (content, opts) => opts.isFirstChar && content.startsWith(">")
+  isMatch: (content, opts) =>
+    opts.isFirstChar &&
+    content.startsWith(">") &&
+    getContentUntilNewline(content)
+      .slice(1)
+      .trim() &&
+    content.trim() !== ">>>"
 };
 
 // Formatters without inner content

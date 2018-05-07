@@ -793,9 +793,8 @@
       display: inline-block;
     }
 
-    pre {
-      background-color: #f0f0f0;
-      color: $brand-primary;
+    .full-width {
+      width: 100%;
     }
 
     &:hover,
