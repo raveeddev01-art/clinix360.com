@@ -46,10 +46,71 @@ defmodule Stitch.Messages.Search do
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
+      |> apply_highlight(params[:search_terms])
       |> Repo.all()
 
     messages = MessageAction.apply_user_message_actions(user, messages)
     Message.Reaction.apply_reactions(messages)
+  end
+
+  def apply_highlight(query, search_terms) do
+    search_term = Enum.join(search_terms, " ")
+
+    query =
+      from(
+        message in query,
+        select: %{
+          id: message.id,
+          user_id: message.user_id,
+          group_id: message.group_id,
+          deleted: message.deleted,
+          text_content: message.text_content,
+          fields: message.fields,
+          type: message.type,
+          inserted_at: message.inserted_at,
+          updated_at: message.updated_at,
+          pinned_by_id: message.pinned_by_id,
+          pinned: message.pinned,
+          pineed_by_id: message.pinned_by_id,
+          pinned_at: message.pinned_at,
+          edited_at: message.edited_at,
+          read_status: message.read_status,
+          mentioned_user_ids: message.mentioned_user_ids,
+          link_previews: message.link_previews,
+          request_id: message.request_id,
+          query: fragment("to_tsquery(?)", type(^search_term, :string))
+        }
+      )
+
+    from(
+      message in subquery(query),
+      select: %{
+        id: message.id,
+        user_id: message.user_id,
+        group_id: message.group_id,
+        deleted: message.deleted,
+        text_content: message.text_content,
+        fields: message.fields,
+        type: message.type,
+        inserted_at: message.inserted_at,
+        updated_at: message.updated_at,
+        pinned_by_id: message.pinned_by_id,
+        pinned: message.pinned,
+        pineed_by_id: message.pinned_by_id,
+        pinned_at: message.pinned_at,
+        edited_at: message.edited_at,
+        read_status: message.read_status,
+        mentioned_user_ids: message.mentioned_user_ids,
+        link_previews: message.link_previews,
+        request_id: message.request_id,
+        text_content:
+          fragment(
+            "ts_headline(?, ?, 'StartSel = *, StopSel = *, MinWords = 9999, MaxWords = 10000')",
+            message.text_content,
+            message.query
+          )
+      }
+    )
   end
 
   def apply_to_user_filters(query, []), do: query
