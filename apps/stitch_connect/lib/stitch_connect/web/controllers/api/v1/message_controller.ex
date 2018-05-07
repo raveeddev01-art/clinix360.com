@@ -61,6 +61,12 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def search(conn, %{"v" => 2, "term" => term}) do
+    current_user = conn.assigns.current_user
+    messages = Stitch.Messages.Search.search(current_user, term, conn.assigns.query_opts)
+    render(conn, "index.json", messages: messages, user_id: current_user.id)
+  end
+
   def search(conn, %{"term" => term}) do
     current_user = conn.assigns.current_user
     messages = MessageQueries.search(current_user.id, term, conn.assigns.query_opts)
@@ -71,7 +77,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     current_user = conn.assigns.current_user
 
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)},
+         {:authorized?, true} <-
+           {:authorized?, GroupAuthorization.can_view?(group, current_user)},
          {:message, %Message{} = message} <-
            {:message, MessageQueries.get_by_id(message_id, false)} do
       feed_surrounding =
@@ -198,7 +205,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
 
-    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)},
+    with {:authorized?, true} <-
+           {:authorized?, GroupAuthorization.can_view?(message.group, user)},
          {:ok, presigned_url} <- Upload.presign(message) do
       json(conn, %{presigned_url: presigned_url})
     else
