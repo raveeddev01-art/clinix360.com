@@ -106,12 +106,16 @@ class TopNav extends Component {
     const isRoomCreator = groupStore.group.creator_user_id === currentUser.id;
     const adminOrCreator = isAdmin() || isRoomCreator;
     const isLastMember = groupStore.group.users.length === 1;
+    const publicOrPrivileged = groupStore.group.public || adminOrCreator;
 
     if (groupStore.group.joined) {
       return (
         <div>
           <NavItemFavorite />
-          {fullMember && isNotDM && !isDefault && <NavItemInvite />}
+          {fullMember &&
+            isNotDM &&
+            !isDefault &&
+            publicOrPrivileged && <NavItemInvite />}
           {isNotDM && <NavItemNotifications />}
           {fullMember &&
             isNotDM &&
