@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
-import Form from "react-bootstrap/lib/Form";
-import FormControl from "react-bootstrap/lib/FormControl";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -20,38 +18,11 @@ import NavItemLeave from "./nav-items/nav-item-leave";
 import NavItemHide from "./nav-items/nav-item-hide";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
+import SearchInput from "./search-input";
 
-@inject("addonStore", "groupStore", "groupsStore", "searchStore", "newsStore")
+@inject("addonStore", "groupStore", "groupsStore", "newsStore")
 @observer
 class TopNav extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      query: ""
-    };
-  }
-
-  onSearch = event => {
-    event.preventDefault();
-
-    const { addonStore } = this.props;
-
-    // Treat an empty query as a non-event
-    // Do not open panel or search
-    if (!this.state.query.trim()) {
-      return;
-    }
-
-    this.props.searchStore.setQuery(this.state.query);
-    addonStore.setAddonPanel("Search Results");
-    addonStore.toggleAddons(true);
-  };
-
-  onSearchQueryChange = event => {
-    this.setState({ query: event.target.value });
-  };
-
   onToggleSettings = isOpen => {
     if (isOpen) {
       this.settingsOverlay.hide();
@@ -89,15 +60,6 @@ class TopNav extends Component {
     }
   };
 
-  clearSearch = event => {
-    const { searchStore } = this.props;
-
-    event.preventDefault();
-
-    this.setState({ query: "" });
-    searchStore.reset();
-  };
-
   renderRoomControls = () => {
     const { groupStore } = this.props;
     const isNotDM = groupStore.group.type === "regular";
@@ -131,14 +93,6 @@ class TopNav extends Component {
         </MenuItem>
       </div>
     );
-  };
-
-  renderClearButton = () => {
-    return this.state.query.length > 0 ? (
-      <a onClick={this.clearSearch}>
-        <i className="fa fa-times-circle-o" />
-      </a>
-    ) : null;
   };
 
   render() {
@@ -199,17 +153,7 @@ class TopNav extends Component {
             </OverlayTrigger>
           </a>
 
-          <Form onSubmit={this.onSearch}>
-            <i className="fa fa-search" />
-            <FormControl
-              type="text"
-              placeholder="Search"
-              onChange={this.onSearchQueryChange}
-              value={this.state.query}
-            />
-
-            {this.renderClearButton()}
-          </Form>
+          <SearchInput />
 
           <DotOptions toggleAddonMenu={this._toggleAddonMenu} />
         </div>
