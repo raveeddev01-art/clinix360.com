@@ -59,45 +59,6 @@
       position: absolute;
       right: 7px;
 
-      form {
-        margin-left: 10px;
-        position: relative;
-
-        i.fa {
-          color: $brand-primary;
-          font-size: 18px;
-          line-height: 36px;
-          position: absolute;
-          top: 0;
-
-          &.fa-search {
-            left: 14px;
-          }
-
-          &.fa-times-circle-o {
-            right: 14px;
-            top: 1px;
-          }
-        }
-
-        .form-control {
-          height: 36px;
-          width: 310px;
-          box-shadow: none;
-          border: 2px solid $border-color;
-          padding-left: 38px;
-          padding-right: 34px;
-
-          &:focus {
-            border-color: $brand-primary;
-          }
-
-          @media (max-width: 991px) {
-            width: 260px;
-          }
-        }
-      }
-
       .btn-default {
         color: $brand-primary;
         font-size: 21px;
@@ -476,9 +437,9 @@
         left: 2px;
         top: 0px;
         bottom: 0px;
-        -webkit-transition: all ease-in-out .15s;
-        -moz-transition: all ease-in-out .15s;
-        transition: all ease-in-out .15s;
+        -webkit-transition: all ease-in-out 0.15s;
+        -moz-transition: all ease-in-out 0.15s;
+        transition: all ease-in-out 0.15s;
 
         .message-form-action-item {
           width: 35px;

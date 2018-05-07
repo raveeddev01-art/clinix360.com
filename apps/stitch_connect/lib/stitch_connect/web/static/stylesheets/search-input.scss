@@ -1,0 +1,118 @@
+.search-input-form {
+  margin-left: 10px;
+  position: relative;
+
+  .search-input-icon {
+    color: $brand-primary;
+    font-size: 18px;
+    line-height: 36px;
+    position: absolute;
+    top: 0;
+
+    &.fa-search {
+      left: 14px;
+    }
+
+    &.fa-times-circle-o {
+      right: 14px;
+      top: 1px;
+    }
+  }
+
+  .form-control {
+    height: 36px;
+    width: 310px;
+    box-shadow: none;
+    border: 2px solid $border-color;
+    padding-left: 38px;
+    padding-right: 34px;
+
+    &:focus {
+      border-color: $brand-primary;
+    }
+
+    @media (max-width: 991px) {
+      width: 260px;
+    }
+  }
+}
+
+.search-input-menu {
+  max-width: 300px;
+
+  .dropdown-menu {
+    width: 100%;
+    padding: 0;
+  }
+
+  .menu-footer {
+    padding: 10px 15px;
+    background: $body-bg;
+    border-top: 1px solid $border-color-secondary;
+    border-radius: 0 0 4px 4px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+
+  .menu-content {
+    max-height: 312px;
+    overflow-y: auto;
+  }
+
+  .search-input-dropdown-item {
+    display: flex;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.45;
+    text-decoration: none;
+    padding: 5px 15px;
+    cursor: pointer;
+
+    .item-icon {
+      font-size: 14px;
+      color: $brand-primary;
+      margin-right: 8px;
+      margin-top: 1px;
+    }
+
+    .item-text {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+
+      .avatar img {
+        width: 20px;
+        height: 20px;
+        display: block;
+        margin-right: 5px;
+      }
+
+      span {
+        display: inline-block;
+        margin-right: 5px;
+
+        &.username {
+          font-weight: 700;
+        }
+      }
+    }
+
+    &.active {
+      background-color: $brand-primary;
+      color: white;
+
+      span {
+        color: white;
+      }
+    }
+  }
+}
+
+.search-input-datepicker {
+  position: absolute;
+  z-index: 1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
