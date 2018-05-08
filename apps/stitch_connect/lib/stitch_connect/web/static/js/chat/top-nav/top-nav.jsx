@@ -103,23 +103,32 @@ class TopNav extends Component {
     const isNotDM = groupStore.group.type === "regular";
     const isDefault = groupStore.group.is_default;
     const fullMember = isFullMember(currentUser);
-    const admin = isAdmin();
     const isRoomCreator = groupStore.group.creator_user_id === currentUser.id;
+    const adminOrCreator = isAdmin() || isRoomCreator;
+    const isLastMember = groupStore.group.users.length === 1;
+    const publicOrPrivileged = groupStore.group.public || adminOrCreator;
 
     if (groupStore.group.joined) {
       return (
         <div>
           <NavItemFavorite />
-          {fullMember && isNotDM && !isDefault && <NavItemInvite />}
-          {fullMember && isNotDM && !isDefault && <NavItemRemoveMembers />}
-          {isNotDM && <NavItemNotifications />}
-          {fullMember && isNotDM && <NavItemRename />}
-          {fullMember && isNotDM && !isDefault && <NavItemConvert />}
-          {fullMember && isNotDM && !isDefault && <NavItemLeave />}
-          {fullMember && !isDefault && !isNotDM && <NavItemHide />}
-          {(admin || isRoomCreator) &&
+          {fullMember &&
             isNotDM &&
-            !isDefault && <NavItemRemoveRoom />}
+            !isDefault &&
+            publicOrPrivileged && <NavItemInvite />}
+          {isNotDM && <NavItemNotifications />}
+          {fullMember &&
+            isNotDM &&
+            !isDefault &&
+            !isLastMember && <NavItemLeave />}
+          {fullMember && !isDefault && !isNotDM && <NavItemHide />}
+          {adminOrCreator &&
+            isNotDM &&
+            !isDefault &&
+            !isLastMember && <NavItemRemoveMembers />}
+          {adminOrCreator && isNotDM && <NavItemRename />}
+          {adminOrCreator && isNotDM && !isDefault && <NavItemConvert />}
+          {adminOrCreator && isNotDM && !isDefault && <NavItemRemoveRoom />}
         </div>
       );
     }

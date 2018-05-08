@@ -7,6 +7,10 @@ import Button from "react-bootstrap/lib/Button";
 import { TeamList } from "common/components";
 import { isFullMember } from "lib/utils";
 
+const fullMemberNotSelf = u => {
+  return isFullMember(u) && u.id !== currentUser.id;
+};
+
 @inject("groupStore", "presenceStore")
 @observer
 export default class NavItemRemoveMembers extends Component {
@@ -21,14 +25,12 @@ export default class NavItemRemoveMembers extends Component {
 
   saveUsers = () => {
     const { groupStore } = this.props;
-    const groupUsers = groupStore.group.users;
-    const removeMembers = this.state.members.split(",");
-    this.props.groupStore.inviteUsers(
-      groupUsers
-        .filter(u => removeMembers.indexOf(`${u.id}`) === -1)
-        .map(u => u.id)
-        .join(",")
-    );
+    const removeMemeberIds = this.state.members
+      .split(",")
+      .map(n => parseInt(n, 10));
+
+    groupStore.removeUsers(removeMemeberIds);
+
     this.setState({ showModal: false });
   };
 
@@ -54,7 +56,7 @@ export default class NavItemRemoveMembers extends Component {
 
   render() {
     const { presenceStore, groupStore } = this.props;
-    const users = groupStore.group.users.filter(u => isFullMember(u));
+    const users = groupStore.group.users.filter(fullMemberNotSelf);
 
     return [
       <MenuItem key="members_menuitem" onClick={this.openModal}>
