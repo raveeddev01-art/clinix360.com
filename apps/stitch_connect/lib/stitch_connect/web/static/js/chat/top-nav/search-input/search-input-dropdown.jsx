@@ -8,7 +8,8 @@ class SearchInputDropdown extends Component {
     super(...args);
 
     this.state = {
-      activeIndex: 0
+      activeIndex: 0,
+      isActive: true
     };
   }
 
@@ -21,8 +22,12 @@ class SearchInputDropdown extends Component {
   }
 
   onActive = index => () => {
-    this.setState({ activeIndex: index });
+    this.setState({ activeIndex: index, isActive: true });
   };
+
+  onInactive = () => {
+    this.setState({ isActive: false });
+  }
 
   onSelectItem = value => () => {
     const { onSelect } = this.props;
@@ -36,14 +41,16 @@ class SearchInputDropdown extends Component {
     switch (evt.keyCode) {
       case 38: // arrow up
         this.setState({
-          activeIndex: activeIndex - 1 >= 0 ? activeIndex - 1 : items.length - 1
+          activeIndex: activeIndex - 1 >= 0 ? activeIndex - 1 : items.length - 1,
+          isActive: true
         });
         evt.preventDefault();
         evt.stopPropagation();
         break;
       case 40: // arrow down
         this.setState({
-          activeIndex: activeIndex + 1 >= items.length ? 0 : activeIndex + 1
+          activeIndex: activeIndex + 1 >= items.length ? 0 : activeIndex + 1,
+          isActive: true
         });
         evt.preventDefault();
         evt.stopPropagation();
@@ -64,7 +71,7 @@ class SearchInputDropdown extends Component {
   };
 
   render() {
-    const { activeIndex } = this.state;
+    const { activeIndex, isActive } = this.state;
     const { items } = this.props;
     if (!items.length) {
       return null;
@@ -72,7 +79,7 @@ class SearchInputDropdown extends Component {
 
     return (
       <div className="search-input-menu open">
-        <ul className="dropdown-menu">
+        <ul className="dropdown-menu" onMouseLeave={this.onInactive}>
           <div className="menu-content">
             {items.map((item, index) => {
               let Item = null;
@@ -87,8 +94,8 @@ class SearchInputDropdown extends Component {
                   <Item
                     key={`search-item-${item.type}-${item.id}`}
                     itemId={item.id}
-                    isActive={activeIndex === index}
-                    onHover={this.onActive(index)}
+                    isActive={activeIndex === index && isActive}
+                    onMouseEnter={this.onActive(index)}
                     onSelectItem={this.onSelectItem(item.value)}
                   />
                 );

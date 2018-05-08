@@ -12,7 +12,7 @@ class SearchInputDropdownMention extends Component {
       itemId,
       isActive,
       presenceStore,
-      onHover,
+      onMouseEnter,
       onSelectItem,
       usersStore
     } = this.props;
@@ -30,7 +30,7 @@ class SearchInputDropdownMention extends Component {
     return (
       <li
         className={itemClassName}
-        onMouseEnter={onHover}
+        onMouseEnter={onMouseEnter}
         onClick={onSelectItem}
       >
         <span className="item-icon">
@@ -54,7 +54,7 @@ class SearchInputDropdownMention extends Component {
 SearchInputDropdownMention.propTypes = {
   itemId: PropTypes.number.isRequired,
   isActive: PropTypes.bool.isRequired,
-  onHover: PropTypes.func.isRequired,
+  onMouseEnter: PropTypes.func.isRequired,
   onSelectItem: PropTypes.func.isRequired
 };
 

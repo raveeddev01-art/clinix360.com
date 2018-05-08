@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import Form from "react-bootstrap/lib/Form";
 import SearchInputDropdown from "./search-input-dropdown";
 import SearchInputDatepicker from "./search-input-datepicker";
+import SearchInputKeywords from "./search-input-keywords";
 
 @inject("addonStore", "searchStore", "usersStore", "groupsStore")
 @observer
@@ -17,6 +18,8 @@ class SearchInput extends Component {
       isDatepickerVisible: false,
       items: [],
       keyword: "",
+      currentWord: "",
+      hasFocus: false,
       dateChunk: ""
     };
   }
@@ -57,6 +60,12 @@ class SearchInput extends Component {
     this.replaceCurrentWord(`${this.state.keyword}${value}`);
   };
 
+  onSelectKeyword = value => {
+    this.replaceCurrentWord(`${value}`, () => {
+      this.checkCursor();
+    });
+  };
+
   getCurrentWord = () => {
     const text = this.state.query;
     const cursorPos = this.searchInput.selectionStart;
@@ -67,7 +76,7 @@ class SearchInput extends Component {
     return `${preWord}${postWord}`;
   };
 
-  replaceCurrentWord = word => {
+  replaceCurrentWord = (word, cb) => {
     const cursorPos = this.searchInput.selectionStart;
     const text = this.state.query;
     const preWord = text
@@ -90,8 +99,20 @@ class SearchInput extends Component {
         const newPos = cursorPos - preWord.length + word.length;
         this.searchInput.focus();
         this.searchInput.setSelectionRange(newPos, newPos);
+
+        if (typeof cb === "function") {
+          cb();
+        }
       }
     );
+  };
+
+  handleFocus = () => {
+    this.setState({ hasFocus: true });
+  };
+
+  handleBlur = () => {
+    this.setState({ hasFocus: false });
   };
 
   checkCursor = () => {
@@ -101,7 +122,8 @@ class SearchInput extends Component {
 
     this.setState({
       items: [],
-      dateChunk: '',
+      dateChunk: "",
+      currentWord: word,
       isDropdownVisible: false,
       isDatepickerVisible: false,
       ...result
@@ -124,6 +146,8 @@ class SearchInput extends Component {
       items,
       isDropdownVisible,
       isDatepickerVisible,
+      hasFocus,
+      currentWord,
       dateChunk
     } = this.state;
 
@@ -141,6 +165,8 @@ class SearchInput extends Component {
           onMouseUp={this.checkCursor}
           onKeyUp={this.onKeyUp}
           value={query}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
         />
         {query && (
           <a role="link" onClick={this.clearSearch}>
@@ -159,6 +185,12 @@ class SearchInput extends Component {
             onSelect={this.onSelect}
           />
         )}
+        {!isDropdownVisible &&
+          !isDatepickerVisible &&
+          hasFocus &&
+          !currentWord && (
+            <SearchInputKeywords onSelect={this.onSelectKeyword} />
+          )}
       </Form>
     );
   }
