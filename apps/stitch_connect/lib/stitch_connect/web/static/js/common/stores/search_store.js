@@ -29,7 +29,7 @@ class SearchStore {
     return this.messages.length === 0;
   }
 
-  checkKeyword(type, word)  {
+  checkKeyword(type, word) {
     if (!KEYWORDS[type]) {
       return null;
     }
@@ -41,7 +41,7 @@ class SearchStore {
     }
 
     return null;
-  };
+  }
 
   checkMention = word => {
     const filter = this.checkKeyword("MENTION", word);
@@ -64,7 +64,7 @@ class SearchStore {
         items,
         keyword: filter[0],
         isDropdownVisible: true,
-        isDatepickerVisible: false,
+        isDatepickerVisible: false
       };
     }
 
@@ -111,7 +111,7 @@ class SearchStore {
         items,
         keyword: filter[0],
         isDropdownVisible: true,
-        isDatepickerVisible: false,
+        isDatepickerVisible: false
       };
     }
 
@@ -125,7 +125,7 @@ class SearchStore {
         keyword: filter[0],
         dateChunk: filter[1],
         isDropdownVisible: false,
-        isDatepickerVisible: true,
+        isDatepickerVisible: true
       };
     }
 
@@ -133,16 +133,21 @@ class SearchStore {
   };
 
   checkWord = word => {
-    return this.checkDate(word) || this.checkRoom(word) || this.checkMention(word);
-  }
+    return (
+      this.checkDate(word) || this.checkRoom(word) || this.checkMention(word)
+    );
+  };
 
   parseQuery(query) {
-    return query.split(' ')
+    return query
+      .split(" ")
       .map(word => {
         const result = this.checkWord(word);
         if (result) {
           if (result.items) {
-            const resultItem = result.items.find(item => word === `${result.keyword}${item.value}`);
+            const resultItem = result.items.find(
+              item => word === `${result.keyword}${item.value}`
+            );
             if (resultItem) {
               return `${result.keyword}${resultItem.id}`;
             }
@@ -151,7 +156,7 @@ class SearchStore {
 
         return word;
       })
-      .join(' ');
+      .join(" ");
   }
 
   @action
@@ -181,7 +186,8 @@ class SearchStore {
       body: {
         term: this.query,
         skip: this.messages.length,
-        limit: this.limit
+        limit: this.limit,
+        v: 2
       }
     }).then(response => {
       this.loading = false;
