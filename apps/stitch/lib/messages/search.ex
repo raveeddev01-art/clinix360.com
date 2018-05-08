@@ -38,6 +38,7 @@ defmodule Stitch.Messages.Search do
       from_users_groups(user.id, options)
       |> apply_date_before_terms(params[:date_before_terms])
       |> apply_date_after_terms(params[:date_after_terms])
+      |> apply_date_on_terms(params[:date_on_terms])
       |> apply_search_terms(params[:search_terms])
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
@@ -135,6 +136,19 @@ defmodule Stitch.Messages.Search do
         where: m.inserted_at > ^date
       )
     end)
+  end
+
+  def apply_date_on_terms(query, []), do: query
+
+  def apply_date_on_terms(query, date_on_terms) do
+    date_string = List.first(date_on_terms) |> String.split(":") |> List.last() |> IO.inspect()
+    date = NaiveDateTime.from_iso8601!(date_string <> " 00:00:00")
+
+    from(
+      m in query,
+      where: m.inserted_at >= ^Timex.beginning_of_day(date),
+      where: m.inserted_at <= ^Timex.end_of_day(date)
+    )
   end
 
   def apply_to_user_filters(query, []), do: query
