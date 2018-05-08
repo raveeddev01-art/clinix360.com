@@ -17,15 +17,15 @@ import messageTextToComponents from "./message-text-to-components";
 
 // parseContent returns two things:
 // - a react node with the formatted content
-// - another substring with any remaining content
-//   that did not match the formatter
+// - the length of the formatted substring
+//   so that the parent can jump past it
 
 // EXAMPLE USAGE:
 // const givenContent = "*this* is important"
 // boldFormatter.isMatch(givenContent)
 //   => true
 // boldFormatter.parseContent(givenContent)
-//   ==> [nodeForBoldedContent, " is important"]
+//   ==> [nodeForBoldedContent, 6]
 // =====================================================
 // =====================================================
 
@@ -132,7 +132,8 @@ const renderNestedContent = content => {
 // getNode: return react node with formatted content
 // getWrappedContent: parse given content for interior
 // of formatted node (usually remove tag character, ie "*"s)
-// getRemainingContent: return the string after formatted content
+// getContentOffset: lenght of formatted string (so called can
+// jump past the now-formatted content)
 // isMatch: return true or false depending on whether string
 // should be formatted
 
@@ -194,27 +195,35 @@ const highlight = {
 
 const multilineBlockquote = {
   getNode: (parsedContent, i) => (
-    <blockquote key={i}> {renderNestedContent(parsedContent)} </blockquote>
+    <blockquote key={i}>
+      {" "}
+      {renderNestedContent(parsedContent.trim())}{" "}
+    </blockquote>
   ),
   getWrappedContent: content => trimFirstCharIfNewline(content.slice(3)),
-  getContentOffset: content => content.length,
+  getContentOffset: content => content.length, // go all the way to end
   isMatch: (content, opts) => {
     return (
-      opts.startOfLine && content.startsWith(">>>") && !!content.slice(3).trim()
+      opts.atStartOfLine &&
+      content.startsWith(">>>") &&
+      !!content.slice(3).trim()
     );
   }
 };
 
 const blockQuote = {
   getNode: (parsedContent, i) => (
-    <blockquote key={i}> {renderNestedContent(parsedContent)} </blockquote>
+    <blockquote key={i}>
+      {" "}
+      {renderNestedContent(parsedContent.trim())}{" "}
+    </blockquote>
   ),
   getWrappedContent: content => getContentUntilNewline(content).slice(1),
   getContentOffset: content => {
-    return getContentUntilNewline(content).length + 1;
+    return getContentUntilNewline(content).length + 1; // 1 == "\n".length
   },
   isMatch: (content, opts) =>
-    opts.startOfLine &&
+    opts.atStartOfLine &&
     content.startsWith(">") &&
     getContentUntilNewline(content)
       .slice(1)

@@ -22,6 +22,7 @@ import {
 const allFormatters = nonNestableFormatters.concat(nestableFormatters);
 const emojiRegex = REGEX.getEmoji();
 
+// HELPERS
 const isSolelyEmojis = messageContent => {
   return !messageContent.replace(emojiRegex, "").trim();
 };
@@ -37,14 +38,14 @@ const getMatchingFormatter = (content, opts) => {
   return validFormatters.find(formatter => formatter.isMatch(content, opts));
 };
 
-// =====================================================
-// TODO: Add new explanation
-// =====================================================
-
 const getUnformattedNode = (content, start, end) => {
   const unformattedString = content.slice(start, end + 1);
   return formatUnmatched(unformattedString, start);
 };
+
+// =====================================================
+// TODO: Add new explanation
+// =====================================================
 
 const getNodeList = (messageContent, opts) => {
   const nodeList = [];
@@ -57,27 +58,31 @@ const getNodeList = (messageContent, opts) => {
   while (currentIndex < messageContent.length) {
     atEnd = currentIndex === messageContent.length - 1;
     remainingMessageContent = messageContent.slice(currentIndex);
-    const startOfLine =
+    const atStartOfLine =
       currentIndex === 0 || messageContent[currentIndex - 1] === "\n";
 
     const matchingFormatter = getMatchingFormatter(
       remainingMessageContent,
-      Object.assign({}, opts, { startOfLine })
+      Object.assign({}, opts, { atStartOfLine })
     );
 
+    // CASE 1: AT END OF CONTENT
+    // push any leftover unformatted content into the nodeList
     if (atEnd) {
-      // CASE 1: AT END OF STRING, FORMAT UNFORMATTED CONTENT
-      nodeList.push(
-        getUnformattedNode(
-          messageContent,
-          indexOfFirstUnformattedChar,
-          currentIndex
-        )
+      const unformattedNode = getUnformattedNode(
+        messageContent,
+        indexOfFirstUnformattedChar,
+        currentIndex
       );
+
+      nodeList.push(unformattedNode);
 
       currentIndex += 1;
     } else if (matchingFormatter) {
       // CASE 2: CURRENT CHAR MATCHES
+      // get the formatted node and unformatted node (before
+      // the current char), push both into the list, skip
+      // to the end of the formatted content
 
       // get nodes to push to list
       const unformattedNode = getUnformattedNode(
@@ -99,11 +104,12 @@ const getNodeList = (messageContent, opts) => {
       nodeList.push(unformattedNode);
       nodeList.push(nodeForMatchingContent);
 
+      // increment index to jump past formatted node
       currentIndex += contentOffset;
       indexOfFirstUnformattedChar = currentIndex;
     } else {
       // CASE 3: NO MATCH AND NOT AT END.
-      // - continue to next char
+      // do nothing but continue to next char
       currentIndex += 1;
     }
   }
