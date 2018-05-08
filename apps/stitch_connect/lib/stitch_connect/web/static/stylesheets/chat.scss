@@ -1287,11 +1287,12 @@
 }
 
 .image-viewer.modal-dialog {
+  width: auto;
   max-width: 80%;
 
   .modal-content {
     width: auto;
-    padding: 0 25px;
+    padding: 25px;
   }
 
   .modal-body {
@@ -1303,7 +1304,6 @@
 .modal-attachment-image {
   max-height: inherit;
   display: block;
-  margin: 25px auto;
   cursor: zoom-out;
 }
 
