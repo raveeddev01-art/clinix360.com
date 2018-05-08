@@ -62,6 +62,11 @@ class MessageContent extends Component {
       ? message.highlighted_text_content || message.text_content
       : message.text_content;
 
+    const messageContentComponents = messageTextToComponents(
+      textContent || "",
+      { inSearch }
+    );
+
     return (
       <div
         properties={{ target: "_blank", className: "message-link" }}
@@ -70,9 +75,9 @@ class MessageContent extends Component {
         {message.type === "upload" && <FileAttachment {...message.fields} />}
         <div className="message-body">
           {message.type === "upload" && message.text_content ? (
-            <div className="attachment-comment">{message.text_content}</div>
+            <div className="attachment-comment">{messageContentComponents}</div>
           ) : (
-            messageTextToComponents(textContent || "", { inSearch })
+            messageContentComponents
           )}
 
           {this.renderLinkPreviews()}
