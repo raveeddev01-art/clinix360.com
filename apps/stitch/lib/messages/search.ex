@@ -82,7 +82,7 @@ defmodule Stitch.Messages.Search do
 
     from(
       message in subquery(query),
-      select: %Message{
+      select: %{
         id: message.id,
         user_id: message.user_id,
         group_id: message.group_id,
@@ -100,7 +100,8 @@ defmodule Stitch.Messages.Search do
         mentioned_user_ids: message.mentioned_user_ids,
         link_previews: message.link_previews,
         request_id: message.request_id,
-        text_content:
+        text_content: message.text_content,
+        highlighted_text_content:
           fragment(
             "ts_headline(?, ?, 'StartSel = *, StopSel = *, MinWords = 9999, MaxWords = 10000')",
             message.text_content,
