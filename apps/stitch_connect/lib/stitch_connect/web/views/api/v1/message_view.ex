@@ -41,10 +41,10 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   end
 
   def message_json(message) do
-    json = %{
+    %{
       id: message.id,
       user_id: message.user_id,
-      user: user_info(message[:user]),
+      user: user_info(message),
       group_id: message.group_id,
       deleted: message.deleted,
       text_content: message.text_content,
@@ -63,14 +63,9 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       reactions_web: Map.get(message, :reactions, %{}),
       mentioned_user_ids: message.mentioned_user_ids,
       link_previews: message.link_previews,
-      request_id: message.request_id
+      request_id: message.request_id,
+      highlighted_text_content: message.highlighted_text_content
     }
-
-    if message[:highlighted_text_content] do
-      Map.put(json, :highlighted_text_content, message.highlighted_text_content)
-    else
-      json
-    end
   end
 
   def user_info(nil), do: nil
@@ -89,14 +84,14 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     %{id: pinned_by.id, first_name: pinned_by.first_name, last_name: pinned_by.last_name}
   end
 
-  def render_fields(%{id: message_id, type: "upload", fields: %{"url" => url} = fields})
+  def render_fields(%Message{id: message_id, type: "upload", fields: %{"url" => url} = fields})
       when is_map(fields) and is_binary(url) do
     fields
     |> put_preview_presigned_url
     |> put_download_link(message_id)
   end
 
-  def render_fields(%{fields: fields}), do: fields
+  def render_fields(%Message{fields: fields}), do: fields
 
   def put_download_link(fields, message_id) do
     Map.merge(fields, %{
