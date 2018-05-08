@@ -174,7 +174,8 @@ defmodule Stitch.Messages.SearchTest do
         text_content: "examples are for docsz"
       )
 
-      assert ids(Search.search(user, "example on:01-01-2018")) == ids([message_b, message_a])
+      assert ids(Search.search(user, "example on:01-01-2018")) |> Enum.sort() ==
+               ids([message_b, message_a]) |> Enum.sort()
     end
   end
 
