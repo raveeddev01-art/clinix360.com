@@ -135,8 +135,8 @@
       li {
         a {
           font-size: 15px;
-          line-height: 25px;
-          padding: 0 15px;
+          line-height: 30px;
+          padding: 0 25px;
           border-radius: 0px;
 
           i.fa {
@@ -693,8 +693,10 @@
   }
 
   .dropdown-menu {
-    width: 100%;
+    width: calc(100% - 37px);
     padding: 42px 0 0;
+    left: auto;
+    right: 0;
   }
 
   .menu-header {
@@ -1321,7 +1323,9 @@ i.file-data-separator {
   width: 100%;
 
   .dropdown-menu {
-    width: 100%;
+    width: calc(100% - 37px);
+    left: auto;
+    right: 0;
 
     .emoji-list-item {
       display: inline-block;
