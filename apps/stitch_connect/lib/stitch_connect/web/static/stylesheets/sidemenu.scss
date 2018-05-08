@@ -73,7 +73,7 @@
         color: $brand-primary;
         display: flex;
         align-items: center;
-        padding: 0 15px;
+        padding: 0 25px;
 
         .avatar {
           margin-right: 10px;
@@ -126,18 +126,14 @@
         }
       }
 
-      li {
-        margin: 8px 0;
+      li a {
+        font-size: 15px;
+        line-height: 30px;
+        border-radius: 0;
+        padding: 0 25px;
 
-        > a {
-          font-size: 15px;
-          line-height: 25px;
-          border-radius: 0;
-          padding: 0 15px;
-
-          &:focus {
-            outline: none;
-          }
+        &:focus {
+          outline: none;
         }
       }
     }
