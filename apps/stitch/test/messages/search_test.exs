@@ -83,18 +83,6 @@ defmodule Stitch.Messages.SearchTest do
       assert ids(Search.search(user, "to:#{user.id}")) == ids([message_a])
     end
 
-    test "it searches for messages from users" do
-      team = insert(:team)
-      user = insert(:user, team: team)
-      group_a = insert(:group, team: team, name: "Example", slug: "example")
-      insert(:group_user, group: group_a, user: user)
-
-      message_a =
-        insert(:message, user: user, group: group_a, text_content: "examples are for docs")
-
-      assert ids(Search.search(user, "xamp from:#{user.id}")) == ids([message_a])
-    end
-
     test "it searches for messages before a date" do
       team = insert(:team)
       user = insert(:user, team: team)
