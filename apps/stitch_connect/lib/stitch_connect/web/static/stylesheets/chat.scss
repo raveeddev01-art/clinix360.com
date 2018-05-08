@@ -814,7 +814,7 @@
       color: $brand-primary;
       border: 1px solid $border-color;
       border-radius: 3px;
-      padding: 0 3px;
+      padding: 0 6px;
       display: inline-block;
     }
 
@@ -920,6 +920,12 @@
         .message-body {
           display: block;
           word-wrap: break-word;
+
+          blockquote {
+            margin: 0px;
+            padding: 5px;
+            font-size: 1rem;
+          }
 
           b, i, s {
             display: inline-block;
