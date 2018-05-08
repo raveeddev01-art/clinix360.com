@@ -38,6 +38,10 @@ defmodule Stitch.Messages.Search do
 
   def search(user, term_string, options \\ []) do
     params = parameterize(term_string)
+    IO.puts("==========")
+    IO.inspect(user)
+    IO.inspect(params)
+    IO.puts("==========")
 
     messages =
       from_users_groups(user.id, options)
@@ -49,6 +53,7 @@ defmodule Stitch.Messages.Search do
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
       |> apply_highlight(params[:search_terms])
+      |> IO.inspect()
       |> Repo.all()
 
     user
@@ -175,14 +180,15 @@ defmodule Stitch.Messages.Search do
   def apply_room_filters(query, []), do: query
 
   def apply_room_filters(query, room_terms) do
-    Enum.reduce(room_terms, query, fn term, query ->
-      group_id = String.split(term, ":") |> List.last()
+    group_ids =
+      Enum.map(room_terms, fn room_string ->
+        String.split(room_string, ":") |> List.last() |> String.to_integer()
+      end)
 
-      from(
-        m in query,
-        or_where: m.group_id == ^group_id
-      )
-    end)
+    from(
+      m in query,
+      where: m.group_id in ^group_ids
+    )
   end
 
   def apply_exact_search_terms(query, []), do: query
