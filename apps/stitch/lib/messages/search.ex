@@ -145,27 +145,31 @@ defmodule Stitch.Messages.Search do
   def apply_to_user_filters(query, []), do: query
 
   def apply_to_user_filters(query, to_users) do
-    Enum.reduce(to_users, query, fn term, query ->
-      user_id = String.split(term, ":") |> List.last()
+    user_ids =
+      Enum.map(to_users, fn user_string ->
+        String.split(user_string, ":") |> List.last() |> String.to_integer()
+      end)
 
-      from(
-        m in query,
-        or_where: ^user_id in m.mentioned_user_ids
-      )
-    end)
+    from(
+      m in query,
+      where: fragment("? @> ?::integer[]", m.mentioned_user_ids, ^user_ids)
+    )
   end
 
   def apply_from_user_filters(query, []), do: query
 
   def apply_from_user_filters(query, from_users) do
-    Enum.reduce(from_users, query, fn term, query ->
-      user_id = String.split(term, ":") |> List.last()
+    user_ids =
+      Enum.map(from_users, fn user_string ->
+        String.split(user_string, ":") |> List.last() |> String.to_integer()
+      end)
 
-      from(
-        m in query,
-        or_where: m.user_id == ^user_id
-      )
-    end)
+    IO.inspect(user_ids)
+
+    from(
+      m in query,
+      where: m.user_id in ^user_ids
+    )
   end
 
   def apply_room_filters(query, []), do: query
