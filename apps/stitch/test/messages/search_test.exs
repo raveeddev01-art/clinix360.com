@@ -92,7 +92,7 @@ defmodule Stitch.Messages.SearchTest do
       message_a =
         insert(:message, user: user, group: group_a, text_content: "examples are for docs")
 
-      assert ids(Search.search(user, "from:#{user.id}")) == ids([message_a])
+      assert ids(Search.search(user, "xamp from:#{user.id}")) == ids([message_a])
     end
 
     test "it searches for messages before a date" do
