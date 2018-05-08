@@ -103,7 +103,7 @@ defmodule Stitch.Messages.Search do
         text_content: message.text_content,
         highlighted_text_content:
           fragment(
-            "ts_headline(?, ?, 'StartSel = *, StopSel = *, MinWords = 9999, MaxWords = 10000')",
+            "ts_headline(?, ?, 'StartSel = %&$&%, StopSel = %&$&%, MinWords = 9999, MaxWords = 10000')",
             message.text_content,
             message.query
           )

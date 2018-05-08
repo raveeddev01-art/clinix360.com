@@ -33,6 +33,7 @@ import messageTextToComponents from "./message-text-to-components";
 const emojiRegex = REGEX.getEmoji();
 const userMentionRegex = REGEX.getUserMentionDecode();
 const groupMentionRegex = REGEX.getGroupMentionDecode();
+const searchDelimiter = "%&$&%";
 
 // ============================
 // ============================
@@ -114,10 +115,11 @@ const hasEmoji = content => {
 };
 
 // recall the formatter on content within tags
-const renderNestedContent = content => {
+const renderNestedContent = (content, opts) => {
   const nestedOpts = {
     nested: true,
-    isAllEmojis: false
+    isAllEmojis: false,
+    inSearch: opts.inSearch
   };
 
   return messageTextToComponents(content, nestedOpts);
@@ -140,8 +142,8 @@ const renderNestedContent = content => {
 // Formatters with inner content
 
 const bold = {
-  getNode: (parsedContent, i) => (
-    <b key={i}> {renderNestedContent(parsedContent)} </b>
+  getNode: (parsedContent, i, opts) => (
+    <b key={i}> {renderNestedContent(parsedContent, opts)} </b>
   ),
   getWrappedContent: getStringBetweenOccurances("*"),
   getContentOffset: lengthTilSecondOccurance("*"),
@@ -149,8 +151,8 @@ const bold = {
 };
 
 const italics = {
-  getNode: (parsedContent, i) => (
-    <i key={i}> {renderNestedContent(parsedContent)} </i>
+  getNode: (parsedContent, i, opts) => (
+    <i key={i}> {renderNestedContent(parsedContent, opts)} </i>
   ),
   getWrappedContent: getStringBetweenOccurances("_"),
   getContentOffset: lengthTilSecondOccurance("_"),
@@ -158,8 +160,8 @@ const italics = {
 };
 
 const strike = {
-  getNode: (parsedContent, i) => (
-    <s key={i}> {renderNestedContent(parsedContent)} </s>
+  getNode: (parsedContent, i, opts) => (
+    <s key={i}> {renderNestedContent(parsedContent, opts)} </s>
   ),
   getWrappedContent: getStringBetweenOccurances("~"),
   getContentOffset: lengthTilSecondOccurance("~"),
@@ -167,9 +169,9 @@ const strike = {
 };
 
 const multilineHighlight = {
-  getNode: (parsedContent, i) => (
+  getNode: (parsedContent, i, opts) => (
     <div className="message-body-highlight full-width" key={i}>
-      {renderNestedContent(parsedContent)}
+      {renderNestedContent(parsedContent, opts)}
     </div>
   ),
   getWrappedContent: getStringBetweenOccurancesAndTrimNewLines("```"),
@@ -183,9 +185,9 @@ const multilineHighlight = {
 };
 
 const highlight = {
-  getNode: (parsedContent, i) => (
+  getNode: (parsedContent, i, opts) => (
     <div className="message-body-highlight" key={i}>
-      {renderNestedContent(parsedContent)}
+      {renderNestedContent(parsedContent, opts)}
     </div>
   ),
   getWrappedContent: getStringBetweenOccurances("`"),
@@ -194,10 +196,10 @@ const highlight = {
 };
 
 const multilineBlockquote = {
-  getNode: (parsedContent, i) => (
+  getNode: (parsedContent, i, opts) => (
     <blockquote key={i}>
       {" "}
-      {renderNestedContent(parsedContent.trim())}{" "}
+      {renderNestedContent(parsedContent.trim(), opts)}{" "}
     </blockquote>
   ),
   getWrappedContent: content => trimFirstCharIfNewline(content.slice(3)),
@@ -212,10 +214,10 @@ const multilineBlockquote = {
 };
 
 const blockQuote = {
-  getNode: (parsedContent, i) => (
+  getNode: (parsedContent, i, opts) => (
     <blockquote key={i}>
       {" "}
-      {renderNestedContent(parsedContent.trimRight())}{" "}
+      {renderNestedContent(parsedContent.trimRight(), opts)}{" "}
     </blockquote>
   ),
   getWrappedContent: content => getContentUntilNewline(content).slice(1),
@@ -277,6 +279,21 @@ const groupMention = {
   isMatch: matchesAndStartsWithRegex(groupMentionRegex)
 };
 
+const searchHighlight = {
+  getNode: (parsedContent, i) => {
+    return (
+      <span key={i} className="message-body-search-highlight">
+        {parsedContent}
+      </span>
+    );
+  },
+  getWrappedContent: getStringBetweenOccurances(searchDelimiter),
+  getContentOffset: lengthTilSecondOccurance(searchDelimiter),
+  isMatch: (content, opts) => {
+    return opts.inSearch && startsWithAndHasAnother(searchDelimiter, content);
+  }
+};
+
 // ===============
 // ===============
 // MAKE FORMATTERS
@@ -308,7 +325,8 @@ const potentialFormatterChars = new Set([
   "\n",
   ">",
   "<",
-  ":"
+  ":",
+  "%"
 ]);
 export const potentialFormatterMatch = char => {
   return potentialFormatterChars.has(char);
@@ -322,7 +340,8 @@ export const nestableFormatters = [
   emoji,
   userMention,
   groupMention,
-  newline
+  newline,
+  searchHighlight
 ].map(makeFormatter);
 
 // note: multilines must precede single-line versions
