@@ -38,6 +38,7 @@ defmodule Stitch.Messages.Search do
       from_users_groups(user.id, options)
       |> apply_date_before_terms(params[:date_before_terms])
       |> apply_date_after_terms(params[:date_after_terms])
+      |> apply_date_on_terms(params[:date_on_terms])
       |> apply_search_terms(params[:search_terms])
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
@@ -99,7 +100,8 @@ defmodule Stitch.Messages.Search do
         mentioned_user_ids: message.mentioned_user_ids,
         link_previews: message.link_previews,
         request_id: message.request_id,
-        text_content:
+        text_content: message.text_content,
+        highlighted_text_content:
           fragment(
             "ts_headline(?, ?, 'StartSel = *, StopSel = *, MinWords = 9999, MaxWords = 10000')",
             message.text_content,
@@ -114,7 +116,7 @@ defmodule Stitch.Messages.Search do
   def apply_date_before_terms(query, date_before_terms) do
     Enum.reduce(date_before_terms, query, fn term, query ->
       date_string = String.split(term, ":") |> List.last()
-      date = NaiveDateTime.from_iso8601!(date_string <> " 00:00:00")
+      date = Timex.parse!(date_string, "{0M}/{D}/{YYYY}")
 
       from(
         m in query,
@@ -128,13 +130,26 @@ defmodule Stitch.Messages.Search do
   def apply_date_after_terms(query, date_after_terms) do
     Enum.reduce(date_after_terms, query, fn term, query ->
       date_string = String.split(term, ":") |> List.last()
-      date = NaiveDateTime.from_iso8601!(date_string <> " 00:00:00")
+      date = Timex.parse!(date_string, "{0M}/{D}/{YYYY}")
 
       from(
         m in query,
         where: m.inserted_at > ^date
       )
     end)
+  end
+
+  def apply_date_on_terms(query, []), do: query
+
+  def apply_date_on_terms(query, date_on_terms) do
+    date_string = List.first(date_on_terms) |> String.split(":") |> List.last()
+    date = Timex.parse!(date_string, "{0M}/{D}/{YYYY}")
+
+    from(
+      m in query,
+      where: m.inserted_at >= ^Timex.beginning_of_day(date),
+      where: m.inserted_at <= ^Timex.end_of_day(date)
+    )
   end
 
   def apply_to_user_filters(query, []), do: query
@@ -198,7 +213,7 @@ defmodule Stitch.Messages.Search do
   def apply_search_terms(query, []), do: query
 
   def apply_search_terms(query, search_terms) do
-    term = Enum.join(search_terms)
+    term = Enum.join(search_terms, " | ")
 
     from(
       m in query,
@@ -225,7 +240,7 @@ defmodule Stitch.Messages.Search do
   end
 
   def parameterize(term_string) do
-    parts = String.split(term_string, " ")
+    parts = term_string |> String.trim() |> String.split(" ")
 
     params = %{
       search_terms: [],

@@ -83,18 +83,6 @@ defmodule Stitch.Messages.SearchTest do
       assert ids(Search.search(user, "to:#{user.id}")) == ids([message_a])
     end
 
-    test "it searches for messages from users" do
-      team = insert(:team)
-      user = insert(:user, team: team)
-      group_a = insert(:group, team: team, name: "Example", slug: "example")
-      insert(:group_user, group: group_a, user: user)
-
-      message_a =
-        insert(:message, user: user, group: group_a, text_content: "examples are for docs")
-
-      assert ids(Search.search(user, "xamp from:#{user.id}")) == ids([message_a])
-    end
-
     test "it searches for messages before a date" do
       team = insert(:team)
       user = insert(:user, team: team)
@@ -121,7 +109,7 @@ defmodule Stitch.Messages.SearchTest do
         inserted_at: future_target_datetime
       )
 
-      assert ids(Search.search(user, "example before:2019-06-06")) == ids([message_a])
+      assert ids(Search.search(user, "before:06/06/2019")) == ids([message_a])
     end
 
     test "it searches for messages after a date" do
@@ -150,7 +138,44 @@ defmodule Stitch.Messages.SearchTest do
         inserted_at: past_target_datetime
       )
 
-      assert ids(Search.search(user, "example after:2015-06-06")) == ids([message_a])
+      assert ids(Search.search(user, "after:06/06/2015")) == ids([message_a])
+    end
+
+    test "it searches for messages on a date" do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group_a = insert(:group, team: team, name: "Example", slug: "example")
+      insert(:group_user, group: group_a, user: user)
+
+      {:ok, target_datetime_a} = NaiveDateTime.new(2018, 1, 1, 0, 0, 0)
+
+      message_a =
+        insert(
+          :message,
+          user: user,
+          group: group_a,
+          text_content: "examples are for docsx",
+          inserted_at: target_datetime_a
+        )
+
+      message_b =
+        insert(
+          :message,
+          user: user,
+          group: group_a,
+          text_content: "examples are for docy",
+          inserted_at: target_datetime_a
+        )
+
+      insert(
+        :message,
+        user: user,
+        group: group_a,
+        text_content: "examples are for docsz"
+      )
+
+      assert ids(Search.search(user, "example on:01/01/2018")) |> Enum.sort() ==
+               ids([message_b, message_a]) |> Enum.sort()
     end
   end
 
