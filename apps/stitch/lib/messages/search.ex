@@ -82,7 +82,7 @@ defmodule Stitch.Messages.Search do
 
     from(
       message in subquery(query),
-      select: %{
+      select: %Message{
         id: message.id,
         user_id: message.user_id,
         group_id: message.group_id,
