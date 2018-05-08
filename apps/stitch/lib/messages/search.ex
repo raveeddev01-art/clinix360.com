@@ -115,7 +115,7 @@ defmodule Stitch.Messages.Search do
   def apply_date_before_terms(query, date_before_terms) do
     Enum.reduce(date_before_terms, query, fn term, query ->
       date_string = String.split(term, ":") |> List.last()
-      date = NaiveDateTime.from_iso8601!(date_string <> " 00:00:00")
+      date = Timex.parse!(date_string, "{0M}-{D}-{YYYY}")
 
       from(
         m in query,
@@ -129,7 +129,7 @@ defmodule Stitch.Messages.Search do
   def apply_date_after_terms(query, date_after_terms) do
     Enum.reduce(date_after_terms, query, fn term, query ->
       date_string = String.split(term, ":") |> List.last()
-      date = NaiveDateTime.from_iso8601!(date_string <> " 00:00:00")
+      date = Timex.parse!(date_string, "{0M}-{D}-{YYYY}")
 
       from(
         m in query,
@@ -141,8 +141,8 @@ defmodule Stitch.Messages.Search do
   def apply_date_on_terms(query, []), do: query
 
   def apply_date_on_terms(query, date_on_terms) do
-    date_string = List.first(date_on_terms) |> String.split(":") |> List.last() |> IO.inspect()
-    date = NaiveDateTime.from_iso8601!(date_string <> " 00:00:00")
+    date_string = List.first(date_on_terms) |> String.split(":") |> List.last()
+    date = Timex.parse!(date_string, "{0M}-{D}-{YYYY}")
 
     from(
       m in query,
