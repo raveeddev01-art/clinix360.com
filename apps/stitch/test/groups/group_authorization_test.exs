@@ -98,70 +98,6 @@ defmodule Stitch.GroupAuthorizationTest do
     end
   end
 
-  describe "Stitch.GroupAuthorization.can_remove_users?/2" do
-    test "returns true for admin users" do
-      user = insert(:user, %{roles: ["admin"]})
-      group = insert(:group, team: user.team)
-      result = Stitch.GroupAuthorization.can_remove_users?(group, user)
-      assert result == true
-    end
-
-    test "returns true for group creators" do
-      user = insert(:user, %{roles: ["member"]})
-      group = insert(:group, team: user.team, creator: user)
-      result = Stitch.GroupAuthorization.can_remove_users?(group, user)
-      assert result == true
-    end
-
-    test "returns false for dm groups" do
-      team = insert(:team)
-      userA = insert(:user, team: team)
-      userB = insert(:user, team: team)
-      {:ok, group} = Stitch.Group.create_single_dm(userA, [userA.id, userB.id])
-      result = Stitch.GroupAuthorization.can_remove_users?(group, userA)
-      assert result == false
-    end
-
-    test "returns false for non-admin non-creator users" do
-      user = insert(:user, %{roles: ["member"]})
-      group = insert(:group, team: user.team)
-      result = Stitch.GroupAuthorization.can_remove_users?(group, user)
-      assert result == false
-    end
-  end
-
-  describe "Stitch.GroupAuthorization.can_rename?/2" do
-    test "returns true for admin users" do
-      user = insert(:user, %{roles: ["admin"]})
-      group = insert(:group, team: user.team)
-      result = Stitch.GroupAuthorization.can_rename?(group, user)
-      assert result == true
-    end
-
-    test "returns true for group creators" do
-      user = insert(:user, %{roles: ["member"]})
-      group = insert(:group, team: user.team, creator: user)
-      result = Stitch.GroupAuthorization.can_rename?(group, user)
-      assert result == true
-    end
-
-    test "returns false for dm groups" do
-      team = insert(:team)
-      userA = insert(:user, team: team)
-      userB = insert(:user, team: team)
-      {:ok, group} = Stitch.Group.create_single_dm(userA, [userA.id, userB.id])
-      result = Stitch.GroupAuthorization.can_rename?(group, userA)
-      assert result == false
-    end
-
-    test "returns false for non-admin non-creator users" do
-      user = insert(:user, %{roles: ["member"]})
-      group = insert(:group, team: user.team)
-      result = Stitch.GroupAuthorization.can_rename?(group, user)
-      assert result == false
-    end
-  end
-
   describe "Stitch.GroupAuthorization.can_toggle_public?/2" do
     test "returns true for admin users" do
       user = insert(:user, roles: ["admin"])
@@ -195,15 +131,7 @@ defmodule Stitch.GroupAuthorizationTest do
       team = insert(:team)
       restricted_group = insert(:group, team: team, public: true)
       public_group = insert(:group, team: team, public: true)
-
-      user =
-        insert(
-          :user,
-          team: team,
-          roles: ["multi-room-guest"],
-          groups_as_guest: [restricted_group.id]
-        )
-
+      user = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [restricted_group.id])
       insert(:group_user, user: user, group: restricted_group)
 
       refute Stitch.GroupAuthorization.can_toggle_public?(restricted_group, user)
@@ -226,7 +154,6 @@ defmodule Stitch.GroupAuthorizationTest do
 
     test "returns false for guests" do
       team = insert(:team)
-
       for role <- ["single-room-guest", "multi-room-guest"] do
         user = insert(:user, roles: [role], team: team)
         group = insert(:group, team: team)
@@ -236,7 +163,6 @@ defmodule Stitch.GroupAuthorizationTest do
 
     test "returns false for guest that is the group creator" do
       team = insert(:team)
-
       for role <- ["single-room-guest", "multi-room-guest"] do
         user = insert(:user, roles: [role], team: team)
         group = insert(:group, creator: user, team: team)

@@ -486,44 +486,14 @@
         }
       }
 
-      .users-typing,
-      .formatting-guide,
-      .character-limit {
+      .users-typing {
         position: absolute;
+        left: 0;
+        right: 0;
         bottom: 0;
         height: 23px;
         font-size: 12px;
         color: #888;
-      }
-
-      .users-typing {
-        left: 45px;
-        right: auto;
-      }
-
-      .formatting-guide {
-        right: 17px;
-        left: auto;
-
-        b, i , span, code {
-          color: inherit;
-          font-size: 12px;
-          margin-right: 5px;
-
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-
-        code {
-          font-size: 11px;
-          padding: 0 2px;
-        }
-      }
-
-      .character-limit {
-        right: 0;
-        left: auto;
       }
 
       .editing-commands {
@@ -534,10 +504,7 @@
         display: flex;
         justify-content: space-between;
         font-size: 85%;
-
-        kbd {
-          background: $brand-primary;
-        }
+        background: $body-bg;
 
         & > div {
           height: 23px;
@@ -784,19 +751,6 @@
     position: relative;
     padding: 2px 40px 3px 0;
 
-    .message-body-highlight {
-      background: #f0f0f0;
-      color: $brand-primary;
-      border: 1px solid $border-color;
-      border-radius: 3px;
-      padding: 0 3px;
-      display: inline-block;
-    }
-
-    .full-width {
-      width: 100%;
-    }
-
     &:hover,
     &.selected {
       background: #f5f5f5;
@@ -896,14 +850,6 @@
           display: block;
           word-wrap: break-word;
 
-          b, i, s {
-            display: inline-block;
-          }
-
-          span {
-            white-space: pre-wrap;
-          }
-
           .attachment-comment {
             position: relative;
 
@@ -919,6 +865,10 @@
               left: -24px;
               top: 2px;
             }
+          }
+
+          br:last-of-type {
+            display: none;
           }
         }
       }

@@ -20,19 +20,11 @@ class TypingUsers extends Component {
         break;
 
       case 1:
-        content = (
-          <span>
-            <b>{usernames[0]}</b> is typing...
-          </span>
-        );
+        content = `${usernames[0]} is typing...`;
         break;
 
       case 2:
-        content = (
-          <span>
-            <b>{usernames.join(" and ")}</b> are typing...
-          </span>
-        );
+        content = `${usernames.join(" and ")} are typing...`;
         break;
 
       default:

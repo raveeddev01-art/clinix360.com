@@ -26,7 +26,7 @@ defmodule Stitch.GroupAuthorization do
   def can_rename?(%Group{creator_user_id: user_id}, %User{id: user_id}), do: true
 
   def can_rename?(%Group{team_id: team_id} = group, %User{team_id: team_id} = user) do
-    "admin" in user.roles || group.creator_user_id == user.id
+    "admin" in user.roles || (group.public && !User.guest?(user))
   end
 
   def can_rename?(_group, _user), do: false
@@ -39,19 +39,6 @@ defmodule Stitch.GroupAuthorization do
   end
 
   def can_invite?(_group, _user), do: false
-
-  @doc """
-  Return true/false whether user can remove other users from this group.
-  Only admin and group creators can remove other users.
-  """
-  def can_remove_users?(%Group{name: name}, _user) when name in @dm_groups, do: false
-  def can_remove_users?(%Group{is_default: true}, _user), do: false
-
-  def can_remove_users?(%Group{team_id: team_id} = group, %User{team_id: team_id} = user) do
-    Enum.member?(user.roles, "admin") || group.creator_user_id == user.id
-  end
-
-  def can_remove_users?(_group, _user), do: false
 
   @doc """
   Return true/false whether user can change the public setting for groups.
