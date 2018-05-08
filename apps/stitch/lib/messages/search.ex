@@ -5,14 +5,9 @@ defmodule Stitch.Messages.Search do
 
   alias Stitch.{
     Repo,
-    Accounts.User,
-    Group,
     GroupUser,
     Message,
-    MessageAction,
-    MessageQueries,
-    Paginator,
-    Team
+    MessageAction
   }
 
   import Ecto.Query
@@ -164,8 +159,6 @@ defmodule Stitch.Messages.Search do
         String.split(user_string, ":") |> List.last() |> String.to_integer()
       end)
 
-    IO.inspect(user_ids)
-
     from(
       m in query,
       where: m.user_id in ^user_ids
@@ -189,18 +182,17 @@ defmodule Stitch.Messages.Search do
   def apply_exact_search_terms(query, []), do: query
 
   def apply_exact_search_terms(query, exact_search_terms) do
-    query =
-      Enum.reduce(exact_search_terms, query, fn term, query ->
-        term =
-          term
-          |> String.replace_prefix("\"", "")
-          |> String.replace_suffix("\"", "")
+    Enum.reduce(exact_search_terms, query, fn term, query ->
+      term =
+        term
+        |> String.replace_prefix("\"", "")
+        |> String.replace_suffix("\"", "")
 
-        from(
-          m in query,
-          or_where: like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")
-        )
-      end)
+      from(
+        m in query,
+        or_where: like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")
+      )
+    end)
   end
 
   def apply_search_terms(query, []), do: query
