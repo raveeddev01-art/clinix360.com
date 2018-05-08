@@ -109,7 +109,7 @@ defmodule Stitch.Messages.SearchTest do
         inserted_at: future_target_datetime
       )
 
-      assert ids(Search.search(user, "example before:06-06-2019")) == ids([message_a])
+      assert ids(Search.search(user, "before:06/06/2019")) == ids([message_a])
     end
 
     test "it searches for messages after a date" do
@@ -138,7 +138,7 @@ defmodule Stitch.Messages.SearchTest do
         inserted_at: past_target_datetime
       )
 
-      assert ids(Search.search(user, "example after:06-06-2015")) == ids([message_a])
+      assert ids(Search.search(user, "after:06/06/2015")) == ids([message_a])
     end
 
     test "it searches for messages on a date" do
@@ -174,7 +174,7 @@ defmodule Stitch.Messages.SearchTest do
         text_content: "examples are for docsz"
       )
 
-      assert ids(Search.search(user, "example on:01-01-2018")) |> Enum.sort() ==
+      assert ids(Search.search(user, "example on:01/01/2018")) |> Enum.sort() ==
                ids([message_b, message_a]) |> Enum.sort()
     end
   end
