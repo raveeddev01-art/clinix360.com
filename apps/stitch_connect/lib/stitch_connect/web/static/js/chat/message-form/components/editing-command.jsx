@@ -28,7 +28,7 @@ class EditingCommand extends Component {
               className="btn-fancy btn-default btn-small"
               onClick={this.cancelEdit}
             >
-              Cancel Editing
+              Cancel editing
             </button>
           </div>
           <div className="editing-commands-save">
@@ -38,7 +38,7 @@ class EditingCommand extends Component {
               className="btn-fancy btn-default btn-small"
               onClick={this.finishEdit}
             >
-              Save Changes
+              Save changes
             </button>
           </div>
         </div>

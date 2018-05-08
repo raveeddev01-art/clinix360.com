@@ -7,7 +7,7 @@ import moment from "moment";
 class Updates extends Component {
   render() {
     return (
-      <div className="updates-addon">
+      <div className="files-addon">
         {this.props.newsStore.news.map(news => (
           <div key={`news-${news.id}`} className="news-story">
             <h2 className="news-story__date">

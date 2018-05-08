@@ -216,10 +216,10 @@ defmodule StitchConnect.Web.GroupChannel do
     %{group: group, current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
 
-    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
-    can_delete = message && MessageAuthorization.can_delete?(message, user, group)
+    message =
+      Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one()
 
-    case can_delete && Message.delete(message) do
+    case message && Message.delete(message) do
       {:ok, %{message: message}} ->
         broadcast_message_deleted(message)
         EventsChannel.broadcast_group_msg_deleted(group, message)
@@ -227,11 +227,11 @@ defmodule StitchConnect.Web.GroupChannel do
 
         {:reply, {:ok, %{id: message.id}}, socket}
 
+      nil ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+
       {:error, _changeset} ->
         message_delete_failure_reply(socket)
-
-      _ ->
-        {:reply, {:error, %{message: "Message not found."}}, socket}
     end
   end
 
@@ -245,7 +245,7 @@ defmodule StitchConnect.Web.GroupChannel do
     ActivityTracker.async_update_activity(user)
     message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
 
-    case {message, message && MessageAuthorization.can_delete?(message, user, group)} do
+    case {message, message && MessageAuthorization.can_delete?(message, user)} do
       {nil, _} ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
 

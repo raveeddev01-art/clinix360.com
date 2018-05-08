@@ -180,7 +180,6 @@ defmodule Stitch.GroupTest do
       team = insert(:team)
       default_group = insert(:group, team: team, is_default: true)
       group = insert(:group, team: team)
-
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
         insert(:group_user, group: group, user: guest)
@@ -282,40 +281,6 @@ defmodule Stitch.GroupTest do
     end
   end
 
-  describe "Stitch.Group.remove_users_by_id/2" do
-    setup do
-      team = insert(:team)
-      bob = insert(:user, team: team)
-      joe = insert(:user, team: team)
-      group = insert(:group, team: team, creator: bob)
-      insert(:group_user, user: bob, group: group)
-      insert(:group_user, user: joe, group: group)
-
-      {:ok, team: team, bob: bob, joe: joe, group: group}
-    end
-
-    test "updates group users", %{group: group, joe: joe} do
-      assert {:ok, {removed_users, []}} = Group.remove_users_by_id(group, [joe.id])
-
-      # db logic tested by update_users
-      assert [removed_user] = removed_users
-      assert removed_user.id == joe.id
-    end
-
-    test "can remove group creators", %{group: group, bob: bob, joe: joe} do
-      assert {:ok, {removed_users, []}} = Group.remove_users_by_id(group, [joe.id, bob.id])
-
-      # db logic tested by update_users
-      assert [removed_user_1, remmoved_user_2] = removed_users
-      assert removed_user_1.id == joe.id
-      assert remmoved_user_2.id == bob.id
-    end
-
-    test "handles empty list", %{group: group} do
-      assert {:ok, {[], []}} = Group.remove_users_by_id(group, [])
-    end
-  end
-
   describe "Stitch.Group.update_users/2" do
     setup do
       team = insert(:team)
@@ -344,13 +309,13 @@ defmodule Stitch.GroupTest do
     test "when user_ids is empty", %{group: group, bob: bob} do
       assert {:ok, _} = Group.update_users(group, [])
 
-      assert Stitch.Repo.get_by(GroupUser, group_id: group.id) == nil
+      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) != nil
     end
 
-    test "can remove creator", %{group: group, bob: bob, sam: sam} do
+    test "doesn't remove creator", %{group: group, bob: bob, sam: sam} do
       assert {:ok, _} = Group.update_users(group, [sam.id])
 
-      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) == nil
+      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) != nil
     end
 
     test "doesn't add user from another team", %{group: group, bob: bob} do
@@ -361,11 +326,7 @@ defmodule Stitch.GroupTest do
       assert Stitch.Repo.get_by(GroupUser, user_id: sam.id, group_id: group.id) == nil
     end
 
-    test "doesn't allow to update members in a direct message room", %{
-      bob: bob,
-      joe: joe,
-      sam: sam
-    } do
+    test "doesn't allow to update members in a direct message room", %{bob: bob, joe: joe, sam: sam} do
       {:ok, group} = Group.create_single_dm(bob, [bob.id, joe.id])
 
       {:error, message} = Group.update_users(group, [bob.id, sam.id])
@@ -395,22 +356,12 @@ defmodule Stitch.GroupTest do
       assert {:error, :user_id_count_is_not_2} = Group.create_single_dm(user, [])
     end
 
-    test "requires the creator to be in the user ids list", %{
-      user_1: user_1,
-      user_2: user_2,
-      team: team
-    } do
+    test "requires the creator to be in the user ids list", %{user_1: user_1, user_2: user_2, team: team} do
       user_3 = insert(:user, team: team)
-
-      assert {:error, :creator_id_is_not_in_user_ids} =
-               Group.create_single_dm(user_1, [user_2.id, user_3.id])
+      assert {:error, :creator_id_is_not_in_user_ids} = Group.create_single_dm(user_1, [user_2.id, user_3.id])
     end
 
-    test "allows guests to DM users in mutual groups", %{
-      user_1: user_1,
-      user_2: user_2,
-      team: team
-    } do
+    test "allows guests to DM users in mutual groups", %{user_1: user_1, user_2: user_2, team: team} do
       group = insert(:group, team: team)
       guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
       insert(:group_user, user: guest, group: group)
@@ -448,43 +399,23 @@ defmodule Stitch.GroupTest do
       assert {:error, :user_id_count_is_not_3_or_more} = Group.create_multi_dm(user, [])
     end
 
-    test "requires the creator to be in the user ids list", %{
-      user_1: user_1,
-      user_2: user_2,
-      user_3: user_3,
-      team: team
-    } do
+    test "requires the creator to be in the user ids list", %{user_1: user_1, user_2: user_2, user_3: user_3, team: team} do
       user_4 = insert(:user, team: team)
       user_ids = [user_2.id, user_3.id, user_4.id]
       assert {:error, :creator_id_is_not_in_user_ids} = Group.create_multi_dm(user_1, user_ids)
     end
 
-    test "allows guests to DM users in mutual groups", %{
-      user_1: user_1,
-      user_2: user_2,
-      user_3: user_3,
-      team: team
-    } do
+    test "allows guests to DM users in mutual groups", %{user_1: user_1, user_2: user_2, user_3: user_3, team: team} do
       group_1 = insert(:group, team: team)
       group_2 = insert(:group, team: team)
-
-      guest =
-        insert(
-          :user,
-          team: team,
-          roles: ["multi-room-guest"],
-          groups_as_guest: [group_1.id, group_2.id]
-        )
-
+      guest = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [group_1.id, group_2.id])
       insert(:group_user, user: guest, group: group_1)
       insert(:group_user, user: guest, group: group_2)
       insert(:group_user, user: user_1, group: group_1)
       insert(:group_user, user: user_2, group: group_2)
 
       assert {:ok, _} = Group.create_multi_dm(guest, [guest.id, user_1.id, user_2.id])
-
-      assert {:error, :invalid_user_ids} =
-               Group.create_multi_dm(guest, [guest.id, user_2.id, user_3.id])
+      assert {:error, :invalid_user_ids} = Group.create_multi_dm(guest, [guest.id, user_2.id, user_3.id])
     end
   end
 
@@ -531,10 +462,7 @@ defmodule Stitch.GroupTest do
       user = insert(:user, team: team)
       group = insert(:group)
       insert(:group_user, user: user, group: group)
-
-      assert {:ok, %{message: message}} =
-               Stitch.Message.create(group.id, user, %{"text_content" => "Hello, World!"})
-
+      assert {:ok, %{message: message}} = Stitch.Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       assert {:ok, _group} = Group.delete(group)
       assert Stitch.Repo.get(Stitch.Message, message.id) == nil
     end
@@ -545,15 +473,7 @@ defmodule Stitch.GroupTest do
       group_b = insert(:group, team: team)
       bob = insert(:user, team: team)
       joe = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group_a.id])
-
-      sam =
-        insert(
-          :user,
-          team: team,
-          roles: ["multi-room-guest"],
-          groups_as_guest: [group_a.id, group_b.id]
-        )
-
+      sam = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [group_a.id, group_b.id])
       insert(:group_user, user: bob, group: group_a)
       insert(:group_user, user: joe, group: group_a)
       insert(:group_user, user: sam, group: group_a)
@@ -561,7 +481,7 @@ defmodule Stitch.GroupTest do
       assert {:ok, %{groups_as_guest: {2, updated_guests}}} = Group.delete(group_a)
       assert Stitch.Repo.get(Stitch.Accounts.User, joe.id).groups_as_guest == []
       assert Stitch.Repo.get(Stitch.Accounts.User, sam.id).groups_as_guest == [group_b.id]
-      assert Enum.sort([joe.id, sam.id]) == updated_guests |> Enum.map(& &1.id) |> Enum.sort()
+      assert Enum.sort([joe.id, sam.id]) == updated_guests |> Enum.map(& &1.id) |> Enum.sort
     end
   end
 end

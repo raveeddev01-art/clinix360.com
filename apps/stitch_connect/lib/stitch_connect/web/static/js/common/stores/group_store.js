@@ -117,13 +117,6 @@ class GroupStore {
   };
 
   @action
-  removeUsers = userIds => {
-    const { groupsStore } = this.rootStore;
-
-    return groupsStore.removeUsersFromGroup(this.group.id, userIds);
-  };
-
-  @action
   setPublic = value => {
     const { groupsStore } = this.rootStore;
 

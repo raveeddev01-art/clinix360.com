@@ -414,15 +414,6 @@ class GroupsStore {
   };
 
   @action
-  removeUsersFromGroup = (id, userIds) => {
-    return post(`/api/v1/groups/${id}/remove_users`, {
-      body: {
-        user_ids: userIds
-      }
-    });
-  };
-
-  @action
   setPublicOfGroup = (id, value) => {
     return post(`/api/v1/groups/${id}/toggle-public`, {
       body: { public: value }
