@@ -44,10 +44,7 @@ class AddonMessage extends Component {
             overlay={<Tooltip id="copy-message">Copy</Tooltip>}
           >
             <CopyToClipboard text={message.text_content}>
-              <a
-                role="link"
-                className="addon-message-action-item"
-              >
+              <a role="link" className="addon-message-action-item">
                 <i className="fa fa-clipboard" />
               </a>
             </CopyToClipboard>
@@ -65,6 +62,7 @@ class AddonMessage extends Component {
             <div className="message-content">
               <MessageHeader timestamp={message.inserted_at} user={user} />
               <MessageContent
+                inSearch={this.props.inSearch}
                 message={Object.assign({}, message, { reactions_web: null })}
               />
             </div>
@@ -75,7 +73,12 @@ class AddonMessage extends Component {
   }
 }
 
+AddonMessage.defaultProps = {
+  inSearch: false
+};
+
 AddonMessage.propTypes = {
+  inSearch: PropTypes.bool,
   message: PropTypes.object.isRequired
 };
 

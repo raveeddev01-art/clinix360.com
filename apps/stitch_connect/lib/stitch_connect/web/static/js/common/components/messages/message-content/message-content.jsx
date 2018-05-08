@@ -57,7 +57,7 @@ class MessageContent extends Component {
   }
 
   render() {
-    const { message } = this.props;
+    const { inSearch, message } = this.props;
 
     return (
       <div
@@ -69,7 +69,7 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
-            messageTextToComponents(message.text_content || "")
+            messageTextToComponents(message.text_content || "", { inSearch })
           )}
 
           {this.renderLinkPreviews()}
@@ -85,7 +85,12 @@ class MessageContent extends Component {
   }
 }
 
+MessageContent.defaultProps = {
+  inSearch: false
+};
+
 MessageContent.propTypes = {
+  inSearch: PropTypes.bool,
   message: PropTypes.any.isRequired
 };
 
