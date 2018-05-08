@@ -7,7 +7,7 @@ import cx from "classnames";
 @observer
 class SearchInputDropdownRoom extends Component {
   render() {
-    const { itemId, isActive, onHover, onSelectItem, groupsStore } = this.props;
+    const { itemId, isActive, onMouseEnter, onSelectItem, groupsStore } = this.props;
     const group = groupsStore.getGroupById(itemId);
 
     if (!group) {
@@ -21,7 +21,7 @@ class SearchInputDropdownRoom extends Component {
     return (
       <li
         className={itemClassName}
-        onMouseEnter={onHover}
+        onMouseEnter={onMouseEnter}
         onClick={onSelectItem}
       >
         <span className="item-icon">
@@ -47,7 +47,7 @@ class SearchInputDropdownRoom extends Component {
 SearchInputDropdownRoom.propTypes = {
   itemId: PropTypes.number.isRequired,
   isActive: PropTypes.bool.isRequired,
-  onHover: PropTypes.func.isRequired,
+  onMouseEnter: PropTypes.func.isRequired,
   onSelectItem: PropTypes.func.isRequired
 };
 

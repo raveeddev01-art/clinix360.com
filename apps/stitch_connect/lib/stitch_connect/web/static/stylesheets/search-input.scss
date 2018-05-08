@@ -45,13 +45,13 @@
     padding: 0;
   }
 
-  .menu-footer {
-    padding: 10px 15px;
+  .menu-header {
+    padding: 7px 15px;
     background: $body-bg;
-    border-top: 1px solid $border-color-secondary;
-    border-radius: 0 0 4px 4px;
+    border-bottom: 1px solid $border-color-secondary;
+    border-radius: 4px 4px 0 0;
     position: absolute;
-    bottom: 0;
+    top: 0;
     right: 0;
     left: 0;
   }
@@ -59,6 +59,10 @@
   .menu-content {
     max-height: 312px;
     overflow-y: auto;
+
+    &.has-header {
+      padding-top: 30px;
+    }
   }
 
   .search-input-dropdown-item {
@@ -89,6 +93,10 @@
         margin-right: 5px;
       }
 
+      .fa {
+        margin-right: 5px;
+      }
+
       span {
         display: inline-block;
         margin-right: 5px;
@@ -100,6 +108,15 @@
     }
 
     &.active {
+      background-color: $brand-primary;
+      color: white;
+
+      span {
+        color: white;
+      }
+    }
+
+    &__hover:hover {
       background-color: $brand-primary;
       color: white;
 
