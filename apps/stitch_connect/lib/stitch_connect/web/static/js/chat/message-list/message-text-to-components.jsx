@@ -22,6 +22,7 @@ import {
 const allFormatters = nonNestableFormatters.concat(nestableFormatters);
 const emojiRegex = REGEX.getEmoji();
 
+// HELPERS
 const isSolelyEmojis = messageContent => {
   return !messageContent.replace(emojiRegex, "").trim();
 };
@@ -37,86 +38,86 @@ const getMatchingFormatter = (content, opts) => {
   return validFormatters.find(formatter => formatter.isMatch(content, opts));
 };
 
+const getUnformattedNode = (content, start, end) => {
+  const unformattedString = content.slice(start, end + 1);
+  return formatUnmatched(unformattedString, start);
+};
+
 // =====================================================
-// getRemainingNodes EXAMPLE:
-// input: "this is *bold* and _italicized_ stuff"
-
-// HALF WAY THRU ITERATION (at the first "_"):
-// remainingMessageContent: "_italicized_ stuff"
-// currentNodeList: [unformattedNode, boldNode]
-// unmatchedCharacters: " and " <-- will eventually be an unformattedNode
-
-// END OF ITERATION:
-// remainingMessageContent: ""
-// currentNodeList:
-//   [unformattedNode1, boldNode, unformattedNode2, italicedNode, unformattedNode3]
-// unmatchedCharacters: ""
+// getNodeList iterates over each character and compares
+// the string from that character on to various formatters
+// (bold, emoji, mention, etc). If a formatter matches,
+// it adds a formatted node to a list and skips forward in
+// the string. If no formatter matches, it moves on to the
+// next character.
 // =====================================================
 
-const getRemainingNodes = (
-  remainingMessageContent,
-  opts = {},
-  currentNodeList = [],
-  unmatchedCharacters = "",
-  keyIndex = 0
-) => {
-  // CASE 1: END OF THE CONTENT (EXITS)
-  if (remainingMessageContent === "") {
-    const nodeForUnmatchedChars = formatUnmatched(
-      unmatchedCharacters,
-      keyIndex + 1
+const getNodeList = (messageContent, opts) => {
+  const nodeList = [];
+  let indexOfFirstUnformattedChar = 0;
+  let currentIndex = 0;
+
+  // START ITERATING THRU CHARACTERS
+  while (currentIndex < messageContent.length) {
+    const atEnd = currentIndex === messageContent.length - 1;
+    const remainingMessageContent = messageContent.slice(currentIndex);
+    const atStartOfLine =
+      currentIndex === 0 || messageContent[currentIndex - 1] === "\n";
+
+    const matchingFormatter = getMatchingFormatter(
+      remainingMessageContent,
+      Object.assign({}, opts, { atStartOfLine })
     );
-    return currentNodeList.concat([nodeForUnmatchedChars]);
+
+    // CASE 1: AT END OF CONTENT
+    // push any leftover unformatted content into the nodeList
+    if (atEnd) {
+      const unformattedNode = getUnformattedNode(
+        messageContent,
+        indexOfFirstUnformattedChar,
+        currentIndex
+      );
+
+      nodeList.push(unformattedNode);
+
+      currentIndex += 1;
+    } else if (matchingFormatter) {
+      // CASE 2: CURRENT CHAR MATCHES
+      // get the formatted node and unformatted node (before
+      // the current char), push both into the list, skip
+      // to the end of the formatted content
+
+      // get nodes to push to list
+      const unformattedNode = getUnformattedNode(
+        messageContent,
+        indexOfFirstUnformattedChar,
+        currentIndex - 1
+      );
+
+      const [
+        nodeForMatchingContent,
+        contentOffset
+      ] = matchingFormatter.parseContent(
+        remainingMessageContent,
+        currentIndex,
+        opts
+      );
+
+      // add nodes to the list
+      nodeList.push(unformattedNode);
+      nodeList.push(nodeForMatchingContent);
+
+      // increment index to jump past formatted node
+      currentIndex += contentOffset;
+      indexOfFirstUnformattedChar = currentIndex;
+    } else {
+      // CASE 3: NO MATCH AND NOT AT END.
+      // do nothing but continue to next char
+      currentIndex += 1;
+    }
   }
 
-  const isFirstChar = !currentNodeList[0] && !unmatchedCharacters[0];
-
-  const matchingFormatter = getMatchingFormatter(
-    remainingMessageContent,
-    Object.assign({}, opts, { isFirstChar })
-  );
-
-  // CASE 2: CURRENT SPOT IN STRING MATCHES A FORMATTER (CONTINUES)
-  // -> Add new nodes to list. Skip to content after the new node.
-  if (matchingFormatter) {
-    const nodeForUnmatchedChars = formatUnmatched(
-      unmatchedCharacters,
-      keyIndex + 1
-    );
-    const newBlankUnmatchedChars = "";
-
-    const [
-      nodeForMatchingContent,
-      newRemainingContent
-    ] = matchingFormatter.parseContent(remainingMessageContent, keyIndex, opts);
-
-    const newNodeList = currentNodeList.concat([
-      nodeForUnmatchedChars,
-      nodeForMatchingContent
-    ]);
-
-    return getRemainingNodes(
-      newRemainingContent,
-      opts,
-      newNodeList,
-      newBlankUnmatchedChars,
-      keyIndex + 2
-    );
-  }
-
-  // CASE 3: CURRENT SPOT DOES NOT MATCH,
-  // BUT MORE CHARACTERS REMAIN (CONTINUES)
-  const newUnmatchedCaracters =
-    unmatchedCharacters + remainingMessageContent.slice(0, 1);
-  const newRemainingContent = remainingMessageContent.slice(1);
-
-  return getRemainingNodes(
-    newRemainingContent,
-    opts,
-    currentNodeList,
-    newUnmatchedCaracters,
-    keyIndex + 2
-  );
+  return nodeList;
 };
 
 const messageTextToComponents = (messageContent, opts) => {
@@ -126,7 +127,7 @@ const messageTextToComponents = (messageContent, opts) => {
   };
 
   const formattingOpts = Object.assign({}, defaultOpts, opts);
-  return getRemainingNodes(messageContent, formattingOpts);
+  return getNodeList(messageContent, formattingOpts);
 };
 
 export default messageTextToComponents;

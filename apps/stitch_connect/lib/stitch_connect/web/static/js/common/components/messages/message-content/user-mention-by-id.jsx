@@ -8,7 +8,7 @@ import UserMention from "./user-mention";
 export default class UserMentionById extends Component {
   render() {
     const { usersStore, id } = this.props;
-    const user = usersStore.usersById[id];
+    const user = usersStore.usersById[id] || {};
 
     return <UserMention user={user} {...this.props} />;
   }
