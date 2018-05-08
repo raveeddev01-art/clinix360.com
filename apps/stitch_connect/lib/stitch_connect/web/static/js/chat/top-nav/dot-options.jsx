@@ -32,16 +32,7 @@ class DotOptions extends React.Component {
             <span>
               <i className="fa fa-ellipsis-v" />
               {this.props.newsStore.unreadNewsCount > 0 && (
-                <span
-                  className="badge"
-                  style={{
-                    position: "absolute",
-                    top: "-14px",
-                    left: "4px",
-                    backgroundColor: "#e43a2f",
-                    borderRadius: "4px"
-                  }}
-                >
+                <span className="badge">
                   {this.props.newsStore.unreadNewsLabel}
                 </span>
               )}
@@ -65,15 +56,7 @@ class DotOptions extends React.Component {
           <MenuItem onSelect={toggleAddonMenu("Updates")}>
             <i className="fa fa-lightbulb-o m-r-5" /> Updates{" "}
             {this.props.newsStore.unreadNewsCount > 0 && (
-              <span
-                className="badge"
-                style={{
-                  backgroundColor: "#e43a2f",
-                  borderRadius: "4px",
-                  marginLeft: "50px",
-                  marginTop: "-3px"
-                }}
-              >
+              <span className="badge">
                 {this.props.newsStore.unreadNewsLabel}
               </span>
             )}
