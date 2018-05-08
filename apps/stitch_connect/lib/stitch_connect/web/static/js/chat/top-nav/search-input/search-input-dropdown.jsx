@@ -27,7 +27,7 @@ class SearchInputDropdown extends Component {
 
   onInactive = () => {
     this.setState({ isActive: false });
-  }
+  };
 
   onSelectItem = value => () => {
     const { onSelect } = this.props;
@@ -41,7 +41,8 @@ class SearchInputDropdown extends Component {
     switch (evt.keyCode) {
       case 38: // arrow up
         this.setState({
-          activeIndex: activeIndex - 1 >= 0 ? activeIndex - 1 : items.length - 1,
+          activeIndex:
+            activeIndex - 1 >= 0 ? activeIndex - 1 : items.length - 1,
           isActive: true
         });
         evt.preventDefault();

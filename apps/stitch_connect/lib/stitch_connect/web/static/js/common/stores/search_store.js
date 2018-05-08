@@ -57,6 +57,7 @@ class SearchStore {
         .map(user => ({
           id: user.id,
           type: "user",
+          orderKey: user.full_name.toLowerCase(),
           value: `@${user.username}`
         }));
 
@@ -84,7 +85,7 @@ class SearchStore {
           }
 
           if (group.type === "multi_dm") {
-            if (groupTypeIndicator === "#") {
+            if (groupTypeIndicator !== "@") {
               return false;
             }
 
@@ -98,14 +99,18 @@ class SearchStore {
           const query = filter[1].substr(1);
           return slug.indexOf(query) > -1;
         })
-        .map(group => ({
-          id: group.id,
-          type: "group",
-          value:
-            group.type === "multi_dm"
-              ? `@${groupsStore.getMultiDMNameWithUsernames(group)}`
-              : `#${group.slug}`
-        }));
+        .map(group => {
+          const groupName = groupsStore.getMultiDMNameWithUsernames(group);
+
+          return {
+            id: group.id,
+            type: "group",
+            orderKey: (group.type === "multi_dm" ? groupName : group.name)
+              .toLowerCase,
+            value:
+              group.type === "multi_dm" ? `@${groupName}` : `#${group.slug}`
+          };
+        });
 
       return {
         items,

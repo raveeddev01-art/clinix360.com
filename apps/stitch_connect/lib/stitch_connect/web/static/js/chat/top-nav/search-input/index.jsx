@@ -16,6 +16,7 @@ class SearchInput extends Component {
       query: "",
       isDropdownVisible: false,
       isDatepickerVisible: false,
+      isKeywordDropdownVisible: false,
       items: [],
       keyword: "",
       currentWord: "",
@@ -28,15 +29,21 @@ class SearchInput extends Component {
     event.preventDefault();
 
     const { addonStore, searchStore } = this.props;
-    const { query, isDatepickerVisible, isDropdownVisible } = this.state;
+    const { query, isDropdownVisible } = this.state;
+
+    this.setState({
+      isDropdownVisible: false,
+      isDatepickerVisible: false,
+      isKeywordDropdownVisible: false
+    });
 
     // Treat an empty query as a non-event
     // Do not open panel or search
-    if (!query.trim() || isDropdownVisible || isDatepickerVisible) {
+    if (!query.trim() || isDropdownVisible) {
       return;
     }
 
-    searchStore.setQuery(this.state.query);
+    searchStore.setQuery(query);
     addonStore.setAddonPanel("Search Results");
     addonStore.toggleAddons(true);
   };
@@ -57,7 +64,7 @@ class SearchInput extends Component {
   };
 
   onSelect = value => {
-    this.replaceCurrentWord(`${this.state.keyword}${value}`);
+    this.replaceCurrentWord(`${this.state.keyword}${value} `);
   };
 
   onSelectKeyword = value => {
@@ -92,6 +99,7 @@ class SearchInput extends Component {
       {
         isDropdownVisible: false,
         isDatepickerVisible: false,
+        currentWord: "",
         query
       },
       () => {
@@ -120,14 +128,25 @@ class SearchInput extends Component {
 
     const result = this.props.searchStore.checkWord(word);
 
-    this.setState({
+    const newState = {
       items: [],
       dateChunk: "",
       currentWord: word,
       isDropdownVisible: false,
       isDatepickerVisible: false,
+      isKeywordDropdownVisible: true,
       ...result
-    });
+    };
+
+    if (
+      newState.items &&
+      !newState.items.length &&
+      newState.isDropdownVisible
+    ) {
+      newState.isDropdownVisible = false;
+    }
+
+    this.setState(newState);
   };
 
   clearSearch = event => {
@@ -146,10 +165,15 @@ class SearchInput extends Component {
       items,
       isDropdownVisible,
       isDatepickerVisible,
+      isKeywordDropdownVisible,
       hasFocus,
       currentWord,
       dateChunk
     } = this.state;
+
+    const menuItems =
+      items &&
+      items.sort((a, b) => (a.orderKey > b.orderKey ? 1 : -1)).slice(0, 10);
 
     return (
       <Form onSubmit={this.onSearch} className="search-input-form">
@@ -174,10 +198,7 @@ class SearchInput extends Component {
           </a>
         )}
         {isDropdownVisible && (
-          <SearchInputDropdown
-            items={items ? items.slice(0, 10) : null}
-            onSelect={this.onSelect}
-          />
+          <SearchInputDropdown items={menuItems} onSelect={this.onSelect} />
         )}
         {isDatepickerVisible && (
           <SearchInputDatepicker
@@ -188,8 +209,11 @@ class SearchInput extends Component {
         {!isDropdownVisible &&
           !isDatepickerVisible &&
           hasFocus &&
-          !currentWord && (
-            <SearchInputKeywords onSelect={this.onSelectKeyword} />
+          isKeywordDropdownVisible && (
+            <SearchInputKeywords
+              onSelect={this.onSelectKeyword}
+              filter={currentWord}
+            />
           )}
       </Form>
     );

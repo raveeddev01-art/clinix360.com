@@ -23,6 +23,8 @@ class SearchInputDatepicker extends Component {
     this.props.onSelect(selectedMoment.format("MM/DD/YYYY"));
   };
 
+  isFutureDate = date => moment().isAfter(date);
+
   render() {
     const { dateChunk } = this.props;
 
@@ -34,6 +36,7 @@ class SearchInputDatepicker extends Component {
           input={false}
           timeFormat={false}
           onChange={this.handleChange}
+          isValidDate={this.isFutureDate}
           viewDate={this.getViewDate(dateChunk)}
         />
       </div>
