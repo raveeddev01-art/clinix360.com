@@ -58,6 +58,9 @@ class MessageContent extends Component {
 
   render() {
     const { inSearch, message } = this.props;
+    const textContent = inSearch
+      ? message.highlighted_text_content || message.text_content
+      : message.text_content;
 
     return (
       <div
@@ -69,7 +72,7 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
-            messageTextToComponents(message.text_content || "", { inSearch })
+            messageTextToComponents(textContent || "", { inSearch })
           )}
 
           {this.renderLinkPreviews()}

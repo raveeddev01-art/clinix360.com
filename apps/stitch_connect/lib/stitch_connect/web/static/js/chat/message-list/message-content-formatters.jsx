@@ -33,6 +33,7 @@ import messageTextToComponents from "./message-text-to-components";
 const emojiRegex = REGEX.getEmoji();
 const userMentionRegex = REGEX.getUserMentionDecode();
 const groupMentionRegex = REGEX.getGroupMentionDecode();
+const searchDelimiter = "%&$&%";
 
 // ============================
 // ============================
@@ -286,10 +287,10 @@ const searchHighlight = {
       </span>
     );
   },
-  getWrappedContent: getStringBetweenOccurances("%&$&%"),
-  getContentOffset: lengthTilSecondOccurance("%&$&%"),
+  getWrappedContent: getStringBetweenOccurances(searchDelimiter),
+  getContentOffset: lengthTilSecondOccurance(searchDelimiter),
   isMatch: (content, opts) => {
-    return opts.inSearch && startsWithAndHasAnother("%&$&%", content);
+    return opts.inSearch && startsWithAndHasAnother(searchDelimiter, content);
   }
 };
 
