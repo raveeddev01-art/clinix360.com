@@ -215,7 +215,7 @@ const blockQuote = {
   getNode: (parsedContent, i) => (
     <blockquote key={i}>
       {" "}
-      {renderNestedContent(parsedContent.trim())}{" "}
+      {renderNestedContent(parsedContent.trimRight())}{" "}
     </blockquote>
   ),
   getWrappedContent: content => getContentUntilNewline(content).slice(1),
