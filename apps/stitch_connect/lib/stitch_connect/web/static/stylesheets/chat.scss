@@ -770,6 +770,10 @@
     position: relative;
     padding: 2px 40px 3px 0;
 
+    .message-body-search-highlight {
+      background: #ffcba4;
+    }
+
     .message-body-highlight {
       background: #f0f0f0;
       color: $brand-primary;

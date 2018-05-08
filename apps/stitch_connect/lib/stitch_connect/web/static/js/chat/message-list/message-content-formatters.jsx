@@ -277,6 +277,19 @@ const groupMention = {
   isMatch: matchesAndStartsWithRegex(groupMentionRegex)
 };
 
+const searchHighlight = {
+  getNode: (parsedContent, i) => {
+    return (
+      <span key={i} className="message-body-search-highlight">
+        {parsedContent}
+      </span>
+    );
+  },
+  getWrappedContent: getStringBetweenOccurances("%&$&%"),
+  getContentOffset: lengthTilSecondOccurance("%&$&%"),
+  isMatch: content => startsWithAndHasAnother("%&$&%", content)
+};
+
 // ===============
 // ===============
 // MAKE FORMATTERS
@@ -308,7 +321,8 @@ const potentialFormatterChars = new Set([
   "\n",
   ">",
   "<",
-  ":"
+  ":",
+  "%"
 ]);
 export const potentialFormatterMatch = char => {
   return potentialFormatterChars.has(char);
@@ -322,7 +336,8 @@ export const nestableFormatters = [
   emoji,
   userMention,
   groupMention,
-  newline
+  newline,
+  searchHighlight
 ].map(makeFormatter);
 
 // note: multilines must precede single-line versions
