@@ -9,6 +9,7 @@ import { confirmModal } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
 import TypingUsers from "./components/typing-users";
+import FormattingGuide from "./components/formatting-guide";
 import JumpingIndicator from "./components/jumping-indicator";
 import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
@@ -370,6 +371,13 @@ class MessageForm extends Component {
 
         {this.renderInput()}
 
+        {this.state.text &&
+          this.state.text.length < 4000 && <FormattingGuide />}
+        {this.state.text.length > 3999 && (
+          <div className="character-limit">
+            You have reached the 4000 character limit per message.
+          </div>
+        )}
         <TypingUsers />
         <EditingCommand />
       </div>
