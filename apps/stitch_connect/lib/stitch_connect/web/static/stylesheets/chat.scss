@@ -896,6 +896,11 @@
           display: block;
           word-wrap: break-word;
 
+          blockquote {
+            margin: 0px;
+            padding: 5px;
+          }
+
           b, i, s {
             display: inline-block;
           }

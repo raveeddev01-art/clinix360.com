@@ -201,7 +201,7 @@ const multilineBlockquote = {
   getContentOffset: content => content.length,
   isMatch: (content, opts) => {
     return (
-      opts.isFirstChar && content.startsWith(">>>") && !!content.slice(3).trim()
+      opts.startOfLine && content.startsWith(">>>") && !!content.slice(3).trim()
     );
   }
 };
@@ -212,10 +212,10 @@ const blockQuote = {
   ),
   getWrappedContent: content => getContentUntilNewline(content).slice(1),
   getContentOffset: content => {
-    return getContentUntilNewline(content).length;
+    return getContentUntilNewline(content).length + 1;
   },
   isMatch: (content, opts) =>
-    opts.isFirstChar &&
+    opts.startOfLine &&
     content.startsWith(">") &&
     getContentUntilNewline(content)
       .slice(1)

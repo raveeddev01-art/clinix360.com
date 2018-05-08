@@ -57,10 +57,12 @@ const getNodeList = (messageContent, opts) => {
   while (currentIndex < messageContent.length) {
     atEnd = currentIndex === messageContent.length - 1;
     remainingMessageContent = messageContent.slice(currentIndex);
+    const startOfLine =
+      currentIndex === 0 || messageContent[currentIndex - 1] === "\n";
 
     const matchingFormatter = getMatchingFormatter(
       remainingMessageContent,
-      Object.assign({}, opts, { isFirstChar: currentIndex === 0 })
+      Object.assign({}, opts, { startOfLine })
     );
 
     if (atEnd) {
@@ -89,8 +91,7 @@ const getNodeList = (messageContent, opts) => {
         contentOffset
       ] = matchingFormatter.parseContent(
         remainingMessageContent,
-        // TODO: make this nicer
-        currentIndex + 5000,
+        currentIndex,
         opts
       );
 
