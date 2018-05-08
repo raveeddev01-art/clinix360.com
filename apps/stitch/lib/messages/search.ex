@@ -212,7 +212,7 @@ defmodule Stitch.Messages.Search do
   def apply_search_terms(query, []), do: query
 
   def apply_search_terms(query, search_terms) do
-    term = Enum.join(search_terms)
+    term = Enum.join(search_terms, " | ")
 
     from(
       m in query,
@@ -239,7 +239,7 @@ defmodule Stitch.Messages.Search do
   end
 
   def parameterize(term_string) do
-    parts = String.split(term_string, " ")
+    parts = term_string |> String.trim() |> String.split(" ")
 
     params = %{
       search_terms: [],
