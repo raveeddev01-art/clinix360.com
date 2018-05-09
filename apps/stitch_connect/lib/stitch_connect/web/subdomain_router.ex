@@ -151,6 +151,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post("/groups/multi_dm", GroupController, :create_multi_dm)
     post("/groups/search", GroupController, :search)
     post("/groups/:id/invite/", GroupController, :invite)
+    post("/groups/:id/remove_users", GroupController, :remove_users)
     post("/groups/:id/toggle-favorite", GroupController, :toggle_favorite)
     post("/groups/:id/toggle-public", GroupController, :toggle_public)
     post("/groups/:id/join", GroupController, :join)
