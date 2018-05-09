@@ -161,10 +161,6 @@ defmodule Stitch.Messages.Search do
           {Timex.beginning_of_day(d), Timex.end_of_day(d)}
       end
 
-    # def apply_date_on_terms(query, date_on_terms, user) do
-    # date_string = List.first(date_on_terms) |> String.split(":") |> List.last()
-    # date = parse_date_string(date_string, user)
-
     from(
       m in query,
       where: m.inserted_at >= ^start_date,
