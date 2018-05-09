@@ -3,16 +3,26 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 
-@inject("groupsStore")
+@inject("groupsStore", "presenceStore")
 @observer
 class SearchInputDropdownRoom extends Component {
   render() {
-    const { itemId, isActive, onMouseEnter, onSelectItem, groupsStore } = this.props;
+    const {
+      itemId,
+      isActive,
+      onMouseEnter,
+      onSelectItem,
+      groupsStore,
+      presenceStore
+    } = this.props;
     const group = groupsStore.getGroupById(itemId);
 
     if (!group) {
       return null;
     }
+
+    const otherUser = group.users.find(user => user.id !== currentUser.id);
+    const online = !otherUser || presenceStore.isOnline(otherUser.id);
 
     const itemClassName = cx("search-input-dropdown-item", {
       active: isActive
@@ -28,6 +38,8 @@ class SearchInputDropdownRoom extends Component {
           <i
             className={cx("fa", {
               "fa-link": group.type === "multi_dm",
+              "fa-circle": group.type === "dm" && online,
+              "fa-circle-o": group.type === "dm" && !online,
               "fa-comments": group.type === "regular" && group.public,
               "fa-lock": group.type === "regular" && !group.public
             })}

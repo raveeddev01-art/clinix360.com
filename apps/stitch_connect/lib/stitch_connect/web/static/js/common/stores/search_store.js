@@ -80,19 +80,18 @@ class SearchStore {
       const items = groupsStore.groups
         .filter(group => {
           let slug = group.slug;
-          if (group.type === "dm") {
-            return false;
-          }
-
-          if (group.type === "multi_dm") {
+          if (group.type === "dm" || group.type === "multi_dm") {
             if (groupTypeIndicator !== "@") {
               return false;
             }
 
-            slug = groupsStore.getMultiDMNameWithUsernames(group);
+            slug = groupsStore.getDMNameWithUsernames(group);
           }
 
-          if (group.type === "regular" && groupTypeIndicator === "@") {
+          if (
+            group.type === "regular" &&
+            (groupTypeIndicator && groupTypeIndicator !== "#")
+          ) {
             return false;
           }
 
@@ -100,15 +99,16 @@ class SearchStore {
           return slug.indexOf(query) > -1;
         })
         .map(group => {
-          const groupName = groupsStore.getMultiDMNameWithUsernames(group);
+          const groupName = groupsStore.getDMNameWithUsernames(group);
 
           return {
             id: group.id,
             type: "group",
-            orderKey: (group.type === "multi_dm" ? groupName : group.name)
-              .toLowerCase,
-            value:
-              group.type === "multi_dm" ? `@${groupName}` : `#${group.slug}`
+            orderKey: (group.type === "regular"
+              ? group.name
+              : groupName
+            ).toLowerCase(),
+            value: group.type === "regular" ? `#${group.slug}` : `@${groupName}`
           };
         });
 

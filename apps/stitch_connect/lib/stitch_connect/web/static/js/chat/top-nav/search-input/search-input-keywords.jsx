@@ -11,17 +11,16 @@ const KEYWORD_GROUPS = [
       { value: "to:", description: "team member" },
       {
         value: "in:",
-        description: "a room or multi user direct message"
+        description: "room or direct message"
       }
     ]
   },
   {
     header: "Time",
     items: [
-      { value: "before:", description: "a date" },
-      { value: "after:", description: "a date" },
-      { value: "during:", description: "a date" },
-      { value: "on:", description: "a date" }
+      { value: "before:", description: "date" },
+      { value: "after:", description: "date" },
+      { value: "on:", description: "date" }
     ]
   }
 ];
@@ -121,7 +120,7 @@ class SearchInputKeyword extends Component {
     return (
       <div className="search-input-menu open">
         <ul className="dropdown-menu" onMouseLeave={this.onInactive}>
-          <div className="menu-header">Select a modifier</div>
+          <div className="menu-header">Modifiers</div>
           <div className="menu-content has-header">
             {KEYWORD_GROUPS.map((keywordGroup, i) => {
               const renderedItems = keywordGroup.items
@@ -138,6 +137,7 @@ class SearchInputKeyword extends Component {
                       onMouseDown={this.onSelectItem(item.value)}
                     >
                       <span className="item-text">
+                        <i className="fa fa-search" />
                         <span className="username">{item.value}</span>
                         <span className="text-muted">{item.description}</span>
                       </span>

@@ -199,7 +199,11 @@ class GroupsStore {
       .join(", ");
   };
 
-  getMultiDMNameWithUsernames = group => {
+  getDMNameWithUsernames = group => {
+    if (group.users.length === 1) {
+      return group.users[0].username;
+    }
+
     return group.users
       .filter(u => u.id !== currentUser.id)
       .map(u => u.username)
