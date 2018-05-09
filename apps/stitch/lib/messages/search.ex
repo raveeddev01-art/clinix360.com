@@ -149,16 +149,22 @@ defmodule Stitch.Messages.Search do
     {start_date, end_date} =
       case String.length(date_string) do
         4 ->
-          d = date_string |> Timex.parse!("{YYYY}") |> convert_to_user_timezone(user)
-          {Timex.beginning_of_year(d), Timex.end_of_year(d)}
+          d = date_string |> Timex.parse!("{YYYY}")
+
+          {Timex.beginning_of_year(d) |> convert_to_user_timezone(user),
+           Timex.end_of_year(d) |> convert_to_user_timezone(user)}
 
         7 ->
-          d = date_string |> Timex.parse!("{0M}/{YYYY}") |> convert_to_user_timezone(user)
-          {Timex.beginning_of_month(d), Timex.end_of_month(d)}
+          d = date_string |> Timex.parse!("{0M}/{YYYY}")
+
+          {Timex.beginning_of_month(d) |> convert_to_user_timezone(user),
+           Timex.end_of_month(d) |> convert_to_user_timezone(user)}
 
         _ ->
-          d = date_string |> Timex.parse!("{0M}/{D}/{YYYY}") |> convert_to_user_timezone(user)
-          {Timex.beginning_of_day(d), Timex.end_of_day(d)}
+          d = date_string |> Timex.parse!("{0M}/{D}/{YYYY}")
+
+          {Timex.beginning_of_day(d) |> convert_to_user_timezone(user),
+           Timex.end_of_day(d) |> convert_to_user_timezone(user)}
       end
 
     from(
@@ -313,7 +319,11 @@ defmodule Stitch.Messages.Search do
   end
 
   defp convert_to_user_timezone(datetime, user) do
+    %{year: year, month: month, day: day, hour: hour, minute: minute, second: second} = datetime
     timezone = user.timezone["tz"] || "Etc/UTC"
-    Timex.Timezone.convert(datetime, timezone)
+
+    {{year, month, day}, {hour, minute, second}}
+    |> Timex.to_datetime(timezone)
+    |> Timex.Timezone.convert("Etc/UTC")
   end
 end
