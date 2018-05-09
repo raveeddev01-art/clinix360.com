@@ -37,9 +37,9 @@ defmodule Stitch.Messages.Search do
 
     messages =
       from_users_groups(user.id, options)
-      |> apply_date_before_terms(params[:date_before_terms])
-      |> apply_date_after_terms(params[:date_after_terms])
-      |> apply_date_on_terms(params[:date_on_terms])
+      |> apply_date_before_terms(params[:date_before_terms], user)
+      |> apply_date_after_terms(params[:date_after_terms], user)
+      |> apply_date_on_terms(params[:date_on_terms], user)
       |> apply_search_terms(params[:search_terms])
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
@@ -112,12 +112,12 @@ defmodule Stitch.Messages.Search do
     )
   end
 
-  def apply_date_before_terms(query, []), do: query
+  def apply_date_before_terms(query, [], _user), do: query
 
-  def apply_date_before_terms(query, date_before_terms) do
+  def apply_date_before_terms(query, date_before_terms, user) do
     Enum.reduce(date_before_terms, query, fn term, query ->
       date_string = String.split(term, ":") |> List.last()
-      date = Timex.parse!(date_string, "{0M}/{D}/{YYYY}")
+      date = parse_date_string(date_string, user)
 
       from(
         m in query,
@@ -126,12 +126,12 @@ defmodule Stitch.Messages.Search do
     end)
   end
 
-  def apply_date_after_terms(query, []), do: query
+  def apply_date_after_terms(query, [], _user), do: query
 
-  def apply_date_after_terms(query, date_after_terms) do
+  def apply_date_after_terms(query, date_after_terms, user) do
     Enum.reduce(date_after_terms, query, fn term, query ->
       date_string = String.split(term, ":") |> List.last()
-      date = Timex.parse!(date_string, "{0M}/{D}/{YYYY}")
+      date = parse_date_string(date_string, user)
 
       from(
         m in query,
@@ -140,26 +140,30 @@ defmodule Stitch.Messages.Search do
     end)
   end
 
-  def apply_date_on_terms(query, []), do: query
+  def apply_date_on_terms(query, [], _user), do: query
 
-  def apply_date_on_terms(query, date_on_terms) do
+  def apply_date_on_terms(query, date_on_terms, user) do
     # Even if multiple on's are passed in, we only apply the first one.
     date_string = List.first(date_on_terms) |> String.split(":") |> List.last()
 
     {start_date, end_date} =
       case String.length(date_string) do
         4 ->
-          d = Timex.parse!(date_string, "{YYYY}")
+          d = date_string |> Timex.parse!("{YYYY}") |> convert_to_user_timezone(user)
           {Timex.beginning_of_year(d), Timex.end_of_year(d)}
 
         7 ->
-          d = Timex.parse!(date_string, "{0M}/{YYYY}")
+          d = date_string |> Timex.parse!("{0M}/{YYYY}") |> convert_to_user_timezone(user)
           {Timex.beginning_of_month(d), Timex.end_of_month(d)}
 
         _ ->
-          d = Timex.parse!(date_string, "{0M}/{D}/{YYYY}")
+          d = date_string |> Timex.parse!("{0M}/{D}/{YYYY}") |> convert_to_user_timezone(user)
           {Timex.beginning_of_day(d), Timex.end_of_day(d)}
       end
+
+    # def apply_date_on_terms(query, date_on_terms, user) do
+    # date_string = List.first(date_on_terms) |> String.split(":") |> List.last()
+    # date = parse_date_string(date_string, user)
 
     from(
       m in query,
@@ -304,5 +308,16 @@ defmodule Stitch.Messages.Search do
           Map.update!(params, :search_terms, fn ps -> [p | ps] end)
       end
     end)
+  end
+
+  defp parse_date_string(string, user) do
+    string
+    |> Timex.parse!("{0M}/{D}/{YYYY}")
+    |> convert_to_user_timezone(user)
+  end
+
+  defp convert_to_user_timezone(datetime, user) do
+    timezone = user.timezone["tz"] || "Etc/UTC"
+    Timex.Timezone.convert(datetime, timezone)
   end
 end
