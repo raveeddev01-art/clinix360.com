@@ -29,7 +29,8 @@ defmodule Stitch.Messages.Search do
   # before:3/30/2018
   # after:3/30/2018
   # on:3/30/2018
-  # during: 3/30/2018
+  # on:2018
+  # on:03/2018
 
   def search(user, term_string, options \\ []) do
     params = parameterize(term_string)
@@ -142,13 +143,28 @@ defmodule Stitch.Messages.Search do
   def apply_date_on_terms(query, []), do: query
 
   def apply_date_on_terms(query, date_on_terms) do
+    # Even if multiple on's are passed in, we only apply the first one.
     date_string = List.first(date_on_terms) |> String.split(":") |> List.last()
-    date = Timex.parse!(date_string, "{0M}/{D}/{YYYY}")
+
+    {start_date, end_date} =
+      case String.length(date_string) do
+        4 ->
+          d = Timex.parse!(date_string, "{YYYY}")
+          {Timex.beginning_of_year(d), Timex.end_of_year(d)}
+
+        7 ->
+          d = Timex.parse!(date_string, "{0M}/{YYYY}")
+          {Timex.beginning_of_month(d), Timex.end_of_month(d)}
+
+        _ ->
+          d = Timex.parse!(date_string, "{0M}/{D}/{YYYY}")
+          {Timex.beginning_of_day(d), Timex.end_of_day(d)}
+      end
 
     from(
       m in query,
-      where: m.inserted_at >= ^Timex.beginning_of_day(date),
-      where: m.inserted_at <= ^Timex.end_of_day(date)
+      where: m.inserted_at >= ^start_date,
+      where: m.inserted_at <= ^end_date
     )
   end
 
@@ -252,8 +268,7 @@ defmodule Stitch.Messages.Search do
       messages_from_terms: [],
       date_before_terms: [],
       date_after_terms: [],
-      date_on_terms: [],
-      date_during_terms: []
+      date_on_terms: []
     }
 
     Enum.reduce(parts, params, fn p, params ->
@@ -284,9 +299,6 @@ defmodule Stitch.Messages.Search do
 
         String.starts_with?(p, "on:") ->
           Map.update!(params, :date_on_terms, fn ps -> [p | ps] end)
-
-        String.starts_with?(p, "during:") ->
-          Map.update!(params, :date_during_terms, fn ps -> [p | ps] end)
 
         true ->
           Map.update!(params, :search_terms, fn ps -> [p | ps] end)
