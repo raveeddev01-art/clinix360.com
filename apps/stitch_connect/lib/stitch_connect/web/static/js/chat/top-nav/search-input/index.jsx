@@ -26,7 +26,9 @@ class SearchInput extends Component {
   }
 
   onSearch = event => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
     const { addonStore, searchStore } = this.props;
     const { query, isDropdownVisible } = this.state;
@@ -64,7 +66,9 @@ class SearchInput extends Component {
   };
 
   onSelect = value => {
-    this.replaceCurrentWord(`${this.state.keyword}${value} `);
+    this.replaceCurrentWord(`${this.state.keyword}${value} `, () => {
+      this.onSearch();
+    });
   };
 
   onSelectKeyword = value => {
@@ -212,6 +216,7 @@ class SearchInput extends Component {
           isKeywordDropdownVisible && (
             <SearchInputKeywords
               onSelect={this.onSelectKeyword}
+              query={query}
               filter={currentWord}
             />
           )}

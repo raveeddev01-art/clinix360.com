@@ -110,10 +110,10 @@ class SearchInputKeyword extends Component {
 
   render() {
     const { activeIndex, isActive } = this.state;
-    const { filter } = this.props;
+    const { filter, query } = this.props;
     const items = this.getItems();
 
-    if (!items.length) {
+    if (!items.length || (query && !filter)) {
       return null;
     }
 
@@ -167,12 +167,14 @@ class SearchInputKeyword extends Component {
 
 SearchInputKeyword.propTypes = {
   onSelect: PropTypes.func.isRequired,
-  filter: PropTypes.string.isRequired
+  filter: PropTypes.string.isRequired,
+  query: PropTypes.string.isRequired
 };
 
 SearchInputKeyword.defaultProps = {
   onSelect: () => undefined,
-  filter: ""
+  filter: "",
+  query: ""
 };
 
 export default SearchInputKeyword;

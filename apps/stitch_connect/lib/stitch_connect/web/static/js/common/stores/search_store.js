@@ -80,12 +80,16 @@ class SearchStore {
       const items = groupsStore.groups
         .filter(group => {
           let slug = group.slug;
+          if (group.hidden) {
+            return false;
+          }
+
           if (group.type === "dm" || group.type === "multi_dm") {
             if (groupTypeIndicator !== "@") {
               return false;
             }
 
-            slug = groupsStore.getDMNameWithUsernames(group);
+            slug = groupsStore.getGroupName(group);
           }
 
           if (
@@ -99,16 +103,19 @@ class SearchStore {
           return slug.indexOf(query) > -1;
         })
         .map(group => {
-          const groupName = groupsStore.getDMNameWithUsernames(group);
-
           return {
             id: group.id,
             type: "group",
-            orderKey: (group.type === "regular"
-              ? group.name
-              : groupName
+            orderKey: (group.users.length === 1 && group.type === "dm"
+              ? ""
+              : group.type === "regular"
+                ? group.name
+                : groupsStore.getGroupName(group).toLowerCase()
             ).toLowerCase(),
-            value: group.type === "regular" ? `#${group.slug}` : `@${groupName}`
+            value:
+              group.type === "regular"
+                ? `#${group.slug}`
+                : `@${groupsStore.getDMNameWithUsernames(group)}`
           };
         });
 
