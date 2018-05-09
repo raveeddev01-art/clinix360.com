@@ -17,7 +17,6 @@ defmodule Stitch.Messages.SearchTest do
   # before:3/30/2018
   # after:3/30/2018
   # on:3/30/2018
-  # during: 3/30/2018
 
   describe "Stitch.Messages.Search.search/3" do
     test "it searches using search terms" do
@@ -148,6 +147,8 @@ defmodule Stitch.Messages.SearchTest do
       insert(:group_user, group: group_a, user: user)
 
       {:ok, target_datetime_a} = NaiveDateTime.new(2018, 1, 1, 0, 0, 0)
+      {:ok, target_datetime_b} = NaiveDateTime.new(2018, 1, 15, 0, 0, 0)
+      {:ok, target_datetime_c} = NaiveDateTime.new(2018, 12, 1, 0, 0, 0)
 
       message_a =
         insert(
@@ -163,19 +164,27 @@ defmodule Stitch.Messages.SearchTest do
           :message,
           user: user,
           group: group_a,
-          text_content: "examples are for docy",
-          inserted_at: target_datetime_a
+          text_content: "examples are for docsx",
+          inserted_at: target_datetime_b
         )
 
-      insert(
-        :message,
-        user: user,
-        group: group_a,
-        text_content: "examples are for docsz"
-      )
+      message_c =
+        insert(
+          :message,
+          user: user,
+          group: group_a,
+          text_content: "examples are for docsz",
+          inserted_at: target_datetime_c
+        )
 
       assert ids(Search.search(user, "example on:01/01/2018")) |> Enum.sort() ==
+               ids([message_a]) |> Enum.sort()
+
+      assert ids(Search.search(user, "example on:01/2018")) |> Enum.sort() ==
                ids([message_b, message_a]) |> Enum.sort()
+
+      assert ids(Search.search(user, "example on:2018")) |> Enum.sort() ==
+               ids([message_c, message_b, message_a]) |> Enum.sort()
     end
   end
 
