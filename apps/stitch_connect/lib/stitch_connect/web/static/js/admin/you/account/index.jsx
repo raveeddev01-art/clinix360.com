@@ -6,6 +6,7 @@ import UsernamePanel from "./username-panel";
 import EmailPanel from "./email-panel";
 import PasswordPanel from "./password-panel";
 import PINPanel from "./pin-panel";
+import TimezonePanel from "./timezone-panel";
 import DeactivatePanel from "./deactivate-panel";
 
 @inject("userStore", "titleStore", "adminPanelStore")
@@ -80,6 +81,11 @@ class AccountSettings extends Component {
             hideAlert={this.hideAlert}
           />
           <PINPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          <TimezonePanel
             onSuccess={this.onSuccess}
             onError={this.onError}
             hideAlert={this.hideAlert}
