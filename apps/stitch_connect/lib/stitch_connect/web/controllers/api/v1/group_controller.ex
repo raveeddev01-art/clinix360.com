@@ -26,12 +26,15 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     include_user_ids? = get_include_user_ids(params)
 
     groups = GroupQueries.available_groups(user, include_user_ids?)
-    render(conn, "index.json", [
+
+    render(
+      conn,
+      "index.json",
       groups: groups,
       user_id: user.id,
       fetch_users: fetch_users?,
       include_user_ids: include_user_ids?
-    ])
+    )
   end
 
   def show(conn, %{"id" => group_id} = params) do
@@ -355,6 +358,23 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         GroupChannel.broadcast_members_update(group, removed_users, added_users)
 
         conn |> json(%{message: "Users invited to room."})
+    end
+  end
+
+  def remove_users(conn, %{"id" => group_id, "user_ids" => user_ids_to_remove}) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_remove_users?(group, conn.assigns.current_user) do
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not authorized to remove users from this room."})
+
+      true ->
+        {:ok, {removed_users, added_users}} = Group.remove_users_by_id(group, user_ids_to_remove)
+        GroupChannel.broadcast_members_update(group, removed_users, added_users)
+
+        conn |> json(%{message: "Users removed from room."})
     end
   end
 

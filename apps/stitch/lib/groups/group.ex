@@ -86,12 +86,14 @@ defmodule Stitch.Group do
 
   # Ensure users are part of team and format them for `cast_assoc`
   defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, false) do
-    query = base_non_guest_group_user_query(user_ids, team_id, creator_id)
+    user_ids = [creator_id | user_ids]
+    query = base_non_guest_group_user_query(user_ids, team_id)
     do_add_users(query, attrs)
   end
 
   defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, true) do
-    query = base_group_user_query(user_ids, team_id, creator_id)
+    user_ids = [creator_id | user_ids]
+    query = base_group_user_query(user_ids, team_id)
     do_add_users(query, attrs)
   end
 
@@ -106,27 +108,25 @@ defmodule Stitch.Group do
     Map.put(attrs, "group_users", group_users)
   end
 
-  defp base_non_guest_group_user_query(user_ids, team_id, creator_id) do
+  defp base_non_guest_group_user_query(user_ids, team_id) do
     from(
-      u in base_non_guest_users_query(user_ids, team_id, creator_id),
+      u in base_non_guest_users_query(user_ids, team_id),
       select: %{id: u.id, user_id: u.id}
     )
   end
 
-  defp base_group_user_query(user_ids, team_id, creator_id) do
-    from(u in base_users_query(user_ids, team_id, creator_id), select: %{id: u.id, user_id: u.id})
+  defp base_group_user_query(user_ids, team_id) do
+    from(u in base_users_query(user_ids, team_id), select: %{id: u.id, user_id: u.id})
   end
 
-  defp base_non_guest_users_query(user_ids, team_id, creator_id) do
+  defp base_non_guest_users_query(user_ids, team_id) do
     from(
-      u in base_users_query(user_ids, team_id, creator_id),
+      u in base_users_query(user_ids, team_id),
       where: not fragment("? && ?", ^@guest_roles, u.roles)
     )
   end
 
-  defp base_users_query(user_ids, team_id, creator_id) do
-    user_ids = [creator_id | user_ids]
-
+  defp base_users_query(user_ids, team_id) do
     from(
       u in User,
       where: u.team_id == ^team_id,
@@ -444,11 +444,11 @@ defmodule Stitch.Group do
     {:error, "Can't update members in a direct message room"}
   end
 
-  def update_users(%Group{creator_user_id: creator_id, team_id: team_id} = group, user_ids) do
+  def update_users(%Group{team_id: team_id} = group, user_ids) do
     group = Repo.preload(group, group_users: :user)
     current_members = group.group_users
 
-    query = base_non_guest_users_query(user_ids, team_id, creator_id)
+    query = base_non_guest_users_query(user_ids, team_id)
     target_users = Repo.all(query)
 
     {removed_users, added_users, final_group_memberships} =
@@ -463,6 +463,22 @@ defmodule Stitch.Group do
     else
       any -> any
     end
+  end
+
+  @doc """
+  Removes users from group given a list of ids.
+  Guests and room creator are excluded from removal.
+  """
+  @spec remove_users_by_id(Group.t(), [user_id :: pos_integer]) ::
+          {:ok, membership_changes} | {:error, Ecto.Changeset.t()}
+  def remove_users_by_id(%Group{} = group, user_ids_to_remove) do
+    # don't need the users info yet, but will call this in update_users
+    # so just call here, to not make another db call
+    group = Repo.preload(group, group_users: :user)
+    current_group_user_ids = Enum.map(group.group_users, & &1.user_id)
+    new_group_user_ids = current_group_user_ids -- user_ids_to_remove
+
+    update_users(group, new_group_user_ids)
   end
 
   defp do_calculate_membership_diff(%{user: %{roles: [role]}} = group_user, {remove, add, target})

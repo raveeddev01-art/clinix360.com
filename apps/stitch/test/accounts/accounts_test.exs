@@ -19,7 +19,9 @@ defmodule Stitch.AccountsTest do
     end
 
     test "returns error when given email domain is prohibited" do
-      {:error, %Ecto.Changeset{} = changeset} = Accounts.create_user_with_email_only("furqan@sina.com")
+      {:error, %Ecto.Changeset{} = changeset} =
+        Accounts.create_user_with_email_only("furqan@sina.com")
+
       assert changeset.errors == [email: {"host %{host} is not supported", [host: "sina.com"]}]
     end
   end
@@ -28,6 +30,7 @@ defmodule Stitch.AccountsTest do
     test "it onboards the user, sets his roles and creates his self DM" do
       team = insert(:team)
       user = insert(:user, %{email: "sergio@email.com", onboarded: false})
+
       attrs = %{
         "fullname" => "Sergio Tapia",
         "first_name" => "Sergio",
@@ -43,20 +46,22 @@ defmodule Stitch.AccountsTest do
       user = Accounts.update_and_complete_user_onboarding(user.id, attrs)
       assert user.team_id == team.id
       assert user.roles == ["admin"]
-      assert Stitch.Repo.get_by Stitch.Group, %{
-        name: "__dm_group__",
-        slug: "__dm:#{user.id}.#{user.id}"
-      }
+
+      assert Stitch.Repo.get_by(Stitch.Group, %{
+               name: "__dm_group__",
+               slug: "__dm:#{user.id}.#{user.id}"
+             })
     end
   end
 
   describe "Accounts.delete_profile_image/1" do
     test "It should set the avatar image to some random default one" do
-      image = "https://localhost.test:4443/images/some-avatar.png"
+      _image = "https://localhost.test:4443/images/some-avatar.png"
 
       # user = insert(:user, %{profile_image_url: image, profile_image_thumb_url: image})
       # {:ok, user} = Accounts.delete_profile_image(user.id)
-      assert true # TODO write case
+      # TODO write case
+      assert true
       # assert String.contains?(user.profile_image_url, "default")
       # assert String.contains?(user.profile_image_thumb_url, "default")
     end

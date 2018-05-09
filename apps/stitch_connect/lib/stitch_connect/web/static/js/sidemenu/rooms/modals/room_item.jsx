@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
-import classNames from "classnames";
 
 @inject("groupsStore")
 class RoomItem extends Component {
@@ -25,17 +24,10 @@ class RoomItem extends Component {
           </div>
 
           <div className="member-count text-muted">
-            <i
-              className={classNames(
-                "fa",
-                room.user_count > 1 ? "fa-users" : "fa-user"
-              )}
-            />
-            {room.user_count}
+            <i className="fa fa-users" />
+            {room.users.filter(user => !user.disabled).length}
           </div>
         </div>
-
-        <div className="description text-muted">{room.description}</div>
       </div>
     );
   }
