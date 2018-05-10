@@ -49,10 +49,4 @@ class TimezonePanel extends Component {
   }
 }
 
-TimezonePanel.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
-};
-
 export default TimezonePanel;
