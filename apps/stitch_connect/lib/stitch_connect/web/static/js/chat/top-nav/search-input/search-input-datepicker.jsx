@@ -23,13 +23,19 @@ class SearchInputDatepicker extends Component {
     this.props.onSelect(selectedMoment.format("MM/DD/YYYY"));
   };
 
+  handleMouseDown = (e) => {
+    // used not to lose focus on input
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
   isFutureDate = date => moment().isAfter(date);
 
   render() {
     const { dateChunk } = this.props;
 
     return (
-      <div className="search-input-menu search-input-menu--datepicker">
+      <div className="search-input-menu search-input-menu--datepicker" onMouseDown={this.handleMouseDown}>
         <div className="menu-header">Time</div>
         <div className="menu-content">
           <DateTime

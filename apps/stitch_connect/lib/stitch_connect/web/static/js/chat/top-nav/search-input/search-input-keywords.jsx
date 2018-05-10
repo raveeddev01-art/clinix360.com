@@ -141,8 +141,10 @@ class SearchInputKeyword extends Component {
                       onMouseEnter={this.onActive(itemIndex)}
                       onMouseDown={this.onSelectItem(item.value)}
                     >
-                      <span className="item-text">
+                      <span className="item-icon">
                         <i className="fa fa-search" />
+                      </span>
+                      <span className="item-text">
                         <span className="username">{item.value}</span>
                         <span className="text-muted">{item.description}</span>
                       </span>

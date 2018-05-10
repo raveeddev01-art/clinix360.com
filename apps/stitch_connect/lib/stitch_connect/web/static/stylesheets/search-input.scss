@@ -55,6 +55,8 @@
   }
 
   .menu-header {
+    color: #036;
+    font-weight: bold;
     padding: 7px 15px;
     background: $body-bg;
     border-bottom: 1px solid $border-color-secondary;
@@ -73,6 +75,9 @@
 
   .dropdown-header {
     padding: 3px 15px;
+    font-size: 14px;
+    color: #707070;
+    font-weight: bold;
   }
 
   .search-input-dropdown-item {
@@ -90,6 +95,7 @@
       margin-right: 8px;
       margin-top: 1px;
       min-width: 15px;
+      text-align: center;
     }
 
     .item-text {
