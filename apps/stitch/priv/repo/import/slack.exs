@@ -34,11 +34,25 @@ defmodule Stitch.Import.Slack do
     {:ok, groups}
   end
 
+  def parse_users(path) do
+    Path.join(path, "users.json")
+    |> File.read!()
+    |> Poison.decode!()
+    |> Enum.each(fn user ->
+      # TODO: Use real team
+      team = Stitch.Repo.all(Stitch.Team) |> List.first()
+      Stitch.Import.Slack.UserImport.parse_json(team, user)
+    end)
+  end
+
   def run do
     IO.puts("Begin import for team: #{@team_name}")
     {:ok, folder_path} = download_and_unzip()
 
     IO.puts("Creating Team")
+
+    IO.puts("Creating Users")
+    parse_users(folder_path)
 
     IO.puts("Creating Groups")
     {:ok, groups} = parse_groups(folder_path)

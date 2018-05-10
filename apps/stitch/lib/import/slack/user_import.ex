@@ -55,7 +55,8 @@ defmodule Stitch.Import.Slack.UserImport do
   end
 
   def get_first_name(user_json) do
-    first_name = get_in(user_json, ["profile", "first_name"]) |> String.trim()
+    first_name = get_in(user_json, ["profile", "first_name"])
+    first_name = first_name && first_name |> String.trim()
 
     if first_name == "" do
       String.split(get_in(user_json, ["profile", "real_name"])) |> List.first() ||
@@ -67,7 +68,8 @@ defmodule Stitch.Import.Slack.UserImport do
   end
 
   def get_last_name(user_json) do
-    last_name = get_in(user_json, ["profile", "last_name"]) |> String.trim()
+    last_name = get_in(user_json, ["profile", "last_name"])
+    last_name = last_name && last_name |> String.trim()
 
     if last_name == "" do
       String.split(get_in(user_json, ["profile", "real_name"])) |> List.last() ||
