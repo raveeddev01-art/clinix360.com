@@ -101,4 +101,24 @@ defmodule Stitch.Import.Slack.UserImport do
   def get_phone_number(user_json) do
     get_in(user_json, ["profile", "phone"])
   end
+
+  def generate_default_avatars(team) do
+    users = Stitch.TeamQueries.list_users(team)
+
+    Enum.each(users, fn user ->
+      with {:ok, avatar} <- Stitch.Accounts.ProfileImage.pick_default_random(user),
+           {:ok, avatar_thumb} <- Stitch.Accounts.ProfileImage.create_thumb(avatar) do
+        Stitch.Repo.update(
+          Ecto.Changeset.change(
+            user,
+            profile_image_url: avatar,
+            profile_image_thumb_url: avatar_thumb
+          )
+        )
+      else
+        error ->
+          IO.puts("[#{__MODULE__}] #{inspect(error)}")
+      end
+    end)
+  end
 end
