@@ -88,6 +88,11 @@ class GroupsStore {
   }
 
   @computed
+  get allDMGroups() {
+    return this.visibleGroups.filter(group => group.type !== "regular");
+  }
+
+  @computed
   get nonFavoritedRegularGroups() {
     return this.regularGroups.filter(group => !group.is_favorite);
   }

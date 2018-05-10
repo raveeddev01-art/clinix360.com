@@ -17,6 +17,7 @@ class SearchInput extends Component {
       isDropdownVisible: false,
       isDatepickerVisible: false,
       isKeywordDropdownVisible: false,
+      dropdownTitle: "",
       items: [],
       keyword: "",
       currentWord: "",
@@ -121,10 +122,14 @@ class SearchInput extends Component {
 
   handleFocus = () => {
     this.setState({ hasFocus: true });
+    clearTimeout(this.blurTimeout);
   };
 
   handleBlur = () => {
-    this.setState({ hasFocus: false });
+    // delays render after click event
+    this.blurTimeout = setTimeout(() => {
+      this.setState({ hasFocus: false });
+    }, 200);
   };
 
   checkCursor = () => {
@@ -170,14 +175,14 @@ class SearchInput extends Component {
       isDropdownVisible,
       isDatepickerVisible,
       isKeywordDropdownVisible,
+      dropdownTitle,
       hasFocus,
       currentWord,
       dateChunk
     } = this.state;
 
     const menuItems =
-      items &&
-      items.sort((a, b) => (a.orderKey > b.orderKey ? 1 : -1)).slice(0, 10);
+      items && items.sort((a, b) => (a.orderKey > b.orderKey ? 1 : -1));
 
     return (
       <Form onSubmit={this.onSearch} className="search-input-form">
@@ -201,15 +206,21 @@ class SearchInput extends Component {
             <i className="fa fa-times-circle-o search-input-icon" />
           </a>
         )}
-        {isDropdownVisible && (
-          <SearchInputDropdown items={menuItems} onSelect={this.onSelect} />
-        )}
-        {isDatepickerVisible && (
-          <SearchInputDatepicker
-            dateChunk={dateChunk}
-            onSelect={this.onSelect}
-          />
-        )}
+        {isDropdownVisible &&
+          hasFocus && (
+            <SearchInputDropdown
+              items={menuItems}
+              onSelect={this.onSelect}
+              title={dropdownTitle}
+            />
+          )}
+        {isDatepickerVisible &&
+          hasFocus && (
+            <SearchInputDatepicker
+              dateChunk={dateChunk}
+              onSelect={this.onSelect}
+            />
+          )}
         {!isDropdownVisible &&
           !isDatepickerVisible &&
           hasFocus &&

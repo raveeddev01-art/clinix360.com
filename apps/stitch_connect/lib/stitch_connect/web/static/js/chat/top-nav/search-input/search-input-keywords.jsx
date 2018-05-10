@@ -5,14 +5,19 @@ import flatten from "lodash/flatten";
 
 const KEYWORD_GROUPS = [
   {
-    header: "Conversation",
+    header: "Conversations",
     items: [
-      { value: "from:", description: "team member" },
-      { value: "to:", description: "team member" },
       {
         value: "in:",
         description: "room or direct message"
       }
+    ]
+  },
+  {
+    header: "People",
+    items: [
+      { value: "from:", description: "team member" },
+      { value: "to:", description: "team member" }
     ]
   },
   {
@@ -121,7 +126,7 @@ class SearchInputKeyword extends Component {
       <div className="search-input-menu open">
         <ul className="dropdown-menu" onMouseLeave={this.onInactive}>
           <div className="menu-header">Modifiers</div>
-          <div className="menu-content has-header">
+          <div className="menu-content">
             {KEYWORD_GROUPS.map((keywordGroup, i) => {
               const renderedItems = keywordGroup.items
                 .filter(item => item.value.indexOf(filter) === 0)

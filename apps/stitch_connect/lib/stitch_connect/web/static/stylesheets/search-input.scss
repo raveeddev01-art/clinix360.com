@@ -40,6 +40,15 @@
 .search-input-menu {
   max-width: 300px;
 
+  &--datepicker {
+    position: absolute;
+    z-index: 1;
+    top: calc(100% + 5px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  }
+
   .dropdown-menu {
     width: 100%;
     padding: 0;
@@ -57,12 +66,9 @@
   }
 
   .menu-content {
-    max-height: 312px;
+    max-height: 500px;
     overflow-y: auto;
-
-    &.has-header {
-      padding-top: 30px;
-    }
+    padding-top: 35px;
   }
 
   .dropdown-header {
@@ -83,13 +89,14 @@
       color: $brand-primary;
       margin-right: 8px;
       margin-top: 1px;
-      width: 17px;
+      min-width: 15px;
     }
 
     .item-text {
       flex-grow: 1;
       display: flex;
       align-items: center;
+      overflow: hidden;
 
       .avatar img {
         width: 20px;
@@ -109,6 +116,10 @@
 
         &.username {
           font-weight: 700;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: block;
         }
       }
     }
@@ -122,11 +133,4 @@
       }
     }
   }
-}
-
-.search-input-datepicker {
-  position: absolute;
-  z-index: 1;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }

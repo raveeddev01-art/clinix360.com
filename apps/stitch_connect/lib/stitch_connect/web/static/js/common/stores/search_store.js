@@ -64,6 +64,7 @@ class SearchStore {
       return {
         items,
         keyword: filter[0],
+        dropdownTitle: "People",
         isDropdownVisible: true,
         isDatepickerVisible: false
       };
@@ -84,28 +85,29 @@ class SearchStore {
             return false;
           }
 
-          if (group.type === "dm" || group.type === "multi_dm") {
-            if (groupTypeIndicator !== "@") {
-              return false;
-            }
-
-            slug = groupsStore.getGroupName(group);
-          }
-
           if (
-            group.type === "regular" &&
-            (groupTypeIndicator && groupTypeIndicator !== "#")
+            (group.type === "dm" || group.type === "multi_dm") &&
+            groupTypeIndicator === "#"
           ) {
             return false;
           }
 
-          const query = filter[1].substr(1);
+          if (group.type === "regular" && groupTypeIndicator === "@") {
+            return false;
+          }
+
+          if (group.type === "dm" || group.type === "multi_dm") {
+            slug = groupsStore.getDMNameWithUsernames(group);
+          }
+
+          const query = filter[1].replace(/[#@]/g, "");
           return slug.indexOf(query) > -1;
         })
         .map(group => {
           return {
             id: group.id,
             type: "group",
+            groupType: group.type === "regular" ? "Rooms" : "Direct Messages",
             orderKey: (group.users.length === 1 && group.type === "dm"
               ? ""
               : group.type === "regular"
@@ -122,6 +124,7 @@ class SearchStore {
       return {
         items,
         keyword: filter[0],
+        dropdownTitle: "Conversations",
         isDropdownVisible: true,
         isDatepickerVisible: false
       };

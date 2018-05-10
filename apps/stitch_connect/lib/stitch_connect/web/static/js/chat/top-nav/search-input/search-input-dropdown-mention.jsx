@@ -44,7 +44,6 @@ class SearchInputDropdownMention extends Component {
         <span className="item-text">
           <Avatar user={user} />
           <span className="username">{user.full_name}</span>
-          <span className="text-muted">{user.username}</span>
         </span>
       </li>
     );

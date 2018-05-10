@@ -47,9 +47,6 @@ class SearchInputDropdownRoom extends Component {
         </span>
         <span className="item-text">
           <span className="username">{groupsStore.getGroupName(group)}</span>
-          {group.type === "regular" && (
-            <span className="text-muted">#{group.slug}</span>
-          )}
         </span>
       </li>
     );

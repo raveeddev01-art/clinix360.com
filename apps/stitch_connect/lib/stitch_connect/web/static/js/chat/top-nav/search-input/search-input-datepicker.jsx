@@ -29,16 +29,19 @@ class SearchInputDatepicker extends Component {
     const { dateChunk } = this.props;
 
     return (
-      <div className="search-input-datepicker">
-        <DateTime
-          open
-          closeOnSelect
-          input={false}
-          timeFormat={false}
-          onChange={this.handleChange}
-          isValidDate={this.isFutureDate}
-          viewDate={this.getViewDate(dateChunk)}
-        />
+      <div className="search-input-menu search-input-menu--datepicker">
+        <div className="menu-header">Time</div>
+        <div className="menu-content">
+          <DateTime
+            open
+            closeOnSelect
+            input={false}
+            timeFormat={false}
+            onChange={this.handleChange}
+            isValidDate={this.isFutureDate}
+            viewDate={this.getViewDate(dateChunk)}
+          />
+        </div>
       </div>
     );
   }
