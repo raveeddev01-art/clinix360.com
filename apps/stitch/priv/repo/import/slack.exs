@@ -22,11 +22,26 @@ defmodule Stitch.Import.Slack do
     {:ok, unzip_path}
   end
 
+  def parse_groups(path) do
+    # We're only interested in folders, each folder represents
+    # a group within the team.
+    groups =
+      File.ls!(path)
+      |> Enum.filter(&File.dir?(Path.join(path, &1)))
+
+    IO.puts("Found these groups:")
+    IO.inspect(groups)
+    {:ok, groups}
+  end
+
   def run do
     IO.puts("Begin import for team: #{@team_name}")
     {:ok, folder_path} = download_and_unzip()
 
     IO.puts("Creating Team")
+
+    IO.puts("Creating Groups")
+    {:ok, groups} = parse_groups(folder_path)
   end
 end
 
