@@ -42,7 +42,25 @@ defmodule Stitch.Import.Slack.UserImport do
       slack_import_id: user_json["id"]
     }
 
-    Stitch.Repo.insert(attributes)
+    if attributes.email do
+      if Stitch.Repo.get_by(Stitch.Accounts.User, team_id: team.id, email: attributes.email) ==
+           nil do
+        Stitch.Repo.insert(attributes)
+      else
+        IO.puts(
+          "Skipping existing user: #{inspect(%{team_id: team.id, email: attributes.email})}"
+        )
+      end
+    else
+      if Stitch.Repo.get_by(Stitch.Accounts.User, team_id: team.id, username: attributes.username) ==
+           nil do
+        Stitch.Repo.insert(attributes)
+      else
+        IO.puts(
+          "Skipping existing user: #{inspect(%{team_id: team.id, username: attributes.username})}"
+        )
+      end
+    end
   end
 
   def get_roles(user_json) do
