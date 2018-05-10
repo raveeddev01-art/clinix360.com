@@ -34,7 +34,7 @@ defmodule Stitch.Import.Slack.UserImport do
       email: get_in(user_json, ["profile", "email"]),
       first_name: get_first_name(user_json),
       last_name: get_last_name(user_json),
-      username: user_json["username"],
+      username: user_json["name"],
       is_bot: user_json["is_bot"],
       pin: "0000",
       phone_number: get_phone_number(user_json),
