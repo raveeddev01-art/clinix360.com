@@ -262,7 +262,7 @@ defmodule Stitch.Messages.Search do
   end
 
   def parameterize(term_string) do
-    parts = term_string |> String.trim() |> String.split(" ")
+    parts = term_string |> String.split()
 
     params = %{
       search_terms: [],
