@@ -29,24 +29,30 @@ defmodule Stitch.Import.Slack.GroupImport do
       }
   """
 
-  def parse_json(users_by_slack_import_id, channel_json) do
+  def parse_json(team, users_by_slack_import_id, channel_json) do
     members = get_members(channel_json, users_by_slack_import_id)
 
     group_name = get_name(channel_json)
+    group_slug = Slugger.slugify_downcase(group_name)
     creator = get_creator(users_by_slack_import_id, channel_json, members)
     description = get_description(channel_json)
 
     group_params = %{
       "name" => group_name,
+      "slug" => group_slug,
       "user_ids" => Enum.map(members, & &1.id),
       "public" => true,
       "description" => description
     }
 
-    creator
-    |> Group.create(group_params)
-    |> log_if_error(channel_json)
-    |> assign_slack_import_id(channel_json["id"])
+    if group = Repo.get_by(Group, slug: group_slug, team_id: team.id) do
+      IO.puts("Skipping existing group: #{inspect(%{team_id: team.id, slug: group_slug})}")
+    else
+      creator
+      |> Group.create(group_params)
+      |> log_if_error(channel_json)
+      |> assign_slack_import_id(channel_json["id"])
+    end
   end
 
   def get_description(channel_json) do
