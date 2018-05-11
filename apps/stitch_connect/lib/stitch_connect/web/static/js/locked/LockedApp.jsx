@@ -5,8 +5,6 @@ import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 
 import { PinInput, LoadingIcon } from "common/components";
-import Header from "../authentication/components/header/header";
-import Footer from "../authentication/components/footer/footer";
 
 @inject("presenceStore", "teamStore")
 @observer
@@ -61,7 +59,6 @@ class LockedApp extends Component {
 
     return (
       <div className={lockAppWrapperClass}>
-        <Header />
         <div className="authentication-wrapper">
           <div>
             {hasError && <Alert bsStyle="danger">PIN is incorrect.</Alert>}
@@ -104,7 +101,6 @@ class LockedApp extends Component {
             </div>
           </div>
         </div>
-        {!window.electronApp && <Footer />}
       </div>
     );
   }
