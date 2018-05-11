@@ -16,14 +16,16 @@ defmodule Stitch.Billing do
   @doc """
   Configures a newly created team with a free account.
   """
-  @spec setup_new_team(Team.t()) :: Subscription.t()
-  def setup_new_team(%Team{id: team_id, name: team_name}) do
+  # @spec setup_new_team(Team.t()) :: Subscription.t()
+
+  def setup_new_team(%Team{id: team_id, name: team_name}, tier \\ "FREE") do
+    IO.inspect("Settings up #{tier} for team #{team_name}")
     customer_id = @stripe_client.create_customer(team_id, team_name)
 
     params = %{
       team_id: team_id,
       customer_id: customer_id,
-      tier: "FREE"
+      tier: tier
     }
 
     params
@@ -128,10 +130,10 @@ defmodule Stitch.Billing do
 
   defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, params, fun) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
-         {:count, card_message} when card_message != :card_required <- {:count, check_card_count(subscription.team_id, params["tier"])},
+         {:count, card_message} when card_message != :card_required <-
+           {:count, check_card_count(subscription.team_id, params["tier"])},
          plan_id <- Plan.id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
-
       result =
         subscription
         |> subscription_update_changeset(changeset.changes, stripe_sub_params)
@@ -278,7 +280,8 @@ defmodule Stitch.Billing do
   end
 
   defp check_card_count(_, nil), do: :card_not_required
-  defp check_card_count(_, new_tier) when not new_tier in @paid_tiers, do: :card_not_required
+  defp check_card_count(_, new_tier) when not (new_tier in @paid_tiers), do: :card_not_required
+
   defp check_card_count(team_id, _new_tier) do
     case card_count(team_id) do
       0 -> :card_required

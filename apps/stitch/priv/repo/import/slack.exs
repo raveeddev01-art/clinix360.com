@@ -66,7 +66,7 @@ defmodule Stitch.Import.Slack do
     {:ok, folder_path} = download_and_unzip()
 
     IO.puts("Creating Team")
-    team = Stitch.Import.Slack.TeamImport.find_or_create(@team_name)
+    team = Stitch.Import.Slack.TeamImport.find_or_create(@team_name, "STANDARD")
 
     IO.puts("Creating Users")
     import_users(team, folder_path)

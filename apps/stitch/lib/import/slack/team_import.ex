@@ -4,10 +4,10 @@ defmodule Stitch.Import.Slack.TeamImport do
 
   require Logger
 
-  def find_or_create(team_slug) do
+  def find_or_create(team_slug, tier \\ "FREE") do
     case TeamQueries.get_by_slug(team_slug) do
       nil ->
-        team = Team.Onboarding.create_team(team_slug, team_slug)
+        team = Team.Onboarding.create_team(team_slug, team_slug, tier)
 
         team = Repo.update!(Ecto.Changeset.change(team, open_invitations_enabled: true))
 
