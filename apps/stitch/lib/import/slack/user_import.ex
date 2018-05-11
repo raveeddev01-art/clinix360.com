@@ -43,7 +43,9 @@ defmodule Stitch.Import.Slack.UserImport do
       roles: get_roles(user_json),
       slack_import_id: user_json["id"],
       onboarded: true,
-      token: Stitch.Rand.token(32)
+      password_hash: Comeonin.Bcrypt.hashpwsalt(Stitch.Rand.token(32)),
+      token: Stitch.Rand.token(32),
+      disabled: user_json["deleted"] == true
     }
 
     if attributes.email do
@@ -82,9 +84,9 @@ defmodule Stitch.Import.Slack.UserImport do
     first_name = get_in(user_json, ["profile", "first_name"])
     first_name = first_name && first_name |> String.trim()
 
-    if first_name == "" do
-      String.split(get_in(user_json, ["profile", "real_name"])) |> List.first() ||
-        String.split(get_in(user_json, ["profile", "display_name"])) |> List.first() ||
+    if first_name == nil || first_name == "" do
+      try_split(get_in(user_json, ["profile", "real_name"])) |> List.first() ||
+        try_split(get_in(user_json, ["profile", "display_name"])) |> List.first() ||
         user_json["name"]
     else
       first_name
@@ -95,14 +97,17 @@ defmodule Stitch.Import.Slack.UserImport do
     last_name = get_in(user_json, ["profile", "last_name"])
     last_name = last_name && last_name |> String.trim()
 
-    if last_name == "" do
-      String.split(get_in(user_json, ["profile", "real_name"])) |> List.last() ||
-        String.split(get_in(user_json, ["profile", "display_name"])) |> List.last() ||
+    if last_name == nil || last_name == "" do
+      try_split(get_in(user_json, ["profile", "real_name"])) |> List.last() ||
+        try_split(get_in(user_json, ["profile", "display_name"])) |> List.last() ||
         user_json["name"]
     else
       last_name
     end
   end
+
+  def try_split(nil), do: []
+  def try_split(string), do: String.split(string)
 
   def get_phone_number(user_json) do
     get_in(user_json, ["profile", "phone"]) || "+"
