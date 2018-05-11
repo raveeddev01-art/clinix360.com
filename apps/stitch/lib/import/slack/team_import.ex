@@ -21,7 +21,7 @@ defmodule Stitch.Import.Slack.TeamImport do
 
       team ->
         Logger.warn("#{team_slug} already exists.")
-        team
+        {:ok, team}
     end
   end
 end

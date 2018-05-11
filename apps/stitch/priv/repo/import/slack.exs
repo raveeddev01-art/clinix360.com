@@ -67,19 +67,23 @@ defmodule Stitch.Import.Slack do
     |> Poison.decode!()
     |> Enum.each(fn
       %{"name" => channel_name, "id" => slack_channel_id} = channel ->
-        if channel["is_archived"] != true do
+        group =
+          Stitch.Repo.get_by(Stitch.Group, team_id: team.id, slack_import_id: slack_channel_id)
+
+        if group && channel["is_archived"] != true do
           Path.wildcard(Path.join([path, channel_name, "*.json"]))
           |> Enum.each(fn message_file ->
             with {:ok, file} <- File.read(message_file),
                  {:ok, messages_json} <- Poison.decode(file) do
-              IO.inspect(messages_json)
-
-              Stitch.Import.Slack.MessageImport.import_message(
-                team,
-                users_by_slack_import_id,
-                groups_by_slack_import_id,
-                message_json
-              )
+              Enum.each(messages_json, fn message_json ->
+                Stitch.Import.Slack.MessageImport.import_message(
+                  team,
+                  group,
+                  users_by_slack_import_id,
+                  groups_by_slack_import_id,
+                  message_json
+                )
+              end)
             else
               error ->
                 nil
@@ -100,7 +104,7 @@ defmodule Stitch.Import.Slack do
     # folder_path = "/tmp/#{@team_name}-slack-export-contents/"
 
     IO.puts("Creating Team")
-    team = Stitch.Import.Slack.TeamImport.find_or_create(@team_name, "STANDARD")
+    {:ok, team} = Stitch.Import.Slack.TeamImport.find_or_create(@team_name, "STANDARD")
 
     IO.puts("Creating Users")
     import_users(team, folder_path)

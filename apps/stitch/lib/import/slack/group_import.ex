@@ -29,6 +29,12 @@ defmodule Stitch.Import.Slack.GroupImport do
         }
       }
   """
+  def parse_json(team, _users_by_slack_import_id, %{"is_archived" => true} = channel_json) do
+    IO.puts(
+      "Skipping archived channel: #{inspect(%{team_id: team.id, name: channel_json["name"]})}"
+    )
+  end
+
   def parse_json(team, users_by_slack_import_id, channel_json) do
     members = get_members(channel_json, users_by_slack_import_id)
 
@@ -52,6 +58,7 @@ defmodule Stitch.Import.Slack.GroupImport do
       |> Group.create(group_params)
       |> log_if_error(channel_json)
       |> assign_slack_import_id(channel_json["id"])
+      |> assign_is_default(channel_json["is_general"])
     end
   end
 
@@ -101,6 +108,14 @@ defmodule Stitch.Import.Slack.GroupImport do
   end
 
   def assign_slack_import_id({:error, _} = result, _slack_import_id), do: result
+
+  def assign_is_default({:ok, group}, true) do
+    group
+    |> Ecto.Changeset.change(is_default: true)
+    |> Repo.update()
+  end
+
+  def assign_is_default(result, _is_default), do: result
 
   @doc """
   Tries to get the creator, in this order:
