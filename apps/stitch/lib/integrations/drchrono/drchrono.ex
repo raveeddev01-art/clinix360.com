@@ -1,5 +1,7 @@
 defmodule Stitch.Drchrono do
   alias Stitch.Drchrono.{Bot, Token}
+  alias Stitch.{Repo, Integration}
+  import Ecto.Query
   require Logger
 
   defp value_or_na(nil), do: "N/A"
@@ -21,6 +23,11 @@ defmodule Stitch.Drchrono do
     end
   end
 
+  def permalink(integration, resource_url) do
+    username = integration.credentials["username"]
+    "https://#{username}.drchrono.com/#{resource_url}"
+  end
+
   def handle_webhook(integration, "APPOINTMENT_CREATE", params) do
     payload = params["object"]
 
@@ -37,12 +44,19 @@ defmodule Stitch.Drchrono do
     duration = value_or_na(payload["duration"])
     notes = value_or_na(payload["notes"])
 
-    message =
-      "Event: Appointment created\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
-        patient["first_name"]
-      } #{patient["last_name"]}\nScheduled: #{scheduled_date}\nTime: #{scheduled_time}\nReason: #{
-        reason
-      }\nDuration: #{duration} minutes\nNotes: #{notes}"
+    resource_url = "appointments/#{payload["id"]}"
+
+    message = """
+    Link: #{permalink(integration, resource_url)}
+    Event: Appointment created
+    Patient: #{patient["first_name"]} #{patient["last_name"]}
+    Doctor: #{doctor["first_name"]} #{doctor["last_name"]}
+    Scheduled: #{scheduled_date}
+    Time: #{scheduled_time}
+    Reason: #{reason}
+    Duration: #{duration} minutes
+    Notes: #{notes}
+    """
 
     if integration.settings["appointmentCreate"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
@@ -65,12 +79,19 @@ defmodule Stitch.Drchrono do
     duration = value_or_na(payload["duration"])
     notes = value_or_na(payload["notes"])
 
-    message =
-      "Event: Appointment modified\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
-        patient["first_name"]
-      } #{patient["last_name"]}\nScheduled: #{scheduled_date}\nTime: #{scheduled_time}\nReason: #{
-        reason
-      }\nDuration: #{duration} minutes\nNotes: #{notes}"
+    resource_url = "appointments/#{payload["id"]}"
+
+    message = """
+    Link: #{permalink(integration, resource_url)}
+    Event: Appointment modified
+    Patient: #{patient["first_name"]} #{patient["last_name"]}
+    Doctor: #{doctor["first_name"]} #{doctor["last_name"]}
+    Scheduled: #{scheduled_date}
+    Time: #{scheduled_time}
+    Reason: #{reason}
+    Duration: #{duration} minutes
+    Notes: #{notes}
+    """
 
     if integration.settings["appointmentModify"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
@@ -90,10 +111,16 @@ defmodule Stitch.Drchrono do
     duration = value_or_na(payload["duration"])
     notes = value_or_na(payload["notes"])
 
-    message =
-      "Event: Appointment deleted\nScheduled: #{scheduled_date}\nTime: #{scheduled_time}\nReason: #{
-        reason
-      }\nDuration: #{duration}minutes \nNotes: #{notes}"
+    resource_url = "appointments/#{payload["id"]}"
+
+    message = """
+    Event: Appointment deleted
+    Scheduled: #{scheduled_date}
+    Time: #{scheduled_time}
+    Reason: #{reason}
+    Duration: #{duration} minutes
+    Notes: #{notes}
+    """
 
     if integration.settings["appointmentDelete"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
@@ -316,13 +343,19 @@ defmodule Stitch.Drchrono do
     http_get(api_url, api_headers)
   end
 
+  def get_current_user_info(integration) do
+    api_url = "https://drchrono.com/api/users/current"
+    api_headers = headers(integration)
+    http_get(api_url, api_headers)
+  end
+
   def headers(integration) do
     {:ok, token} = Token.for_integration(integration)
     [Authorization: "Bearer #{token}"]
   end
 
   def http_get(api_url, headers) do
-    case HTTPoison.get(api_url, headers) do
+    case HTTPoison.get(api_url, headers, follow_redirect: true) do
       {:ok, response} ->
         Poison.decode(response.body)
 
@@ -336,6 +369,18 @@ defmodule Stitch.Drchrono do
 
     {:ok, _credentials} = Token.create_access_token(integration, code)
     Logger.info("[dr-chrono] [integration-#{integration.id}] Authenticated successfully.")
+
+    Logger.info("[dr-chrono] [integration-#{integration.id}] Saving username.")
+
+    integration = Repo.get(Integration, integration.id)
+    {:ok, user} = get_current_user_info(integration)
+
+    credentials =
+      integration.credentials
+      |> Map.put("username", user["username"])
+
+    changeset = Ecto.Changeset.change(integration, %{credentials: credentials})
+    Repo.update!(changeset)
 
     :ok
   end
