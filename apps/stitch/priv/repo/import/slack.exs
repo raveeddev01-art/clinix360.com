@@ -52,6 +52,15 @@ defmodule Stitch.Import.Slack do
     end)
   end
 
+  def add_guests(team, path) do
+    Path.join(path, "users.json")
+    |> File.read!()
+    |> Poison.decode!()
+    |> Enum.each(fn user ->
+      Stitch.Import.Slack.UserImport.add_guest(team, user)
+    end)
+  end
+
   def run do
     IO.puts("Begin import for team: #{@team_name}")
     {:ok, folder_path} = download_and_unzip()
@@ -69,6 +78,9 @@ defmodule Stitch.Import.Slack do
     {:ok, groups} = parse_groups(folder_path)
     users_by_slack_import_id = get_users_by_slack_import_id(team)
     import_groups(team, users_by_slack_import_id, folder_path)
+
+    IO.puts("Adding guests")
+    add_guests(team, folder_path)
   end
 
   def get_users_by_slack_import_id(team) do

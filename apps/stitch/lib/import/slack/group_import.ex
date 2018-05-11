@@ -1,6 +1,7 @@
 defmodule Stitch.Import.Slack.GroupImport do
   require Logger
-  alias Stitch.{Repo, Group}
+  import Ecto.Query
+  alias Stitch.{Repo, Group, Accounts.User}
 
   @doc """
   Expected input:
@@ -28,7 +29,6 @@ defmodule Stitch.Import.Slack.GroupImport do
         }
       }
   """
-
   def parse_json(team, users_by_slack_import_id, channel_json) do
     members = get_members(channel_json, users_by_slack_import_id)
 

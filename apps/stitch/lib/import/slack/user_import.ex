@@ -1,4 +1,6 @@
 defmodule Stitch.Import.Slack.UserImport do
+  alias Stitch.{Repo, Group, Accounts.User}
+
   require Logger
 
   # Expected input:
@@ -138,5 +140,51 @@ defmodule Stitch.Import.Slack.UserImport do
   def log_if_error({:error, error} = result, user_json) do
     Logger.error("[#{__MODULE__}] #{inspect(error)} #{inspect(user_json)}")
     result
+  end
+
+  def add_guest(team, %{"is_ultra_restricted" => true} = user_json) do
+    do_add_guest(team, user_json)
+  end
+
+  def add_guest(team, %{"is_restricted" => true} = user_json) do
+    do_add_guest(team, user_json)
+  end
+
+  def add_guest(_team, _json) do
+    {:error, "Not a guest"}
+  end
+
+  def do_add_guest(team, %{"id" => slack_user_id} = user_json) do
+    with guest_channels_json when not is_nil(guest_channels_json) <-
+           get_in(user_json, ["profile", "guest_channels"]),
+         {:ok, guest_channels} when is_list(guest_channels) <- Poison.decode(guest_channels_json),
+         guest_groups <- get_groups_for_slack_ids(team, guest_channels),
+         %User{} = user <- Repo.get_by(User, team_id: team.id, slack_import_id: slack_user_id),
+         {:ok, user} <- update_groups_as_guest(user, guest_groups) do
+      Stitch.Accounts.Admin.update_user_groups(user)
+    else
+      error ->
+        Logger.error("[#{__MODULE__}] #{inspect(error)} #{inspect(user_json)}")
+        error
+    end
+  end
+
+  def update_groups_as_guest(user, []) do
+    {:error, "Guest is not a member of any group #{inspect(%{user_id: user.id})}"}
+  end
+
+  def update_groups_as_guest(user, guest_groups) do
+    user
+    |> Ecto.Changeset.change(groups_as_guest: guest_groups)
+    |> Repo.update()
+  end
+
+  def get_groups_for_slack_ids(team, guest_channels) do
+    guest_channels
+    |> Enum.map(fn slack_channel_id ->
+      Repo.get_by(Group, team_id: team.id, slack_import_id: slack_channel_id)
+    end)
+    |> Enum.filter(&(&1 != nil))
+    |> Enum.map(& &1.id)
   end
 end
