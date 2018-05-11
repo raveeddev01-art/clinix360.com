@@ -64,11 +64,13 @@ defmodule Stitch.Import.Slack.UserImport do
   end
 
   def get_roles(user_json) do
-    if user_json["is_admin"] == true || user_json["is_owner"] == true ||
-         user_json["is_primary_owner"] == true do
-      ["admin"]
-    else
-      ["member"]
+    case user_json do
+      %{"is_admin" => true} -> ["admin"]
+      %{"is_owner" => true} -> ["admin"]
+      %{"is_primary_owner" => true} -> ["admin"]
+      %{"is_restricted" => true} -> ["multi-room-guest"]
+      %{"is_ultra_restricted" => true} -> ["single-room-guest"]
+      _ -> ["member"]
     end
   end
 
