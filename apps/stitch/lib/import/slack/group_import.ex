@@ -45,7 +45,7 @@ defmodule Stitch.Import.Slack.GroupImport do
       "description" => description
     }
 
-    if group = Repo.get_by(Group, slug: group_slug, team_id: team.id) do
+    if Repo.get_by(Group, slug: group_slug, team_id: team.id) do
       IO.puts("Skipping existing group: #{inspect(%{team_id: team.id, slug: group_slug})}")
     else
       creator
