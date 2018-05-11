@@ -103,7 +103,7 @@ defmodule Stitch.Import.Slack.UserImport do
   end
 
   def get_phone_number(user_json) do
-    get_in(user_json, ["profile", "phone"])
+    get_in(user_json, ["profile", "phone"]) || "+"
   end
 
   def generate_default_avatars(team) do
