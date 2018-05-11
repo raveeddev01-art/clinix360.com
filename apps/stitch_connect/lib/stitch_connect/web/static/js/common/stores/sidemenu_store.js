@@ -229,7 +229,10 @@ class SidemenuStore {
     const notification = new Notification(title, {
       body,
       tag,
-      icon: window.electronApp ? undefined : "/favicon-192x192.png",
+      icon:
+        window.electronApp && browserDetails.os === "Mac OS X"
+          ? undefined
+          : "/favicon-192x192.png", // hide icon on mac electron
       silent: true
     });
 
