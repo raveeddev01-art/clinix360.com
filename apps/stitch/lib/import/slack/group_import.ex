@@ -1,5 +1,6 @@
 defmodule Stitch.Import.Slack.GroupImport do
-  alias Stitch.Group
+  require Logger
+  alias Stitch.{Repo, Group}
 
   #
   # Expected input:
@@ -27,6 +28,25 @@ defmodule Stitch.Import.Slack.GroupImport do
   #     }
   # }
 
+  def parse_json(users_by_slack_import_id, channel_json) do
+    members = get_members(channel_json, users_by_slack_import_id)
+
+    group_name = get_name(channel_json)
+    creator = get_creator(users_by_slack_import_id, channel_json, members)
+
+    #
+    group_params = %{
+      "name" => group_name,
+      "user_ids" => Enum.map(members, & &1.id),
+      "public" => true
+    }
+
+    creator
+    |> Group.create(group_params)
+    |> log_if_error(channel_json)
+    |> assign_slack_import_id(channel_json["id"])
+  end
+
   # Must conform to:
   # |> validate_length(:name, max: 25)
   # |> validate_format(:name, ~r/^[\w-\s]+$/)
@@ -44,21 +64,26 @@ defmodule Stitch.Import.Slack.GroupImport do
     end
   end
 
-  def get_members(%{"members" => []}) do
+  def get_members(%{"members" => members}, users_by_slack_import_id) do
+    members
+    |> Enum.reduce([], fn slack_user_id, acc ->
+      case Map.fetch(users_by_slack_import_id, slack_user_id) do
+        {:ok, user} ->
+          [user | acc]
+
+        :error ->
+          acc
+      end
+    end)
   end
 
-  def parse_json(users_mapped_by_slack_import_id, channel_json) do
-    # group_name = get_name(channel_json)
-    # creator = get_creator(users_mapped_by_slack_import_id, channel_json)
-    #
-    # group_params = %{
-    #   "name" => group_name,
-    #   "user_ids" => get_members(channel_json),
-    #   "public" => true
-    # }
-    #
-    # group = Group.create(creator, group_params)
+  def assign_slack_import_id({:ok, group}, slack_import_id) do
+    group
+    |> Ecto.Changeset.change(slack_import_id: slack_import_id)
+    |> Repo.update()
   end
+
+  def assign_slack_import_id({:error, _} = result, _slack_import_id), do: result
 
   @doc """
   Tries to get the creator, in this order:
@@ -67,16 +92,30 @@ defmodule Stitch.Import.Slack.GroupImport do
   - team admin
   Each Slack team has at least one admin.
   """
-  def get_creator(users_mapped_by_slack_import_id, channel_json) do
-    get_channel_creator(users_mapped_by_slack_import_id, channel_json)
+  def get_creator(users_by_slack_import_id, channel_json, members) do
+    get_channel_creator(users_by_slack_import_id, channel_json) || List.first(members) ||
+      get_team_admin(users_by_slack_import_id)
   end
 
-  def get_channel_creator(users_mapped_by_slack_import_id, channel_json) do
+  def get_channel_creator(users_by_slack_import_id, channel_json) do
     with {:ok, slack_user_id} <- Map.fetch(channel_json, "creator"),
-         {:ok, user} <- Map.fetch(users_mapped_by_slack_import_id, slack_user_id) do
+         {:ok, user} <- Map.fetch(users_by_slack_import_id, slack_user_id) do
       user
     else
       _ -> nil
     end
+  end
+
+  def get_team_admin(users_by_slack_import_id) do
+    users_by_slack_import_id
+    |> Map.values()
+    |> Enum.find(fn user -> user.roles == ["admin"] end)
+  end
+
+  def log_if_error({:ok, _user} = result, _channel_json), do: result
+
+  def log_if_error({:error, error} = result, channel_json) do
+    Logger.error("[#{__MODULE__}] #{inspect(error)} #{inspect(channel_json)}")
+    result
   end
 end

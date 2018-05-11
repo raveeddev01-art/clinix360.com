@@ -1,4 +1,6 @@
 defmodule Stitch.Import.Slack.UserImport do
+  require Logger
+
   # Expected input:
   # %{
   #   "id" => "user_id",
@@ -45,7 +47,7 @@ defmodule Stitch.Import.Slack.UserImport do
     if attributes.email do
       if Stitch.Repo.get_by(Stitch.Accounts.User, team_id: team.id, email: attributes.email) ==
            nil do
-        Stitch.Repo.insert(attributes)
+        Stitch.Repo.insert(attributes) |> log_if_error(user_json)
       else
         IO.puts(
           "Skipping existing user: #{inspect(%{team_id: team.id, email: attributes.email})}"
@@ -54,7 +56,7 @@ defmodule Stitch.Import.Slack.UserImport do
     else
       if Stitch.Repo.get_by(Stitch.Accounts.User, team_id: team.id, username: attributes.username) ==
            nil do
-        Stitch.Repo.insert(attributes)
+        Stitch.Repo.insert(attributes) |> log_if_error(user_json)
       else
         IO.puts(
           "Skipping existing user: #{inspect(%{team_id: team.id, username: attributes.username})}"
@@ -119,8 +121,15 @@ defmodule Stitch.Import.Slack.UserImport do
         )
       else
         error ->
-          IO.puts("[#{__MODULE__}] #{inspect(error)}")
+          Logger.error("[#{__MODULE__}] #{inspect(error)}")
       end
     end)
+  end
+
+  def log_if_error({:ok, _user} = result, _user_json), do: result
+
+  def log_if_error({:error, error} = result, user_json) do
+    Logger.error("[#{__MODULE__}] #{inspect(error)} #{inspect(user_json)}")
+    result
   end
 end
