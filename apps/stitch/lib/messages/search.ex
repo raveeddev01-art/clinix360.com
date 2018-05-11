@@ -227,7 +227,7 @@ defmodule Stitch.Messages.Search do
 
       from(
         m in query,
-        or_where: like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")
+        where: like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")
       )
     end)
   end
