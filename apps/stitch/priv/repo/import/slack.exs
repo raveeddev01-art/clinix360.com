@@ -61,9 +61,43 @@ defmodule Stitch.Import.Slack do
     end)
   end
 
+  def add_messages(team, users_by_slack_import_id, groups_by_slack_import_id, path) do
+    Path.join(path, "channels.json")
+    |> File.read!()
+    |> Poison.decode!()
+    |> Enum.each(fn
+      %{"name" => channel_name, "id" => slack_channel_id} = channel ->
+        if channel["is_archived"] != true do
+          Path.wildcard(Path.join([path, channel_name, "*.json"]))
+          |> Enum.each(fn message_file ->
+            with {:ok, file} <- File.read(message_file),
+                 {:ok, messages_json} <- Poison.decode(file) do
+              IO.inspect(messages_json)
+
+              Stitch.Import.Slack.MessageImport.import_message(
+                team,
+                users_by_slack_import_id,
+                groups_by_slack_import_id,
+                message_json
+              )
+            else
+              error ->
+                nil
+            end
+          end)
+        else
+          IO.puts("Skipping archived channel #{channel_name}")
+        end
+
+      _ ->
+        nil
+    end)
+  end
+
   def run do
     IO.puts("Begin import for team: #{@team_name}")
     {:ok, folder_path} = download_and_unzip()
+    # folder_path = "/tmp/#{@team_name}-slack-export-contents/"
 
     IO.puts("Creating Team")
     team = Stitch.Import.Slack.TeamImport.find_or_create(@team_name, "STANDARD")
@@ -81,11 +115,22 @@ defmodule Stitch.Import.Slack do
 
     IO.puts("Adding guests")
     add_guests(team, folder_path)
+
+    IO.puts("Adding messages")
+    users_by_slack_import_id = get_users_by_slack_import_id(team)
+    groups_by_slack_import_id = get_groups_by_slack_import_id(team)
+    add_messages(team, users_by_slack_import_id, groups_by_slack_import_id, folder_path)
   end
 
   def get_users_by_slack_import_id(team) do
     team
     |> Stitch.TeamQueries.list_users()
+    |> Enum.reduce(%{}, &Map.put(&2, &1.slack_import_id, &1))
+  end
+
+  def get_groups_by_slack_import_id(team) do
+    team
+    |> Stitch.TeamQueries.list_groups()
     |> Enum.reduce(%{}, &Map.put(&2, &1.slack_import_id, &1))
   end
 end

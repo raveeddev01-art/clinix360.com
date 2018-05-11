@@ -5,7 +5,7 @@ defmodule Stitch.TeamQueries do
 
   @guest_roles Role.guests()
 
-  @spec all_with_user_email(binary) :: [Team.t]
+  @spec all_with_user_email(binary) :: [Team.t()]
   def all_with_user_email(email) do
     Team
     |> join(:inner, [t], u in User, u.team_id == t.id and u.email == ^email)
@@ -21,10 +21,12 @@ defmodule Stitch.TeamQueries do
 
   def get_by_slug(slug) when byte_size(slug) > 0 do
     query =
-      from t in Team,
-      left_join: s in assoc(t, :subscription),
-      where: t.slug == ^slug,
-      preload: [subscription: s]
+      from(
+        t in Team,
+        left_join: s in assoc(t, :subscription),
+        where: t.slug == ^slug,
+        preload: [subscription: s]
+      )
 
     Repo.one(query)
   end
@@ -66,6 +68,12 @@ defmodule Stitch.TeamQueries do
   def list_users(%Team{id: team_id}) do
     query = from(u in User, where: u.team_id == ^team_id)
     Repo.all(query)
+  end
+
+  def list_groups(team) do
+    Stitch.Group
+    |> where([g], g.team_id == ^team.id)
+    |> Repo.all()
   end
 
   @doc """
@@ -156,21 +164,23 @@ defmodule Stitch.TeamQueries do
   def team_ids do
     Team
     |> select([t], t.id)
-    |> Repo.all
+    |> Repo.all()
   end
 
   @doc """
   Deactivate all geust users
   """
-  def deactivate_all_guests(%Team{id: team_id})  do
+  def deactivate_all_guests(%Team{id: team_id}) do
     query =
-      from u in User,
-      where: u.team_id == ^team_id,
-      where: fragment("? && ?", ^@guest_roles, u.roles),
-      where: u.disabled == ^false,
-      update: [
-        set: [disabled: true, updated_at: ^NaiveDateTime.utc_now]
-      ]
+      from(
+        u in User,
+        where: u.team_id == ^team_id,
+        where: fragment("? && ?", ^@guest_roles, u.roles),
+        where: u.disabled == ^false,
+        update: [
+          set: [disabled: true, updated_at: ^NaiveDateTime.utc_now()]
+        ]
+      )
 
     Repo.update_all(query, [], returning: true)
   end
