@@ -41,7 +41,9 @@ defmodule Stitch.Import.Slack.UserImport do
       pin: "0000",
       phone_number: get_phone_number(user_json),
       roles: get_roles(user_json),
-      slack_import_id: user_json["id"]
+      slack_import_id: user_json["id"],
+      onboarded: true,
+      token: Stitch.Rand.token(32)
     }
 
     if attributes.email do

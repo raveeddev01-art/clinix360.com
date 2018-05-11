@@ -7,7 +7,8 @@ defmodule StitchConnect.Plug.Authenticate do
   def init(default), do: default
 
   def call(conn, _) do
-    with {:token, token} when is_binary(token) <- {:token, get_session(conn, :current_user_token)},
+    with {:token, token} when is_binary(token) <-
+           {:token, get_session(conn, :current_user_token)},
          {:user, %User{disabled: false} = user} <- {:user, UserQueries.get_by_token(token)},
          {:team_member?, true} <- {:team_member?, user.team_id == conn.assigns.team.id} do
       conn
