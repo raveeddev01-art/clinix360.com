@@ -2,49 +2,60 @@ defmodule Stitch.Import.Slack.GroupImport do
   require Logger
   alias Stitch.{Repo, Group}
 
-  #
-  # Expected input:
-  #
-  #   {
-  #     "id": "C00000000",
-  #     "name": "general",
-  #     "created": "1411111111",
-  #     "creator": "U000000000",
-  #     "is_archived": false,
-  #     "is_general": true,
-  #     "members": [
-  #         "U00000000",
-  #         "U00000001",
-  #     ],
-  #     "topic": {
-  #         "value": "Company-wide announcements and work-based matters",
-  #         "creator": "",
-  #         "last_set": "0"
-  #     },
-  #     "purpose": {
-  #         "value": "This channel is for team-wide communication and announcements. All team members are in this channel.",
-  #         "creator": "",
-  #         "last_set": "0"
-  #     }
-  # }
+  @doc """
+  Expected input:
+
+      {
+        "id": "C00000000",
+        "name": "general",
+        "created": "1411111111",
+        "creator": "U000000000",
+        "is_archived": false,
+        "is_general": true,
+        "members": [
+            "U00000000",
+            "U00000001",
+        ],
+        "topic": {
+            "value": "Company-wide announcements and work-based matters",
+            "creator": "",
+            "last_set": "0"
+        },
+        "purpose": {
+            "value": "This channel is for team-wide communication and announcements. All team members are in this channel.",
+            "creator": "",
+            "last_set": "0"
+        }
+      }
+  """
 
   def parse_json(users_by_slack_import_id, channel_json) do
     members = get_members(channel_json, users_by_slack_import_id)
 
     group_name = get_name(channel_json)
     creator = get_creator(users_by_slack_import_id, channel_json, members)
+    description = get_description(channel_json)
 
-    #
     group_params = %{
       "name" => group_name,
       "user_ids" => Enum.map(members, & &1.id),
-      "public" => true
+      "public" => true,
+      "description" => description
     }
 
     creator
     |> Group.create(group_params)
     |> log_if_error(channel_json)
     |> assign_slack_import_id(channel_json["id"])
+  end
+
+  def get_description(channel_json) do
+    topic = get_in(channel_json, ["topic", "value"])
+    purpose = get_in(channel_json, ["purpose", "value"])
+
+    [topic, purpose]
+    |> Enum.filter(&(&1 != nil))
+    |> Enum.join(" ")
   end
 
   # Must conform to:
