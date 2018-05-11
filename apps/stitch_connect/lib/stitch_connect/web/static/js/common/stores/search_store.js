@@ -81,7 +81,7 @@ class SearchStore {
       const items = groupsStore.groups
         .filter(group => {
           let slug = group.slug;
-          if (group.hidden) {
+          if (group.hidden || !group.joined) {
             return false;
           }
 
