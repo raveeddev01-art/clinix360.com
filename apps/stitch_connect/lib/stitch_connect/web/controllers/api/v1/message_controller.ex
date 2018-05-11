@@ -237,8 +237,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def delete(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
+    user = conn.assigns.current_user
+    group = GroupQueries.get_by_id(message.group_id)
 
-    case conn.assigns.current_user.id == message.user_id do
+    case MessageAuthorization.can_delete?(message, user, group) do
       true ->
         case Message.delete(message) do
           {:ok, _message} ->
@@ -317,14 +319,15 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
     with {:message, %Message{} = message} <-
            {:message, MessageQueries.get_by_id(message_id, false)},
+         {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(message.group_id)},
          {:authorized?, true} <-
-           {:authorized?, MessageAuthorization.can_delete?(message, current_user)} do
+           {:authorized?, MessageAuthorization.can_delete?(message, current_user, group)} do
       message = Message.LinkPreview.delete!(message, link)
-      group = GroupQueries.get_by_id(message.group_id)
       GroupChannel.broadcast_msg_link_preview_deleted(group, message.id, link)
       json(conn, %{status: "ok"})
     else
       {:message, _} -> {:error, :not_found}
+      {:group, _} -> {:error, :not_found}
       {:authorized?, false} -> {:error, :not_authorized}
     end
   end

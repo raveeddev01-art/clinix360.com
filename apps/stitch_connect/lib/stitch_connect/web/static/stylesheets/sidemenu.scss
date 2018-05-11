@@ -66,13 +66,14 @@
 
     .dropdown-menu {
       width: 210px;
-      padding: 17px 27px;
+      padding: 17px 0;
       margin: -16px -10px 0 0;
 
       .user-header {
         color: $brand-primary;
         display: flex;
         align-items: center;
+        padding: 0 25px;
 
         .avatar {
           margin-right: 10px;
@@ -84,15 +85,19 @@
 
         .content {
           flex: 1;
+          min-width: 0;
+
+          .full-name,
+          .username {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+          }
 
           .full-name {
             font-size: 16px;
             font-weight: 700;
-            line-height: 1.2;
-          }
-
-          .username {
-            line-height: 1.2;
           }
         }
       }
@@ -121,17 +126,14 @@
         }
       }
 
-      li {
-        margin: 8px 0;
+      li a {
+        font-size: 15px;
+        line-height: 30px;
+        border-radius: 0;
+        padding: 0 25px;
 
-        > a {
-          font-size: 15px;
-          line-height: 25px;
-          padding: 0 12px;
-
-          &:focus {
-            outline: none;
-          }
+        &:focus {
+          outline: none;
         }
       }
     }

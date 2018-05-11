@@ -34,6 +34,8 @@ class AddonStore {
       this.addonPanelData = panelData;
     }
 
+    this.showAddonDetail = false;
+
     switch (this.addonPanelType) {
       case "starred":
         this.rootStore.globalStarredMessageStore.loadStarredMessages();
