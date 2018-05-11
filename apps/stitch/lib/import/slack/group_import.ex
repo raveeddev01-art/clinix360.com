@@ -68,5 +68,15 @@ defmodule Stitch.Import.Slack.GroupImport do
   Each Slack team has at least one admin.
   """
   def get_creator(users_mapped_by_slack_import_id, channel_json) do
+    get_channel_creator(users_mapped_by_slack_import_id, channel_json)
+  end
+
+  def get_channel_creator(users_mapped_by_slack_import_id, channel_json) do
+    with {:ok, slack_user_id} <- Map.fetch(channel_json, "creator"),
+         {:ok, user} <- Map.fetch(users_mapped_by_slack_import_id, slack_user_id) do
+      user
+    else
+      _ -> nil
+    end
   end
 end
