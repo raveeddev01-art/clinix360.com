@@ -29,34 +29,36 @@ class PasswordCard extends Component {
   render() {
     const { password, formValid } = this.state;
     return (
-      <OnboardCard
-        {...this.props}
-        title="Password"
-        description={
-          <span>
-            Enter a <strong>password</strong>.
-          </span>
-        }
-        onNext={this._onNext}
-        disableNext={formValid}
-      >
-        <FormGroup bsSize="large">
-          <FormControl
-            required
-            autoFocus
-            name={`password_${new Date().getTime()}`}
-            autoComplete="off"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={this._onChange}
+      <div>
+        <OnboardCard
+          {...this.props}
+          title="Password"
+          description={
+            <span>
+              Enter a <strong>password</strong>.
+            </span>
+          }
+          onNext={this._onNext}
+          disableNext={formValid}
+        >
+          <FormGroup bsSize="large">
+            <FormControl
+              required
+              autoFocus
+              name={`password_${new Date().getTime()}`}
+              autoComplete="off"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={this._onChange}
+            />
+          </FormGroup>
+          <PasswordValidator
+            password={password}
+            onChangeValid={this._onChangeValid}
           />
-        </FormGroup>
-        <PasswordValidator
-          password={password}
-          onChangeValid={this._onChangeValid}
-        />
-      </OnboardCard>
+        </OnboardCard>
+      </div>
     );
   }
 }
