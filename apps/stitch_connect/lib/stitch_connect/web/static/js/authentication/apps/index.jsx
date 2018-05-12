@@ -87,57 +87,39 @@ export default class DownloadApps extends Component {
   render() {
     const { shouldRedirect, os, mobile } = this.state;
     return (
-      <div>
-        <Header />
-        {!shouldRedirect && (
-          <div className="authentication-main">
-            <div className="authentication-card text-center m-b-20">
-              {this.renderHeader()}
+      !shouldRedirect && (
+        <div className="authentication-main">
+          <div className="authentication-card text-center m-b-20">
+            {this.renderHeader()}
 
-              <h5 className="text-muted url-heading">
-                {this.props.registrationStore.teamSlug ||
-                  this.props.invitationStore.subdomain}.teamstitch.com
+            <h5 className="text-muted url-heading">
+              {this.props.registrationStore.teamSlug ||
+                this.props.invitationStore.subdomain}.teamstitch.com
+            </h5>
+
+            {os === "Windows" && !mobile && <WindowsDesktop />}
+
+            {os === "Mac OS X" && !mobile && <MacDesktop />}
+
+            {os === "Linux" && !mobile && <LinuxDesktop />}
+
+            {os === "iOS" && mobile && <IOSMobile />}
+
+            {os === "Android" && mobile && <AndroidMobile />}
+
+            {!mobile && (
+              <h5>
+                Looking for web app?{" "}
+                <a href="/">
+                  <strong>Skip & Launch</strong>
+                </a>
               </h5>
-
-              {os === "Windows" && !mobile && <WindowsDesktop />}
-
-              {os === "Mac OS X" && !mobile && <MacDesktop />}
-
-              {os === "Linux" && !mobile && <LinuxDesktop />}
-
-              {os === "iOS" && mobile && <IOSMobile />}
-
-              {os === "Android" && mobile && <AndroidMobile />}
-
-              {!mobile && (
-                <h5>
-                  Looking for web app?{" "}
-                  <a href="/">
-                    <strong>Skip & Launch</strong>
-                  </a>
-                </h5>
-              )}
-            </div>
-
-            {this.renderAlternateOS()}
-
-            <h5>
-              Wrong team?{" "}
-              <a href={`https://${applicationHost}/signin`}>
-                <strong>Sign in to a different team</strong>
-              </a>
-            </h5>
-
-            <h5>
-              Just getting started?{" "}
-              <a href={`https://${applicationHost}/signup/email`}>
-                <strong>Create a new team</strong>
-              </a>
-            </h5>
+            )}
           </div>
-        )}
-        {!window.electronApp && <Footer />}
-      </div>
+
+          {this.renderAlternateOS()}
+        </div>
+      )
     );
   }
 }
