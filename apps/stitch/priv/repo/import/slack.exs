@@ -70,6 +70,8 @@ defmodule Stitch.Import.Slack do
         group =
           Stitch.Repo.get_by(Stitch.Group, team_id: team.id, slack_import_id: slack_channel_id)
 
+        IO.puts("Importing messages for group #{group.name}")
+
         if group && channel["is_archived"] != true do
           Path.wildcard(Path.join([path, channel_name, "*.json"]))
           |> Enum.each(fn message_file ->
@@ -98,6 +100,14 @@ defmodule Stitch.Import.Slack do
     end)
   end
 
+  def clean_standard_default(team) do
+    Group
+    |> where(team_id: ^team.id)
+    |> where(is_default: true)
+    |> where([g], is_nil(g.slack_import_id))
+    |> Repo.delete_all()
+  end
+
   def run do
     IO.puts("Begin import for team: #{@team_name}")
     {:ok, folder_path} = download_and_unzip()
@@ -111,6 +121,9 @@ defmodule Stitch.Import.Slack do
 
     IO.puts("Creating avatars")
     Stitch.Import.Slack.UserImport.generate_default_avatars(team)
+
+    IO.puts("Clean default group from team creation")
+    clean_standard_default(team)
 
     IO.puts("Creating Groups")
     {:ok, groups} = parse_groups(folder_path)

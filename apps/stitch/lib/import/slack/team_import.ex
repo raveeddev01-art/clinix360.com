@@ -15,6 +15,7 @@ defmodule Stitch.Import.Slack.TeamImport do
           Group
           |> where(team_id: ^team.id)
           |> where(is_default: true)
+          |> where([g], is_nil(g.slack_import_id))
           |> Repo.delete_all(returning: true)
 
         {:ok, team}
