@@ -1,5 +1,7 @@
 defmodule Stitch.Import.Slack do
   alias Stitch.Repo
+  import Ecto.Query
+
   # alias Stitch.{Accounts.User, Team, TeamQueries, Group, GroupUser, Message}
 
   @team_name System.get_env("TEAM_NAME")
@@ -101,7 +103,7 @@ defmodule Stitch.Import.Slack do
   end
 
   def clean_standard_default(team) do
-    Group
+    Stitch.Group
     |> where(team_id: ^team.id)
     |> where(is_default: true)
     |> where([g], is_nil(g.slack_import_id))
