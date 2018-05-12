@@ -28,28 +28,30 @@ class PinCard extends Component {
   render() {
     const { saving, ...otherProps } = this.props;
     return (
-      <OnboardCard
-        {...otherProps}
-        title="PIN"
-        description={
-          <span>
-            Enter a <strong>4-digit PIN</strong>.
-          </span>
-        }
-        onNext={this.onNext}
-        loading={saving}
-        disableNext={!this.state.formValid}
-      >
-        <PinInput
-          className="m-b-20 m-center"
-          onValid={this.onValid}
-          onInvalid={this.onInvalid}
-        />
-        <HelpBlock className="m-b-20">
-          You can use this PIN when your screen is locked after a period of
-          inactivity.
-        </HelpBlock>
-      </OnboardCard>
+      <div>
+        <OnboardCard
+          {...otherProps}
+          title="PIN"
+          description={
+            <span>
+              Enter a <strong>4-digit PIN</strong>.
+            </span>
+          }
+          onNext={this.onNext}
+          loading={saving}
+          disableNext={!this.state.formValid}
+        >
+          <PinInput
+            className="m-b-20 m-center"
+            onValid={this.onValid}
+            onInvalid={this.onInvalid}
+          />
+          <HelpBlock className="m-b-20">
+            You can use this PIN when your screen is locked after a period of
+            inactivity.
+          </HelpBlock>
+        </OnboardCard>
+      </div>
     );
   }
 }

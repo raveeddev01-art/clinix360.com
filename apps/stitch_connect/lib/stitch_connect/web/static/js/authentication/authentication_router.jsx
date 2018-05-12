@@ -17,8 +17,6 @@ import SendEmail from "./reset-password/send-email";
 import SetPassword from "./reset-password/set-password";
 import Invitation from "./invitation";
 import InvitationError from "./invitation/error";
-import Header from "./components/header/header";
-import Footer from "./components/footer/footer";
 
 @inject("titleStore")
 @observer
@@ -31,7 +29,6 @@ class AuthenticationRouter extends Component {
 
     return (
       <div className={onboardingWrapperClass}>
-        <Header />
         <div className="authentication-wrapper">
           <Helmet>
             <title>{titleStore.title}</title>
@@ -91,7 +88,6 @@ class AuthenticationRouter extends Component {
             <Route component={() => <Redirect to="/" />} />
           </Switch>
         </div>
-        {!window.electronApp && <Footer />}
       </div>
     );
   }
