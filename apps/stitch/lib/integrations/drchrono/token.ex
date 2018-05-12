@@ -63,7 +63,7 @@ defmodule Stitch.Drchrono.Token do
         new_credentials = Map.merge(integration.credentials, response_values)
 
         {:ok, _integration} =
-          Integration.update(integration, %{authenticated: false, credentials: new_credentials})
+          Integration.update(integration, %{authenticated: true, credentials: new_credentials})
 
         {:ok, new_credentials}
 
