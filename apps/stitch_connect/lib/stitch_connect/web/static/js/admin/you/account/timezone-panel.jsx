@@ -5,8 +5,8 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
-const title = "Time zone";
-const description = "";
+const title = "Time Zone";
+const description = "Your current time zone. We use this when we send emails.";
 
 @inject("userStore")
 @observer
@@ -21,7 +21,7 @@ class TimezonePanel extends Component {
         disableSave
       >
         <FormGroup bsSize="large">
-          <ControlLabel>Time zone</ControlLabel>
+          <ControlLabel>Time Zone</ControlLabel>
           <FormControl
             type="timezone"
             value={this.props.userStore.timezone}
