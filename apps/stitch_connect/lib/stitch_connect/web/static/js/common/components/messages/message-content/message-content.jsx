@@ -68,9 +68,17 @@ class MessageContent extends Component {
   };
 
   render() {
-    const { message } = this.props;
+    const { inSearch, message } = this.props;
     const userId = message.user.id;
     const user = this.props.usersStore.usersById[userId];
+    const textContent = inSearch
+      ? message.highlighted_text_content || message.text_content
+      : message.text_content;
+
+    const messageContentComponents = messageTextToComponents(
+      textContent || "",
+      { inSearch }
+    );
 
     return (
       <div
@@ -80,13 +88,12 @@ class MessageContent extends Component {
         {message.type === "upload" && <FileAttachment {...message.fields} />}
         <div className="message-body">
           {message.type === "upload" && message.text_content ? (
-            <div className="attachment-comment">{message.text_content}</div>
+            <div className="attachment-comment">{messageContentComponents}</div>
           ) : (
-            messageTextToComponents(message.text_content || "")
+            messageContentComponents
           )}
 
           {user && user.is_bot ? this._renderIntegrationLink() : null}
-
           {this.renderLinkPreviews()}
           {this.renderEdited()}
           <Reactions
@@ -100,7 +107,12 @@ class MessageContent extends Component {
   }
 }
 
+MessageContent.defaultProps = {
+  inSearch: false
+};
+
 MessageContent.propTypes = {
+  inSearch: PropTypes.bool,
   message: PropTypes.any.isRequired
 };
 

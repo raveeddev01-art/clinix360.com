@@ -7,6 +7,7 @@
 import { observable, action, computed } from "mobx";
 import pick from "lodash/pick";
 import difference from "lodash/difference";
+import { getTimezone } from "../../lib/utils"
 
 // const defaultAvatars = ["/images/default-avatar.png"];
 
@@ -23,6 +24,7 @@ class UserStore {
   @observable avatar = currentUser.avatar;
   @observable avatarThumb = currentUser.avatar_thumb;
   @observable roles = currentUser.roles;
+  @observable timezone = getTimezone();
   @observable hasAvatar = this.userHasAvatar();
   @observable roleChanged = false;
 

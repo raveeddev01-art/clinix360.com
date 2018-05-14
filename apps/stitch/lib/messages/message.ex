@@ -30,6 +30,7 @@ defmodule Stitch.Message do
     field(:client_device_type, :string, default: "unknown")
     field(:client_os, :string, default: "unknown")
     field(:client_name, :string, default: "unknown")
+    field(:highlighted_text_content, :string, virtual: true)
     embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
     timestamps()

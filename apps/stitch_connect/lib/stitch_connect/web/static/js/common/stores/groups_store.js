@@ -88,6 +88,11 @@ class GroupsStore {
   }
 
   @computed
+  get allDMGroups() {
+    return this.visibleGroups.filter(group => group.type !== "regular");
+  }
+
+  @computed
   get nonFavoritedRegularGroups() {
     return this.regularGroups.filter(group => !group.is_favorite);
   }
@@ -197,6 +202,17 @@ class GroupsStore {
       .filter(u => u.id !== currentUser.id)
       .map(u => u.full_name)
       .join(", ");
+  };
+
+  getDMNameWithUsernames = group => {
+    if (group.users.length === 1) {
+      return group.users[0].username;
+    }
+
+    return group.users
+      .filter(u => u.id !== currentUser.id)
+      .map(u => u.username)
+      .join(",");
   };
 
   @action
