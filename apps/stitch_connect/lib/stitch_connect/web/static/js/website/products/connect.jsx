@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import VisibilitySensor from "react-visibility-sensor";
+import cx from "classnames";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
 
 import CreateTeam from "../components/create-team";
-import OurCustomers from "../components/our-customers";
 import Feature from "../components/feature";
 import Footer from "../components/footer";
-// import GetStarted from "../components/get-started";
 import Header from "../components/header";
 import VideoModal from "../components/video-modal";
 
@@ -18,9 +18,16 @@ export default class Connect extends Component {
     super(props);
 
     this.state = {
-      modal: ""
+      modal: "",
+      setupVisible: false
     };
   }
+
+  onVisibleChange = isVisible => {
+    if (isVisible) {
+      this.setState({ setupVisible: true });
+    }
+  };
 
   videoModal = () => {
     this.setState({
@@ -37,13 +44,17 @@ export default class Connect extends Component {
   render() {
     const { flipped } = this.props;
 
+    const setupClass = cx("get-started-new", {
+      visible: this.state.setupVisible
+    });
+
     return (
-      <div className="product-page">
+      <div className="product-page connect-page">
         <Header />
         <div className="subheader">
           <div className="container">
-            <Row>
-              <Col md={6}>
+            <div className="flex-box">
+              <div className="flex-item">
                 <h1>
                   The messaging app for <br className="visible-lg" />healthcare
                   teams
@@ -53,7 +64,18 @@ export default class Connect extends Component {
                   <span>free to use</span> with an unlimited number of people.
                 </h3>
 
-                <CreateTeam />
+                <Button
+                  bsStyle="primary"
+                  block
+                  href="https://teamstitch.com/signup/email"
+                  className="m-b-50 hidden-md hidden-lg"
+                >
+                  Get Started
+                </Button>
+
+                <div className="hidden-xs hidden-sm">
+                  <CreateTeam />
+                </div>
 
                 <a
                   className="mobile-video hidden-xs hidden-sm"
@@ -64,16 +86,16 @@ export default class Connect extends Component {
                   </span>
                   See How It Works
                 </a>
-              </Col>
+              </div>
 
-              <Col md={6}>
+              <div className="flex-item">
                 <img
-                  src="/images/homepage-platform.png"
+                  src="/images/cross-platform.png"
                   alt="Stitch Platform"
                   className="img-responsive"
                 />
-              </Col>
-            </Row>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -122,11 +144,9 @@ export default class Connect extends Component {
           Team knowledge at your fingertips, whenever you need it.
         </Feature>
 
-        <div className="additional-features text-center">
+        <div className="additional-features">
           <div className="container">
-            <h3 className="m-b-50">
-              Everything you need to keep your team in sync
-            </h3>
+            <h3>Everything you need to keep your team in sync</h3>
 
             <Row>
               <Col sm={6} md={4}>
@@ -136,11 +156,12 @@ export default class Connect extends Component {
                   </h4>
                   <p className="m-b-15">
                     View engagement statistics to understand the how, when and
-                    who of your team’s Stitch usage. Visualize robust graphs of
-                    messages sent and files shared for deep insight.
+                    who of your team’s Stitch usage.
                   </p>
 
-                  <a href="#">Learn more about Analytics</a>
+                  <a href="https://intercom.help/teamstitch/team-administration/usage-analytics">
+                    Learn more about Analytics
+                  </a>
                 </div>
               </Col>
 
@@ -150,12 +171,13 @@ export default class Connect extends Component {
                     <i className="fa fa-cogs" /> Security
                   </h4>
                   <p className="m-b-15">
-                    Control all the details. Stitch lets you fine-tune security
-                    features like our inactivity lockout interval, password
-                    complexity requirements and new user invite ability.
+                    Control all the details, like our inactivity lockout
+                    interval, password requirements and user invite ability.
                   </p>
 
-                  <a href="#">Learn more about Security</a>
+                  <a href="https://intercom.help/teamstitch/security-and-compliance">
+                    Learn more about Security
+                  </a>
                 </div>
               </Col>
 
@@ -165,12 +187,13 @@ export default class Connect extends Component {
                     <i className="fa fa-bell" /> Custom Alerts
                   </h4>
                   <p className="m-b-15">
-                    Help your team stay on top of conversations with our
-                    group-level alert settings. Every chat room has custom
-                    notification settings, so you never miss a beat.
+                    Use our group-level alert settings, to adjust custom
+                    notification settings for each chat room. Never miss a beat.
                   </p>
 
-                  <a href="#">Learn more about Notifications</a>
+                  <a href="https://intercom.help/teamstitch/stitch-connect/receiving-notifications/about-notifications">
+                    Learn more about Notifications
+                  </a>
                 </div>
               </Col>
 
@@ -180,12 +203,13 @@ export default class Connect extends Component {
                     <i className="fa fa-check-circle" /> Read Receipts
                   </h4>
                   <p className="m-b-15">
-                    No more guessing if your message has been read. Improve team
-                    accountability and reliability with easy-to-access read
-                    receipts for every message.
+                    Improve team accountability and reliability with
+                    easy-to-access read receipts for every message.
                   </p>
 
-                  <a href="#">Learn more about Read Receipts</a>
+                  <a href="https://intercom.help/teamstitch/stitch-connect/sending-messages/message-info">
+                    Learn more about Read Receipts
+                  </a>
                 </div>
               </Col>
 
@@ -195,92 +219,104 @@ export default class Connect extends Component {
                     <i className="fa fa-users" /> Administration
                   </h4>
                   <p className="m-b-15">
-                    Visualize your team and adjust user rights easily.
-                    Deactivate stale members with the click of a button. Need
-                    user access logs or data exports? We’ve got you covered.
+                    Adjust user rights, deactivate stale members, view access
+                    logs and create data exports with the click of a button.
                   </p>
 
-                  <a href="#">Learn more about Administration</a>
+                  <a href="https://intercom.help/teamstitch/team-administration">
+                    Learn more about Administration
+                  </a>
                 </div>
               </Col>
 
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-video-camera" /> Video Calls
+                    <i className="fa fa-video-camera" /> EHR Integrations
                   </h4>
                   <p className="m-b-15">
-                    Work efficiently with in-app voice and video calls. When
-                    your team needs more than text to get the message across,
-                    video calls are the perfect way to accelerate collaboration.
+                    When your team needs more than text messages, video calls
+                    are the perfect way to accelerate collaboration.
                   </p>
 
-                  <a href="#">Learn more about Video Calls</a>
+                  <a href="https://intercom.help/teamstitch/integrations/integrations">
+                    Learn more about Video Calls
+                  </a>
                 </div>
               </Col>
             </Row>
           </div>
         </div>
 
-        <div className="get-started-new text-center">
-          <div className="container">
-            <h2>Free to use, simple to start</h2>
+        <VisibilitySensor
+          active
+          onChange={this.onVisibleChange}
+          scrollCheck
+          partialVisibility
+        >
+          <div className={setupClass}>
+            <div className="setup-line" />
+            <div className="container">
+              <h2>Free to use, simple to start</h2>
 
-            <div className="steps m-b-20">
-              <Panel className="step-1">
-                <Panel.Body>
-                  <div className="number m-b-30">1</div>
-                  <h4 className="m-b-20">Create your account</h4>
+              <div className="steps">
+                <Panel className="step-1">
+                  <Panel.Body>
+                    <div className="number m-b-30">1</div>
+                    <h4 className="m-b-20">Create your account</h4>
 
-                  <p>
-                    Stitch is 100% free to start. Pick a team name and a custom
-                    URL you can use to access Stitch easily.
-                  </p>
-                </Panel.Body>
-              </Panel>
+                    <p>
+                      Stitch is 100% free to start. Pick a team name and a
+                      custom URL you can use to access Stitch easily.
+                    </p>
+                  </Panel.Body>
+                </Panel>
 
-              <Panel className="step-2">
-                <Panel.Body>
-                  <div className="number m-b-30">2</div>
-                  <h4 className="m-b-20">Invite your team</h4>
-                  <p>
-                    Stitch works best when your entire team is inside. Use
-                    Stitch with an unlimited number of users.
-                  </p>
-                </Panel.Body>
-              </Panel>
+                <Panel className="step-2">
+                  <Panel.Body>
+                    <div className="number m-b-30">2</div>
+                    <h4 className="m-b-20">Invite your team</h4>
+                    <p>
+                      Stitch works best when your entire team is inside. Use
+                      Stitch with an unlimited number of users.
+                    </p>
+                  </Panel.Body>
+                </Panel>
 
-              <Panel className="step-3">
-                <Panel.Body>
-                  <div className="number m-b-30">3</div>
-                  <h4 className="m-b-20">Add your chat rooms</h4>
-                  <p>
-                    Pick a few major topics that your team talks about
-                    frequently, and create your Stitch rooms to get started.
-                  </p>
-                </Panel.Body>
-              </Panel>
+                <Panel className="step-3">
+                  <Panel.Body>
+                    <div className="number m-b-30">3</div>
+                    <h4 className="m-b-20">Add your chat rooms</h4>
+                    <p>
+                      Pick a few major topics that your team talks about
+                      frequently, and create your Stitch rooms to get started.
+                    </p>
+                  </Panel.Body>
+                </Panel>
 
-              <Panel className="step-4">
-                <Panel.Body>
-                  <div className="number m-b-30">4</div>
-                  <h4 className="m-b-20">Communicate securely</h4>
-                  <p>
-                    Directly name patients and share patient files to
-                    collaborate more efficiently with HIPAA compliance.{" "}
-                  </p>
-                </Panel.Body>
-              </Panel>
+                <Panel className="step-4">
+                  <Panel.Body>
+                    <div className="number m-b-30">4</div>
+                    <h4 className="m-b-20">Communicate securely</h4>
+                    <p>
+                      Directly name patients and share patient files to
+                      collaborate more efficiently with HIPAA compliance.{" "}
+                    </p>
+                  </Panel.Body>
+                </Panel>
+              </div>
+
+              <div className="text-center">
+                <Button
+                  bsStyle="primary"
+                  href="https://teamstitch.com/signup/email"
+                >
+                  Get Started
+                </Button>
+              </div>
             </div>
-
-            <Button
-              bsStyle="primary"
-              href="https://teamstitch.com/signup/email"
-            >
-              Get Started
-            </Button>
           </div>
-        </div>
+        </VisibilitySensor>
 
         <Footer />
 
