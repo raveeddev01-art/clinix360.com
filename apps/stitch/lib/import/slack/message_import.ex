@@ -66,7 +66,8 @@ defmodule Stitch.Import.Slack.MessageImport do
         text_content: text_content,
         mentioned_user_ids: mentioned_user_id,
         user_id: creator.id,
-        group_id: group.id
+        group_id: group.id,
+        slack_import_id: message_json["id"]
       }
       |> Repo.insert()
     else
