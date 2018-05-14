@@ -77,7 +77,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     current_user = conn.assigns.current_user
 
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)},
+         {:authorized?, true} <-
+           {:authorized?, GroupAuthorization.can_view?(group, current_user)},
          {:message, %Message{} = message} <-
            {:message, MessageQueries.get_by_id(message_id, false)} do
       feed_surrounding =
@@ -204,7 +205,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
 
-    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)},
+    with {:authorized?, true} <-
+           {:authorized?, GroupAuthorization.can_view?(message.group, user)},
          {:ok, presigned_url} <- Upload.presign(message) do
       json(conn, %{presigned_url: presigned_url})
     else

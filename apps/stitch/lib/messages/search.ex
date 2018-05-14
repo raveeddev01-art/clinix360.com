@@ -46,6 +46,7 @@ defmodule Stitch.Messages.Search do
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
       |> apply_highlight(params[:search_terms], params[:exact_search_terms])
+      |> apply_skip(options)
       |> Repo.all()
 
     user
@@ -243,6 +244,16 @@ defmodule Stitch.Messages.Search do
       where: fragment("? %> ?", m.text_content, ^term),
       order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)]
     )
+  end
+
+  def apply_skip(query, opts) do
+    case Keyword.fetch(opts, :skip) do
+      {:ok, skip} ->
+        query |> offset([m], ^skip)
+
+      :error ->
+        query
+    end
   end
 
   def from_users_groups(user_id, opts) do
