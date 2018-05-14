@@ -61,7 +61,11 @@ class MessageContent extends Component {
     if (message.fields && message.fields.integration) {
       const i = message.fields.integration;
       const link = `https://drchrono.com/${i.data.type}/${i.data.id}`;
-      return <a href={link}>Link to drchrono</a>;
+      return (
+        <a target="_blank" href={link}>
+          Link to drchrono
+        </a>
+      );
     }
 
     return null;
