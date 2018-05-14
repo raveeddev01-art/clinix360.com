@@ -75,6 +75,7 @@ defmodule Stitch.Message do
     struct
     |> cast(params, [
       :type,
+      :fields,
       :request_id,
       :text_content,
       :mentioned_user_ids,

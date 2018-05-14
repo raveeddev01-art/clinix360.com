@@ -56,8 +56,21 @@ class MessageContent extends Component {
     );
   }
 
+  _renderIntegrationLink = () => {
+    const message = this.props.message;
+    if (message.fields && message.fields.integration) {
+      const i = message.fields.integration;
+      const link = `https://drchrono.com/${i.data.type}/${i.data.id}`;
+      return <a href={link}>Link to drchrono</a>;
+    }
+
+    return null;
+  };
+
   render() {
     const { inSearch, message } = this.props;
+    const userId = message.user.id;
+    const user = this.props.usersStore.usersById[userId];
     const textContent = inSearch
       ? message.highlighted_text_content || message.text_content
       : message.text_content;
@@ -80,6 +93,7 @@ class MessageContent extends Component {
             messageContentComponents
           )}
 
+          {user && user.is_bot ? this._renderIntegrationLink() : null}
           {this.renderLinkPreviews()}
           {this.renderEdited()}
           <Reactions
