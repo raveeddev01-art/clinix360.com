@@ -55,14 +55,14 @@ defmodule Stitch.Drchrono do
     }
 
     message = """
-    *Event*: Appointment created
-    *Patient*: #{patient["first_name"]} #{patient["last_name"]}
-    *Doctor*: #{doctor["first_name"]} #{doctor["last_name"]}
-    *Scheduled*: #{scheduled_date}
-    *Time*: #{scheduled_time}
-    *Reason*: #{reason}
-    *Duration*: #{duration} minutes
-    *Notes*: #{notes}
+    *Event* : Appointment created
+    *Patient* : #{patient["first_name"]} #{patient["last_name"]}
+    *Doctor* : #{doctor["first_name"]} #{doctor["last_name"]}
+    *Scheduled* : #{scheduled_date}
+    *Time* : #{scheduled_time}
+    *Reason* : #{reason}
+    *Duration* : #{duration} minutes
+    *Notes* : #{notes}
     """
 
     if integration.settings["appointmentCreate"] do
@@ -97,14 +97,14 @@ defmodule Stitch.Drchrono do
     }
 
     message = """
-    *Event*: Appointment modified
-    *Patient*: #{patient["first_name"]} #{patient["last_name"]}
-    *Doctor*: #{doctor["first_name"]} #{doctor["last_name"]}
-    *Scheduled*: #{scheduled_date}
-    *Time*: #{scheduled_time}
-    *Reason*: #{reason}
-    *Duration*: #{duration} minutes
-    *Notes*: #{notes}
+    *Event* : Appointment modified
+    *Patient* : #{patient["first_name"]} #{patient["last_name"]}
+    *Doctor* : #{doctor["first_name"]} #{doctor["last_name"]}
+    *Scheduled* : #{scheduled_date}
+    *Time* : #{scheduled_time}
+    *Reason* : #{reason}
+    *Duration* : #{duration} minutes
+    *Notes* : #{notes}
     """
 
     if integration.settings["appointmentModify"] do
@@ -126,12 +126,12 @@ defmodule Stitch.Drchrono do
     notes = value_or_na(payload["notes"])
 
     message = """
-    *Event*: Appointment deleted
-    *Scheduled*: #{scheduled_date}
-    *Time*: #{scheduled_time}
-    *Reason*: #{reason}
-    *Duration*: #{duration} minutes
-    *Notes*: #{notes}
+    *Event* : Appointment deleted
+    *Scheduled* : #{scheduled_date}
+    *Time* : #{scheduled_time}
+    *Reason* : #{reason}
+    *Duration* : #{duration} minutes
+    *Notes* : #{notes}
     """
 
     if integration.settings["appointmentDelete"] do
@@ -150,16 +150,26 @@ defmodule Stitch.Drchrono do
     home_phone = value_or_na(payload["home_phone"])
     cell_phone = value_or_na(payload["cell_phone"])
 
+    integration_metadata = %{
+      integration: %{
+        type: "drchrono",
+        data: %{
+          type: "patients",
+          id: payload["id"]
+        }
+      }
+    }
+
     message = """
-    *Event*: Patient created
-    *Patient*: #{patient_name}
-    *Doctor*: #{doctor_name}
-    *Home phone*: #{home_phone}
-    *Cell phone*: #{cell_phone}
+    *Event* : Patient created
+    *Patient* : #{patient_name}
+    *Doctor* : #{doctor_name}
+    *Home phone* : #{home_phone}
+    *Cell phone* : #{cell_phone}
     """
 
     if integration.settings["patientCreate"] do
-      Bot.post_message(integration.team_id, integration.group_id, message)
+      Bot.post_message(integration.team_id, integration.group_id, message, integration_metadata)
     end
   end
 
@@ -174,16 +184,26 @@ defmodule Stitch.Drchrono do
     home_phone = value_or_na(payload["home_phone"])
     cell_phone = value_or_na(payload["cell_phone"])
 
+    integration_metadata = %{
+      integration: %{
+        type: "drchrono",
+        data: %{
+          type: "patients",
+          id: payload["id"]
+        }
+      }
+    }
+
     message = """
-    *Event*: Patient modified
-    *Patient*: #{patient_name}
-    *Doctor*: #{doctor_name}
-    *Home phone*: #{home_phone}
-    *Cell phone*: #{cell_phone}
+    *Event* : Patient modified
+    *Patient* : #{patient_name}
+    *Doctor* : #{doctor_name}
+    *Home phone* : #{home_phone}
+    *Cell phone* : #{cell_phone}
     """
 
     if integration.settings["patientModify"] do
-      Bot.post_message(integration.team_id, integration.group_id, message)
+      Bot.post_message(integration.team_id, integration.group_id, message, integration_metadata)
     end
   end
 
@@ -197,11 +217,11 @@ defmodule Stitch.Drchrono do
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
 
     message = """
-    *Event*: Patient problem created
-    *Patient*: #{patient_name}
-    *Doctor*: #{doctor_name}
-    *Name*: #{value_or_na(payload["name"])}
-    *Notes*: #{value_or_na(payload["notes"])}
+    *Event* : Patient problem created
+    *Patient* : #{patient_name}
+    *Doctor* : #{doctor_name}
+    *Name* : #{value_or_na(payload["name"])}
+    *Notes* : #{value_or_na(payload["notes"])}
     """
 
     if integration.settings["patientProblemCreate"] do
@@ -219,11 +239,11 @@ defmodule Stitch.Drchrono do
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
 
     message = """
-    *Event*: Patient problem modified
-    *Patient*: #{patient_name}
-    *Doctor*: #{doctor_name}
-    *Name*: #{value_or_na(payload["name"])}
-    *Notes*: #{value_or_na(payload["notes"])}
+    *Event* : Patient problem modified
+    *Patient* : #{patient_name}
+    *Doctor* : #{doctor_name}
+    *Name* : #{value_or_na(payload["name"])}
+    *Notes* : #{value_or_na(payload["notes"])}
     """
 
     if integration.settings["patientProblemModify"] do
@@ -243,11 +263,11 @@ defmodule Stitch.Drchrono do
     reaction = value_or_na(payload["reaction"])
 
     message = """
-    *Event*: Patient allergy created
-    *Patient*: #{patient_name}
-    *Doctor*: #{doctor_name}
-    *Reaction*: #{reaction}
-    *Notes*: #{notes}
+    *Event* : Patient allergy created
+    *Patient* : #{patient_name}
+    *Doctor* : #{doctor_name}
+    *Reaction* : #{reaction}
+    *Notes* : #{notes}
     """
 
     if integration.settings["patientAllergyCreate"] do
@@ -267,11 +287,11 @@ defmodule Stitch.Drchrono do
     reaction = value_or_na(payload["reaction"])
 
     message = """
-    *Event*: Patient allergy modified
-    *Patient*: #{patient_name}
-    *Doctor*: #{doctor_name}
-    *Reaction*: #{reaction}
-    *Notes*: #{notes}
+    *Event* : Patient allergy modified
+    *Patient* : #{patient_name}
+    *Doctor* : #{doctor_name}
+    *Reaction* : #{reaction}
+    *Notes* : #{notes}
     """
 
     if integration.settings["patientAllergyModify"] do
@@ -291,11 +311,11 @@ defmodule Stitch.Drchrono do
     indication = value_or_na(payload["indication"])
 
     message = """
-    *Event*: Patient medication created
-    *Patient*: #{patient_name}
-    *Doctor*: #{doctor_name}
-    *Medication*: #{medication_name}
-    *Indication*: #{indication}
+    *Event* : Patient medication created
+    *Patient* : #{patient_name}
+    *Doctor* : #{doctor_name}
+    *Medication* : #{medication_name}
+    *Indication* : #{indication}
     """
 
     if integration.settings["patientMedicationCreate"] do
@@ -315,11 +335,11 @@ defmodule Stitch.Drchrono do
     indication = value_or_na(payload["indication"])
 
     message = """
-    *Event*: Patient medication modified
-    *Patient*: #{patient_name}
-    *Doctor*: #{doctor_name}
-    *Medication*: #{medication_name}
-    *Indication*: #{indication}
+    *Event* : Patient medication modified
+    *Patient* : #{patient_name}
+    *Doctor* : #{doctor_name}
+    *Medication* : #{medication_name}
+    *Indication* : #{indication}
     """
 
     if integration.settings["patientMedicationModify"] do
