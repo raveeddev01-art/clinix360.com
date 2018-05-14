@@ -94,7 +94,7 @@ defmodule Stitch.Import.Slack.UserImport do
     if first_name == nil || first_name == "" do
       try_split(get_in(user_json, ["profile", "real_name"])) |> List.first() ||
         try_split(get_in(user_json, ["profile", "display_name"])) |> List.first() ||
-        user_json["name"]
+        user_json["name"] |> String.capitalize()
     else
       first_name
     end
@@ -107,7 +107,7 @@ defmodule Stitch.Import.Slack.UserImport do
     if last_name == nil || last_name == "" do
       try_split(get_in(user_json, ["profile", "real_name"])) |> List.last() ||
         try_split(get_in(user_json, ["profile", "display_name"])) |> List.last() ||
-        user_json["name"]
+        user_json["name"] |> String.capitalize()
     else
       last_name
     end
