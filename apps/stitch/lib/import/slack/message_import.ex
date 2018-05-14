@@ -118,10 +118,10 @@ defmodule Stitch.Import.Slack.MessageImport do
         end
 
       _full_text, "https://" <> _ = url ->
-        url
+        url |> String.split("|") |> List.first()
 
       _full_text, "http://" <> _ = url ->
-        url
+        url |> String.split("|") |> List.first()
 
       full_text, _captured ->
         full_text
