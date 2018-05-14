@@ -17,8 +17,8 @@ defmodule Stitch.Messages.Search do
   # DONE: medication
   # "medication changes"
   # walk -> walks, walking, walked
-  # seren* -> serene, serenity, serendipity, serendipitous
-  # teddy -bear
+  # seren* -> serene, serenity, serendipity, serendipitous (note: not yet implemented)
+  # teddy -bear (note: not yet implemented)
 
   # in:#emergency-room
   # in:@bharat,jonathan
@@ -283,11 +283,11 @@ defmodule Stitch.Messages.Search do
         String.starts_with?(p, "\"") && String.ends_with?(p, "\"") ->
           Map.update!(params, :exact_search_terms, fn ps -> [p | ps] end)
 
-        String.ends_with?(p, "*") ->
-          Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
+        # String.ends_with?(p, "*") ->
+        #   Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
 
-        String.starts_with?(p, "-") ->
-          Map.update!(params, :minus_terms, fn ps -> [p | ps] end)
+        # String.starts_with?(p, "-") ->
+        #   Map.update!(params, :minus_terms, fn ps -> [p | ps] end)
 
         String.starts_with?(p, "in:") ->
           Map.update!(params, :room_terms, fn ps -> [p | ps] end)
