@@ -89,6 +89,7 @@ defmodule Stitch.Drchrono.Token do
       |> Enum.join("&")
 
     IO.puts("=====")
+    IO.inspect(integration)
     IO.inspect(params)
 
     response =
