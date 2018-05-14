@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
+import Button from "react-bootstrap/lib/Button";
 
 import CreateTeam from "../components/create-team";
 import OurCustomers from "../components/our-customers";
@@ -42,61 +43,49 @@ export default class Connect extends Component {
         <div className="subheader">
           <div className="container">
             <Row>
-              <Col md={6} xsHidden smHidden>
-                <div className="header-video">
-                  <img
-                    src="/images/homepage-platform.png"
-                    alt="Stitch Platform"
-                    className="img-responsive"
-                  />
-                  <div
-                    className="play-video text-center"
-                    onClick={this.videoModal}
-                  >
-                    <i className="fa fa-play" />
-                  </div>
-                </div>
-              </Col>
-
-              <Col sm={12} md={6}>
+              <Col md={6}>
                 <h1>
                   The messaging app for <br className="visible-lg" />healthcare
                   teams
                 </h1>
                 <h3 className="m-b-30">
-                  Free to use with unlimited number of people.
+                  Stitch Connect is <span>HIPAA compliant</span> and{" "}
+                  <span>free to use</span> with an unlimited number of people.
                 </h3>
 
                 <CreateTeam />
 
                 <a
-                  className="mobile-video hidden-md hidden-lg"
+                  className="mobile-video hidden-xs hidden-sm"
                   onClick={this.videoModal}
                 >
-                  <i className="fa fa-play m-r-5" /> See How It Works
+                  <span className="play-btn m-r-5">
+                    <i className="fa fa-play" />
+                  </span>
+                  See How It Works
                 </a>
+              </Col>
+
+              <Col md={6}>
+                <img
+                  src="/images/homepage-platform.png"
+                  alt="Stitch Platform"
+                  className="img-responsive"
+                />
               </Col>
             </Row>
           </div>
         </div>
-
-        <OurCustomers />
 
         <Feature
           featureClassName={flipped ? "alt" : ""}
           heading="Get to the right person at the right time."
           image="/images/connect-feature-1-new.png"
         >
-          <span className="m-b-20">
-            Stitch Connect lets you organize conversations the way your team
-            works, so you always know where to communicate.
-          </span>
-          <span>
-            Public and private rooms bring healthcare teams together for
-            powerful team dialogue. Easily discuss patients, events, tasks and
-            more. Direct messages enable instant 1-to-1 communication. No more
-            pagers, email, fax machines or phone calls.
-          </span>
+          Public and private rooms bring healthcare teams together for powerful
+          team dialogue. Easily discuss patients, events, tasks and more. Direct
+          messages enable instant 1-to-1 communication. No more pagers, texting,
+          email or phone calls.
         </Feature>
 
         <Feature
@@ -104,16 +93,10 @@ export default class Connect extends Component {
           heading="Easily share information across the team"
           image="/images/connect-feature-2-new.png"
         >
-          <span className="m-b-20">
-            Healthcare workflows are filled with files: patient charts, labs,
-            images, intake forms and more. Stitch solves the problems of sharing
-            siloed healthcare data both inside and outside your team.{" "}
-          </span>
-          <span>
-            Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
-            Word, Excel, PowerPoint, and more. You can preview them right in the
-            app, without the headache of downloading files to your device.
-          </span>
+          Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
+          Word, Excel, PowerPoint, and more. You can preview them right in the
+          app, without the headache of downloading files to your device. Start
+          sharing patient charts, labs, images, intake forms and more.
         </Feature>
 
         <Feature
@@ -121,17 +104,11 @@ export default class Connect extends Component {
           heading="Choose notifications that matter to you"
           image="/images/connect-feature-3-new.png"
         >
-          <span className="m-b-20">
-            From the front desk to the clinical room, communication never stops.
-            In today’s modern practice, it’s hard to stay focused and keep track
-            of so many communication streams.{" "}
-          </span>
-          <span>
-            With Stitch, you can apply custom notification preferences to every
-            conversation. Say goobye to cluttered inboxes, noisy pagers and
-            unruly text threads. Best of all, Stitch goes wherever you go with
-            native Mac, Windows, iOS and Android apps.
-          </span>
+          With Stitch, you can apply custom notification preferences to every
+          conversation, so you can stay focused and in the loop. Say goobye to
+          cluttered inboxes, noisy pagers and unruly text threads. Best of all,
+          Stitch goes wherever you go with native Mac, Windows, iOS and Android
+          apps.
         </Feature>
 
         <Feature
@@ -139,17 +116,10 @@ export default class Connect extends Component {
           heading="Instantly find answers when you need them"
           image="/images/connect-feature-4-new.png"
         >
-          <span className="m-b-20">
-            Your communications are your most valuable asset. Yet, thousands of
-            team decisions, discoveries and pieces of useful information are
-            lost in SMS, email, hallway chats and phone calls.
-          </span>
-          <span>
-            Stitch turns historical conversations into the ultimate source of
-            answers: it’s built from the ground up for deep search. Every
-            message, every file, every comment is carefully archived and made
-            searchable. Team knowledge at your fingertips, whenever you need it.
-          </span>
+          Stitch turns historical conversations into the ultimate source of
+          answers: it’s built from the ground up for deep search. Every message,
+          every file, every comment is carefully archived and made searchable.
+          Team knowledge at your fingertips, whenever you need it.
         </Feature>
 
         <div className="additional-features text-center">
@@ -159,7 +129,7 @@ export default class Connect extends Component {
             </h3>
 
             <Row>
-              <Col sm={4}>
+              <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
                     <i className="fa fa-bar-chart" /> Analytics
@@ -174,7 +144,7 @@ export default class Connect extends Component {
                 </div>
               </Col>
 
-              <Col sm={4}>
+              <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
                     <i className="fa fa-cogs" /> Security
@@ -189,7 +159,7 @@ export default class Connect extends Component {
                 </div>
               </Col>
 
-              <Col sm={4}>
+              <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
                     <i className="fa fa-bell" /> Custom Alerts
@@ -204,7 +174,7 @@ export default class Connect extends Component {
                 </div>
               </Col>
 
-              <Col sm={4}>
+              <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
                     <i className="fa fa-check-circle" /> Read Receipts
@@ -219,7 +189,7 @@ export default class Connect extends Component {
                 </div>
               </Col>
 
-              <Col sm={4}>
+              <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
                     <i className="fa fa-users" /> Administration
@@ -234,7 +204,7 @@ export default class Connect extends Component {
                 </div>
               </Col>
 
-              <Col sm={4}>
+              <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
                     <i className="fa fa-video-camera" /> Video Calls
@@ -256,7 +226,7 @@ export default class Connect extends Component {
           <div className="container">
             <h2>Free to use, simple to start</h2>
 
-            <div className="steps">
+            <div className="steps m-b-20">
               <Panel className="step-1">
                 <Panel.Body>
                   <div className="number m-b-30">1</div>
@@ -302,6 +272,13 @@ export default class Connect extends Component {
                 </Panel.Body>
               </Panel>
             </div>
+
+            <Button
+              bsStyle="primary"
+              href="https://teamstitch.com/signup/email"
+            >
+              Get Started
+            </Button>
           </div>
         </div>
 

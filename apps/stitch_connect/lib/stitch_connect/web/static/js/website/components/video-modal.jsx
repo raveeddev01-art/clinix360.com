@@ -12,7 +12,10 @@ class VideoModal extends Component {
       <Modal show={!!state} onHide={closeModal} className="video-modal">
         <Modal.Body>
           <ResponsiveEmbed a16by9>
-            <embed src="https://www.youtube.com/embed/lDnzr-OrYWU" />
+            <embed
+              src="https://www.youtube.com/embed/lDnzr-OrYWU?rel=0&amp;autoplay=1&amp;showinfo=0"
+              allowFullScreen
+            />
           </ResponsiveEmbed>
         </Modal.Body>
       </Modal>
