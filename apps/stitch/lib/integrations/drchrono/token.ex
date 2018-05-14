@@ -88,10 +88,6 @@ defmodule Stitch.Drchrono.Token do
       ]
       |> Enum.join("&")
 
-    IO.puts("=====")
-    IO.inspect(integration)
-    IO.inspect(params)
-
     response =
       HTTPoison.post("https://drchrono.com/o/token/", params, [
         {"Content-Type", "application/x-www-form-urlencoded"}
@@ -100,9 +96,6 @@ defmodule Stitch.Drchrono.Token do
     case response do
       {:ok, response} ->
         response_json = Poison.decode!(response.body)
-
-        IO.inspect(response_json)
-        IO.puts("=====")
 
         expiration_in_unix =
           (DateTime.utc_now() |> DateTime.to_unix()) + response_json["expires_in"]
