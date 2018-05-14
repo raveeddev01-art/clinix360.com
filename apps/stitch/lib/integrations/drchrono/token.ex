@@ -78,7 +78,7 @@ defmodule Stitch.Drchrono.Token do
 
     params =
       [
-        "refresh_token=#{integration.credentials["refreshToken"]}",
+        "refresh_token=#{integration.credentials["refresh_token"]}",
         "grant_type=refresh_token",
         "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono/#{
           integration.webhook_token
