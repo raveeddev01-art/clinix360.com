@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -12,21 +11,7 @@ const description = "";
 @inject("userStore")
 @observer
 class TimezonePanel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      timezone: ""
-    };
-  }
-
-  _onToggle = () => {
-    this.setState({
-      timezone: this.props.userStore.timezone
-    });
-  };
-
   render() {
-    const { timezone } = this.state;
     return (
       <SettingPanel
         title={title}
@@ -39,7 +24,7 @@ class TimezonePanel extends Component {
           <ControlLabel>Time zone</ControlLabel>
           <FormControl
             type="timezone"
-            value={timezone}
+            value={this.props.userStore.timezone}
             onChange={() => null}
             disabled
           />

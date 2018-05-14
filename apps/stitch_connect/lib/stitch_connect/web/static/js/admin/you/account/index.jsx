@@ -85,11 +85,7 @@ class AccountSettings extends Component {
             onError={this.onError}
             hideAlert={this.hideAlert}
           />
-          <TimezonePanel
-            onSuccess={this.onSuccess}
-            onError={this.onError}
-            hideAlert={this.hideAlert}
-          />
+          <TimezonePanel />
           {this._nonAdminsOnly() && <DeactivatePanel onError={this.onError} />}
         </Panel.Body>
       </Panel>
