@@ -42,26 +42,28 @@ class OnboardInputCard extends Component {
       ...otherProps
     } = this.props;
     return (
-      <OnboardCard
-        {...otherProps}
-        onNext={this._onNext}
-        description={children}
-        disableNext={disableNext || (isRequired && !value)}
-      >
-        <FormGroup bsSize="large">
-          <FormControl
-            required={isRequired}
-            autoFocus
-            type={type}
-            placeholder={placeholder}
-            value={value}
-            onChange={this._onChange}
-            onFocus={this._onFocus}
-            maxLength={maxLength}
-          />
-        </FormGroup>
-        <HelpBlock className="m-b-20">{helperText}</HelpBlock>
-      </OnboardCard>
+      <div>
+        <OnboardCard
+          {...otherProps}
+          onNext={this._onNext}
+          description={children}
+          disableNext={disableNext || (isRequired && !value)}
+        >
+          <FormGroup bsSize="large">
+            <FormControl
+              required={isRequired}
+              autoFocus
+              type={type}
+              placeholder={placeholder}
+              value={value}
+              onChange={this._onChange}
+              onFocus={this._onFocus}
+              maxLength={maxLength}
+            />
+          </FormGroup>
+          <HelpBlock className="m-b-20">{helperText}</HelpBlock>
+        </OnboardCard>
+      </div>
     );
   }
 }
