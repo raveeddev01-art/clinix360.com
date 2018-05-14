@@ -58,10 +58,11 @@ class MessageContent extends Component {
 
   _renderIntegrationLink = () => {
     const message = this.props.message;
-    console.log(message);
     if (message.fields && message.fields.integration) {
-      console.log(message.fields);
-      return <a href="#">Link to drchrono</a>;
+      const i = message.fields.integration;
+      const link = `https://${i.username}.drchrono.com/${i.data.type}/${i.data
+        .id}`;
+      return <a href={link}>Link to drchrono</a>;
     }
 
     return null;
@@ -71,7 +72,7 @@ class MessageContent extends Component {
     const { message } = this.props;
     const userId = message.user.id;
     const user = this.props.usersStore.usersById[userId];
-    console.log("User:", user);
+
     return (
       <div
         properties={{ target: "_blank", className: "message-link" }}

@@ -48,6 +48,7 @@ defmodule Stitch.Drchrono do
       integration: %{
         type: "drchrono",
         data: %{
+          username: integration.credentials["username"],
           type: "appointments",
           id: payload["id"]
         }
@@ -90,6 +91,7 @@ defmodule Stitch.Drchrono do
       integration: %{
         type: "drchrono",
         data: %{
+          username: integration.credentials["username"],
           type: "appointments",
           id: payload["id"]
         }
@@ -154,6 +156,7 @@ defmodule Stitch.Drchrono do
       integration: %{
         type: "drchrono",
         data: %{
+          username: integration.credentials["username"],
           type: "patients",
           id: payload["id"]
         }
@@ -188,6 +191,7 @@ defmodule Stitch.Drchrono do
       integration: %{
         type: "drchrono",
         data: %{
+          username: integration.credentials["username"],
           type: "patients",
           id: payload["id"]
         }
