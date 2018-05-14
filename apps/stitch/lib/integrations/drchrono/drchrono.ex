@@ -44,8 +44,15 @@ defmodule Stitch.Drchrono do
     duration = value_or_na(payload["duration"])
     notes = value_or_na(payload["notes"])
 
-    resource_url = "appointments/#{payload["id"]}"
-    resource_permalink = permalink(integration, resource_url)
+    integration_metadata = %{
+      integration: %{
+        type: "drchrono",
+        data: %{
+          type: "appointments",
+          id: payload["id"]
+        }
+      }
+    }
 
     message = """
     *Event*: Appointment created
@@ -59,7 +66,7 @@ defmodule Stitch.Drchrono do
     """
 
     if integration.settings["appointmentCreate"] do
-      Bot.post_message(integration.team_id, integration.group_id, message)
+      Bot.post_message(integration.team_id, integration.group_id, message, integration_metadata)
     end
   end
 
@@ -79,8 +86,15 @@ defmodule Stitch.Drchrono do
     duration = value_or_na(payload["duration"])
     notes = value_or_na(payload["notes"])
 
-    resource_url = "appointments/#{payload["id"]}"
-    resource_permalink = permalink(integration, resource_url)
+    integration_metadata = %{
+      integration: %{
+        type: "drchrono",
+        data: %{
+          type: "appointments",
+          id: payload["id"]
+        }
+      }
+    }
 
     message = """
     *Event*: Appointment modified
@@ -94,7 +108,7 @@ defmodule Stitch.Drchrono do
     """
 
     if integration.settings["appointmentModify"] do
-      Bot.post_message(integration.team_id, integration.group_id, message)
+      Bot.post_message(integration.team_id, integration.group_id, message, integration_metadata)
     end
   end
 
