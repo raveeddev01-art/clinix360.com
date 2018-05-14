@@ -100,19 +100,13 @@ const firstCharNotSpace = (tag, string) => {
   return !!getStringBetweenOccurances(tag)(string)[0].trim();
 };
 
-const spaceOrEndAfterSecondOccurance = (tag, string) => {
-  const nextChar = string.slice(lengthTilSecondOccurance(tag)(string))[0];
-  return !nextChar || (nextChar && !nextChar.trim());
-};
-
-const standardTagRules = (tag, allowInitialSpace = false) => (string, opts) => {
+const standardTagRules = tag => (string, opts) => {
   return (
     startsWithAndHasAnother(tag, string) &&
     !newLineIsBetweenOccurances(tag, string) &&
     !blankIsBetweenOccurances(tag, string) &&
-    (allowInitialSpace || firstCharNotSpace(tag, string)) &&
-    opts.followingSpaceOrNewline &&
-    spaceOrEndAfterSecondOccurance(tag, string)
+    firstCharNotSpace(tag, string) &&
+    opts.followingSpaceOrNewline
   );
 };
 
@@ -199,7 +193,13 @@ const highlight = {
   ),
   getWrappedContent: getStringBetweenOccurances("`"),
   getContentOffset: lengthTilSecondOccurance("`"),
-  isMatch: standardTagRules("`", true)
+  isMatch: string => {
+    return (
+      startsWithAndHasAnother("`", string) &&
+      !newLineIsBetweenOccurances("`", string) &&
+      !blankIsBetweenOccurances("`", string)
+    );
+  }
 };
 
 const multilineBlockquote = {
