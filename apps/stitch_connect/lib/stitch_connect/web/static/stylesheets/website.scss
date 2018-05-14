@@ -615,6 +615,117 @@
         }
       }
     }
+
+    .get-started-new {
+      background: #fff;
+      padding: 60px 0;
+      overflow: hidden;
+
+      h2 {
+        color: $brand-primary;
+        font-weight: 700;
+        margin: 0 0 40px;
+      }
+
+      .steps {
+        display: flex;
+        justify-content: center;
+        @media (max-width: 940px) {
+          flex-direction: column;
+        }
+      }
+
+      .panel {
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        border: 2px solid #f0f0f0;
+        box-shadow: 2px 4px 15px rgba(155,155,155,.15);
+        
+        @media (max-width: 940px) {
+          max-width: 370px;
+          height: 310px;
+          margin: 0 auto 20px;
+          -webkit-transform: translateY(100%);
+          transform: translateY(100%);
+          -webkit-animation: mobileAnimation .8s;
+          animation: mobileAnimation .8s;
+          -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+          -webkit-animation-timing-function: ease-out;
+          animation-timing-function: ease-out;
+          -webkit-animation-delay: 0s;
+          animation-delay: 0s;
+        }
+
+        @media (min-width: 941px) {
+          max-width: 240px;
+          height: 290px;
+          -webkit-transform: translatex(100%);
+          transform: translateX(100%);
+          animation: desktopAnimation .8s;
+          animation-fill-mode: forwards;
+          animation-timing-function: ease-in;
+          animation-delay: 0s;
+
+          &:not(:first-child) {
+            margin-left: 25px;
+          }
+        }
+
+        &.step-2 {
+          animation-delay: .4s;
+        }
+
+        &.step-3 {
+          animation-delay: .8s;
+        }
+
+        &.step-4 {
+          animation-delay: 1.2s;
+        }
+
+        .number {
+          width: 40px;
+          height: 40px;
+          color: #fff;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 40px; 
+          background: $brand-primary;
+          border-radius: 50%;
+          margin: 0 auto;
+        }
+      }
+
+      @keyframes desktopAnimation {
+        0% {
+          opacity: 0;
+          -webkit-transform: translateX(100%);
+          transform: translateX(100%)
+        }
+    
+        to {
+          opacity: 1;
+          -webkit-transform: translateX(0);
+          transform: translateX(0)
+        }
+      }
+
+      @keyframes mobileAnimation {
+        0% {
+          opacity: 0;
+          -webkit-transform: translateY(100%);
+          transform: translateY(100%)
+        }
+
+        to {
+          opacity: 1;
+          -webkit-transform: translateY(0);
+          transform: translateY(0)
+        }
+      }
+    }
   }
 
   .engage-feature-image-2 {

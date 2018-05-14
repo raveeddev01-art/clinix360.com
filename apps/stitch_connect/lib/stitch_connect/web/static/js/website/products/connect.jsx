@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
+import Panel from "react-bootstrap/lib/Panel";
 
 import CreateTeam from "../components/create-team";
 import OurCustomers from "../components/our-customers";
 import Feature from "../components/feature";
 import Footer from "../components/footer";
-import GetStarted from "../components/get-started";
+// import GetStarted from "../components/get-started";
 import Header from "../components/header";
 import VideoModal from "../components/video-modal";
 
@@ -251,7 +252,59 @@ export default class Connect extends Component {
           </div>
         </div>
 
-        <GetStarted />
+        <div className="get-started-new text-center">
+          <div className="container">
+            <h2>Free to use, simple to start</h2>
+
+            <div className="steps">
+              <Panel className="step-1">
+                <Panel.Body>
+                  <div className="number m-b-30">1</div>
+                  <h4 className="m-b-20">Create your account</h4>
+
+                  <p>
+                    Stitch is 100% free to start. Pick a team name and a custom
+                    URL you can use to access Stitch easily.
+                  </p>
+                </Panel.Body>
+              </Panel>
+
+              <Panel className="step-2">
+                <Panel.Body>
+                  <div className="number m-b-30">2</div>
+                  <h4 className="m-b-20">Invite your team</h4>
+                  <p>
+                    Stitch works best when your entire team is inside. Use
+                    Stitch with an unlimited number of users.
+                  </p>
+                </Panel.Body>
+              </Panel>
+
+              <Panel className="step-3">
+                <Panel.Body>
+                  <div className="number m-b-30">3</div>
+                  <h4 className="m-b-20">Add your chat rooms</h4>
+                  <p>
+                    Pick a few major topics that your team talks about
+                    frequently, and create your Stitch rooms to get started.
+                  </p>
+                </Panel.Body>
+              </Panel>
+
+              <Panel className="step-4">
+                <Panel.Body>
+                  <div className="number m-b-30">4</div>
+                  <h4 className="m-b-20">Communicate securely</h4>
+                  <p>
+                    Directly name patients and share patient files to
+                    collaborate more efficiently with HIPAA compliance.{" "}
+                  </p>
+                </Panel.Body>
+              </Panel>
+            </div>
+          </div>
+        </div>
+
         <Footer />
 
         <VideoModal state={this.state.modal} closeModal={this.closeModal} />
