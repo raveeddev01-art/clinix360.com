@@ -85,7 +85,7 @@ class MessageContent extends Component {
             messageTextToComponents(message.text_content || "")
           )}
 
-          {this.user && this.user.is_bot ? this._renderIntegrationLink() : null}
+          {user && user.is_bot ? this._renderIntegrationLink() : null}
 
           {this.renderLinkPreviews()}
           {this.renderEdited()}
