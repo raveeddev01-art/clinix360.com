@@ -88,6 +88,9 @@ defmodule Stitch.Drchrono.Token do
       ]
       |> Enum.join("&")
 
+    IO.puts("=====")
+    IO.inspect(params)
+
     response =
       HTTPoison.post("https://drchrono.com/o/token/", params, [
         {"Content-Type", "application/x-www-form-urlencoded"}
@@ -97,7 +100,6 @@ defmodule Stitch.Drchrono.Token do
       {:ok, response} ->
         response_json = Poison.decode!(response.body)
 
-        IO.puts("=====")
         IO.inspect(response_json)
         IO.puts("=====")
 
