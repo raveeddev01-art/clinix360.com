@@ -17,8 +17,8 @@ defmodule Stitch.Messages.Search do
   # DONE: medication
   # "medication changes"
   # walk -> walks, walking, walked
-  # seren* -> serene, serenity, serendipity, serendipitous
-  # teddy -bear
+  # seren* -> serene, serenity, serendipity, serendipitous (note: not yet implemented)
+  # teddy -bear (note: not yet implemented)
 
   # in:#emergency-room
   # in:@bharat,jonathan
@@ -45,7 +45,7 @@ defmodule Stitch.Messages.Search do
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
-      |> apply_highlight(params[:search_terms])
+      |> apply_highlight(params[:search_terms], params[:exact_search_terms])
       |> Repo.all()
 
     user
@@ -53,8 +53,12 @@ defmodule Stitch.Messages.Search do
     |> Message.Reaction.apply_reactions()
   end
 
-  def apply_highlight(query, search_terms) do
-    search_term = Enum.join(search_terms, " | ")
+  def apply_highlight(query, search_terms, exact_search_terms) do
+    exact_search_terms_without_quotes =
+      Enum.map(exact_search_terms, &strip_exact_search_delimiters/1)
+
+    all_search_terms = search_terms ++ exact_search_terms_without_quotes
+    search_term = Enum.join(all_search_terms, " | ")
 
     query =
       from(
@@ -220,10 +224,7 @@ defmodule Stitch.Messages.Search do
 
   def apply_exact_search_terms(query, exact_search_terms) do
     Enum.reduce(exact_search_terms, query, fn term, query ->
-      term =
-        term
-        |> String.replace_prefix("\"", "")
-        |> String.replace_suffix("\"", "")
+      term = strip_exact_search_delimiters(term)
 
       from(
         m in query,
@@ -282,11 +283,11 @@ defmodule Stitch.Messages.Search do
         String.starts_with?(p, "\"") && String.ends_with?(p, "\"") ->
           Map.update!(params, :exact_search_terms, fn ps -> [p | ps] end)
 
-        String.ends_with?(p, "*") ->
-          Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
+        # String.ends_with?(p, "*") ->
+        #   Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
 
-        String.starts_with?(p, "-") ->
-          Map.update!(params, :minus_terms, fn ps -> [p | ps] end)
+        # String.starts_with?(p, "-") ->
+        #   Map.update!(params, :minus_terms, fn ps -> [p | ps] end)
 
         String.starts_with?(p, "in:") ->
           Map.update!(params, :room_terms, fn ps -> [p | ps] end)
@@ -325,5 +326,9 @@ defmodule Stitch.Messages.Search do
     {{year, month, day}, {hour, minute, second}}
     |> Timex.to_datetime(timezone)
     |> Timex.Timezone.convert("Etc/UTC")
+  end
+
+  defp strip_exact_search_delimiters(term) do
+    term |> String.replace_prefix("\"", "") |> String.replace_suffix("\"", "")
   end
 end
