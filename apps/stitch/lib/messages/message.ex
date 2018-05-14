@@ -184,10 +184,6 @@ defmodule Stitch.Message do
     attrs =
       Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
 
-    IO.puts("==========")
-    IO.inspect(attrs)
-    IO.puts("==========")
-
     result =
       Multi.new()
       |> Multi.insert(:message, message_changeset(message_struct, attrs))
