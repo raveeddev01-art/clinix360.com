@@ -23,11 +23,6 @@ defmodule Stitch.Drchrono do
     end
   end
 
-  def permalink(integration, resource_url) do
-    username = integration.credentials["username"]
-    "https://#{username}.drchrono.com/#{resource_url}"
-  end
-
   def handle_webhook(integration, "APPOINTMENT_CREATE", params) do
     payload = params["object"]
 
