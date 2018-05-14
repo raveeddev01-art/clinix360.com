@@ -60,16 +60,26 @@ defmodule Stitch.Import.Slack.MessageImport do
       )
 
     if text && inserted_at && creator do
-      %Message{
-        inserted_at: inserted_at,
-        updated_at: inserted_at,
-        text_content: text_content,
-        mentioned_user_ids: mentioned_user_id,
-        user_id: creator.id,
-        group_id: group.id,
-        slack_import_id: message_json["id"]
-      }
-      |> Repo.insert()
+      if Repo.get_by(
+           Message,
+           group_id: group.id,
+           user_id: creator.id,
+           slack_import_id: message_json["id"]
+         ) do
+        # "Skipping already imported message"
+        nil
+      else
+        %Message{
+          inserted_at: inserted_at,
+          updated_at: inserted_at,
+          text_content: text_content,
+          mentioned_user_ids: mentioned_user_id,
+          user_id: creator.id,
+          group_id: group.id,
+          slack_import_id: message_json["id"]
+        }
+        |> Repo.insert()
+      end
     else
       Logger.error(
         "[#{__MODULE__}] Error creating message for #{inspect([text, inserted_at, creator])}"
