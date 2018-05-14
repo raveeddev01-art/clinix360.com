@@ -130,7 +130,7 @@ defmodule Stitch.Import.Slack do
     clean_standard_default(team)
 
     IO.puts("Creating Groups")
-    {:ok, groups} = parse_groups(folder_path)
+    {:ok, _groups} = parse_groups(folder_path)
     users_by_slack_import_id = get_users_by_slack_import_id(team)
     import_groups(team, users_by_slack_import_id, folder_path)
 

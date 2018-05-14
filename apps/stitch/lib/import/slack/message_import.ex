@@ -1,9 +1,8 @@
 defmodule Stitch.Import.Slack.MessageImport do
-  import Ecto.Query
-  alias Stitch.{Team, TeamQueries, Group, Repo, Message}
+  alias Stitch.{Repo, Message}
 
-  # TODO: adjust
-  @max_file_size 2_000_000
+  # 1 GB
+  @max_file_size 1_000_000_000
 
   require Logger
 
