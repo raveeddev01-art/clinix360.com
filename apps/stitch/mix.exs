@@ -49,7 +49,8 @@ defmodule Stitch.Mixfile do
       {:floki, "~> 0.18.1"},
       {:exmoji, github: "mroth/exmoji"},
       {:pdf_generator, ">=0.3.5"},
-      {:ua_inspector, "~> 0.17"}
+      {:ua_inspector, "~> 0.17"},
+      {:murmur, "~> 1.0"}
     ]
   end
 

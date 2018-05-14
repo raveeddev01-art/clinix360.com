@@ -2,6 +2,9 @@ defmodule Stitch.Import.Slack.MessageImport do
   import Ecto.Query
   alias Stitch.{Team, TeamQueries, Group, Repo, Message}
 
+  # TODO: adjust
+  @max_file_size 2_000_000
+
   require Logger
 
   #   {
@@ -33,8 +36,17 @@ defmodule Stitch.Import.Slack.MessageImport do
         message_json
       )
     else
-      # IO.inspect(message_json["subtype"])
-      nil
+      if message_json["subtype"] == "file_share" do
+        import_file(
+          team,
+          group,
+          users_by_slack_import_id,
+          groups_by_slack_import_id,
+          message_json
+        )
+      else
+        nil
+      end
     end
   end
 
@@ -59,12 +71,15 @@ defmodule Stitch.Import.Slack.MessageImport do
         group
       )
 
+    # Since slack doesn't provide ids for messages, we generate hash of the json content using Murmur
+    slack_import_id = Murmur.hash_x86_128(Poison.encode!(message_json)) |> Integer.to_string()
+
     if text && inserted_at && creator do
       if Repo.get_by(
            Message,
            group_id: group.id,
            user_id: creator.id,
-           slack_import_id: message_json["id"]
+           slack_import_id: slack_import_id
          ) do
         # "Skipping already imported message"
         nil
@@ -76,7 +91,7 @@ defmodule Stitch.Import.Slack.MessageImport do
           mentioned_user_ids: mentioned_user_id,
           user_id: creator.id,
           group_id: group.id,
-          slack_import_id: message_json["id"]
+          slack_import_id: slack_import_id
         }
         |> Repo.insert()
       end
@@ -146,6 +161,124 @@ defmodule Stitch.Import.Slack.MessageImport do
       error ->
         Logger.error("[#{__MODULE__}] Error parsing timestamp #{inspect(error)} #{inspect(ts)}")
         DateTime.utc_now()
+    end
+  end
+
+  # {
+  #   "url": "https://s3.amazonaws.com/bucketname/13245.jpg",
+  #   "filename": "sunset.jpg",
+  #   "mimetype": "image/jpeg",
+  #   "preview_url": "https://s3.amazonaws.com/bucketname/12345.jpg",
+  #   "preview_width": 276,
+  #   "size_in_bytes": 5059,
+  #   "preview_height": 183
+  #  }
+  #
+  #   {
+  #     "id": "F10000000",
+  #     "name": "Pasted image at 1234 PM.png",
+  #     "mimetype": "image\/png",
+  #     "size": 1095514,
+  #     "url_private_download": "...",
+  # },
+
+  def import_file(
+        _team,
+        group,
+        users_by_slack_import_id,
+        groups_by_slack_import_id,
+        message_json
+      ) do
+    text = ""
+    inserted_at = get_datetime(message_json["ts"])
+    creator = get_creator(message_json["user"], users_by_slack_import_id)
+    text_content = get_text(text, groups_by_slack_import_id, users_by_slack_import_id)
+    # File ids are at "file.id"
+    slack_import_id = get_in(message_json, ["file", "id"])
+    mimetype = get_in(message_json, ["file", "mimetype"])
+    slack_download_url = get_in(message_json, ["file", "url_private_download"])
+    file_size = get_in(message_json, ["file", "size"])
+
+    if inserted_at && creator && slack_import_id && mimetype && slack_download_url && file_size do
+      if Repo.get_by(
+           Message,
+           group_id: group.id,
+           user_id: creator.id,
+           slack_import_id: slack_import_id
+         ) do
+        # "Skipping already imported message"
+        nil
+      else
+        if file_size > @max_file_size do
+          Logger.warn(
+            "[#{__MODULE__}] File is too large #{inspect(%{mimetype: mimetype, size: file_size})}"
+          )
+        else
+          case import_file(slack_download_url) do
+            {:ok, imported_url, filename} ->
+              fields = %{url: imported_url, mimetype: mimetype, filename: filename}
+
+              %Message{
+                inserted_at: inserted_at,
+                updated_at: inserted_at,
+                text_content: text_content,
+                mentioned_user_ids: [],
+                user_id: creator.id,
+                group_id: group.id,
+                slack_import_id: slack_import_id,
+                type: "upload",
+                fields: fields
+              }
+              |> Repo.insert()
+              |> add_preview()
+
+            error ->
+              Logger.error("[#{__MODULE__}] Error importing file #{inspect(error)}")
+          end
+        end
+      end
+    else
+      Logger.error(
+        "[#{__MODULE__}] Error creating message for #{
+          inspect([inserted_at, creator, slack_import_id, mimetype, slack_download_url, file_size])
+        }"
+      )
+    end
+  end
+
+  def add_preview({:ok, message}) do
+    message
+    |> Stitch.UploadPreview.add_preview()
+  end
+
+  def add_preview(result), do: result
+
+  @doc """
+  Extract filename and extension,
+  Add hashing to filename,
+  Download file,
+  Upload to the S3 bucket
+
+  upload to S3,
+  get URL,
+  create fields: {mimetype: mimetype, url: url},
+  create message,
+  call Stitch.UploadPreview.add_preview
+  """
+  def import_file(slack_download_file) do
+    with %URI{path: filename} <- slack_download_file |> Path.basename() |> URI.parse(),
+         filename = String.downcase(Stitch.Rand.token(8)) <> "_" <> filename,
+         {:ok, %{body: binary_data}} <- HTTPoison.get(slack_download_file),
+         filepath = Path.join(System.tmp_dir!(), filename),
+         _ <- File.rm(filepath),
+         {:file_written, :ok} <- {:file_written, File.write(filepath, binary_data)},
+         {:ok, %{status_code: 200}} <- Stitch.AWS.S3.upload(filepath),
+         :ok <- File.rm(filepath) do
+      {:ok, Stitch.AWS.S3.fullpath(filename), filename}
+    else
+      error ->
+        IO.inspect("Error downloading file #{slack_download_file}")
+        error
     end
   end
 end

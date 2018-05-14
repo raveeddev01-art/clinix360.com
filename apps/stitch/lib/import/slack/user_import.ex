@@ -33,7 +33,7 @@ defmodule Stitch.Import.Slack.UserImport do
   # }
 
   def parse_json(team, user_json) do
-    attributes = %Stitch.Accounts.User{
+    attributes = %User{
       team_id: team.id,
       email: get_in(user_json, ["profile", "email"]),
       first_name: get_first_name(user_json),
@@ -45,24 +45,29 @@ defmodule Stitch.Import.Slack.UserImport do
       roles: get_roles(user_json),
       slack_import_id: user_json["id"],
       onboarded: true,
-      password_hash: Comeonin.Bcrypt.hashpwsalt(Stitch.Rand.token(32)),
       token: Stitch.Rand.token(32),
       disabled: user_json["deleted"] == true
     }
 
     if attributes.email do
-      if Stitch.Repo.get_by(Stitch.Accounts.User, team_id: team.id, email: attributes.email) ==
-           nil do
-        Stitch.Repo.insert(attributes) |> log_if_error(user_json)
+      if Repo.get_by(User, team_id: team.id, email: attributes.email) == nil do
+        Repo.insert(%{
+          attributes
+          | password_hash: Comeonin.Bcrypt.hashpwsalt(Stitch.Rand.token(32))
+        })
+        |> log_if_error(user_json)
       else
         IO.puts(
           "Skipping existing user: #{inspect(%{team_id: team.id, email: attributes.email})}"
         )
       end
     else
-      if Stitch.Repo.get_by(Stitch.Accounts.User, team_id: team.id, username: attributes.username) ==
-           nil do
-        Stitch.Repo.insert(attributes) |> log_if_error(user_json)
+      if Repo.get_by(User, team_id: team.id, username: attributes.username) == nil do
+        Repo.insert(%{
+          attributes
+          | password_hash: Comeonin.Bcrypt.hashpwsalt(Stitch.Rand.token(32))
+        })
+        |> log_if_error(user_json)
       else
         IO.puts(
           "Skipping existing user: #{inspect(%{team_id: team.id, username: attributes.username})}"
@@ -121,7 +126,7 @@ defmodule Stitch.Import.Slack.UserImport do
     Enum.each(users, fn user ->
       with {:ok, avatar} <- Stitch.Accounts.ProfileImage.pick_default_random(user),
            {:ok, avatar_thumb} <- Stitch.Accounts.ProfileImage.create_thumb(avatar) do
-        Stitch.Repo.update(
+        Repo.update(
           Ecto.Changeset.change(
             user,
             profile_image_url: avatar,

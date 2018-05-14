@@ -2,6 +2,8 @@ defmodule Stitch.Import.Slack do
   alias Stitch.Repo
   import Ecto.Query
 
+  import Logger
+
   # alias Stitch.{Accounts.User, Team, TeamQueries, Group, GroupUser, Message}
 
   @team_name System.get_env("TEAM_NAME")
@@ -90,7 +92,7 @@ defmodule Stitch.Import.Slack do
               end)
             else
               error ->
-                nil
+                Logger.error("[#{__MODULE__}] Error parsing timestamp #{inspect(error)}")
             end
           end)
         else
