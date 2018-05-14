@@ -61,15 +61,6 @@ defmodule Stitch.Import.Slack.MessageImport do
     creator = get_creator(message_json["user"], users_by_slack_import_id)
     text_content = get_text(text, groups_by_slack_import_id, users_by_slack_import_id)
 
-    mentioned_user_id =
-      Stitch.Message.Mention.get_mentioned_user_ids(
-        Repo.preload(group, :users).users,
-        creator,
-        text_content,
-        [],
-        group
-      )
-
     # Since slack doesn't provide ids for messages, we generate hash of the json content using Murmur
     slack_import_id = Murmur.hash_x86_128(Poison.encode!(message_json)) |> Integer.to_string()
 
@@ -83,6 +74,15 @@ defmodule Stitch.Import.Slack.MessageImport do
         # "Skipping already imported message"
         nil
       else
+        mentioned_user_id =
+          Stitch.Message.Mention.get_mentioned_user_ids(
+            Repo.preload(group, :users).users,
+            creator,
+            text_content,
+            [],
+            group
+          )
+
         %Message{
           inserted_at: inserted_at,
           updated_at: inserted_at,
