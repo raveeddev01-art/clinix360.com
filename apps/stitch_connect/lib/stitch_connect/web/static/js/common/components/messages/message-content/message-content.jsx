@@ -60,8 +60,7 @@ class MessageContent extends Component {
     const message = this.props.message;
     if (message.fields && message.fields.integration) {
       const i = message.fields.integration;
-      const link = `https://${i.username}.drchrono.com/${i.data.type}/${i.data
-        .id}`;
+      const link = `https://drchrono.com/${i.data.type}/${i.data.id}`;
       return <a href={link}>Link to drchrono</a>;
     }
 
