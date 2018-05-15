@@ -118,13 +118,14 @@ defmodule Stitch.UserQueries do
 
   @spec user_with_email_exists?(binary) :: boolean
   def user_with_email_exists?(email) do
-    query = from(
-      u in User,
-      where: u.onboarded == ^true,
-      where: u.email == ^email,
-      select: u.id,
-      limit: 1
-    )
+    query =
+      from(
+        u in User,
+        where: u.onboarded == ^true,
+        where: u.email == ^email,
+        select: u.id,
+        limit: 1
+      )
 
     !!Repo.one(query)
   end
