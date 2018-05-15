@@ -69,39 +69,44 @@ defmodule Stitch.Import.Slack do
     Path.join(path, "channels.json")
     |> File.read!()
     |> Poison.decode!()
-    |> Enum.each(fn
-      %{"name" => channel_name, "id" => slack_channel_id} = channel ->
-        group =
-          Stitch.Repo.get_by(Stitch.Group, team_id: team.id, slack_import_id: slack_channel_id)
+    |> Task.async_stream(
+      fn
+        %{"name" => channel_name, "id" => slack_channel_id} = channel ->
+          group =
+            Stitch.Repo.get_by(Stitch.Group, team_id: team.id, slack_import_id: slack_channel_id)
 
-        IO.puts("Importing messages for group #{group.name}")
+          if group && channel["is_archived"] != true do
+            IO.puts("Importing messages for group #{group.name}")
 
-        if group && channel["is_archived"] != true do
-          Path.wildcard(Path.join([path, channel_name, "*.json"]))
-          |> Enum.each(fn message_file ->
-            with {:ok, file} <- File.read(message_file),
-                 {:ok, messages_json} <- Poison.decode(file) do
-              Enum.each(messages_json, fn message_json ->
-                Stitch.Import.Slack.MessageImport.import_message(
-                  team,
-                  group,
-                  users_by_slack_import_id,
-                  groups_by_slack_import_id,
-                  message_json
-                )
-              end)
-            else
-              error ->
-                Logger.error("[#{__MODULE__}] Error parsing timestamp #{inspect(error)}")
-            end
-          end)
-        else
-          IO.puts("Skipping archived channel #{channel_name}")
-        end
+            Path.wildcard(Path.join([path, channel_name, "*.json"]))
+            |> Enum.each(fn message_file ->
+              with {:ok, file} <- File.read(message_file),
+                   {:ok, messages_json} <- Poison.decode(file) do
+                Enum.each(messages_json, fn message_json ->
+                  Stitch.Import.Slack.MessageImport.import_message(
+                    team,
+                    group,
+                    users_by_slack_import_id,
+                    groups_by_slack_import_id,
+                    message_json
+                  )
+                end)
+              else
+                error ->
+                  Logger.error("[#{__MODULE__}] Error parsing timestamp #{inspect(error)}")
+              end
+            end)
+          else
+            IO.puts("Skipping archived or non-existing channel #{channel_name}")
+          end
 
-      _ ->
-        nil
-    end)
+        _ ->
+          nil
+      end,
+      max_concurrency: 10,
+      timeout: :infinity
+    )
+    |> Stream.run()
   end
 
   def clean_standard_default(team) do
