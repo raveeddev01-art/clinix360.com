@@ -241,8 +241,13 @@ defmodule Stitch.Messages.Search do
 
     from(
       m in query,
-      where: fragment("? %> ?", m.text_content, ^term),
-      order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)]
+      where: fragment("to_tsvector(?) @@ to_tsquery(?)", m.text_content, ^term),
+      order_by:
+        fragment(
+          "ts_rank(to_tsvector(?), to_tsquery(?)) DESC",
+          m.text_content,
+          type(^term, :string)
+        )
     )
   end
 
