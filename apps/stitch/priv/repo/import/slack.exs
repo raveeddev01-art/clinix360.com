@@ -74,9 +74,9 @@ defmodule Stitch.Import.Slack do
         group =
           Stitch.Repo.get_by(Stitch.Group, team_id: team.id, slack_import_id: slack_channel_id)
 
-        IO.puts("Importing messages for group #{group.name}")
-
         if group && channel["is_archived"] != true do
+          IO.puts("Importing messages for group #{group.name}")
+
           Path.wildcard(Path.join([path, channel_name, "*.json"]))
           |> Enum.each(fn message_file ->
             with {:ok, file} <- File.read(message_file),
@@ -96,7 +96,7 @@ defmodule Stitch.Import.Slack do
             end
           end)
         else
-          IO.puts("Skipping archived channel #{channel_name}")
+          IO.puts("Skipping archived or non-existing channel #{channel_name}")
         end
 
       _ ->
