@@ -477,7 +477,7 @@
         bottom: 0;
         height: 23px;
         font-size: 12px;
-        color: #888;
+        color: $brand-primary;
       }
 
       .users-typing {
@@ -888,8 +888,21 @@
 
           blockquote {
             margin: 0px;
-            padding: 5px;
+            padding: 1px 0 2px 10px;
             font-size: 1rem;
+            border: 0;
+            position: relative;
+
+            &:before {
+              content: "";
+              width: 4px;
+              background: rgba(0, 0, 0, 0.12);
+              border-radius: 6px;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+            }
           }
 
           b, i, s {
