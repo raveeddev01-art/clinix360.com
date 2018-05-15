@@ -21,6 +21,7 @@ defmodule Stitch.Group do
     field(:description, :string)
     field(:is_default, :boolean, default: false)
     field(:public, :boolean, default: true)
+    field(:slack_import_id, :string)
 
     belongs_to(:team, Stitch.Team)
     has_many(:group_users, GroupUser, on_replace: :delete)

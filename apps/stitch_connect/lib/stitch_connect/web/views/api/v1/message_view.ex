@@ -63,9 +63,12 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       reactions_web: Map.get(message, :reactions, %{}),
       mentioned_user_ids: message.mentioned_user_ids,
       link_previews: message.link_previews,
-      request_id: message.request_id
+      request_id: message.request_id,
+      highlighted_text_content: message.highlighted_text_content
     }
   end
+
+  def user_info(nil), do: nil
 
   def user_info(%{user: %Ecto.Association.NotLoaded{}}), do: nil
 

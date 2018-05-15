@@ -36,7 +36,7 @@ class MessageSearch extends Component {
       return (
         <div>
           {searchStore.messages.map(message => (
-            <AddonMessage key={message.id} message={message} />
+            <AddonMessage inSearch key={message.id} message={message} />
           ))}
         </div>
       );

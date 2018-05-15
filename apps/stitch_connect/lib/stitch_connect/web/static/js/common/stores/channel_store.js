@@ -1,3 +1,5 @@
+import { getTimezone } from "../../lib/utils"
+
 /**
  * Channel store
  *
@@ -157,7 +159,8 @@ class ChannelStore {
   joinTeamChannel(options = {}) {
     const { presenceStore, sidemenuStore, usersStore } = this.rootStore;
 
-    const joined = this.join(this.teamChannelTopic, options);
+    const timezone = this.getTimezoneInfo()
+    const joined = this.join(this.teamChannelTopic, { ...options, timezone });
 
     this.teamChannel.on("presence_state", presenceStore.onPresenceState);
     this.teamChannel.on("presence_diff", presenceStore.onPresenceDiff);
@@ -183,12 +186,21 @@ class ChannelStore {
   leaveAllChannelsButTeamAndEvent() {
     Object.keys(this.channels)
       .filter(
-        topic =>
-          topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
+      topic =>
+        topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
       )
       .forEach(topic => {
         this.leave(topic);
       });
+  }
+
+  getTimezoneInfo() {
+    const date = new Date();
+    const offset = date.getTimezoneOffset() * 60;
+    return {
+      tz: getTimezone(),
+      tz_offset: offset
+    }
   }
 }
 

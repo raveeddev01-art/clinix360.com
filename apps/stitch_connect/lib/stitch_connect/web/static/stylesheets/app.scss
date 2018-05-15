@@ -3,6 +3,7 @@
 @import "~react-select/dist/react-select.css";
 @import "~react-image-crop/lib/ReactCrop.scss";
 @import "~simplebar/dist/simplebar.css";
+@import "~react-datetime/css/react-datetime.css";
 
 $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome";
@@ -38,3 +39,4 @@ $fa-font-path: "~font-awesome/fonts";
 @import "user-profile-menu";
 @import "website";
 @import "news";
+@import "search-input";

@@ -1,0 +1,142 @@
+.search-input-form {
+  margin-left: 10px;
+  position: relative;
+
+  .search-input-icon {
+    color: $brand-primary;
+    font-size: 18px;
+    line-height: 36px;
+    position: absolute;
+    top: 0;
+
+    &.fa-search {
+      left: 14px;
+    }
+
+    &.fa-times-circle-o {
+      right: 14px;
+      top: 1px;
+    }
+  }
+
+  .form-control {
+    height: 36px;
+    width: 310px;
+    box-shadow: none;
+    border: 2px solid $border-color;
+    padding-left: 38px;
+    padding-right: 34px;
+
+    &:focus {
+      border-color: $brand-primary;
+    }
+
+    @media (max-width: 991px) {
+      width: 260px;
+    }
+  }
+}
+
+.search-input-menu {
+  max-width: 300px;
+
+  &--datepicker {
+    position: absolute;
+    z-index: 1;
+    top: calc(100% + 5px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  }
+
+  .dropdown-menu {
+    width: 100%;
+    padding: 0;
+  }
+
+  .menu-header {
+    color: #036;
+    font-weight: bold;
+    padding: 7px 15px;
+    background: $body-bg;
+    border-bottom: 1px solid $border-color-secondary;
+    border-radius: 4px 4px 0 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+  }
+
+  .menu-content {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-top: 35px;
+  }
+
+  .dropdown-header {
+    padding: 3px 15px;
+    font-size: 14px;
+    color: #707070;
+    font-weight: bold;
+  }
+
+  .search-input-dropdown-item {
+    display: flex;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.45;
+    text-decoration: none;
+    padding: 5px 15px;
+    cursor: pointer;
+
+    .item-icon {
+      font-size: 14px;
+      color: $brand-primary;
+      margin-right: 8px;
+      margin-top: 1px;
+      min-width: 15px;
+      text-align: center;
+    }
+
+    .item-text {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+
+      .avatar img {
+        width: 20px;
+        height: 20px;
+        display: block;
+        margin-right: 5px;
+      }
+
+      .fa {
+        margin-right: 5px;
+        color: #999;
+      }
+
+      span {
+        display: inline-block;
+        margin-right: 5px;
+
+        &.username {
+          font-weight: 700;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: block;
+        }
+      }
+    }
+
+    &.active {
+      background-color: $brand-primary;
+      color: white;
+
+      span {
+        color: white;
+      }
+    }
+  }
+}

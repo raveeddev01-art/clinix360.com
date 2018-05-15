@@ -110,8 +110,8 @@ export function isFullMember(user) {
 
 /**
  * Format currency
- * 
- * @param {number} money 
+ *
+ * @param {number} money
  */
 export function formatCurrency(money) {
   return isNaN(money) ? "$0.00" : `$${parseFloat(money).toFixed(2)}`;
@@ -119,9 +119,22 @@ export function formatCurrency(money) {
 
 /**
  * Check if string provided is valid US zip code
- * 
- * @param {string} zipCode 
+ *
+ * @param {string} zipCode
  */
 export function isZipCode(zipCode) {
   return /^\d{5}-\d{4}$/.test(zipCode);
+}
+
+/**
+ * Returns user's timezone
+ *
+ * @return {string}
+ */
+export function getTimezone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone
+  } catch (_error) {
+    return "Etc/UTC"
+  }
 }

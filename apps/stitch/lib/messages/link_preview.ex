@@ -119,10 +119,10 @@ defmodule Stitch.Message.LinkPreview do
         {:error, _error} ->
           nil
       end
-    catch
-      :exit, _ -> nil
     rescue
       _ -> nil
+    catch
+      :exit, _ -> nil
     end
   end
 

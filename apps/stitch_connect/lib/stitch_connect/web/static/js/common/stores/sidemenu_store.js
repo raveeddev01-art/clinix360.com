@@ -7,6 +7,7 @@
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
+import browserDetails from "lib/browser_details";
 
 import {
   NOTIFICATION_CARD_DURATION,
@@ -228,7 +229,10 @@ class SidemenuStore {
     const notification = new Notification(title, {
       body,
       tag,
-      icon: "/favicon-192x192.png",
+      icon:
+        window.electronApp && browserDetails.os === "Mac OS X"
+          ? undefined
+          : "/favicon-192x192.png", // hide icon on mac electron
       silent: true
     });
 
@@ -236,9 +240,11 @@ class SidemenuStore {
       notification.onclick = onClick;
     }
 
-    setTimeout(() => {
-      notification.close();
-    }, NOTIFICATION_CARD_DURATION);
+    if (!window.electronApp) {
+      setTimeout(() => {
+        notification.close();
+      }, NOTIFICATION_CARD_DURATION);
+    }
   }
 
   showNotificationCardForNewMessage(message) {

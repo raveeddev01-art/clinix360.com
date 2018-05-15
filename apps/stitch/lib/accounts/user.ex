@@ -37,6 +37,7 @@ defmodule Stitch.Accounts.User do
     field(:groups_as_guest, {:array, :integer}, default: [])
     field(:timezone, :map, default: %{})
     field(:whats_new_last_seen_at, :utc_datetime)
+    field(:slack_import_id, :string)
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
     has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)
@@ -198,16 +199,9 @@ defmodule Stitch.Accounts.User do
     |> validate_timezone()
   end
 
-  def timezone_changeset(struct, params) do
-    struct
-    |> cast(params, [:timezone])
-    |> validate_timezone()
-  end
-
   def validate_timezone(%{valid?: true, changes: %{timezone: timezone}} = changeset) do
     case timezone do
-      %{"tz" => tz, "tz_label" => tz_label, "tz_offset" => tz_offset}
-      when is_binary(tz) and is_binary(tz_label) and is_integer(tz_offset) ->
+      %{"tz" => tz, "tz_offset" => tz_offset} when is_binary(tz) and is_integer(tz_offset) ->
         if Timex.Timezone.exists?(tz) do
           changeset
         else
