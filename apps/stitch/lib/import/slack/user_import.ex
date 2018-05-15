@@ -49,7 +49,7 @@ defmodule Stitch.Import.Slack.UserImport do
       disabled: user_json["deleted"] == true
     }
 
-    if attributes.email do
+    if attributes.email != nil && attributes.is_bot != true do
       if Repo.get_by(User, team_id: team.id, email: attributes.email) == nil do
         Repo.insert(%{
           attributes
@@ -62,17 +62,11 @@ defmodule Stitch.Import.Slack.UserImport do
         )
       end
     else
-      if Repo.get_by(User, team_id: team.id, username: attributes.username) == nil do
-        Repo.insert(%{
-          attributes
-          | password_hash: Comeonin.Bcrypt.hashpwsalt(Stitch.Rand.token(32))
-        })
-        |> log_if_error(user_json)
-      else
-        IO.puts(
-          "Skipping existing user: #{inspect(%{team_id: team.id, username: attributes.username})}"
-        )
-      end
+      IO.puts(
+        "Skipping bot user or user without email: #{
+          inspect(%{team_id: team.id, username: attributes.username})
+        }"
+      )
     end
   end
 
