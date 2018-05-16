@@ -472,9 +472,6 @@ defmodule StitchConnect.Web.GroupChannel do
          user,
          socket
        ) do
-    messages = MessageQueries.load_info(messages)
-    messages_json = MessageView.render("index.json", %{messages: messages})
-
     json = %{
       group_id: group_user.group_id,
       last_read_at: group_user.last_read_at,
@@ -483,7 +480,11 @@ defmodule StitchConnect.Web.GroupChannel do
     }
 
     EventsChannel.broadcast_marked_as_read(user, json)
+
+    messages = MessageQueries.load_info(messages)
+    messages_json = MessageView.render("index.json", %{messages: messages})
     broadcast_read_status(socket.assigns.group, messages_json)
+
     PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
   end
