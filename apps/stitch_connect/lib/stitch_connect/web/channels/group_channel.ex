@@ -32,7 +32,7 @@ defmodule StitchConnect.Web.GroupChannel do
       {:sorted, false} -> {:error, %{message: "User ids should be sorted."}}
       {:member, false} -> {:error, %{message: "You can't participate on this chat."}}
       {:group, nil} -> create_dm_on_join(id_pair, user, socket)
-      {:fetch_messages, true, group} -> render_messages(group, user, socket)
+      {:fetch_messages, true, group} -> render_messages(group, user, socket, params)
     end
   end
 
@@ -47,7 +47,7 @@ defmodule StitchConnect.Web.GroupChannel do
     else
       {:group, {:error, _}} -> {:error, %{message: "group not found"}}
       {:authorized?, false} -> {:error, %{message: "unauthorized"}}
-      {:fetch_messages, true, group} -> render_messages(group, user, socket)
+      {:fetch_messages, true, group} -> render_messages(group, user, socket, params)
     end
   end
 
@@ -64,12 +64,13 @@ defmodule StitchConnect.Web.GroupChannel do
     else
       {:group, nil} -> {:error, %{message: "group not found"}}
       {:authorized?, false} -> {:error, %{message: "unauthorized"}}
-      {:fetch_messages, true, group} -> render_messages(group, user, socket)
+      {:fetch_messages, true, group} -> render_messages(group, user, socket, params)
     end
   end
 
-  defp render_messages(group, user, socket) do
-    messages = MessageQueries.group_latest_messages(group.id, user)
+  defp render_messages(group, user, socket, params) do
+    opts = [limit: params["limit"]]
+    messages = MessageQueries.group_latest_messages(group.id, user, opts)
     json = MessageView.render("index.json", %{messages: messages})
     {:ok, %{messages: json}, assign(socket, :group, group)}
   end
