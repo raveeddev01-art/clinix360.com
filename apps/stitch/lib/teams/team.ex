@@ -8,7 +8,7 @@ defmodule Stitch.Team do
     field(:slug, :string)
     field(:security_lockout, :boolean, default: false)
     field(:seconds_to_lockout, :integer)
-    field(:open_invitations_enabled, :boolean, default: false)
+    field(:open_invitations_enabled, :boolean, default: true)
     field(:is_legacy, :boolean, default: false)
     field(:company_name, :string)
     field(:address_line_one, :string)
