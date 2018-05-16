@@ -555,9 +555,11 @@
       }
 
       .xtra {
-        max-width: 85%;
-        margin-right: auto;
-        margin-left: 0;
+        @media(min-width: 992px) {
+          max-width: 85%;
+          margin-right: auto;
+          margin-left: 0;
+        }
       }
 
       .product-heading {
@@ -673,10 +675,10 @@
         h2 {
           margin-bottom: 30px;
         }
+      }
 
-        .flex-item > img {
-          max-width: 100%;
-        }
+      .flex-item > img {
+        max-width: 100%;
       }
   
       &.alt {
@@ -732,8 +734,6 @@
 
       h2 {
         color: $brand-primary;
-        font-size: 30px;
-        font-weight: 900;
         margin: 0 0 80px;
         @media(min-width: 768px) {
           text-align: center;
