@@ -44,7 +44,22 @@ config :stitch, :redix, %{
   url: System.get_env("REDIS_URL")
 }
 
-import_config "#{Mix.env()}.exs"
-
 config :ua_inspector,
   database_path: System.get_env("UA_INSPECTOR_DB_PATH") || "./apps/stitch/priv/ua_inspector"
+
+config :exq,
+  host: System.get_env("REDIS_URL") || "127.0.0.1",
+  port: 6379,
+  namespace: "exq",
+  # keep concurrency low for db's sake
+  concurrency: 20,
+  queues: ["transactional_messages"],
+  poll_timeout: 50,
+  scheduler_poll_timeout: 200
+
+config :exq_ui,
+  web_port: 4040,
+  web_namespace: "jobs",
+  server: true
+
+import_config "#{Mix.env()}.exs"

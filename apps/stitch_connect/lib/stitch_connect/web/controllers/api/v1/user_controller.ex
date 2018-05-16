@@ -1,9 +1,21 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  alias Stitch.Accounts.{User, Role}
-  alias Stitch.{UserQueries, FeatureGateway}
+  alias Stitch.Accounts.{Admin, User, Role}
   alias StitchConnect.Web.{TeamChannel, EventsChannel, GroupChannel, Endpoint}
   alias Stitch.Analytics.User, as: UserAnalytics
+
+  alias Stitch.{
+    AWS.S3,
+    Accounts,
+    Billing,
+    FeatureGateway,
+    Group,
+    GroupQueries,
+    TeamQueries,
+    TransactionalMessage,
+    UserQueries
+  }
+
   import Stitch.UserAuthorization, only: [can_update_user?: 2]
 
   action_fallback(StitchConnect.Web.Api.V1.FallbackController)
@@ -20,8 +32,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def activate(conn, %{"id" => id}) do
     with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
-         {:ok, _user} <- Stitch.Accounts.Admin.activate(conn.assigns.team, id) do
-      Stitch.Billing.update_subscriber_count(conn.assigns.team)
+         {:ok, _user} <- Admin.activate(conn.assigns.team, id) do
+      Billing.update_subscriber_count(conn.assigns.team)
       TeamChannel.broadcast_activated(conn.assigns.team, String.to_integer(id))
       json(conn, %{message: "Account has been activated."})
     else
@@ -35,24 +47,28 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def deactivate_my_account(conn, _params) do
     id = conn.assigns.current_user.id
+
     with false <- Enum.member?(conn.assigns.current_user.roles, "admin"),
-         {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
-      Stitch.Billing.update_subscriber_count(conn.assigns.team)
+         {:ok, _user} <- Admin.deactivate(conn.assigns.team, id) do
+      Billing.update_subscriber_count(conn.assigns.team)
       TeamChannel.broadcast_deactivated(conn.assigns.team, id)
       Endpoint.broadcast("user_socket:#{id}", "disconnect", %{})
       json(conn, %{message: "Account has been deactivated."})
     else
       {:error, :not_found} ->
         not_found_error(conn)
+
       true ->
-        unprocessable_entity_error(conn, %{message: "Only non-admins can deactivate their account."})
+        unprocessable_entity_error(conn, %{
+          message: "Only non-admins can deactivate their account."
+        })
     end
   end
 
   def deactivate(conn, %{"id" => id}) do
     with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
-         {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
-      Stitch.Billing.update_subscriber_count(conn.assigns.team)
+         {:ok, _user} <- Admin.deactivate(conn.assigns.team, id) do
+      Billing.update_subscriber_count(conn.assigns.team)
       TeamChannel.broadcast_deactivated(conn.assigns.team, String.to_integer(id))
       Endpoint.broadcast("user_socket:#{id}", "disconnect", %{})
       json(conn, %{message: "Account has been deactivated."})
@@ -67,9 +83,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"id" => user_id} = params) do
     current_user = conn.assigns.current_user
+
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(current_user, user_id),
-         {:ok, user} <- Stitch.Accounts.Admin.update_user(user_id, params, user_id == current_user.id) do
+         {:ok, user} <- Admin.update_user(user_id, params, user_id == current_user.id) do
       TeamChannel.broadcast_user_info(conn.assigns.team, user)
       render(conn, "update.json", user: user)
     else
@@ -85,7 +102,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def promote_admin(conn, %{"id" => user_id}) do
-    case Stitch.Accounts.Admin.promote_admin(conn.assigns.current_user, user_id) do
+    case Admin.promote_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
         TeamChannel.broadcast_user_info(conn.assigns.team, user)
 
@@ -99,7 +116,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def revoke_admin(conn, %{"id" => user_id}) do
-    case Stitch.Accounts.Admin.revoke_admin(conn.assigns.current_user, user_id) do
+    case Admin.revoke_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
         TeamChannel.broadcast_user_info(conn.assigns.team, user)
 
@@ -113,7 +130,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def create(conn, %{"email" => email}) do
-    case Stitch.Accounts.create_user_with_email_only(email) do
+    case Accounts.create_user_with_email_only(email) do
       {:error, %Ecto.Changeset{errors: [email: {_, [host: host]}]}} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -166,15 +183,16 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     {id, params} = Map.pop(params, "id")
     params = Map.put(params, "roles", ["admin"])
 
-    case Stitch.Accounts.update_and_complete_user_onboarding(id, params) do
+    case Accounts.update_and_complete_user_onboarding(id, params) do
       {:error, changeset} ->
         conn
         |> unprocessable_entity_error(%{changeset: changeset})
 
       user ->
-        group = Stitch.GroupQueries.default_group(user)
-        Stitch.Group.add_user(group, user.id)
-        Stitch.Group.assign_creator(group, user.id)
+        group = GroupQueries.default_group(user)
+        Group.add_user(group, user.id)
+        Group.assign_creator(group, user.id)
+        TransactionalMessage.Event.new_team_owner(user)
 
         conn
         |> login_user(user)
@@ -238,9 +256,9 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def profile_image(conn, %{"id" => user_id}) do
     team = conn.assigns.team
 
-    with {:user, %User{} = user} <- {:user, Stitch.UserQueries.team_member_by_id(team, user_id)},
-         {:ok, presigned_avatar} <- Stitch.AWS.S3.presign(user.profile_image_url),
-         {:ok, presigned_avatar_thumb} <- Stitch.AWS.S3.presign(user.profile_image_thumb_url),
+    with {:user, %User{} = user} <- {:user, UserQueries.team_member_by_id(team, user_id)},
+         {:ok, presigned_avatar} <- S3.presign(user.profile_image_url),
+         {:ok, presigned_avatar_thumb} <- S3.presign(user.profile_image_thumb_url),
          presigned_grey_avatar <- User.grey_avatar(user) do
       conn
       |> json(%{
@@ -256,7 +274,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, user} <- Stitch.Accounts.update_profile_image(user_id, url) do
+         {:ok, user} <- Accounts.update_profile_image(user_id, url) do
       TeamChannel.broadcast_user_info(conn.assigns.team, user)
       conn |> render("show.json", user: user)
     else
@@ -276,7 +294,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def delete_profile_image(conn, %{"id" => user_id}) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, user} <- Stitch.Accounts.delete_profile_image(user_id) do
+         {:ok, user} <- Accounts.delete_profile_image(user_id) do
       TeamChannel.broadcast_user_info(conn.assigns.team, user)
       conn |> render("show.json", user: user)
     else
@@ -298,7 +316,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def exists?(conn, %{"email" => email}) do
     team_id = conn.private[:team_id]
 
-    case Stitch.UserQueries.team_member_with_email(team_id, email) do
+    case UserQueries.team_member_with_email(team_id, email) do
       %User{} -> json(conn, %{exists: true})
       _ -> json(conn, %{exists: false})
     end
@@ -366,10 +384,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     with team = conn.assigns.team,
          {:user, user} when not is_nil(user) <-
            {:user, UserQueries.team_member_by_id(team, user_id)},
-         {:ok, updated_user} <- Stitch.Accounts.Admin.change_role(user, params),
-         {:admins, team_admins} = {:admins, Stitch.TeamQueries.list_admins(team)},
-         {removed_groups, added_groups} = Stitch.Accounts.Admin.update_user_groups(updated_user) do
-      Stitch.Billing.update_subscriber_count(team)
+         {:ok, updated_user} <- Admin.change_role(user, params),
+         {:admins, team_admins} = {:admins, TeamQueries.list_admins(team)},
+         {removed_groups, added_groups} = Admin.update_user_groups(updated_user) do
+      Billing.update_subscriber_count(team)
       TeamChannel.broadcast_user_info(team, updated_user)
       GroupChannel.broadcast_members_update(user, removed_groups, added_groups)
       send_role_changed_email(team_admins, user, updated_user)
@@ -383,7 +401,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   defp send_role_changed_email(team_admins, user, updated_user) do
     if user.roles != updated_user.roles do
       Enum.each(team_admins, fn admin ->
-        Stitch.Accounts.Email.role_changed_email(admin, user.roles, updated_user.roles)
+        Accounts.Email.role_changed_email(admin, user.roles, updated_user.roles)
       end)
     end
   end

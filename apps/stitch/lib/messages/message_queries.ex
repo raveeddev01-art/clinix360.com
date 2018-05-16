@@ -510,5 +510,13 @@ defmodule Stitch.MessageQueries do
     }
   end
 
+  def mobile_count_for_user(user_id) do
+    Message
+    |> where([m], m.client_os in ["iOS", "Android"])
+    |> where(user_id: ^user_id)
+    |> select([m], count(m.id))
+    |> Repo.one()
+  end
+
   defp yesterday, do: Date.add(Date.utc_today(), -1)
 end

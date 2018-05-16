@@ -12,11 +12,10 @@ config :stitch, Stitch.Repo,
   pool_timeout: :timer.minutes(5),
   timeout: :timer.minutes(5)
 
-config :stitch, Stitch.Mailer,
-  adapter: Bamboo.TestAdapter
+config :stitch, Stitch.Mailer, adapter: Bamboo.TestAdapter
+config :stitch, Stitch.NewMailer, adapter: Bamboo.TestAdapter
 
-config :stitch, Stitch.Exports,
-  enabled: false
+config :stitch, Stitch.Exports, enabled: false
 
 config :stitch,
   stripe_client: Stitch.Stripe.TestClient,
@@ -36,10 +35,10 @@ config :stitch, :aws_user_upload, %{
   host: "s3.amazonaws.com"
 }
 
-config :stitch, Stitch.Analytics.Sync.RecurringSync,
-  enabled: false
+config :stitch, Stitch.Analytics.Sync.RecurringSync, enabled: false
 
 config :stitch, async_tasks?: false
 
-config :stitch, Stitch.Analytics.DailyReports.Scheduler,
-  enabled: false
+config :stitch, Stitch.Analytics.DailyReports.Scheduler, enabled: false
+
+config :exq_ui, server: false
