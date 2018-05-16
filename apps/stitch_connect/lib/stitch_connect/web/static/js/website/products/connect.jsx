@@ -55,37 +55,43 @@ export default class Connect extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <h1>
-                  The messaging app for <br className="visible-lg" />healthcare
-                  teams
-                </h1>
-                <h3 className="m-b-30">
-                  Stitch Connect is <span>HIPAA compliant</span> and{" "}
-                  <span>free to use</span> with an unlimited number of people.
-                </h3>
+                <div className="xtra">
+                  <h4 className="product-heading">
+                    <i className="fa fa-comments" /> Connect
+                  </h4>
 
-                <Button
-                  bsStyle="primary"
-                  block
-                  href="https://teamstitch.com/signup/email"
-                  className="m-b-50 hidden-md hidden-lg"
-                >
-                  Get Started
-                </Button>
+                  <h1>
+                    The messaging app <br className="visible-lg" />for
+                    healthcare teams
+                  </h1>
+                  <h3 className="m-b-30">
+                    Stitch Connect is <span>HIPAA compliant</span> and{" "}
+                    <span>free to use</span> with an unlimited number of people.
+                  </h3>
 
-                <div className="hidden-xs hidden-sm">
-                  <CreateTeam />
+                  <Button
+                    bsStyle="primary"
+                    block
+                    href="https://teamstitch.com/signup/email"
+                    className="m-b-50 hidden-md hidden-lg"
+                  >
+                    Get Started
+                  </Button>
+
+                  <div className="hidden-xs hidden-sm">
+                    <CreateTeam />
+                  </div>
+
+                  <a
+                    className="play-video-link hidden-xs hidden-sm"
+                    onClick={this.videoModal}
+                  >
+                    <span className="play-btn m-r-5">
+                      <i className="fa fa-play" />
+                    </span>
+                    <span>See How It Works</span>
+                  </a>
                 </div>
-
-                <a
-                  className="mobile-video hidden-xs hidden-sm"
-                  onClick={this.videoModal}
-                >
-                  <span className="play-btn m-r-5">
-                    <i className="fa fa-play" />
-                  </span>
-                  See How It Works
-                </a>
               </div>
 
               <div className="flex-item">
@@ -112,7 +118,7 @@ export default class Connect extends Component {
 
         <Feature
           featureClassName={flipped ? "" : "alt"}
-          heading="Easily share information across the team"
+          heading="Share information across the team"
           image="/images/connect-feature-2-new.png"
         >
           Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
@@ -146,7 +152,7 @@ export default class Connect extends Component {
 
         <div className="additional-features">
           <div className="container">
-            <h3>Everything you need to keep your team in sync</h3>
+            <h2>Everything you need to keep your team in sync</h2>
 
             <Row>
               <Col sm={6} md={4}>
@@ -232,11 +238,12 @@ export default class Connect extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-video-camera" /> EHR Integrations
+                    <i className="fa fa-refresh" /> EHR Integrations
                   </h4>
                   <p className="m-b-15">
-                    When your team needs more than text messages, video calls
-                    are the perfect way to accelerate collaboration.
+                    Tie Stitch into your existing toolset with our seamless EHR
+                    integrations. Use our easy configurations right out of the
+                    box.
                   </p>
 
                   <a href="https://intercom.help/teamstitch/integrations/integrations">
