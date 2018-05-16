@@ -472,11 +472,7 @@ defmodule StitchConnect.Web.GroupChannel do
          user,
          socket
        ) do
-    messages = MessageQueries.load_info(messages)
-    messages_json = MessageView.render("index.json", %{messages: messages})
-
     json = %{
-      messages: messages_json,
       group_id: group_user.group_id,
       last_read_at: group_user.last_read_at,
       mentions_count: group_user.mentions_count,
@@ -484,7 +480,11 @@ defmodule StitchConnect.Web.GroupChannel do
     }
 
     EventsChannel.broadcast_marked_as_read(user, json)
+
+    messages = MessageQueries.load_info(messages)
+    messages_json = MessageView.render("index.json", %{messages: messages})
     broadcast_read_status(socket.assigns.group, messages_json)
+
     PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
   end
@@ -494,8 +494,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   defp mark_as_unread_response(
-         {:ok,
-          %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}},
+         {:ok, %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}},
          user,
          socket
        ) do

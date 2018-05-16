@@ -44,7 +44,9 @@ defmodule Stitch.Team.Onboarding do
   @doc """
   Creates a team with the given name and slug.
   """
-  def create_team(name, slug, tier \\ "FREE") when byte_size(name) > 0 and byte_size(slug) > 0 do
+  def create_team(name, slug, tier \\ "FREE")
+
+  def create_team(name, slug, tier) when byte_size(name) > 0 and byte_size(slug) > 0 do
     slug = Slugger.slugify_downcase(slug)
     changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
 
@@ -57,5 +59,9 @@ defmodule Stitch.Team.Onboarding do
       {:error, _} ->
         {:error, "Team wasn't created"}
     end
+  end
+
+  def create_team("", "", _tier) do
+    {:error, "Team name or slug cannot be empty or nil."}
   end
 end
