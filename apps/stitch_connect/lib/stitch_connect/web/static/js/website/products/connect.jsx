@@ -60,25 +60,29 @@ export default class Connect extends Component {
                     <i className="fa fa-comments" /> Connect
                   </h4>
 
-                  <h1>
-                    The messaging app <br className="visible-lg" />for
-                    healthcare teams
+                  <h1 className="hidden-xs hidden-sm">
+                    The messaging app for healthcare teams
+                  </h1>
+
+                  <h1 className="visible-xs visible-sm">
+                    Messaging for healthcare teams
                   </h1>
                   <h3 className="m-b-30">
-                    Stitch Connect is <span>HIPAA compliant</span> and{" "}
-                    <span>free to use</span> with an unlimited number of people.
+                    Message your team, from any device. Stitch Connect is{" "}
+                    <span>HIPAA compliant</span> and <span>free to use</span>{" "}
+                    with an unlimited number of people.
                   </h3>
 
                   <Button
                     bsStyle="primary"
                     block
                     href="https://teamstitch.com/signup/email"
-                    className="m-b-50 hidden-md hidden-lg"
+                    className="m-b-50 hidden-sm hidden-md hidden-lg"
                   >
                     Get Started
                   </Button>
 
-                  <div className="hidden-xs hidden-sm">
+                  <div className="hidden-xs">
                     <CreateTeam />
                   </div>
 
@@ -86,7 +90,7 @@ export default class Connect extends Component {
                     className="play-video-link hidden-xs hidden-sm"
                     onClick={this.videoModal}
                   >
-                    <span className="play-btn m-r-5">
+                    <span className="play-btn">
                       <i className="fa fa-play" />
                     </span>
                     <span>See How It Works</span>

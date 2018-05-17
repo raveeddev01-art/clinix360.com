@@ -71,7 +71,6 @@
       -ms-flex-direction: row;
 
       .flex-item {
-        width: auto;
         flex: 1;
       }
     }
@@ -545,20 +544,41 @@
       font-size: 18px;
     }
 
+    .btn {
+      text-transform: uppercase;
+      padding: 16px 30px;
+    }
+
+    .flex-box {
+      .flex-item {
+        flex: 1 0 auto;
+        @media (min-width: 1024px) {
+          flex: 1;
+        }
+      }
+    }
+
     .subheader {
       color: #4c4c4c;
       background: #fff;
       padding: 160px 0 110px;
       @media (max-width: 992px) {
-        text-align: center;
-        padding: 100px 0 50px;
+        padding: 130px 0 50px;
       }
 
-      .xtra {
-        @media(min-width: 992px) {
+      img {
+        max-width: 50%;
+        margin: 0 auto;
+        @media (min-width: 1024px) {
           max-width: 85%;
-          margin-right: auto;
-          margin-left: 0;
+          margin-left: auto;
+          margin-right: 0;   
+        }
+      }
+
+      .flex-box {
+        @media (max-width: 1024px) {
+          flex-direction: column;
         }
       }
 
@@ -566,7 +586,7 @@
         color: $brand-primary;
         font-size: 24px;
         font-weight: 900;
-        margin: 0 0 10px;
+        margin: 0 0 20px;
       }
 
       h1 {
@@ -590,7 +610,7 @@
 
       .create-team-form {
         margin: 20px auto 40px;
-        @media(min-width: 992px) {
+        @media(min-width: 768px) {
           max-width: 100%;
           margin: 0 0 15px;
         }
@@ -621,22 +641,26 @@
         font-size: 18px;
         font-weight: 700;
         text-decoration: none;
+        @media(max-width: 1024px) {
+          display: none;
+        }
 
         .play-btn {
           display: inline-block;
-          width: 18px;
-          height: 18px;
+          width: 16px;
+          height: 16px;
           color: #fff;
           text-align: center;
           background: $brand-primary;
           border-radius: 50%;
+          margin-right: 8px;
           box-shadow: 0 0 0 0 rgba($brand-primary, .5);
           animation: pulse 1.5s linear infinite;
 
           i.fa {
-            font-size: 10px;
+            font-size: 8px;
             position: relative;
-            top: -7px;
+            top: -9px;
             left: 1px;
           }
         }
@@ -648,14 +672,6 @@
           100% {
             box-shadow: 0 0 0 0 rgba($brand-primary, 0)
           }
-        }
-      }
-
-      @media (min-width: 992px) {
-        img {
-          max-width: 85%;
-          margin-left: auto;
-          margin-right: 0;
         }
       }
     }
@@ -852,6 +868,8 @@
         }
 
         .btn {
+          width: 100%;
+          max-width: 370px;
           opacity: 0;
           animation: mobileAnimation .8s;
           animation-delay: 1.6s;
