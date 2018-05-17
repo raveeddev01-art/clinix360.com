@@ -918,6 +918,53 @@
     }
   }
 
+  .engage-page {
+    h2 {
+      color: $brand-primary;
+      font-size: calc(1.6rem + (6 * (100vw - 360px) / 624));
+      font-weight: 900;
+      @media(min-width: 1200px) {
+        font-size: 2.125rem;
+      }
+    }
+
+    p {
+      font-size: 18px;
+    }
+    
+    .feature {
+      background: #f0f1f3;
+      padding: 100px 0;
+
+      .info {
+        max-width: 100%;
+        padding: 0;
+        @media (min-width: 992px) {
+          max-width: 85%;
+          margin: 0 auto 0 0 !important;
+        }
+
+        h2 {
+          margin-bottom: 30px;
+        }
+      }
+
+      .flex-item > img {
+        max-width: 100%;
+      }
+  
+      &.alt {
+        background: #fff;
+
+        @media (min-width: 992px) {
+          .info {
+            margin: 0 0 0 auto !important;
+          }
+        }
+      }
+    }
+  }
+
   .engage-feature-image-2 {
     max-height: 326px;
   }

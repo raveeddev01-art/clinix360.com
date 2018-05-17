@@ -9,7 +9,7 @@ import Footer from "../components/footer";
 export default class Engage extends Component {
   render() {
     return (
-      <div className="product-page">
+      <div className="product-page engage-page">
         <Header />
         <div className="subheader">
           <div className="container">
