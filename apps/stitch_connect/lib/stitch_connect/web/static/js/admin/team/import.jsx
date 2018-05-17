@@ -11,14 +11,15 @@ const description =
 
 export default class TeamImport extends Component {
   _mailToFor = app => {
-    return `mailto:support@teamstitch.com?subject=Import Data from ${app}&body=We'd like to import data from ${app} into Stitch.`;
+    return `mailto:support@teamstitch.com?subject=Import Data from ${app}&body=We would like to import data from ${app} to Stitch.`;
   };
 
   render() {
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
+        <br />
         <Row className="m-b-20">
-          <Col md={9} className="import-app-option">
+          <Col md={10} className="import-app-option">
             <img src="/images/import-stitch-logo.png" alt="stitch logo" />
             <div>
               <h4>
@@ -27,10 +28,10 @@ export default class TeamImport extends Component {
               <p>Import your message history and files.</p>
             </div>
           </Col>
-          <Col md={3}>
+          <Col md={2}>
             <Button
               className="import-app-button"
-              href={this._mailToFor("stitch")}
+              href={this._mailToFor("Stitch")}
               block
               bsStyle="primary"
             >
@@ -40,7 +41,7 @@ export default class TeamImport extends Component {
         </Row>
 
         <Row className="m-b-20">
-          <Col md={9} className="import-app-option">
+          <Col md={10} className="import-app-option">
             <img src="/images/import-excel-logo.png" />
             <div>
               <h4>
@@ -49,7 +50,7 @@ export default class TeamImport extends Component {
               <p>Import messages in a custom format.</p>
             </div>
           </Col>
-          <Col md={3}>
+          <Col md={2}>
             <Button
               className="import-app-button"
               href={this._mailToFor("CSV/Text File")}
@@ -62,7 +63,7 @@ export default class TeamImport extends Component {
         </Row>
 
         <Row className="m-b-20">
-          <Col md={9} className="import-app-option">
+          <Col md={10} className="import-app-option">
             <img src="/images/import-slack-logo.png" />
             <div>
               <h4>
@@ -71,7 +72,7 @@ export default class TeamImport extends Component {
               <p>Import your message history and files.</p>
             </div>
           </Col>
-          <Col md={3}>
+          <Col md={2}>
             <Button
               className="import-app-button"
               href={this._mailToFor("Slack")}
@@ -84,7 +85,7 @@ export default class TeamImport extends Component {
         </Row>
 
         <Row className="m-b-20">
-          <Col md={9} className="import-app-option">
+          <Col md={10} className="import-app-option">
             <img src="/images/import-hipchat-logo.png" />
             <div>
               <h4>
@@ -93,10 +94,10 @@ export default class TeamImport extends Component {
               <p>Import your message history and files.</p>
             </div>
           </Col>
-          <Col md={3}>
+          <Col md={2}>
             <Button
               className="import-app-button"
-              href={this._mailToFor("Hipchat")}
+              href={this._mailToFor("HipChat")}
               block
               bsStyle="primary"
             >
