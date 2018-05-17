@@ -37,9 +37,13 @@ defmodule Stitch.Version do
     |> validate_required([:event, :record_type, :record])
   end
 
+  @spec insert(struct, map | nil) :: {:ok, struct()} | {:error, Ecto.Changeset.t()}
   def insert(target_record, options \\ %{}), do: create("insert", target_record, options)
+
+  @spec update(struct, map | nil) :: {:ok, struct()} | {:error, Ecto.Changeset.t()}
   def update(target_record, options \\ %{}), do: create("update", target_record, options)
 
+  @spec create(String.t(), struct, map | nil) :: {:ok, struct()} | {:error, Ecto.Changeset.t()}
   def create(event_type, target_record, options \\ %{}) do
     originator = get_originator(options[:originator])
 
@@ -56,15 +60,15 @@ defmodule Stitch.Version do
     |> Repo.insert()
   end
 
-  def get_originator(%__struct__{id: id} = struct) do
+  defp get_originator(%__struct__{id: id} = struct) do
     %{id: id, type: get_struct_type(struct)}
   end
 
-  def get_originator(string) do
+  defp get_originator(string) do
     %{type: string}
   end
 
-  def get_struct_type(%{__struct__: module}) do
+  defp get_struct_type(%{__struct__: module}) do
     [_ | originator_type] = module |> Module.split()
     originator_type |> Enum.join(".")
   end

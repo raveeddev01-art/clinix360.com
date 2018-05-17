@@ -528,6 +528,7 @@ defmodule Stitch.Message do
 
   def track_update({:ok, message}, author) do
     Stitch.Version.update(message, %{originator: author})
+    {:ok, message}
   end
 
   def track_update(result, _author), do: result
