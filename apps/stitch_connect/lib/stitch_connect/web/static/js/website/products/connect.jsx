@@ -68,9 +68,9 @@ export default class Connect extends Component {
                     Messaging for healthcare teams
                   </h1>
                   <h3 className="m-b-30">
-                    Message your team, from any device. Stitch Connect is{" "}
-                    <span>HIPAA compliant</span> and <span>free to use</span>{" "}
-                    with an unlimited number of people.
+                    Message your team, from any device. Stitch Connect is HIPAA
+                    compliant and free to use with an unlimited number of
+                    people.
                   </h3>
 
                   <Button

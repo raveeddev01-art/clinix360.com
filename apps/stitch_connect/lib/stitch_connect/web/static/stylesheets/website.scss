@@ -585,9 +585,14 @@
 
       .product-heading {
         color: $brand-primary;
-        font-size: 24px;
-        font-weight: 900;
+        font-size: 20px;
+        font-weight: 700;
         margin: 0 0 20px;
+
+        i.fa {
+          font-size: 18px;
+          margin-right: 3px;
+        }
       }
 
       h1 {
@@ -603,17 +608,13 @@
 
       h3 {
         opacity: 1;
-        span {
-          color: $brand-primary;
-          font-weight: 900;
-        }
       }
 
       .create-team-form {
         margin: 20px auto 40px;
         @media(min-width: 768px) {
           max-width: 100%;
-          margin: 0 0 15px;
+          margin: 0 0 25px;
         }
 
         .form-group {
@@ -648,8 +649,8 @@
 
         .play-btn {
           display: inline-block;
-          width: 16px;
-          height: 16px;
+          width: 15px;
+          height: 15px;
           color: #fff;
           text-align: center;
           background: $brand-primary;
@@ -659,9 +660,9 @@
           animation: pulse 1.5s linear infinite;
 
           i.fa {
-            font-size: 8px;
+            font-size: 7px;
             position: relative;
-            top: -9px;
+            top: -10px;
             left: 1px;
           }
         }
@@ -931,7 +932,7 @@
     p {
       font-size: 18px;
     }
-    
+
     .feature {
       background: #f0f1f3;
       padding: 100px 0;
