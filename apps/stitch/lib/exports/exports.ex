@@ -18,7 +18,7 @@ defmodule Stitch.Exports do
       {:ok, %Export{...}}
 
   """
-  @spec create_export(Team.t) :: {:ok, Export.t} | {:error, Ecto.Changeset.t}
+  @spec create_export(Team.t()) :: {:ok, Export.t()} | {:error, Ecto.Changeset.t()}
   def create_export(%Team{id: team_id}) do
     %{team_id: team_id}
     |> Export.new()
@@ -34,12 +34,14 @@ defmodule Stitch.Exports do
       [%Export{...}, ...]
 
   """
-  @spec list_exports(Team.t) :: [Export.t]
+  @spec list_exports(Team.t()) :: [Export.t()]
   def list_exports(%Team{id: team_id}) do
     query =
-      from e in Export,
-      where: e.team_id == ^team_id,
-      order_by: [asc: e.inserted_at]
+      from(
+        e in Export,
+        where: e.team_id == ^team_id,
+        order_by: [asc: e.inserted_at]
+      )
 
     Repo.all(query)
   end
@@ -57,7 +59,7 @@ defmodule Stitch.Exports do
       {:ok, %Export{...}}
 
   """
-  @spec update_export(Team.t, map) :: {:ok, Export.t} | {:error, Ecto.Changeset.t}
+  @spec update_export(Team.t(), map) :: {:ok, Export.t()} | {:error, Ecto.Changeset.t()}
   def update_export(%Export{} = export, params) do
     export
     |> Export.update(params)
@@ -70,10 +72,13 @@ defmodule Stitch.Exports do
   Not enabled on test env.
 
   """
-  @spec schedule_export(Team.t, Export.t) :: {:ok, pid} | :ignore
+  @spec schedule_export(Team.t(), Export.t()) :: {:ok, pid} | :ignore
   def schedule_export(%Team{} = team, %Export{} = export) do
     if @exports_enabled do
-      Task.Supervisor.start_child(Stitch.Exports.Supervisor, __MODULE__, :start_export, [team, export])
+      Task.Supervisor.start_child(Stitch.Exports.Supervisor, __MODULE__, :start_export, [
+        team,
+        export
+      ])
     else
       :ignore
     end
@@ -89,21 +94,21 @@ defmodule Stitch.Exports do
   4. Update export record with status 'COMPLETE' and the zip url from S3.
 
   """
-  @spec start_export(Team.t, Export.t) :: {:ok, Export.t} | {:error, term}
+  @spec start_export(Team.t(), Export.t()) :: {:ok, Export.t()} | {:error, term}
   def start_export(%Team{} = team, %Export{} = export) do
     try do
       do_start_export(team, export)
     rescue
       e ->
-        Logger.error("Failed to complete export for team id #{inspect team.id}. #{inspect e}")
+        Logger.error("Failed to complete export for team id #{inspect(team.id)}. #{inspect(e)}")
         update_export(export, %{status: "FAILED"})
     end
   end
 
   defp do_start_export(%Team{} = team, %Export{} = export) do
     with {:ok, zip_path} <- TeamHistory.generate_zip(team, 60_000),
-         {:ok, _}        <- S3.upload(zip_path),
-         :ok             <- File.rm(zip_path) do
+         {:ok, _} <- S3.upload(zip_path),
+         :ok <- File.rm(zip_path) do
       zip_url = S3.fullpath(zip_path)
       update_export(export, %{status: "COMPLETE", zip_url: zip_url})
     else
@@ -118,12 +123,14 @@ defmodule Stitch.Exports do
   hours, false otherwise.
 
   """
-  @spec authorized_to_create_export?(Team.t) :: boolean
+  @spec authorized_to_create_export?(Team.t()) :: boolean
   def authorized_to_create_export?(%Team{id: team_id}) do
     query =
-      from e in Export,
-      where: e.team_id == ^team_id,
-      where: e.inserted_at > ago(1, "day")
+      from(
+        e in Export,
+        where: e.team_id == ^team_id,
+        where: e.inserted_at > ago(1, "day")
+      )
 
     Repo.all(query) == []
   end
