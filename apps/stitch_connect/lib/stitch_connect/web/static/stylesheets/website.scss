@@ -14,11 +14,18 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 810px) {
     .container {
-      padding-left: 25px;
-      padding-right: 25px;
+      padding-left: 6vw;
+      padding-right: 6vw;
     }
+  }
+
+  @media (max-width: 768px) {
+    // .container {
+    //   padding-left: 25px;
+    //   padding-right: 25px;
+    // }
 
     .navbar-header,
     .navbar-collapse {
@@ -552,7 +559,7 @@
     .flex-box {
       .flex-item {
         flex: 1 0 auto;
-        @media (min-width: 1024px) {
+        @media (min-width: 992px) {
           flex: 1;
         }
       }
@@ -611,14 +618,17 @@
       }
 
       .create-team-form {
+        max-width: 100%;
         margin: 20px auto 40px;
         @media(min-width: 768px) {
-          max-width: 100%;
           margin: 0 0 25px;
         }
 
         .form-group {
           display: flex;
+          @media (max-width: 460px) {
+            flex-direction: column;
+          }
         }
 
         .form-control {
@@ -632,7 +642,10 @@
           position: initial;
           text-transform: uppercase;
           padding: 13px 30px;
-          margin-left: 10px;
+          margin: 10px 0 0 0;
+          @media (min-width: 461px) {
+            margin: 0 0 0 10px;
+          }
         }
       }
 
@@ -714,8 +727,10 @@
       padding: 100px 0;
   
       h2 {
-        margin: 0 0 40px;
+        margin: 0;
+        
         @media(min-width: 768px) {
+          margin: 0 0 40px;
           text-align: center;
         }
       }
@@ -746,15 +761,20 @@
 
     .get-started-new {
       background: #fff;
+      box-shadow: 0 1px 0 #eaeaea;
       padding: 100px 0;
       position: relative;
       overflow: hidden;
 
       h2 {
         color: $brand-primary;
-        margin: 0 0 80px;
-        @media(min-width: 768px) {
+        margin: 0 0 40px;
+        @media(min-width: 430px) {
           text-align: center;
+        }
+
+        @media (min-width: 1000px) {
+          margin: 0 0 80px;
         }
       }
 
@@ -765,6 +785,7 @@
         margin-bottom: 60px;
         @media (max-width: 1000px) {
           flex-direction: column;
+          margin-bottom: 20px;
         }
       }
 
@@ -778,6 +799,10 @@
 
         .panel-body {
           padding: 15px 30px;
+
+          h4 {
+            font-size: 18px;
+          }
         }
         
         @media (max-width: 1000px) {

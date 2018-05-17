@@ -73,18 +73,7 @@ export default class Connect extends Component {
                     people.
                   </h3>
 
-                  <Button
-                    bsStyle="primary"
-                    block
-                    href="https://teamstitch.com/signup/email"
-                    className="m-b-50 hidden-sm hidden-md hidden-lg"
-                  >
-                    Get Started
-                  </Button>
-
-                  <div className="hidden-xs">
-                    <CreateTeam />
-                  </div>
+                  <CreateTeam />
 
                   <a
                     className="play-video-link hidden-xs hidden-sm"
@@ -268,13 +257,13 @@ export default class Connect extends Component {
           <div className={setupClass}>
             <div className="setup-line" />
             <div className="container">
-              <h2>Free to use, simple to start</h2>
+              <h2>Simple setup in under 5 minutes</h2>
 
               <div className="steps">
                 <Panel className="step-1">
                   <Panel.Body>
                     <div className="number m-b-30">1</div>
-                    <h4 className="m-b-20">Create your account</h4>
+                    <h4 className="m-b-20">Create an account</h4>
 
                     <p>
                       Stitch is 100% free to start. Pick a team name and a
@@ -297,7 +286,7 @@ export default class Connect extends Component {
                 <Panel className="step-3">
                   <Panel.Body>
                     <div className="number m-b-30">3</div>
-                    <h4 className="m-b-20">Add your chat rooms</h4>
+                    <h4 className="m-b-20">Add chat rooms</h4>
                     <p>
                       Pick a few major topics that your team talks about
                       frequently, and create your Stitch rooms to get started.
@@ -308,10 +297,10 @@ export default class Connect extends Component {
                 <Panel className="step-4">
                   <Panel.Body>
                     <div className="number m-b-30">4</div>
-                    <h4 className="m-b-20">Communicate securely</h4>
+                    <h4 className="m-b-20">Message securely</h4>
                     <p>
                       Directly name patients and share patient files to
-                      collaborate more efficiently with HIPAA compliance.{" "}
+                      collaborate more efficiently with HIPAA compliance.
                     </p>
                   </Panel.Body>
                 </Panel>
