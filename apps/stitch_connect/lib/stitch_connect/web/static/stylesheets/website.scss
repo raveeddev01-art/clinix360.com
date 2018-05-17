@@ -567,7 +567,8 @@
       }
 
       img {
-        max-width: 50%;
+        width: 100%;
+        max-width: 470px;
         margin: 0 auto;
         @media (min-width: 1024px) {
           max-width: 85%;
