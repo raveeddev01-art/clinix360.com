@@ -211,6 +211,8 @@ defmodule Stitch.Message do
           message.id
         )
 
+        track_insert(message, user)
+
         {:ok, Map.put(result_map, :notify_user_ids, notify_user_ids)}
 
       error ->
@@ -249,6 +251,7 @@ defmodule Stitch.Message do
       mentioned_user_ids: mentioned_user_ids
     })
     |> Repo.update()
+    |> track_update(author)
   end
 
   def delete(message) do
@@ -518,4 +521,14 @@ defmodule Stitch.Message do
   def leave_message_changeset(%Group{} = group, user_id) do
     leave_message_changeset(group, Repo.get(User, user_id))
   end
+
+  def track_insert(message, author) do
+    Stitch.Version.insert(message, %{originator: author})
+  end
+
+  def track_update({:ok, message}, author) do
+    Stitch.Version.update(message, %{originator: author})
+  end
+
+  def track_update(result, _author), do: result
 end
