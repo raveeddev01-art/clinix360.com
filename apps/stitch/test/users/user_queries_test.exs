@@ -88,6 +88,11 @@ defmodule Stitch.UserQueriesTest do
       assert UserQueries.user_with_email_exists?("foo@example.com")
     end
 
+    test "returns true even if the email letter cases don't match" do
+      insert(:user, email: "foo@example.com")
+      assert UserQueries.user_with_email_exists?("FOO@EXAMPLE.COM")
+    end
+
     test "returns false when no user with the given email exists" do
       insert(:user, email: "bar@example.com")
       refute UserQueries.user_with_email_exists?("foo@example.com")

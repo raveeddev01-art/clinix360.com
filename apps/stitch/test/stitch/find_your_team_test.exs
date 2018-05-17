@@ -24,9 +24,10 @@ defmodule Stitch.FindYourTeamTest do
     test "replaces old token on creation" do
       insert(:user, email: "foo@example.com")
       {:ok, %Token{} = token_1} = FindYourTeam.create_team_list_token("foo@example.com")
-      {:ok, %Token{} = token_2} = FindYourTeam.create_team_list_token("foo@example.com")
+      {:ok, %Token{} = token_2} = FindYourTeam.create_team_list_token("FOO@example.com")
 
       assert token_1.token != token_2.token
+      assert [_token] = Repo.all(Token)
     end
   end
 

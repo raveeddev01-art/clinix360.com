@@ -46,4 +46,5 @@ config :stitch, :redix, %{
 
 import_config "#{Mix.env()}.exs"
 
-config :ua_inspector, database_path: "./apps/stitch/priv/ua_inspector"
+config :ua_inspector,
+  database_path: System.get_env("UA_INSPECTOR_DB_PATH") || "./apps/stitch/priv/ua_inspector"

@@ -63,10 +63,12 @@ const getNodeList = (messageContent, opts) => {
     const remainingMessageContent = messageContent.slice(currentIndex);
     const atStartOfLine =
       currentIndex === 0 || messageContent[currentIndex - 1] === "\n";
+    const followingSpaceOrNewline =
+      atStartOfLine || messageContent[currentIndex - 1] === " ";
 
     const matchingFormatter = getMatchingFormatter(
       remainingMessageContent,
-      Object.assign({}, opts, { atStartOfLine })
+      Object.assign({}, opts, { atStartOfLine, followingSpaceOrNewline })
     );
 
     // CASE 1: AT END OF CONTENT

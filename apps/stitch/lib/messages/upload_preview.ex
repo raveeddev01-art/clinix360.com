@@ -10,7 +10,7 @@ defmodule Stitch.UploadPreview do
           upload
       )
       when not is_nil(url) do
-    case create_preview(upload) do
+    case create_preview(upload.fields) do
       {:ok, preview} ->
         fields = Map.merge(upload.fields, preview)
 
@@ -51,7 +51,9 @@ defmodule Stitch.UploadPreview do
     end
   end
 
-  def create_preview(_fields), do: {:error, "Unsupported type"}
+  def create_preview(_fields) do
+    {:error, "Unsupported type"}
+  end
 
   @spec generate_preview(binary) :: Mogrify.Image.t()
   def generate_preview(origin) do

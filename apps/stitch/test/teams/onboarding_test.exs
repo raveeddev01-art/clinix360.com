@@ -28,8 +28,7 @@ defmodule Stitch.Team.OnboardingTest do
 
     test "it creates a room called General for the new team" do
       team = Onboarding.create_team("Care Clinic", "care-clinic-12")
-      assert [%{name: "General", is_default: true}] =
-        team |> Ecto.assoc(:groups) |> Repo.all
+      assert [%{name: "General", is_default: true}] = team |> Ecto.assoc(:groups) |> Repo.all()
     end
 
     test "it returns an error given a name for an existing team" do

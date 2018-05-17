@@ -148,6 +148,14 @@ defmodule Stitch.InvitationTest do
       {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
       assert reason == "Email has already been registered."
     end
+
+    test "returns error when account with that email already exists on team, even if its letter cases differ" do
+      team = insert(:team, %{open_invitations_enabled: true})
+      user = insert(:user, %{team_id: team.id, roles: ["admin"]})
+      _existing_user = insert(:user, %{team_id: team.id, email: "example@email.com"})
+      {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "EXAMPLE@email.com")
+      assert reason == "Email has already been registered."
+    end
   end
 
   describe "Stitch.Invitation.list_pending_team_invitations/1" do
