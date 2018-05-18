@@ -254,12 +254,13 @@ defmodule Stitch.Message do
     |> track_update(author)
   end
 
-  def delete(message) do
+  def delete(message, user) do
     Multi.new()
     |> Multi.update_all(:unmention_users, unmention_users(message), [])
     |> Multi.update_all(:decrement_unread_counter, decrement_unread_counter(message), [])
     |> Multi.delete(:message, message)
     |> Repo.transaction()
+    |> track_delete(user)
   end
 
   def mark_as_read_on_creation(multi, group_id, user_id) do
@@ -522,14 +523,21 @@ defmodule Stitch.Message do
     leave_message_changeset(group, Repo.get(User, user_id))
   end
 
-  def track_insert(message, author) do
-    Stitch.Version.insert(message, %{originator: author})
+  def track_insert(message, user) do
+    Stitch.Version.insert(message, %{committed_by: user})
   end
 
-  def track_update({:ok, message}, author) do
-    Stitch.Version.update(message, %{originator: author})
+  def track_update({:ok, message}, user) do
+    Stitch.Version.update(message, %{committed_by: user})
     {:ok, message}
   end
 
-  def track_update(result, _author), do: result
+  def track_update(result, _user), do: result
+
+  def track_delete({:ok, %{message: message}} = result, user) do
+    Stitch.Version.delete(message, %{committed_by: user})
+    result
+  end
+
+  def track_delete(result, _user), do: result
 end

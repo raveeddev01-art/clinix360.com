@@ -3,18 +3,18 @@ defmodule Repo.Migrations.AddVersions do
 
   def change do
     create table(:versions) do
-      add(:event, :string, null: false)
+      add(:action, :string, null: false)
       add(:record_type, :string, null: false)
-      add(:record_id, :integer)
+      add(:record_id, :integer, null: false)
       add(:record, :map, null: false)
-      add(:originator_id, references(:users))
-      add(:originator_type, :string)
-      add(:meta, :map)
+      add(:committed_by_id, references(:users))
+      add(:source, :string, null: true)
+      add(:meta, :map, null: true)
 
-      add(:inserted_at, :utc_datetime, null: false)
+      timestamps(updated_at: false)
     end
 
-    create(index(:versions, [:originator_id]))
+    create(index(:versions, [:committed_by_id]))
     create(index(:versions, [:record_id]))
   end
 end

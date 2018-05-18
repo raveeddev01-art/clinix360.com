@@ -248,7 +248,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
     case MessageAuthorization.can_delete?(message, user, group) do
       true ->
-        case Message.delete(message) do
+        case Message.delete(message, user) do
           {:ok, _message} ->
             GroupChannel.broadcast_message_deleted(message)
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
