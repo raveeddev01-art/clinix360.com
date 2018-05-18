@@ -77,7 +77,8 @@ defmodule Stitch.Group do
          group = %Group{team_id: team_id, creator_user_id: user_id},
          changeset = with_users_changeset(group, params),
          {:ok, group} <- Repo.insert(changeset),
-         _ = GroupAnalytics.track_creation(group, creator) do
+         _ = GroupAnalytics.track_creation(group, creator),
+         _ = track_insert(group, creator) do
       {:ok, Repo.preload(group, :users)}
     else
       false -> {:error, :invalid_user_ids}
@@ -323,11 +324,11 @@ defmodule Stitch.Group do
   @doc """
   Deletes the group
   """
-  @spec delete(Group.t()) :: {:ok, map} | {:error, any()}
-  def delete(%Group{name: name}) when name in @dm_groups, do: {:error, :direct_message}
-  def delete(%Group{is_default: true}), do: {:error, :default_group}
+  @spec delete(Group.t(), User.t()) :: {:ok, map} | {:error, any()}
+  def delete(%Group{name: name}, _user) when name in @dm_groups, do: {:error, :direct_message}
+  def delete(%Group{is_default: true}, _user), do: {:error, :default_group}
 
-  def delete(%Group{} = group) do
+  def delete(%Group{} = group, user) do
     Ecto.Multi.new()
     |> Ecto.Multi.update_all(
       :groups_as_guest,
@@ -337,6 +338,7 @@ defmodule Stitch.Group do
     )
     |> Ecto.Multi.delete(:group, group)
     |> Repo.transaction()
+    |> track_delete(user)
   end
 
   def delete_from_groups_as_guest(%Group{} = group) do
@@ -515,4 +517,15 @@ defmodule Stitch.Group do
   def type(%Group{name: name}) when name == @single_dm_name, do: "single-dm"
   def type(%Group{name: name}) when name == @multi_dm_name, do: "multi-dm"
   def type(%Group{}), do: "room"
+
+  def track_insert(group, user) do
+    Stitch.Version.insert(group, %{committed_by_id: user.id, source: "application"})
+  end
+
+  def track_delete({:ok, %{group: group}} = result, user) do
+    Stitch.Version.delete(group, %{committed_by_id: user.id, source: "application"})
+    result
+  end
+
+  def track_delete(result, _user), do: result
 end
