@@ -636,6 +636,10 @@
           border: 2px solid #ededed;
           box-shadow: none;
           padding: 6px 12px;
+
+          &:focus {
+            border-color: $brand-primary;
+          }
         }
 
         .btn-form {
@@ -1499,11 +1503,42 @@
 
   .navbar-toggle {
     border: 0;
-    padding: 9px 0px;
+    padding: 15px 0px;
     margin-right: 25px;
+    position: relative;
+
+    .icon-bar:nth-child(2) {
+      position: relative;
+      top: 1px;
+      transform: rotate(-45deg);
+    }
+    .icon-bar:nth-child(3) {
+      transform: rotate(45deg);
+      margin: 0;
+    }
+    .icon-bar:last-child {
+      display: none;
+    }
 
     &:hover, &:focus {
       background: transparent;
+    }
+
+    &.collapsed {
+      padding: 9px 0px;
+
+      .icon-bar {
+        transform: rotate(0deg);
+        top: 0;
+
+        &:nth-child(3) {
+          margin-top: 4px;
+  }
+
+        &:last-child {
+          display: block;
+  }
+      }
     }
   }
 
@@ -1753,12 +1788,6 @@
     .modal-body {
       min-height: auto;
       padding: 0;
-    }
-  }
-
-  @media (max-width: 768px) {
-    &:before {
-      // display: block;
     }
   }
 }

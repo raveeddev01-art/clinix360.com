@@ -226,13 +226,12 @@ export default class Connect extends Component {
                     <i className="fa fa-refresh" /> EHR Integrations
                   </h4>
                   <p className="m-b-15">
-                    Tie Stitch into your existing toolset with our seamless EHR
-                    integrations. Use our easy configurations right out of the
-                    box.
+                    Tie Stitch into your existing toolset with a seamless EHR
+                    integration. Use our configurations right out of the box.
                   </p>
 
                   <a href="https://intercom.help/teamstitch/integrations/integrations">
-                    Learn more about Video Calls
+                    Learn more about Integrations
                   </a>
                 </div>
               </Col>
