@@ -695,7 +695,10 @@
     }
 
     .feature {
-      padding: 100px 0;
+      padding: 60px 0;
+      @media (min-width: 768) {
+        padding: 95px 0;  
+      }
 
       .info {
         max-width: 100%;
@@ -724,7 +727,10 @@
     }
 
     .additional-features {
-      padding: 100px 0;
+      padding: 60px 0;
+      @media (min-width: 768) {
+        padding: 95px 0;  
+      }
   
       h2 {
         margin: 0;

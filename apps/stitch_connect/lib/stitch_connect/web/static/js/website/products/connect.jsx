@@ -92,7 +92,7 @@ export default class Connect extends Component {
 
         <Feature
           featureClassName={flipped ? "" : "alt"}
-          heading="Get to the right person at the right time."
+          heading="Get to the right person at the right time"
           image="/images/connect-feature-1-new.png"
         >
           Public and private rooms bring healthcare teams together for powerful
@@ -103,7 +103,7 @@ export default class Connect extends Component {
 
         <Feature
           featureClassName={flipped ? "alt" : ""}
-          heading="Share information across the team"
+          heading="Share information across your entire team"
           image="/images/connect-feature-2-new.png"
         >
           Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
