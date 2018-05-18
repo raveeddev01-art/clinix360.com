@@ -81,7 +81,7 @@ export default class Connect extends Component {
 
               <div className="flex-item">
                 <img
-                  src="/images/cross-platform.png"
+                  src="/images/cross-platform-new.png"
                   alt="Stitch Platform"
                   className="img-responsive"
                 />
