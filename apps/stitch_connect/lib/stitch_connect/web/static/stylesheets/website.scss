@@ -696,7 +696,7 @@
 
     .feature {
       padding: 60px 0;
-      @media (min-width: 768) {
+      @media (min-width: 768px) {
         padding: 95px 0;  
       }
 
@@ -728,7 +728,7 @@
 
     .additional-features {
       padding: 60px 0;
-      @media (min-width: 768) {
+      @media (min-width: 768px) {
         padding: 95px 0;  
       }
   
@@ -768,9 +768,12 @@
     .get-started-new {
       background: #fff;
       box-shadow: 0 1px 0 #eaeaea;
-      padding: 100px 0;
       position: relative;
       overflow: hidden;
+      padding: 60px 0;
+      @media (min-width: 768px) {
+        padding: 95px 0;  
+      }
 
       h2 {
         color: $brand-primary;
