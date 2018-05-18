@@ -211,8 +211,6 @@ defmodule Stitch.Message do
           message.id
         )
 
-        track_insert(message, user)
-
         {:ok, Map.put(result_map, :notify_user_ids, notify_user_ids)}
 
       error ->
@@ -251,7 +249,7 @@ defmodule Stitch.Message do
       mentioned_user_ids: mentioned_user_ids
     })
     |> Repo.update()
-    |> track_update(author)
+    |> track_update(author, message)
   end
 
   def delete(message, user) do
@@ -523,19 +521,21 @@ defmodule Stitch.Message do
     leave_message_changeset(group, Repo.get(User, user_id))
   end
 
-  def track_insert(message, user) do
-    Stitch.Version.insert(message, %{committed_by: user})
-  end
+  def track_update({:ok, message}, user, message_before_edit) do
+    Stitch.Version.insert(message_before_edit, %{
+      committed_by_id: message.user_id,
+      source: "application"
+    })
 
-  def track_update({:ok, message}, user) do
-    Stitch.Version.update(message, %{committed_by: user})
+    Stitch.Version.update(message, %{committed_by_id: user.id, source: "application"})
     {:ok, message}
   end
 
-  def track_update(result, _user), do: result
+  def track_update(result, _user, _message), do: result
 
   def track_delete({:ok, %{message: message}} = result, user) do
-    Stitch.Version.delete(message, %{committed_by: user})
+    Stitch.Version.insert(message, %{committed_by_id: message.user_id, source: "application"})
+    Stitch.Version.delete(message, %{committed_by_id: user.id, source: "application"})
     result
   end
 

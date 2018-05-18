@@ -7,7 +7,7 @@ defmodule Stitch.VersionTest do
       message = insert(:message)
 
       {:ok, version} =
-        Stitch.Version.insert(message, %{committed_by: user, source: "application"})
+        Stitch.Version.insert(message, %{committed_by_id: user.id, source: "application"})
 
       assert version.source == "application"
       assert version.committed_by_id == user.id

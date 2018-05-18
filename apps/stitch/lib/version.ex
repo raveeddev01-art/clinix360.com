@@ -2,7 +2,7 @@ defmodule Stitch.Version do
   @moduledoc """
   Tracks record changes.
 
-  - commited_by: user that commited the action (insert / update / delete)
+  - committed_by_id: user that commited the action (insert / update / delete)
   - source: "application", "migration", "rails admin", etc
   - action_type: "insert", "update", "delete"
   - record_type: the name of the module without the namespace e.g. "Accounts.User", "Message"
@@ -47,7 +47,13 @@ defmodule Stitch.Version do
   end
 
   @spec insert(struct, map | nil) :: {:ok, struct()} | {:error, Ecto.Changeset.t()}
-  def insert(target_record, options \\ %{}), do: create("insert", target_record, options)
+  def insert(target_record, options \\ %{}) do
+    if Repo.get_by(Version, record_id: target_record.id, action: "insert") do
+      {:error, "Already tracked"}
+    else
+      create("insert", target_record, options)
+    end
+  end
 
   @spec update(struct, map | nil) :: {:ok, struct()} | {:error, Ecto.Changeset.t()}
   def update(target_record, options \\ %{}), do: create("update", target_record, options)
@@ -70,7 +76,7 @@ defmodule Stitch.Version do
     |> Repo.insert()
   end
 
-  def get_committed_by_id(%{committed_by: %User{id: user_id}}), do: user_id
+  def get_committed_by_id(%{committed_by_id: user_id}), do: user_id
   def get_committed_by_id(_options), do: nil
 
   defp get_struct_type(%{__struct__: module}) do
