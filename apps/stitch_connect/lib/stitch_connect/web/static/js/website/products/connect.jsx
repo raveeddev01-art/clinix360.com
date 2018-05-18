@@ -55,36 +55,28 @@ export default class Connect extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="xtra">
-                  <h4 className="product-heading">
-                    <i className="fa fa-comments" /> Connect
-                  </h4>
+                <h4 className="product-heading">
+                  <i className="fa fa-comments" /> Connect
+                </h4>
 
-                  <h1 className="hidden-xs hidden-sm">
-                    The messaging app for healthcare teams
-                  </h1>
+                <h1>Team Messaging for Healthcare</h1>
 
-                  <h1 className="visible-xs visible-sm">
-                    Messaging for healthcare teams
-                  </h1>
-                  <h3 className="m-b-30">
-                    Message your team, from any device. Stitch Connect is HIPAA
-                    compliant and free to use with an unlimited number of
-                    people.
-                  </h3>
+                <h3 className="m-b-30">
+                  Message your team, from any device. Stitch Connect is HIPAA
+                  compliant and free to use with an unlimited number of people.
+                </h3>
 
-                  <CreateTeam />
+                <CreateTeam />
 
-                  <a
-                    className="play-video-link hidden-xs hidden-sm"
-                    onClick={this.videoModal}
-                  >
-                    <span className="play-btn">
-                      <i className="fa fa-play" />
-                    </span>
-                    <span>See How It Works</span>
-                  </a>
-                </div>
+                <a
+                  className="play-video-link hidden-xs hidden-sm"
+                  onClick={this.videoModal}
+                >
+                  <span className="play-btn">
+                    <i className="fa fa-play" />
+                  </span>
+                  <span>See How It Works</span>
+                </a>
               </div>
 
               <div className="flex-item">
@@ -99,7 +91,7 @@ export default class Connect extends Component {
         </div>
 
         <Feature
-          featureClassName={flipped ? "alt" : ""}
+          featureClassName={flipped ? "" : "alt"}
           heading="Get to the right person at the right time."
           image="/images/connect-feature-1-new.png"
         >
@@ -110,7 +102,7 @@ export default class Connect extends Component {
         </Feature>
 
         <Feature
-          featureClassName={flipped ? "" : "alt"}
+          featureClassName={flipped ? "alt" : ""}
           heading="Share information across the team"
           image="/images/connect-feature-2-new.png"
         >
@@ -121,7 +113,7 @@ export default class Connect extends Component {
         </Feature>
 
         <Feature
-          featureClassName={flipped ? "alt" : ""}
+          featureClassName={flipped ? "" : "alt"}
           heading="Choose notifications that matter to you"
           image="/images/connect-feature-3-new.png"
         >
@@ -133,7 +125,7 @@ export default class Connect extends Component {
         </Feature>
 
         <Feature
-          featureClassName={flipped ? "" : "alt"}
+          featureClassName={flipped ? "alt" : ""}
           heading="Instantly find answers when you need them"
           image="/images/connect-feature-4-new.png"
         >

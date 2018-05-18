@@ -48,7 +48,7 @@ class CreateTeam extends Component {
           <FormControl
             required
             id="createTeam"
-            placeholder="Email Address"
+            placeholder="Email address"
             type="email"
             value={email}
             onChange={this.onChange}
