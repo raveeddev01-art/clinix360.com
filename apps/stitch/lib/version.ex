@@ -19,7 +19,7 @@ defmodule Stitch.Version do
   @type t :: %__MODULE__{}
 
   schema "versions" do
-    belongs_to(:committed_by, Stitch.Accounts.User, foreign_key: :committed_by_id)
+    belongs_to(:committed_by, User, foreign_key: :committed_by_id)
     field(:action, :string)
     field(:record_type, :string)
     field(:record_id, :integer)
