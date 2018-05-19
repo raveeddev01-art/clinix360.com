@@ -192,6 +192,12 @@ defmodule StitchConnect.Web.TeamChannel do
     broadcast_user_joined(team.id, user)
   end
 
+  def broadcast_hipaa_toggled(%Stitch.Team{} = team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "hipaa_switch_toggled", %{
+      hipaa_enabled: team.hipaa_enabled
+    })
+  end
+
   def broadcast_team_rename(%Stitch.Team{} = team) do
     @endpoint.broadcast("team:lobby:#{team.id}", "team_renamed", %{
       name: team.name,

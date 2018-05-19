@@ -5,6 +5,7 @@ class TeamStore {
   @observable name = currentUser.team.name;
   @observable id = currentUser.team.id;
   @observable slug = currentUser.team.slug;
+  @observable hipaaEnabled = currentUser.team.hipaaEnabled;
   @observable securityLockoutEnabled = currentUser.team.securityLockoutEnabled;
   @observable secondsToLockout = currentUser.team.secondsToLockout;
   @observable openInvitationsEnabled = currentUser.team.openInvitationsEnabled;

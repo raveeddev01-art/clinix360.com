@@ -1,8 +1,10 @@
 defmodule StitchConnect.Web.Api.V1.TeamController do
   use StitchConnect.Web, :controller
   alias Stitch.Team.Admin
-  alias Stitch.{Team, TeamQueries}
+  alias Stitch.{Team, TeamQueries, TeamAuthorization}
   alias StitchConnect.Web.{TeamChannel}
+
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def show(conn, %{"id" => _}) do
     team = TeamQueries.get_by_id(conn.private[:team_id])
@@ -127,6 +129,20 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
           name: team.name,
           open_invitations_enabled: team.open_invitations_enabled
         })
+    end
+  end
+
+  def toggle_hipaa(conn, %{"id" => _}) do
+    user = conn.assigns.current_user
+    team = conn.assigns.team
+
+    with {:authorized?, true} <- {:authorized?, TeamAuthorization.is_admin?(user, team)},
+         {:ok, team} <- Team.Admin.toggle_hipaa_switch(team) do
+      TeamChannel.broadcast_hipaa_toggled(team)
+      conn |> json(%{id: team.id, hipaa_enabled: team.hipaa_enabled})
+    else
+      {:authorized?, false} -> {:error, :not_authorized}
+      _ -> {:error, :not_found}
     end
   end
 

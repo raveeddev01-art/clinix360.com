@@ -7,6 +7,8 @@ defmodule Stitch.Team.Admin do
   alias Stitch.Team
   alias Stitch.Analytics.Team, as: TeamAnalytics
 
+  import Ecto.Query
+
   @spec update_name(number, String.t()) :: {:ok, term} | {:error, term}
   @doc """
   Updates the team name field.
@@ -91,6 +93,20 @@ defmodule Stitch.Team.Admin do
   def delete_team(team_id) do
     team = Repo.get(Team, team_id)
     Repo.delete(team)
+  end
+
+  @spec toggle_hipaa_switch(Team.t()) :: {:ok, Team.t()} | :error
+  def toggle_hipaa_switch(%Team{} = team) do
+    result =
+      Team
+      |> where([t], t.id == ^team.id)
+      |> update([t], set: [hipaa_enabled: not t.hipaa_enabled])
+      |> Repo.update_all([], returning: true)
+
+    case result do
+      {1, [updated_team]} -> {:ok, updated_team}
+      _ -> :error
+    end
   end
 
   @spec export_history(number) :: boolean | {:error, term}

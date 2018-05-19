@@ -172,6 +172,7 @@ class ChannelStore {
     );
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
+    // this.teamChannel.on("hipaa_switch_toggled", ({ hipaa_enabled }) => {});
     this.teamChannel.on("team_deleted", presenceStore.logout); // just log out immediately if the team is deleted
 
     this.teamChannel.on("user_joined", usersStore.onUserJoined);
@@ -186,8 +187,8 @@ class ChannelStore {
   leaveAllChannelsButTeamAndEvent() {
     Object.keys(this.channels)
       .filter(
-      topic =>
-        topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
+        topic =>
+          topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
       )
       .forEach(topic => {
         this.leave(topic);
