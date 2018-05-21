@@ -56,10 +56,10 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &__MODULE__.with_notifications_link/2
     },
     "app_downloads" => %{
-      subject: "Download the Stitch App!",
-      load_data: &__MODULE__.get_user_with_mobile_message_check/1,
-      send_if: &__MODULE__.is_active_and_not_sent_mobile_message/1,
-      template_vars: &__MODULE__.with_download_app_link/2
+      subject: "Download the Stitch App",
+      load_data: &__MODULE__.get_user_with_team/1,
+      send_if: &__MODULE__.is_active_user/1,
+      template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # ADMIN SPECIFIC MESSAGES
     "admin_welcome" => %{
