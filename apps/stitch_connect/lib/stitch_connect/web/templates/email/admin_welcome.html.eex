@@ -102,9 +102,9 @@
                             <table border="0" cellspacing="0" class="mcnTextContentContainer" width="100%" style="min-width: 100% !important;background-color: #FFFFFF;border: 1px dashed;">
                                 <tbody><tr>
                                     <td valign="top" class="mcnTextContent" style="padding: 18px;color: #F2F2F2;font-family: &quot;Source Sans Pro&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size: 14px;font-weight: normal;text-align: center;">
-                                        <div style="text-align: center;"><span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><span style="color:#000000"><%=@team_name%></span></span></span></div>
+                                        <div style="text-align: center;"><span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><span style="color:#000000"><b><%=@team_name%></b></span></span></span></div>
 
-<div dir="ltr" style="text-align: center;"><span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><span style="color:#000000">URL: </span><span style="color:#000000"></span><font color="#000000"><%=@team_login_url%></font><span style="color:#000000"><br>
+<div dir="ltr" style="text-align: center;"><span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><span style="color:#000000">URL: </span><span style="color:#000000"></span><font color="#000000"><a href="<%=@team_login_url%>"><%=@team_login_url%></a></font><span style="color:#000000"><br>
 Email:&nbsp;</span><font color="#000000"><%=@user_email%></font><br>
 <span style="color:#000000">Plan: </span><font color="#000000"><%=@subscription_tier%></font></span></span></div>
 
