@@ -41,7 +41,7 @@ defmodule Stitch.TimedMessage.Event do
   @spec new_guest_member(User.t()) :: :ok
   def new_guest_member(_user) do
     # Additional messages will be enqueued on same event once templates are ready
-    # enqueue_delivery(%{type: "guest_welcome", data: %{user_id: user.id}, time: in_days(0)})
+    # enqueue_delivery(%{type: "user_welcome", data: %{user_id: user.id}, time: in_days(0)})
     :ok
   end
 
