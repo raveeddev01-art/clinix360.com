@@ -38,7 +38,11 @@ defmodule Stitch.TimedMessage.Event do
   """
   @spec new_guest_member(User.t()) :: :ok
   def new_guest_member(user) do
-    enqueue_delivery(%{type: "user_welcome", data: %{user_id: user.id}, time: in_days(0)})
+    enqueue_messages([
+      %{type: "user_welcome", data: %{user_id: user.id}, time: in_days(0)},
+      %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(1)},
+      %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(2)}
+    ])
   end
 
   @doc """

@@ -44,26 +44,26 @@ defmodule Stitch.TimedMessage.Worker do
   @message_rules_for_type %{
     # SHARED MESSAGES
     "complete_profile" => %{
-      subject: "Complete your Stitch profile",
+      subject: "Complete your profile",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_complete_profile_link/2
     },
     "manage_notifications" => %{
-      subject: "Manage your notifications on Stitch",
+      subject: "Get notified for important messages",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_notifications_link/2
     },
     "app_downloads" => %{
-      subject: "Download the Stitch App",
+      subject: "Get the Stitch mobile and desktop apps",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # ADMIN SPECIFIC MESSAGES
     "admin_welcome" => %{
-      subject: "Welcome to Stitch Connect",
+      subject: "Welcome to Stitch: New Account Information",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_and_has_team/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
@@ -75,28 +75,28 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &__MODULE__.with_admin_invitation_attrs/2
     },
     "admin_create_rooms" => %{
-      subject: "Create rooms on Stitch",
+      subject: "Organize your conversations",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # STANDARD USER SPECIFIC MESSAGES
     "user_welcome" => %{
-      subject: "Welcome to Stitch Connect",
+      subject: "Welcome to Stitch: New Account Information",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_and_has_team/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # GUEST USER SPECIFIC MESSAGES
     "guest_welcome" => %{
-      subject: "Welcome to Stitch Connect",
+      subject: "Welcome to Stitch: New Account Information",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_and_has_team/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # INVITE MESSAGES
     "invite_reminder" => %{
-      subject: "Your team is waiting on Stitch",
+      subject: "Reminder: Join your team on Stitch",
       load_data: &__MODULE__.get_invitation_and_user/1,
       send_if: &__MODULE__.is_invitation_pending/1,
       template_vars: &__MODULE__.with_invitation_attrs/2
