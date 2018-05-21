@@ -124,6 +124,37 @@ class GroupsStore {
   }
 
   @computed
+  get quickSwitchGroups() {
+    // Favorites before non faves,
+    // thenGroups before DMs,
+    // then alphabetical
+    return this.groups.sort((roomA, roomB) => {
+      if (roomA.is_favorite && !roomB.is_favorite) {
+        return -1;
+      }
+
+      if (!roomA.is_favorite && roomB.is_favorite) {
+        return 1;
+      }
+
+      if (roomA.type === "dm" && roomB.type !== "dm") {
+        return 1;
+      }
+
+      if (roomA.type !== "dm" && roomB.type === "dm") {
+        return -1;
+      }
+
+      const aName = this.getGroupName(roomA).toLowerCase();
+      const bName = this.getGroupName(roomB).toLowerCase();
+
+      if (aName < bName) return -1;
+      if (aName > bName) return 1;
+      return 0;
+    });
+  }
+
+  @computed
   get multiDMGroups() {
     return this.visibleGroups.filter(group => group.type === "multi_dm");
   }

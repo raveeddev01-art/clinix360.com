@@ -23,6 +23,7 @@ class SidemenuStore {
   @observable subdomain = "";
   @observable teamId = "";
   @observable isInChat = false;
+  @observable currentModal = null;
 
   badge = null;
   desktopBadge = null;
@@ -102,6 +103,16 @@ class SidemenuStore {
   // //////////
   // METHODS //
   // /////// //
+
+  @action
+  setModal = modalName => {
+    this.currentModal = modalName;
+  };
+
+  @action
+  closeModal = () => {
+    this.currentModal = null;
+  };
 
   @action
   loadApp = async () => {
