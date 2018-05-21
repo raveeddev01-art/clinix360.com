@@ -33,10 +33,6 @@ class Header extends Component {
 
         <Navbar.Collapse>
           <Nav pullRight>
-            <LinkContainer to="/demo">
-              <NavItem>Demo</NavItem>
-            </LinkContainer>
-
             <NavDropdown title="Products" id="products-dropdown">
               <LinkContainer to="/connect">
                 <MenuItem>
@@ -124,18 +120,6 @@ class Header extends Component {
                   Stories and updates from the Stitch Health team
                 </div>
               </MenuItem>
-            </NavDropdown>
-
-            <NavDropdown title="Industries" id="industries-dropdown">
-              <LinkContainer to="/industries/dentistry">
-                <MenuItem>Dentistry</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/industries/optometry">
-                <MenuItem>Optometry</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/industries/primary-care">
-                <MenuItem>Primary Care</MenuItem>
-              </LinkContainer>
             </NavDropdown>
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
