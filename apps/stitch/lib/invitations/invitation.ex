@@ -330,8 +330,8 @@ defmodule Stitch.Invitation do
       {:ok, %{user: %{roles: [role]} = user}} when not (role in @guest_roles) ->
         default_group = Stitch.GroupQueries.default_group(user)
         Stitch.Group.add_user(default_group, user)
-        {:ok, %{user: user, groups: [default_group]}}
         TimedMessage.Event.new_standard_member(user)
+        {:ok, %{user: user, groups: [default_group]}}
 
       # Guests
       {:ok, %{user: %{team_id: team_id, groups_as_guest: restricted_groups} = user}} ->
