@@ -341,7 +341,7 @@ defmodule Stitch.GroupTest do
       assert Stitch.Repo.get_by(GroupUser, user_id: sam.id, group_id: group.id)
     end
 
-    test "when user_ids is empty", %{group: group, bob: bob} do
+    test "when user_ids is empty", %{group: group} do
       assert {:ok, _} = Group.update_users(group, [])
 
       assert Stitch.Repo.get_by(GroupUser, group_id: group.id) == nil
@@ -495,7 +495,7 @@ defmodule Stitch.GroupTest do
       joe = insert(:user, team: team)
       {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
 
-      assert {:error, :direct_message} = Group.delete(group)
+      assert {:error, :direct_message} = Group.delete(group, bob)
     end
 
     test "gives an error when the group is a multi DM" do
@@ -505,12 +505,12 @@ defmodule Stitch.GroupTest do
       sam = insert(:user, team: team)
       {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
 
-      assert {:error, :direct_message} = Group.delete(group)
+      assert {:error, :direct_message} = Group.delete(group, bob)
     end
 
     test "given an error for the default group" do
       group = insert(:group, is_default: true)
-      assert {:error, :default_group} = Group.delete(group)
+      assert {:error, :default_group} = Group.delete(group, group.creator)
     end
 
     test "removes associated group_user records" do
@@ -520,7 +520,7 @@ defmodule Stitch.GroupTest do
       group = insert(:group)
       group_user_bob = insert(:group_user, user: bob, group: group)
       group_user_joe = insert(:group_user, user: joe, group: group)
-      assert {:ok, %{group: group}} = Group.delete(group)
+      assert {:ok, %{group: group}} = Group.delete(group, bob)
       assert group.id == group.id
       assert Stitch.Repo.get(Stitch.GroupUser, group_user_bob.id) == nil
       assert Stitch.Repo.get(Stitch.GroupUser, group_user_joe.id) == nil
@@ -535,7 +535,7 @@ defmodule Stitch.GroupTest do
       assert {:ok, %{message: message}} =
                Stitch.Message.create(group.id, user, %{"text_content" => "Hello, World!"})
 
-      assert {:ok, _group} = Group.delete(group)
+      assert {:ok, _group} = Group.delete(group, user)
       assert Stitch.Repo.get(Stitch.Message, message.id) == nil
     end
 
@@ -558,7 +558,7 @@ defmodule Stitch.GroupTest do
       insert(:group_user, user: joe, group: group_a)
       insert(:group_user, user: sam, group: group_a)
       insert(:group_user, user: sam, group: group_b)
-      assert {:ok, %{groups_as_guest: {2, updated_guests}}} = Group.delete(group_a)
+      assert {:ok, %{groups_as_guest: {2, updated_guests}}} = Group.delete(group_a, bob)
       assert Stitch.Repo.get(Stitch.Accounts.User, joe.id).groups_as_guest == []
       assert Stitch.Repo.get(Stitch.Accounts.User, sam.id).groups_as_guest == [group_b.id]
       assert Enum.sort([joe.id, sam.id]) == updated_guests |> Enum.map(& &1.id) |> Enum.sort()

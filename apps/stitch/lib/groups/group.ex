@@ -3,7 +3,7 @@ defmodule Stitch.Group do
   import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.{User, Role}
-  alias Stitch.{Repo, Group, GroupUser, GroupQueries, Message, UserQueries}
+  alias Stitch.{Repo, Group, GroupUser, GroupQueries, Message, UserQueries, Audit}
   alias Stitch.Analytics.Group, as: GroupAnalytics
 
   @type t :: %__MODULE__{}
@@ -77,7 +77,8 @@ defmodule Stitch.Group do
          group = %Group{team_id: team_id, creator_user_id: user_id},
          changeset = with_users_changeset(group, params),
          {:ok, group} <- Repo.insert(changeset),
-         _ = GroupAnalytics.track_creation(group, creator) do
+         _ = GroupAnalytics.track_creation(group, creator),
+         _ = Audit.Group.track_insert(group, creator) do
       {:ok, Repo.preload(group, :users)}
     else
       false -> {:error, :invalid_user_ids}
@@ -323,11 +324,11 @@ defmodule Stitch.Group do
   @doc """
   Deletes the group
   """
-  @spec delete(Group.t()) :: {:ok, map} | {:error, any()}
-  def delete(%Group{name: name}) when name in @dm_groups, do: {:error, :direct_message}
-  def delete(%Group{is_default: true}), do: {:error, :default_group}
+  @spec delete(Group.t(), User.t()) :: {:ok, map} | {:error, any()}
+  def delete(%Group{name: name}, _user) when name in @dm_groups, do: {:error, :direct_message}
+  def delete(%Group{is_default: true}, _user), do: {:error, :default_group}
 
-  def delete(%Group{} = group) do
+  def delete(%Group{} = group, user) do
     Ecto.Multi.new()
     |> Ecto.Multi.update_all(
       :groups_as_guest,
@@ -337,6 +338,7 @@ defmodule Stitch.Group do
     )
     |> Ecto.Multi.delete(:group, group)
     |> Repo.transaction()
+    |> Audit.Group.track_delete(user)
   end
 
   def delete_from_groups_as_guest(%Group{} = group) do

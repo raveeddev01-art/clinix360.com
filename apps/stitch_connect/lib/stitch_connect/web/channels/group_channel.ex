@@ -220,7 +220,7 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
     can_delete = message && MessageAuthorization.can_delete?(message, user, group)
 
-    case can_delete && Message.delete(message) do
+    case can_delete && Message.delete(message, user) do
       {:ok, %{message: message}} ->
         broadcast_message_deleted(message)
         EventsChannel.broadcast_group_msg_deleted(group, message)
@@ -495,7 +495,8 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   defp mark_as_unread_response(
-         {:ok, %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}},
+         {:ok,
+          %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}},
          user,
          socket
        ) do
