@@ -42,7 +42,7 @@ export default class Connect extends Component {
   };
 
   render() {
-    const { flipped } = this.props;
+    const { header, flipped, subHeader } = this.props;
 
     const setupClass = cx("get-started-new", {
       visible: this.state.setupVisible
@@ -59,12 +59,9 @@ export default class Connect extends Component {
                   <i className="fa fa-comments" /> Connect
                 </h4>
 
-                <h1>Team Messaging for Healthcare</h1>
+                <h1>{header}</h1>
 
-                <h3 className="m-b-30">
-                  Message your team, from any device. Stitch Connect is HIPAA
-                  compliant and free to use with an unlimited number of people.
-                </h3>
+                <h3 className="m-b-30">{subHeader}</h3>
 
                 <CreateTeam />
 
@@ -320,13 +317,14 @@ export default class Connect extends Component {
 Connect.propTypes = {
   flipped: PropTypes.bool,
   header: PropTypes.string,
-  industryBodyText: PropTypes.string,
   subHeader: PropTypes.string
+  // industryBodyText: PropTypes.string
 };
 
 Connect.defaultProps = {
   flipped: false,
-  header: "Connect",
-  industryBodyText: "healthcare",
-  subHeader: "Team Communication"
+  header: "Team Messaging for Healthcare",
+  subHeader:
+    "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
+  // industryBodyText: "healthcare"
 };

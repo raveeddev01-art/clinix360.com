@@ -117,10 +117,16 @@
     }
 
     .btn-default {
-      color: #036
+      color: #036;
+
+      &.create-team-mobile {
+        max-width: 500px;
+        margin: 0 auto;
+      }
     }
 
     form.create-team-form {
+      display: none;
       max-width: 500px;
       margin: 0 auto;
 
@@ -144,13 +150,9 @@
     }
   }
 
-  @media (min-width: 458px) {
+  @media (min-width: 768px) {
     .subheader form.create-team-form {
       display: block;
-    }
-
-    .subheader p {
-      font-size: 14px;
     }
 
     .subheader .create-team-mobile {
