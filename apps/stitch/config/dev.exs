@@ -10,6 +10,11 @@ config :stitch, Stitch.Mailer,
   adapter: Bamboo.MandrillAdapter,
   api_key: System.get_env("MANDRILL_API_KEY")
 
+config :stitch, Stitch.NewMailer,
+  adapter: Bamboo.MailgunAdapter,
+  api_key: System.get_env("MAILGUN_KEY"),
+  domain: System.get_env("MAILGUN_DOMAIN")
+
 config :stitch, Stitch.Exports, enabled: true
 
 config :stitch,

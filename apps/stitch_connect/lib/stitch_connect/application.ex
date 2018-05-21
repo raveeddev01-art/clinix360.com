@@ -11,7 +11,7 @@ defmodule StitchConnect.Application do
       supervisor(StitchConnect.Web.Presence, []),
       worker(StitchConnect.MessageMailer, []),
       worker(StitchConnect.PresignedUrlCache, []),
-      worker(StitchConnect.ActivityTrackerWorker, []),
+      worker(StitchConnect.ActivityTrackerWorker, [])
       # Start your own worker by calling: StitchConnect.Worker.start_link(arg1, arg2, arg3)
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
     ]
@@ -20,20 +20,28 @@ defmodule StitchConnect.Application do
       if Application.get_env(:stitch_connect, :env) == :test do
         children
       else
-        children ++ [
-          worker(StitchConnect.MobileBadgeUpdater, [])
-        ]
+        children ++
+          [
+            worker(StitchConnect.MobileBadgeUpdater, [])
+          ]
       end
 
-    children = if Application.get_env(:stitch_connect, :start_message_link_preview_generator, true) do
-      children ++ [worker(StitchConnect.MessageLinkPreviewGenerator, [])]
-    else
-      children
-    end
+    children =
+      if Application.get_env(:stitch_connect, :start_message_link_preview_generator, true) do
+        children ++ [worker(StitchConnect.MessageLinkPreviewGenerator, [])]
+      else
+        children
+      end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: StitchConnect.Supervisor, max_restarts: 1_000, max_seconds: 1]
+    opts = [
+      strategy: :one_for_one,
+      name: StitchConnect.Supervisor,
+      max_restarts: 1_000,
+      max_seconds: 1
+    ]
+
     Supervisor.start_link(children, opts)
   end
 
