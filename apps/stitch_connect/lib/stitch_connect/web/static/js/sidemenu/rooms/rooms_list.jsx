@@ -23,6 +23,10 @@ class RoomsList extends Component {
     return this.props.sidemenuStore.currentModal;
   }
 
+  get isShowing() {
+    return this.currentModal === "list" || this.currentModal === "create" || this.currentModal === "search"
+  }
+
   showRoomsListModal = () => {
     this.props.sidemenuStore.setModal("list");
   };
@@ -101,7 +105,7 @@ class RoomsList extends Component {
 
         {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
-        {this.currentModal && this.renderModal()}
+        {this.isShowing && this.renderModal()}
       </div>
     );
   }

@@ -297,9 +297,8 @@ class RoomsModal extends Component {
     return (
       <div>
         {this.renderModalHeader()}
-        {currentModal === "search"
-          ? this.renderGoToModal()
-          : this.renderRoomsListModal()}
+        {currentModal === "search" && this.renderGoToModal()}
+        {currentModal === "list" && this.renderRoomsListModal()}
       </div>
     );
   }
