@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import VisibilitySensor from "react-visibility-sensor";
 import cx from "classnames";
+
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
@@ -49,7 +50,7 @@ export default class Connect extends Component {
     });
 
     return (
-      <div className="product-page connect-page">
+      <div className="product-page">
         <Header />
         <div className="subheader">
           <div className="container">
@@ -78,7 +79,7 @@ export default class Connect extends Component {
 
               <div className="flex-item">
                 <img
-                  src="/images/cross-platform-new.png"
+                  src="/images/connect-header.png"
                   alt="Stitch Platform"
                   className="img-responsive"
                 />
@@ -90,7 +91,7 @@ export default class Connect extends Component {
         <Feature
           featureClassName={flipped ? "" : "alt"}
           heading="Get to the right person at the right time"
-          image="/images/connect-feature-1-new.png"
+          image="/images/connect-feature-1.png"
         >
           Public and private rooms bring healthcare teams together for powerful
           team dialogue. Easily discuss patients, events, tasks and more. Direct
@@ -101,7 +102,7 @@ export default class Connect extends Component {
         <Feature
           featureClassName={flipped ? "alt" : ""}
           heading="Share information across your entire team"
-          image="/images/connect-feature-2-new.png"
+          image="/images/connect-feature-2.png"
         >
           Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
           Word, Excel, PowerPoint, and more. You can preview them right in the
@@ -112,7 +113,7 @@ export default class Connect extends Component {
         <Feature
           featureClassName={flipped ? "" : "alt"}
           heading="Choose notifications that matter to you"
-          image="/images/connect-feature-3-new.png"
+          image="/images/connect-feature-3.png"
         >
           With Stitch, you can apply custom notification preferences to every
           conversation, so you can stay focused and in the loop. Say goobye to
@@ -124,7 +125,7 @@ export default class Connect extends Component {
         <Feature
           featureClassName={flipped ? "alt" : ""}
           heading="Instantly find answers when you need them"
-          image="/images/connect-feature-4-new.png"
+          image="/images/connect-feature-4.png"
         >
           Stitch turns historical conversations into the ultimate source of
           answers: it’s built from the ground up for deep search. Every message,
