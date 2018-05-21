@@ -50,7 +50,7 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &__MODULE__.with_complete_profile_link/2
     },
     "manage_notifications" => %{
-      subject: "Get notified for important messages",
+      subject: "Get notified of important messages",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_notifications_link/2
