@@ -30,6 +30,7 @@ current_user =
         "avatar" => Stitch.PresignedUrlCache.fetch(user.profile_image_url),
         "avatar_thumb" => Stitch.Web.Api.V1.UserView.avatar_thumb(user),
         "desktop_sound" => user.desktop_sound,
+        "connect_tour_status" => user.connect_tour_status,
         "team" => %{
           "securityLockoutEnabled" => user.team.security_lockout,
           "secondsToLockout" => user.team.seconds_to_lockout,

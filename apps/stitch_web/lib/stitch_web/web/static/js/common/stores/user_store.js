@@ -27,6 +27,7 @@ class UserStore {
   @observable timezone = getTimezone();
   @observable hasAvatar = this.userHasAvatar();
   @observable roleChanged = false;
+  @observable connectTourStatus = currentUser.connect_tour_status;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -60,6 +61,7 @@ class UserStore {
   onUserInfo = user => {
     this.avatar = user.avatar;
     this.avatarThumb = user.avatar_thumb;
+    this.connectTourStatus = user.connect_tour_status;
 
     // show role change modal if groups assigned as guests or roles has changed
     if (
@@ -80,6 +82,11 @@ class UserStore {
       body: data,
       hideNotify: true
     });
+  };
+
+  @action
+  markConnectTourCompleted = () => {
+    return this.save({ connect_tour_status: "Completed" });
   };
 
   @action

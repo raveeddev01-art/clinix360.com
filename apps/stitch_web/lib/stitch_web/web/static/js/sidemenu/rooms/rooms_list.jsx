@@ -95,7 +95,11 @@ class RoomsList extends Component {
                 placement="top"
                 overlay={<Tooltip id="create-new-group">Create Room</Tooltip>}
               >
-                <a role="button" onClick={() => this.showRoomCreateModal()}>
+                <a
+                  role="button"
+                  className="create-room-button"
+                  onClick={this.showRoomCreateModal}
+                >
                   <i className="fa fa-plus-square-o" />
                 </a>
               </OverlayTrigger>
