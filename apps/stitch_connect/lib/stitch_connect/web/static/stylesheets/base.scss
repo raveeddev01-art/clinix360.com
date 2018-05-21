@@ -384,7 +384,7 @@ hr {
           margin-left: 5px;
         }
 
-        &:hover {
+        &:hover, &:focus {
           background: #edf7fd;
           border-color: #d3ecfa;
           border-radius: 3px;

@@ -1,38 +1,67 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import { isFullMember } from "lib/utils";
 
+import Modal from "react-bootstrap/lib/Modal";
 import Room from "../room";
-import RoomsModal from "./modals/rooms_modal";
+import SelectRoomModal from "./modals/rooms_modal";
+import CreateRoomModal from "./modals/create_room_modal";
 
+@inject("sidemenuStore")
+@observer
 class RoomsList extends Component {
   constructor(props) {
     super(props);
+    this.state = { roomName: "" };
+  }
 
-    this.state = {
-      modal: ""
-    };
+  get currentModal() {
+    return this.props.sidemenuStore.currentModal;
   }
 
   showRoomsListModal = () => {
-    this.setState({
-      modal: "list"
-    });
+    this.props.sidemenuStore.setModal("list");
   };
 
-  showRoomCreateModal = () => {
-    this.setState({
-      modal: "create"
-    });
+  showRoomCreateModal = (roomName = "") => {
+    this.setState({ roomName });
+    this.props.sidemenuStore.setModal("create");
   };
 
   closeModal = () => {
-    this.setState({
-      modal: ""
-    });
+    this.props.sidemenuStore.closeModal();
+  };
+
+  renderModalBody = () => {
+    if (this.currentModal === "create") {
+      return (
+        <CreateRoomModal
+          roomName={this.state.roomName}
+          showRoomsListModal={this.showRoomsListModal}
+          closeModal={this.closeModal}
+        />
+      );
+    }
+    return (
+      <SelectRoomModal
+        key={this.currentModal}
+        currentModal={this.currentModal}
+        showRoomCreateModal={this.showRoomCreateModal}
+        closeModal={this.closeModal}
+      />
+    );
+  };
+
+  renderModal = () => {
+    return (
+      <Modal className="rooms-modal" show onHide={this.closeModal}>
+        {this.renderModalBody()}
+      </Modal>
+    );
   };
 
   render() {
@@ -62,7 +91,7 @@ class RoomsList extends Component {
                 placement="top"
                 overlay={<Tooltip id="create-new-group">Create Room</Tooltip>}
               >
-                <a role="button" onClick={this.showRoomCreateModal}>
+                <a role="button" onClick={() => this.showRoomCreateModal()}>
                   <i className="fa fa-plus-square-o" />
                 </a>
               </OverlayTrigger>
@@ -72,12 +101,7 @@ class RoomsList extends Component {
 
         {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
-        <RoomsModal
-          state={this.state.modal}
-          showRoomsListModal={this.showRoomsListModal}
-          showRoomCreateModal={this.showRoomCreateModal}
-          closeModal={this.closeModal}
-        />
+        {this.currentModal && this.renderModal()}
       </div>
     );
   }

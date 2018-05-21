@@ -18,17 +18,8 @@ import { isMemberOrAdmin } from "../lib/utils";
 @inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
 class Sidemenu extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showInviteModal: false
-    };
-  }
-
   componentDidMount() {
     const { sidemenuStore } = this.props;
-
     sidemenuStore.loadSidemenuDiv(this.scrollbar);
   }
 
@@ -58,10 +49,16 @@ class Sidemenu extends Component {
     );
   }
 
+  get invitesModalIsOpen() {
+    return this.props.sidemenuStore.currentModal === "invites";
+  }
+
   toggleInviteModal = () => {
-    this.setState({
-      showInviteModal: !this.state.showInviteModal
-    });
+    if (this.invitesModalIsOpen) {
+      this.props.sidemenuStore.closeModal();
+    } else {
+      this.props.sidemenuStore.setModal("invites");
+    }
   };
 
   showInviteModal = evt => {
@@ -268,7 +265,7 @@ class Sidemenu extends Component {
                 />
 
                 <InviteModal
-                  show={this.state.showInviteModal}
+                  show={this.invitesModalIsOpen}
                   toggle={this.toggleInviteModal}
                 />
               </div>

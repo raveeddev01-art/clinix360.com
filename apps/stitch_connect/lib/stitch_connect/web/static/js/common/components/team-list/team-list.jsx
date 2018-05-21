@@ -42,6 +42,15 @@ class TeamList extends Component {
     }));
   };
 
+  handleKeydown = user => e => {
+    const code = e.charCode || e.keyCode;
+    const spaceOrEnter = code === 32 || code === 13;
+    if (spaceOrEnter) {
+      this.onSelectUser(user)();
+      e.preventDefault();
+    }
+  };
+
   handleChange = members => {
     this.props.onChange(members.map(m => m.id).join(","));
   };
@@ -106,9 +115,12 @@ class TeamList extends Component {
 
               return (
                 <div
+                  tabIndex="0"
+                  role="link"
                   key={`team-list-${user.id}`}
                   className="team-member"
                   onClick={this.onSelectUser(user)}
+                  onKeyDown={this.handleKeydown(user)}
                 >
                   <i className={iconClasName} />
                   <Avatar user={user} />
