@@ -95,14 +95,8 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # INVITE MESSAGES
-    "invite_reminder_a" => %{
+    "invite_reminder" => %{
       subject: "Your team is waiting on Stitch",
-      load_data: &__MODULE__.get_invitation_and_user/1,
-      send_if: &__MODULE__.is_invitation_pending/1,
-      template_vars: &__MODULE__.with_invitation_attrs/2
-    },
-    "invite_reminder_b" => %{
-      subject: "Join your team on Stitch",
       load_data: &__MODULE__.get_invitation_and_user/1,
       send_if: &__MODULE__.is_invitation_pending/1,
       template_vars: &__MODULE__.with_invitation_attrs/2
@@ -223,12 +217,11 @@ defmodule Stitch.TimedMessage.Worker do
     |> assign(:team_login_url, "#{user.team.slug}.#{System.get_env("APP_HOST")}")
   end
 
-  def with_invitation_attrs(email, %{"user" => user, "invitation" => invitation}) do
+  def with_invitation_attrs(email, params = %{"user" => user, "invitation" => invitation}) do
     email
-    |> assign(:user_email, user.email)
-    |> assign(:team_name, user.team.name)
+    |> with_user_and_team_attrs(params)
     |> assign(
-      :team_login_url,
+      :invitation_accept_url,
       "#{user.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{
         invitation.invite_token
       }"

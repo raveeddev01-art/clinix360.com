@@ -45,11 +45,12 @@ defmodule Stitch.TimedMessage.Event do
   Enqueues jobs to remind user about invite (if pending).
   """
   @spec new_invitation(Invitation.t()) :: :ok
-  def new_invitation(_invitation) do
-    enqueue_messages([
-      # %{type: "invite_reminder_a", data: %{invitation_id: invitation.id}, time: in_days(2)},
-      # %{type: "invite_reminder_b", data: %{invitation_id: invitation.id}, time: in_days(4)}
-    ])
+  def new_invitation(invitation) do
+    enqueue_delivery(%{
+      type: "invite_reminder",
+      data: %{invitation_id: invitation.id},
+      time: in_days(2)
+    })
   end
 
   defp enqueue_messages(message_list) do
