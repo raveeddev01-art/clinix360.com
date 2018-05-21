@@ -13,7 +13,7 @@ config :stitch, Stitch.Mailer,
 
 config :stitch, Stitch.NewMailer,
   adapter: Bamboo.MailgunAdapter,
-  api_key: System.get_env("MAILGUN_KEY")
+  api_key: System.get_env("MAILGUN_KEY"),
   domain: System.get_env("MAILGUN_DOMAIN")
 
 config :stitch, Stitch.Exports, enabled: true
