@@ -75,7 +75,7 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &__MODULE__.with_admin_invitation_attrs/2
     },
     "admin_create_rooms" => %{
-      subject: "Room creation tips on Stitch",
+      subject: "Create rooms on Stitch",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2

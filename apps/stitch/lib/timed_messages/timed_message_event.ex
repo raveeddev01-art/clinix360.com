@@ -15,8 +15,8 @@ defmodule Stitch.TimedMessage.Event do
     enqueue_messages([
       %{type: "admin_welcome", data: %{user_id: user.id}, time: in_days(0)},
       %{type: "admin_invite_prompt", data: %{user_id: user.id}, time: in_days(1)},
-      %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(2)}
-      # %{type: "admin_create_rooms", data: %{user_id: user.id}, time: in_days(3)},
+      %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(2)},
+      %{type: "admin_create_rooms", data: %{user_id: user.id}, time: in_days(3)}
       # %{type: "manage_notifications", data: %{user_id: user.id}, time: in_days(4)},
       # %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(5)}
     ])
