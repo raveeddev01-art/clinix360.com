@@ -29,14 +29,18 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
   end
 
   test "message with more than 5 links" do
-    message = insert :message, text_content: """
-    https://www.youtube.com/watch?v=3tmd-ClpJxA
-    https://www.youtube.com/watch?v=uo14xGYwWd4
-    https://www.youtube.com/watch?v=J_ub7Etch2U
-    https://www.youtube.com/watch?v=OrSadmwmmAs
-    https://www.youtube.com/watch?v=iKzRIweSBLA
-    https://www.youtube.com/watch?v=PEGccV-NOm8
-    """
+    message =
+      insert(
+        :message,
+        text_content: """
+        https://www.youtube.com/watch?v=3tmd-ClpJxA
+        https://www.youtube.com/watch?v=uo14xGYwWd4
+        https://www.youtube.com/watch?v=J_ub7Etch2U
+        https://www.youtube.com/watch?v=OrSadmwmmAs
+        https://www.youtube.com/watch?v=iKzRIweSBLA
+        https://www.youtube.com/watch?v=PEGccV-NOm8
+        """
+      )
 
     Stitch.Message.LinkPreview.generate_link_previews(message)
 
@@ -66,7 +70,11 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
   end
 
   test "message with an invalid link" do
-    message = insert(:message, text_content: "lorem http://%00%00c:/../../../../windows/system32/calc.exe ipsum")
+    message =
+      insert(
+        :message,
+        text_content: "lorem http://%00%00c:/../../../../windows/system32/calc.exe ipsum"
+      )
 
     Stitch.Message.LinkPreview.generate_link_previews(message)
 
@@ -76,7 +84,8 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
   end
 
   test "message with a link to a pdf" do
-    link = "http://www.mediterraneandeli.com/files/6615/0828/1809/Med_Deli_Menu_w_image_2017_edited_final_fin.pdf"
+    link = "https://s3.amazonaws.com/stitch-content-public/test-files/test.pdf"
+
     message = insert(:message, text_content: "lorem #{link} ipsum")
 
     Stitch.Message.LinkPreview.generate_link_previews(message)
