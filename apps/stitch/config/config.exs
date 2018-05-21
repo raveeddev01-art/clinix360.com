@@ -48,8 +48,7 @@ config :ua_inspector,
   database_path: System.get_env("UA_INSPECTOR_DB_PATH") || "./apps/stitch/priv/ua_inspector"
 
 config :exq,
-  host: System.get_env("REDIS_URL") || "127.0.0.1",
-  port: 6379,
+  url: System.get_env("REDIS_URL"),
   namespace: "exq",
   queues: [{"timed_messages", 10}],
   poll_timeout: 50,
