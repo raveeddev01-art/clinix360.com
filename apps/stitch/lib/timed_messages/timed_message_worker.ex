@@ -213,7 +213,6 @@ defmodule Stitch.TimedMessage.Worker do
     email
     |> assign(:user_email, user.email)
     |> assign(:team_name, user.team.name)
-    |> assign(:subscription_tier, user.team.subscription.tier)
-    |> assign(:team_login_url, "https://www.#{user.team.slug}.teamstitch.com/login")
+    |> assign(:team_login_url, "#{user.team.slug}.teamstitch.com")
   end
 end

@@ -105,9 +105,7 @@
                                         <div style="text-align: center;"><span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><span style="color:#000000"><b><%=@team_name%></b></span></span></span></div>
 
 <div dir="ltr" style="text-align: center;"><span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><span style="color:#000000">URL: </span><span style="color:#000000"></span><font color="#000000"><a href="<%=@team_login_url%>"><%=@team_login_url%></a></font><span style="color:#000000"><br>
-Email:&nbsp;</span><font color="#000000"><%=@user_email%></font><br>
-<span style="color:#000000">Plan: </span><font color="#000000"><%=@subscription_tier%></font></span></span></div>
-
+Email:&nbsp;</span><font color="#000000"><%=@user_email%></font>
                                     </td>
                                 </tr>
                             </tbody></table>
