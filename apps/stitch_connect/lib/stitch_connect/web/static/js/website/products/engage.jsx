@@ -9,6 +9,7 @@ import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
 
 import Header from "../components/header";
+import CreateTeam from "../components/create-team";
 import Feature from "../components/feature";
 import Footer from "../components/footer";
 import VideoModal from "../components/video-modal";
@@ -68,12 +69,7 @@ export default class Engage extends Component {
                   engage with patients on every level.
                 </h3>
 
-                <Button
-                  bsStyle="primary"
-                  href="https://teamstitch.typeform.com/to/Ncn8x8"
-                >
-                  Request Access
-                </Button>
+                <CreateTeam />
               </div>
 
               <div className="flex-item">
@@ -274,9 +270,9 @@ export default class Engage extends Component {
               <div className="text-center">
                 <Button
                   bsStyle="primary"
-                  href="https://teamstitch.typeform.com/to/Ncn8x8"
+                  href="https://teamstitch.com/signup/email"
                 >
-                  Request Access
+                  Get Started
                 </Button>
               </div>
             </div>

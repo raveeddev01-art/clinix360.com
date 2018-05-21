@@ -9,6 +9,7 @@ import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
 
 import Header from "../components/header";
+import CreateTeam from "../components/create-team";
 import Feature from "../components/feature";
 import Footer from "../components/footer";
 
@@ -54,12 +55,7 @@ export default class Manage extends Component {
                   goes from start to done.
                 </h3>
 
-                <Button
-                  bsStyle="primary"
-                  href="https://teamstitch.typeform.com/to/Yt22AI"
-                >
-                  Request Access
-                </Button>
+                <CreateTeam />
               </div>
 
               <div className="flex-item">
@@ -259,9 +255,9 @@ export default class Manage extends Component {
               <div className="text-center">
                 <Button
                   bsStyle="primary"
-                  href="https://teamstitch.typeform.com/to/Yt22AI"
+                  href="https://teamstitch.com/signup/email"
                 >
-                  Request Access
+                  Get Started
                 </Button>
               </div>
             </div>
