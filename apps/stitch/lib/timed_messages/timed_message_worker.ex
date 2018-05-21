@@ -69,7 +69,7 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     "admin_invite_prompt" => %{
-      subject: "Invite your team to Stitch Connect",
+      subject: "Invite your team to Stitch",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_admin_invitation_attrs/2
