@@ -493,12 +493,15 @@ defmodule Stitch.MessageQueries do
 
   @spec has_sent_mobile_message(binary) :: boolean
   def has_sent_mobile_message(user_id) do
-    !!Message
-    |> where([m], m.client_os in ["iOS", "Android"])
-    |> where(user_id: ^user_id)
-    |> limit(1)
-    |> select(1)
-    |> Repo.one()
+    sent_mobile_message =
+      Message
+      |> where([m], m.client_os in ["iOS", "Android"])
+      |> where(user_id: ^user_id)
+      |> limit(1)
+      |> select(1)
+      |> Repo.one()
+
+    !!sent_mobile_message
   end
 
   @spec surrounding(Message.t(), Group.t(), User.t(), [{pos_integer, integer | boolean}]) :: map
