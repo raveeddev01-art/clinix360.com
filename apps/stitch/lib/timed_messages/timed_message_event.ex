@@ -17,7 +17,9 @@ defmodule Stitch.TimedMessage.Event do
       %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(1)},
       %{type: "admin_create_rooms", data: %{user_id: user.id}, time: in_days(6)},
       %{type: "manage_notifications", data: %{user_id: user.id}, time: in_days(10)},
-      %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(13)}
+      %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(13)},
+      %{type: "admin_invite_reminder", data: %{user_id: user.id}, time: in_days(2)},
+      %{type: "admin_invite_reminder", data: %{user_id: user.id}, time: in_days(4)}
     ])
   end
 

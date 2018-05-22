@@ -79,6 +79,12 @@ defmodule Stitch.TimedMessage.Worker do
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
+    "admin_invite_reminder" => %{
+      subject: "Reminder: Invite your team to Stitch",
+      load_data: &__MODULE__.get_user_with_team_invites/1,
+      send_if: &__MODULE__.has_not_invited_users/1,
+      template_vars: &__MODULE__.with_admin_invitation_attrs/2
+    },
     # STANDARD USER SPECIFIC MESSAGES
     "user_welcome" => %{
       subject: &__MODULE__.welcome_subject/1,
