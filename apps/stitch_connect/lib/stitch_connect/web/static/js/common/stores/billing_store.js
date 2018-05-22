@@ -43,6 +43,10 @@ class BillingStore {
     );
   }
 
+  isFreeTier() {
+    return this.subscription.tier === "FREE";
+  }
+
   @action
   loadData() {
     this.loading = true;
