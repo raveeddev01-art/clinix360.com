@@ -75,12 +75,17 @@ defmodule StitchConnect.Web.GroupChannel do
     messages_json = MessageView.render("index.json", %{messages: messages})
     group_user = GroupUser.get(group.id, user.id)
 
-    json = %{
-      last_read_at: group_user && group_user.last_read_at,
-      mentions_count: group_user && group_user.mentions_count,
-      unread_messages_count: group_user && group_user.unread_messages_count,
-      messages: messages_json
-    }
+    json =
+      if group_user do
+        %{
+          last_read_at: group_user.last_read_at,
+          mentions_count: group_user.mentions_count,
+          unread_messages_count: group_user.unread_messages_count,
+          messages: messages_json
+        }
+      else
+        %{messages: messages_json}
+      end
 
     {:ok, json, assign(socket, :group, group)}
   end
