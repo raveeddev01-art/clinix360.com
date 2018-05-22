@@ -9,6 +9,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias Stitch.{
     Repo,
     Group,
+    GroupUser,
     GroupQueries,
     GroupAuthorization,
     Message,
@@ -71,8 +72,17 @@ defmodule StitchConnect.Web.GroupChannel do
   defp render_messages(group, user, socket, params) do
     opts = [limit: params["limit"]]
     messages = MessageQueries.group_latest_messages(group.id, user, opts)
-    json = MessageView.render("index.json", %{messages: messages})
-    {:ok, %{messages: json}, assign(socket, :group, group)}
+    messages_json = MessageView.render("index.json", %{messages: messages})
+    group_user = GroupUser.get(group.id, user.id)
+
+    json = %{
+      last_read_at: group_user && group_user.last_read_at,
+      mentions_count: group_user && group_user.mentions_count,
+      unread_messages_count: group_user && group_user.unread_messages_count,
+      messages: messages_json
+    }
+
+    {:ok, json, assign(socket, :group, group)}
   end
 
   # ignore Pigeon callbacks
