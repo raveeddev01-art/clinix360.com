@@ -167,8 +167,14 @@ defmodule Stitch.TimedMessage.Helper do
   end
 
   @spec has_not_sent_mobile_message(map) :: sendable_res
-  defp has_not_sent_mobile_message(%{"has_sent_mobile_message" => false}), do: :ok
-  defp has_not_sent_mobile_message(_data), do: :not_sendable
+  def has_not_sent_mobile_message(%{"has_sent_mobile_message" => false}), do: :ok
+  def has_not_sent_mobile_message(_data), do: :not_sendable
+
+  @spec user_has_invite_permissions(map) :: sendable_res
+  def user_has_invite_permissions(%{"user" => user}) do
+    sendable = user.team.open_invitations_enabled
+    if sendable, do: :ok, else: :not_sendable
+  end
 
   # ================
   # ================
@@ -223,6 +229,15 @@ defmodule Stitch.TimedMessage.Helper do
     |> assign(
       :invite_others_link,
       "#{user.team.slug}.#{System.get_env("APP_HOST")}/admin/members"
+    )
+  end
+
+  def with_member_invitation_attrs(email, params = %{"user" => user}) do
+    email
+    |> with_user_and_team_attrs(params)
+    |> assign(
+      :invite_others_link,
+      "#{user.team.slug}.#{System.get_env("APP_HOST")}"
     )
   end
 end

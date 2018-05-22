@@ -108,4 +108,20 @@ defmodule Stitch.UserAuthorizationTest do
       assert Helper.is_invitation_pending(%{"invitation" => invitation}) === :not_sendable
     end
   end
+
+  describe "Stitch.TimedMessage.Helper.user_has_invite_permissions" do
+    test "sends when team allows open invites" do
+      team = insert(:team, open_invitations_enabled: true)
+      user = insert(:user, team: team)
+
+      assert Helper.user_has_invite_permissions(%{"user" => user}) === :ok
+    end
+
+    test "not sendable when team disallows open invites" do
+      team = insert(:team, open_invitations_enabled: false)
+      user = insert(:user, team: team)
+
+      assert Helper.user_has_invite_permissions(%{"user" => user}) === :not_sendable
+    end
+  end
 end

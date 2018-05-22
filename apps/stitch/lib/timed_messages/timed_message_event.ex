@@ -32,7 +32,9 @@ defmodule Stitch.TimedMessage.Event do
       %{type: "user_welcome", data: %{user_id: user.id}, time: in_days(0)},
       %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(1)},
       %{type: "manage_notifications", data: %{user_id: user.id}, time: in_days(10)},
-      %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(13)}
+      %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(13)},
+      %{type: "member_invite_reminder", data: %{user_id: user.id}, time: in_days(2)},
+      %{type: "member_invite_reminder", data: %{user_id: user.id}, time: in_days(4)}
     ])
   end
 
