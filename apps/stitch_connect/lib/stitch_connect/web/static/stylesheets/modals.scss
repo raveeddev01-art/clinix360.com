@@ -54,11 +54,15 @@
               height: 30px;
 
               .name {
-                flex-grow: 1;
+                width: 91%;
+
                 font-size: 16px;
                 font-weight: bold;
                 margin: 0 0 2px;
                 color: #333;
+                white-space: nowrap;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
 
                 span.text-muted {
                   font-weight: normal;
@@ -66,6 +70,11 @@
                   color: #9e9ea6;
                   font-size: 15px;
                 }
+              }
+
+
+              .member-count {
+                width: 8%;
               }
 
               .member-count i.fa {
@@ -180,7 +189,7 @@
   .modal-dialog {
     max-width: 610px;
   }
-  
+
   .modal-body {
     max-height: 90vh;
     overflow-y: auto;

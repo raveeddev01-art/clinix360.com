@@ -137,6 +137,14 @@ class GroupsStore {
         return 1;
       }
 
+      if (roomA.type === "multi_dm" && roomB.type !== "multi_dm") {
+        return 1;
+      }
+
+      if (roomA.type !== "multi_dm" && roomB.type === "multi_dm") {
+        return -1;
+      }
+
       if (roomA.type === "dm" && roomB.type !== "dm") {
         return 1;
       }
@@ -333,28 +341,40 @@ class GroupsStore {
     const slug = getSlugOfDMGroupByUsers(userIds);
     const group = this.getGroupBySlug(slug);
 
-    let promise;
-
     if (!group) {
-      const parseResponseAndAddGroup = response => {
-        const groupFromApi = response.data;
-        this.onCreatedGroup(groupFromApi);
-        return groupFromApi;
-      };
-
-      // Create
-      promise = this.createDMGroup(userIds).then(parseResponseAndAddGroup);
-    } else if (group.is_hidden) {
-      // Unhide
-      promise = this.unhideGroup(group.id).then(() => group);
+      this.createAndOpenDM(userIds);
     } else {
-      // Do nothing
-      promise = Promise.resolve(group);
+      this.goToCreatedDM(group);
     }
+  };
 
-    promise.then(groupCreated => {
+  @action
+  goToCreatedDM = group => {
+    this.unhideIfHiddenPromise(group).then(groupCreated => {
       history.push(getGroupUrl(groupCreated));
     });
+  };
+
+  @action
+  createAndOpenDM = userIds => {
+    const parseResponseAndAddGroup = response => {
+      const groupFromApi = response.data;
+      this.onCreatedGroup(groupFromApi);
+      return groupFromApi;
+    };
+
+    this.createDMGroup(userIds)
+      .then(parseResponseAndAddGroup)
+      .then(groupCreated => {
+        history.push(getGroupUrl(groupCreated));
+      });
+  };
+
+  @action
+  unhideIfHiddenPromise = group => {
+    return group.is_hidden
+      ? this.unhideGroup(group.id).then(() => group)
+      : Promise.resolve(group);
   };
 
   @action
@@ -368,7 +388,6 @@ class GroupsStore {
 
       // Change the group
       this.currentGroupId = group.id;
-
       this.onOpenedGroup();
     }
   };
