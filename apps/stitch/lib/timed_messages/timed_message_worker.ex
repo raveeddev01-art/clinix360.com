@@ -23,9 +23,8 @@ defmodule Stitch.TimedMessage.Worker do
       new_email()
       |> from(@from_address)
       |> to([System.get_env("MAILGUN_EMAIL_OVERRIDE") || data["user"].email])
-      |> subject(rules.subject())
+      |> set_subject(rules, data)
       |> assign_vars(rules, data)
-      |> assign(:subject, rules.subject())
       |> put_html_layout({StitchConnect.EmailView, "layout/email.html"})
       |> render("email/#{type}.html")
       |> Stitch.NewMailer.deliver_later()
@@ -63,7 +62,7 @@ defmodule Stitch.TimedMessage.Worker do
     },
     # ADMIN SPECIFIC MESSAGES
     "admin_welcome" => %{
-      subject: "Welcome to Stitch: New Account Information",
+      subject: &__MODULE__.welcome_subject/1,
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_and_has_team/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
@@ -82,7 +81,7 @@ defmodule Stitch.TimedMessage.Worker do
     },
     # STANDARD USER SPECIFIC MESSAGES
     "user_welcome" => %{
-      subject: "Welcome to Stitch: New Account Information",
+      subject: &__MODULE__.welcome_subject/1,
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_and_has_team/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
@@ -109,6 +108,15 @@ defmodule Stitch.TimedMessage.Worker do
   end
 
   # === Handle optional Lambdas ===
+
+  defp set_subject(email, %{subject: subject_line}, _data) when is_binary(subject_line) do
+    email |> subject(subject_line) |> assign(:subject, subject_line)
+  end
+
+  defp set_subject(email, %{subject: subject_fn}, data) when is_function(subject_fn) do
+    subject_line = subject_fn.(data)
+    email |> subject(subject_line) |> assign(:subject, subject_line)
+  end
 
   defp load_additional_data(%{load_data: load_data}, initial_data) do
     load_data.(initial_data)
@@ -168,6 +176,12 @@ defmodule Stitch.TimedMessage.Worker do
       |> Map.put("has_sent_mobile_message", has_sent_mobile_message)
 
     {:ok, loaded_data}
+  end
+
+  # === Subject Setting ===
+
+  def welcome_subject(%{"user" => user}) do
+    "#{user.team.name} on Stitch: New Account Information"
   end
 
   # === Checking Sendable ===
