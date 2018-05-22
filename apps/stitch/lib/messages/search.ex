@@ -40,7 +40,7 @@ defmodule Stitch.Messages.Search do
       |> apply_date_before_terms(params[:date_before_terms], user)
       |> apply_date_after_terms(params[:date_after_terms], user)
       |> apply_date_on_terms(params[:date_on_terms], user)
-      |> apply_search_terms(params[:search_terms])
+      |> apply_search_terms(params[:search_terms], options)
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
@@ -234,17 +234,17 @@ defmodule Stitch.Messages.Search do
     end)
   end
 
-  def apply_search_terms(query, []), do: query
+  def apply_search_terms(query, [], _options), do: query
 
-  def apply_search_terms(query, search_terms) do
+  def apply_search_terms(query, search_terms, options) do
     term = Enum.join(search_terms, " | ")
-    # TODO: add option to sort by relevance instead (ts_tank)
-    order_by_recency = true
+    order_by_recency = Keyword.get(options, :search_order, "recency") == "recency"
 
-    from(
-      m in query,
-      where: fragment("to_tsvector(?) @@ to_tsquery(?)", m.text_content, ^term)
-    )
+    query =
+      from(
+        m in query,
+        where: fragment("to_tsvector(?) @@ to_tsquery(?)", m.text_content, ^term)
+      )
 
     if order_by_recency do
       from(m in query, order_by: [desc: m.updated_at])
