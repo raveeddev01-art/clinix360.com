@@ -238,17 +238,27 @@ defmodule Stitch.Messages.Search do
 
   def apply_search_terms(query, search_terms) do
     term = Enum.join(search_terms, " | ")
+    # TODO: add option to sort by relevance instead (ts_tank)
+    order_by_recency = true
 
     from(
       m in query,
-      where: fragment("to_tsvector(?) @@ to_tsquery(?)", m.text_content, ^term),
-      order_by:
-        fragment(
-          "ts_rank(to_tsvector(?), to_tsquery(?)) DESC",
-          m.text_content,
-          type(^term, :string)
-        )
+      where: fragment("to_tsvector(?) @@ to_tsquery(?)", m.text_content, ^term)
     )
+
+    if order_by_recency do
+      from(m in query, order_by: [desc: m.updated_at])
+    else
+      from(
+        m in query,
+        order_by:
+          fragment(
+            "ts_rank(to_tsvector(?), to_tsquery(?)) DESC",
+            m.text_content,
+            type(^term, :string)
+          )
+      )
+    end
   end
 
   def apply_skip(query, opts) do
