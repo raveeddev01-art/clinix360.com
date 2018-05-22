@@ -71,11 +71,12 @@ class ChatApp extends Component {
     uploadStore.dropzoneRef = ref;
   };
 
-  handleKeyboardShortcuts = ({ charCode, keyCode, metaKey }) => {
-    const code = charCode || keyCode;
+  handleKeyboardShortcuts = (e) => {
+    const code = e.charCode || e.keyCode;
     const hitK = code === 75;
-    if (hitK && metaKey) {
+    if (hitK && e.metaKey) {
       this.props.sidemenuStore.setModal("search");
+      e.preventDefault()
     }
   };
 
