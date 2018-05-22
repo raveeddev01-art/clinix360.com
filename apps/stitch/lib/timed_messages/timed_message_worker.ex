@@ -19,7 +19,7 @@ defmodule Stitch.TimedMessage.Worker do
   def perform(type, initial_data) do
     with {:ok, rules} <- get_rules(type),
          {:ok, data} <- load_additional_data(rules, initial_data),
-         {:ok} <- check_sendable(rules, data) do
+         :ok <- check_sendable(rules, data) do
       new_email()
       |> from(@from_address)
       |> to([System.get_env("MAILGUN_EMAIL_OVERRIDE") || data["user"].email])
@@ -45,7 +45,7 @@ defmodule Stitch.TimedMessage.Worker do
     "complete_profile" => %{
       subject: "Complete your profile",
       load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.is_active_user/1,
+      send_if: &__MODULE__.has_not_set_profile/1,
       template_vars: &__MODULE__.with_complete_profile_link/2
     },
     "manage_notifications" => %{
@@ -69,8 +69,8 @@ defmodule Stitch.TimedMessage.Worker do
     },
     "admin_invite_prompt" => %{
       subject: "Invite your team to Stitch",
-      load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.is_active_user/1,
+      load_data: &__MODULE__.get_user_with_team_invites/1,
+      send_if: &__MODULE__.has_not_invited_users/1,
       template_vars: &__MODULE__.with_admin_invitation_attrs/2
     },
     "admin_create_rooms" => %{
@@ -134,7 +134,7 @@ defmodule Stitch.TimedMessage.Worker do
     send_if.(data)
   end
 
-  defp check_sendable(_rules, _data), do: {:ok}
+  defp check_sendable(_rules, _data), do: :ok
 
   # === Loading Data ===
 
@@ -166,6 +166,15 @@ defmodule Stitch.TimedMessage.Worker do
     {:ok, Map.put(data, "user", user)}
   end
 
+  def get_user_with_team_invites(data) do
+    user =
+      User
+      |> Repo.get(data["user_id"])
+      |> Repo.preload(team: :invitations)
+
+    {:ok, Map.put(data, "user", user)}
+  end
+
   def get_user_with_mobile_message_check(data) do
     user = Repo.get(User, data["user_id"])
     has_sent_mobile_message = MessageQueries.has_sent_mobile_message(data["user_id"])
@@ -188,39 +197,49 @@ defmodule Stitch.TimedMessage.Worker do
 
   def is_active_user(%{"user" => user}) do
     sendable = user && user.onboarded && !user.disabled
-    if sendable, do: {:ok}, else: {:not_sendable}
+    if sendable, do: :ok, else: :not_sendable
+  end
+
+  defp has_team(%{"user" => user}) do
+    sendable = user && user.team
+    if sendable, do: :ok, else: :not_sendable
   end
 
   def is_active_and_has_team(data) do
-    with {:ok} <- is_active_user(data),
-         {:ok} <- has_team(data) do
-      {:ok}
+    with :ok <- is_active_user(data),
+         :ok <- has_team(data) do
+      :ok
     else
-      _ -> {:not_sendable}
+      _ -> :not_sendable
     end
   end
 
+  def has_not_invited_users(%{"user" => user}) do
+    sendable = length(user.team.invitations) < 1
+    if sendable, do: :ok, else: :not_sendable
+  end
+
+  def has_not_set_profile(%{"user" => user}) do
+    sendable = User.has_default_image(user)
+    if sendable, do: :ok, else: :not_sendable
+  end
+
   def is_active_and_not_sent_mobile_message(data) do
-    with {:ok} <- is_active_user(data),
-         {:ok} <- has_not_sent_mobile_message(data) do
-      {:ok}
+    with :ok <- is_active_user(data),
+         :ok <- has_not_sent_mobile_message(data) do
+      :ok
     else
-      _ -> {:not_sendable}
+      _ -> :not_sendable
     end
   end
 
   def is_invitation_pending(%{"invitation" => invitation}) do
     sendable = invitation && !invitation.accepted
-    if sendable, do: {:ok}, else: {:not_sendable}
+    if sendable, do: :ok, else: :not_sendable
   end
 
-  defp has_team(%{"user" => user}) do
-    sendable = user && user.team
-    if sendable, do: {:ok}, else: {:not_sendable}
-  end
-
-  defp has_not_sent_mobile_message(%{"has_sent_mobile_message" => false}), do: {:ok}
-  defp has_not_sent_mobile_message(_data), do: {:not_sendable}
+  defp has_not_sent_mobile_message(%{"has_sent_mobile_message" => false}), do: :ok
+  defp has_not_sent_mobile_message(_data), do: :not_sendable
 
   # === Assigning Vars ===
 
