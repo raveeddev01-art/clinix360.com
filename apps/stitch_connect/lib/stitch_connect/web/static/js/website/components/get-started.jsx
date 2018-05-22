@@ -12,12 +12,13 @@ export default class GetStarted extends Component {
             <div className="flex-item">
               <h2>
                 <strong className="hidden-md hidden-lg">
-                  Ready to get started?
+                  Ready to bring Stitch to your team?
                 </strong>
                 <strong className="hidden-xs hidden-sm">
                   Ready to bring Stitch to your team?
                 </strong>
-                <br /> <span>Get started for free today, or book a demo.</span>
+                <br />{" "}
+                <span>Free to use with an unlimited number of people.</span>
               </h2>
             </div>
 

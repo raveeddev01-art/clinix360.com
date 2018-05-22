@@ -2,21 +2,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
-import slugify from "slugify";
-
 import Modal from "react-bootstrap/lib/Modal";
-import Form from "react-bootstrap/lib/Form";
-import Col from "react-bootstrap/lib/Col";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import ControlLabel from "react-bootstrap/lib/ControlLabel";
-import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
-import Alert from "react-bootstrap/lib/Alert";
+import { getGroupUrl } from "lib/utils";
 
-import { Members, Toggle } from "common/components";
 import RoomItem from "./room_item";
 
+const enterKey = 13;
+const upKey = 38;
+const downKey = 40;
+const maxQuickSearchListLength = 8;
 @inject("groupsStore")
 @observer
 class RoomsModal extends Component {
@@ -25,47 +20,64 @@ class RoomsModal extends Component {
 
     this.state = {
       filter: "",
-      members: [],
-      public: true,
-      name: "",
-      error: ""
+      inputFocused: false,
+      selectedGroupIndex: -1
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.state !== this.props.state && !!nextProps.state) {
-      // members should be set manualy set empty when modal is open
-      this.setState({ members: [], filter: "", error: null });
-    }
+  // =============
+  //   LIFECYCLE
+  // =============
+
+  componentDidMount() {
+    // timeout is needed for consistent behavior
+    setTimeout(() => {
+      this.input.focus();
+    }, 10);
   }
 
-  onModalEntered = () => {
-    this.setState({ members: [], filter: "", name: "" });
-  };
+  // ===========
+  //   HELPERS
+  // ===========
 
-  getSlug() {
-    return this.state.name
-      ? `#${slugify(this.state.name, { lower: true })}`
-      : "";
+  get allRooms() {
+    return this.applyFilterToList(this.props.groupsStore.quickSwitchGroups);
   }
 
-  handleChange = event => {
-    const { value } = event.target;
+  get filteredRegularGroups() {
+    return this.applyFilterToList(this.props.groupsStore.regularGroups);
+  }
 
-    this.setState({
-      filter: value
-    });
-  };
+  get roomList() {
+    return this.props.currentModal === "search"
+      ? this.allRooms
+      : this.filteredRegularGroups;
+  }
 
-  filterRooms() {
-    const { groupsStore } = this.props;
-    const { filter } = this.state;
-    const rooms = groupsStore.regularGroups.filter(room =>
-      groupsStore
-        .getGroupName(room)
-        .toLowerCase()
-        .startsWith(filter.toLowerCase())
+  get searchFilterOrManualIndex() {
+    // If nothing has been typed into the search
+    // and the user has not hit down, don't highlight
+    return this.state.filter[0] || this.state.selectedGroupIndex !== -1;
+  }
+
+  get endOfListIndex() {
+    const lengthOfList = this.roomList.length;
+
+    return this.props.currentModal === "search"
+      ? Math.min(maxQuickSearchListLength, lengthOfList) - 1
+      : lengthOfList - 1;
+  }
+
+  get focusedItemIndex() {
+    return (
+      this.state.inputFocused &&
+      this.searchFilterOrManualIndex &&
+      this.state.selectedGroupIndex
     );
+  }
+
+  get roomsByJoined() {
+    const rooms = this.roomList;
 
     return {
       joined: rooms.filter(room => room.joined),
@@ -73,82 +85,98 @@ class RoomsModal extends Component {
     };
   }
 
-  updateValue = field => evt => {
-    this.setState({ [field]: evt.target.value });
+  applyFilterToList(groups) {
+    const { groupsStore } = this.props;
+    const { filter } = this.state;
+
+    return groups.filter(room =>
+      groupsStore
+        .getGroupName(room)
+        .toLowerCase()
+        .startsWith(filter.toLowerCase())
+    );
+  }
+
+  // ===========
+  //   ACTIONS
+  // ===========
+
+  switchToCreateModal = () => {
+    this.props.showRoomCreateModal(this.state.filter);
   };
 
-  cleanName = e => {
-    const re = /^[\w\-\s]+$/;
-    if (!re.test(e.key)) {
+  handleInputChange = event => {
+    const { value } = event.target;
+
+    this.setState({
+      filter: value,
+      selectedGroupIndex: value[0] ? 0 : -1
+    });
+  };
+
+  inputRef = node => {
+    this.input = node;
+  };
+
+  inputFocused = () => {
+    this.setState({ inputFocused: true });
+  };
+
+  inputBlurred = () => {
+    this.setState({ inputFocused: false });
+  };
+
+  handleInputKey = e => {
+    const code = e.charCode || e.keyCode;
+    const { selectedGroupIndex } = this.state;
+
+    // ignore unless there are groups present
+    if (!this.roomList[0]) return;
+
+    if (code === enterKey && this.searchFilterOrManualIndex) {
+      const room = this.roomList[selectedGroupIndex];
+      this.goToRoom(room);
+      e.preventDefault();
+    } else if (code === downKey) {
+      const newIndex = Math.min(this.endOfListIndex, selectedGroupIndex + 1);
+      this.setState({ selectedGroupIndex: newIndex });
+      e.preventDefault();
+    } else if (code === upKey) {
+      const newIndex = Math.max(0, selectedGroupIndex - 1);
+      this.setState({ selectedGroupIndex: newIndex });
       e.preventDefault();
     }
   };
 
-  updateMembers = value => {
-    this.setState({ members: value });
+  goToRoom = room => {
+    this.props.closeModal();
+    this.props.history.push(getGroupUrl(room));
   };
 
-  togglePublic = () => {
-    this.setState({ public: !this.state.public });
-  };
+  // ==========
+  //   RENDER
+  // ==========
 
-  switchToCreateModal = () => {
-    this.setState({ name: this.state.filter });
-    this.props.showRoomCreateModal();
-  };
+  renderHeaderButton() {
+    if (this.props.currentModal === "list") {
+      return (
+        <Button bsSize="xsmall" onClick={this.switchToCreateModal}>
+          Create Room
+        </Button>
+      );
+    }
 
-  createRoom = () => {
-    const { groupsStore, history, closeModal } = this.props;
-
-    groupsStore
-      .createGroup({
-        name: this.state.name.trim(),
-        public: this.state.public,
-        user_ids: this.state.members.map(user => user.id)
-      })
-      .then(slug => {
-        this.setState({
-          error: null
-        });
-        history.push(`/rooms/${slug}`);
-        closeModal();
-      })
-      .catch(response => {
-        this.setState({
-          error: "A group with this name already exists."
-        });
-      });
-  };
-
-  canCreateRoom = () => {
-    const { name } = this.state;
-    return name.trim() !== "";
-  };
+    return "";
+  }
 
   renderModalHeader() {
-    const {
-      state,
-      showRoomsListModal,
-      showRoomCreateModal,
-      closeModal
-    } = this.props;
+    const { currentModal, closeModal } = this.props;
+    const title = currentModal === "search" ? "Find Room" : "Browse Rooms";
 
     return (
       <Modal.Header>
-        <Modal.Title>
-          {state === "list" && "Browse Rooms"}
-          {state === "create" && "Create Room"}
-        </Modal.Title>
-        {state === "list" && (
-          <Button bsSize="xsmall" onClick={showRoomCreateModal}>
-            Create Room
-          </Button>
-        )}
-        {state === "create" && (
-          <Button bsSize="xsmall" onClick={showRoomsListModal}>
-            Browse Rooms
-          </Button>
-        )}
+        <Modal.Title>{title}</Modal.Title>
+        {this.renderHeaderButton()}
         <a role="link" onClick={closeModal}>
           <i className="fa fa-close" />
         </a>
@@ -156,193 +184,128 @@ class RoomsModal extends Component {
     );
   }
 
+  renderInput() {
+    return (
+      <div className="rooms-filter">
+        <input
+          ref={this.inputRef}
+          type="text"
+          className="form-control input-lg"
+          placeholder="Find Room"
+          onChange={this.handleInputChange}
+          onKeyDown={this.handleInputKey}
+          onFocus={this.inputFocused}
+          onBlur={this.inputBlurred}
+        />
+      </div>
+    );
+  }
+
   renderRoomsListModal() {
     const { closeModal } = this.props;
-    const rooms = this.filterRooms();
+    const noRoomsInList = !this.roomList[0];
+    const { joined, notJoined } = this.roomsByJoined;
+    let i = -1;
 
     return (
       <Modal.Body>
-        <div className="rooms-filter">
-          <input
-            type="text"
-            className="form-control input-lg"
-            placeholder="Find room"
-            onChange={this.handleChange}
-          />
-        </div>
+        {this.renderInput()}
 
         <div className="rooms-filter-result">
-          {rooms.notJoined.length > 0 && (
+          {notJoined.length > 0 && (
             <div className="rooms-list">
               <h5 className="rooms-list-heading">Rooms you can join</h5>
               <div className="rooms-list-content">
-                {rooms.notJoined.map(room => (
-                  <RoomItem key={room.id} room={room} closeModal={closeModal} />
-                ))}
+                {notJoined.map(room => {
+                  i += 1;
+                  return (
+                    <RoomItem
+                      hasManualFocus={this.focusedItemIndex === i}
+                      key={i}
+                      room={room}
+                      closeModal={closeModal}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
-          {rooms.joined.length > 0 && (
+          {joined.length > 0 && (
             <div className="rooms-list">
               <h5 className="rooms-list-heading">Rooms you belong to</h5>
               <div className="rooms-list-content">
-                {rooms.joined.map(room => (
-                  <RoomItem key={room.id} room={room} closeModal={closeModal} />
-                ))}
+                {joined.map(room => {
+                  i += 1;
+                  return (
+                    <RoomItem
+                      hasManualFocus={this.focusedItemIndex === i}
+                      key={i}
+                      room={room}
+                      closeModal={closeModal}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
-          {rooms.notJoined.length === 0 &&
-            rooms.joined.length === 0 && (
-              <div className="no-result text-center">
-                <p>No rooms found.</p>
-                <Button bsSize="large" onClick={this.switchToCreateModal}>
-                  Create a room called <strong>{this.state.filter}</strong>
-                </Button>
-              </div>
-            )}
+          {noRoomsInList && (
+            <div className="no-result text-center">
+              <p>No rooms found.</p>
+              <Button bsSize="large" onClick={this.switchToCreateModal}>
+                Create a room called <strong>{this.state.filter}</strong>
+              </Button>
+            </div>
+          )}
         </div>
       </Modal.Body>
     );
   }
 
-  renderRoomCreateModal() {
-    const { name } = this.state;
+  renderGoToModal() {
+    const { closeModal } = this.props;
+    const rooms = this.roomList.slice(0, maxQuickSearchListLength);
 
     return (
       <Modal.Body>
-        <Form horizontal>
-          {!!this.state.error && (
-            <Alert bsStyle="danger">{this.state.error}</Alert>
-          )}
-
-          <FormGroup>
-            <Col sm={3}>
-              <Toggle
-                onToggle={this.togglePublic}
-                on="Public"
-                off="Private"
-                active={this.state.public}
-              />
-            </Col>
-
-            <Col sm={9}>
-              <div className="publicity-description">
-                {this.state.public
-                  ? "Open to all members"
-                  : "Restricted to invited members"}
+        {this.renderInput()}
+        <div className="rooms-filter-result">
+          {rooms[0] && (
+            <div className="rooms-list">
+              <div className="rooms-list-content">
+                {rooms.map((room, i) => {
+                  return (
+                    <RoomItem
+                      hasManualFocus={this.focusedItemIndex === i}
+                      key={i}
+                      room={room}
+                      closeModal={closeModal}
+                      hideSlug
+                    />
+                  );
+                })}
               </div>
-            </Col>
-          </FormGroup>
-
-          <FormGroup bsSize="large">
-            <Col componentClass={ControlLabel} sm={3}>
-              Name
-            </Col>
-
-            <Col sm={9}>
-              <FormControl
-                name="name"
-                type="text"
-                placeholder="e.g. Emergency Room"
-                maxLength="25"
-                value={name}
-                onKeyPress={this.cleanName}
-                onChange={this.updateValue("name")}
-              />
-              <HelpBlock>
-                Names must be shorter than 25 characters and without
-                punctuation.
-              </HelpBlock>
-            </Col>
-          </FormGroup>
-
-          <FormGroup bsSize="large">
-            <Col componentClass={ControlLabel} sm={3} className="optional">
-              Reference
-              <br />
-              <span>(automatic)</span>
-            </Col>
-
-            <Col sm={9}>
-              <FormControl
-                name="reference"
-                placeholder="e.g. #emergency-room"
-                value={this.getSlug()}
-                disabled
-              />
-              <HelpBlock>
-                The reference name is the unique ID for a room and can be
-                mentioned in a conversation to link right to it.
-              </HelpBlock>
-            </Col>
-          </FormGroup>
-
-          <FormGroup bsSize="large" className="members-select">
-            <Col componentClass={ControlLabel} sm={3} className="optional">
-              Members
-              <br />
-              <span>(optional)</span>
-            </Col>
-
-            <Col sm={9}>
-              <Members
-                onChange={this.updateMembers}
-                value={this.state.members}
-              />
-              <HelpBlock>
-                Click to select team members to invite to your room. You can
-                always invite members later.
-              </HelpBlock>
-            </Col>
-          </FormGroup>
-        </Form>
+            </div>
+          )}
+        </div>
       </Modal.Body>
-    );
-  }
-
-  renderModalFooter() {
-    const { closeModal } = this.props;
-
-    return (
-      <Modal.Footer>
-        <Button bsSize="large" onClick={closeModal}>
-          Cancel
-        </Button>
-        <Button
-          bsSize="large"
-          bsStyle="primary"
-          onClick={this.createRoom}
-          disabled={!this.canCreateRoom()}
-        >
-          Create Room
-        </Button>
-      </Modal.Footer>
     );
   }
 
   render() {
-    const { state, closeModal } = this.props;
+    const { currentModal } = this.props;
 
     return (
-      <Modal
-        className="rooms-modal"
-        show={!!state}
-        onEnter={this.onModalEntered}
-        onHide={closeModal}
-      >
+      <div>
         {this.renderModalHeader()}
-        {state === "list" && this.renderRoomsListModal()}
-        {state === "create" && this.renderRoomCreateModal()}
-        {state === "create" && this.renderModalFooter()}
-      </Modal>
+        {currentModal === "search" && this.renderGoToModal()}
+        {currentModal === "list" && this.renderRoomsListModal()}
+      </div>
     );
   }
 }
 
 RoomsModal.propTypes = {
-  state: PropTypes.string.isRequired,
-  showRoomsListModal: PropTypes.func.isRequired,
+  currentModal: PropTypes.string.isRequired,
   showRoomCreateModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired
 };

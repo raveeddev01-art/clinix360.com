@@ -572,6 +572,7 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
+    const { groupStore } = this.rootStore;
     // Set the unread messages info in optimistic
     //
     // last_read_at: lastest message's timestamp + 1ms
@@ -592,7 +593,9 @@ class MessageStore {
       this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
-    post(`/api/v1/groups/${this.group.id}/mark_as_read`);
+    if (groupStore.group.joined) {
+      post(`/api/v1/groups/${this.group.id}/mark_as_read`);
+    }
   };
 
   // returns the same debouncedMarkAsRead if the

@@ -665,4 +665,70 @@ defmodule Stitch.MessageQueriesTest do
       refute Stitch.MessageQueries.last_occurred_at(team)
     end
   end
+
+  describe "Stitch.MessageQueries.has_sent_mobile_message/1" do
+    test "is false if no messages sent" do
+      team = insert(:team)
+      user_1 = insert(:user, team: team)
+      group_1 = insert(:group, team: team)
+
+      refute Stitch.MessageQueries.has_sent_mobile_message(user_1.id)
+    end
+
+    test "is false if only desktop messages sent" do
+      team = insert(:team)
+      user_1 = insert(:user, team: team)
+      group_1 = insert(:group, team: team)
+
+      insert(
+        :message,
+        user: user_1,
+        group: group_1
+      )
+
+      refute Stitch.MessageQueries.has_sent_mobile_message(user_1.id)
+    end
+
+    test "is true if iOS message sent" do
+      team = insert(:team)
+      user_1 = insert(:user, team: team)
+      group_1 = insert(:group, team: team)
+
+      insert(
+        :message,
+        user: user_1,
+        group: group_1
+      )
+
+      insert(
+        :message,
+        user: user_1,
+        group: group_1,
+        client_os: "iOS"
+      )
+
+      assert Stitch.MessageQueries.has_sent_mobile_message(user_1.id)
+    end
+
+    test "is true if Android message sent" do
+      team = insert(:team)
+      user_1 = insert(:user, team: team)
+      group_1 = insert(:group, team: team)
+
+      insert(
+        :message,
+        user: user_1,
+        group: group_1
+      )
+
+      insert(
+        :message,
+        user: user_1,
+        group: group_1,
+        client_os: "Android"
+      )
+
+      assert Stitch.MessageQueries.has_sent_mobile_message(user_1.id)
+    end
+  end
 end

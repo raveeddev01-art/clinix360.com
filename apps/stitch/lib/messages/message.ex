@@ -3,7 +3,7 @@ defmodule Stitch.Message do
   import Ecto.Changeset
   import Ecto.Query
   alias Ecto.Multi
-  alias Stitch.{Repo, Message, Group, GroupUser, GroupQueries, Accounts.User}
+  alias Stitch.{Repo, Message, Group, GroupUser, GroupQueries, Accounts.User, Audit}
   alias Stitch.Analytics.Message, as: MessageAnalytics
 
   import Appsignal.Instrumentation.Helpers, only: [instrument: 3]
@@ -249,14 +249,16 @@ defmodule Stitch.Message do
       mentioned_user_ids: mentioned_user_ids
     })
     |> Repo.update()
+    |> Audit.Message.track_update(author, message)
   end
 
-  def delete(message) do
+  def delete(message, user) do
     Multi.new()
     |> Multi.update_all(:unmention_users, unmention_users(message), [])
     |> Multi.update_all(:decrement_unread_counter, decrement_unread_counter(message), [])
     |> Multi.delete(:message, message)
     |> Repo.transaction()
+    |> Audit.Message.track_delete(user)
   end
 
   def mark_as_read_on_creation(multi, group_id, user_id) do

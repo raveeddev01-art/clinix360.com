@@ -20,7 +20,15 @@ defmodule Stitch.Mixfile do
   def application do
     [
       mod: {Stitch.Application, []},
-      extra_applications: [:logger, :runtime_tools, :appsignal, :pdf_generator, :ua_inspector]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :appsignal,
+        :pdf_generator,
+        :ua_inspector,
+        :exq,
+        :exq_ui
+      ]
     ]
   end
 
@@ -50,7 +58,9 @@ defmodule Stitch.Mixfile do
       {:exmoji, github: "mroth/exmoji"},
       {:pdf_generator, ">=0.3.5"},
       {:ua_inspector, "~> 0.17"},
-      {:murmur, "~> 1.0"}
+      {:murmur, "~> 1.0"},
+      {:exq, "~> 0.11.0"},
+      {:exq_ui, "~> 0.9.0"}
     ]
   end
 

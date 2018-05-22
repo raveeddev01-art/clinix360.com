@@ -98,6 +98,9 @@ defmodule Stitch.Message.LinkPreview do
   defp generate_link_preview_param(link) do
     try do
       case HTTPoison.get(link, [], follow_redirect: true) do
+        {:ok, %{status_code: code}} when code >= 400 ->
+          nil
+
         {:ok, response} ->
           html = response.body
           title = title(html)

@@ -5,9 +5,11 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
 
   setup [:create_users, :connect_socket, :create_group, :create_messages]
 
-  test "mark_as_unread event marks all messages after the target message as unread",
-    %{user2: user2, group: group, messages: messages} do
-
+  test "mark_as_unread event marks all messages after the target message as unread", %{
+    user2: user2,
+    group: group,
+    messages: messages
+  } do
     {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
     {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
 
@@ -15,19 +17,19 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
 
     @endpoint.subscribe("events:#{user2.id}")
 
-    ref = push socket2, "mark_as_read", %{"group_id": group.id}
-    assert_reply ref, :ok, _reply
+    ref = push(socket2, "mark_as_read", %{group_id: group.id})
+    assert_reply(ref, :ok, _reply)
 
-    ref = push socket2, "mark_as_unread", %{"group_id": group.id, "message_id": message2.id}
-    assert_reply ref, :ok, _reply
+    ref = push(socket2, "mark_as_unread", %{group_id: group.id, message_id: message2.id})
+    assert_reply(ref, :ok, _reply)
 
-    assert_broadcast "marked_as_unread", %{
+    assert_broadcast("marked_as_unread", %{
       messages: updated_messages,
       group_id: group_id,
       last_read_at: last_read_at,
       mentions_count: mentions_count,
-      unread_messages_count: unread_messages_count,
-    }
+      unread_messages_count: unread_messages_count
+    })
 
     assert length(updated_messages) == 2
     assert group_id == group.id
@@ -41,15 +43,18 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
     assert message3.read_status[to_string(user2.id)] == nil
   end
 
-  test "mark_as_read event marks all unread messages as read for given user",
-      %{user2: user2, group: group, messages: messages} do
+  test "mark_as_read event marks all unread messages as read for given user", %{
+    user2: user2,
+    group: group,
+    messages: messages
+  } do
     {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
     {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
 
     assert [_message1, _message2, _message3] = messages
 
-    ref = push socket2, "mark_as_read", %{"group_id": group.id}
-    assert_reply ref, :ok, reply
+    ref = push(socket2, "mark_as_read", %{group_id: group.id})
+    assert_reply(ref, :ok, reply)
 
     assert reply[:group_id] == group.id
     assert reply[:last_read_at] != nil
@@ -64,60 +69,49 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
     assert message3.read_status[user_id_str] != nil
   end
 
-  test "mark_as_read event returns only updated messages",
-      %{socket1: socket1, user2: user2, group: group, messages: messages} do
+  test "marked_as_read event broadcasted from user events channel when mark_as_read triggered", %{
+    user2: user2,
+    group: group,
+    messages: messages
+  } do
     {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
     {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
-
-    assert [_message1, _message2, _message3] = messages
-
-    ref = push socket2, "mark_as_read", %{}
-    assert_reply ref, :ok, %{messages: updated_messages}
-    assert length(updated_messages) == 3
-
-    ref = push socket1, "new_msg", %{text_content: "Message 4"}
-    assert_reply ref, :ok, %{id: message_id}
-    message4 = Repo.get(Message, message_id)
-
-    ref = push socket2, "mark_as_read", %{}
-    assert_reply ref, :ok, %{messages: [message]}
-    assert message.id == message4.id
-  end
-
-  test "marked_as_read event broadcasted from user events channel when mark_as_read triggered",
-      %{user2: user2, group: group, messages: messages} do
-    {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-    {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
-
-    [_message1, _message2, _message3] = messages
 
     @endpoint.subscribe("events:#{user2.id}")
 
-    ref = push socket2, "mark_as_read", %{}
+    ref = push(socket2, "mark_as_read", %{})
 
-    assert_reply ref, :ok
-    assert_broadcast "marked_as_read", %{messages: updated_messages}
-    assert length(updated_messages) == 3
+    assert_reply(ref, :ok)
+
+    assert_broadcast("marked_as_read", %{
+      group_id: _group_id,
+      last_read_at: _last_read_at,
+      mentions_count: _mentions_count,
+      unread_messages_count: _unread_messages_count
+    })
   end
 
-  test "mark_as_read replies with an error when user is not part of the group",
-      %{team: team, socket1: socket1} do
+  test "mark_as_read replies with an error when user is not part of the group", %{
+    team: team,
+    socket1: socket1
+  } do
     group = insert(:group, team: team)
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
-    ref = push socket1, "mark_as_read", %{"group_id": group.id}
+    ref = push(socket1, "mark_as_read", %{group_id: group.id})
 
-    assert_reply ref, :error, %{message: "User is not part of this room"}
+    assert_reply(ref, :error, %{message: "User is not part of this room"})
   end
 
   defp create_messages(%{socket1: socket1, group: group}) do
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
-    messages = Enum.map(1..3, fn n ->
-      ref = push socket1, "new_msg", %{text_content: "Message #{n}"}
-      assert_reply ref, :ok, %{id: message_id}, 1_000
-      Repo.get(Message, message_id)
-    end)
+    messages =
+      Enum.map(1..3, fn n ->
+        ref = push(socket1, "new_msg", %{text_content: "Message #{n}"})
+        assert_reply(ref, :ok, %{id: message_id}, 1_000)
+        Repo.get(Message, message_id)
+      end)
 
     {:ok, messages: messages, socket1: socket1}
   end

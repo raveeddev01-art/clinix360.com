@@ -27,8 +27,10 @@ defmodule StitchConnect.Web do
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/stitch_connect/web/templates",
-                        namespace: StitchConnect.Web
+      use Phoenix.View,
+        root: "lib/stitch_connect/web/templates",
+        namespace: StitchConnect.Web,
+        pattern: "**/*"
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -56,6 +58,7 @@ defmodule StitchConnect.Web do
       use Phoenix.Channel
       use Appsignal.Instrumentation.Decorators
       import StitchConnect.Web.Gettext
+
       if Application.get_env(:stitch_connect, :sql_sandbox) do
         use StitchConnect.Web.ChannelSandbox
       end

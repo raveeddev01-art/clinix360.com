@@ -14,20 +14,28 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
       user_3 = insert(:user, team: team_2)
       _group_user_1 = insert(:group_user, group: group_1, user: user_1)
       _group_user_2 = insert(:group_user, group: group_1, user: user_2)
-      message_1 = insert(:message,
-                         user: user_1,
-                         group: group_1,
-                         pinned: true,
-                         pinned_by_id: user_2.id,
-                         pinned_at: NaiveDateTime.utc_now() |> NaiveDateTime.to_iso8601())
-      message_2 = insert(:message,
-                         user: user_1,
-                         group: group_1,
-                         pinned: false)
+
+      message_1 =
+        insert(
+          :message,
+          user: user_1,
+          group: group_1,
+          pinned: true,
+          pinned_by_id: user_2.id,
+          pinned_at: NaiveDateTime.utc_now() |> NaiveDateTime.to_iso8601()
+        )
+
+      message_2 =
+        insert(
+          :message,
+          user: user_1,
+          group: group_1,
+          pinned: false
+        )
 
       group_exports = TeamHistory.get_group_data(team_1)
 
-      group_ids = Enum.map(group_exports, &(&1.id))
+      group_ids = Enum.map(group_exports, & &1.id)
       assert length(group_exports) == 2
       assert group_1.id in group_ids
       assert group_2.id in group_ids
@@ -69,7 +77,7 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
 
       user_exports = TeamHistory.get_user_data(team_1)
 
-      user_export_ids = Enum.map(user_exports, &(&1.id))
+      user_export_ids = Enum.map(user_exports, & &1.id)
       assert user_1.id in user_export_ids
       assert user_2.id in user_export_ids
       refute user_3.id in user_export_ids
@@ -77,12 +85,14 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
       user_1_export = Enum.find(user_exports, &(&1.id == user_1.id))
       disallowed_fields = ~w(
         password_hash confirmation_code onboarded email_confirmation pin token
-        disabled password_reset_token desktop_notification_preference
+        password_reset_token desktop_notification_preference
         mobile_notification_preference email_notification_preference
       )a
+
       Enum.each(user_1_export, fn {k, _} ->
         refute k in disallowed_fields
       end)
+
       Enum.each(user_1_export, fn {k, v} ->
         assert Map.get(user_1, k) == v
       end)
@@ -97,7 +107,8 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
     end
 
     test "returns message data for a given team and month" do
-      {:ok, target_datetime_1} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0) # year, month, day, hour, minute, second
+      # year, month, day, hour, minute, second
+      {:ok, target_datetime_1} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
       {:ok, target_datetime_2} = NaiveDateTime.new(2017, 1, 2, 0, 0, 0)
       team_1 = insert(:team)
       team_2 = insert(:team)
@@ -131,9 +142,14 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
       assert length(export_group_1_datetime_2_messages) == 1
       assert length(export_group_2_datetime_1_messages) == 1
 
-      export_group_1_datetime_1_message_ids = Enum.map(export_group_1_datetime_1_messages, &(&1.id))
-      export_group_1_datetime_2_message_ids = Enum.map(export_group_1_datetime_2_messages, &(&1.id))
-      export_group_2_datetime_1_message_ids = Enum.map(export_group_2_datetime_1_messages, &(&1.id))
+      export_group_1_datetime_1_message_ids =
+        Enum.map(export_group_1_datetime_1_messages, & &1.id)
+
+      export_group_1_datetime_2_message_ids =
+        Enum.map(export_group_1_datetime_2_messages, & &1.id)
+
+      export_group_2_datetime_1_message_ids =
+        Enum.map(export_group_2_datetime_1_messages, & &1.id)
 
       assert message_1.id in export_group_1_datetime_1_message_ids
       refute message_1.id in export_group_1_datetime_2_message_ids

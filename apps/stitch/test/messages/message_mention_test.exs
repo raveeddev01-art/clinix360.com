@@ -18,7 +18,8 @@ defmodule Stitch.Message.MentionTest do
     _group_alice = insert(:group_user, user: alice, group: group)
     _group_eve = insert(:group_user, user: eve, group: group)
 
-    mention_keywords = Stitch.Message.Mention.user_mention_keywords([bob, alice, eve], eve, [], group)
+    mention_keywords =
+      Stitch.Message.Mention.user_mention_keywords([bob, alice, eve], eve, [], group)
 
     assert mention_keywords["<@U#{bob.id}>"] == [bob.id]
     assert mention_keywords["<@U#{alice.id}>"] == [alice.id]
@@ -27,7 +28,8 @@ defmodule Stitch.Message.MentionTest do
 
   describe "Stitch.Message.get_mentions/2" do
     test "when message contains no mentions" do
-      assert Stitch.Message.Mention.message_mentions("Hello, bob.", %{"<@U#{123}>" => [1, 2]}) == []
+      assert Stitch.Message.Mention.message_mentions("Hello, bob.", %{"<@U#{123}>" => [1, 2]}) ==
+               []
     end
 
     test "when user is mentioned" do
@@ -36,32 +38,63 @@ defmodule Stitch.Message.MentionTest do
     end
 
     test "when one user out of many is mentioned" do
-      mentions = Stitch.Message.Mention.message_mentions("Hello, <@U123>", %{"<@U123>" => [1], "@alice" => [2]})
+      mentions =
+        Stitch.Message.Mention.message_mentions("Hello, <@U123>", %{
+          "<@U123>" => [1],
+          "@alice" => [2]
+        })
+
       assert mentions == [1]
     end
 
     test "when keyword is followed by a punctuation mark" do
-      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>!", %{"<@U123>" => [1]}) == [1]
-      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>.", %{"<@U123>" => [1]}) == [1]
-      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>,", %{"<@U123>" => [1]}) == [1]
-      assert Stitch.Message.Mention.message_mentions("(Hello, <@U123>)", %{"<@U123>" => [1]}) == [1]
-      assert Stitch.Message.Mention.message_mentions("(Hello, <@U123>:", %{"<@U123>" => [1]}) == [1]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>!", %{"<@U123>" => [1]}) == [
+               1
+             ]
+
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>.", %{"<@U123>" => [1]}) == [
+               1
+             ]
+
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>,", %{"<@U123>" => [1]}) == [
+               1
+             ]
+
+      assert Stitch.Message.Mention.message_mentions("(Hello, <@U123>)", %{"<@U123>" => [1]}) == [
+               1
+             ]
+
+      assert Stitch.Message.Mention.message_mentions("(Hello, <@U123>:", %{"<@U123>" => [1]}) == [
+               1
+             ]
     end
 
     test "when multiple users are mentioned" do
-      assert Stitch.Message.Mention.message_mentions("Hello, <@U123> and <@U1234>!", %{"<@U123>" => [1], "<@U1234>" => [2]}) == [1, 2]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123> and <@U1234>!", %{
+               "<@U123>" => [1],
+               "<@U1234>" => [2]
+             }) == [1, 2]
     end
 
     test "when users' mention keywords overlap" do
-      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>, <@U1234>, and eve.", %{"<@U123>" => [1], "<@U1234>" => [2], "eve" => [1, 2, 3]}) == [1, 2, 3]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>, <@U1234>, and eve.", %{
+               "<@U123>" => [1],
+               "<@U1234>" => [2],
+               "eve" => [1, 2, 3]
+             }) == [1, 2, 3]
     end
 
     test "when username contains a punctuation mark" do
-      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>.a", %{"<@U123>.a" => [1]}) == [1]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>.a", %{"<@U123>.a" => [1]}) ==
+               [1]
     end
 
     test "when @all is mentioned" do
-      assert Stitch.Message.Mention.message_mentions("Hello, @all!", %{"@all" => [1, 2, 3]}) == [1, 2, 3]
+      assert Stitch.Message.Mention.message_mentions("Hello, @all!", %{"@all" => [1, 2, 3]}) == [
+               1,
+               2,
+               3
+             ]
     end
   end
 
@@ -74,7 +107,11 @@ defmodule Stitch.Message.MentionTest do
       group_bob = insert(:group_user, user: bob, group: group)
       group_alice = insert(:group_user, user: alice, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, bob, %{"text_content" => "Hello, <@U#{alice.id}>.", "type" => "chat"})
+      {:ok, %{message: _message}} =
+        Stitch.Message.create(group.id, bob, %{
+          "text_content" => "Hello, <@U#{alice.id}>.",
+          "type" => "chat"
+        })
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -93,7 +130,11 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       _group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hello, <@U#{alice.id}>, and <@U#{bob.id}>.", "type" => "chat"})
+      {:ok, %{message: _message}} =
+        Stitch.Message.create(group.id, eve, %{
+          "text_content" => "Hello, <@U#{alice.id}>, and <@U#{bob.id}>.",
+          "type" => "chat"
+        })
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -115,7 +156,11 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, <@Geveryone>!", "type" => "chat"})
+      {:ok, %{message: _message}} =
+        Stitch.Message.create(group.id, eve, %{
+          "text_content" => "Hi, <@Geveryone>!",
+          "type" => "chat"
+        })
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -140,7 +185,11 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, <@Geveryone>!", "type" => "chat"})
+      {:ok, %{message: _message}} =
+        Stitch.Message.create(group.id, eve, %{
+          "text_content" => "Hi, <@Geveryone>!",
+          "type" => "chat"
+        })
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -165,7 +214,13 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Ghere>", "type" => "chat"}, %{active: [], online: []})
+      {:ok, %{message: _message}} =
+        Stitch.Message.create(
+          group.id,
+          eve,
+          %{"text_content" => "Hi <@Ghere>", "type" => "chat"},
+          %{active: [], online: []}
+        )
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -190,7 +245,13 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Ghere>", "type" => "chat"}, %{active: [], online: [bob.id]})
+      {:ok, %{message: _message}} =
+        Stitch.Message.create(
+          group.id,
+          eve,
+          %{"text_content" => "Hi <@Ghere>", "type" => "chat"},
+          %{active: [], online: [bob.id]}
+        )
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -215,7 +276,13 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Groom>", "type" => "chat"}, %{active: [], online: []})
+      {:ok, %{message: _message}} =
+        Stitch.Message.create(
+          group.id,
+          eve,
+          %{"text_content" => "Hi <@Groom>", "type" => "chat"},
+          %{active: [], online: []}
+        )
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -240,7 +307,11 @@ defmodule Stitch.Message.MentionTest do
     group_bob = insert(:group_user, user: bob, group: group)
     group_alice = insert(:group_user, user: alice, group: group)
 
-    {:ok, %{message: message}} = Stitch.Message.create(group.id, bob, %{"text_content" => "Hello, <@U#{alice.id}>.", "type" => "chat"})
+    {:ok, %{message: message}} =
+      Stitch.Message.create(group.id, bob, %{
+        "text_content" => "Hello, <@U#{alice.id}>.",
+        "type" => "chat"
+      })
 
     group_bob = Repo.get(GroupUser, group_bob.id)
     group_alice = Repo.get(GroupUser, group_alice.id)
@@ -248,7 +319,7 @@ defmodule Stitch.Message.MentionTest do
     assert group_bob.mentions_count == 0
     assert group_alice.mentions_count == 1
 
-    {:ok, _message} = Stitch.Message.delete(message)
+    {:ok, _message} = Stitch.Message.delete(message, bob)
 
     group_bob = Repo.get(GroupUser, group_bob.id)
     group_alice = Repo.get(GroupUser, group_alice.id)
@@ -259,7 +330,7 @@ defmodule Stitch.Message.MentionTest do
 
   defp available_groups_indexed_by_slug(user) do
     user
-    |> Stitch.GroupQueries.available_groups
+    |> Stitch.GroupQueries.available_groups()
     |> Enum.reduce(%{}, &Map.put(&2, &1.slug, &1))
   end
 end
