@@ -19,21 +19,23 @@ class Welcome extends Component {
 
   render() {
     return (
-      <Card
-        title="Invalid Invite"
-        description={
-          <span>
-            It seems like the invitation you are trying to accept is invalid,
-            because you joined the team already or your invitation has been
-            revoked. Try contacting your team administrator for more
-            information.
-          </span>
-        }
-      >
-        <a href="/" className="btn btn-lg btn-block btn-primary m-b-40">
-          Back
-        </a>
-      </Card>
+      <div>
+        <Card
+          title="Invalid Invite"
+          description={
+            <span>
+              It seems like the invitation you are trying to accept is invalid,
+              because you joined the team already or your invitation has been
+              revoked. Try contacting your team administrator for more
+              information.
+            </span>
+          }
+        >
+          <a href="/" className="btn btn-lg btn-block btn-primary m-b-40">
+            Back
+          </a>
+        </Card>
+      </div>
     );
   }
 }
