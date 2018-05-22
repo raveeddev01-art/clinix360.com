@@ -1,4 +1,4 @@
-defmodule Stitch.UserAuthorizationTest do
+defmodule Stitch.TimedMessageHelperTest do
   use ExUnit.Case, async: true
   import Stitch.Factory
   alias Stitch.{Repo, TimedMessage.Helper}
