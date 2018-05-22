@@ -40,26 +40,6 @@ defmodule Stitch.TimedMessage.Worker do
   # template_vars: lambda assigning variables for template render
 
   @message_rules_for_type %{
-    # SHARED MESSAGES
-    "complete_profile" => %{
-      subject: "Complete your profile",
-      load_data: &Helper.get_user_with_team/1,
-      send_if: &Helper.has_not_set_profile/1,
-      template_vars: &Helper.with_complete_profile_link/2
-    },
-    "manage_notifications" => %{
-      subject: "Get notified of important messages",
-      load_data: &Helper.get_user_with_team/1,
-      send_if: &Helper.is_active_user/1,
-      template_vars: &Helper.with_notifications_link/2
-    },
-    "app_downloads" => %{
-      subject: "Get the Stitch mobile and desktop apps",
-      load_data: &Helper.get_user_with_team/1,
-      send_if: &Helper.is_active_user/1,
-      template_vars: &Helper.with_user_and_team_attrs/2
-    },
-    # ADMIN SPECIFIC MESSAGES
     "admin_welcome" => %{
       subject: &Helper.welcome_subject/1,
       load_data: &Helper.get_user_with_team/1,
@@ -84,32 +64,47 @@ defmodule Stitch.TimedMessage.Worker do
       send_if: &Helper.has_not_invited_users/1,
       template_vars: &Helper.with_admin_invitation_attrs/2
     },
-    "member_invite_reminder" => %{
-      subject: "Invite your teammates to Stitch",
-      load_data: &Helper.get_user_with_team_invites/1,
-      send_if: &Helper.user_has_invite_permissions/1,
-      template_vars: &Helper.with_member_invitation_attrs/2
-    },
-    # STANDARD USER SPECIFIC MESSAGES
-    "user_welcome" => %{
-      subject: &Helper.welcome_subject/1,
+    "app_downloads" => %{
+      subject: "Get the Stitch mobile and desktop apps",
       load_data: &Helper.get_user_with_team/1,
-      send_if: &Helper.is_active_and_has_team/1,
+      send_if: &Helper.is_active_user/1,
       template_vars: &Helper.with_user_and_team_attrs/2
     },
-    # GUEST USER SPECIFIC MESSAGES
-    "guest_welcome" => %{
-      subject: "Welcome to Stitch: New Account Information",
+    "complete_profile" => %{
+      subject: "Complete your profile",
       load_data: &Helper.get_user_with_team/1,
-      send_if: &Helper.is_active_and_has_team/1,
-      template_vars: &Helper.with_user_and_team_attrs/2
+      send_if: &Helper.has_not_set_profile/1,
+      template_vars: &Helper.with_complete_profile_link/2
     },
-    # INVITE MESSAGES
     "invite_reminder" => %{
       subject: "Reminder: Join your team on Stitch",
       load_data: &Helper.get_invitation_and_user/1,
       send_if: &Helper.is_invitation_pending/1,
       template_vars: &Helper.with_invitation_attrs/2
+    },
+    "manage_notifications" => %{
+      subject: "Get notified of important messages",
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.is_active_user/1,
+      template_vars: &Helper.with_notifications_link/2
+    },
+    # "member_invite_reminder" => %{
+    #   subject: "Reminder: Invite your teammates to Stitch",
+    #   load_data: &Helper.get_user_with_team_invites/1,
+    #   send_if: &Helper.user_has_invite_permissions/1,
+    #   template_vars: &Helper.with_member_invitation_attrs/2
+    # },
+    "member_invite_prompt" => %{
+      subject: "Invite your teammates to Stitch",
+      load_data: &Helper.get_user_with_team_invites/1,
+      send_if: &Helper.user_has_invite_permissions/1,
+      template_vars: &Helper.with_member_invitation_attrs/2
+    },
+    "user_welcome" => %{
+      subject: &Helper.welcome_subject/1,
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.is_active_and_has_team/1,
+      template_vars: &Helper.with_user_and_team_attrs/2
     }
   }
 
