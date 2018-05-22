@@ -123,7 +123,7 @@ defmodule Stitch.TimedMessage.Helper do
   end
 
   @spec has_team(map) :: sendable_res
-  defp has_team(%{"user" => user}) do
+  def has_team(%{"user" => user}) do
     sendable = user && user.team
     if sendable, do: :ok, else: :not_sendable
   end
