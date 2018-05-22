@@ -11,14 +11,13 @@ defmodule Stitch.TimedMessage.Event do
   """
   @spec new_team_owner(User.t()) :: :ok
   def new_team_owner(user) do
-    # Additional messages will be enqueued on same event once templates are ready
     enqueue_messages([
-      %{type: "admin_welcome", data: %{user_id: user.id}, time: in_days(0)}
-      # %{type: "admin_invite_prompt", data: %{user_id: user.id}, time: in_days(1)},
-      # %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(2)},
-      # %{type: "admin_create_rooms", data: %{user_id: user.id}, time: in_days(3)},
-      # %{type: "manage_notifications", data: %{user_id: user.id}, time: in_days(4)},
-      # %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(5)}
+      %{type: "admin_welcome", data: %{user_id: user.id}, time: in_days(0)},
+      %{type: "admin_invite_prompt", data: %{user_id: user.id}, time: in_days(0)},
+      %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(1)},
+      %{type: "admin_create_rooms", data: %{user_id: user.id}, time: in_days(6)},
+      %{type: "manage_notifications", data: %{user_id: user.id}, time: in_days(10)},
+      %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(13)}
     ])
   end
 
@@ -26,12 +25,12 @@ defmodule Stitch.TimedMessage.Event do
   Enqueues jobs to message team member (non-owner).
   """
   @spec new_standard_member(User.t()) :: :ok
-  def new_standard_member(_user) do
-    # Additional messages will be enqueued on same event once templates are ready
+  def new_standard_member(user) do
     enqueue_messages([
-      # %{type: "user_welcome", data: %{user_id: user.id}, time: in_days(0)},
-      # %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(1)},
-      # %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(2)}
+      %{type: "user_welcome", data: %{user_id: user.id}, time: in_days(0)},
+      %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(1)},
+      %{type: "manage_notifications", data: %{user_id: user.id}, time: in_days(10)},
+      %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(13)}
     ])
   end
 
@@ -39,20 +38,31 @@ defmodule Stitch.TimedMessage.Event do
   Enqueues jobs to message team guest (non-owner, non-standard member).
   """
   @spec new_guest_member(User.t()) :: :ok
-  def new_guest_member(_user) do
-    # Additional messages will be enqueued on same event once templates are ready
-    # enqueue_delivery(%{type: "user_welcome", data: %{user_id: user.id}, time: in_days(0)})
-    :ok
+  def new_guest_member(user) do
+    enqueue_messages([
+      %{type: "user_welcome", data: %{user_id: user.id}, time: in_days(0)},
+      %{type: "app_downloads", data: %{user_id: user.id}, time: in_days(1)},
+      %{type: "manage_notifications", data: %{user_id: user.id}, time: in_days(10)},
+      %{type: "complete_profile", data: %{user_id: user.id}, time: in_days(13)}
+    ])
   end
 
   @doc """
   Enqueues jobs to remind user about invite (if pending).
   """
   @spec new_invitation(Invitation.t()) :: :ok
-  def new_invitation(_invitation) do
+  def new_invitation(invitation) do
     enqueue_messages([
-      # %{type: "invite_reminder_a", data: %{invitation_id: invitation.id}, time: in_days(2)},
-      # %{type: "invite_reminder_b", data: %{invitation_id: invitation.id}, time: in_days(4)}
+      %{
+        type: "invite_reminder",
+        data: %{invitation_id: invitation.id},
+        time: in_days(2)
+      },
+      %{
+        type: "invite_reminder",
+        data: %{invitation_id: invitation.id},
+        time: in_days(4)
+      }
     ])
   end
 

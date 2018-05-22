@@ -6,16 +6,26 @@ defmodule Stitch.Invitation do
   alias Ecto.Changeset
   import Ecto.{Changeset, Query}
   alias Stitch.Invitation.{SingleRoomGuestInvite, MultiRoomGuestInvite}
-  alias Stitch.{Repo, Accounts.User, Team, Invitation, TeamAuthorization, GroupQueries}
+
+  alias Stitch.{
+    Repo,
+    Accounts.User,
+    GroupQueries,
+    Invitation,
+    Team,
+    TeamAuthorization,
+    TimedMessage
+  }
+
   alias Stitch.Analytics.Invitation, as: InvitationAnalytics
 
   @guest_roles Stitch.Accounts.Role.guests()
 
   schema "invitations" do
-    belongs_to :user, User
-    belongs_to :team, Team
-    field :invite_token, :string
-    field :accepted, :boolean, default: false
+    belongs_to(:user, User)
+    belongs_to(:team, Team)
+    field(:invite_token, :string)
+    field(:accepted, :boolean, default: false)
 
     timestamps()
   end
@@ -42,7 +52,10 @@ defmodule Stitch.Invitation do
   """
   def invite_as_single_room_guests(%User{} = inviter, %Team{} = team, params) do
     Enum.map(params["emails"], fn email ->
-      invite_as_single_room_guest(inviter, team, %{"email" => email, "group_id" => params["group_id"]})
+      invite_as_single_room_guest(inviter, team, %{
+        "email" => email,
+        "group_id" => params["group_id"]
+      })
     end)
   end
 
@@ -52,14 +65,23 @@ defmodule Stitch.Invitation do
       iex> invite_as_single_room_guest(%Team{...}, %{email: "test@test.com", group_id: 9000})
       {:ok, %Invitation{...}}
   """
-  @spec invite_as_single_room_guest(User.t, Team.t, map) :: {:ok, map} | {:error, Changeset.t | :group_not_found}
+  @spec invite_as_single_room_guest(User.t(), Team.t(), map) ::
+          {:ok, map} | {:error, Changeset.t() | :group_not_found}
   def invite_as_single_room_guest(%User{} = inviter, %Team{id: team_id} = team, params) do
     with %Changeset{valid?: true} = invite <- SingleRoomGuestInvite.changeset(params),
-         {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, invite.changes.group_id)},
+         {:group, group} when not is_nil(group) <-
+           {:group, GroupQueries.get_by_id(team, invite.changes.group_id)},
          email = invite.changes.email,
-         user_params = %{email: email, groups_as_guest: [group.id], team_id: team_id, roles: ["single-room-guest"]},
-         {:user, {:ok, user}} <- {:user, Repo.insert(User.team_invite_changeset(%User{}, user_params))},
-         {:ok, invitation} = Repo.insert(Invitation.changeset(%Invitation{}, %{user_id: user.id, team_id: team_id})) do
+         user_params = %{
+           email: email,
+           groups_as_guest: [group.id],
+           team_id: team_id,
+           roles: ["single-room-guest"]
+         },
+         {:user, {:ok, user}} <-
+           {:user, Repo.insert(User.team_invite_changeset(%User{}, user_params))},
+         {:ok, invitation} =
+           Repo.insert(Invitation.changeset(%Invitation{}, %{user_id: user.id, team_id: team_id})) do
       InvitationAnalytics.track_new_invitation(user, email)
       Invitation.resend_invitation(inviter.id, invitation.id)
       {:ok, Repo.preload(invitation, :user)}
@@ -78,7 +100,10 @@ defmodule Stitch.Invitation do
   """
   def invite_as_multi_room_guests(%User{} = inviter, %Team{} = team, params) do
     Enum.map(params["emails"], fn email ->
-      invite_as_multi_room_guest(inviter, team, %{"email" => email, "group_id" => params["group_ids"]})
+      invite_as_multi_room_guest(inviter, team, %{
+        "email" => email,
+        "group_id" => params["group_ids"]
+      })
     end)
   end
 
@@ -88,15 +113,23 @@ defmodule Stitch.Invitation do
       iex> invite_as_multi_room_guest(%User{...}, %Team{...}, %{email: "test@test.com", group_ids: [9000, 9001]})
       {:ok, %Invitation{...}}
   """
-  @spec invite_as_multi_room_guest(User.t, Team.t, map) :: {:ok, map} | {:error, Changeset.t} | {:error, :invalid_groups, [group_id :: integer]}
+  @spec invite_as_multi_room_guest(User.t(), Team.t(), map) ::
+          {:ok, map} | {:error, Changeset.t()} | {:error, :invalid_groups, [group_id :: integer]}
   def invite_as_multi_room_guest(%User{} = inviter, %Team{id: team_id} = team, params) do
     with %Changeset{valid?: true} = invite <- MultiRoomGuestInvite.changeset(params),
          group_ids = invite.changes.group_ids,
          {:ok, _groups} <- validate_groups(team, group_ids),
          email = invite.changes.email,
-         user_params = %{email: email, groups_as_guest: group_ids, team_id: team_id, roles: ["multi-room-guest"]},
-         {:user, {:ok, user}} <- {:user, Repo.insert(User.team_invite_changeset(%User{}, user_params))},
-         {:ok, invitation} = Repo.insert(Invitation.changeset(%Invitation{}, %{user_id: user.id, team_id: team_id})) do
+         user_params = %{
+           email: email,
+           groups_as_guest: group_ids,
+           team_id: team_id,
+           roles: ["multi-room-guest"]
+         },
+         {:user, {:ok, user}} <-
+           {:user, Repo.insert(User.team_invite_changeset(%User{}, user_params))},
+         {:ok, invitation} =
+           Repo.insert(Invitation.changeset(%Invitation{}, %{user_id: user.id, team_id: team_id})) do
       InvitationAnalytics.track_new_invitation(user, email)
       Invitation.resend_invitation(inviter.id, invitation.id)
       {:ok, Repo.preload(invitation, :user)}
@@ -111,6 +144,7 @@ defmodule Stitch.Invitation do
     groups = GroupQueries.get_by_ids(group_ids, %User{team_id: team.id})
     valid_group_ids = for group <- groups, do: group.id
     invalid_group_ids = group_ids -- valid_group_ids
+
     if invalid_group_ids == [] do
       {:ok, groups}
     else
@@ -125,8 +159,10 @@ defmodule Stitch.Invitation do
   def invite_to_team(user_id, email) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
+
     if TeamAuthorization.can_send_invites?(user, team) do
       new_user_changeset = User.team_invite_changeset(%User{}, %{email: email, team_id: team.id})
+
       case Repo.insert(new_user_changeset) do
         {:error, _changeset} ->
           invited_user = Repo.get_by(User, email: email, team_id: team.id)
@@ -142,10 +178,14 @@ defmodule Stitch.Invitation do
                 false -> {:error, "Email has already been invited."}
               end
           end
+
         {:ok, new_user} ->
-          invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
+          invitation_changeset =
+            Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
+
           {:ok, invitation} = Repo.insert(invitation_changeset)
           InvitationAnalytics.track_new_invitation(user, email)
+          TimedMessage.Event.new_invitation(invitation)
           Invitation.resend_invitation(user_id, invitation.id)
       end
     else
@@ -159,17 +199,21 @@ defmodule Stitch.Invitation do
   """
   def get_by_invite_token(invite_token) when byte_size(invite_token) > 0 do
     query =
-      from i in Invitation,
-      where: i.invite_token == ^invite_token,
-      preload: [:user]
+      from(
+        i in Invitation,
+        where: i.invite_token == ^invite_token,
+        preload: [:user]
+      )
 
     case Repo.one(query) do
       nil ->
         {:error, "Invitation does not exist."}
+
       invitation ->
         {:ok, invitation}
     end
   end
+
   def get_by_invite_token(_) do
     {:error, "Invite_token cannot be blank or nil."}
   end
@@ -180,7 +224,7 @@ defmodule Stitch.Invitation do
   def accept(%Invitation{} = invitation) do
     invitation
     |> accept_changeset(%{accepted: true})
-    |> Repo.update
+    |> Repo.update()
   end
 
   @doc """
@@ -188,11 +232,13 @@ defmodule Stitch.Invitation do
   """
   def list_pending_team_invitations(%Team{id: team_id}) do
     query =
-      from i in Invitation,
-      join: u in assoc(i, :user),
-      where: i.team_id == ^team_id,
-      where: i.accepted == ^false,
-      preload: [user: u]
+      from(
+        i in Invitation,
+        join: u in assoc(i, :user),
+        where: i.team_id == ^team_id,
+        where: i.accepted == ^false,
+        preload: [user: u]
+      )
 
     Repo.all(query)
   end
@@ -204,19 +250,25 @@ defmodule Stitch.Invitation do
   def resend_invitation(user_id, invitation_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
+
     if TeamAuthorization.can_send_invites?(user, team) do
       query =
-        from i in Invitation,
-        where: i.id == ^invitation_id,
-        preload: [:user, :team]
+        from(
+          i in Invitation,
+          where: i.id == ^invitation_id,
+          preload: [:user, :team]
+        )
 
       invitation = Repo.one(query)
+
       case invitation.accepted do
         true ->
           {:error, "This invitation has been accepted already."}
+
         false ->
           Invitation.Email.team_invitation("#{user.first_name} #{user.last_name}", invitation)
-          |> Stitch.Mailer.deliver_later
+          |> Stitch.Mailer.deliver_later()
+
           {:ok, invitation}
       end
     else
@@ -231,15 +283,21 @@ defmodule Stitch.Invitation do
   def revoke_invitation(user_id, invitation_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
+
     if TeamAuthorization.can_send_invites?(user, team) do
       query =
-        from i in Invitation,
-        where: i.id == ^invitation_id,
-        preload: [:user, :team]
+        from(
+          i in Invitation,
+          where: i.id == ^invitation_id,
+          preload: [:user, :team]
+        )
+
       invitation = Repo.one(query)
+
       case invitation.accepted do
         true ->
           {:error, "This invitation has been accepted already."}
+
         false ->
           Repo.delete(invitation.user)
           {:ok, invitation}
@@ -254,31 +312,40 @@ defmodule Stitch.Invitation do
   """
   def accept_and_complete_onboarding(invite_token, params) do
     result =
-      Ecto.Multi.new
+      Ecto.Multi.new()
       |> Ecto.Multi.run(:invite, fn _ -> Invitation.get_by_invite_token(invite_token) end)
       |> Ecto.Multi.run(:accept, fn %{invite: invite} -> Stitch.Invitation.accept(invite) end)
       |> Ecto.Multi.run(:user, fn %{invite: invite} ->
         params = Map.put(params, "team_id", invite.team_id)
+
         case Stitch.Accounts.update_and_complete_user_onboarding(invite.user_id, params) do
           %User{} = user -> {:ok, user}
           error -> error
         end
       end)
-      |> Repo.transaction
+      |> Repo.transaction()
 
-      case result do
-        {:ok, %{user: %{roles: [role]} = user}} when not role in @guest_roles -> # Regular users
-          default_group = Stitch.GroupQueries.default_group(user)
-          Stitch.Group.add_user(default_group, user)
-          {:ok, %{user: user, groups: [default_group]}}
-        {:ok, %{user: %{team_id: team_id, groups_as_guest: restricted_groups} = user}} -> # Guests
-          groups = Stitch.GroupQueries.get_by_ids(restricted_groups, %User{team_id: team_id})
-          for group <- groups do
-            Stitch.Group.add_user(group, user)
-          end
-          {:ok, %{user: user, groups: groups}}
-        {:error, _, error, _} ->
-          {:error, error}
-      end
+    case result do
+      # Regular users
+      {:ok, %{user: %{roles: [role]} = user}} when not (role in @guest_roles) ->
+        default_group = Stitch.GroupQueries.default_group(user)
+        Stitch.Group.add_user(default_group, user)
+        TimedMessage.Event.new_standard_member(user)
+        {:ok, %{user: user, groups: [default_group]}}
+
+      # Guests
+      {:ok, %{user: %{team_id: team_id, groups_as_guest: restricted_groups} = user}} ->
+        groups = Stitch.GroupQueries.get_by_ids(restricted_groups, %User{team_id: team_id})
+        TimedMessage.Event.new_guest_member(user)
+
+        for group <- groups do
+          Stitch.Group.add_user(group, user)
+        end
+
+        {:ok, %{user: user, groups: groups}}
+
+      {:error, _, error, _} ->
+        {:error, error}
+    end
   end
 end

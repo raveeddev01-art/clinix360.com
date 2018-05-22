@@ -44,65 +44,59 @@ defmodule Stitch.TimedMessage.Worker do
   @message_rules_for_type %{
     # SHARED MESSAGES
     "complete_profile" => %{
-      subject: "Complete your Stitch profile",
+      subject: "Complete your profile",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_complete_profile_link/2
     },
     "manage_notifications" => %{
-      subject: "Manage your notifications on Stitch",
+      subject: "Get notified of important messages",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_notifications_link/2
     },
     "app_downloads" => %{
-      subject: "Download the Stitch App!",
-      load_data: &__MODULE__.get_user_with_mobile_message_check/1,
-      send_if: &__MODULE__.is_active_and_not_sent_mobile_message/1,
-      template_vars: &__MODULE__.with_download_app_link/2
+      subject: "Get the Stitch mobile and desktop apps",
+      load_data: &__MODULE__.get_user_with_team/1,
+      send_if: &__MODULE__.is_active_user/1,
+      template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # ADMIN SPECIFIC MESSAGES
     "admin_welcome" => %{
-      subject: "Welcome to Stitch Connect",
+      subject: "Welcome to Stitch: New Account Information",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_and_has_team/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     "admin_invite_prompt" => %{
-      subject: "Invite your team to Stitch Connect",
+      subject: "Invite your team to Stitch",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_admin_invitation_attrs/2
     },
     "admin_create_rooms" => %{
-      subject: "Room creation tips on Stitch",
+      subject: "Organize your conversations",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_user/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # STANDARD USER SPECIFIC MESSAGES
     "user_welcome" => %{
-      subject: "Welcome to Stitch Connect",
+      subject: "Welcome to Stitch: New Account Information",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_and_has_team/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # GUEST USER SPECIFIC MESSAGES
     "guest_welcome" => %{
-      subject: "Welcome to Stitch Connect",
+      subject: "Welcome to Stitch: New Account Information",
       load_data: &__MODULE__.get_user_with_team/1,
       send_if: &__MODULE__.is_active_and_has_team/1,
       template_vars: &__MODULE__.with_user_and_team_attrs/2
     },
     # INVITE MESSAGES
-    "invite_reminder_a" => %{
-      subject: "Your team is waiting on Stitch",
-      load_data: &__MODULE__.get_invitation_and_user/1,
-      send_if: &__MODULE__.is_invitation_pending/1,
-      template_vars: &__MODULE__.with_invitation_attrs/2
-    },
-    "invite_reminder_b" => %{
-      subject: "Join your team on Stitch",
+    "invite_reminder" => %{
+      subject: "Reminder: Join your team on Stitch",
       load_data: &__MODULE__.get_invitation_and_user/1,
       send_if: &__MODULE__.is_invitation_pending/1,
       template_vars: &__MODULE__.with_invitation_attrs/2
@@ -223,12 +217,11 @@ defmodule Stitch.TimedMessage.Worker do
     |> assign(:team_login_url, "#{user.team.slug}.#{System.get_env("APP_HOST")}")
   end
 
-  def with_invitation_attrs(email, %{"user" => user, "invitation" => invitation}) do
+  def with_invitation_attrs(email, params = %{"user" => user, "invitation" => invitation}) do
     email
-    |> assign(:user_email, user.email)
-    |> assign(:team_name, user.team.name)
+    |> with_user_and_team_attrs(params)
     |> assign(
-      :team_login_url,
+      :invitation_accept_url,
       "#{user.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{
         invitation.invite_token
       }"
