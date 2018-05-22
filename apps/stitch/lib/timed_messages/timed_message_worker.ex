@@ -4,8 +4,7 @@ defmodule Stitch.TimedMessage.Worker do
   """
   use Bamboo.Phoenix, view: StitchConnect.EmailView
   import Bamboo.Email
-
-  alias Stitch.{Repo, Accounts.User, MessageQueries, Invitation}
+  alias Stitch.TimedMessage.Helper
 
   @from_address {"Stitch", "hello@mail.teamstitch.com"}
 
@@ -44,67 +43,67 @@ defmodule Stitch.TimedMessage.Worker do
     # SHARED MESSAGES
     "complete_profile" => %{
       subject: "Complete your profile",
-      load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.has_not_set_profile/1,
-      template_vars: &__MODULE__.with_complete_profile_link/2
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.has_not_set_profile/1,
+      template_vars: &Helper.with_complete_profile_link/2
     },
     "manage_notifications" => %{
       subject: "Get notified of important messages",
-      load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.is_active_user/1,
-      template_vars: &__MODULE__.with_notifications_link/2
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.is_active_user/1,
+      template_vars: &Helper.with_notifications_link/2
     },
     "app_downloads" => %{
       subject: "Get the Stitch mobile and desktop apps",
-      load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.is_active_user/1,
-      template_vars: &__MODULE__.with_user_and_team_attrs/2
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.is_active_user/1,
+      template_vars: &Helper.with_user_and_team_attrs/2
     },
     # ADMIN SPECIFIC MESSAGES
     "admin_welcome" => %{
-      subject: &__MODULE__.welcome_subject/1,
-      load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.is_active_and_has_team/1,
-      template_vars: &__MODULE__.with_user_and_team_attrs/2
+      subject: &Helper.welcome_subject/1,
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.is_active_and_has_team/1,
+      template_vars: &Helper.with_user_and_team_attrs/2
     },
     "admin_invite_prompt" => %{
       subject: "Invite your team to Stitch",
-      load_data: &__MODULE__.get_user_with_team_invites/1,
-      send_if: &__MODULE__.has_not_invited_users/1,
-      template_vars: &__MODULE__.with_admin_invitation_attrs/2
+      load_data: &Helper.get_user_with_team_invites/1,
+      send_if: &Helper.has_not_invited_users/1,
+      template_vars: &Helper.with_admin_invitation_attrs/2
     },
     "admin_create_rooms" => %{
       subject: "Organize your conversations",
-      load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.is_active_user/1,
-      template_vars: &__MODULE__.with_user_and_team_attrs/2
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.is_active_user/1,
+      template_vars: &Helper.with_user_and_team_attrs/2
     },
     "admin_invite_reminder" => %{
       subject: "Reminder: Invite your team to Stitch",
-      load_data: &__MODULE__.get_user_with_team_invites/1,
-      send_if: &__MODULE__.has_not_invited_users/1,
-      template_vars: &__MODULE__.with_admin_invitation_attrs/2
+      load_data: &Helper.get_user_with_team_invites/1,
+      send_if: &Helper.has_not_invited_users/1,
+      template_vars: &Helper.with_admin_invitation_attrs/2
     },
     # STANDARD USER SPECIFIC MESSAGES
     "user_welcome" => %{
-      subject: &__MODULE__.welcome_subject/1,
-      load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.is_active_and_has_team/1,
-      template_vars: &__MODULE__.with_user_and_team_attrs/2
+      subject: &Helper.welcome_subject/1,
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.is_active_and_has_team/1,
+      template_vars: &Helper.with_user_and_team_attrs/2
     },
     # GUEST USER SPECIFIC MESSAGES
     "guest_welcome" => %{
       subject: "Welcome to Stitch: New Account Information",
-      load_data: &__MODULE__.get_user_with_team/1,
-      send_if: &__MODULE__.is_active_and_has_team/1,
-      template_vars: &__MODULE__.with_user_and_team_attrs/2
+      load_data: &Helper.get_user_with_team/1,
+      send_if: &Helper.is_active_and_has_team/1,
+      template_vars: &Helper.with_user_and_team_attrs/2
     },
     # INVITE MESSAGES
     "invite_reminder" => %{
       subject: "Reminder: Join your team on Stitch",
-      load_data: &__MODULE__.get_invitation_and_user/1,
-      send_if: &__MODULE__.is_invitation_pending/1,
-      template_vars: &__MODULE__.with_invitation_attrs/2
+      load_data: &Helper.get_invitation_and_user/1,
+      send_if: &Helper.is_invitation_pending/1,
+      template_vars: &Helper.with_invitation_attrs/2
     }
   }
 
@@ -113,16 +112,7 @@ defmodule Stitch.TimedMessage.Worker do
     if rules, do: {:ok, rules}, else: {:no_matching_rule}
   end
 
-  # === Handle optional Lambdas ===
-
-  defp set_subject(email, %{subject: subject_line}, _data) when is_binary(subject_line) do
-    email |> subject(subject_line) |> assign(:subject, subject_line)
-  end
-
-  defp set_subject(email, %{subject: subject_fn}, data) when is_function(subject_fn) do
-    subject_line = subject_fn.(data)
-    email |> subject(subject_line) |> assign(:subject, subject_line)
-  end
+  # ===== Handle rules =====
 
   defp load_additional_data(%{load_data: load_data}, initial_data) do
     load_data.(initial_data)
@@ -130,11 +120,15 @@ defmodule Stitch.TimedMessage.Worker do
 
   defp load_additional_data(_rules, data), do: {:ok, data}
 
-  defp assign_vars(email, %{template_vars: template_vars}, data) do
-    template_vars.(email, data)
+  defp set_subject(email, %{subject: subject_fn}, data) when is_function(subject_fn) do
+    set_subject(email, %{subject: subject_fn.(data)}, data)
   end
 
-  defp assign_vars(email, _rules, _data), do: email
+  defp set_subject(email, %{subject: subject_line}, _data) when is_binary(subject_line) do
+    email
+    |> subject(subject_line)
+    |> assign(:subject, subject_line)
+  end
 
   defp check_sendable(%{send_if: send_if}, data) do
     send_if.(data)
@@ -142,160 +136,9 @@ defmodule Stitch.TimedMessage.Worker do
 
   defp check_sendable(_rules, _data), do: :ok
 
-  # === Loading Data ===
-
-  def get_user(data) do
-    user = Repo.get(User, data["user_id"])
-    {:ok, Map.put(data, "user", user)}
+  defp assign_vars(email, %{template_vars: template_vars}, data) do
+    template_vars.(email, data)
   end
 
-  def get_invitation_and_user(data) do
-    invitation =
-      Invitation
-      |> Repo.get(data["invitation_id"])
-      |> Repo.preload(user: :team)
-
-    new_data =
-      data
-      |> Map.put("invitation", invitation)
-      |> Map.put("user", invitation.user)
-
-    {:ok, new_data}
-  end
-
-  def get_user_with_team(data) do
-    user =
-      User
-      |> Repo.get(data["user_id"])
-      |> Repo.preload(:team)
-
-    {:ok, Map.put(data, "user", user)}
-  end
-
-  def get_user_with_team_invites(data) do
-    user =
-      User
-      |> Repo.get(data["user_id"])
-      |> Repo.preload(team: :invitations)
-
-    {:ok, Map.put(data, "user", user)}
-  end
-
-  def get_user_with_mobile_message_check(data) do
-    user = Repo.get(User, data["user_id"])
-    has_sent_mobile_message = MessageQueries.has_sent_mobile_message(data["user_id"])
-
-    loaded_data =
-      data
-      |> Map.put("user", user)
-      |> Map.put("has_sent_mobile_message", has_sent_mobile_message)
-
-    {:ok, loaded_data}
-  end
-
-  # === Subject Setting ===
-
-  def welcome_subject(%{"user" => user}) do
-    "#{user.team.name} on Stitch: New Account Information"
-  end
-
-  # === Checking Sendable ===
-
-  def is_active_user(%{"user" => user}) do
-    sendable = user && user.onboarded && !user.disabled
-    if sendable, do: :ok, else: :not_sendable
-  end
-
-  defp has_team(%{"user" => user}) do
-    sendable = user && user.team
-    if sendable, do: :ok, else: :not_sendable
-  end
-
-  def is_active_and_has_team(data) do
-    with :ok <- is_active_user(data),
-         :ok <- has_team(data) do
-      :ok
-    else
-      _ -> :not_sendable
-    end
-  end
-
-  def has_not_invited_users(%{"user" => user}) do
-    sendable = length(user.team.invitations) < 1
-    if sendable, do: :ok, else: :not_sendable
-  end
-
-  def has_not_set_profile(%{"user" => user}) do
-    sendable = User.has_default_image(user)
-    if sendable, do: :ok, else: :not_sendable
-  end
-
-  def is_active_and_not_sent_mobile_message(data) do
-    with :ok <- is_active_user(data),
-         :ok <- has_not_sent_mobile_message(data) do
-      :ok
-    else
-      _ -> :not_sendable
-    end
-  end
-
-  def is_invitation_pending(%{"invitation" => invitation}) do
-    sendable = invitation && !invitation.accepted
-    if sendable, do: :ok, else: :not_sendable
-  end
-
-  defp has_not_sent_mobile_message(%{"has_sent_mobile_message" => false}), do: :ok
-  defp has_not_sent_mobile_message(_data), do: :not_sendable
-
-  # === Assigning Vars ===
-
-  def with_user_and_team_attrs(email, %{"user" => user}) do
-    email
-    |> assign(:user_email, user.email)
-    |> assign(:team_name, user.team.name)
-    |> assign(:team_login_url, "#{user.team.slug}.#{System.get_env("APP_HOST")}")
-  end
-
-  def with_invitation_attrs(email, params = %{"user" => user, "invitation" => invitation}) do
-    email
-    |> with_user_and_team_attrs(params)
-    |> assign(
-      :invitation_accept_url,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{
-        invitation.invite_token
-      }"
-    )
-  end
-
-  def with_download_app_link(email, _params) do
-    email
-    |> assign(:download_app_link, "https://teamstitch.com/downloads")
-  end
-
-  def with_notifications_link(email, params = %{"user" => user}) do
-    email
-    |> with_user_and_team_attrs(params)
-    |> assign(
-      :notifications_link,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}/admin/you/notifications"
-    )
-  end
-
-  def with_complete_profile_link(email, params = %{"user" => user}) do
-    email
-    |> with_user_and_team_attrs(params)
-    |> assign(
-      :complete_profile_link,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}/admin/you/profile"
-    )
-  end
-
-  def with_admin_invitation_attrs(email, params = %{"user" => user}) do
-    email
-    |> with_user_and_team_attrs(params)
-    |> assign(
-      :invite_others_link,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}/admin/members"
-    )
-  end
+  defp assign_vars(email, _rules, _data), do: email
 end
