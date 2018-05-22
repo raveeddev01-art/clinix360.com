@@ -88,13 +88,14 @@ class RoomsModal extends Component {
   applyFilterToList(groups) {
     const { groupsStore } = this.props;
     const { filter } = this.state;
+    const filterParts = filter.split(" ").map(p => p.toLowerCase());
 
-    return groups.filter(room =>
-      groupsStore
-        .getGroupName(room)
-        .toLowerCase()
-        .startsWith(filter.toLowerCase())
-    );
+    // split filter by spaces, and if all the parts match selelect that name
+    // doing it this way for groups that have multiple users
+    return groups.filter(room => {
+      const lowerName = groupsStore.getGroupName(room).toLowerCase();
+      return filterParts.every(p => lowerName.indexOf(p) > -1);
+    });
   }
 
   // ===========
@@ -149,8 +150,15 @@ class RoomsModal extends Component {
   };
 
   goToRoom = room => {
-    this.props.closeModal();
-    this.props.history.push(getGroupUrl(room));
+    const { closeModal, history, groupsStore } = this.props;
+
+    closeModal();
+
+    if (room.type === "dm" || room.type === "multi_dm") {
+      groupsStore.goToCreatedDM(room);
+    } else {
+      history.push(getGroupUrl(room));
+    }
   };
 
   // ==========
@@ -202,7 +210,6 @@ class RoomsModal extends Component {
   }
 
   renderRoomsListModal() {
-    const { closeModal } = this.props;
     const noRoomsInList = !this.roomList[0];
     const { joined, notJoined } = this.roomsByJoined;
     let i = -1;
@@ -220,10 +227,10 @@ class RoomsModal extends Component {
                   i += 1;
                   return (
                     <RoomItem
+                      goToRoom={this.goToRoom}
                       hasManualFocus={this.focusedItemIndex === i}
                       key={i}
                       room={room}
-                      closeModal={closeModal}
                     />
                   );
                 })}
@@ -238,10 +245,10 @@ class RoomsModal extends Component {
                   i += 1;
                   return (
                     <RoomItem
+                      goToRoom={this.goToRoom}
                       hasManualFocus={this.focusedItemIndex === i}
                       key={i}
                       room={room}
-                      closeModal={closeModal}
                     />
                   );
                 })}
@@ -262,7 +269,6 @@ class RoomsModal extends Component {
   }
 
   renderGoToModal() {
-    const { closeModal } = this.props;
     const rooms = this.roomList.slice(0, maxQuickSearchListLength);
 
     return (
@@ -278,7 +284,7 @@ class RoomsModal extends Component {
                       hasManualFocus={this.focusedItemIndex === i}
                       key={i}
                       room={room}
-                      closeModal={closeModal}
+                      goToRoom={this.goToRoom}
                       hideSlug
                     />
                   );

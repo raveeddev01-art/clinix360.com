@@ -8,10 +8,8 @@ import { getGroupUrl } from "lib/utils";
 @inject("groupsStore")
 class RoomItem extends Component {
   handleClick = () => {
-    const { room, closeModal, history } = this.props;
-
-    closeModal();
-    history.push(getGroupUrl(room));
+    const { room, goToRoom } = this.props;
+    goToRoom(room);
   };
 
   handleKeydown = e => {
@@ -57,7 +55,7 @@ RoomItem.defaultProps = {
 };
 
 RoomItem.propTypes = {
-  closeModal: PropTypes.func.isRequired,
+  goToRoom: PropTypes.func.isRequired,
   hasManualFocus: PropTypes.bool,
   hideSlug: PropTypes.bool,
   room: PropTypes.object.isRequired
