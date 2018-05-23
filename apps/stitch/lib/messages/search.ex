@@ -53,9 +53,33 @@ defmodule Stitch.Messages.Search do
     user
     |> MessageAction.apply_user_message_actions(messages)
     |> Message.Reaction.apply_reactions()
+    |> apply_higlight_for_stop_words(params[:exact_search_terms])
   end
 
-  def apply_highlight(query, search_terms, exact_search_terms) do
+  def apply_higlight_for_stop_words(messages, exact_search_terms) do
+    terms = get_search_terms([], exact_search_terms)
+    non_stop_words_regex = Regex.recompile!(~r/%\&\$\&%([\w]*)%\&\$\&%/i)
+
+    messages
+    |> Enum.map(fn m ->
+      %{
+        m
+        | highlighted_text_content:
+            highlight_stop_words(m.highlighted_text_content, terms, non_stop_words_regex)
+      }
+    end)
+  end
+
+  def highlight_stop_words(highlighted_text_content, terms, non_stop_words_regex) do
+    non_stop_words =
+      Regex.scan(non_stop_words_regex, highlighted_text_content)
+      |> Enum.map(fn [_, captured] -> String.downcase(captured) end)
+
+    regex = ~r/\b((?i)#{(terms -- non_stop_words) |> Enum.join("|")})\b/iu
+    Regex.replace(regex, highlighted_text_content, fn x -> "%&$&%#{x}%&$&%" end)
+  end
+
+  def get_search_terms(search_terms, exact_search_terms) do
     exact_search_terms_without_quotes =
       Enum.map(exact_search_terms, &strip_exact_search_delimiters/1)
 
@@ -69,7 +93,11 @@ defmodule Stitch.Messages.Search do
           [x | acc]
       end)
 
-    search_term = Enum.join(all_search_terms, " | ")
+    all_search_terms
+  end
+
+  def apply_highlight(query, search_terms, exact_search_terms) do
+    search_term = get_search_terms(search_terms, exact_search_terms) |> Enum.join(" | ")
 
     query =
       from(
