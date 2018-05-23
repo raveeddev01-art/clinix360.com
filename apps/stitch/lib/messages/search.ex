@@ -36,7 +36,7 @@ defmodule Stitch.Messages.Search do
     params = parameterize(term_string)
 
     messages =
-      from_users_groups(user.id, options)
+      from_users_groups(user.id, params, options)
       |> apply_date_before_terms(params[:date_before_terms], user)
       |> apply_date_after_terms(params[:date_after_terms], user)
       |> apply_date_on_terms(params[:date_on_terms], user)
@@ -271,7 +271,7 @@ defmodule Stitch.Messages.Search do
     end
   end
 
-  def from_users_groups(user_id, opts) do
+  def from_users_groups(user_id, params, opts) do
     user_groups_ids =
       GroupUser
       |> where([gu], gu.user_id == ^user_id)
@@ -280,12 +280,19 @@ defmodule Stitch.Messages.Search do
 
     limit = Enum.min([Keyword.get(opts, :limit, 30), 1000])
 
-    from(
-      m in Message,
-      where: m.group_id in ^user_groups_ids,
-      where: m.type != ^"system",
-      limit: ^limit
-    )
+    query =
+      from(
+        m in Message,
+        where: m.group_id in ^user_groups_ids,
+        where: m.type != ^"system",
+        limit: ^limit
+      )
+
+    if params[:search_terms] == [] && params[:exact_search_terms] == [] do
+      from(m in query, order_by: [desc: m.updated_at])
+    else
+      query
+    end
   end
 
   def parameterize(term_string) do
