@@ -41,7 +41,8 @@ defmodule Stitch.Messages.Search do
       |> apply_date_after_terms(params[:date_after_terms], user)
       |> apply_date_on_terms(params[:date_on_terms], user)
       |> apply_search_terms(params[:search_terms], options)
-      |> apply_negation(params[:negation_terms])
+      |> apply_minus_terms(params[:minus_terms])
+      |> apply_wildcard_terms(params[:wildcard_terms])
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
@@ -231,13 +232,26 @@ defmodule Stitch.Messages.Search do
     )
   end
 
-  def apply_negation(query, []), do: query
+  def apply_minus_terms(query, []), do: query
 
-  def apply_negation(query, negation_terms) do
-    Enum.reduce(negation_terms, query, fn term, query ->
+  def apply_minus_terms(query, minus_term) do
+    Enum.reduce(minus_term, query, fn term, query ->
       from(
         m in query,
         where: not ilike(m.text_content, ^"%#{term}%")
+      )
+    end)
+  end
+
+  def apply_wildcard_terms(query, []), do: query
+
+  def apply_wildcard_terms(query, wildcard_terms) do
+    Enum.reduce(wildcard_terms, query, fn term, query ->
+      term = string_init(term)
+
+      from(
+        m in query,
+        where: ilike(m.text_content, ^"%#{term}%")
       )
     end)
   end
@@ -322,7 +336,7 @@ defmodule Stitch.Messages.Search do
     {terms, Regex.replace(regex, string, "")}
   end
 
-  def extract_negation(string) do
+  def extract_minus_terms(string) do
     # hack to avoid capturing beginning of string or space in regex
     string = " " <> string
     regex = ~r/\s-(\w+)/
@@ -332,15 +346,14 @@ defmodule Stitch.Messages.Search do
 
   def parameterize(term_string) do
     {exact_terms, term_string} = extract_exact_search_terms(term_string)
-    {negation_terms, term_string} = extract_negation(term_string)
+    {minus_terms, term_string} = extract_minus_terms(term_string)
     parts = term_string |> String.split()
 
     params = %{
       search_terms: [],
-      negation_terms: negation_terms,
       exact_search_terms: exact_terms,
       wildcard_terms: [],
-      minus_terms: [],
+      minus_terms: minus_terms,
       room_terms: [],
       messages_to_terms: [],
       messages_from_terms: [],
@@ -354,8 +367,8 @@ defmodule Stitch.Messages.Search do
         # String.starts_with?(p, "\"") && String.ends_with?(p, "\"") ->
         #   Map.update!(params, :exact_search_terms, fn ps -> [p | ps] end)
 
-        # String.ends_with?(p, "*") ->
-        #   Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
+        String.ends_with?(p, "*") ->
+          Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
 
         # String.starts_with?(p, "-") ->
         #   Map.update!(params, :minus_terms, fn ps -> [p | ps] end)
@@ -401,5 +414,13 @@ defmodule Stitch.Messages.Search do
 
   defp strip_exact_search_delimiters(term) do
     term |> String.replace_prefix("\"", "") |> String.replace_suffix("\"", "")
+  end
+
+  @doc """
+  iex> string_init("abcd")
+  > "abc"
+  """
+  def string_init(string) do
+    String.slice(string, 0..(String.length(string) - 2))
   end
 end
