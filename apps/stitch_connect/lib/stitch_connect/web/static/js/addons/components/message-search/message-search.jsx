@@ -60,10 +60,10 @@ class MessageSearch extends Component {
         <div className="btn-group">
           <span className={cx("btn btn-default btn-fancy btn-sm", {
             active: searchStore.orderBy == "recency"
-          })} onClick={this.setOrder("recency")}>Recency</span>
+          })} onClick={this.setOrder("recency")}>Recent</span>
           <span className={cx("btn btn-default btn-fancy btn-sm", {
             active: searchStore.orderBy == "relevance"
-          })} onClick={this.setOrder("relevance")}>Relevance</span>
+          })} onClick={this.setOrder("relevance")}>Relevant</span>
         </div>
         <br />
         {this.renderSearchResults()}
