@@ -41,6 +41,7 @@ defmodule Stitch.Messages.Search do
       |> apply_date_after_terms(params[:date_after_terms], user)
       |> apply_date_on_terms(params[:date_on_terms], user)
       |> apply_search_terms(params[:search_terms], options)
+      |> apply_negation(params[:negation_terms])
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
@@ -230,6 +231,17 @@ defmodule Stitch.Messages.Search do
     )
   end
 
+  def apply_negation(query, []), do: query
+
+  def apply_negation(query, negation_terms) do
+    Enum.reduce(negation_terms, query, fn term, query ->
+      from(
+        m in query,
+        where: not ilike(m.text_content, ^"%#{term}%")
+      )
+    end)
+  end
+
   def apply_exact_search_terms(query, []), do: query
 
   def apply_exact_search_terms(query, exact_search_terms) do
@@ -305,17 +317,25 @@ defmodule Stitch.Messages.Search do
   end
 
   def extract_exact_search_terms(string) do
-    regex = ~r/\"([^""]+)\"/
+    regex = ~r/\"([^"]+)\"/
+    terms = Regex.scan(regex, string) |> Enum.map(fn [_match, captured] -> captured end)
+    {terms, Regex.replace(regex, string, "")}
+  end
+
+  def extract_negation(string) do
+    regex = ~r/-(\w+)/
     terms = Regex.scan(regex, string) |> Enum.map(fn [_match, captured] -> captured end)
     {terms, Regex.replace(regex, string, "")}
   end
 
   def parameterize(term_string) do
     {exact_terms, term_string} = extract_exact_search_terms(term_string)
+    {negation_terms, term_string} = extract_negation(term_string)
     parts = term_string |> String.split()
 
     params = %{
       search_terms: [],
+      negation_terms: negation_terms,
       exact_search_terms: exact_terms,
       wildcard_terms: [],
       minus_terms: [],
