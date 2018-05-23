@@ -323,7 +323,9 @@ defmodule Stitch.Messages.Search do
   end
 
   def extract_negation(string) do
-    regex = ~r/-(\w+)/
+    # hack to avoid capturing beginning of string or space in regex
+    string = " " <> string
+    regex = ~r/\s-(\w+)/
     terms = Regex.scan(regex, string) |> Enum.map(fn [_match, captured] -> captured end)
     {terms, Regex.replace(regex, string, "")}
   end
