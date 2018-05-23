@@ -10,7 +10,7 @@ import EditProfileModal from "common/modals/edit-profile-modal";
 import { isFullMember } from "lib/utils";
 import { RoleText } from "common/components";
 
-@inject("usersStore")
+@inject("usersStore", "billingStore")
 @observer
 class MemberItem extends Component {
   constructor(props) {
@@ -19,6 +19,10 @@ class MemberItem extends Component {
       open: false,
       showEditProfileModal: false
     };
+  }
+
+  get isFreeTier() {
+    return this.props.billingStore.isFreeTier();
   }
 
   _toggleControls = () => {
@@ -133,15 +137,16 @@ class MemberItem extends Component {
           <Collapse in={this.state.open}>
             <div>
               <ButtonToolbar className="actions-toolbar">
-                {user.roles.indexOf("admin") === -1 && (
-                  <Button
-                    bsSize="small"
-                    className="m-r-10"
-                    onClick={this._startEditing}
-                  >
-                    Manage Member Type
-                  </Button>
-                )}
+                {user.roles.indexOf("admin") === -1 &&
+                  !this.isFreeTier && (
+                    <Button
+                      bsSize="small"
+                      className="m-r-10"
+                      onClick={this._startEditing}
+                    >
+                      Manage Member Type
+                    </Button>
+                  )}
                 {!user.disabled &&
                   isFullMember(user) &&
                   (user.roles.indexOf("admin") > -1 ? (
