@@ -56,8 +56,10 @@ class Reactions extends Component {
                 className={cx("btn-message-reaction", { active })}
                 onClick={this.toggleReaction(emoji, !active)}
               >
-                <Emoji emoji={emoji} size={14} />
-                {reactions[emoji].length}
+                <div>
+                  <Emoji emoji={emoji} size={14} />
+                  {reactions[emoji].length}
+                </div>
               </Button>
             </OverlayTrigger>
           );
