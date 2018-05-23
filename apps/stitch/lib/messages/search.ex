@@ -48,7 +48,6 @@ defmodule Stitch.Messages.Search do
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
       |> apply_highlight(params[:search_terms], params[:exact_search_terms])
-      |> apply_skip(options)
       |> Repo.all()
 
     user
@@ -296,16 +295,6 @@ defmodule Stitch.Messages.Search do
     end
   end
 
-  def apply_skip(query, opts) do
-    case Keyword.fetch(opts, :skip) do
-      {:ok, skip} ->
-        query |> offset([m], ^skip)
-
-      :error ->
-        query
-    end
-  end
-
   def from_users_groups(user_id, params, opts) do
     user_groups_ids =
       GroupUser
@@ -314,13 +303,15 @@ defmodule Stitch.Messages.Search do
       |> Repo.all()
 
     limit = Enum.min([Keyword.get(opts, :limit, 30), 1000])
+    skip = Keyword.get(opts, :skip, 0)
 
     query =
       from(
         m in Message,
         where: m.group_id in ^user_groups_ids,
         where: m.type != ^"system",
-        limit: ^limit
+        limit: ^limit,
+        offset: ^skip
       )
 
     if params[:search_terms] == [] && params[:exact_search_terms] == [] do
