@@ -348,7 +348,11 @@ defmodule Stitch.Accounts.User do
     end
   end
 
-  defp has_default_image(user) do
+  @spec has_default_image(User.t()) :: boolean
+  @doc """
+  Returns true if the user has the default image
+  """
+  def has_default_image(user) do
     if user.profile_image_url do
       # Default images look like this: https://s3.amazonaws.com/stitch-content/ST.png
       # We check if the image name length ST.png is equal to 6.
