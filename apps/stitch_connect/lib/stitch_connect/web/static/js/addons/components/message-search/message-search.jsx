@@ -18,7 +18,10 @@ class MessageSearch extends Component {
 
   setOrder = value => () => {
     const { searchStore } = this.props;
-    searchStore.setOrder(value);
+
+    if (value !== searchStore.orderBy) {
+      searchStore.setOrder(value);
+    }
   };
 
   loadMore = () => {
@@ -32,7 +35,7 @@ class MessageSearch extends Component {
 
     if (searchStore.loading) {
       return (
-        <div className="text-center">
+        <div className="loading-wrapper">
           <LoadingIcon size={2} />
         </div>
       );
@@ -81,7 +84,7 @@ class MessageSearch extends Component {
 
     return (
       <div className="search-results-addon">
-        {this.renderOrderByToggle()}
+        {!searchStore.loading && this.renderOrderByToggle()}
         {this.renderSearchResults()}
 
         <div className="footer">

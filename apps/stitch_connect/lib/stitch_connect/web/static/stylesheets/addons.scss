@@ -269,6 +269,15 @@
     color: $brand-primary;
   }
 
+  .loading-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    // unfortunate hardcode to center icon
+    padding-right: 13px;
+    margin-bottom: 8px;
+  }
+
   .search-results-addon-order-by {
     width: 100%;
     display: flex;

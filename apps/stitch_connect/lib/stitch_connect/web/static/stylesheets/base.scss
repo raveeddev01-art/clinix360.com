@@ -118,6 +118,10 @@ code {
     box-shadow: none;
     border-color: #d8d8d8;
   }
+
+  .btn:hover {
+    color: $brand-primary;
+  }
 }
 
 .form-control,
