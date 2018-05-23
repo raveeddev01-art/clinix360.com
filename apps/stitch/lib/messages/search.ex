@@ -58,7 +58,16 @@ defmodule Stitch.Messages.Search do
     exact_search_terms_without_quotes =
       Enum.map(exact_search_terms, &strip_exact_search_delimiters/1)
 
-    all_search_terms = search_terms ++ exact_search_terms_without_quotes
+    all_search_terms =
+      (search_terms ++ (exact_search_terms_without_quotes |> Enum.map(&String.split(&1))))
+      |> Enum.reduce([], fn
+        x, acc when is_list(x) ->
+          x ++ acc
+
+        x, acc ->
+          [x | acc]
+      end)
+
     search_term = Enum.join(all_search_terms, " | ")
 
     query =
@@ -295,12 +304,19 @@ defmodule Stitch.Messages.Search do
     end
   end
 
+  def extract_exact_search_terms(string) do
+    regex = ~r/\"([^""]+)\"/
+    terms = Regex.scan(regex, string) |> Enum.map(fn [_match, captured] -> captured end)
+    {terms, Regex.replace(regex, string, "")}
+  end
+
   def parameterize(term_string) do
+    {exact_terms, term_string} = extract_exact_search_terms(term_string)
     parts = term_string |> String.split()
 
     params = %{
       search_terms: [],
-      exact_search_terms: [],
+      exact_search_terms: exact_terms,
       wildcard_terms: [],
       minus_terms: [],
       room_terms: [],
@@ -313,8 +329,8 @@ defmodule Stitch.Messages.Search do
 
     Enum.reduce(parts, params, fn p, params ->
       cond do
-        String.starts_with?(p, "\"") && String.ends_with?(p, "\"") ->
-          Map.update!(params, :exact_search_terms, fn ps -> [p | ps] end)
+        # String.starts_with?(p, "\"") && String.ends_with?(p, "\"") ->
+        #   Map.update!(params, :exact_search_terms, fn ps -> [p | ps] end)
 
         # String.ends_with?(p, "*") ->
         #   Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
