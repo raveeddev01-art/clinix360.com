@@ -108,7 +108,6 @@ code {
     border-radius: 0;
     box-shadow: none;
     border-color: #d8d8d8;
-    padding: 4px 38px;
     color: #444;
   }
 
@@ -119,8 +118,15 @@ code {
     border-color: #d8d8d8;
   }
 
-  .btn:hover {
+  .btn:hover, .btn:active {
     color: $brand-primary;
+    background-color: transparent;
+    border-color: #d8d8d8;
+  }
+
+  .btn.active:hover, .btn.active:active {
+    color: $brand-primary;
+    background-color: #fff;
   }
 }
 
