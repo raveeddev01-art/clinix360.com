@@ -103,9 +103,9 @@ export default class Homepage extends Component {
                       for healthcare teams.
                     </p>
 
-                    <Link to="/connect">
+                    <div className="learn-more">
                       Learn more <i className="fa fa-arrow-right" />
-                    </Link>
+                    </div>
                   </div>
                 </Link>
               </div>
@@ -123,9 +123,9 @@ export default class Homepage extends Component {
                       calls directly with patients.
                     </p>
 
-                    <Link to="/engage">
+                    <div className="learn-more">
                       Learn more <i className="fa fa-arrow-right" />
-                    </Link>
+                    </div>
                   </div>
                 </Link>
               </div>
@@ -147,9 +147,9 @@ export default class Homepage extends Component {
                         organized and on track.
                       </p>
 
-                      <Link to="/manage">
+                      <div className="learn-more">
                         Learn more <i className="fa fa-arrow-right" />
-                      </Link>
+                      </div>
                     </div>
                   </Link>
                 </LinkContainer>

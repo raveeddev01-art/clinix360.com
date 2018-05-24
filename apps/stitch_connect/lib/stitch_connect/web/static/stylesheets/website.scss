@@ -301,11 +301,11 @@
       }
 
       .flex-item {
-        max-width: 350px;
+        max-width: 310px;
         padding: 0;
         margin-bottom: 25px;
         @media(min-width: 769px) {
-          margin: 0 10px;
+          margin: 0 15px;
 
           &:first-of-type {
             margin-left: 15px;
@@ -373,7 +373,7 @@
         font-size: 18px;
       }
 
-      a {
+      .learn-more {
         color: $brand-primary;
         font-weight: 700;
         position: absolute;
@@ -396,7 +396,7 @@
           opacity: 1;
         }
 
-        a > i.fa {
+        .learn-more > i.fa {
           margin-left: 8px;
         }
       }
