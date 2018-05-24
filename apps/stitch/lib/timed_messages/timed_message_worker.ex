@@ -24,7 +24,7 @@ defmodule Stitch.TimedMessage.Worker do
       |> to([System.get_env("MAILGUN_EMAIL_OVERRIDE") || data["user"].email])
       |> set_subject(rules, data)
       |> assign_vars(rules, data)
-      |> put_html_layout({StitchConnect.Web.EmailView, "layout/email.html"})
+      |> put_html_layout({StitchConnect.Web.EmailView, "layout/mail_chimp_email.html"})
       |> render("email/#{type}.html")
       |> Stitch.NewMailer.deliver_later()
     end
