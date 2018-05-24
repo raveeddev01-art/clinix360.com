@@ -7,11 +7,11 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 class Header extends Component {
   goToSignIn() {
-    window.location.href = "https://teamstitch.com/signin";
+    window.location.href = `https://${applicationHost}/signin`;
   }
 
   goToStartTrial() {
-    window.location.href = "https://teamstitch.com/signup/email";
+    window.location.href = `https://${applicationHost}/signup/email`;
   }
 
   render() {

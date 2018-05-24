@@ -55,7 +55,7 @@ class NameCard extends Component {
           title="Name"
           description={
             <span>
-              Enter your <strong>full name</strong>.
+              Enter your <strong>full name</strong>
             </span>
           }
           disableNext={!firstName || !lastName}

@@ -1,12 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import Nav from "react-bootstrap/lib/Nav";
+import Navbar from "react-bootstrap/lib/Navbar";
+import NavItem from "react-bootstrap/lib/NavItem";
 import cx from "classnames";
+import { Link } from "react-router-dom";
 
 class Card extends Component {
   _renderDescription = () => {
     const { description } = this.props;
     return description && <h4>{description}</h4>;
   };
+
+  goToFindTeam() {
+    window.location.href = `https://${applicationHost}/find-your-team`;
+  }
 
   render() {
     const { children, title, className, footer } = this.props;
@@ -15,8 +23,25 @@ class Card extends Component {
     return (
       <div className={cardStyles}>
         <div className="authentication-header">
-          <div>Stitch!</div>
-          <div>Some Button</div>
+          <Navbar id="header" inverse fixedTop>
+            <Navbar.Header>
+              <Navbar.Brand>
+                <Link to="/" className="brand">
+                  <img src="/images/stitch-brand.png" alt="Stitch" />
+                </Link>
+              </Navbar.Brand>
+            </Navbar.Header>
+
+            <Nav pullRight className="hidden-xs">
+              <NavItem onClick={this.goToFindTeam}>
+                {" "}
+                Looking to join an existing team?{" "}
+              </NavItem>
+              <NavItem onClick={this.goToFindTeam} className="btn-trial">
+                Find Your Team
+              </NavItem>
+            </Nav>
+          </Navbar>
         </div>
         <div className="authentication-body">
           <h1>{title}</h1>
@@ -34,6 +59,10 @@ Card.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
+  footer: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
   className: PropTypes.string
@@ -43,7 +72,8 @@ Card.defaultProps = {
   children: null,
   description: "",
   title: "",
-  className: ""
+  className: "",
+  footer: ""
 };
 
 export default Card;

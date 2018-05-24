@@ -59,7 +59,7 @@ class SendEmail extends Component {
                 title="Password Reset"
                 description={
                   <span>
-                    Enter your <strong>email address</strong>.
+                    Enter your <strong>email address</strong>
                   </span>
                 }
               >

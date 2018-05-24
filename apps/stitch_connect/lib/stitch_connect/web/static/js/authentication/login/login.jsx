@@ -105,7 +105,7 @@ class Login extends Component {
 
             <h5>
               Enter your <strong>email address</strong> and{" "}
-              <strong>password</strong>.
+              <strong>password</strong>
             </h5>
 
             <form action="/login" method="post" onSubmit={this.handleSubmit}>

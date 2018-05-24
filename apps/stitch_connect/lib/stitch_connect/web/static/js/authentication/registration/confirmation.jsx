@@ -153,7 +153,7 @@ class Confirmation extends Component {
           title="Confirmation Code"
           description={
             <span>
-              Enter your <strong>confirmation code</strong>.
+              Enter your <strong>confirmation code</strong>
             </span>
           }
           loading={this.state.loading}

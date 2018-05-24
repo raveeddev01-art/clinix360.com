@@ -12,7 +12,7 @@ class TeamNameCard extends Component {
         placeholder="Ex. Care Clinic"
         maxLength={80}
       >
-        Enter your <strong>team name</strong>.
+        Enter your <strong>team name</strong>
       </OnboardInputCard>
     );
   }

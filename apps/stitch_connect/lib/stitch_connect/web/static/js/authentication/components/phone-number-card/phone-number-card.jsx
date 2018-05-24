@@ -42,7 +42,7 @@ class PhoneNumberCard extends Component {
           title="Phone Number"
           description={
             <span>
-              Enter your <strong>phone number</strong>.
+              Enter your <strong>phone number</strong>
             </span>
           }
           loading={loading}

@@ -63,7 +63,7 @@ class EmailCard extends Component {
           title="Create a new team"
           description={
             <span>
-              Enter your <strong>email address</strong>.
+              Enter your <strong>email address</strong>
             </span>
           }
           onNext={this.onNext}
