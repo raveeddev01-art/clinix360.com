@@ -86,8 +86,8 @@ export default class Homepage extends Component {
 
             <hr className="section-line" />
 
-            <Row>
-              <Col sm={4}>
+            <div className="flex-box">
+              <div className="flex-item">
                 <Link
                   className="panel panel-default connect-card"
                   to="/connect"
@@ -108,9 +108,9 @@ export default class Homepage extends Component {
                     </Link>
                   </div>
                 </Link>
-              </Col>
+              </div>
 
-              <Col sm={4}>
+              <div className="flex-item">
                 <Link className="panel panel-default engage-card" to="/engage">
                   <div className="panel-body">
                     <div className="hover-line" />
@@ -128,9 +128,9 @@ export default class Homepage extends Component {
                     </Link>
                   </div>
                 </Link>
-              </Col>
+              </div>
 
-              <Col sm={4}>
+              <div className="flex-item">
                 <LinkContainer to="/manage">
                   <Link
                     className="panel panel-default manage-card"
@@ -153,8 +153,8 @@ export default class Homepage extends Component {
                     </div>
                   </Link>
                 </LinkContainer>
-              </Col>
-            </Row>
+              </div>
+            </div>
           </div>
         </div>
 

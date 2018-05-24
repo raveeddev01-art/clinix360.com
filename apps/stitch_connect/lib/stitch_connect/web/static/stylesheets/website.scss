@@ -17,8 +17,8 @@
       padding: 0 5vw;
     }
 
-    @media screen and (min-width: 84.875rem) {
-      max-width: 1230px;
+    @media (min-width: 1280px) {
+      max-width: 1137px;
       padding: 0;
     }
 
@@ -159,7 +159,7 @@
       width: 100%;
       max-width: 470px;
       margin: 0 auto;
-      @media (min-width: 992px) {
+      @media (min-width: 993px) {
         max-width: 85%;
         margin-left: auto;
         margin-right: 0;   
@@ -319,7 +319,6 @@
   }
 
   .stitch-products {
-    // background: #f0f1f3;
     padding: 80px 0;
 
     h2, h3 {
@@ -332,7 +331,33 @@
       margin-top: 0;
     }
 
+    .flex-box {
+      flex-direction: column;
+      justify-content: center;
+      @media (min-width: 769px) {
+        flex-direction: row;
+        align-items: stretch;
+      }
+
+      .flex-item {
+        max-width: 350px;
+        padding: 0;
+        margin-bottom: 25px;
+        @media(min-width: 769px) {
+          margin: 0 10px;
+
+          &:first-of-type {
+            margin-left: 15px;
+          }
+          &:last-of-type {
+            margin-right: 15px;
+          }
+        }
+      }
+    }
+
     .panel {
+      height: 100%;
       display: block;
       color: $brand-primary;
       text-decoration: none;
@@ -340,18 +365,7 @@
       box-shadow: 2px 4px 15px rgba(0, 0, 0, 0.1);
       transition: box-shadow .3s;
       position: relative;
-
-      @media (min-width: 768px) and (max-width: 878px) {
-        min-height: 327px;
-      }
-
-      @media (min-width: 879px) and (max-width: 1038px) {
-        min-height: 300px;
-      }
-
-      @media (min-width: 1039px) {
-        min-height: auto;
-      }
+      margin: 0;
 
       .panel-body {
         margin-bottom: 20px;
@@ -549,12 +563,12 @@
       &.alt {
         background: #f0f1f3;
 
-        .flex-box {
-          flex-direction: row-reverse;
-          -ms-flex-direction: row-reverse;
-        }
+        @media (min-width: 993px) {
+          .flex-box {
+            flex-direction: row-reverse;
+            -ms-flex-direction: row-reverse;
+          }
 
-        @media (min-width: 992px) {
           .info {
             margin: 0 0 0 auto !important;
           }
