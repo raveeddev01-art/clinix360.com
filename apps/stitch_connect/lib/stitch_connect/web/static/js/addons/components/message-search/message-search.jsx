@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import cx from "classnames";
 
 import { AddonMessage } from "common/components";
 import LoadingIcon from "common/components/loading-icon";
@@ -15,6 +16,14 @@ class MessageSearch extends Component {
     }
   }
 
+  setOrder = value => () => {
+    const { searchStore } = this.props;
+
+    if (value !== searchStore.orderBy) {
+      searchStore.setOrder(value);
+    }
+  };
+
   loadMore = () => {
     const { searchStore } = this.props;
 
@@ -26,7 +35,7 @@ class MessageSearch extends Component {
 
     if (searchStore.loading) {
       return (
-        <div className="text-center">
+        <div className="loading-wrapper">
           <LoadingIcon size={2} />
         </div>
       );
@@ -45,11 +54,37 @@ class MessageSearch extends Component {
     return <div className="text-muted text-center">No messages found.</div>;
   }
 
+  renderOrderByToggle() {
+    const { searchStore } = this.props;
+
+    const recencyClass = cx("btn btn-default btn-sm", {
+      active: searchStore.orderBy === "recency"
+    });
+
+    const relevanceClass = cx("btn btn-default btn-sm", {
+      active: searchStore.orderBy === "relevance"
+    });
+
+    return (
+      <div className="search-results-addon-order-by">
+        <div className="btn-group">
+          <span className={recencyClass} onClick={this.setOrder("recency")}>
+            Recent
+          </span>
+          <span className={relevanceClass} onClick={this.setOrder("relevance")}>
+            Relevant
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { searchStore } = this.props;
 
     return (
       <div className="search-results-addon">
+        {!searchStore.loading && this.renderOrderByToggle()}
         {this.renderSearchResults()}
 
         <div className="footer">

@@ -356,7 +356,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def parse_query_params(conn, _opts) do
-    types = %{skip: :integer, limit: :integer, min_id: :integer, max_id: :integer}
+    types = %{
+      skip: :integer,
+      limit: :integer,
+      min_id: :integer,
+      max_id: :integer,
+      search_order: :string
+    }
+
     changeset = Ecto.Changeset.cast({%{}, types}, conn.params, Map.keys(types))
     query_opts = Enum.into(changeset.changes, [])
     query_opts = Keyword.put(query_opts, :fetch_users, get_fetch_users_param(conn.params))

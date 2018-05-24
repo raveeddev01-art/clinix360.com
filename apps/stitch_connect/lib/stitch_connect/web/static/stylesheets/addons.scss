@@ -263,10 +263,30 @@
 .updates-addon,
 .global-starred-messages-addon,
 .search-results-addon {
-  padding: 15px;
+  padding: 10px 15px;
 
   i.fa-circle-o-notch {
     color: $brand-primary;
+  }
+
+  .loading-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    margin-bottom: 8px;
+  }
+
+  .search-results-addon-order-by {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+
+    .btn {
+      padding: 4px 8px;
+      width: 120px;
+    }
   }
 
   .status {
