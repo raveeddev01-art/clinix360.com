@@ -38,10 +38,9 @@ class OnboardCard extends Component {
   }
 
   render() {
-    const { title, children, description, header } = this.props;
+    const { title, children, description } = this.props;
     return (
       <Card
-        header={header}
         title={title}
         description={description}
         footer={this.renderFooter()}
@@ -57,10 +56,6 @@ OnboardCard.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  header: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
   onNext: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
@@ -71,7 +66,6 @@ OnboardCard.propTypes = {
 
 OnboardCard.defaultProps = {
   children: null,
-  header: null,
   onNext: () => {},
   description: "",
   title: "",
