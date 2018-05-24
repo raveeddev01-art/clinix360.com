@@ -362,7 +362,7 @@ defmodule Stitch.Messages.Search do
   def extract_exact_search_terms(string) do
     regex = ~r/\"([^"]+)\"/
     terms = Regex.scan(regex, string) |> Enum.map(fn [_match, captured] -> captured end)
-    {terms, Regex.replace(regex, string, "")}
+    {terms, string}
   end
 
   def extract_minus_terms(string) do
