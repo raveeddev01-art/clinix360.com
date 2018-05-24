@@ -75,8 +75,17 @@ defmodule Stitch.Messages.Search do
       Regex.scan(non_stop_words_regex, highlighted_text_content)
       |> Enum.map(fn [_, captured] -> String.downcase(captured) end)
 
-    regex = ~r/\b((?i)#{(terms -- non_stop_words) |> Enum.join("|")})\b/iu
-    Regex.replace(regex, highlighted_text_content, fn x -> "%&$&%#{x}%&$&%" end)
+    terms = terms -- non_stop_words
+
+    if Enum.empty?(terms) do
+      highlighted_text_content
+    else
+      regex = ~r/\b(#{(terms -- non_stop_words) |> Enum.join("|")})\b/iu
+
+      Regex.replace(regex, highlighted_text_content, fn x ->
+        "%&$&%#{x}%&$&%"
+      end)
+    end
   end
 
   def get_search_terms(search_terms, exact_search_terms) do
@@ -291,7 +300,8 @@ defmodule Stitch.Messages.Search do
 
       from(
         m in query,
-        where: ilike(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")
+        where: ilike(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%"),
+        order_by: [desc: m.updated_at]
       )
     end)
   end
