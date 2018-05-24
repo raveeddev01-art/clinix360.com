@@ -1,4 +1,4 @@
-import { getTimezone } from "../../lib/utils"
+import { getTimezone } from "../../lib/utils";
 
 /**
  * Channel store
@@ -159,7 +159,7 @@ class ChannelStore {
   joinTeamChannel(options = {}) {
     const { presenceStore, sidemenuStore, usersStore } = this.rootStore;
 
-    const timezone = this.getTimezoneInfo()
+    const timezone = this.getTimezoneInfo();
     const joined = this.join(this.teamChannelTopic, { ...options, timezone });
 
     this.teamChannel.on("presence_state", presenceStore.onPresenceState);
@@ -172,6 +172,7 @@ class ChannelStore {
     );
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
+    // this.teamChannel.on("conceal_toggled", ({ conceal_enabled }) => {});
     this.teamChannel.on("team_deleted", presenceStore.logout); // just log out immediately if the team is deleted
 
     this.teamChannel.on("user_joined", usersStore.onUserJoined);
@@ -186,8 +187,8 @@ class ChannelStore {
   leaveAllChannelsButTeamAndEvent() {
     Object.keys(this.channels)
       .filter(
-      topic =>
-        topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
+        topic =>
+          topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
       )
       .forEach(topic => {
         this.leave(topic);
@@ -200,7 +201,7 @@ class ChannelStore {
     return {
       tz: getTimezone(),
       tz_offset: offset
-    }
+    };
   }
 }
 
