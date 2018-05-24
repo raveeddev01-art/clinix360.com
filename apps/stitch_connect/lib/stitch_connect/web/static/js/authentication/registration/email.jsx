@@ -60,7 +60,7 @@ class EmailCard extends Component {
           <Alert bsStyle="danger">{this.state.errorMessage}</Alert>
         )}
         <OnboardCard
-          title="Email"
+          title="Create a new team"
           description={
             <span>
               Enter your <strong>email address</strong>.
@@ -77,16 +77,11 @@ class EmailCard extends Component {
               autoFocus
               autoComplete="off"
               type="email"
-              placeholder="Email"
+              placeholder="Email address"
               value={this.state.email}
               onChange={this.onChange}
             />
           </FormGroup>
-          <HelpBlock className="m-b-20">
-            We will send you a confirmation code to verify your email. If your
-            team already has an account, ask your administrator for an
-            invitation.
-          </HelpBlock>
         </OnboardCard>
       </div>
     );

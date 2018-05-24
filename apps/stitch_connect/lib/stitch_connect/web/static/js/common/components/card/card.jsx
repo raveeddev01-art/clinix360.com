@@ -5,19 +5,22 @@ import cx from "classnames";
 class Card extends Component {
   _renderDescription = () => {
     const { description } = this.props;
-    return description && <h5>{description}</h5>;
+    return description && <h4>{description}</h4>;
   };
 
   render() {
-    const { children, header, title, className } = this.props;
-    const cardStyles = cx("authentication-card", "text-center", className);
+    const { children, header, title, className, footer } = this.props;
+    const cardStyles = cx("authentication-card", className);
 
     return (
       <div className={cardStyles}>
-        {header}
-        <h2>{title}</h2>
-        {this._renderDescription()}
-        {children}
+        <div>{header}</div>
+        <div>
+          <h1>{title}</h1>
+          {this._renderDescription()}
+          {children}
+        </div>
+        {footer}
       </div>
     );
   }

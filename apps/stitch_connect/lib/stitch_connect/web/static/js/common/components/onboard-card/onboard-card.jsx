@@ -22,31 +22,31 @@ class OnboardCard extends Component {
     return description && <h5>{description}</h5>;
   };
 
-  render() {
-    const {
-      title,
-      children,
-      nextButtonText,
-      description,
-      header,
-      loading,
-      disableNext
-    } = this.props;
+  renderFooter() {
     return (
-      <Card header={header} title={title} description={description}>
-        <Form onSubmit={this._onNext}>
-          {children}
-          <LoadingButton
-            type="submit"
-            bsStyle="primary"
-            bsSize="lg"
-            className="btn-block m-b-40"
-            disabled={disableNext}
-            loading={loading}
-          >
-            {nextButtonText}
-          </LoadingButton>
-        </Form>
+      <LoadingButton
+        type="submit"
+        bsStyle="primary"
+        bsSize="lg"
+        className="btn m-b-40"
+        disabled={this.props.disableNext}
+        loading={this.props.loading}
+      >
+        {this.props.nextButtonText}
+      </LoadingButton>
+    );
+  }
+
+  render() {
+    const { title, children, description, header } = this.props;
+    return (
+      <Card
+        header={header}
+        title={title}
+        description={description}
+        footer={this.renderFooter()}
+      >
+        <Form onSubmit={this._onNext}>{children}</Form>
       </Card>
     );
   }
@@ -75,7 +75,7 @@ OnboardCard.defaultProps = {
   onNext: () => {},
   description: "",
   title: "",
-  nextButtonText: "Next",
+  nextButtonText: "Next →",
   disableNext: false,
   loading: false
 };
