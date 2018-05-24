@@ -10,7 +10,7 @@ defmodule StitchConnect.Web.Email.NewMessagesView do
     inflected_message = if recipient.new_message_count == 1, do: "message", else: "messages"
 
     new_email()
-    |> to(recipient.email)
+    |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || recipient.email)
     |> from(@from_address)
     |> subject("[Stitch Connect] Notifications from #{team.name} #{user_time}")
     |> put_layout({StitchConnect.Web.LayoutView, :email})

@@ -71,7 +71,7 @@ export INTERCOM_IDENTITY_VERIFICATION_SECRET=
 export INTERCOM_APP_ID=
 export SENTRY_PUBLIC_DSN=
 
-export MAILGUN_API_KEY=
+export MAILGUN_KEY=
 export MAILGUN_DOMAIN=
 
 export REDIS_URL= # optional
@@ -166,7 +166,7 @@ mix dialyzer
 When working on maintaining or extending `Stitch.Analytics` consider these
 recommendations to more easily test or debug as needed.
 
-1. Edit `config/dev.exs` for `Stitch.Analytics` to push events to `Segment`:
+1.  Edit `config/dev.exs` for `Stitch.Analytics` to push events to `Segment`:
 
 In dev env `Stitch` is configured to use `Stitch.Analytics.Segment.InMemory`.
 This means that analytics events will be created in the `segment_events` DB
@@ -176,7 +176,7 @@ analytics system in dev env without hitting the Segment API. In prod env
 test/debug in dev env, while hitting the Segment API and the associated destinations
 configured on Segment, edit `config/dev.exs to use the`HTTPClient`module. If you do this, remember to use the Segment API keys for the`Staging`source and not`Production`.
 
-2. Edit `config/dev.exs` to enable `Stitch.Analytics.Sync.RecurringSync`:
+2.  Edit `config/dev.exs` to enable `Stitch.Analytics.Sync.RecurringSync`:
 
 In dev env `Stitch.Analytics.Sync.RecurringSync` is disabled. This means
 analytics events are created in the `segment_events` DB table but never move

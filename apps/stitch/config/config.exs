@@ -10,7 +10,7 @@ config :stitch,
 
 config :stitch, Stitch.MailgunMailer,
   adapter: Bamboo.MailgunAdapter,
-  api_key: System.get_env("MAILGUN_API_KEY"),
+  api_key: System.get_env("MAILGUN_KEY"),
   domain: System.get_env("MAILGUN_DOMAIN")
 
 config :stitch, :twilio, %{
