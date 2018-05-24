@@ -300,8 +300,7 @@ defmodule Stitch.Messages.Search do
 
       from(
         m in query,
-        where: ilike(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%"),
-        order_by: [desc: m.updated_at]
+        where: ilike(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")
       )
     end)
   end
