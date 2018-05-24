@@ -19,7 +19,7 @@ class OurCustomers extends Component {
 
   render() {
     return (
-      <div className="our-customers text-center">
+      <div className="our-customers">
         <div className="container">
           <h2>Trusted by the best teams</h2>
           <h3>
@@ -29,7 +29,7 @@ class OurCustomers extends Component {
 
           <hr className="section-line" />
 
-          <div className="customer-logos">
+          <div className="customer-logos text-center">
             <div className="row logo-row">{this.renderCustomers()}</div>
           </div>
         </div>

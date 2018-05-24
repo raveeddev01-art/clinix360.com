@@ -108,7 +108,10 @@
     width: 140px;
     border-width: 4px;
     border-color: $brand-primary;
-    margin: 40px auto 60px;
+    margin: 40px 0 60px;
+    @media (min-width: 768px) {
+      margin: 40px auto 60px;
+    }
   }
 
   .create-team-form {
@@ -236,60 +239,18 @@
     // background: #f0f1f3;
     padding: 80px 0;
 
+    h2, h3 {
+      @media (min-width: 768px) {
+        text-align: center;
+      }
+    }
+
     h2 {
       margin-top: 0;
     }
 
     .logo-row {
       margin-bottom: 10px;
-
-      // [class*="col-"] {
-      //   border-right: 1px solid #e4e4e4;
-      //   border-bottom: 1px solid #e4e4e4;
-
-      //   @media (max-width: 992px) {
-      //     &:nth-child(2),
-      //     &:nth-child(4),
-      //     &:nth-child(7),
-      //     &:nth-child(9) {
-      //       border-right-color: transparent;
-      //     }
-
-      //     &:nth-child(8),
-      //     &:nth-child(9) {
-      //       border-bottom-color: transparent;
-      //     }
-      //   }
-
-      //   @media (min-width: 993px) and (max-width: 1200px) {
-      //     &:nth-child(4),
-      //     &:nth-child(9),
-      //     &:nth-child(14) {
-      //       border-right-color: transparent;
-      //     }
-          
-      //     &:nth-child(6),
-      //     &:nth-child(7),
-      //     &:nth-child(8),
-      //     &:nth-child(9), {
-      //       border-bottom-color: transparent;
-      //     }
-      //   }
-
-      //   @media (min-width: 1200px) {          
-      //     &:nth-child(6),
-      //     &:nth-child(7),
-      //     &:nth-child(8),
-      //     &:nth-child(9),
-      //     &:nth-child(10), {
-      //       border-bottom-color: transparent;
-      //     }
-      //   }
-
-      //   &.no-border {
-      //     border-right: 0;
-      //   }
-      // }
 
       img {
         max-width: 100%;
