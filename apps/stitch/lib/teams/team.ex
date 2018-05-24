@@ -20,7 +20,7 @@ defmodule Stitch.Team do
     field(:ehr, :string)
     field(:industry, :string)
     field(:size, :string)
-    field(:hipaa_enabled, :boolean, default: true)
+    field(:conceal_enabled, :boolean, default: true)
 
     has_many(:users, Stitch.Accounts.User, on_delete: :delete_all)
     has_many(:groups, Stitch.Group, on_delete: :delete_all)

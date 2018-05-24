@@ -131,19 +131,19 @@ defmodule StitchConnect.Web.TeamControllerTest do
     end
   end
 
-  describe "PUT /api/v1/teams/:id/toggle-hipaa" do
-    test "toggles hipaa switch", %{conn: conn} do
-      team = insert(:team, hipaa_enabled: true)
+  describe "PUT /api/v1/teams/:id/toggle-conceal" do
+    test "toggles conceal switch", %{conn: conn} do
+      team = insert(:team, conceal_enabled: true)
       user = insert(:user, team: team, roles: ["admin"])
 
       json =
         conn
         |> with_team_subdomain(team)
         |> with_api_user(user)
-        |> put(Routes.api_v1_team_path(conn, :toggle_hipaa, team.id), %{})
+        |> put(Routes.api_v1_team_path(conn, :toggle_conceal, team.id), %{})
         |> json_response(200)
 
-      assert %{"hipaa_enabled" => false} = json
+      assert %{"conceal_enabled" => false} = json
     end
   end
 end

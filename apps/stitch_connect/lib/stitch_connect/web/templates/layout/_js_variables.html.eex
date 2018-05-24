@@ -31,7 +31,7 @@ current_user =
           "openInvitationsEnabled" => user.team.open_invitations_enabled,
           "name" => user.team.name,
           "slug" => user.team.slug,
-          "hipaaEnabled" => user.team.hipaa_enabled,
+          "concealEnabled" => user.team.conceal_enabled,
           "id" => user.team.id
         }
       })

@@ -192,9 +192,9 @@ defmodule StitchConnect.Web.TeamChannel do
     broadcast_user_joined(team.id, user)
   end
 
-  def broadcast_hipaa_toggled(%Stitch.Team{} = team) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "hipaa_switch_toggled", %{
-      hipaa_enabled: team.hipaa_enabled
+  def broadcast_conceal_toggled(%Stitch.Team{} = team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "conceal_switch_toggled", %{
+      conceal_enabled: team.conceal_enabled
     })
   end
 

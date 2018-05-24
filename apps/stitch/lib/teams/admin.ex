@@ -95,12 +95,12 @@ defmodule Stitch.Team.Admin do
     Repo.delete(team)
   end
 
-  @spec toggle_hipaa_switch(Team.t()) :: {:ok, Team.t()} | :error
-  def toggle_hipaa_switch(%Team{} = team) do
+  @spec toggle_conceal_switch(Team.t()) :: {:ok, Team.t()} | :error
+  def toggle_conceal_switch(%Team{} = team) do
     result =
       Team
       |> where([t], t.id == ^team.id)
-      |> update([t], set: [hipaa_enabled: not t.hipaa_enabled])
+      |> update([t], set: [conceal_enabled: not t.conceal_enabled])
       |> Repo.update_all([], returning: true)
 
     case result do

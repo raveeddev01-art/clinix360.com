@@ -132,14 +132,14 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
     end
   end
 
-  def toggle_hipaa(conn, %{"id" => _}) do
+  def toggle_conceal(conn, %{"id" => _}) do
     user = conn.assigns.current_user
     team = conn.assigns.team
 
     with {:authorized?, true} <- {:authorized?, TeamAuthorization.is_admin?(user, team)},
-         {:ok, team} <- Team.Admin.toggle_hipaa_switch(team) do
-      TeamChannel.broadcast_hipaa_toggled(team)
-      conn |> json(%{id: team.id, hipaa_enabled: team.hipaa_enabled})
+         {:ok, team} <- Team.Admin.toggle_conceal_switch(team) do
+      TeamChannel.broadcast_conceal_toggled(team)
+      conn |> json(%{id: team.id, conceal_enabled: team.conceal_enabled})
     else
       {:authorized?, false} -> {:error, :not_authorized}
       _ -> {:error, :not_found}
