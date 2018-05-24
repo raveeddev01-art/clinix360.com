@@ -12,9 +12,14 @@
     width: 100%;
     margin: 0 auto;
     padding: 0 6vw;
+    transition: padding .3s;
     
-    @media screen and (min-width: 48rem) {
+    @media (min-width: 48rem) {
       padding: 0 5vw;
+    }
+
+    @media (min-width: 800px) and (max-width: 1000px) {
+      padding: 0 12vw;
     }
 
     @media (min-width: 1280px) {
