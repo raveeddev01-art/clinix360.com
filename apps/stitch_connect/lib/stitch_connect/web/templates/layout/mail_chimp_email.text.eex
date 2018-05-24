@@ -1,0 +1,4 @@
+<%= render @view_module, @view_template, assigns %>
+
+Made by Stitch Technologies, Inc. http://teamstitch.com
+156 2nd St # 201 • San Francisco, CA • 94105-3724
