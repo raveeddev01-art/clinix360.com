@@ -21,15 +21,13 @@ class OurCustomers extends Component {
     return (
       <div className="our-customers text-center">
         <div className="container">
-          <div className="text-center">
-            <h2>Trusted by the best healthcare teams</h2>
-            <h3>
-              Healthcare organizations big and small have made Stitch their home
-              base for work.
-            </h3>
+          <h2>Trusted by the best teams</h2>
+          <h3>
+            Healthcare organizations big and small have made Stitch their home
+            base for work.
+          </h3>
 
-            <hr className="section-line" />
-          </div>
+          <hr className="section-line" />
 
           <div className="customer-logos">
             <div className="row logo-row">{this.renderCustomers()}</div>

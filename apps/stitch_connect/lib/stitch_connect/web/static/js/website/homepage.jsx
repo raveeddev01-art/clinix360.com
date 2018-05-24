@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { LinkContainer } from "react-router-bootstrap";
+import { Link } from "react-router-dom";
 import ProgressiveImage from "react-progressive-image";
-import cx from "classnames";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -12,8 +12,29 @@ import CreateTeam from "./components/create-team";
 import OurCustomers from "./components/our-customers";
 import GetStarted from "./components/get-started";
 import Footer from "./components/footer";
+import VideoModal from "./components/video-modal";
 
 export default class Homepage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      modal: ""
+    };
+  }
+
+  videoModal = () => {
+    this.setState({
+      modal: "video"
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      modal: ""
+    });
+  };
+
   render() {
     return (
       <div className="homepage">
@@ -57,20 +78,21 @@ export default class Homepage extends Component {
 
         <div className="stitch-products">
           <div className="container">
-            <div className="text-center">
-              <h2>Three powerful tools in a single workspace</h2>
-              <h3>
-                Combined with your EHR, it’s everything you need to run your
-                practice.
-              </h3>
+            <h2>Three powerful tools in a single workspace</h2>
+            <h3>
+              Combined with your EHR, it’s everything you need to run your
+              practice.
+            </h3>
 
-              <hr className="section-line" />
-            </div>
+            <hr className="section-line" />
 
             <Row>
               <Col sm={4}>
-                <Panel>
-                  <Panel.Body>
+                <Link
+                  className="panel panel-default connect-card"
+                  to="/connect"
+                >
+                  <div className="panel-body">
                     <div className="hover-line" />
                     <h5 className="meta text-uppercase">Team Messaging</h5>
                     <h3 className="title">
@@ -81,16 +103,16 @@ export default class Homepage extends Component {
                       for healthcare teams.
                     </p>
 
-                    <a href="#">
+                    <Link to="/connect">
                       Learn more <i className="fa fa-arrow-right" />
-                    </a>
-                  </Panel.Body>
-                </Panel>
+                    </Link>
+                  </div>
+                </Link>
               </Col>
 
               <Col sm={4}>
-                <Panel>
-                  <Panel.Body>
+                <Link className="panel panel-default engage-card" to="/engage">
+                  <div className="panel-body">
                     <div className="hover-line" />
                     <h5 className="meta text-uppercase">Patient Messaging</h5>
                     <h3 className="title">
@@ -101,31 +123,36 @@ export default class Homepage extends Component {
                       calls directly with patients.
                     </p>
 
-                    <a href="#">
+                    <Link to="/engage">
                       Learn more <i className="fa fa-arrow-right" />
-                    </a>
-                  </Panel.Body>
-                </Panel>
+                    </Link>
+                  </div>
+                </Link>
               </Col>
 
               <Col sm={4}>
-                <Panel>
-                  <Panel.Body>
-                    <div className="hover-line" />
-                    <h5 className="meta text-uppercase">Task Management</h5>
-                    <h3 className="title">
-                      <i className="fa fa-tasks" /> Manage
-                    </h3>
-                    <p className="m-b-20">
-                      Assign and manage tasks to keep your team’s workflow
-                      organized and on track.
-                    </p>
+                <LinkContainer to="/manage">
+                  <Link
+                    className="panel panel-default manage-card"
+                    to="/manage"
+                  >
+                    <div className="panel-body">
+                      <div className="hover-line" />
+                      <h5 className="meta text-uppercase">Task Management</h5>
+                      <h3 className="title">
+                        <i className="fa fa-tasks" /> Manage
+                      </h3>
+                      <p className="m-b-20">
+                        Assign and manage tasks to keep your team’s workflow
+                        organized and on track.
+                      </p>
 
-                    <a href="#">
-                      Learn more <i className="fa fa-arrow-right" />
-                    </a>
-                  </Panel.Body>
-                </Panel>
+                      <Link to="/manage">
+                        Learn more <i className="fa fa-arrow-right" />
+                      </Link>
+                    </div>
+                  </Link>
+                </LinkContainer>
               </Col>
             </Row>
           </div>
@@ -136,6 +163,8 @@ export default class Homepage extends Component {
         <GetStarted />
 
         <Footer />
+
+        <VideoModal state={this.state.modal} closeModal={this.closeModal} />
       </div>
     );
   }

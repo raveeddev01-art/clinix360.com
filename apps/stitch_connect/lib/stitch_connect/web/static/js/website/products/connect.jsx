@@ -309,7 +309,11 @@ export default class Connect extends Component {
 
         <Footer />
 
-        <VideoModal state={this.state.modal} closeModal={this.closeModal} />
+        <VideoModal
+          state={this.state.modal}
+          closeModal={this.closeModal}
+          connectVideo
+        />
       </div>
     );
   }

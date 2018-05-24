@@ -322,15 +322,40 @@
     // background: #f0f1f3;
     padding: 80px 0;
 
+    h2, h3 {
+      @media (min-width: 768px) {
+        text-align: center;
+      }
+    }
+
     h2 {
       margin-top: 0;
     }
 
     .panel {
+      display: block;
       color: $brand-primary;
+      text-decoration: none;
+      border: 1px solid #F0F1F3;
       box-shadow: 2px 4px 15px rgba(0, 0, 0, 0.1);
-      transition: all .12s ease-in-out;
+      transition: box-shadow .3s;
       position: relative;
+
+      @media (min-width: 768px) and (max-width: 878px) {
+        min-height: 327px;
+      }
+
+      @media (min-width: 879px) and (max-width: 1038px) {
+        min-height: 300px;
+      }
+
+      @media (min-width: 1039px) {
+        min-height: auto;
+      }
+
+      .panel-body {
+        margin-bottom: 20px;
+      }
 
       .hover-line {
         opacity: 0;
@@ -338,14 +363,10 @@
         height: 6px;
         background: $brand-primary;
         border-radius: 4px 4px 0 0;
+        transition: opacity .3s;        
         position: absolute;
         top: 0;
         left: 0;
-
-        @keyframes cardHover {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
       }
 
       .panel-body {
@@ -364,7 +385,12 @@
       .title {
         font-size: 24px;
         font-weight: 900;
+        text-align: left;
         margin: 0 0 10px;
+
+        i.fa {
+          margin-right: 2px;
+        }
       }
 
       p {
@@ -375,20 +401,28 @@
       a {
         color: $brand-primary;
         font-weight: 700;
+        position: absolute;
+        bottom: 30px;
 
         i.fa {
           margin-left: 5px;
+          transition: margin-left .3s;
         }
       }
 
+      &.connect-card .title i.fa { font-size: 22px; }
+      &.engage-card .title i.fa  { font-size: 21px; }
+      &.manage-card .title i.fa  { font-size: 20px; }
+
       &:hover {
-        transform: scale(1.01);
         box-shadow: 2px 4px 20px rgba(0, 0, 0, 0.25);
 
         .hover-line {
-          -webkit-animation: cardHover .4s forwards;
-          -moz-animation: cardHover .4s forwards;
-          animation: cardHover .4s forwards;
+          opacity: 1;
+        }
+
+        a > i.fa {
+          margin-left: 8px;
         }
       }
     }
@@ -455,18 +489,6 @@
   }
 
   //----------------- PRODUCTS -----------------
-  // .product-page .feature {
-  //   background: #fff;
-
-  //   .info h2 {
-  //     margin-bottom: 30px;
-  //   }
-
-  //   &.alt {
-  //     background: #f0f1f3;
-  //   }
-  // }
-
   .product-page {
     p {
       font-size: 18px;
@@ -526,6 +548,12 @@
   
       &.alt {
         background: #f0f1f3;
+
+        .flex-box {
+          flex-direction: row-reverse;
+          -ms-flex-direction: row-reverse;
+        }
+
         @media (min-width: 992px) {
           .info {
             margin: 0 0 0 auto !important;
@@ -535,6 +563,7 @@
     }
 
     .additional-features {
+      background: #f0f1f3;
       padding: 60px 0;
       @media (min-width: 768px) {
         padding: 95px 0;  
