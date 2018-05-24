@@ -7,7 +7,7 @@ class OurCustomers extends Component {
   renderCustomers() {
     return CUSTOMERS.map((c, index) => {
       const className = cx("col-lg-5ths col-md-3 col-xs-4", {
-        "visible-lg": index % 5 === 4
+        "visible-lg no-border": index % 5 === 4
       });
       return (
         <div className={className} key={`customer_${index}`}>
@@ -21,7 +21,16 @@ class OurCustomers extends Component {
     return (
       <div className="our-customers text-center">
         <div className="container">
-          <h4 className="text-uppercase">Trusted by top healthcare teams</h4>
+          <div className="text-center">
+            <h2>Trusted by the best healthcare teams</h2>
+            <h3>
+              Healthcare organizations big and small have made Stitch their home
+              base for work.
+            </h3>
+
+            <hr className="section-line" />
+          </div>
+
           <div className="customer-logos">
             <div className="row logo-row">{this.renderCustomers()}</div>
           </div>

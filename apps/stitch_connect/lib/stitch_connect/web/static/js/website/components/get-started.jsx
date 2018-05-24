@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { LinkContainer } from "react-router-bootstrap";
 
-import Button from "react-bootstrap/lib/Button";
+import CreateTeam from "./create-team";
 
 export default class GetStarted extends Component {
   render() {
@@ -10,30 +9,12 @@ export default class GetStarted extends Component {
         <div className="container">
           <div className="flex-box">
             <div className="flex-item">
-              <h2>
-                <strong className="hidden-md hidden-lg">
-                  Ready to bring Stitch to your team?
-                </strong>
-                <strong className="hidden-xs hidden-sm">
-                  Ready to bring Stitch to your team?
-                </strong>
-                <br />{" "}
-                <span>Free to use with an unlimited number of people.</span>
-              </h2>
+              <h3>Get started for free</h3>
+              <h4>Unlimited users, unlimited time.</h4>
             </div>
 
-            <div className="flex-item text-right">
-              <Button
-                bsStyle="primary"
-                block
-                href="https://teamstitch.com/signup/email"
-              >
-                Get Started
-              </Button>
-
-              <LinkContainer to="/demo">
-                <Button>Request Demo</Button>
-              </LinkContainer>
+            <div className="flex-item ">
+              <CreateTeam />
             </div>
           </div>
         </div>

@@ -57,8 +57,6 @@ class CreateTeam extends Component {
             Get Started
           </Button>
         </FormGroup>
-
-        {/* <Button type="submit">Get Started</Button> */}
       </Form>
     );
   }
