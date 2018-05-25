@@ -5,7 +5,6 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
-import Alert from "react-bootstrap/lib/Alert";
 import { Card } from "common/components";
 import isEmpty from "lodash/isEmpty";
 
@@ -73,14 +72,18 @@ class InvitesCard extends Component {
     });
   };
 
+  get errorText() {
+    return "There was an issue with one or more of your emails. Please ensure they are valid.";
+  }
+
   render() {
     const { invites, validationResults, alertMessage } = this.state;
 
     return (
       <div>
-        {alertMessage && <Alert bsStyle="danger">{alertMessage}</Alert>}
         <Card
           title="Send Invitations"
+          errorText={alertMessage && this.errorText}
           description={
             <span>
               Enter <strong>invitations</strong> to email out.

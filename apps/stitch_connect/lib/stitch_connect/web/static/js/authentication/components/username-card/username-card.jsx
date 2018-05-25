@@ -3,8 +3,11 @@ import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import Alert from "react-bootstrap/lib/Alert";
 import { OnboardCard } from "common/components";
+
+function formatUsername(givenUsername) {
+  return givenUsername.replace(/[^0-9a-zA-Z]/g, "").toLowerCase();
+}
 
 class UsernameCard extends Component {
   constructor(...args) {
@@ -19,7 +22,7 @@ class UsernameCard extends Component {
 
   onChange = evt => {
     this.setState({
-      username: evt.target.value.replace(/\s/g, "")
+      username: formatUsername(evt.target.value)
     });
   };
 
@@ -49,6 +52,20 @@ class UsernameCard extends Component {
       });
   };
 
+  get errorText() {
+    const { hasPatternError, hasUniquenessError } = this.state;
+
+    if (hasPatternError) {
+      return "The username should be lowercase and only use alphanumeric characters.";
+    }
+
+    if (hasUniquenessError) {
+      return "That username is already taken.";
+    }
+
+    return "";
+  }
+
   patternValidate = () => {
     const { username } = this.state;
 
@@ -62,26 +79,15 @@ class UsernameCard extends Component {
   };
 
   render() {
-    const { username, hasError, hasPatternError, loading } = this.state;
+    const { username, loading } = this.state;
     const { placeholder } = this.props;
 
     return (
       <div>
-        {hasPatternError && (
-          <Alert bsStyle="danger">
-            The username should be lowercase and only use alphanumeric
-            characters.
-          </Alert>
-        )}
-
-        {!hasPatternError &&
-          hasError && (
-            <Alert bsStyle="danger">That username is already taken.</Alert>
-          )}
-
         <OnboardCard
           {...this.props}
           title="Username"
+          errorText={this.errorText}
           description={
             <span>
               Enter a <strong>username</strong>.
@@ -95,7 +101,7 @@ class UsernameCard extends Component {
             <FormControl
               required
               autoFocus
-              placeholder={placeholder || "Username"}
+              placeholder={placeholder || "username"}
               value={username}
               onChange={this.onChange}
               maxLength={20}
