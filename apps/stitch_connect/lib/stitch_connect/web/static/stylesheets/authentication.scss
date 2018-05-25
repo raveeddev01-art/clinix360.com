@@ -32,6 +32,31 @@
 .authentication-wrapper {
   height: 100vh;
 
+  .form-control {
+    flex: 1;
+    height: 53px;
+    border: 2px solid #d8d8d8;
+    box-shadow: none;
+    padding: 6px 12px;
+
+    &:focus {
+      border-color: $brand-primary;
+    }
+  }
+
+  .next-button-interior {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 50px;
+    font-weight: 700;
+  }
+
+  .next-arrow-wrapper {
+    font-size: 11px;
+    margin-top: 1px;
+  }
+
   > div {
     height: 100vh;
     display: flex;
@@ -162,6 +187,7 @@
         flex-shrink: 0;
         flex-grow: 0;
         font-size: 16px;
+        font-weight: 700;
       }
     }
 

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { observer, inject } from "mobx-react";
-import Alert from "react-bootstrap/lib/Alert";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import { OnboardCard } from "common/components";
@@ -128,6 +127,10 @@ class Confirmation extends Component {
     }
   };
 
+  get hasSixDigits() {
+    return this.state.digits && this.state.digits.join("").length === 6;
+  }
+
   renderCodeInput = (from, to) => {
     const comps = [];
     for (let i = from; i < to; i += 1) {
@@ -163,6 +166,7 @@ class Confirmation extends Component {
           errorText={this.state.error && this.errorText}
           loading={this.state.loading}
           onNext={this.onNext}
+          disableNext={!this.hasSixDigits}
         >
           <div className="confirmation-code m-b-20">
             <InputGroup className="code-group">

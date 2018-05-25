@@ -22,6 +22,17 @@ class OnboardCard extends Component {
     return description && <h5>{description}</h5>;
   };
 
+  defaultNext() {
+    return (
+      <div className="next-button-interior">
+        <div>Next</div>
+        <div className="next-arrow-wrapper">
+          <i className="fa fa-arrow-right" />
+        </div>
+      </div>
+    );
+  }
+
   renderFooter() {
     return (
       <LoadingButton
@@ -33,7 +44,7 @@ class OnboardCard extends Component {
         loading={this.props.loading}
         onClick={this._onNext}
       >
-        {this.props.nextButtonText}
+        {this.props.nextButtonText || this.defaultNext()}
       </LoadingButton>
     );
   }
@@ -62,7 +73,7 @@ OnboardCard.propTypes = {
   onNext: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
-  nextButtonText: PropTypes.string.isRequired,
+  nextButtonText: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired
 };
@@ -73,7 +84,7 @@ OnboardCard.defaultProps = {
   description: "",
   title: "",
   errorText: "",
-  nextButtonText: "Next →",
+  nextButtonText: null,
   disableNext: false,
   loading: false
 };

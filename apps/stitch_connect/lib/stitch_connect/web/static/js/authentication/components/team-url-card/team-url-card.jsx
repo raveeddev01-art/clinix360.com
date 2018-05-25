@@ -98,7 +98,7 @@ class TeamUrlCard extends Component {
           title="Team URL"
           description={
             <span>
-              Enter your <strong>Team URL</strong>.
+              Enter your <strong>team url</strong>.
             </span>
           }
           errorText={this.errorText}

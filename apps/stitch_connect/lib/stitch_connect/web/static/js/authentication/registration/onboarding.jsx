@@ -22,9 +22,9 @@ const stepList = [
   { field: "username", component: Username },
   { field: "password", component: Password },
   { field: "pin", component: Pin },
+  { field: "hipaa", component: Hipaa },
   { field: "invites", component: Invites },
-  { field: "teaminfo", component: TeamInfo },
-  { field: "hipaa", component: Hipaa }
+  { field: "teaminfo", component: TeamInfo }
 ];
 
 @inject("registrationStore")
