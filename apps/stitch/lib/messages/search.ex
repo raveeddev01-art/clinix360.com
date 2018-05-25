@@ -36,30 +36,77 @@ defmodule Stitch.Messages.Search do
     params = parameterize(term_string)
 
     messages =
-      from_users_groups(user.id, options)
+      from_users_groups(user.id, params, options)
       |> apply_date_before_terms(params[:date_before_terms], user)
       |> apply_date_after_terms(params[:date_after_terms], user)
       |> apply_date_on_terms(params[:date_on_terms], user)
-      |> apply_search_terms(params[:search_terms])
+      |> apply_search_terms(params[:search_terms], options)
+      |> apply_minus_terms(params[:minus_terms])
+      |> apply_wildcard_terms(params[:wildcard_terms])
       |> apply_exact_search_terms(params[:exact_search_terms])
       |> apply_room_filters(params[:room_terms])
       |> apply_to_user_filters(params[:messages_to_terms])
       |> apply_from_user_filters(params[:messages_from_terms])
       |> apply_highlight(params[:search_terms], params[:exact_search_terms])
-      |> apply_skip(options)
       |> Repo.all()
 
     user
     |> MessageAction.apply_user_message_actions(messages)
     |> Message.Reaction.apply_reactions()
+    |> apply_higlight_for_stop_words(params[:exact_search_terms])
   end
 
-  def apply_highlight(query, search_terms, exact_search_terms) do
+  def apply_higlight_for_stop_words(messages, exact_search_terms) do
+    terms = get_search_terms([], exact_search_terms)
+    non_stop_words_regex = Regex.recompile!(~r/%\&\$\&%([\w]*)%\&\$\&%/i)
+
+    messages
+    |> Enum.map(fn m ->
+      %{
+        m
+        | highlighted_text_content:
+            highlight_stop_words(m.highlighted_text_content, terms, non_stop_words_regex)
+      }
+    end)
+  end
+
+  def highlight_stop_words(highlighted_text_content, terms, non_stop_words_regex) do
+    non_stop_words =
+      Regex.scan(non_stop_words_regex, highlighted_text_content)
+      |> Enum.map(fn [_, captured] -> String.downcase(captured) end)
+
+    terms = terms -- non_stop_words
+
+    if Enum.empty?(terms) do
+      highlighted_text_content
+    else
+      regex = ~r/\b(#{(terms -- non_stop_words) |> Enum.join("|")})\b/iu
+
+      Regex.replace(regex, highlighted_text_content, fn x ->
+        "%&$&%#{x}%&$&%"
+      end)
+    end
+  end
+
+  def get_search_terms(search_terms, exact_search_terms) do
     exact_search_terms_without_quotes =
       Enum.map(exact_search_terms, &strip_exact_search_delimiters/1)
 
-    all_search_terms = search_terms ++ exact_search_terms_without_quotes
-    search_term = Enum.join(all_search_terms, " | ")
+    all_search_terms =
+      (search_terms ++ (exact_search_terms_without_quotes |> Enum.map(&String.split(&1))))
+      |> Enum.reduce([], fn
+        x, acc when is_list(x) ->
+          x ++ acc
+
+        x, acc ->
+          [x | acc]
+      end)
+
+    all_search_terms
+  end
+
+  def apply_highlight(query, search_terms, exact_search_terms) do
+    search_term = get_search_terms(search_terms, exact_search_terms) |> Enum.join(" | ")
 
     query =
       from(
@@ -221,6 +268,30 @@ defmodule Stitch.Messages.Search do
     )
   end
 
+  def apply_minus_terms(query, []), do: query
+
+  def apply_minus_terms(query, minus_term) do
+    Enum.reduce(minus_term, query, fn term, query ->
+      from(
+        m in query,
+        where: not ilike(m.text_content, ^"%#{term}%")
+      )
+    end)
+  end
+
+  def apply_wildcard_terms(query, []), do: query
+
+  def apply_wildcard_terms(query, wildcard_terms) do
+    Enum.reduce(wildcard_terms, query, fn term, query ->
+      term = string_init(term)
+
+      from(
+        m in query,
+        where: ilike(m.text_content, ^"%#{term}%")
+      )
+    end)
+  end
+
   def apply_exact_search_terms(query, []), do: query
 
   def apply_exact_search_terms(query, exact_search_terms) do
@@ -234,29 +305,34 @@ defmodule Stitch.Messages.Search do
     end)
   end
 
-  def apply_search_terms(query, []), do: query
+  def apply_search_terms(query, [], _options), do: query
 
-  def apply_search_terms(query, search_terms) do
+  def apply_search_terms(query, search_terms, options) do
     term = Enum.join(search_terms, " | ")
+    order_by_recency = Keyword.get(options, :search_order, "recency") == "recency"
 
-    from(
-      m in query,
-      where: fragment("? %> ?", m.text_content, ^term),
-      order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)]
-    )
-  end
+    query =
+      from(
+        m in query,
+        where: fragment("to_tsvector(?) @@ to_tsquery(?)", m.text_content, ^term)
+      )
 
-  def apply_skip(query, opts) do
-    case Keyword.fetch(opts, :skip) do
-      {:ok, skip} ->
-        query |> offset([m], ^skip)
-
-      :error ->
-        query
+    if order_by_recency do
+      from(m in query, order_by: [desc: m.updated_at])
+    else
+      from(
+        m in query,
+        order_by:
+          fragment(
+            "ts_rank(to_tsvector(?), to_tsquery(?)) DESC",
+            m.text_content,
+            type(^term, :string)
+          )
+      )
     end
   end
 
-  def from_users_groups(user_id, opts) do
+  def from_users_groups(user_id, params, opts) do
     user_groups_ids =
       GroupUser
       |> where([gu], gu.user_id == ^user_id)
@@ -264,23 +340,48 @@ defmodule Stitch.Messages.Search do
       |> Repo.all()
 
     limit = Enum.min([Keyword.get(opts, :limit, 30), 1000])
+    skip = Keyword.get(opts, :skip, 0)
 
-    from(
-      m in Message,
-      where: m.group_id in ^user_groups_ids,
-      where: m.type != ^"system",
-      limit: ^limit
-    )
+    query =
+      from(
+        m in Message,
+        where: m.group_id in ^user_groups_ids,
+        where: m.type != ^"system",
+        limit: ^limit,
+        offset: ^skip
+      )
+
+    if params[:search_terms] == [] && params[:exact_search_terms] == [] do
+      from(m in query, order_by: [desc: m.updated_at])
+    else
+      query
+    end
+  end
+
+  def extract_exact_search_terms(string) do
+    regex = ~r/\"([^"]+)\"/
+    terms = Regex.scan(regex, string) |> Enum.map(fn [_match, captured] -> captured end)
+    {terms, string}
+  end
+
+  def extract_minus_terms(string) do
+    # hack to avoid capturing beginning of string or space in regex
+    string = " " <> string
+    regex = ~r/\s-(\w+)/
+    terms = Regex.scan(regex, string) |> Enum.map(fn [_match, captured] -> captured end)
+    {terms, Regex.replace(regex, string, "")}
   end
 
   def parameterize(term_string) do
+    {exact_terms, term_string} = extract_exact_search_terms(term_string)
+    {minus_terms, term_string} = extract_minus_terms(term_string)
     parts = term_string |> String.split()
 
     params = %{
       search_terms: [],
-      exact_search_terms: [],
+      exact_search_terms: exact_terms,
       wildcard_terms: [],
-      minus_terms: [],
+      minus_terms: minus_terms,
       room_terms: [],
       messages_to_terms: [],
       messages_from_terms: [],
@@ -291,11 +392,11 @@ defmodule Stitch.Messages.Search do
 
     Enum.reduce(parts, params, fn p, params ->
       cond do
-        String.starts_with?(p, "\"") && String.ends_with?(p, "\"") ->
-          Map.update!(params, :exact_search_terms, fn ps -> [p | ps] end)
+        # String.starts_with?(p, "\"") && String.ends_with?(p, "\"") ->
+        #   Map.update!(params, :exact_search_terms, fn ps -> [p | ps] end)
 
-        # String.ends_with?(p, "*") ->
-        #   Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
+        String.ends_with?(p, "*") ->
+          Map.update!(params, :wildcard_terms, fn ps -> [p | ps] end)
 
         # String.starts_with?(p, "-") ->
         #   Map.update!(params, :minus_terms, fn ps -> [p | ps] end)
@@ -341,5 +442,13 @@ defmodule Stitch.Messages.Search do
 
   defp strip_exact_search_delimiters(term) do
     term |> String.replace_prefix("\"", "") |> String.replace_suffix("\"", "")
+  end
+
+  @doc """
+  iex> string_init("abcd")
+  > "abc"
+  """
+  def string_init(string) do
+    String.slice(string, 0..(String.length(string) - 2))
   end
 end

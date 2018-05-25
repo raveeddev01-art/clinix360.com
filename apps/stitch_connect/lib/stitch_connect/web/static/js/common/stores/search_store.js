@@ -11,6 +11,7 @@ class SearchStore {
   @observable messages = [];
   @observable loading = false;
   @observable hasMore = false;
+  @observable orderBy = "recency"
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -190,6 +191,15 @@ class SearchStore {
   }
 
   @action
+  setOrder(orderBy) {
+    this.orderBy = orderBy;
+    this.messages = [];
+    this.hasMore = true;
+    this.loading = false;
+    this.loadMore();
+  }
+
+  @action
   loadMore() {
     if (this.loading || !this.hasMore || this.queryIsBlank) {
       return;
@@ -202,6 +212,7 @@ class SearchStore {
         term: this.query,
         skip: this.messages.length,
         limit: this.limit,
+        search_order: this.orderBy,
         v: 2
       }
     }).then(response => {
