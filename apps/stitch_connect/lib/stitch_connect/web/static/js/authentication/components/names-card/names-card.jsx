@@ -8,7 +8,8 @@ import { OnboardCard } from "common/components";
 import { isValidUnicodeString } from "lib/utils";
 
 function formatUsername(givenUsername) {
-  return givenUsername.replace(/[^0-9a-zA-Z]/g, "").toLowerCase();
+  // letters, numbers, periods, hyphens, and underscores
+  return givenUsername.replace(/[^0-9a-zA-Z|\-|_|.]/g, "").toLowerCase();
 }
 
 function formatName(givenUsername) {
@@ -139,7 +140,7 @@ class NamesCards extends Component {
           <FormGroup inline bsSize="large">
             <ControlLabel>Full Name</ControlLabel>
             <div className="inline-input-holder">
-              <div className="inline-input">
+              <div className="inline-half-input">
                 <FormControl
                   required
                   autoFocus
@@ -149,7 +150,7 @@ class NamesCards extends Component {
                   onChange={this.onChange("firstName")}
                 />
               </div>
-              <div className="bar">
+              <div className="inline-half-input">
                 <FormControl
                   required
                   placeholder="Last Name"
@@ -170,7 +171,7 @@ class NamesCards extends Component {
               maxLength={20}
             />
           </FormGroup>
-          <HelpBlock className="m-b-20">
+          <HelpBlock className="onboarding-hint m-b-20">
             Usernames must be lowercase and contian only letters, numbers,
             periods, hyphens, and underscores.
           </HelpBlock>
