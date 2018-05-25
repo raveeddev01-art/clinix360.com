@@ -5,9 +5,7 @@ import { withRouter, Redirect } from "react-router-dom";
 import { alertModal } from "common/modals";
 import TeamName from "../components/team-name-card/team-name-card";
 import TeamUrl from "../components/team-url-card/team-url-card";
-import NameInput from "../components/name-card/name-card";
-import PhoneNumber from "../components/phone-number-card/phone-number-card";
-import Username from "../components/username-card/username-card";
+import Names from "../components/names-card/names-card";
 import Password from "../components/password-card/password-card";
 import Pin from "../components/pin-card/pin-card";
 import Invites from "../components/invites-card/invites-card";
@@ -15,15 +13,13 @@ import TeamInfo from "../components/team-info-card/team-info-card";
 import Hipaa from "../components/hipaa-card/hipaa-card";
 
 const stepList = [
+  { field: "names", component: Names },
+  { field: "password", component: Password },
   { field: "teamname", component: TeamName },
   { field: "teamurl", component: TeamUrl },
-  { field: "name", component: NameInput },
-  { field: "phone", component: PhoneNumber },
-  { field: "username", component: Username },
-  { field: "password", component: Password },
+  { field: "invites", component: Invites },
   { field: "pin", component: Pin },
   { field: "hipaa", component: Hipaa },
-  { field: "invites", component: Invites },
   { field: "teaminfo", component: TeamInfo }
 ];
 

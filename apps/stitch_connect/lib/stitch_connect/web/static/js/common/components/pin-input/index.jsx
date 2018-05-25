@@ -123,6 +123,8 @@ class PinInput extends Component {
       comps.push(
         <input
           type="password"
+          pattern="\d*"
+          inputMode="numeric"
           className="form-control"
           autoFocus={i === 0}
           key={`code_${i}`}

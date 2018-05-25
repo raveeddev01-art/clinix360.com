@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 
-import Form from "react-bootstrap/lib/Form";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
+import Form from "react-bootstrap/lib/Form";
+import FormControl from "react-bootstrap/lib/FormControl";
+import FormGroup from "react-bootstrap/lib/FormGroup";
 import Cookies from "js-cookie";
 
 import browserDetails from "../../lib/browser_details";

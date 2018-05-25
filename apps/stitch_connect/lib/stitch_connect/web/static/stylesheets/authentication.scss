@@ -14,6 +14,10 @@
   }
 }
 
+.onboarding-hint {
+  font-size: 16px;
+}
+
 .locked-app-wrapper {
   min-height: 100vh;
   display: flex;
@@ -32,8 +36,17 @@
 .authentication-wrapper {
   height: 100vh;
 
+  label {
+    text-align: left;
+    font-weight: 700;
+    font-size: 20px;
+    color: $brand-primary;
+    margin: 5px 0px 15px;
+  }
+
   .form-control {
     flex: 1;
+    flex-shrink: 1;
     height: 53px;
     border: 2px solid #d8d8d8;
     box-shadow: none;
@@ -44,17 +57,29 @@
     }
   }
 
+  .foo {
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .bar {
+    width: 47%;
+  }
+
   .next-button-interior {
+    padding-left: 7px;
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    width: 50px;
+    width: 60px;
     font-weight: 700;
   }
 
   .next-arrow-wrapper {
     font-size: 11px;
     margin-top: 1px;
+    padding-right: 5px;
   }
 
   > div {
@@ -97,10 +122,6 @@
     max-width: 450px;
     min-width: 200px;
     padding: 20px;
-
-    div {
-      text-align: center;
-    }
   }
 
   .authentication-card {
@@ -115,6 +136,12 @@
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+
+    .card-description {
+      text-align: left;
+      color: #737373;
+    }
+
 
     @media (min-width: $screen-sm) {
       padding: 40px 60px 50px;
@@ -142,6 +169,16 @@
           color: #666;
           background: #eee;
         }
+      }
+    }
+
+    h1 {
+      font-size: 40px;
+    }
+
+    @media (max-width: $screen-sm) {
+      h1 {
+        font-size: 30px;
       }
     }
 

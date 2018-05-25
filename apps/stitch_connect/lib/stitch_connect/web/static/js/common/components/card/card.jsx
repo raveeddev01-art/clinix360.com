@@ -10,7 +10,13 @@ import Alert from "react-bootstrap/lib/Alert";
 class Card extends Component {
   _renderDescription = () => {
     const { description } = this.props;
-    return description && <h4>{description}</h4>;
+    return (
+      description && (
+        <h5>
+          <div className="card-description">{description}</div>
+        </h5>
+      )
+    );
   };
 
   _renderError = () => {
