@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 // import HelpBlock from "react-bootstrap/lib/HelpBlock";
@@ -63,7 +64,7 @@ class EmailCard extends Component {
           title="Create a new team"
           description={
             <span>
-              Enter your <strong>email address</strong>
+              Enter your email address to start creating your team on Stitch
             </span>
           }
           onNext={this.onNext}
@@ -71,6 +72,7 @@ class EmailCard extends Component {
           disableNext={!this.state.formValid}
         >
           <FormGroup bsSize="large">
+            <ControlLabel>Email Address</ControlLabel>
             <FormControl
               name={`email_${new Date().getTime()}`}
               required

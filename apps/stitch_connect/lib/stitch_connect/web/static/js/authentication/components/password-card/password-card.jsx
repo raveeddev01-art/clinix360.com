@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 
@@ -32,16 +33,13 @@ class PasswordCard extends Component {
       <div>
         <OnboardCard
           {...this.props}
-          title="Password"
-          description={
-            <span>
-              Enter a <strong>password</strong>.
-            </span>
-          }
+          title="Set your password"
+          description={<span>Select a password for signing into Stitch</span>}
           onNext={this._onNext}
           disableNext={formValid}
         >
           <FormGroup bsSize="large">
+            <ControlLabel>Password</ControlLabel>
             <FormControl
               required
               autoFocus
