@@ -8,22 +8,9 @@
 <tr>
   <td class="content-block">
     <p>
-      You have <%= @new_message_count %> new <%= @inflected_message %> waiting for you.
+      You have<%=@count_string%>from <b><%=@team_name%></b> (<b><a href="<%=@team_url%>"><%=@team_url%></a></b>).
     </p>
-  </td>
-</tr>
-<tr>
-  <td style="text-align: center;" class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-    <a href="<%= @login_url %>" class="btn-primary" itemprop="url">
-      Sign-in to Stitch Connect
-    </a>
-  </td>
-</tr>
-<tr>
-  <td class="content-block" style="text-align: center">
-    <p>
-      <strong>Your sign-in email is:</strong> <%= @receiver_email %>
-    </p>
+    <hr>
   </td>
 </tr>
 <tr>
@@ -42,25 +29,19 @@
             </a>
             <div>
               <a href="<%= message.group_url %>" class="username"><%= message.user.first_name %> <%= message.user.last_name %></a>
-              <span time="time"><%= message.inserted_at %></span>
+              <span class="time"><%= message.inserted_at %></span>
               <br />
               <%= message.text_content %>
             </div>
           </div>
         <% end %>
+        <hr>
       <% end %>
     </div>
   </td>
 </tr>
 <tr>
   <td class="content-block">
-    <p>
-      If you need anything, we can help. Reply to this email or send a new one to us by clicking <a href="mailto:support@teamstitch.com" target="_blank">here</a>. We're online 7 days a week and love to hear from you :)
-    </p>
-    <p>
-      See you inside!<br />
-      -- Team Stitch
-    </p>
     <p>
       <br />
       <a href="<%= @notification_settings_url %>">Turn these email notifications off on your account page.</a>

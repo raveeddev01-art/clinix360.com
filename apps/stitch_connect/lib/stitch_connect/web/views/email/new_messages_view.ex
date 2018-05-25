@@ -1,4 +1,5 @@
 defmodule StitchConnect.Web.Email.NewMessagesView do
+  alias Stitch.Group
   use Bamboo.Phoenix, view: StitchConnect.Web.EmailView
 
   @from_address {"Stitch", "no-reply@teamstitch.com"}
@@ -8,6 +9,11 @@ defmodule StitchConnect.Web.Email.NewMessagesView do
 
     user_time = format_datetime_subject(recipient.timezone)
     inflected_message = if recipient.new_message_count == 1, do: "message", else: "messages"
+
+    dm_count = Enum.count(messages, &message_is_dm/1)
+    # this could be technically incorrect (if DMs and mentions overlap)
+    # but we don't want to double count messages
+    mention_count = recipient.new_message_count - dm_count
 
     new_email()
     |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || recipient.email)
@@ -19,8 +25,11 @@ defmodule StitchConnect.Web.Email.NewMessagesView do
       receiver_email: recipient.email,
       first_name: recipient.first_name,
       login_url: recipient.login_url,
-      inflected_message: inflected_message,
       new_message_count: recipient.new_message_count,
+      inflected_message: inflected_message,
+      count_string: count_string(dm_count, mention_count),
+      team_name: team.name,
+      team_url: "#{team.slug}.#{System.get_env("APP_HOST")}",
       # TODO: Implement HIPAA switch; Enabled by default
       groups: prepare_messages(team, recipient, true),
       notification_settings_url: notification_settings(team)
@@ -38,6 +47,27 @@ defmodule StitchConnect.Web.Email.NewMessagesView do
       messages: prepare_messages(messages, user),
       login_url: login_url(team)
     }
+  end
+
+  defp count_string(dm_count, mention_count) do
+    substring =
+      [dm_string(dm_count), mention_string(mention_count)]
+      |> Enum.reject(&is_nil/1)
+      |> Enum.join(" and ")
+
+    " #{substring} "
+  end
+
+  defp dm_string(0), do: nil
+  defp dm_string(1), do: "1 direct message"
+  defp dm_string(count), do: "#{count} direct messages"
+
+  defp mention_string(0), do: nil
+  defp mention_string(1), do: "1 mention"
+  defp mention_string(count), do: "#{count} mentions"
+
+  defp message_is_dm(message) do
+    Group.type(message.group) == "single-dm" || Group.type(message.group) == "multi_dm"
   end
 
   def prepare_messages(messages, recipient) do
@@ -75,7 +105,7 @@ defmodule StitchConnect.Web.Email.NewMessagesView do
     if recipient_id in message.mentioned_user_ids do
       "mentioned you in a room message."
     else
-      "sent a new room message."
+      "sent a new direct message."
     end
   end
 
