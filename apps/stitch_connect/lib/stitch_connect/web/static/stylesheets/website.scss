@@ -116,12 +116,12 @@
     border-color: $brand-primary;
     margin: 40px 0;
     @media (min-width: 768px) {
-      margin: 40px auto;
+      margin: 40px auto 70px;
     }
   }
 
   .create-team-form {
-    margin: 20px auto 40px;
+    margin: 20px auto 50px;
     @media(min-width: 768px) {
       margin-bottom: 25px;
     }
@@ -242,9 +242,9 @@
 
   //----------------- HOMEPAGE -----------------
   .our-customers {
-    padding: 0 0 80px;
+    padding: 0 0 50px;
     @media (min-width: 768px) {
-      padding: 80px 0;
+      padding: 50px 0 80px;
     }
 
     h2, h3 {
@@ -288,9 +288,9 @@
   }
 
   .stitch-products {
-    padding: 20px 0 80px;
+    padding: 20px 0 50px;
     @media (min-width: 768px) {
-      padding: 80px 0;
+      padding: 50px 0 80px;
     }
 
     h2, h3 {
@@ -312,11 +312,14 @@
       }
 
       .flex-item {
-        padding: 0;
+        flex: 1 0 auto;
+        // padding: 0;
         margin-bottom: 25px;
         @media(min-width: 769px) {
+          flex: 1;
           max-width: 310px;
           margin: 0 15px;
+          padding: 0;
 
           &:first-of-type {
             margin-left: 15px;
@@ -1117,7 +1120,10 @@
     color: #036;
     background-color: #fff;
     box-shadow: 0 -1px 0 #eaeaea;
-    padding: 60px 0;
+    padding: 50px 0;
+    @media (min-width: 768px) {
+      padding: 60px 0;
+    }
 
     // .flex-box {
     //   flex-direction: column;
