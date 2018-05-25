@@ -3,8 +3,11 @@ import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import Alert from "react-bootstrap/lib/Alert";
 import { OnboardCard } from "common/components";
+
+function formatTeamName(givenTeamName) {
+  return givenTeamName.replace(/\s/g, "").toLowerCase();
+}
 
 class TeamUrlCard extends Component {
   constructor(...args) {
@@ -16,10 +19,9 @@ class TeamUrlCard extends Component {
       loading: false
     };
   }
-
   onChange = evt => {
     this.setState({
-      teamUrl: evt.target.value.replace(/\s/g, "") // disallowing spaces
+      teamUrl: formatTeamName(evt.target.value)
     });
   };
 
@@ -49,6 +51,20 @@ class TeamUrlCard extends Component {
       });
   };
 
+  get errorText() {
+    const { hasPatternError, hasUniquenessError } = this.state;
+
+    if (hasPatternError) {
+      return "Your team URL can only contain lowercase letters, numbers and dashes. It also must start with a letter or number.";
+    }
+
+    if (hasUniquenessError) {
+      return "This team URL is taken. Please choose another one.";
+    }
+
+    return "";
+  }
+
   patternValidate = () => {
     const { teamUrl } = this.state;
 
@@ -73,29 +89,10 @@ class TeamUrlCard extends Component {
   }
 
   render() {
-    const {
-      teamUrl,
-      hasUniquenessError,
-      hasPatternError,
-      loading
-    } = this.state;
+    const { teamUrl, loading } = this.state;
 
     return (
       <div>
-        {hasPatternError && (
-          <Alert bsStyle="danger">
-            Your team URL can only contain lowercase letters, numbers and
-            dashes. It also must start with a letter or number.
-          </Alert>
-        )}
-
-        {!hasPatternError &&
-          hasUniquenessError && (
-            <Alert bsStyle="danger">
-              This team URL is taken. Please choose another one.
-            </Alert>
-          )}
-
         <OnboardCard
           {...this.props}
           title="Team URL"
@@ -104,6 +101,7 @@ class TeamUrlCard extends Component {
               Enter your <strong>Team URL</strong>.
             </span>
           }
+          errorText={this.errorText}
           onNext={this.onNext}
           loading={loading}
           disableNext={!teamUrl}

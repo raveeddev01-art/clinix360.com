@@ -74,6 +74,10 @@ class Confirmation extends Component {
     }
   };
 
+  get errorText() {
+    return "The confirmation code doesn't match the one we have on record. Please check your email again.";
+  }
+
   digitComponents = {};
 
   moveLeft = index => {
@@ -156,16 +160,11 @@ class Confirmation extends Component {
               Enter your <strong>confirmation code</strong>
             </span>
           }
+          errorText={this.state.error && this.errorText}
           loading={this.state.loading}
           onNext={this.onNext}
         >
           <div className="confirmation-code m-b-20">
-            {this.state.error && (
-              <Alert bsStyle="danger">
-                The confirmation code doesn&#39;t match the one we have on
-                record. Please check your email again.
-              </Alert>
-            )}
             <InputGroup className="code-group">
               {this.renderCodeInput(0, 3)}
             </InputGroup>

@@ -5,11 +5,16 @@ import Navbar from "react-bootstrap/lib/Navbar";
 import NavItem from "react-bootstrap/lib/NavItem";
 import cx from "classnames";
 import { Link } from "react-router-dom";
+import Alert from "react-bootstrap/lib/Alert";
 
 class Card extends Component {
   _renderDescription = () => {
     const { description } = this.props;
     return description && <h4>{description}</h4>;
+  };
+
+  _renderError = () => {
+    return <Alert bsStyle="danger">{this.props.errorText}</Alert>;
   };
 
   goToFindTeam() {
@@ -44,6 +49,7 @@ class Card extends Component {
           </Navbar>
         </div>
         <div className="authentication-body">
+          {this.props.errorText && this._renderError()}
           <h1>{title}</h1>
           {this._renderDescription()}
           {children}
@@ -65,7 +71,8 @@ Card.propTypes = {
   ]),
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
-  className: PropTypes.string
+  className: PropTypes.string,
+  errorText: PropTypes.node
 };
 
 Card.defaultProps = {
@@ -73,7 +80,8 @@ Card.defaultProps = {
   description: "",
   title: "",
   className: "",
-  footer: ""
+  footer: "",
+  errorText: ""
 };
 
 export default Card;

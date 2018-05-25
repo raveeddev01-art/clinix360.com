@@ -91,7 +91,7 @@ OnboardInputCard.defaultProps = {
   title: "",
   placeholder: "",
   helperText: "",
-  nextButtonText: "Next",
+  nextButtonText: "Next →",
   type: "text",
   value: "",
   disableNext: false,

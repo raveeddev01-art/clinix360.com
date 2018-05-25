@@ -31,6 +31,7 @@ class OnboardCard extends Component {
         className="btn m-b-40"
         disabled={this.props.disableNext}
         loading={this.props.loading}
+        onClick={this._onNext}
       >
         {this.props.nextButtonText}
       </LoadingButton>
@@ -38,11 +39,12 @@ class OnboardCard extends Component {
   }
 
   render() {
-    const { title, children, description } = this.props;
+    const { title, children, description, errorText } = this.props;
     return (
       <Card
         title={title}
         description={description}
+        errorText={errorText}
         footer={this.renderFooter()}
       >
         <Form onSubmit={this._onNext}>{children}</Form>
@@ -56,6 +58,7 @@ OnboardCard.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
+  errorText: PropTypes.node,
   onNext: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
@@ -69,6 +72,7 @@ OnboardCard.defaultProps = {
   onNext: () => {},
   description: "",
   title: "",
+  errorText: "",
   nextButtonText: "Next →",
   disableNext: false,
   loading: false
