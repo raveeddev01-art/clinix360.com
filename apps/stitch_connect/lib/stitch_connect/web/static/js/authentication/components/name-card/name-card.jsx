@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import Alert from "react-bootstrap/lib/Alert";
 import { OnboardCard } from "common/components";
 import { isValidUnicodeString } from "lib/utils";
 
@@ -40,7 +39,8 @@ class NameCard extends Component {
 
     return this.props.onNext({
       firstname: firstName,
-      lastname: lastName
+      lastname: lastName,
+      alertMessage: ""
     });
   };
 
@@ -49,10 +49,10 @@ class NameCard extends Component {
 
     return (
       <div>
-        {alertMessage && <Alert bsStyle="danger">{alertMessage}</Alert>}
         <OnboardCard
           {...this.props}
           title="Name"
+          errorText={alertMessage}
           description={
             <span>
               Enter your <strong>full name</strong>

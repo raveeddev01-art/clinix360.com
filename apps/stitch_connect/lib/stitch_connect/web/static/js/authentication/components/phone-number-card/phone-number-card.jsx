@@ -3,8 +3,12 @@ import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import Alert from "react-bootstrap/lib/Alert";
 import { OnboardCard } from "common/components";
+
+function formatNumber(numStr) {
+  // allow: +1 (123) 456-7890 ext. #23*
+  return numStr.replace(/[^0-9|\-|+|\(|\)|e|x|t|E|X|T|\.| |#|\*]/g, "");
+}
 
 class PhoneNumberCard extends Component {
   constructor(...args) {
@@ -18,7 +22,7 @@ class PhoneNumberCard extends Component {
 
   onChange = evt => {
     this.setState({
-      phone: evt.target.value
+      phone: formatNumber(evt.target.value)
     });
   };
 
@@ -28,18 +32,19 @@ class PhoneNumberCard extends Component {
     this.props.onNext(this.state.phone);
   };
 
+  get errorText() {
+    return "This phone number is invalid.";
+  }
+
   render() {
     const { phone, hasError, loading } = this.state;
 
     return (
       <div>
-        {hasError && (
-          <Alert bsStyle="danger">This phone number is invalid.</Alert>
-        )}
-
         <OnboardCard
           {...this.props}
           title="Phone Number"
+          errorText={hasError && this.errorText}
           description={
             <span>
               Enter your <strong>phone number</strong>
