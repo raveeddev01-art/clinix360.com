@@ -12,14 +12,9 @@
     width: 100%;
     margin: 0 auto;
     padding: 0 6vw;
-    transition: padding .3s;
     
-    @media (min-width: 48rem) {
+    @media screen and (min-width: 48rem) {
       padding: 0 5vw;
-    }
-
-    @media (min-width: 800px) and (max-width: 1000px) {
-      padding: 0 12vw;
     }
 
     @media (min-width: 1280px) {
@@ -35,6 +30,7 @@
   //----------------- COMPONENTS -----------------
   .flex-box {
     display: flex;
+    align-items: center;
     flex-direction: column;
     -ms-flex-direction: column;
     margin-right: -15px;
@@ -46,7 +42,23 @@
       padding-left: 15px;
       padding-right: 15px;
     }
+    
+    @media(min-width: 992px) {
+      flex-direction: row; 
+      -ms-flex-direction: row;
+
+      .flex-item {
+        flex: 1;
+      }
+    }
   }
+
+  // .flex-box {
+  //   align-items: center;
+  //   @media (max-width: 992px) {
+  //     flex-direction: column;
+  //   }
+  // }
 
   .btn {
     font-size: 15px;
@@ -98,24 +110,13 @@
 
   h4 { font-size: 17px; }
 
-  @media(min-width: 768px) {
-    .flex-box { 
-      flex-direction: row; 
-      -ms-flex-direction: row;
-
-      .flex-item {
-        flex: 1;
-      }
-    }
-  }
-
   hr.section-line {
     width: 140px;
     border-width: 4px;
     border-color: $brand-primary;
-    margin: 40px 0 60px;
+    margin: 40px 0;
     @media (min-width: 768px) {
-      margin: 40px auto 60px;
+      margin: 40px auto;
     }
   }
 
@@ -167,7 +168,7 @@
       width: 100%;
       max-width: 470px;
       margin: 0 auto;
-      @media (min-width: 993px) {
+      @media (min-width: 992px) {
         max-width: 85%;
         margin-left: auto;
         margin-right: 0;   
@@ -176,9 +177,9 @@
 
     .flex-box {
       align-items: center;
-      @media (max-width: 992px) {
-        flex-direction: column;
-      }
+      // @media (max-width: 992px) {
+      //   flex-direction: column;
+      // }
     }
 
     .product-heading {
@@ -241,8 +242,10 @@
 
   //----------------- HOMEPAGE -----------------
   .our-customers {
-    // background: #f0f1f3;
-    padding: 80px 0;
+    padding: 0 0 80px;
+    @media (min-width: 768px) {
+      padding: 80px 0;
+    }
 
     h2, h3 {
       @media (min-width: 768px) {
@@ -285,7 +288,10 @@
   }
 
   .stitch-products {
-    padding: 80px 0;
+    padding: 20px 0 80px;
+    @media (min-width: 768px) {
+      padding: 80px 0;
+    }
 
     h2, h3 {
       @media (min-width: 768px) {
@@ -306,10 +312,10 @@
       }
 
       .flex-item {
-        max-width: 310px;
         padding: 0;
         margin-bottom: 25px;
         @media(min-width: 769px) {
+          max-width: 310px;
           margin: 0 15px;
 
           &:first-of-type {
@@ -479,14 +485,14 @@
       padding: 16px 30px;
     }
 
-    .flex-box {
-      .flex-item {
-        flex: 1 0 auto;
-        @media (min-width: 992px) {
-          flex: 1;
-        }
-      }
-    }
+    // .flex-box {
+    //   .flex-item {
+    //     flex: 1 0 auto;
+    //     @media (min-width: 992px) {
+    //       flex: 1;
+    //     }
+    //   }
+    // }
 
     .subheader {
       .product-heading {
@@ -530,7 +536,7 @@
       &.alt {
         background: #f0f1f3;
 
-        @media (min-width: 993px) {
+        @media (min-width: 992px) {
           .flex-box {
             flex-direction: row-reverse;
             -ms-flex-direction: row-reverse;
@@ -1113,6 +1119,22 @@
     box-shadow: 0 -1px 0 #eaeaea;
     padding: 60px 0;
 
+    // .flex-box {
+    //   flex-direction: column;
+      
+    //   .flex-item {
+    //     flex: 1 0 auto;
+    //   }
+
+    //   @media (min-width: 768px) {
+    //     flex-direction: row;
+
+    //     .flex-item {
+    //       flex: 1;
+    //     }
+    //   }
+    // }
+
     h3 {
       font-size: 24px;
       font-weight: 900;
@@ -1124,12 +1146,13 @@
       font-size: 18px;
       margin: 0;
     }
-  }
 
-  .flex-box {
-    align-items: center;
-    @media (max-width: 992px) {
-      flex-direction: column;
+    .create-team-form {
+      margin: 25px 0 0; 
+
+      @media (min-width: 992px) {
+        margin: 0;
+      }
     }
   }
 }
