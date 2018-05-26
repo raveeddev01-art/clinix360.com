@@ -5,8 +5,10 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
-import { Card } from "common/components";
 import isEmpty from "lodash/isEmpty";
+
+import { Card } from "common/components";
+import LoadingButton from "../../../common/components/loading-button";
 
 class InvitesCard extends Component {
   constructor(...args) {
@@ -76,6 +78,33 @@ class InvitesCard extends Component {
     return "There was an issue with one or more of your emails. Please ensure they are valid.";
   }
 
+  renderFooter() {
+    return (
+      <div className="invites-card-footer">
+        <Button
+          className="btn btn-lg invite-footer-btn invite-footer-btn-white"
+          onClick={this.onSkip}
+        >
+          Skip for now
+        </Button>
+
+        <LoadingButton
+          type="submit"
+          bsStyle="primary"
+          className="btn invite-footer-btn btn-lg"
+          onClick={this.onNext}
+        >
+          <div className="next-button-interior">
+            <div>Next</div>
+            <div className="next-arrow-wrapper">
+              <i className="fa fa-arrow-right" />
+            </div>
+          </div>
+        </LoadingButton>
+      </div>
+    );
+  }
+
   render() {
     const { invites, validationResults, alertMessage } = this.state;
 
@@ -86,11 +115,19 @@ class InvitesCard extends Component {
           errorText={alertMessage && this.errorText}
           description={
             <span>
-              Enter <strong>invitations</strong> to email out.
+              Your Stitch team is all set. Get started by bringing in your team
+              members to explore Stitch with you.
             </span>
           }
+          footer={this.renderFooter()}
         >
           <Form onSubmit={this.onNext}>
+            <div className="invite-form-laberl-wrapper">
+              <span>Email Address</span>
+              <Button className="link" onClick={this.onAddEmail}>
+                + Add Invitation
+              </Button>
+            </div>
             {invites.map((email, index) => {
               const validationState = validationResults[email] ? "error" : null;
               return (
@@ -103,7 +140,7 @@ class InvitesCard extends Component {
                     type="text"
                     value={email}
                     onChange={this.onChange(index)}
-                    placeholder="name@example.com"
+                    placeholder="name@domain.com"
                   />
                   {validationState === "error" && (
                     <HelpBlock className="text-left">
@@ -114,29 +151,6 @@ class InvitesCard extends Component {
                 </FormGroup>
               );
             })}
-
-            <Button block className="m-b-10" onClick={this.onAddEmail}>
-              Add Invitations
-            </Button>
-
-            <HelpBlock className="m-b-20">
-              Enter your team members&#39; email addresses so they can join your
-              team. You can also do this later after you set up your team.
-            </HelpBlock>
-
-            <Button block bsSize="lg" bsStyle="primary" type="submit">
-              Next
-            </Button>
-
-            <Button
-              block
-              bsSize="lg"
-              bsStyle="default"
-              className="m-b-40"
-              onClick={this.onSkip}
-            >
-              Skip this step
-            </Button>
           </Form>
         </Card>
       </div>

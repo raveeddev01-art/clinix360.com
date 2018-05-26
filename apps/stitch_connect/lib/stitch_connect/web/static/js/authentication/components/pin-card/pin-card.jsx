@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import { OnboardCard, PinInput } from "common/components";
 
@@ -31,22 +32,21 @@ class PinCard extends Component {
       <div>
         <OnboardCard
           {...otherProps}
-          title="PIN"
+          title="Set your PIN"
           description={
-            <span>
-              Enter a <strong>4-digit PIN</strong>.
-            </span>
+            <span>Set a 4 digit PIN for lockout access into Stitch.</span>
           }
           onNext={this.onNext}
           loading={saving}
           disableNext={!this.state.formValid}
         >
+          <ControlLabel>PIN</ControlLabel>
           <PinInput
-            className="m-b-20 m-center"
+            className="m-b-20"
             onValid={this.onValid}
             onInvalid={this.onInvalid}
           />
-          <HelpBlock className="m-b-20">
+          <HelpBlock className="onboarding-hint m-b-20">
             You can use this PIN when your screen is locked after a period of
             inactivity.
           </HelpBlock>

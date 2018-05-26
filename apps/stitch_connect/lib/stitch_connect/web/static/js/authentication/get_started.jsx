@@ -1,36 +1,44 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import Header from "./components/header/header";
+import Card from "../common/components/card/card";
 import Footer from "./components/footer/footer";
 
 export default class GetStarted extends Component {
   render() {
     return (
       <div>
-        <Header />
-        <div className="authentication-main">
-          <div className="authentication-card text-center">
-            <h2>Care Coordination</h2>
-
-            <h4>
-              Communicate, write notes, <br />track tasks, upload files, and{" "}
-              <br />
-              collaborate on any device.
-            </h4>
-
-            <Link to="/signin" className="btn btn-block btn-lg btn-primary">
-              Sign In
-            </Link>
+        <Card
+          title="Get Started"
+          description={
+            <span>
+              A Stitch team is a group of people using Stitch together for team
+              communication, patient communication, patient management, and
+              more.
+              <br />Are you looking to join an existing team or create a new
+              one?
+            </span>
+          }
+        >
+          <div>
             <Link
               to="/signup/email"
-              className="btn btn-block btn-lg btn-default m-b-40"
+              className="btn btn-lg btn-primary invite-footer-btn"
             >
-              Get Started
+              Create a New Team
             </Link>
           </div>
-        </div>
-        {!window.electronApp && <Footer />}
+
+          <div>
+            <Link
+              to="/signin"
+              className="btn btn-lg invite-footer-btn invite-footer-btn-white"
+            >
+              Find Your Team
+            </Link>
+          </div>
+        </Card>
+        {!window.electronApp && <Footer />} */
       </div>
     );
   }

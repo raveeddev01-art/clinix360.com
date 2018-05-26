@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
@@ -33,47 +34,40 @@ class TeamNameCard extends Component {
   renderDesc() {
     return (
       <span>
-        Enter your <strong>team name</strong>
+        Name your team after the group that will be using Stitch together.
       </span>
     );
   }
 
   render() {
     const { value } = this.state;
-    const {
-      type,
-      helperText,
-      placeholder,
-      isRequired,
-      children,
-      disableNext,
-      maxLength
-    } = this.props;
+    const { type, isRequired, disableNext, maxLength } = this.props;
 
     return (
       <div>
         <OnboardCard
           {...this.props}
-          title="Team Name"
-          helperText="This is the name of your team. It will show up in menus and headings."
-          placeholder="Ex. Care Clinic"
+          title="What is your team name?"
           onNext={this._onNext}
           description={this.renderDesc()}
           disableNext={disableNext || (isRequired && !value)}
         >
           <FormGroup bsSize="large">
+            <ControlLabel>Team Name</ControlLabel>
             <FormControl
               required={isRequired}
               autoFocus
               type={type}
-              placeholder={placeholder}
+              placeholder="Ex. Care Clinic."
               value={value}
               onChange={this._onChange}
               onFocus={this._onFocus}
               maxLength={maxLength}
             />
           </FormGroup>
-          <HelpBlock className="m-b-20">{helperText}</HelpBlock>
+          <HelpBlock className="onboarding-hint m-b-20">
+            You can change this later
+          </HelpBlock>
         </OnboardCard>
       </div>
     );

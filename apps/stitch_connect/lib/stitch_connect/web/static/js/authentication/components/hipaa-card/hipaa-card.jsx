@@ -25,46 +25,49 @@ class HipaaCard extends Component {
     });
   };
 
-  render() {
+  renderFooter() {
     const { saving } = this.props;
 
     return (
-      <div>
+      <LoadingButton
+        type="submit"
+        bsStyle="primary"
+        bsSize="lg"
+        className="btn m-b-40"
+        disabled={!this.state.hipaaAgreed}
+        loading={saving}
+        onClick={this._onNext}
+      >
+        Done!
+      </LoadingButton>
+    );
+  }
+
+  render() {
+    return (
+      <div className="onboarding-hipaa">
         <Card
           title="HIPAA"
-          description={<strong>Business Associate Agreement</strong>}
+          description={
+            <span>
+              By checking the box above, you represent that your team agrees to
+              the terms of the HIPAA Business Associate Agreement.
+            </span>
+          }
+          footer={this.renderFooter()}
         >
           <Form onSubmit={this.onNext}>
             <Checkbox
               name="hipaaAgreed"
               checked={this.state.hipaaAgreed}
               onChange={this.onChange}
+              footer={this.renderFooter()}
               className="m-b-20"
             >
               I agree to the terms of the HIPAA BAA
             </Checkbox>
 
-            <HelpBlock className="m-b-20">
-              By checking the box above, you represent that your team agrees to
-              the terms of the&nbsp;
-              <a href="/baa" target="_blank">
-                HIPAA BAA
-              </a>.
-            </HelpBlock>
-
-            <LoadingButton
-              block
-              bsSize="lg"
-              bsStyle="primary"
-              disabled={!this.state.hipaaAgreed}
-              type="submit"
-              className="m-b-20"
-              loading={saving}
-            >
-              Done!
-            </LoadingButton>
-
-            <HelpBlock className="m-b-20">
+            <HelpBlock className="onboarding-hint m-b-20">
               By proceeding to use Stitch, you agree to our&nbsp;
               <a href="/terms-of-service" target="_blank">
                 Terms of Service

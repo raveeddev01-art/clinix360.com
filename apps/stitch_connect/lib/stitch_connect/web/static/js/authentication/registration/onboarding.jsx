@@ -17,8 +17,8 @@ const stepList = [
   { field: "password", component: Password },
   { field: "teamname", component: TeamName },
   { field: "teamurl", component: TeamUrl },
-  { field: "invites", component: Invites },
   { field: "pin", component: Pin },
+  { field: "invites", component: Invites },
   { field: "hipaa", component: Hipaa },
   { field: "teaminfo", component: TeamInfo }
 ];

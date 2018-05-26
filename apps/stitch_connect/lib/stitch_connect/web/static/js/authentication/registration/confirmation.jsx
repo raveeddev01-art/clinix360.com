@@ -120,7 +120,8 @@ class Confirmation extends Component {
       })
         .then(() => {
           registrationStore.verified = true;
-          history.push("/signup/onboarding/teamname");
+          // CHANGE THIS
+          history.push("/signup/onboarding/invites");
         })
         .catch(() => {
           this.setState({ error: true, loading: false });

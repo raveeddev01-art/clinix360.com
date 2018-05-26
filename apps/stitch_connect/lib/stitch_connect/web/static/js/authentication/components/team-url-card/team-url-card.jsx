@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import { OnboardCard } from "common/components";
 
-function formatTeamName(givenTeamName) {
-  return givenTeamName.replace(/\s/g, "").toLowerCase();
+function formatTeamUrl(givenTeamName) {
+  return givenTeamName.replace(/[^0-9a-zA-Z|-]/g, "").toLowerCase();
 }
 
 class TeamUrlCard extends Component {
@@ -21,7 +22,7 @@ class TeamUrlCard extends Component {
   }
   onChange = evt => {
     this.setState({
-      teamUrl: formatTeamName(evt.target.value)
+      teamUrl: formatTeamUrl(evt.target.value)
     });
   };
 
@@ -95,10 +96,11 @@ class TeamUrlCard extends Component {
       <div>
         <OnboardCard
           {...this.props}
-          title="Team URL"
+          title="What URL do you want for your Stitch team?"
           description={
             <span>
-              Enter your <strong>team url</strong>.
+              This is the address you and your team will use to sign in to
+              Stitch.
             </span>
           }
           errorText={this.errorText}
@@ -106,11 +108,11 @@ class TeamUrlCard extends Component {
           loading={loading}
           disableNext={!teamUrl}
         >
+          <ControlLabel>Team URL</ControlLabel>
           <FormGroup bsSize="large" className="team-form">
             <FormControl
               required
               autoFocus
-              placeholder="Ex. care-clinic"
               value={teamUrl}
               onChange={this.onChange}
               onFocus={this.moveCaretAtEnd}
@@ -118,10 +120,8 @@ class TeamUrlCard extends Component {
             />
             <span className="domain">.teamstitch.com</span>
           </FormGroup>
-          <HelpBlock className="m-b-20">
-            This is the URL you will use to access Stitch.
-            <br />
-            You'll login here.
+          <HelpBlock className="onboarding-hint m-b-20">
+            Team URL must be letters, numbers, or dashes.
           </HelpBlock>
         </OnboardCard>
       </div>
