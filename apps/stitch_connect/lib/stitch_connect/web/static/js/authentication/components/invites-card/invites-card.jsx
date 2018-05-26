@@ -82,7 +82,7 @@ class InvitesCard extends Component {
     return (
       <div className="invites-card-footer">
         <Button
-          className="btn btn-lg invite-footer-btn invite-footer-btn-white"
+          className="btn btn-lg btn-new btn-new-inverse"
           onClick={this.onSkip}
         >
           Skip for now
@@ -91,7 +91,7 @@ class InvitesCard extends Component {
         <LoadingButton
           type="submit"
           bsStyle="primary"
-          className="btn invite-footer-btn btn-lg"
+          className="btn btn-lg btn-new"
           onClick={this.onNext}
         >
           <div className="next-button-interior">
@@ -122,35 +122,39 @@ class InvitesCard extends Component {
           footer={this.renderFooter()}
         >
           <Form onSubmit={this.onNext}>
-            <div className="invite-form-laberl-wrapper">
+            <div className="invite-form-label-wrapper">
               <span>Email Address</span>
               <Button className="link" onClick={this.onAddEmail}>
                 + Add Invitation
               </Button>
             </div>
-            {invites.map((email, index) => {
-              const validationState = validationResults[email] ? "error" : null;
-              return (
-                <FormGroup
-                  bsSize="large"
-                  key={`invite_email_${index}`}
-                  validationState={validationState}
-                >
-                  <FormControl
-                    type="text"
-                    value={email}
-                    onChange={this.onChange(index)}
-                    placeholder="name@domain.com"
-                  />
-                  {validationState === "error" && (
-                    <HelpBlock className="text-left">
-                      <i className="fa fa-exclamation-circle" />{" "}
-                      {validationResults[email]}
-                    </HelpBlock>
-                  )}
-                </FormGroup>
-              );
-            })}
+            <div className="invite-form-input-wrapper">
+              {invites.map((email, index) => {
+                const validationState = validationResults[email]
+                  ? "error"
+                  : null;
+                return (
+                  <FormGroup
+                    bsSize="large"
+                    key={`invite_email_${index}`}
+                    validationState={validationState}
+                  >
+                    <FormControl
+                      type="text"
+                      value={email}
+                      onChange={this.onChange(index)}
+                      placeholder="name@domain.com"
+                    />
+                    {validationState === "error" && (
+                      <HelpBlock className="text-left">
+                        <i className="fa fa-exclamation-circle" />{" "}
+                        {validationResults[email]}
+                      </HelpBlock>
+                    )}
+                  </FormGroup>
+                );
+              })}
+            </div>
           </Form>
         </Card>
       </div>

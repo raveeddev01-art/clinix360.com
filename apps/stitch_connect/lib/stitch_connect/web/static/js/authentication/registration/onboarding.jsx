@@ -9,18 +9,16 @@ import Names from "../components/names-card/names-card";
 import Password from "../components/password-card/password-card";
 import Pin from "../components/pin-card/pin-card";
 import Invites from "../components/invites-card/invites-card";
-import TeamInfo from "../components/team-info-card/team-info-card";
 import Hipaa from "../components/hipaa-card/hipaa-card";
 
 const stepList = [
   { field: "names", component: Names },
   { field: "password", component: Password },
+  { field: "pin", component: Pin },
   { field: "teamname", component: TeamName },
   { field: "teamurl", component: TeamUrl },
-  { field: "pin", component: Pin },
-  { field: "invites", component: Invites },
   { field: "hipaa", component: Hipaa },
-  { field: "teaminfo", component: TeamInfo }
+  { field: "invites", component: Invites }
 ];
 
 @inject("registrationStore")

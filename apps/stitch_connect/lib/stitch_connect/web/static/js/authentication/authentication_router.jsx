@@ -84,8 +84,6 @@ class AuthenticationRouter extends Component {
               path="/invitations/error"
               component={InvitationError}
             />
-
-            <Route component={() => <Redirect to="/" />} />
           </Switch>
         </div>
       </div>

@@ -33,7 +33,7 @@ class Card extends Component {
           {this._renderDescription()}
           {children}
         </div>
-        {footer}
+        <div className="authentication-footer">{footer}</div>
       </div>
     );
   }

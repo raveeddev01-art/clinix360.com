@@ -14,14 +14,15 @@
   }
 }
 
-// TODO: extract into a shared class!
-.invite-footer-btn {
+// Rename these things!
+.btn-new {
   margin-bottom: 40px;
   height: 50px;
   width: 180px;
+  color: #fff;
 }
 
-.invite-footer-btn-white {
+.btn-new-inverse {
   color: $brand-primary;
   height: 52px;
   font-weight: 700;
@@ -74,7 +75,7 @@
   }
 
   // rename
-  .invite-form-laberl-wrapper {
+  .invite-form-label-wrapper {
     width: 100%;
     display: inline-flex;
     justify-content: space-between;
@@ -92,6 +93,12 @@
       border: none;
       background: transparent;
       padding: 0;
+    }
+  }
+
+  .invite-form-input-wrapper {
+    input {
+      margin-bottom: 20px;
     }
   }
 
@@ -179,6 +186,7 @@
   
   .authentication-header {
     padding: 0px 20px;
+    flex: 1;
     .navbar-header {
       padding-left: 25px;
       padding-right: 25px;
@@ -186,10 +194,18 @@
   }
 
   .authentication-body {
+    flex: 4;
     width: 100%;
     max-width: 500px;
     min-width: 200px;
     padding: 20px;
+  }
+
+  .authentication-footer {
+    flex: 1;
+    width: 100%;
+    max-width: 500px;
+    min-width: 200px;
   }
 
   .authentication-card {
@@ -207,7 +223,7 @@
 
     .card-description {
       text-align: left;
-      color: #737373;
+      color: #4F4F4F;
     }
 
 
