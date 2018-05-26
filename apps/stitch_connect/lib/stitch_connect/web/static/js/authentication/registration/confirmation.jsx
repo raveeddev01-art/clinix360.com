@@ -120,7 +120,8 @@ class Confirmation extends Component {
       })
         .then(() => {
           registrationStore.verified = true;
-          // CHANGE THIS
+          // TODO: REMOVE THIS COMMENT
+          // THIS IS CHANGED
           history.push("/signup/onboarding/names");
         })
         .catch(() => {

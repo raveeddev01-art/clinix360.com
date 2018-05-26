@@ -14,22 +14,39 @@ export default class GetStarted extends Component {
               A Stitch team is a group of people using Stitch together for team
               communication, patient communication, patient management, and
               more.
-              <br />Are you looking to join an existing team or create a new
-              one?
+              <br />
+              <br />
+              Are you looking to join an existing team or create a new one?
             </span>
           }
           footer={<div />}
         >
-          <div>
-            <Link to="/signup/email" className="btn btn-lg btn-primary btn-new">
-              Create a New Team
-            </Link>
-          </div>
+          <div className="get-started-links">
+            <div className="get-started-link-wrapper">
+              <Link to="/signup/email" className="btn btn-new btn-new-primary">
+                Create a New Team
+              </Link>
+              <div className="get-started-link-description">
+                Set up your team on Stitch
+              </div>
+            </div>
+            <div className="get-started-link-separator">
+              <div className="get-started-link-separator-line" />
+              <div className="get-started-link-separator-text">or</div>
+              <div className="get-started-link-separator-line" />
+            </div>
 
-          <div>
-            <Link to="/signin" className="btn btn-lg btn-new btn-new-inverse">
-              Find Your Team
-            </Link>
+            <div className="get-started-link-wrapper">
+              <Link
+                to="/find-your-team"
+                className="btn btn-new btn-new-inverse"
+              >
+                Find Your Team
+              </Link>
+              <div className="get-started-link-description">
+                Join or sign in to an existing team
+              </div>
+            </div>
           </div>
         </Card>
       </div>

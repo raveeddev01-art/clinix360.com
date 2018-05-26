@@ -34,6 +34,10 @@ class OnboardCard extends Component {
   }
 
   renderFooter() {
+    if (this.props.hideFooter) {
+      return <div />;
+    }
+
     return (
       <LoadingButton
         type="submit"
@@ -75,7 +79,8 @@ OnboardCard.propTypes = {
   description: PropTypes.node,
   nextButtonText: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  hideFooter: PropTypes.bool
 };
 
 OnboardCard.defaultProps = {
@@ -86,7 +91,8 @@ OnboardCard.defaultProps = {
   errorText: "",
   nextButtonText: null,
   disableNext: false,
-  loading: false
+  loading: false,
+  hideFooter: false
 };
 
 export default OnboardCard;

@@ -16,16 +16,25 @@
 
 // Rename these things!
 .btn-new {
-  margin-bottom: 40px;
   height: 50px;
-  width: 180px;
   color: #fff;
+  font-weight: 700;
+}
+
+.btn-new-primary {
+  background-color: $brand-primary;
+  color: #fff;
+  padding: 12px 20px;
+
+  &:hover, &:focus {
+    color: #fff;
+    background: #036;
+  }
 }
 
 .btn-new-inverse {
   color: $brand-primary;
   height: 52px;
-  font-weight: 700;
   text-align: center;
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px $brand-primary;
@@ -33,7 +42,7 @@
 
   &:hover, &:focus {
     color: #fff;
-    background: #036;
+    background: $brand-primary;
   }
 }
 
@@ -72,6 +81,54 @@
     input[type="checkbox"] {
       margin-top: 9px;
     }
+  }
+
+  .get-started-links {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 0px;
+  }
+
+  .get-started-link-separator{ 
+    width: 100%;
+    text-align: center;
+    margin: 25px;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+
+    .get-started-link-separator-line {
+      flex: 5;
+      height: 1px;
+      border-top: solid 1px #ccc;
+    }
+    .get-started-link-separator-text {
+      flex: 1
+    }
+  }
+
+  .get-started-link-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    .btn-new {
+      width: 200px;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+  }
+
+  .get-started-link-description{
+    text-align: center;
+    width: 100%;
+    font-size: 16px;
   }
 
   // rename
@@ -172,6 +229,10 @@
     display: flex;
     flex-direction: column;
     padding: 120px 15px;
+
+    a {
+      color: $brand-primary;
+    }
     
     > div {
       width: 100%;
@@ -194,7 +255,7 @@
   }
 
   .authentication-body {
-    flex: 4;
+    flex: 3;
     width: 100%;
     max-width: 500px;
     min-width: 200px;

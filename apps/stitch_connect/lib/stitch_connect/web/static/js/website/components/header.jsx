@@ -29,8 +29,8 @@ class Header extends Component {
     window.location.href = `https://${applicationHost}/signin`;
   }
 
-  goToStartTrial() {
-    window.location.href = `https://${applicationHost}/signup/email`;
+  goToGetStarted() {
+    window.location.href = `https://${applicationHost}/getstarted`;
   }
 
   toggleProductsMenu = () => {
@@ -159,7 +159,7 @@ class Header extends Component {
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
-            <NavItem onClick={this.goToStartTrial} className="btn-trial">
+            <NavItem onClick={this.goToGetStarted} className="btn-trial">
               Get Started
             </NavItem>
           </Nav>
