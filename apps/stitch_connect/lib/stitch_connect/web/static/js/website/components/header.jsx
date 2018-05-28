@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
+import cx from "classnames";
 
 import Navbar from "react-bootstrap/lib/Navbar";
 import Nav from "react-bootstrap/lib/Nav";
@@ -9,6 +10,14 @@ import NavDropdown from "react-bootstrap/lib/NavDropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
 class Header extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      mobileNavOpened: false
+    };
+  }
+
   goToSignIn() {
     window.location.href = "https://teamstitch.com/signin";
   }
@@ -17,21 +26,36 @@ class Header extends Component {
     window.location.href = "https://teamstitch.com/signup/email";
   }
 
+  mobileNavToggle = () => {
+    this.setState({
+      mobileNavOpened: !this.state.mobileNavOpened
+    });
+  };
+
   render() {
-    // const logoLink = !window.electronApp ? `https://${applicationHost}` : "#";
+    const mobileNavClasses = cx({
+      "is-open": this.state.mobileNavOpened === true,
+      "is-hidden": this.state.mobileNavOpened === false
+    });
 
     return (
-      <Navbar id="header" inverse collapseOnSelect fixedTop>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to="/" className="brand">
-              <img src="/images/stitch-brand.png" alt="Stitch" />
-            </Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
+      <div style={{ "overflow-y": "auto" }}>
+        <Navbar
+          id="header"
+          inverse
+          fixedTop
+          // collapseOnSelect
+          // className={navbarClass}
+        >
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Link to="/" className="brand">
+                <img src="/images/stitch-brand.png" alt="Stitch" />
+              </Link>
+            </Navbar.Brand>
+            <Navbar.Toggle onClick={this.mobileNavToggle} />
+          </Navbar.Header>
 
-        <Navbar.Collapse>
           <Nav pullRight>
             <NavDropdown title="Products" id="products-dropdown">
               <LinkContainer to="/connect">
@@ -128,8 +152,99 @@ class Header extends Component {
               Get Started
             </NavItem>
           </Nav>
-        </Navbar.Collapse>
-      </Navbar>
+        </Navbar>
+
+        <nav id="mobile-nav" className={mobileNavClasses}>
+          <div className="header">
+            <div className="container">
+              <Link className="brand" to="/">
+                <img src="/images/stitch-brand-alt.png" alt="Stitch" />
+              </Link>
+
+              <a className="close-menu" onClick={this.mobileNavToggle}>
+                <i className="fa fa-close" />
+              </a>
+            </div>
+          </div>
+
+          <Navbar>
+            <Nav>
+              <NavDropdown title="Products" id="products-dropdown">
+                <LinkContainer to="/connect">
+                  <MenuItem>
+                    <div className="product-icon">
+                      <img src="/images/connect-menu.png" alt="" />
+                    </div>
+                    Connect
+                  </MenuItem>
+                </LinkContainer>
+
+                <LinkContainer to="/engage">
+                  <MenuItem>
+                    <div className="product-icon">
+                      <img src="/images/engage-menu.png" alt="" />
+                    </div>
+                    Engage
+                  </MenuItem>
+                </LinkContainer>
+
+                <LinkContainer to="/manage">
+                  <MenuItem>
+                    <div className="product-icon">
+                      <img src="/images/manage-menu.png" alt="" />
+                    </div>
+                    Manage
+                  </MenuItem>
+                </LinkContainer>
+              </NavDropdown>
+
+              <LinkContainer to="/pricing">
+                <NavItem>Pricing</NavItem>
+              </LinkContainer>
+
+              <NavDropdown title="Resources" id="resources-dropdown">
+                <LinkContainer to="/downloads">
+                  <MenuItem>
+                    <i className="fa fa-cloud-download" /> Downloads
+                  </MenuItem>
+                </LinkContainer>
+
+                <MenuItem
+                  href="https://intercom.help/teamstitch"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="fa fa-life-ring" /> Help Center
+                </MenuItem>
+
+                <MenuItem href={`https://${applicationHost}/jobs`}>
+                  <i className="fa fa-wrench" /> Jobs
+                </MenuItem>
+
+                <LinkContainer to="/customers">
+                  <MenuItem>
+                    <i className="fa fa-users" /> Customers
+                  </MenuItem>
+                </LinkContainer>
+
+                <MenuItem
+                  href="https://medium.com/stitch-health"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="fa fa-book" /> Blog
+                </MenuItem>
+              </NavDropdown>
+
+              <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
+
+              <NavItem onClick={this.goToStartTrial} className="btn-trial">
+                Get Started
+              </NavItem>
+            </Nav>
+          </Navbar>
+        </nav>
+      </div>
     );
   }
 }
