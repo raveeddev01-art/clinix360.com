@@ -476,6 +476,24 @@
     }
   }
 
+  .login-helpers {
+    font-size: 16px;
+    margin-top: 15px;
+
+    b {
+      color: #4F4F4F;
+    }
+
+    div {
+      margin-bottom: 15px;
+    }
+
+    a {
+      font-weight: 700;
+      color: $brand-primary;
+    }
+  }
+
   .cancel-login {
     font-size: 16px;
   }

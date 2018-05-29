@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
+
+import Alert from "react-bootstrap/lib/Alert";
+import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
-import Alert from "react-bootstrap/lib/Alert";
 import Cookies from "js-cookie";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-import { LoadingIcon } from "common/components";
-import Header from "../components/header/header";
-import Footer from "../components/footer/footer";
+import { Card, LoadingIcon } from "common/components";
 
 @inject("registrationStore", "titleStore")
 @observer
@@ -28,6 +29,7 @@ class Login extends Component {
 
   componentWillMount() {
     this.props.titleStore.setPageName("Sign In");
+
     const { location } = this.props;
     if (location.state && location.state.passwordReset === true) {
       this.setState({
@@ -36,7 +38,7 @@ class Login extends Component {
     }
   }
 
-  handleChange = event => {
+  onChange = event => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
@@ -46,7 +48,7 @@ class Login extends Component {
     });
   };
 
-  handleSubmit = evt => {
+  onSubmit = evt => {
     this.setState({ saving: true });
     evt.preventDefault();
     const { history } = this.props;
@@ -79,106 +81,86 @@ class Login extends Component {
       });
   };
 
-  _renderLoadingIcon = () => {
+  get errorText() {
+    return this.state.errorMessage;
+  }
+
+  renderLoadingIcon = () => {
     const { saving } = this.state;
 
     return saving && <LoadingIcon className="on-right" />;
   };
 
   render() {
+    const { teamName } = this.props.registrationStore;
     return (
-      <div>
-        <Header />
+      <Card
+        title={`Sign in to ${teamName}`}
+        errorText={this.errorText}
+        description={
+          <span>
+            Enter your team’s <b>email address</b> and <b>password</b>.
+          </span>
+        }
+        footer={<div />}
+      >
+        {this.state.passwordReset && (
+          <Alert bsStyle="success">Your password is now reset.</Alert>
+        )}
+        <Form onSubmit={this.onSubmit}>
+          <input type="hidden" name="_csrf_token" value={window.csrfToken} />
 
-        <div className="authentication-main">
-          {this.state.errorMessage && (
-            <Alert bsStyle="danger">{this.state.errorMessage}</Alert>
-          )}
-          {this.state.passwordReset && (
-            <Alert bsStyle="success">Your password is now reset.</Alert>
-          )}
-          <div className="authentication-card text-center m-b-20">
-            <h2>{this.props.registrationStore.teamName}</h2>
-            <h5 className="text-muted url-heading">
-              {this.props.registrationStore.teamSlug}.teamstitch.com
-            </h5>
+          <FormGroup bsSize="large">
+            <FormControl
+              name="email"
+              required
+              autoFocus
+              type="email"
+              placeholder="Email"
+              value={this.state.email}
+              onChange={this.onChange}
+            />
+          </FormGroup>
 
-            <h5>
-              Enter your <strong>email address</strong> and{" "}
-              <strong>password</strong>
-            </h5>
+          <FormGroup bsSize="large">
+            <FormControl
+              name="password"
+              required
+              type="password"
+              placeholder="Password"
+              value={this.state.password}
+              onChange={this.onChange}
+            />
+          </FormGroup>
 
-            <form action="/login" method="post" onSubmit={this.handleSubmit}>
-              <input
-                type="hidden"
-                name="_csrf_token"
-                value={window.csrfToken}
-              />
+          <Button
+            type="submit"
+            bsStyle="primary"
+            bsSize="lg"
+            className="btn-lg btn-block"
+          >
+            Login
+            {this.renderLoadingIcon()}
+          </Button>
+        </Form>
 
-              <FormGroup bsSize="large">
-                <FormControl
-                  name="email"
-                  required
-                  autoFocus
-                  type="email"
-                  placeholder="Email"
-                  value={this.state.email}
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
-
-              <FormGroup bsSize="large">
-                <FormControl
-                  name="password"
-                  required
-                  type="password"
-                  placeholder="Password"
-                  value={this.state.password}
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
-
-              <Button
-                type="submit"
-                bsStyle="primary"
-                bsSize="lg"
-                className="btn-block"
-              >
-                Login
-                {this._renderLoadingIcon()}
-              </Button>
-
-              <h5>
-                Forgot your password?{" "}
-                <Link to="/reset-password">
-                  <strong>Reset Password</strong>
-                </Link>
-              </h5>
-            </form>
+        <div className="login-helpers">
+          <div>
+            <Link to="/reset-password"> Forgot your password?</Link>
           </div>
 
-          <h5>
-            Don't have an account with this team?<br />
-            <strong>Contact the team administrator</strong>.
-          </h5>
+          <div>
+            <b>Don't have an account with this team?</b>
+            <br />
+            Contact the team administrator for an invitation.
+          </div>
 
-          <h5>
-            Wrong team?{" "}
-            <a href={`https://${applicationHost}/signin`}>
-              <strong>Sign in to a different team</strong>
-            </a>
-          </h5>
-
-          <h5>
+          <div>
             Just getting started?{" "}
-            <a href={`https://${applicationHost}/signup/email`}>
-              <strong>Create a new team</strong>
-            </a>
-          </h5>
+            <Link to="/signup/email">Create a new team.</Link>
+          </div>
         </div>
-
-        {!window.electronApp && <Footer />}
-      </div>
+      </Card>
     );
   }
 }

@@ -4,6 +4,7 @@ import cx from "classnames";
 import Alert from "react-bootstrap/lib/Alert";
 import MinimalHeader from "../../../authentication/components/header/minimal_header";
 
+// TODO: rename Card and maybe OnboardCard
 class Card extends Component {
   _renderDescription = () => {
     const { description } = this.props;
