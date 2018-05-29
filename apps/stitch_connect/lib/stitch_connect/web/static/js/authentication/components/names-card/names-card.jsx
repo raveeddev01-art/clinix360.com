@@ -33,6 +33,14 @@ class NamesCards extends Component {
     };
   }
 
+  onKeyPress = e => {
+    const hitEnter = e.charCode === 13 || e.keyCode === 13;
+
+    if (hitEnter) {
+      this.onNext();
+    }
+  };
+
   onChange = field => evt => {
     const val =
       field === "username"
@@ -47,6 +55,9 @@ class NamesCards extends Component {
     this.setState({ hasPatternError: false });
 
     if (!this.patternValidate()) {
+      this.setState({
+        alertMessage: "Username is invalid."
+      });
       return;
     }
 
@@ -65,7 +76,6 @@ class NamesCards extends Component {
       return;
     }
 
-    this.setState({ loading: true });
     get(`/api/v1/users/validate-username?username=${username}`, {
       hideNotify: true
     })
@@ -109,7 +119,7 @@ class NamesCards extends Component {
   patternValidate = () => {
     const { username } = this.state;
 
-    if (/[^a-z0-9]/.test(username)) {
+    if (/[^a-z0-9]/.test(username) || !username) {
       // starts with letter or number
       this.setState({ hasPatternError: true });
       return false;
@@ -148,6 +158,7 @@ class NamesCards extends Component {
                   value={firstName}
                   maxLength={80}
                   onChange={this.onChange("firstName")}
+                  onKeyPress={this.onKeyPress}
                 />
               </div>
               <div className="inline-half-input">
@@ -157,6 +168,7 @@ class NamesCards extends Component {
                   value={lastName}
                   maxLength={80}
                   onChange={this.onChange("lastName")}
+                  onKeyPress={this.onKeyPress}
                 />
               </div>
             </div>
@@ -169,6 +181,7 @@ class NamesCards extends Component {
               value={username}
               onChange={this.onChange("username")}
               maxLength={20}
+              onKeyPress={this.onKeyPress}
             />
           </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">
