@@ -1393,13 +1393,20 @@
       }
     }
 
-    .btn-trial a,
-    .btn-trial a:hover,
-    .btn-trial a:focus {
+    .btn-trial a {
       border: 1px solid $brand-primary;
       border-radius: 3px;
       padding: 10px 16px;
       margin: 6px 0 6px 6px;
+
+      &:hover,
+      &:focus {
+        color: #fff;
+        background: $brand-primary;
+        border-radius: 3px;
+        padding: 10px 16px;
+        margin: 6px 0 6px 6px;
+      }
     }
   }
 }
