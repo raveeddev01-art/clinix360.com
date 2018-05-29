@@ -57,7 +57,7 @@ class Header extends Component {
           </Navbar.Header>
 
           <Nav pullRight>
-            <NavDropdown title="Products" id="products-dropdown">
+            <NavDropdown title="Products" id="products-dropdown" noCaret>
               <LinkContainer to="/connect">
                 <MenuItem>
                   <i className="fa fa-comments" />
@@ -84,7 +84,7 @@ class Header extends Component {
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
-            <NavDropdown title="Resources" id="resources-dropdown">
+            <NavDropdown title="Resources" id="resources-dropdown" noCaret>
               <LinkContainer to="/downloads">
                 <MenuItem>
                   <i className="fa fa-cloud-download" /> Downloads

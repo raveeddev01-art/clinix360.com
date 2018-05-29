@@ -1283,6 +1283,7 @@
   border-radius: 0;
   border: 0;
   border-bottom: 1px solid #ebebeb;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, .04);
   margin: 0;
 
   .navbar-header {
@@ -1338,6 +1339,7 @@
       font-weight: 600;
       background: transparent;
       border-radius: 0;
+      padding: 15px 20px;
 
       i.fa {
         margin-right: 6px;
@@ -1372,7 +1374,7 @@
     .btn-trial a {
       border: 1px solid $brand-primary;
       border-radius: 3px;
-      padding: 10px 15px;
+      padding: 10px 16px;
       margin: 6px 0 6px 6px;
     }
   }
