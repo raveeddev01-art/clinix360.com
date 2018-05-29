@@ -131,6 +131,7 @@ class PinInput extends Component {
           value={this.state.digits[i]}
           onChange={this.onChangeCode(i)}
           onKeyDown={this.onKeyDown(i)}
+          onKeyPress={this.props.onKeyPress}
           ref={input => {
             this.digitComponents[i] = input;
           }}
@@ -154,6 +155,7 @@ class PinInput extends Component {
 PinInput.propTypes = {
   onValid: PropTypes.func.isRequired,
   onInvalid: PropTypes.func.isRequired,
+  onKeyPress: PropTypes.func,
   className: PropTypes.string,
   pin: PropTypes.string.isRequired
 };
@@ -161,6 +163,7 @@ PinInput.propTypes = {
 PinInput.defaultProps = {
   onValid: () => {},
   onInvalid: () => {},
+  onKeyPress: () => {},
   className: "",
   pin: ""
 };

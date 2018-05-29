@@ -16,19 +16,31 @@ class InvitesCard extends Component {
     this.state = {
       invites: ["", "", ""],
       validationResults: {},
-      alertMessage: ""
+      alertMessage: "",
+      loading: false
     };
   }
+
+  onKeyPress = e => {
+    const hitEnter = e.charCode === 13 || e.keyCode === 13;
+
+    if (hitEnter) {
+      this.onNext(e);
+    }
+  };
 
   onNext = event => {
     event.preventDefault();
 
     const { invites } = this.state;
+    this.setState({ loading: true });
+
     post("/api/v1/users/validate-emails", {
       body: { emails: this.state.invites },
       hideNotify: true
     })
       .then(response => {
+        this.setState({ loading: false });
         const validationResults = {};
         response.data.forEach((e, index) => {
           const email = invites[index];
@@ -48,7 +60,10 @@ class InvitesCard extends Component {
         }
       })
       .catch(() => {
-        this.setState({ alertMessage: "Emails validation has failed." });
+        this.setState({
+          alertMessage: "Emails validation has failed.",
+          loading: false
+        });
       });
   };
 
@@ -93,6 +108,7 @@ class InvitesCard extends Component {
           bsStyle="primary"
           className="btn btn-lg btn-new m-b-40"
           onClick={this.onNext}
+          loading={this.state.loading}
         >
           <div className="next-button-interior">
             <div>Next</div>
@@ -140,6 +156,7 @@ class InvitesCard extends Component {
                     validationState={validationState}
                   >
                     <FormControl
+                      autoFocus={index === 0}
                       type="text"
                       value={email}
                       onChange={this.onChange(index)}

@@ -24,6 +24,14 @@ class PinCard extends Component {
     });
   };
 
+  onKeyPress = e => {
+    const hitEnter = e.charCode === 13 || e.keyCode === 13;
+
+    if (hitEnter) {
+      this.onNext();
+    }
+  };
+
   onNext = () => this.props.onNext(this.state.pin);
 
   render() {
@@ -45,6 +53,7 @@ class PinCard extends Component {
             className="m-b-20"
             onValid={this.onValid}
             onInvalid={this.onInvalid}
+            onKeyPress={this.onKeyPress}
           />
           <HelpBlock className="onboarding-hint m-b-20">
             You can use this PIN when your screen is locked after a period of
