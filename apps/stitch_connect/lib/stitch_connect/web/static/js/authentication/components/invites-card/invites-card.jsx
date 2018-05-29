@@ -111,6 +111,7 @@ class InvitesCard extends Component {
     return (
       <div>
         <Card
+          footer={this.renderFooter()}
           title="Send Invitations"
           errorText={alertMessage && this.errorText}
           description={

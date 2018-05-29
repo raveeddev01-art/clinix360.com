@@ -56,6 +56,7 @@ class OnboardingPage extends Component {
         description={description}
         errorText={errorText}
         headerType={headerType}
+        footer={this.renderFooter()}
       >
         <Form onSubmit={this._onNext}>{children}</Form>
       </Card>
