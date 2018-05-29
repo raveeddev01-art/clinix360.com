@@ -29,7 +29,10 @@ export default class Landing extends Component {
             <Row>
               <Col xs={5}>
                 <a href="/" className="brand">
-                  <img src="/images/stitch-brand.png" alt="Stitch" />
+                  <img
+                    src="apps/stitch_connect/lib/stitch_connect/web/static/js/authentication/team/select_team.jsx"
+                    alt="Stitch"
+                  />
                 </a>
               </Col>
 
