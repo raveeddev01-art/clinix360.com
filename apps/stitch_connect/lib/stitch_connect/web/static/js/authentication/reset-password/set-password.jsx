@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import Alert from "react-bootstrap/lib/Alert";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
 import Button from "react-bootstrap/lib/Button";
 
 import { Card, PasswordValidator } from "common/components";
-import Header from "../components/header/header";
-import Footer from "../components/footer/footer";
 
 @inject("resetPasswordStore", "titleStore")
 @observer
@@ -57,47 +54,42 @@ class SetPassword extends Component {
   render() {
     const { password, error } = this.state;
     return (
-      <div>
-        <Header />
-        <div className="authentication-main">
-          {this.state.error && <Alert bsStyle="danger">{error}</Alert>}
-          <Card
-            title="Reset Password"
-            description={
-              <span>
-                Enter a <strong>password</strong>.
-              </span>
-            }
+      <Card
+        title="Reset Password"
+        errorText={error}
+        description={
+          <span>
+            Enter a <strong>password</strong>.
+          </span>
+        }
+        footer={<div />}
+      >
+        <Form onSubmit={this._onSubmit}>
+          <FormGroup bsSize="large">
+            <FormControl
+              required
+              autoFocus
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={this.onChange}
+            />
+          </FormGroup>
+          <PasswordValidator
+            password={password}
+            onChangeValid={this.onChangeValid}
+          />
+          <Button
+            type="submit"
+            bsStyle="primary"
+            bsSize="lg"
+            className="btn-block m-b-40"
+            disabled={this.state.formValid}
           >
-            <Form onSubmit={this._onSubmit}>
-              <FormGroup bsSize="large">
-                <FormControl
-                  required
-                  autoFocus
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={this.onChange}
-                />
-              </FormGroup>
-              <PasswordValidator
-                password={password}
-                onChangeValid={this.onChangeValid}
-              />
-              <Button
-                type="submit"
-                bsStyle="primary"
-                bsSize="lg"
-                className="btn-block m-b-40"
-                disabled={this.state.formValid}
-              >
-                Submit
-              </Button>
-            </Form>
-          </Card>
-        </div>
-        {!window.electronApp && <Footer />}
-      </div>
+            Submit
+          </Button>
+        </Form>
+      </Card>
     );
   }
 }
