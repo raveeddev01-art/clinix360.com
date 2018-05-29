@@ -1414,6 +1414,9 @@
   top: 0;
   z-index: 2147483648;
   overflow-y: auto;
+  @media(min-width: 768px) {
+    display: none;
+  }
 
   &.is-hidden {
     left: 100%;
