@@ -6,7 +6,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-import OnboardCard from "../../../common/components/onboard-card/onboard-card";
+import { OnboardPage } from "common/components";
 
 class TeamNameCard extends Component {
   constructor(props) {
@@ -45,7 +45,7 @@ class TeamNameCard extends Component {
 
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...this.props}
           title="What is your team name?"
           onNext={this._onNext}
@@ -68,7 +68,7 @@ class TeamNameCard extends Component {
           <HelpBlock className="onboarding-hint m-b-20">
             You can change this later
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

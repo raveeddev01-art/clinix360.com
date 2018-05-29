@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Form from "react-bootstrap/lib/Form";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 
 class HipaaCard extends Component {
   constructor(props) {
@@ -25,7 +24,7 @@ class HipaaCard extends Component {
 
     return (
       <div className="onboarding-hipaa">
-        <OnboardCard
+        <OnboardPage
           title="HIPAA"
           description={
             <span>
@@ -55,7 +54,7 @@ class HipaaCard extends Component {
               Privacy Policy
             </a>.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

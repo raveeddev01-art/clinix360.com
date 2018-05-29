@@ -4,7 +4,9 @@ import Form from "react-bootstrap/lib/Form";
 import Card from "../card/card";
 import LoadingButton from "../loading-button";
 
-class OnboardCard extends Component {
+// OnboardingPage wraps AuthPage and provides some shared
+// functionality and a standard next button in the footer
+class OnboardingPage extends Component {
   _onNext = evt => {
     evt.preventDefault();
     this.props.onNext(evt);
@@ -61,7 +63,7 @@ class OnboardCard extends Component {
   }
 }
 
-OnboardCard.propTypes = {
+OnboardingPage.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -73,10 +75,11 @@ OnboardCard.propTypes = {
   nextButtonText: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
-  hideFooter: PropTypes.bool
+  hideFooter: PropTypes.bool,
+  headerType: PropTypes.string
 };
 
-OnboardCard.defaultProps = {
+OnboardingPage.defaultProps = {
   children: null,
   onNext: () => {},
   description: "",
@@ -85,7 +88,8 @@ OnboardCard.defaultProps = {
   nextButtonText: null,
   disableNext: false,
   loading: false,
-  hideFooter: false
+  hideFooter: false,
+  headerType: "find-team"
 };
 
-export default OnboardCard;
+export default OnboardingPage;

@@ -8,7 +8,7 @@ import LoadingButton from "./loading-button";
 import LoadingIcon from "./loading-icon";
 import Members from "./members/members";
 import MemberType from "./member-type";
-import OnboardCard from "./onboard-card/onboard-card";
+import OnboardPage from "./onboard-page/onboard-page";
 import OnboardInputCard from "./onboard-input-card/onboard-input-card";
 import PasswordValidator from "./password-validator";
 import PinInput from "./pin-input";
@@ -40,7 +40,7 @@ export {
   LoadingIcon,
   Members,
   MemberType,
-  OnboardCard,
+  OnboardPage,
   OnboardInputCard,
   PasswordValidator,
   PinInput,
