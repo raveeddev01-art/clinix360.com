@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import OrLine from "./components/or-line/or-line";
 import Card from "../common/components/card/card";
 
 export default class GetStarted extends Component {
@@ -31,13 +32,7 @@ export default class GetStarted extends Component {
                 Set up your team on Stitch
               </div>
             </div>
-            {/* TODO: Extract this component */}
-            <div className="get-started-link-separator">
-              <div className="get-started-link-separator-line" />
-              <div className="get-started-link-separator-text">or</div>
-              <div className="get-started-link-separator-line" />
-            </div>
-
+            <OrLine />
             <div className="get-started-link-wrapper">
               <Link
                 to="/find-your-team"

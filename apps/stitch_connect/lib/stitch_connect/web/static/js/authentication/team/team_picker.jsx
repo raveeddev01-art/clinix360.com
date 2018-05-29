@@ -7,6 +7,7 @@ import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import { Card } from "common/components";
+import OrLine from "../components/or-line/or-line";
 
 @inject("titleStore")
 export default class TeamPicker extends Component {
@@ -116,14 +117,7 @@ export default class TeamPicker extends Component {
             <strong>Find your team</strong>
           </Link>
         </div>
-
-        {/* TODO: Extract this component */}
-        <div className="get-started-link-separator">
-          <div className="get-started-link-separator-line" />
-          <div className="get-started-link-separator-text">or</div>
-          <div className="get-started-link-separator-line" />
-        </div>
-
+        <OrLine />
         <h5>
           <Link
             className="btn btn-lg btn-new btn-new-inverse btn-block"

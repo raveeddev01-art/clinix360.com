@@ -292,6 +292,11 @@
     .card-description {
       text-align: left;
       color: #4F4F4F;
+
+      a {
+        color: $brand-primary;
+        font-weight: 700;
+      }
     }
 
 
@@ -486,6 +491,11 @@
   .login-helpers {
     font-size: 16px;
     margin-top: 15px;
+
+    a {
+      color: $brand-primary;
+      font-weight: 700;
+    }
 
     b {
       color: #4F4F4F;

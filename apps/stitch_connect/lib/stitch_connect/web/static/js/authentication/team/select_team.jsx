@@ -30,6 +30,7 @@ export default class SelectTeam extends Component {
     return (
       <Card
         title="Select Team"
+        headerType="signin"
         description={<span>Select one of your teams:</span>}
       >
         <div className="m-b-40">
