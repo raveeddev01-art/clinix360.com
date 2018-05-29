@@ -34,7 +34,8 @@ class TeamNameCard extends Component {
   renderDesc() {
     return (
       <span>
-        Name your team after the group that will be using Stitch together.
+        Name your team after the group that will be using Stitch together (You
+        can change this later).
       </span>
     );
   }
@@ -65,9 +66,6 @@ class TeamNameCard extends Component {
               maxLength={maxLength}
             />
           </FormGroup>
-          <HelpBlock className="onboarding-hint m-b-20">
-            You can change this later
-          </HelpBlock>
         </OnboardPage>
       </div>
     );
