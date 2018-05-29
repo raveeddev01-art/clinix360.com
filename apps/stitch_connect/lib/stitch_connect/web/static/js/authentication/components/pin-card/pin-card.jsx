@@ -27,7 +27,7 @@ class PinCard extends Component {
   onKeyPress = e => {
     const hitEnter = e.charCode === 13 || e.keyCode === 13;
 
-    if (hitEnter) {
+    if (hitEnter && this.state.formValid) {
       this.onNext();
     }
   };
