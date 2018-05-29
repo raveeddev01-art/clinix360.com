@@ -15,7 +15,8 @@ class Header extends Component {
 
     this.state = {
       mobileNavOpened: false,
-      isOpen: false
+      productsMenuOpened: false,
+      resourcesMenuOpened: false
     };
   }
 
@@ -27,12 +28,16 @@ class Header extends Component {
     window.location.href = "https://teamstitch.com/signup/email";
   }
 
-  handleOpen = () => {
-    this.setState({ isOpen: true });
+  toggleProductsMenu = () => {
+    this.setState({
+      productsMenuOpened: !this.state.productsMenuOpened
+    });
   };
 
-  handleClose = () => {
-    this.setState({ isOpen: false });
+  toggleResourcesMenu = () => {
+    this.setState({
+      resourcesMenuOpened: !this.state.resourcesMenuOpened
+    });
   };
 
   mobileNavToggle = () => {
@@ -49,13 +54,7 @@ class Header extends Component {
 
     return (
       <div style={{ overflowY: "auto" }}>
-        <Navbar
-          id="header"
-          inverse
-          fixedTop
-          // collapseOnSelect
-          // className={navbarClass}
-        >
+        <Navbar id="header" inverse fixedTop>
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/" className="brand">
@@ -66,7 +65,14 @@ class Header extends Component {
           </Navbar.Header>
 
           <Nav pullRight>
-            <NavDropdown title="Products" id="products-dropdown" noCaret>
+            <NavDropdown
+              title="Products"
+              id="products-dropdown"
+              onMouseEnter={this.toggleProductsMenu}
+              onMouseLeave={this.toggleProductsMenu}
+              open={this.state.productsMenuOpened}
+              noCaret
+            >
               <LinkContainer to="/connect">
                 <MenuItem>
                   <i className="fa fa-comments" />
@@ -93,7 +99,14 @@ class Header extends Component {
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
-            <NavDropdown title="Resources" id="resources-dropdown" noCaret>
+            <NavDropdown
+              title="Resources"
+              id="resources-dropdown"
+              onMouseEnter={this.toggleResourcesMenu}
+              onMouseLeave={this.toggleResourcesMenu}
+              open={this.state.resourcesMenuOpened}
+              noCaret
+            >
               <LinkContainer to="/downloads">
                 <MenuItem>
                   <i className="fa fa-cloud-download" /> Downloads
@@ -159,27 +172,21 @@ class Header extends Component {
               <NavDropdown title="Products" id="products-dropdown">
                 <LinkContainer to="/connect">
                   <MenuItem>
-                    <div className="product-icon">
-                      <img src="/images/connect-menu.png" alt="" />
-                    </div>
+                    <i className="fa fa-comments" />
                     Connect
                   </MenuItem>
                 </LinkContainer>
 
                 <LinkContainer to="/engage">
                   <MenuItem>
-                    <div className="product-icon">
-                      <img src="/images/engage-menu.png" alt="" />
-                    </div>
+                    <i className="fa fa-bullhorn" />
                     Engage
                   </MenuItem>
                 </LinkContainer>
 
                 <LinkContainer to="/manage">
                   <MenuItem>
-                    <div className="product-icon">
-                      <img src="/images/manage-menu.png" alt="" />
-                    </div>
+                    <i className="fa fa-tasks" />
                     Manage
                   </MenuItem>
                 </LinkContainer>
