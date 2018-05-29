@@ -91,12 +91,15 @@
     justify-content: space-between;
     align-items: center;
     margin: 40px 0px;
+
+    .get-started-link-separator{ 
+      margin: 25px;
+    }
   }
 
   .get-started-link-separator{ 
     width: 100%;
     text-align: center;
-    margin: 25px;
     font-size: 18px;
     display: inline-flex;
     align-items: center;
@@ -375,6 +378,14 @@
         font-size: 16px;
         font-weight: 700;
       }
+
+      input {
+        text-align: right;
+      }
+    }
+
+    .team-picker-find-team-helper {
+      text-align: center;
     }
 
     .team-info-label {

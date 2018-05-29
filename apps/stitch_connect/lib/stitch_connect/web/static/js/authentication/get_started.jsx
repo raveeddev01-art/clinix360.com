@@ -30,6 +30,7 @@ export default class GetStarted extends Component {
                 Set up your team on Stitch
               </div>
             </div>
+            {/* TODO: Extract this component */}
             <div className="get-started-link-separator">
               <div className="get-started-link-separator-line" />
               <div className="get-started-link-separator-text">or</div>
