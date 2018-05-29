@@ -48,7 +48,7 @@ class Header extends Component {
     });
 
     return (
-      <div style={{ "overflow-y": "auto" }}>
+      <div style={{ overflowY: "auto" }}>
         <Navbar
           id="header"
           inverse

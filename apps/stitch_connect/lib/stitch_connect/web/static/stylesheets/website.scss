@@ -1365,32 +1365,35 @@
       border-color: #ebebeb;
       border-radius: 3px;
       box-shadow: 0 2px 15px rgba(0,0,0,.10);
-      padding: 0;
       right: -50px;
 
       li > a {
-        padding: 8px 25px;
-        border-bottom: 1px solid #f7f7f7;
+        padding: 8px 15px;
+        // border-bottom: 1px solid #f7f7f7;
+        border-left: 4px solid transparent;
+        border-radius: 3px;
         margin: 0;
 
         &:hover {
-          color: #fff;
-          background: $brand-primary;
+          // color: #fff;
+          background: #f0f1f3;
+          border-color: $brand-primary;
+          box-shadow: 0 2px 5px rgba(0,0,0, .15);
 
           .subtext {
-            color: #fff;
+            // color: #fff;
           }
         }
       }
 
-      li:first-child > a {
-        border-radius: 3px 3px 0 0;
-      }
+      // li:first-child > a {
+      //   border-radius: 3px 3px 0 0;
+      // }
 
-      li:last-child > a {
-        border-radius: 0 0 3px 3px;
-        border: 0;
-      }
+      // li:last-child > a {
+      //   border-radius: 0 0 3px 3px;
+      //   // border: 0;
+      // }
     }
 
     .btn-trial a {
