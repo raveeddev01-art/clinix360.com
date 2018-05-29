@@ -21,7 +21,6 @@ export default class GetStarted extends Component {
             </span>
           }
           headerType="signin"
-          footer={<div />}
         >
           <div className="get-started-links">
             <div className="get-started-link-wrapper">

@@ -119,7 +119,6 @@ class InvitesCard extends Component {
               members to explore Stitch with you.
             </span>
           }
-          footer={this.renderFooter()}
         >
           <Form onSubmit={this.onNext}>
             <div className="invite-form-label-wrapper">

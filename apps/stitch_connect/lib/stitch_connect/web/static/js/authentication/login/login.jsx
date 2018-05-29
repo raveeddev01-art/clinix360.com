@@ -102,7 +102,6 @@ class Login extends Component {
             Enter your team’s <b>email address</b> and <b>password</b>.
           </span>
         }
-        footer={<div />}
       >
         {this.state.passwordReset && (
           <Alert bsStyle="success">Your password is now reset.</Alert>

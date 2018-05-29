@@ -21,7 +21,6 @@ export default class LoggedOut extends Component {
             <b>{this.props.registrationStore.teamSlug}.teamstitch.com</b>.
           </span>
         }
-        footer={<div />}
       >
         <Link to="/login" className="btn btn-block btn-lg btn-primary">
           Sign Back In

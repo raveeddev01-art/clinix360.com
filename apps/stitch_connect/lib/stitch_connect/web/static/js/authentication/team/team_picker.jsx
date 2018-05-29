@@ -80,7 +80,6 @@ export default class TeamPicker extends Component {
             Enter your team's <b> Stitch URL </b>
           </span>
         }
-        footer={<div />}
       >
         <Form onSubmit={this.onSubmit}>
           <FormGroup bsSize="large" className="team-form">
