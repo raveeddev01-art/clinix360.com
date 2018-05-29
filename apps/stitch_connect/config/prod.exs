@@ -20,9 +20,11 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
     compress: true
   ],
   url: [scheme: "https", host: System.get_env("APP_HOST"), port: 443],
-  force_ssl: [rewrite_on: [:x_forwarded_proto]],
+  force_ssl: [
+    rewrite_on: [:x_forwarded_proto],
+    hsts: false
+  ],
   secret_key_base: System.get_env("SECRET_KEY_BASE")
-
 
 # ## SSL Support
 #
@@ -65,4 +67,5 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
 # General application configuration
 config :stitch_connect,
   version: System.get_env("SOURCE_VERSION") || System.get_env("APTIBLE_RELEASE_HREF")
+
 # https://devcenter.heroku.com/changelog-items/630
