@@ -53,6 +53,7 @@ class SendEmail extends Component {
     return (
       <div>
         <Card
+          headerType="create"
           errorText={error}
           title="Password Reset"
           footer={<div />}
@@ -93,6 +94,7 @@ class SendEmail extends Component {
 
     return (
       <Card
+        headerType="create"
         title="Check Your Email!"
         className="password-reset-check-email wide"
         footer={<div />}
