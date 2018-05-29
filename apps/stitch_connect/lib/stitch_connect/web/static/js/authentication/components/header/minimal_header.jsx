@@ -20,6 +20,10 @@ class MinimalHeader extends Component {
   }
 
   renderCTA() {
+    if (this.props.type === "no-cta") {
+      return null;
+    }
+
     if (this.props.type === "signin") {
       return (
         <Nav pullRight className="hidden-xs">

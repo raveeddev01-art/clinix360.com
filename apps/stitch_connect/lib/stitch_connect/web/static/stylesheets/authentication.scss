@@ -237,10 +237,18 @@
 
     a {
       color: $brand-primary;
+      font-weight: 700;
     }
 
     > div {
       width: 100%;
+    }
+  }
+
+  .onboarding-hint{
+    a {
+      color: $brand-primary;
+      font-weight: 700;
     }
   }
 
@@ -527,6 +535,35 @@
       padding: 0;
       font-weight: 700;
       color: $brand-primary;
+    }
+  }
+}
+
+
+.select-team-list {
+  width: 100%;
+
+  .select-team-item {
+    font-size: 20px;
+    font-weight: 700;
+    color: #036;
+    border: solid 2px #036;
+    border-radius: 6px;
+    width: 100%;
+
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px 0px 10px;
+    padding: 10px 15px;;
+
+    .select-team-item-link-holder {
+      font-size: 16px;
+      // margin-top: -3px;
+
+      a {
+        font-weight: 700;
+      }
     }
   }
 }
