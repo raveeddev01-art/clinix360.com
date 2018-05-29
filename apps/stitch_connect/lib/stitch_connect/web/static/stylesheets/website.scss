@@ -1285,20 +1285,13 @@
   border-bottom: 1px solid #ebebeb;
   margin: 0;
 
-  &.blue {
-    background: $brand-primary;
-    height: 100vh;
-
-    .navbar-toggle .icon-bar {
-      background: #fff;
-    }
-  }
-
   .navbar-header {
     padding: 10px 0;
 
     .navbar-brand {
       padding: 12px 0;
+      margin-left: 0;
+
       img {
         width: auto;
         height: 26px;
@@ -1332,6 +1325,55 @@
 
     &.navbar-right {
       margin-right: 0;
+    }
+    
+    li > a,
+    li > a:hover,
+    li > a:focus,
+    .open > a,
+    .open > a:hover,
+    .open > a:focus {
+      color: $brand-primary;
+      font-size: 18px;
+      font-weight: 600;
+      background: transparent;
+      border-radius: 0;
+
+      i.fa {
+        margin-right: 6px;
+      }
+      
+      .subtext {
+        color: #696969;
+        font-size: 17px;
+        font-weight: normal;
+      }
+    }
+
+    .dropdown-menu {
+      min-width: 220px;
+      padding: 10px 0;
+      right: -50px;
+
+      a {
+        padding: 8px 25px;
+
+        &:hover {
+          color: #fff;
+          background: $brand-primary;
+
+          .subtext {
+            color: #fff;
+          }
+        }
+      }
+    }
+
+    .btn-trial a {
+      border: 1px solid $brand-primary;
+      border-radius: 3px;
+      padding: 10px 15px;
+      margin: 6px 0 6px 6px;
     }
   }
 }

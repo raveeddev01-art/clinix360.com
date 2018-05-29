@@ -60,27 +60,21 @@ class Header extends Component {
             <NavDropdown title="Products" id="products-dropdown">
               <LinkContainer to="/connect">
                 <MenuItem>
-                  <div className="product-icon">
-                    <img src="/images/connect-menu.png" alt="" />
-                  </div>
+                  <i className="fa fa-comments" />
                   Connect <div className="subtext">Team Communication</div>
                 </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/engage">
                 <MenuItem>
-                  <div className="product-icon">
-                    <img src="/images/engage-menu.png" alt="" />
-                  </div>
+                  <i className="fa fa-bullhorn" />
                   Engage <div className="subtext">Patient Engagement</div>
                 </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/manage">
                 <MenuItem>
-                  <div className="product-icon">
-                    <img src="/images/manage-menu.png" alt="" />
-                  </div>
+                  <i className="fa fa-tasks" />
                   Manage <div className="subtext">Patient Management</div>
                 </MenuItem>
               </LinkContainer>
