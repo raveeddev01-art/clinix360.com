@@ -110,12 +110,12 @@ export default class TeamPicker extends Component {
           </Button>
         </Form>
 
-        <h5 className="team-picker-find-team-helper">
+        <div className="team-picker-find-team-helper">
           Don't know your team's URL?{" "}
           <Link to="/find-your-team">
             <strong>Find your team</strong>
           </Link>
-        </h5>
+        </div>
 
         {/* TODO: Extract this component */}
         <div className="get-started-link-separator">

@@ -385,7 +385,14 @@
     }
 
     .team-picker-find-team-helper {
+      font-size: 16px;
       text-align: center;
+      margin: 20px 0px;
+
+      a {
+        color: $brand-primary;
+        font-weight: 700;
+      }
     }
 
     .team-info-label {

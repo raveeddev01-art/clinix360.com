@@ -17,6 +17,7 @@ import SendEmail from "./reset-password/send-email";
 import SetPassword from "./reset-password/set-password";
 import Invitation from "./invitation";
 import InvitationError from "./invitation/error";
+import HardRedirect from "../common/components/hard-redirect/hard-redirect";
 
 @inject("titleStore")
 @observer
@@ -66,6 +67,7 @@ class AuthenticationRouter extends Component {
               path="/apps"
               render={() => <DownloadApps {...this.props} />}
             />
+
             <Route path="/signup" component={Registration} />
 
             <Route exact path="/reset-password" component={SendEmail} />
@@ -83,6 +85,13 @@ class AuthenticationRouter extends Component {
               exact
               path="/invitations/error"
               component={InvitationError}
+            />
+
+            <Route
+              exact
+              push
+              path="/"
+              component={() => <HardRedirect to="/" />}
             />
           </Switch>
         </div>
