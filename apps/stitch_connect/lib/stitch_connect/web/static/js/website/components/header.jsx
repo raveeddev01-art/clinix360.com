@@ -14,7 +14,8 @@ class Header extends Component {
     super(props);
 
     this.state = {
-      mobileNavOpened: false
+      mobileNavOpened: false,
+      isOpen: false
     };
   }
 
@@ -25,6 +26,14 @@ class Header extends Component {
   goToStartTrial() {
     window.location.href = "https://teamstitch.com/signup/email";
   }
+
+  handleOpen = () => {
+    this.setState({ isOpen: true });
+  };
+
+  handleClose = () => {
+    this.setState({ isOpen: false });
+  };
 
   mobileNavToggle = () => {
     this.setState({
@@ -61,21 +70,21 @@ class Header extends Component {
               <LinkContainer to="/connect">
                 <MenuItem>
                   <i className="fa fa-comments" />
-                  Connect <div className="subtext">Team Communication</div>
+                  Connect <div className="subtext">Team messaging</div>
                 </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/engage">
                 <MenuItem>
                   <i className="fa fa-bullhorn" />
-                  Engage <div className="subtext">Patient Engagement</div>
+                  Engage <div className="subtext">Patient communication</div>
                 </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/manage">
                 <MenuItem>
                   <i className="fa fa-tasks" />
-                  Manage <div className="subtext">Patient Management</div>
+                  Manage <div className="subtext">Task management</div>
                 </MenuItem>
               </LinkContainer>
             </NavDropdown>
@@ -88,18 +97,12 @@ class Header extends Component {
               <LinkContainer to="/downloads">
                 <MenuItem>
                   <i className="fa fa-cloud-download" /> Downloads
-                  <div className="subtext hidden-sm hidden-lg">
-                    Apps for Mac, Windows, iOS and Android
-                  </div>
                 </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/pilot">
                 <MenuItem>
                   <i className="fa fa-hospital-o" /> Pilot
-                  <div className="subtext hidden-sm hidden-lg">
-                    Enterprise grade deployment plans
-                  </div>
                 </MenuItem>
               </LinkContainer>
 
@@ -109,22 +112,15 @@ class Header extends Component {
                 rel="noopener noreferrer"
               >
                 <i className="fa fa-life-ring" /> Help Center
-                <div className="subtext hidden-sm hidden-lg">
-                  Everything you need to be a Stitch power user
-                </div>
               </MenuItem>
 
               <MenuItem href={`https://${applicationHost}/jobs`}>
                 <i className="fa fa-wrench" /> Jobs
-                <div className="subtext hidden-sm hidden-lg">We're hiring!</div>
               </MenuItem>
 
               <LinkContainer to="/customers">
                 <MenuItem>
                   <i className="fa fa-users" /> Customers
-                  <div className="subtext hidden-sm hidden-lg">
-                    Everything you need to be a Stitch power user
-                  </div>
                 </MenuItem>
               </LinkContainer>
 
@@ -134,9 +130,6 @@ class Header extends Component {
                 rel="noopener noreferrer"
               >
                 <i className="fa fa-book" /> Blog
-                <div className="subtext hidden-sm hidden-lg">
-                  Stories and updates from the Stitch Health team
-                </div>
               </MenuItem>
             </NavDropdown>
 
