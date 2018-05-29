@@ -68,9 +68,15 @@
 .authentication-wrapper {
   height: 100vh;
 
+  // TODO: this doesn't play well w/ btn links
   a {
     font-weight: 700;
     color: $brand-primary;
+  }
+
+  .btn-primary {
+    font-weight: 700;
+    color: white;
   }
 
   .pin-code {
@@ -97,12 +103,12 @@
     align-items: center;
     margin: 40px 0px;
 
-    .get-started-link-separator{ 
+    .get-started-link-separator{
       margin: 25px;
     }
   }
 
-  .get-started-link-separator{ 
+  .get-started-link-separator{
     width: 100%;
     text-align: center;
     font-size: 18px;
@@ -241,7 +247,7 @@
     a {
       color: $brand-primary;
     }
-    
+
     > div {
       width: 100%;
     }
@@ -252,7 +258,7 @@
     margin: 0 auto 20px;
   }
 
-  
+
   .authentication-header {
     padding: 0px 20px;
     flex: 1;
@@ -513,7 +519,7 @@
     .btn-link {
       padding: 0;
       font-weight: 700;
-      color: $brand-primary;      
+      color: $brand-primary;
     }
   }
 }

@@ -2,28 +2,31 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import { Link } from "react-router-dom";
+import { Card } from "common/components";
 
 @inject("registrationStore", "titleStore")
 @observer
-export default class Loggedout extends Component {
+export default class LoggedOut extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Signed Out");
   }
 
   render() {
     return (
-      <div>
-        <div className="authentication-card text-center m-b-20">
-          <h2>Signed Out</h2>
-          <h5 className="text-muted url-heading">
-            {this.props.registrationStore.teamSlug}.teamstitch.com
-          </h5>
-
-          <Link to="/login" className="btn btn-block btn-lg btn-primary">
-            Sign Back In
-          </Link>
-        </div>
-      </div>
+      <Card
+        title="Signed Out"
+        description={
+          <span>
+            You are signed out of{" "}
+            <b>{this.props.registrationStore.teamSlug}.teamstitch.com</b>.
+          </span>
+        }
+        footer={<div />}
+      >
+        <Link to="/login" className="btn btn-block btn-lg btn-primary">
+          Sign Back In
+        </Link>
+      </Card>
     );
   }
 }
