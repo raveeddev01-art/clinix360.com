@@ -5,13 +5,6 @@ import Card from "../card/card";
 import LoadingButton from "../loading-button";
 
 class OnboardCard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEditing: false
-    };
-  }
-
   _onNext = evt => {
     evt.preventDefault();
     this.props.onNext(evt);
@@ -54,12 +47,13 @@ class OnboardCard extends Component {
   }
 
   render() {
-    const { title, children, description, errorText } = this.props;
+    const { title, children, description, errorText, headerType } = this.props;
     return (
       <Card
         title={title}
         description={description}
         errorText={errorText}
+        headerType={headerType}
         footer={this.renderFooter()}
       >
         <Form onSubmit={this._onNext}>{children}</Form>

@@ -19,6 +19,7 @@ export default class GetStarted extends Component {
               Are you looking to join an existing team or create a new one?
             </span>
           }
+          headerType="signin"
           footer={<div />}
         >
           <div className="get-started-links">

@@ -50,6 +50,7 @@ export default class FindTeam extends Component {
           {!sent ? (
             <OnboardCard
               title="Find Your Team"
+              headerType="signin"
               description={
                 <span>
                   We’ll send you an email to confirm your address and find

@@ -98,9 +98,9 @@ class SendEmail extends Component {
         footer={<div />}
         description={
           <span>
-            We've emailed instructions on how to reset your password to
-            {email}. Click the link to confirm your address and get started.{" "}
-            <br />
+            We've emailed instructions on how to reset your password to{" "}
+            <b>{email}</b>. Click the link to confirm your address and get
+            started. <br />
             <br /> Wrong email? Please{" "}
             <button className="btn-link" onClick={pageReload}>
               re-enter your address

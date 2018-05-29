@@ -68,17 +68,6 @@
 .authentication-wrapper {
   height: 100vh;
 
-  // TODO: this doesn't play well w/ btn links
-  a {
-    font-weight: 700;
-    color: $brand-primary;
-  }
-
-  .btn-primary {
-    font-weight: 700;
-    color: white;
-  }
-
   .pin-code {
     width: 100%;
 

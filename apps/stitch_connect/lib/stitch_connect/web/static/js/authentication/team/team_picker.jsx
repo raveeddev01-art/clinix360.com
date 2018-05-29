@@ -72,6 +72,7 @@ export default class TeamPicker extends Component {
     return (
       <Card
         title="Sign in to your team"
+        headerType="create"
         errorText={showAlert && this.errorText}
         description={
           <span>

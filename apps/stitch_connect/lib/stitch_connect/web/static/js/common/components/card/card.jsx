@@ -22,12 +22,12 @@ class Card extends Component {
   };
 
   render() {
-    const { children, title, className, footer } = this.props;
+    const { children, title, className, headerType, footer } = this.props;
     const cardStyles = cx("authentication-card", className);
 
     return (
       <div className={cardStyles}>
-        <MinimalHeader />
+        <MinimalHeader type={headerType} />
         <div className="authentication-body">
           {this.props.errorText && this._renderError()}
           <h1>{title}</h1>
@@ -52,6 +52,7 @@ Card.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
   className: PropTypes.string,
+  headerType: PropTypes.string,
   errorText: PropTypes.node
 };
 
@@ -61,6 +62,7 @@ Card.defaultProps = {
   title: "",
   className: "",
   footer: "",
+  headerType: "find-team",
   errorText: ""
 };
 

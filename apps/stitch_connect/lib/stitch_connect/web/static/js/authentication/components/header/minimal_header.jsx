@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+
 import Nav from "react-bootstrap/lib/Nav";
 import Navbar from "react-bootstrap/lib/Navbar";
 import NavItem from "react-bootstrap/lib/NavItem";
@@ -13,13 +15,31 @@ class MinimalHeader extends Component {
     window.location.href = `https://${applicationHost}/signin`;
   }
 
+  goToCreate() {
+    window.location.href = `https://${applicationHost}/signup/email`;
+  }
+
   renderCTA() {
-    if (this.props.cta === "signin") {
+    if (this.props.type === "signin") {
       return (
         <Nav pullRight className="hidden-xs">
-          <NavItem onClick={this.goToSignIn}> Know your team's url? </NavItem>
+          <NavItem onClick={this.goToSignIn}> Already on a team? </NavItem>
           <NavItem onClick={this.goToSignIn} className="btn-trial">
             Sign In
+          </NavItem>
+        </Nav>
+      );
+    }
+
+    if (this.props.type === "create") {
+      return (
+        <Nav pullRight className="hidden-xs">
+          <NavItem onClick={this.goToCreate}>
+            {" "}
+            Looking to set up a new workspace?{" "}
+          </NavItem>
+          <NavItem onClick={this.goToCreate} className="btn-trial">
+            Create a new team
           </NavItem>
         </Nav>
       );
@@ -56,5 +76,9 @@ class MinimalHeader extends Component {
     );
   }
 }
+
+MinimalHeader.propTypes = {
+  type: PropTypes.string.isRequired
+};
 
 export default MinimalHeader;
