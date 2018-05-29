@@ -4,7 +4,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 
 function formatTeamUrl(givenTeamName) {
   return givenTeamName.replace(/[^0-9a-zA-Z|-]/g, "").toLowerCase();
@@ -94,7 +94,7 @@ class TeamUrlCard extends Component {
 
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...this.props}
           title="What URL do you want for your Stitch team?"
           description={
@@ -123,7 +123,7 @@ class TeamUrlCard extends Component {
           <HelpBlock className="onboarding-hint m-b-20">
             Team URL must be letters, numbers, or dashes.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

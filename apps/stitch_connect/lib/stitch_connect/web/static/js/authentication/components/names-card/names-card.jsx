@@ -4,7 +4,7 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 import { isValidUnicodeString } from "lib/utils";
 
 function formatUsername(givenUsername) {
@@ -123,7 +123,7 @@ class NamesCards extends Component {
 
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...this.props}
           title="What is your name?"
           errorText={alertMessage}
@@ -175,7 +175,7 @@ class NamesCards extends Component {
             Usernames must be lowercase and contian only letters, numbers,
             periods, hyphens, and underscores.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

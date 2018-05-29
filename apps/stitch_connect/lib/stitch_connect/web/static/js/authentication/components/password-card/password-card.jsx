@@ -4,7 +4,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 
-import { OnboardCard, PasswordValidator } from "common/components";
+import { OnboardPage, PasswordValidator } from "common/components";
 
 class PasswordCard extends Component {
   constructor(...args) {
@@ -31,7 +31,7 @@ class PasswordCard extends Component {
     const { password, formValid } = this.state;
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...this.props}
           title="Set your password"
           description={<span>Select a password for signing into Stitch</span>}
@@ -55,7 +55,7 @@ class PasswordCard extends Component {
             password={password}
             onChangeValid={this._onChangeValid}
           />
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

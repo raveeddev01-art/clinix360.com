@@ -4,7 +4,7 @@ import { observer, inject } from "mobx-react";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 
 @inject("registrationStore")
 @observer
@@ -161,7 +161,7 @@ class Confirmation extends Component {
   render() {
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           title="Check your email!"
           description={
             <span>
@@ -191,7 +191,7 @@ class Confirmation extends Component {
           <HelpBlock className="onboarding-hint m-b-20">
             Keep this window open while you check for your code.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

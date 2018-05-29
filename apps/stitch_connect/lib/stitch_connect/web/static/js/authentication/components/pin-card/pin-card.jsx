@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import { OnboardCard, PinInput } from "common/components";
+import { OnboardPage, PinInput } from "common/components";
 
 class PinCard extends Component {
   constructor(...args) {
@@ -30,7 +30,7 @@ class PinCard extends Component {
     const { saving, ...otherProps } = this.props;
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...otherProps}
           title="Set your PIN"
           description={
@@ -50,7 +50,7 @@ class PinCard extends Component {
             You can use this PIN when your screen is locked after a period of
             inactivity.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

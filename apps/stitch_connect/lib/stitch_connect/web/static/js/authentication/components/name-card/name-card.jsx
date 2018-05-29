@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 import { isValidUnicodeString } from "lib/utils";
 
 class NameCard extends Component {
@@ -49,7 +49,7 @@ class NameCard extends Component {
 
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...this.props}
           title="Name"
           errorText={alertMessage}
@@ -84,7 +84,7 @@ class NameCard extends Component {
             Your full name will be shown in the team directory and next to your
             profile and messages.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

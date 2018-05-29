@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 
 function formatNumber(numStr) {
   // allow: +1 (123) 456-7890 ext. #23*
@@ -41,7 +41,7 @@ class PhoneNumberCard extends Component {
 
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...this.props}
           title="Phone Number"
           errorText={hasError && this.errorText}
@@ -67,7 +67,7 @@ class PhoneNumberCard extends Component {
             Your phone number will be shown in your profile so you can be
             reached.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

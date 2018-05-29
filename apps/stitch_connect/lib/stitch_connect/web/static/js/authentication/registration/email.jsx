@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 // import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Alert from "react-bootstrap/lib/Alert";
 import isEmail from "validator/lib/isEmail";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 
 @inject("registrationStore")
 @observer
@@ -60,7 +60,7 @@ class EmailCard extends Component {
         {this.state.errorMessage && (
           <Alert bsStyle="danger">{this.state.errorMessage}</Alert>
         )}
-        <OnboardCard
+        <OnboardPage
           title="Create a new team"
           description={
             <span>
@@ -84,7 +84,7 @@ class EmailCard extends Component {
               onChange={this.onChange}
             />
           </FormGroup>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

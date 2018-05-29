@@ -6,7 +6,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 import MinimalHeader from "../components/header/minimal_header";
 
 @inject("titleStore")
@@ -42,7 +42,7 @@ export default class FindTeam extends Component {
     const { email, sent } = this.state;
 
     return !sent ? (
-      <OnboardCard
+      <OnboardPage
         title="Find Your Team"
         headerType="signin"
         description={
@@ -64,9 +64,9 @@ export default class FindTeam extends Component {
             onChange={this._onChange}
           />
         </FormGroup>
-      </OnboardCard>
+      </OnboardPage>
     ) : (
-      <OnboardCard
+      <OnboardPage
         title="Check your email!"
         headerType="signin"
         description={

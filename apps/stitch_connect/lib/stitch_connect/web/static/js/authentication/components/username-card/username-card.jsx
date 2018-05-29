@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 
 function formatUsername(givenUsername) {
   return givenUsername.replace(/[^0-9a-zA-Z]/g, "").toLowerCase();
@@ -84,7 +84,7 @@ class UsernameCard extends Component {
 
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...this.props}
           title="Username"
           errorText={this.errorText}
@@ -111,7 +111,7 @@ class UsernameCard extends Component {
             Your username is how others will mention you. It should be unique,
             lowercase, and use only letters and numbers.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }
