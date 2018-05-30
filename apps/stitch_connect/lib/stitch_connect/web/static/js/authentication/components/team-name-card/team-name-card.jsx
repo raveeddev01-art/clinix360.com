@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 import { OnboardPage } from "common/components";
 
@@ -42,7 +41,7 @@ class TeamNameCard extends Component {
 
   render() {
     const { value } = this.state;
-    const { type, isRequired, disableNext, maxLength } = this.props;
+    const { type, isRequired, disableNext } = this.props;
 
     return (
       <div>
@@ -63,7 +62,7 @@ class TeamNameCard extends Component {
               value={value}
               onChange={this._onChange}
               onFocus={this._onFocus}
-              maxLength={maxLength}
+              maxLength={80}
             />
           </FormGroup>
         </OnboardPage>
@@ -85,8 +84,7 @@ TeamNameCard.propTypes = {
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
-  isRequired: PropTypes.bool,
-  maxLength: PropTypes.number
+  isRequired: PropTypes.bool
 };
 
 TeamNameCard.defaultProps = {
@@ -99,8 +97,7 @@ TeamNameCard.defaultProps = {
   value: "",
   nextButtonText: null,
   disableNext: false,
-  isRequired: true,
-  maxLength: undefined
+  isRequired: true
 };
 
 export default TeamNameCard;

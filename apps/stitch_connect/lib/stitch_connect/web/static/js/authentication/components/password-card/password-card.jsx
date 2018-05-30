@@ -47,6 +47,7 @@ class PasswordCard extends Component {
               autoComplete="off"
               type="password"
               placeholder="Password"
+              maxLength={80}
               value={password}
               onChange={this._onChange}
             />

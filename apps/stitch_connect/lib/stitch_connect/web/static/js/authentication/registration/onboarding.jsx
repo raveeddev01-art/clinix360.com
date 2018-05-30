@@ -3,13 +3,14 @@ import { observer, inject } from "mobx-react";
 import { withRouter, Redirect } from "react-router-dom";
 
 import { alertModal } from "common/modals";
-import TeamName from "../components/team-name-card/team-name-card";
-import TeamUrl from "../components/team-url-card/team-url-card";
+
 import Names from "../components/names-card/names-card";
 import Password from "../components/password-card/password-card";
 import Pin from "../components/pin-card/pin-card";
-import Invites from "../components/invites-card/invites-card";
+import TeamName from "../components/team-name-card/team-name-card";
+import TeamUrl from "../components/team-url-card/team-url-card";
 import Hipaa from "../components/hipaa-card/hipaa-card";
+import Invites from "../components/invites-card/invites-card";
 
 const stepList = [
   { field: "names", component: Names },
