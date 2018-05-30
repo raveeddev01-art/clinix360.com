@@ -81,7 +81,9 @@ class EmailCard extends Component {
               onChange={this.onChange}
             />
             {this.state.errorMessage && (
-              <div className="input-error">this.state.errorMessage</div>
+              <div className="text-input-error-message">
+                this.state.errorMessage
+              </div>
             )}
           </FormGroup>
         </OnboardPage>

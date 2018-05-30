@@ -107,7 +107,7 @@ class TeamUrlCard extends Component {
             />
             <span className="domain">.teamstitch.com</span>
           </FormGroup>
-          {error && <div className="input-error">{error}</div>}
+          {error && <div className="text-input-error-message">{error}</div>}
           <HelpBlock className="onboarding-hint m-b-20">
             Team URL must be letters, numbers, or dashes.
           </HelpBlock>

@@ -182,7 +182,9 @@ class NamesCards extends Component {
                   onKeyPress={this.onKeyPress}
                 />
                 {firstNameError && (
-                  <div className="input-error">{firstNameError}</div>
+                  <div className="text-input-error-message">
+                    {firstNameError}
+                  </div>
                 )}
               </div>
               <div className="inline-half-input">
@@ -195,7 +197,9 @@ class NamesCards extends Component {
                   onKeyPress={this.onKeyPress}
                 />
                 {lastNameError && (
-                  <div className="input-error">{lastNameError}</div>
+                  <div className="text-input-error-message">
+                    {lastNameError}
+                  </div>
                 )}
               </div>
             </div>
@@ -211,7 +215,7 @@ class NamesCards extends Component {
               onKeyPress={this.onKeyPress}
             />
             {(usernameError || generalError) && (
-                <div className="input-error">
+                <div className="text-input-error-message">
                   {usernameError || generalError}
                 </div>
               )}
