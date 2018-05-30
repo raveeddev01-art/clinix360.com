@@ -83,6 +83,9 @@ class EmailCard extends Component {
               value={this.state.email}
               onChange={this.onChange}
             />
+            <div className="input-error">
+              There was an issue with your email!
+            </div>
           </FormGroup>
         </OnboardPage>
       </div>
