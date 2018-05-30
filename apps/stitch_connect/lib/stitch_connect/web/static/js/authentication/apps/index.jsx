@@ -8,9 +8,6 @@ import LinuxDesktop from "./linux-desktop";
 import IOSMobile from "./ios-mobile";
 import AndroidMobile from "./android-mobile";
 
-import Header from "../components/header/header";
-import Footer from "../components/footer/footer";
-
 @inject("registrationStore", "invitationStore", "titleStore")
 @observer
 export default class DownloadApps extends Component {
