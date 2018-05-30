@@ -21,14 +21,11 @@ class TeamNameCard extends Component {
     this.setState({ value });
   };
 
-  _onFocus = evt => {
-    const tempValue = evt.target.value;
-
-    evt.target.value = "";
-    evt.target.value = tempValue;
+  _onNext = () => {
+    if (this.state.value) {
+      this.props.onNext(this.state.value);
+    }
   };
-
-  _onNext = () => this.props.onNext(this.state.value);
 
   renderDesc() {
     return (
@@ -61,7 +58,6 @@ class TeamNameCard extends Component {
               placeholder="Ex. Care Clinic."
               value={value}
               onChange={this._onChange}
-              onFocus={this._onFocus}
               maxLength={80}
             />
           </FormGroup>
@@ -73,14 +69,10 @@ class TeamNameCard extends Component {
 
 TeamNameCard.propTypes = {
   onNext: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  nextButtonText: PropTypes.string,
-  placeholder: PropTypes.string.isRequired,
-  helperText: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
@@ -90,12 +82,8 @@ TeamNameCard.propTypes = {
 TeamNameCard.defaultProps = {
   onNext: () => {},
   children: "",
-  title: "",
-  placeholder: "",
-  helperText: "",
   type: "text",
   value: "",
-  nextButtonText: null,
   disableNext: false,
   isRequired: true
 };

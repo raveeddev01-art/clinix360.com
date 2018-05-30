@@ -253,7 +253,13 @@ $dark-gray: #333;
     input {
       height: 80px;
       width: 80px;
+
+      @media (max-width: $screen-sm) {
+        height: 60px;
+        width: 60px;
+      }
     }
+
   }
 
   // ============
