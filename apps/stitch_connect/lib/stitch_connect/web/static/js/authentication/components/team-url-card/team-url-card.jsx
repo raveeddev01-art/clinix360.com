@@ -10,16 +10,20 @@ function formatTeamUrl(givenTeamName) {
   return givenTeamName.replace(/[^0-9a-zA-Z|-]/g, "").toLowerCase();
 }
 
+const uniquenessErrorText =
+  "This team URL is taken. Please choose another one.";
+const patternErrorText =
+  "Your team URL can only contain lowercase letters, numbers and dashes. It also must start with a letter or number.";
 class TeamUrlCard extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
       teamUrl: "",
-      hasUniquenessError: false,
-      hasPatternError: false,
+      error: "",
       loading: false
     };
   }
+
   onChange = evt => {
     this.setState({
       teamUrl: formatTeamUrl(evt.target.value)
@@ -29,7 +33,7 @@ class TeamUrlCard extends Component {
   onNext = () => {
     this.setState({ hasPatternError: false });
 
-    if (!this.patternValidate()) {
+    if (!this.validatePattern()) {
       return;
     }
 
@@ -44,53 +48,38 @@ class TeamUrlCard extends Component {
         if (response.data.available) {
           this.props.onNext(this.state.teamUrl);
         } else {
-          this.setState({ hasUniquenessError: true });
+          this.setState({
+            error: uniquenessErrorText,
+            loading: false
+          });
         }
       })
       .catch(() => {
-        this.setState({ hasUniquenessError: true, loading: false });
+        this.setState({
+          error: uniquenessErrorText,
+          loading: false
+        });
       });
   };
 
-  get errorText() {
-    const { hasPatternError, hasUniquenessError } = this.state;
-
-    if (hasPatternError) {
-      return "Your team URL can only contain lowercase letters, numbers and dashes. It also must start with a letter or number.";
-    }
-
-    if (hasUniquenessError) {
-      return "This team URL is taken. Please choose another one.";
-    }
-
-    return "";
-  }
-
-  patternValidate = () => {
+  validatePattern = () => {
     const { teamUrl } = this.state;
 
     if (!/^[a-z0-9]/.test(teamUrl)) {
       // starts with letter or number
-      this.setState({ hasPatternError: true });
+      this.setState({ error: patternErrorText });
       return false;
     } else if (/[^0-9a-z-]/.test(teamUrl)) {
       // has only letter, number, dash
-      this.setState({ hasPatternError: true });
+      this.setState({ error: patternErrorText });
       return false;
     }
 
     return true;
   };
 
-  moveCaretAtEnd(e) {
-    const tempValue = e.target.value;
-
-    e.target.value = "";
-    e.target.value = tempValue;
-  }
-
   render() {
-    const { teamUrl, loading } = this.state;
+    const { teamUrl, loading, error } = this.state;
 
     return (
       <div>
@@ -103,7 +92,6 @@ class TeamUrlCard extends Component {
               Stitch.
             </span>
           }
-          errorText={this.errorText}
           onNext={this.onNext}
           loading={loading}
           disableNext={!teamUrl}
@@ -115,11 +103,11 @@ class TeamUrlCard extends Component {
               autoFocus
               value={teamUrl}
               onChange={this.onChange}
-              onFocus={this.moveCaretAtEnd}
               maxLength={80}
             />
             <span className="domain">.teamstitch.com</span>
           </FormGroup>
+          {error && <div className="input-error">{error}</div>}
           <HelpBlock className="onboarding-hint m-b-20">
             Team URL must be letters, numbers, or dashes.
           </HelpBlock>
