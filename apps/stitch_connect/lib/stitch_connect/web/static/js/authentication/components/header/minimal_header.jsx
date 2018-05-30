@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import Nav from "react-bootstrap/lib/Nav";
 import Navbar from "react-bootstrap/lib/Navbar";
 import NavItem from "react-bootstrap/lib/NavItem";
-import { Link } from "react-router-dom";
 
 class MinimalHeader extends Component {
   goToFindTeam() {
@@ -68,12 +67,12 @@ class MinimalHeader extends Component {
         <Navbar id="header" inverse fixedTop>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to="/" className="brand">
+              <a href={`https://${applicationHost}/`} className="brand">
                 <img
                   src="https://dha4w82d62smt.cloudfront.net/items/3V2j19013l3O0k3p1v2v/Image%202018-05-29%20at%201.50.36%20PM.png?X-CloudApp-Visitor-Id=2995866&v=27c5a31f"
                   alt="Stitch"
                 />
-              </Link>
+              </a>
             </Navbar.Brand>
           </Navbar.Header>
 

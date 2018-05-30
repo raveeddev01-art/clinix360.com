@@ -49,7 +49,7 @@ export default class SelectTeam extends Component {
       <Card
         title="Your Teams"
         headerType="no-cta"
-        description={<span>You’re a member of of these Stitch teams:</span>}
+        description={<span>You are a member of of these Stitch teams:</span>}
       >
         <div className="select-team-list m-b-40">
           {this.state.teams.map(this.renderTeamLink)}

@@ -55,6 +55,7 @@ class SetPassword extends Component {
     const { password, error } = this.state;
     return (
       <Card
+        headerType="create"
         title="Reset Password"
         errorText={error}
         description={

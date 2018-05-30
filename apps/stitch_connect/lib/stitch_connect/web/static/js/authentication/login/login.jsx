@@ -8,7 +8,6 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import Cookies from "js-cookie";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 import { Card, LoadingIcon } from "common/components";
 
@@ -95,6 +94,7 @@ class Login extends Component {
     const { teamName } = this.props.registrationStore;
     return (
       <Card
+        headerType="create"
         title={`Sign in to ${teamName}`}
         errorText={this.errorText}
         description={
