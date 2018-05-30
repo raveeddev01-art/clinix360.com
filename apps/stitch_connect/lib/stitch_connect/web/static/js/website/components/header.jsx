@@ -161,9 +161,12 @@ class Header extends Component {
             </div>
           </div>
 
-          <Navbar collapseOnSelect>
+          <Navbar
+            collapseOnSelect
+            onSelect={() => this.setState({ mobileNavOpened: false })}
+          >
             <Nav>
-              <NavDropdown title="Products" id="products-dropdown">
+              <NavDropdown title="Products" id="products-dropdown" eventKey={1}>
                 <LinkContainer to="/connect">
                   <MenuItem>
                     <i className="fa fa-comments" />
