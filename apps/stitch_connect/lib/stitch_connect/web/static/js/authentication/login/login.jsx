@@ -6,10 +6,11 @@ import Alert from "react-bootstrap/lib/Alert";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 import Cookies from "js-cookie";
 
-import { Card, LoadingIcon } from "common/components";
+import { AuthenticationPage, LoadingIcon } from "common/components";
 
 @inject("registrationStore", "titleStore")
 @observer
@@ -93,10 +94,9 @@ class Login extends Component {
   render() {
     const { teamName } = this.props.registrationStore;
     return (
-      <Card
+      <AuthenticationPage
         headerType="create"
         title={`Sign in to ${teamName}`}
-        errorText={this.errorText}
         description={
           <span>
             Enter your team’s <b>email address</b> and <b>password</b>.
@@ -132,6 +132,13 @@ class Login extends Component {
             />
           </FormGroup>
 
+          {this.errorText && (
+            <HelpBlock className="text-left error-text">
+              <i className="fa fa-exclamation-circle" />
+              {this.errorText}
+            </HelpBlock>
+          )}
+
           <Button
             type="submit"
             bsStyle="primary"
@@ -159,7 +166,7 @@ class Login extends Component {
             <Link to="/signup/email">Create a new team.</Link>
           </div>
         </div>
-      </Card>
+      </AuthenticationPage>
     );
   }
 }

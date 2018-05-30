@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import { AuthenticationPage } from "common/components";
 import OrLine from "./components/or-line/or-line";
-import Card from "../common/components/card/card";
 
 export default class GetStarted extends Component {
   render() {
     return (
       <div>
-        <Card
+        <AuthenticationPage
           title="Get Started"
           description={
             <span>
@@ -47,7 +47,7 @@ export default class GetStarted extends Component {
               </div>
             </div>
           </div>
-        </Card>
+        </AuthenticationPage>
       </div>
     );
   }

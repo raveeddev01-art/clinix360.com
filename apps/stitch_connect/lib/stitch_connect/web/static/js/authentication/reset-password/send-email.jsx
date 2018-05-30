@@ -6,7 +6,7 @@ import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 
 function pageReload() {
   location.reload();
@@ -52,7 +52,7 @@ class SendEmail extends Component {
 
     return (
       <div>
-        <Card
+        <AuthenticationPage
           headerType="create"
           errorText={error}
           title="Password Reset"
@@ -84,7 +84,7 @@ class SendEmail extends Component {
               Reset Password
             </Button>
           </Form>
-        </Card>
+        </AuthenticationPage>
       </div>
     );
   }
@@ -93,7 +93,7 @@ class SendEmail extends Component {
     const { email } = this.state;
 
     return (
-      <Card
+      <AuthenticationPage
         headerType="create"
         title="Check Your Email!"
         className="password-reset-check-email wide"

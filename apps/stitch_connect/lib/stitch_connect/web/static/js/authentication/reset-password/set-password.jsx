@@ -5,7 +5,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
 import Button from "react-bootstrap/lib/Button";
 
-import { Card, PasswordValidator } from "common/components";
+import { AuthenticationPage, PasswordValidator } from "common/components";
 
 @inject("resetPasswordStore", "titleStore")
 @observer
@@ -54,7 +54,7 @@ class SetPassword extends Component {
   render() {
     const { password, error } = this.state;
     return (
-      <Card
+      <AuthenticationPage
         headerType="create"
         title="Reset Password"
         errorText={error}
@@ -90,7 +90,7 @@ class SetPassword extends Component {
             Submit
           </Button>
         </Form>
-      </Card>
+      </AuthenticationPage>
     );
   }
 }

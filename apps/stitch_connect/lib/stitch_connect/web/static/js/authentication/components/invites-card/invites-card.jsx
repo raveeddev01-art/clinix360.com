@@ -7,7 +7,7 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 import isEmpty from "lodash/isEmpty";
 
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 import LoadingButton from "../../../common/components/loading-button";
 
 class InvitesCard extends Component {
@@ -71,8 +71,11 @@ class InvitesCard extends Component {
   onSkip = event => {
     event.preventDefault();
 
+    this.setState({
+      loading: true
+    });
+
     this.props.onNext({
-      loading: true,
       sendInvites: false,
       invites: this.state.invites
     });
@@ -129,7 +132,7 @@ class InvitesCard extends Component {
 
     return (
       <div>
-        <Card
+        <AuthenticationPage
           title="Send Invitations"
           description={
             <span>
@@ -181,7 +184,7 @@ class InvitesCard extends Component {
               })}
             </div>
           </Form>
-        </Card>
+        </AuthenticationPage>
       </div>
     );
   }

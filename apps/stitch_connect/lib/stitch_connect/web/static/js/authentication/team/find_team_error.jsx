@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject } from "mobx-react";
 
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 
 @inject("titleStore")
 export default class FindTeam extends Component {
@@ -11,7 +11,7 @@ export default class FindTeam extends Component {
 
   render() {
     return (
-      <Card
+      <AuthenticationPage
         title="Oops!"
         description={<span>Your session has expired. Please try again.</span>}
       >
@@ -22,7 +22,7 @@ export default class FindTeam extends Component {
             <strong>Create a new team</strong>
           </a>
         </h5>
-      </Card>
+      </AuthenticationPage>
     );
   }
 }

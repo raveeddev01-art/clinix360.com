@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import { Link } from "react-router-dom";
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 
 @inject("registrationStore", "titleStore")
 @observer
@@ -13,7 +13,7 @@ export default class LoggedOut extends Component {
 
   render() {
     return (
-      <Card
+      <AuthenticationPage
         title="Signed Out"
         description={
           <span>
@@ -25,7 +25,7 @@ export default class LoggedOut extends Component {
         <Link to="/login" className="btn btn-block btn-lg btn-primary">
           Sign Back In
         </Link>
-      </Card>
+      </AuthenticationPage>
     );
   }
 }

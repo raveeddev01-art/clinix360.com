@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 import FindTeam from "./find_team";
 
 export default class SelectTeam extends Component {
@@ -46,7 +46,7 @@ export default class SelectTeam extends Component {
     }
 
     return (
-      <Card
+      <AuthenticationPage
         title="Your Teams"
         headerType="no-cta"
         description={<span>You are a member of of these Stitch teams:</span>}
@@ -59,7 +59,7 @@ export default class SelectTeam extends Component {
           <a href="/find-your-team">try a different email address</a> or request
           an invitation from your Team Administrator.
         </HelpBlock>
-      </Card>
+      </AuthenticationPage>
     );
   }
 }

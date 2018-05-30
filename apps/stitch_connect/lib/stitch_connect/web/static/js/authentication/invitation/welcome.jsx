@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 
 @inject("invitationStore")
 @observer
@@ -26,7 +26,7 @@ class Welcome extends Component {
     const { invitationStore } = this.props;
     return (
       <div>
-        <Card
+        <AuthenticationPage
           title="Welcome!"
           description={
             <span>
@@ -47,7 +47,7 @@ class Welcome extends Component {
           >
             Continue
           </Button>
-        </Card>
+        </AuthenticationPage>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import AppAlert from "./app-alert";
 import Avatar from "./avatar/avatar";
 import AvatarUploader from "./avatar-uploader";
-import Card from "./card/card";
+import AuthenticationPage from "./card/card";
 import Groups from "./groups/groups";
 import Loading from "./loading";
 import LoadingButton from "./loading-button";
@@ -33,7 +33,7 @@ export {
   Avatar,
   AppAlert,
   AvatarUploader,
-  Card,
+  AuthenticationPage,
   Groups,
   Loading,
   LoadingButton,

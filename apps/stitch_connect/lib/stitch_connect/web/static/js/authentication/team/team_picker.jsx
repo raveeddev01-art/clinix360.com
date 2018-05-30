@@ -6,7 +6,7 @@ import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 
 @inject("titleStore")
 export default class TeamPicker extends Component {
@@ -70,7 +70,7 @@ export default class TeamPicker extends Component {
     const { teamUrl, showAlert } = this.state;
 
     return (
-      <Card
+      <AuthenticationPage
         title="Sign in to your team"
         headerType="create"
         errorText={showAlert && this.errorText}
@@ -115,7 +115,7 @@ export default class TeamPicker extends Component {
             <strong>Find your team</strong>
           </Link>
         </div>
-      </Card>
+      </AuthenticationPage>
     );
   }
 }

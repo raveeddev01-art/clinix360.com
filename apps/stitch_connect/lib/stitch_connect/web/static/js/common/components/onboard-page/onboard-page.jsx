@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Form from "react-bootstrap/lib/Form";
-import Card from "../card/card";
 import LoadingButton from "../loading-button";
+import { AuthenticationPage } from "common/components";
 
 // OnboardingPage wraps AuthPage and provides some shared
 // functionality and a standard next button in the footer
@@ -51,7 +51,7 @@ class OnboardingPage extends Component {
   render() {
     const { title, children, description, errorText, headerType } = this.props;
     return (
-      <Card
+      <AuthenticationPage
         title={title}
         description={description}
         errorText={errorText}
@@ -59,7 +59,7 @@ class OnboardingPage extends Component {
         footer={this.renderFooter()}
       >
         <Form onSubmit={this._onNext}>{children}</Form>
-      </Card>
+      </AuthenticationPage>
     );
   }
 }

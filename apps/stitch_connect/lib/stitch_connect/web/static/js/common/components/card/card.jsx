@@ -4,8 +4,7 @@ import cx from "classnames";
 import Alert from "react-bootstrap/lib/Alert";
 import MinimalHeader from "../../../authentication/components/header/minimal_header";
 
-// TODO: rename Card
-class Card extends Component {
+class AuthenticationPage extends Component {
   _renderDescription = () => {
     const { description } = this.props;
     return (
@@ -40,7 +39,7 @@ class Card extends Component {
   }
 }
 
-Card.propTypes = {
+AuthenticationPage.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -56,7 +55,7 @@ Card.propTypes = {
   errorText: PropTypes.node
 };
 
-Card.defaultProps = {
+AuthenticationPage.defaultProps = {
   children: null,
   description: "",
   title: "",
@@ -66,4 +65,4 @@ Card.defaultProps = {
   errorText: ""
 };
 
-export default Card;
+export default AuthenticationPage;
