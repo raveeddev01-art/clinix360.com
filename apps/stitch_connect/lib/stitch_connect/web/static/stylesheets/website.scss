@@ -1,3 +1,8 @@
+.mobile-menu-open {
+  overflow: hidden;
+  height: 100%;
+}
+
 .website-wrapper {
   display: flex;
   min-height: 100%;
@@ -53,13 +58,6 @@
       }
     }
   }
-
-  // .flex-box {
-  //   align-items: center;
-  //   @media (max-width: 992px) {
-  //     flex-direction: column;
-  //   }
-  // }
 
   .btn {
     font-size: 15px;
@@ -1133,22 +1131,6 @@
       padding: 60px 0;
     }
 
-    // .flex-box {
-    //   flex-direction: column;
-      
-    //   .flex-item {
-    //     flex: 1 0 auto;
-    //   }
-
-    //   @media (min-width: 768px) {
-    //     flex-direction: row;
-
-    //     .flex-item {
-    //       flex: 1;
-    //     }
-    //   }
-    // }
-
     h3 {
       font-size: 24px;
       font-weight: 900;
@@ -1316,27 +1298,6 @@
       background: transparent;
     }
   }
-  
-  // .collapsing {
-  //   height: 100vh;
-  //   -webkit-transition: height 0.01s;
-  //   -moz-transition: height 0.01s;
-  //   -ms-transition: height 0.01s;
-  //   -o-transition: height 0.01s;
-  //   transition: height 0.01s;
-  // }
-
-  // .collapse {
-  //   width: 100%;
-  //   height: 100vh;
-  // }
-
-  // .collapse.in {
-  //   position: fixed;
-  //   background: red;
-  //   margin: 0px;
-  //   left: 0px;
-  // }
 
   .navbar-nav {
     display: none;
@@ -1360,7 +1321,6 @@
       background: transparent;
       border-radius: 0;
       padding: 12px 15px;
-      margin: 0 5px;
       outline: none;
 
       i.fa {
@@ -1380,12 +1340,12 @@
       }
     }
 
-    > .open > a,
-    > .open > a:hover,
-    > .open > a:focus {
-      background: #f0f1f3;
-      border-radius: 3px;
-    }
+    // > .open > a,
+    // > .open > a:hover,
+    // > .open > a:focus {
+    //   background: #f0f1f3;
+    //   border-radius: 3px;
+    // }
 
     .dropdown-menu {
       opacity: 0;
@@ -1455,15 +1415,12 @@
       border: 1px solid $brand-primary;
       border-radius: 3px;
       padding: 11px 16px;
-      margin: 0;
+      margin: 0 0 0 5px;
 
       &:hover,
       &:focus {
         color: #fff;
         background: $brand-primary;
-        border-radius: 3px;
-        padding: 11px 16px;
-        margin: 0;
       }
     }
   }
@@ -1529,12 +1486,8 @@
         color: #fff;
         font-size: 24px;
         font-weight: 600;
-        padding: 20px 0;
-      }
-
-      .open > a,
-      .open .active > a {
         background: transparent;
+        padding: 20px 0;
       }
 
       .dropdown-menu {
@@ -1574,70 +1527,6 @@
     }
   }
 }
-
-// @media (min-width: 768px) {
-//   .navbar-inverse {
-//     .navbar-header .navbar-brand{
-//       padding-left: 15px;
-//     }
-
-//     .navbar-collapse {
-//       background: transparent;
-//       box-shadow: none;
-//     }
-
-//     .navbar-nav {
-//       padding: 15px 0;
-//       margin: 0;
-
-//       > li > a {
-//         background: transparent;
-//         padding: 10px 15px;
-
-//         &.dropdown-toggle {
-//           .caret {
-//             display: inline-block;
-//           }
-
-//           &:after {
-//             content: '';
-//           }
-//         }
-//       }
-
-//       > .open > .dropdown-toggle:after {
-//         content: '';
-//       }
-
-//       .dropdown-menu {
-//         border: 1px solid rgba(0,0,0,.15);
-//         border-radius: 4px;
-//         padding: 8px;
-//       }
-
-//       .open .dropdown-menu > li > a,
-//       .open .dropdown-menu > .active > a {
-//         color: #036;
-
-//         &:hover, &:focus {
-//           color: #fff;
-//           background: #036;
-//         }
-//       }
-
-//       .dropdown .dropdown-menu a:hover .product-icon img {
-//         top: -15px;
-//       }
-
-//       .btn-trial a {
-//         width: auto;
-//         display: inline-block;
-//         margin: 2px 0 2px 5px;
-//         padding: 8px 20px;
-//       }
-//     }
-//   }
-// }
 
 //----------------- FOOTER -----------------
 #footer {
