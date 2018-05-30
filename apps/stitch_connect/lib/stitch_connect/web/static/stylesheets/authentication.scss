@@ -210,13 +210,13 @@ $dark-gray: #333;
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    width: 60px;
+    min-width: 60px;
     font-weight: 700;
   }
 
   .next-arrow-wrapper {
     font-size: 11px;
-    margin-top: 1px;
+    margin: 1px 4px 0px;
     padding-right: 5px;
   }
 

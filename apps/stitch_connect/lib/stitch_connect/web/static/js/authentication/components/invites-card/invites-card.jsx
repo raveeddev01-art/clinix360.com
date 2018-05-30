@@ -16,7 +16,7 @@ class InvitesCard extends Component {
     this.state = {
       invites: ["", "", ""],
       validationResults: {},
-      alertMessage: "",
+      showError: false,
       loading: false
     };
   }
@@ -40,7 +40,6 @@ class InvitesCard extends Component {
       hideNotify: true
     })
       .then(response => {
-        this.setState({ loading: false });
         const validationResults = {};
         response.data.forEach((e, index) => {
           const email = invites[index];
@@ -48,6 +47,7 @@ class InvitesCard extends Component {
             validationResults[email] = e[email] || "Unexpected Error";
           }
         });
+
         if (isEmpty(validationResults)) {
           this.props.onNext({
             sendInvites: true,
@@ -55,13 +55,14 @@ class InvitesCard extends Component {
           });
         } else {
           this.setState({
+            loading: false,
             validationResults
           });
         }
       })
       .catch(() => {
         this.setState({
-          alertMessage: "Emails validation has failed.",
+          showError: true,
           loading: false
         });
       });
@@ -69,7 +70,9 @@ class InvitesCard extends Component {
 
   onSkip = event => {
     event.preventDefault();
+
     this.props.onNext({
+      loading: true,
       sendInvites: false,
       invites: this.state.invites
     });
@@ -111,7 +114,7 @@ class InvitesCard extends Component {
           loading={this.state.loading}
         >
           <div className="next-button-interior">
-            <div>Next</div>
+            <div>Send Invites </div>
             <div className="next-arrow-wrapper">
               <i className="fa fa-arrow-right" />
             </div>
@@ -122,26 +125,30 @@ class InvitesCard extends Component {
   }
 
   render() {
-    const { invites, validationResults, alertMessage } = this.state;
+    const { invites, validationResults, showError } = this.state;
 
     return (
       <div>
         <Card
-          footer={this.renderFooter()}
           title="Send Invitations"
-          errorText={alertMessage && this.errorText}
           description={
             <span>
               Your Stitch team is all set. Get started by bringing in your team
               members to explore Stitch with you.
             </span>
           }
+          footer={this.renderFooter()}
         >
+          {showError && (
+            <HelpBlock className="text-left error-text">
+              <i className="fa fa-exclamation-circle" /> {this.errorText}
+            </HelpBlock>
+          )}
           <Form onSubmit={this.onNext}>
             <div className="invite-form-label-wrapper">
               <span>Email Address</span>
               <Button className="link" onClick={this.onAddEmail}>
-                + Add Invitation
+                Add Invitation
               </Button>
             </div>
             <div className="invite-form-input-wrapper">
@@ -160,7 +167,8 @@ class InvitesCard extends Component {
                       type="text"
                       value={email}
                       onChange={this.onChange(index)}
-                      placeholder="name@domain.com"
+                      onKeyPress={this.onKeyPress}
+                      placeholder="Email address"
                     />
                     {validationState === "error" && (
                       <HelpBlock className="text-left">
