@@ -170,7 +170,6 @@ class Confirmation extends Component {
               below to confirm your email address.
             </span>
           }
-          errorText={this.state.error && this.errorText}
           loading={this.state.loading}
           onNext={this.onNext}
           disableNext={!this.hasSixDigits}
@@ -188,6 +187,9 @@ class Confirmation extends Component {
             </InputGroup>
             <div className="clearfix" />
           </div>
+          {this.state.error && (
+            <div className="input-error">{this.errorText}</div>
+          )}
           <HelpBlock className="onboarding-hint m-b-20">
             Keep this window open while you check for your code.
           </HelpBlock>

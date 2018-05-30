@@ -19,6 +19,14 @@ function formatName(givenUsername) {
   );
 }
 
+function isValidUsername(username) {
+  if (/[^a-z0-9]/.test(username)) {
+    return false;
+  }
+
+  return true;
+}
+
 const generalErrorText =
   "There was an issue setting your name. Please try again.";
 
@@ -29,8 +37,10 @@ class NamesCards extends Component {
       firstName: "",
       lastName: "",
       userName: "",
-      alertMessage: "",
-      hasPatternError: false,
+      firstNameError: "",
+      lastNameError: "",
+      usernameError: "",
+      generalError: "",
       loading: false
     };
   }
@@ -54,27 +64,54 @@ class NamesCards extends Component {
 
   onNext = () => {
     const { firstName, lastName, username } = this.state;
-    this.setState({ hasPatternError: false });
+    this.setState({
+      usernameError: "",
+      firstNameError: "",
+      lastNameError: "",
+      generalError: ""
+    });
 
-    if (!this.patternValidate()) {
+    if (!firstName) {
       this.setState({
-        alertMessage: "Username is invalid."
+        firstNameError: "You must provide a first name"
       });
       return;
     }
 
     if (!isValidUnicodeString(firstName)) {
       this.setState({
-        alertMessage: "First name contains invalid characters."
+        firstNameError: "First name contains invalid characters."
+      });
+      return;
+    }
+
+    if (!lastName) {
+      this.setState({
+        lastNameError: "You must provide a last name"
       });
       return;
     }
 
     if (!isValidUnicodeString(lastName)) {
       this.setState({
-        alertMessage: "Last name contains invalid characters."
+        lastNameError: "Last name contains invalid characters."
       });
 
+      return;
+    }
+
+    if (!username) {
+      this.setState({
+        usernameError: "You must provide a username"
+      });
+      return;
+    }
+
+    if (!isValidUsername(username)) {
+      this.setState({
+        usernameError:
+          "The username should be lowercase and only use alphanumeric characters."
+      });
       return;
     }
 
@@ -84,67 +121,43 @@ class NamesCards extends Component {
       .then(resp => {
         this.setState({ loading: false });
         if (resp.data) {
-          this.setState({ alertMessage: "" });
           this.props.onNext({
             firstname: firstName,
             lastname: lastName,
-            username,
-            alertMessage: ""
+            username
           });
         } else {
           this.setState({
-            alertMessage: generalErrorText,
+            generalError: generalErrorText,
             loading: false
           });
         }
       })
       .catch(() => {
         this.setState({
-          alertMessage: generalErrorText,
+          generalError: generalErrorText,
           loading: false
         });
       });
   };
 
-  get errorText() {
-    const { alertMessage, hasPatternError, hasUniquenessError } = this.state;
-
-    if (alertMessage) {
-      return alertMessage;
-    }
-
-    if (hasPatternError) {
-      return "The username should be lowercase and only use alphanumeric characters.";
-    }
-
-    if (hasUniquenessError) {
-      return "That username is already taken.";
-    }
-
-    return "";
-  }
-
-  patternValidate = () => {
-    const { username } = this.state;
-
-    if (/[^a-z0-9]/.test(username) || !username) {
-      // starts with letter or number
-      this.setState({ hasPatternError: true });
-      return false;
-    }
-
-    return true;
-  };
-
   render() {
-    const { firstName, lastName, username, alertMessage, loading } = this.state;
+    const {
+      firstName,
+      lastName,
+      username,
+      firstNameError,
+      lastNameError,
+      usernameError,
+      generalError,
+      loading
+    } = this.state;
 
     return (
       <div>
         <OnboardPage
           {...this.props}
           title="What is your name?"
-          errorText={alertMessage}
           description={
             <span>
               Your name will appear alongside your messages, files, tasks, and
@@ -168,6 +181,9 @@ class NamesCards extends Component {
                   onChange={this.onChange("firstName")}
                   onKeyPress={this.onKeyPress}
                 />
+                {firstNameError && (
+                  <div className="input-error">{firstNameError}</div>
+                )}
               </div>
               <div className="inline-half-input">
                 <FormControl
@@ -178,6 +194,9 @@ class NamesCards extends Component {
                   onChange={this.onChange("lastName")}
                   onKeyPress={this.onKeyPress}
                 />
+                {lastNameError && (
+                  <div className="input-error">{lastNameError}</div>
+                )}
               </div>
             </div>
           </FormGroup>
@@ -191,6 +210,11 @@ class NamesCards extends Component {
               maxLength={20}
               onKeyPress={this.onKeyPress}
             />
+            {(usernameError || generalError) && (
+                <div className="input-error">
+                  {usernameError || generalError}
+                </div>
+              )}
           </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">
             Usernames must be lowercase and contian only letters, numbers,
