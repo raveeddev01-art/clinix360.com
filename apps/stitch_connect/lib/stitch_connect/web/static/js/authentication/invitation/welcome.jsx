@@ -19,7 +19,7 @@ class Welcome extends Component {
 
   onNext = () => {
     const { history, invitationStore } = this.props;
-    history.push(`/invitations/accept/${invitationStore.token}/name`);
+    history.push(`/invitations/accept/${invitationStore.token}/names`);
   };
 
   render() {
@@ -28,6 +28,7 @@ class Welcome extends Component {
       <div>
         <AuthenticationPage
           title="Welcome!"
+          headerType="no-cta"
           description={
             <span>
               Time to join the <strong>{invitationStore.teamName}</strong> team.

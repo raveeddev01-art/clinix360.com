@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 // import Button from "react-bootstrap/lib/Button";
+import { Link } from "react-router-dom";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 
 import { OnboardPage } from "common/components";
-import MinimalHeader from "../components/header/minimal_header";
 
 @inject("titleStore")
 @observer
@@ -64,6 +64,12 @@ export default class FindTeam extends Component {
             onChange={this._onChange}
           />
         </FormGroup>
+        <div className="team-picker-find-team-helper">
+          Know your team's URL?{" "}
+          <Link to="/signin">
+            <strong>Sign In</strong>
+          </Link>
+        </div>
       </OnboardPage>
     ) : (
       <OnboardPage

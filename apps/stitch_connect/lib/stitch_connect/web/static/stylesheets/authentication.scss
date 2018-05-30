@@ -268,7 +268,6 @@ $dark-gray: #333;
         width: 60px;
       }
     }
-
   }
 
   // ============
@@ -505,6 +504,18 @@ $dark-gray: #333;
       color: $light-gray;
       padding: 20px 0;
       margin-right: 1px;
+    }
+  }
+
+  .has-error {
+    .code-group {
+      .form-control {
+        border-color: $error;
+        
+        &:focus {
+          border-color: $error;
+        }
+      }
     }
   }
 
