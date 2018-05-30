@@ -113,9 +113,9 @@ class Header extends Component {
                 </MenuItem>
               </LinkContainer>
 
-              <LinkContainer to="/pilot">
+              <LinkContainer to="/customers">
                 <MenuItem>
-                  <i className="fa fa-hospital-o" /> Pilot
+                  <i className="fa fa-users" /> Customers
                 </MenuItem>
               </LinkContainer>
 
@@ -130,12 +130,6 @@ class Header extends Component {
               <MenuItem href={`https://${applicationHost}/jobs`}>
                 <i className="fa fa-wrench" /> Jobs
               </MenuItem>
-
-              <LinkContainer to="/customers">
-                <MenuItem>
-                  <i className="fa fa-users" /> Customers
-                </MenuItem>
-              </LinkContainer>
 
               <MenuItem
                 href="https://medium.com/stitch-health"
@@ -167,7 +161,7 @@ class Header extends Component {
             </div>
           </div>
 
-          <Navbar>
+          <Navbar collapseOnSelect>
             <Nav>
               <NavDropdown title="Products" id="products-dropdown">
                 <LinkContainer to="/connect">
