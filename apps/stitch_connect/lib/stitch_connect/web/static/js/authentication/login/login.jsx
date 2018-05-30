@@ -109,7 +109,7 @@ class Login extends Component {
         <Form onSubmit={this.onSubmit}>
           <input type="hidden" name="_csrf_token" value={window.csrfToken} />
 
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" validationState={this.errorText && "error"}>
             <FormControl
               name="email"
               required
@@ -121,7 +121,7 @@ class Login extends Component {
             />
           </FormGroup>
 
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" validationState={this.errorText && "error"}>
             <FormControl
               name="password"
               required
@@ -134,8 +134,7 @@ class Login extends Component {
 
           {this.errorText && (
             <HelpBlock className="text-left error-text">
-              <i className="fa fa-exclamation-circle" />
-              {this.errorText}
+              <i className="fa fa-exclamation-circle" /> {this.errorText}
             </HelpBlock>
           )}
 

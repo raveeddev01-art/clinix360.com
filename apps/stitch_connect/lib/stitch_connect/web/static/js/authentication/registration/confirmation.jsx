@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { observer, inject } from "mobx-react";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormGroup from "react-bootstrap/lib/FormGroup";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import { OnboardPage } from "common/components";
@@ -172,25 +173,26 @@ class Confirmation extends Component {
           onNext={this.onNext}
           disableNext={!this.hasSixDigits}
         >
-          <ControlLabel>Confirmation Code</ControlLabel>
-          <div className="confirmation-code m-b-20">
-            <InputGroup className="code-group">
-              {this.renderCodeInput(0, 3)}
-            </InputGroup>
+          <FormGroup validationState={this.state.error && "error"}>
+            <ControlLabel>Confirmation Code</ControlLabel>
+            <div className="confirmation-code m-b-20">
+              <InputGroup className="code-group">
+                {this.renderCodeInput(0, 3)}
+              </InputGroup>
 
-            <div className="code-separator">—</div>
+              <div className="code-separator">—</div>
 
-            <InputGroup className="code-group">
-              {this.renderCodeInput(3, 6)}
-            </InputGroup>
-            <div className="clearfix" />
-          </div>
-          {this.state.error && (
-            <HelpBlock className="text-left error-text">
-              <i className="fa fa-exclamation-circle" />
-              {this.errorText}
-            </HelpBlock>
-          )}
+              <InputGroup className="code-group">
+                {this.renderCodeInput(3, 6)}
+              </InputGroup>
+              <div className="clearfix" />
+            </div>
+            {this.state.error && (
+              <HelpBlock className="text-left error-text">
+                <i className="fa fa-exclamation-circle" /> {this.errorText}
+              </HelpBlock>
+            )}
+          </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">
             Keep this window open while you check for your code.
           </HelpBlock>

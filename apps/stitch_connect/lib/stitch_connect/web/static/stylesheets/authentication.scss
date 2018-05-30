@@ -1,6 +1,6 @@
 $white: #fff;
 $almost-white: #eee;
-$error: red;
+$error: #a94442;
 $light-gray: #d8d8d8;
 $medium-gray: #4f4f4f;
 $dark-gray: #333;
@@ -31,6 +31,7 @@ $dark-gray: #333;
 
   .error-text {
     color: $error;
+    font-weight: 700;
   }
 
   label {
@@ -51,6 +52,16 @@ $dark-gray: #333;
 
     &:focus {
       border-color: $brand-primary;
+    }
+  }
+
+  .has-error {
+    .form-control {
+      border-color: $error;
+      
+      &:focus {
+        border-color: $error;
+      }
     }
   }
 

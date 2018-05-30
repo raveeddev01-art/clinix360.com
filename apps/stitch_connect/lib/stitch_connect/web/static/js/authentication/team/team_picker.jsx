@@ -6,6 +6,7 @@ import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import { AuthenticationPage } from "common/components";
 
 @inject("titleStore")
@@ -73,7 +74,6 @@ export default class TeamPicker extends Component {
       <AuthenticationPage
         title="Sign in to your team"
         headerType="create"
-        errorText={showAlert && this.errorText}
         description={
           <span>
             Enter your team's <b> Stitch URL </b>
@@ -81,7 +81,11 @@ export default class TeamPicker extends Component {
         }
       >
         <Form onSubmit={this.onSubmit}>
-          <FormGroup bsSize="large" className="team-form">
+          <FormGroup
+            bsSize="large"
+            className="team-form"
+            validationState={showAlert && "error"}
+          >
             <FormControl
               required
               autoFocus
@@ -94,6 +98,13 @@ export default class TeamPicker extends Component {
             <span className="domain">.teamstitch.com</span>
           </FormGroup>
           {/* TODO: extract the new button? */}
+
+          {showAlert && (
+            <HelpBlock className="text-left error-text">
+              <i className="fa fa-exclamation-circle" /> {this.errorText}
+            </HelpBlock>
+          )}
+
           <Button
             bsStyle="primary"
             bsSize="lg"
