@@ -11,7 +11,7 @@ class PasswordCard extends Component {
     super(...args);
     this.state = {
       password: "",
-      formValid: false
+      formInvalid: true
     };
   }
 
@@ -21,14 +21,18 @@ class PasswordCard extends Component {
     });
   };
 
-  _onChangeValid = formValid => {
-    this.setState({ formValid });
+  _onChangeValid = formInvalid => {
+    this.setState({ formInvalid });
   };
 
-  _onNext = () => this.props.onNext(this.state.password);
+  _onNext = () => {
+    if (!this.state.formInvalid) {
+      this.props.onNext(this.state.password);
+    }
+  };
 
   render() {
-    const { password, formValid } = this.state;
+    const { password, formInvalid } = this.state;
     return (
       <div>
         <OnboardPage
@@ -36,7 +40,7 @@ class PasswordCard extends Component {
           title="Set your password"
           description={<span>Select a password for signing into Stitch</span>}
           onNext={this._onNext}
-          disableNext={formValid}
+          disableNext={formInvalid}
         >
           <FormGroup bsSize="large">
             <ControlLabel>Password</ControlLabel>
