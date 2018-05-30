@@ -19,6 +19,9 @@ function formatName(givenUsername) {
   );
 }
 
+const generalErrorText =
+  "There was an issue setting your name. Please try again.";
+
 class NamesCards extends Component {
   constructor(...args) {
     super(...args);
@@ -27,7 +30,6 @@ class NamesCards extends Component {
       lastName: "",
       userName: "",
       alertMessage: "",
-      hasError: false,
       hasPatternError: false,
       loading: false
     };
@@ -82,7 +84,7 @@ class NamesCards extends Component {
       .then(resp => {
         this.setState({ loading: false });
         if (resp.data) {
-          this.setState({ hasError: false });
+          this.setState({ alertMessage: "" });
           this.props.onNext({
             firstname: firstName,
             lastname: lastName,
@@ -90,11 +92,17 @@ class NamesCards extends Component {
             alertMessage: ""
           });
         } else {
-          this.setState({ hasError: true });
+          this.setState({
+            alertMessage: generalErrorText,
+            loading: false
+          });
         }
       })
       .catch(() => {
-        this.setState({ hasError: true, loading: false });
+        this.setState({
+          alertMessage: generalErrorText,
+          loading: false
+        });
       });
   };
 
