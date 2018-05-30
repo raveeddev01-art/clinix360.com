@@ -7,7 +7,6 @@ import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import { Card } from "common/components";
-import OrLine from "../components/or-line/or-line";
 
 @inject("titleStore")
 export default class TeamPicker extends Component {

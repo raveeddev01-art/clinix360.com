@@ -5,81 +5,29 @@ $light-gray: #d8d8d8;
 $medium-gray: #4f4f4f;
 $dark-gray: #333;
 
-.onboarding-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: $white;
-
-  &.on-electron {
-    justify-content: flex-start;
-
-    #header {
-      margin-bottom: 40px;
-    }
-  }
-}
-
-// Rename these things!
-.btn-new {
-  height: 50px;
-  color: $white;
-  font-weight: 700;
-}
-
-.btn-new-primary {
-  background-color: $brand-primary;
-  color: $white;
-  padding: 12px 20px;
-
-  &:hover, &:focus {
-    color: $white;
-    background: $brand-primary;
-  }
-}
-
-.btn-new-inverse {
-  color: $brand-primary;
-  background-color: $white;
-  height: 52px;
-  text-align: center;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px $brand-primary;
-  padding: 12px 20px;
-
-  &:hover, &:focus {
-    color: $white;
-    background: $brand-primary;
-  }
-}
-
-.onboarding-hint {
-  font-size: 16px;
-}
-
-.locked-app-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  &.on-electron {
-    justify-content: flex-start;
-
-    #header {
-      margin-bottom: 40px;
-    }
-  }
-}
+// everything in file is handled 
+// within authentication-wrapper
 
 .authentication-wrapper {
   min-height: 100vh;
   background-color: $white;
 
-  // =====================
-  //  GENERAL AUTH STYLES
-  // =====================
+  &.on-electron {
+    #header {
+      margin-bottom: 40px;
+    }
+  }
+
+  > div {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  // ================
+  //  GENERAL STYLES
+  // ================
 
   .input-error {
     color: $error;
@@ -107,26 +55,49 @@ $dark-gray: #333;
     }
   }
 
-  .inline-input-holder {
-    display: inline-flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .inline-half-input {
-    width: 48%;
-  }
-
-  > div {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
   .alert {
     max-width: 600px;
     margin: 0 auto 20px;
+  }
+
+  .btn-onboarding {
+    height: 50px;
+    color: $white;
+    font-weight: 700;
+  }
+  
+  .btn-onboarding-primary {
+    background-color: $brand-primary;
+    color: $white;
+    padding: 12px 20px;
+  
+    &:hover, &:focus {
+      color: $white;
+      background: $brand-primary;
+    }
+  }
+  
+  .btn-onboarding-inverse {
+    color: $brand-primary;
+    background-color: $white;
+    height: 52px;
+    text-align: center;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 1px $brand-primary;
+    padding: 12px 20px;
+  
+    &:hover, &:focus {
+      color: $white;
+      background: $brand-primary;
+    }
+  }
+  
+  .onboarding-hint {
+    font-size: 16px;
+  }
+
+  .url-heading {
+    margin-top: 0;
   }
 
   // ===================
@@ -182,12 +153,13 @@ $dark-gray: #333;
 
   .authentication-card {
     width: 100%;
-    max-width: 1230px;
     min-height: 100vh;
+    max-width: 1230px;
     position: relative;
     padding: 20px 0px;
     margin: 0 auto;
     margin-top: 20px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -232,15 +204,7 @@ $dark-gray: #333;
         font-weight: 700;
       }
     }
-  
-    .url-heading {
-      margin-top: 0;
-    }
   }
-
-  // =============
-  //  CARD STYLES
-  // =============
 
   .next-button-interior {
     padding-left: 7px;
@@ -262,6 +226,21 @@ $dark-gray: #333;
   //  PAGE-SPECIFIC STYLES
   // ======================
   // ======================
+
+  // ============
+  //  NAMES PAGE
+  // ============
+
+  .inline-input-holder {
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .inline-half-input {
+    width: 48%;
+  }
+
 
   // ==========
   //  PIN PAGE
@@ -328,7 +307,7 @@ $dark-gray: #333;
     align-items: center;
     width: 100%;
 
-    .btn-new {
+    .btn-onboarding {
       width: 200px;
       font-size: 18px;
       margin-bottom: 5px;

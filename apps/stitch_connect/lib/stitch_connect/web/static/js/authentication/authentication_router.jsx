@@ -24,77 +24,63 @@ import HardRedirect from "../common/components/hard-redirect/hard-redirect";
 class AuthenticationRouter extends Component {
   render() {
     const { titleStore } = this.props;
-    const onboardingWrapperClass = cx("onboarding-wrapper", {
+    const authWrapperClass = cx("authentication-wrapper", {
       "on-electron": window.electronApp
     });
 
     return (
-      <div className={onboardingWrapperClass}>
-        <div className="authentication-wrapper">
-          <Helmet>
-            <title>{titleStore.title}</title>
+      <div className={authWrapperClass}>
+        <Helmet>
+          <title>{titleStore.title}</title>
 
-            <script type="text/javascript">{`
-                window.intercomSettings = {
-                  app_id: "jig8cj9z",
-                  hide_default_launcher: false
-                };
-            `}</script>
-          </Helmet>
-          <Switch>
-            <Route exact path="/getstarted" component={GetStarted} />
-            <Route exact path="/signin" component={TeamPicker} />
-            <Route exact path="/find-your-team" component={FindTeam} />
-            <Route exact path="/find-your-team/:token" component={SelectTeam} />
-            <Route
-              exact
-              path="/find-your-team/:token/login"
-              component={FindTeamError}
-            />
+          <script type="text/javascript">{`
+              window.intercomSettings = {
+                app_id: "jig8cj9z",
+                hide_default_launcher: false
+              };
+          `}</script>
+        </Helmet>
+        <Switch>
+          <Route exact path="/getstarted" component={GetStarted} />
+          <Route exact path="/signin" component={TeamPicker} />
+          <Route exact path="/find-your-team" component={FindTeam} />
+          <Route exact path="/find-your-team/:token" component={SelectTeam} />
+          <Route
+            exact
+            path="/find-your-team/:token/login"
+            component={FindTeamError}
+          />
 
-            <Route
-              exact
-              path="/login"
-              render={() => <Login {...this.props} />}
-            />
-            <Route
-              exact
-              path="/logged-out"
-              render={() => <LoggedOut {...this.props} />}
-            />
-            <Route
-              exact
-              path="/apps"
-              render={() => <DownloadApps {...this.props} />}
-            />
+          <Route exact path="/login" render={() => <Login {...this.props} />} />
+          <Route
+            exact
+            path="/logged-out"
+            render={() => <LoggedOut {...this.props} />}
+          />
+          <Route
+            exact
+            path="/apps"
+            render={() => <DownloadApps {...this.props} />}
+          />
 
-            <Route path="/signup" component={Registration} />
+          <Route path="/signup" component={Registration} />
 
-            <Route exact path="/reset-password" component={SendEmail} />
-            <Route
-              exact
-              path="/reset-password/:token"
-              component={SetPassword}
-            />
+          <Route exact path="/reset-password" component={SendEmail} />
+          <Route exact path="/reset-password/:token" component={SetPassword} />
 
-            <Route
-              path="/invitations/accept/:token"
-              render={() => <Invitation {...this.props} />}
-            />
-            <Route
-              exact
-              path="/invitations/error"
-              component={InvitationError}
-            />
+          <Route
+            path="/invitations/accept/:token"
+            render={() => <Invitation {...this.props} />}
+          />
+          <Route exact path="/invitations/error" component={InvitationError} />
 
-            <Route
-              exact
-              push
-              path="/"
-              component={() => <HardRedirect to="/" />}
-            />
-          </Switch>
-        </div>
+          <Route
+            exact
+            push
+            path="/"
+            component={() => <HardRedirect to="/" />}
+          />
+        </Switch>
       </div>
     );
   }

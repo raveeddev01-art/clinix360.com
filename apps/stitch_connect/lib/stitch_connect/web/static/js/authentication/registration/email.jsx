@@ -57,9 +57,6 @@ class EmailCard extends Component {
   render() {
     return (
       <div>
-        {this.state.errorMessage && (
-          <Alert bsStyle="danger">{this.state.errorMessage}</Alert>
-        )}
         <OnboardPage
           title="Create a new team"
           description={
@@ -83,9 +80,9 @@ class EmailCard extends Component {
               value={this.state.email}
               onChange={this.onChange}
             />
-            <div className="input-error">
-              There was an issue with your email!
-            </div>
+            {this.state.errorMessage && (
+              <div className="input-error">this.state.errorMessage</div>
+            )}
           </FormGroup>
         </OnboardPage>
       </div>
