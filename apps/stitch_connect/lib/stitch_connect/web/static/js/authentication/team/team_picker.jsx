@@ -116,15 +116,6 @@ export default class TeamPicker extends Component {
             <strong>Find your team</strong>
           </Link>
         </div>
-        <OrLine />
-        <h5>
-          <Link
-            className="btn btn-lg btn-new btn-new-inverse btn-block"
-            to="/signup/email"
-          >
-            <strong>Create a new team</strong>
-          </Link>
-        </h5>
       </Card>
     );
   }
