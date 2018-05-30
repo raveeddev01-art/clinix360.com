@@ -67,7 +67,7 @@
 }
 
 .authentication-wrapper {
-  height: 100vh;
+  min-height: 100vh;
   background-color: #fff;
 
   .pin-code {
@@ -220,7 +220,7 @@
   }
 
   > div {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -289,10 +289,11 @@
   .authentication-card {
     width: 100%;
     max-width: 1230px;
-    height: 100vh;
+    min-height: 100vh;
     position: relative;
     padding: 20px 0px;
     margin: 0 auto;
+    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
