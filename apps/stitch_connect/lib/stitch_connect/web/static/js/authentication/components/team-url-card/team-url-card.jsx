@@ -96,18 +96,29 @@ class TeamUrlCard extends Component {
           loading={loading}
           disableNext={!teamUrl}
         >
-          <ControlLabel>Team URL</ControlLabel>
-          <FormGroup bsSize="large" className="team-form">
-            <FormControl
-              required
-              autoFocus
-              value={teamUrl}
-              onChange={this.onChange}
-              maxLength={80}
-            />
-            <span className="domain">.teamstitch.com</span>
+          <FormGroup
+            bsSize="large"
+            className=""
+            validationState={error && "error"}
+          >
+            <ControlLabel>Team URL</ControlLabel>
+            <div className="team-form">
+              <FormControl
+                required
+                autoFocus
+                value={teamUrl}
+                onChange={this.onChange}
+                maxLength={80}
+              />
+              <span className="domain">.teamstitch.com</span>
+            </div>
+            {error && (
+              <HelpBlock className="text-left">
+                <i className="fa fa-exclamation-circle" />
+                {error}
+              </HelpBlock>
+            )}
           </FormGroup>
-          {error && <div className="text-input-error-message">{error}</div>}
           <HelpBlock className="onboarding-hint m-b-20">
             Team URL must be letters, numbers, or dashes.
           </HelpBlock>

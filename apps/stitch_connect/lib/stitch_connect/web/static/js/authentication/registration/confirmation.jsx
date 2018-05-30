@@ -186,7 +186,10 @@ class Confirmation extends Component {
             <div className="clearfix" />
           </div>
           {this.state.error && (
-            <div className="text-input-error-message">{this.errorText}</div>
+            <HelpBlock className="text-left error-text">
+              <i className="fa fa-exclamation-circle" />
+              {this.errorText}
+            </HelpBlock>
           )}
           <HelpBlock className="onboarding-hint m-b-20">
             Keep this window open while you check for your code.

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-// import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Alert from "react-bootstrap/lib/Alert";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
+
 import isEmail from "validator/lib/isEmail";
 import { OnboardPage } from "common/components";
 
@@ -55,6 +56,7 @@ class EmailCard extends Component {
   };
 
   render() {
+    const { errorMessage } = this.state;
     return (
       <div>
         <OnboardPage
@@ -68,7 +70,7 @@ class EmailCard extends Component {
           loading={this.state.loading}
           disableNext={!this.state.formValid}
         >
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" validationState={errorMessage && "error"}>
             <ControlLabel>Email Address</ControlLabel>
             <FormControl
               name={`email_${new Date().getTime()}`}
@@ -80,10 +82,11 @@ class EmailCard extends Component {
               value={this.state.email}
               onChange={this.onChange}
             />
-            {this.state.errorMessage && (
-              <div className="text-input-error-message">
-                this.state.errorMessage
-              </div>
+            {errorMessage && (
+              <HelpBlock className="text-left">
+                <i className="fa fa-exclamation-circle" />
+                {errorMessage}
+              </HelpBlock>
             )}
           </FormGroup>
         </OnboardPage>

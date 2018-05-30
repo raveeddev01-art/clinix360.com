@@ -168,7 +168,11 @@ class NamesCards extends Component {
           loading={loading}
           onNext={this.onNext}
         >
-          <FormGroup inline bsSize="large">
+          <FormGroup
+            inline
+            bsSize="large"
+            validationState={(firstNameError || lastNameError) && "error"}
+          >
             <ControlLabel>Full Name</ControlLabel>
             <div className="inline-input-holder">
               <div className="inline-half-input">
@@ -181,11 +185,6 @@ class NamesCards extends Component {
                   onChange={this.onChange("firstName")}
                   onKeyPress={this.onKeyPress}
                 />
-                {firstNameError && (
-                  <div className="text-input-error-message">
-                    {firstNameError}
-                  </div>
-                )}
               </div>
               <div className="inline-half-input">
                 <FormControl
@@ -196,15 +195,19 @@ class NamesCards extends Component {
                   onChange={this.onChange("lastName")}
                   onKeyPress={this.onKeyPress}
                 />
-                {lastNameError && (
-                  <div className="text-input-error-message">
-                    {lastNameError}
-                  </div>
-                )}
               </div>
             </div>
+            {(firstNameError || lastNameError) && (
+                <HelpBlock className="text-left">
+                  <i className="fa fa-exclamation-circle" />
+                  {firstNameError || lastNameError}
+                </HelpBlock>
+              )}
           </FormGroup>
-          <FormGroup bsSize="large">
+          <FormGroup
+            bsSize="large"
+            validationState={(usernameError || generalError) && "error"}
+          >
             <ControlLabel>Username</ControlLabel>
             <FormControl
               required
@@ -215,9 +218,10 @@ class NamesCards extends Component {
               onKeyPress={this.onKeyPress}
             />
             {(usernameError || generalError) && (
-                <div className="text-input-error-message">
+                <HelpBlock className="text-left">
+                  <i className="fa fa-exclamation-circle" />
                   {usernameError || generalError}
-                </div>
+                </HelpBlock>
               )}
           </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">
