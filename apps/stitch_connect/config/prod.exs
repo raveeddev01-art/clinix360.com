@@ -22,7 +22,9 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
   url: [scheme: "https", host: System.get_env("APP_HOST"), port: 443],
   force_ssl: [
     rewrite_on: [:x_forwarded_proto],
-    hsts: false
+    # Adds Strict-Transport-Security. Note, Aptible also does that but we don't want to
+    # make the app depend on it.
+    hsts: true
   ],
   secret_key_base: System.get_env("SECRET_KEY_BASE")
 
