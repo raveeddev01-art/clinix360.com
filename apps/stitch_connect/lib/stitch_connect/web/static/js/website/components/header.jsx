@@ -45,10 +45,12 @@ class Header extends Component {
       mobileNavOpened: !this.state.mobileNavOpened
     });
 
-    if (document.body.classList.contains("mobile-menu-open")) {
-      document.body.classList.remove("mobile-menu-open");
+    const html = document.getElementsByTagName("html")[0];
+
+    if (html.classList.contains("mobile-menu-open")) {
+      html.classList.remove("mobile-menu-open");
     } else {
-      document.body.classList.add("mobile-menu-open");
+      html.classList.add("mobile-menu-open");
     }
   };
 
