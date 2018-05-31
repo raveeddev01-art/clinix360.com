@@ -53,7 +53,7 @@ class SendEmail extends Component {
     return (
       <div>
         <AuthenticationPage
-          headerType="create"
+          headerCTA="create"
           errorText={error}
           title="Password Reset"
           description={
@@ -93,7 +93,7 @@ class SendEmail extends Component {
 
     return (
       <AuthenticationPage
-        headerType="create"
+        headerCTA="create"
         title="Check Your Email!"
         className="password-reset-check-email wide"
         description={

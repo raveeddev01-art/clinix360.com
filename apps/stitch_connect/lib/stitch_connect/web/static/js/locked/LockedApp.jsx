@@ -65,7 +65,7 @@ class LockedApp extends Component {
       <div className={authWrapperClass}>
         <div>
           <AuthenticationPage
-            headerType="no-cta"
+            headerCTA="no-cta"
             title="Locked Out"
             description="Enter your PIN to resume using Stitch."
           >

@@ -72,7 +72,7 @@ export default class TeamPicker extends Component {
     return (
       <AuthenticationPage
         title="Sign in to your team"
-        headerType="create"
+        headerCTA="create"
         description={
           <span>
             Enter your team's <b> Stitch URL </b>

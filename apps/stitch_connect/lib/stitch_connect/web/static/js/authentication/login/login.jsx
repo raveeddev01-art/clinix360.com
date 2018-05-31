@@ -94,7 +94,7 @@ class Login extends Component {
     const { teamName } = this.props.registrationStore;
     return (
       <AuthenticationPage
-        headerType="create"
+        headerCTA="create"
         title={`Sign in to ${teamName}`}
         description={
           <span>

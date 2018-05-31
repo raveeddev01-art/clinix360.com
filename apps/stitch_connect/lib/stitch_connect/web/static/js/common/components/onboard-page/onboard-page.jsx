@@ -50,13 +50,13 @@ class OnboardingPage extends Component {
   }
 
   render() {
-    const { title, children, description, errorText, headerType } = this.props;
+    const { title, children, description, errorText, headerCTA } = this.props;
     return (
       <AuthenticationPage
         title={title}
         description={description}
         errorText={errorText}
-        headerType={headerType}
+        headerCTA={headerCTA}
         footer={this.renderFooter()}
       >
         <Form onSubmit={this._onNext}>{children}</Form>
@@ -78,7 +78,7 @@ OnboardingPage.propTypes = {
   disableNext: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   hideFooter: PropTypes.bool,
-  headerType: PropTypes.string
+  headerCTA: PropTypes.string
 };
 
 OnboardingPage.defaultProps = {
@@ -91,7 +91,7 @@ OnboardingPage.defaultProps = {
   disableNext: false,
   loading: false,
   hideFooter: false,
-  headerType: "find-team"
+  headerCTA: "find-team"
 };
 
 export default OnboardingPage;

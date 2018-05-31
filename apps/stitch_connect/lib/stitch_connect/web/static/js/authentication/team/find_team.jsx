@@ -44,7 +44,7 @@ export default class FindTeam extends Component {
     return !sent ? (
       <OnboardPage
         title="Find Your Team"
-        headerType="signin"
+        headerCTA="signin"
         description={
           <span>
             We’ll send you an email to confirm your address and find existing
@@ -74,7 +74,7 @@ export default class FindTeam extends Component {
     ) : (
       <OnboardPage
         title="Check your email!"
-        headerType="signin"
+        headerCTA="signin"
         description={
           <span>
             We've emailed a confirmation link to {email}. Click the link to

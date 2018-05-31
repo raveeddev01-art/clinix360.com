@@ -21,12 +21,12 @@ class AuthenticationPage extends Component {
   };
 
   render() {
-    const { children, title, className, headerType, footer } = this.props;
+    const { children, title, className, headerCTA, footer } = this.props;
     const cardStyles = cx("authentication-card", className);
 
     return (
       <div className={cardStyles}>
-        <AuthenticationHeader type={headerType} />
+        <AuthenticationHeader type={headerCTA} />
         <div className="authentication-body">
           {this.props.errorText && this._renderError()}
           <h1>{title}</h1>
@@ -51,7 +51,7 @@ AuthenticationPage.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
   className: PropTypes.string,
-  headerType: PropTypes.string,
+  headerCTA: PropTypes.string,
   errorText: PropTypes.node
 };
 
@@ -61,7 +61,7 @@ AuthenticationPage.defaultProps = {
   title: "",
   className: "",
   footer: "",
-  headerType: "find-team",
+  headerCTA: "find-team",
   errorText: ""
 };
 

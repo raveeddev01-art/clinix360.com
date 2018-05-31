@@ -28,7 +28,7 @@ class Welcome extends Component {
       <div>
         <AuthenticationPage
           title="Welcome!"
-          headerType="no-cta"
+          headerCTA="no-cta"
           description={
             <span>
               Time to join the <strong>{invitationStore.teamName}</strong> team.

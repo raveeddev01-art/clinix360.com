@@ -48,7 +48,7 @@ export default class SelectTeam extends Component {
     return (
       <AuthenticationPage
         title="Your Teams"
-        headerType="no-cta"
+        headerCTA="no-cta"
         description={<span>You are a member of of these Stitch teams:</span>}
       >
         <div className="select-team-list m-b-40">

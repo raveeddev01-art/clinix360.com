@@ -56,7 +56,7 @@ class JoinTeam extends Component {
     }
 
     return React.createElement(stepList[stepIndex].component, {
-      headerType: "no-cta",
+      headerCTA: "no-cta",
       onNext: value => {
         if (typeof value === "object") {
           Object.assign(invitationStore, value);

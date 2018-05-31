@@ -20,7 +20,7 @@ export default class GetStartedCard extends Component {
               Are you looking to join an existing team or create a new one?
             </span>
           }
-          headerType="signin"
+          headerCTA="signin"
         >
           <div className="get-started-links">
             <div className="get-started-link-wrapper">
