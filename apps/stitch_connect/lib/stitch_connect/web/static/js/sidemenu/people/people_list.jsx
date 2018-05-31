@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
+import cx from "classnames";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import CreateDMModal from "./modals/create-dm-modal";
 import Room from "../room";
 
-@inject("userStore")
+@inject("userStore", "usersStore")
 @observer
 class PeopleList extends Component {
   constructor(props) {
@@ -30,7 +31,12 @@ class PeopleList extends Component {
   };
 
   render() {
-    const { heading, rooms, userStore } = this.props;
+    const { heading, rooms, userStore, usersStore } = this.props;
+
+    const invitesLinkClass = cx({
+      "invite-link": true,
+      "encourage-invites": usersStore.users.length < 2
+    });
 
     return (
       <div className="menu-nav people m-b-20">
@@ -67,7 +73,7 @@ class PeopleList extends Component {
         {userStore.canInvite && (
           <a
             role="button"
-            className="invite-link"
+            className={invitesLinkClass}
             onClick={this.props.showInviteModal}
           >
             Invite Members

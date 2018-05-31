@@ -368,7 +368,7 @@
         .invite-link {
           display: inline-block;
           color: #fff;
-          font-size: 15px;
+          font-size: 16px;
           text-decoration: none;
           border-bottom: 1px dotted #fff;
           margin: 15px 15px 0;
@@ -379,6 +379,11 @@
             opacity: 1;
             border-bottom-style: solid;
           }
+        }
+
+        .invite-link.encourage-invites{
+          font-weight: 700;
+          opacity: 1;
         }
       }
     }
