@@ -9,6 +9,8 @@ import NavItem from "react-bootstrap/lib/NavItem";
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
+import browserDetails from "../../lib/browser_details";
+
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +18,8 @@ class Header extends Component {
     this.state = {
       mobileNavOpened: false,
       productsMenuOpened: false,
-      resourcesMenuOpened: false
+      resourcesMenuOpened: false,
+      mobileProductsMenu: false
     };
   }
 
@@ -47,7 +50,7 @@ class Header extends Component {
 
     const html = document.getElementsByTagName("html")[0];
 
-    if (html.classList.contains("mobile-menu-open")) {
+    if (this.state.mobileNavOpened === true) {
       html.classList.remove("mobile-menu-open");
     } else {
       html.classList.add("mobile-menu-open");
@@ -55,7 +58,7 @@ class Header extends Component {
   };
 
   render() {
-    const mobileNavClasses = cx({
+    const mobileNavClasses = cx("navbar navbar-default", {
       "is-open": this.state.mobileNavOpened === true,
       "is-hidden": this.state.mobileNavOpened === false
     });
@@ -76,9 +79,7 @@ class Header extends Component {
             <NavDropdown
               title="Products"
               id="products-dropdown"
-              onMouseEnter={this.toggleProductsMenu}
-              onMouseLeave={this.toggleProductsMenu}
-              open={this.state.productsMenuOpened}
+              onClick={e => e.stopPropagation()}
               noCaret
             >
               <LinkContainer to="/connect">
@@ -169,12 +170,9 @@ class Header extends Component {
             </div>
           </div>
 
-          <Navbar
-            collapseOnSelect
-            onSelect={() => this.setState({ mobileNavOpened: false })}
-          >
+          <Navbar collapseOnSelect onSelect={this.mobileNavToggle}>
             <Nav>
-              <NavDropdown title="Products" id="products-dropdown" eventKey={1}>
+              <NavDropdown title="Products" id="products-dropdown">
                 <LinkContainer to="/connect">
                   <MenuItem>
                     <i className="fa fa-comments" />

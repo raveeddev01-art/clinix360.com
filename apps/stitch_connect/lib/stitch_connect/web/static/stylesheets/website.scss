@@ -1270,6 +1270,9 @@
 
   .navbar-header {
     padding: 10px 0;
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+      float: none;
+    }
 
     .navbar-brand {
       padding: 12px 0;
@@ -1287,6 +1290,9 @@
     padding: 8px 0px;
     margin-right: 0;
     position: relative;
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+      display: block;
+    }
 
     .icon-bar {
       width: 24px;
@@ -1304,6 +1310,9 @@
     margin: 8px 0;
     @media (min-width: 768px) {
       display: block;
+    }
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+      display: none;
     }
 
     &.navbar-right {
@@ -1339,13 +1348,6 @@
         border-radius: 3px;
       }
     }
-
-    // > .open > a,
-    // > .open > a:hover,
-    // > .open > a:focus {
-    //   background: #f0f1f3;
-    //   border-radius: 3px;
-    // }
 
     .dropdown-menu {
       opacity: 0;
@@ -1439,6 +1441,9 @@
   @media(min-width: 768px) {
     display: none;
   }
+  @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+    display: block;
+  }
 
   &.is-hidden {
     left: 100%;
@@ -1504,15 +1509,24 @@
         }
       }
 
-      .mobile-menu {
-        background: red;
-
-        &.is-closed {
-          display: none;
+      @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+        float: none;
+        
+        li {
+          float: none
         }
 
-        &.is-open {
-          display: block;
+        .dropdown-menu {
+          position: static;
+          float: none;
+          width: auto;
+          margin-top: 0;
+          background-color: transparent;
+          border: 0;
+          border-top: 1px solid #35597C;
+          border-bottom: 1px solid #35597C;
+          -webkit-box-shadow: none;
+          box-shadow: none;
         }
       }
 
@@ -1522,6 +1536,7 @@
         font-weight: 700;
         text-align: center;
         background: #fff;
+        border-radius: 3px;
         margin: 40px 0;
       }
     }
