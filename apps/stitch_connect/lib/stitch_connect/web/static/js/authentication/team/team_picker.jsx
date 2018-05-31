@@ -71,11 +71,11 @@ export default class TeamPicker extends Component {
 
     return (
       <AuthenticationPage
-        title="Sign in to your team"
+        title="Sign in to your carespace"
         headerCTA="create"
         description={
           <span>
-            Enter your team's <b> Stitch URL </b>
+            Enter your carespace's <b> Stitch URL </b>
           </span>
         }
       >
@@ -91,7 +91,7 @@ export default class TeamPicker extends Component {
               value={teamUrl}
               onChange={this.onChange}
               onFocus={this.moveCaretAtEnd}
-              placeholder="your-team-url"
+              placeholder="your-carespace-url"
               maxLength={80}
             />
             <span className="domain">.teamstitch.com</span>
@@ -114,9 +114,9 @@ export default class TeamPicker extends Component {
         </Form>
 
         <div className="team-picker-find-team-helper">
-          Don't know your team's URL?{" "}
+          Don't know your carespace's URL?{" "}
           <Link to="/find-your-team">
-            <strong>Find your team</strong>
+            <strong>Find your carespace</strong>
           </Link>
         </div>
       </AuthenticationPage>
