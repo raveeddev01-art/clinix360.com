@@ -10,6 +10,9 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 import { AuthenticationPage, LoadingButton } from "common/components";
 
+const emailErrorText =
+  "There was an issue with one or more of your emails. Please ensure they are valid.";
+
 class InvitesCard extends Component {
   constructor(...args) {
     super(...args);
@@ -95,10 +98,6 @@ class InvitesCard extends Component {
     });
   };
 
-  get errorText() {
-    return "There was an issue with one or more of your emails. Please ensure they are valid.";
-  }
-
   renderFooter() {
     return (
       <div className="invites-card-footer m-b-40">
@@ -144,7 +143,7 @@ class InvitesCard extends Component {
         >
           {showError && (
             <HelpBlock className="text-left error-text">
-              <i className="fa fa-exclamation-circle" /> {this.errorText}
+              <i className="fa fa-exclamation-circle" /> {emailErrorText}
             </HelpBlock>
           )}
           <Form onSubmit={this.onNext}>
