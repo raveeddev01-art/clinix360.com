@@ -125,7 +125,7 @@ class Confirmation extends Component {
     }
   };
 
-  get hasSixDigits() {
+  hasSixDigits() {
     return this.state.digits && this.state.digits.join("").length === 6;
   }
 
@@ -167,7 +167,7 @@ class Confirmation extends Component {
           }
           loading={this.state.loading}
           onNext={this.onNext}
-          disableNext={!this.hasSixDigits}
+          disableNext={!this.hasSixDigits()}
         >
           <FormGroup validationState={(this.state.error && "error") || null}>
             <ControlLabel>Confirmation Code</ControlLabel>
