@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Form from "react-bootstrap/lib/Form";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
 import isEmpty from "lodash/isEmpty";
 
-import { AuthenticationPage } from "common/components";
-import LoadingButton from "../../../common/components/loading-button";
+import Button from "react-bootstrap/lib/Button";
+import Form from "react-bootstrap/lib/Form";
+import FormControl from "react-bootstrap/lib/FormControl";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
+
+import { AuthenticationPage, LoadingButton } from "common/components";
 
 class InvitesCard extends Component {
   constructor(...args) {
