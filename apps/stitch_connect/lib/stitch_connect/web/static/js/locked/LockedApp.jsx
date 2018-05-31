@@ -1,8 +1,12 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
-import Alert from "react-bootstrap/lib/Alert";
+
 import Button from "react-bootstrap/lib/Button";
+import Form from "react-bootstrap/lib/Form";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 import { AuthenticationPage, PinInput, LoadingIcon } from "common/components";
 
@@ -52,7 +56,7 @@ class LockedApp extends Component {
   };
 
   render() {
-    const authWrapperClass = cx("authentication-wrapper", {
+    const authWrapperClass = cx("authentication-wrapper", "locked-out", {
       "on-electron": window.electronApp
     });
     const { hasError, isSaving } = this.state;
@@ -61,40 +65,47 @@ class LockedApp extends Component {
       <div className={authWrapperClass}>
         <div>
           <AuthenticationPage
-            title="Session Locked"
-            description={`${this.props.teamStore.slug}.teamstitch.com`}
-            errorText={hasError && "PIN is incorrect"}
+            headerType="no-cta"
+            title="Locked Out"
+            description="Enter your PIN to resume using Stitch."
           >
-            <h5>
-              Enter <strong>PIN</strong> to resume Stitch.
-            </h5>
-
-            <form className="m-b-40" onSubmit={this.handleSubmit}>
-              <PinInput
-                className="m-b-20 m-center"
-                pin={this.state.pin}
-                onValid={this.onValid}
-                onInvalid={this.onInvalid}
-              />
+            <Form onSubmit={this.handleSubmit}>
+              <FormGroup
+                bsSize="large"
+                validationState={(this.state.hasError && "error") || null}
+              >
+                <ControlLabel>PIN</ControlLabel>
+                <PinInput
+                  className="m-b-20 m-center"
+                  pin={this.state.pin}
+                  onValid={this.onValid}
+                  onInvalid={this.onInvalid}
+                />
+                {hasError && (
+                  <HelpBlock className="text-left">
+                    <i className="fa fa-exclamation-circle" /> PIN is incorrect
+                  </HelpBlock>
+                )}
+              </FormGroup>
 
               <Button
                 type="submit"
                 bsStyle="primary"
                 bsSize="lg"
-                className="btn-block m-center"
+                className="btn btn-block btn-onboarding m-center m-b-20"
                 disabled={isSaving}
               >
                 Unlock
                 {this.renderLoadingIcon()}
               </Button>
-            </form>
+            </Form>
 
-            <h5>
+            <HelpBlock className="onboarding-hint m-b-20">
               Can't remember your PIN?{" "}
               <a href="/logout">
                 <strong>Sign Out</strong>
               </a>
-            </h5>
+            </HelpBlock>
           </AuthenticationPage>
         </div>
       </div>

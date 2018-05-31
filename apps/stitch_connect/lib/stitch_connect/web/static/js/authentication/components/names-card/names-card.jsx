@@ -168,11 +168,7 @@ class NamesCards extends Component {
           loading={loading}
           onNext={this.onNext}
         >
-          <FormGroup
-            inline
-            bsSize="large"
-            validationState={firstNameError && "error"}
-          >
+          <FormGroup bsSize="large" validationState={firstNameError && "error"}>
             <ControlLabel>First Name</ControlLabel>
             <FormControl
               required
@@ -190,11 +186,7 @@ class NamesCards extends Component {
               </HelpBlock>
             )}
           </FormGroup>
-          <FormGroup
-            inline
-            bsSize="large"
-            validationState={lastNameError && "error"}
-          >
+          <FormGroup bsSize="large" validationState={lastNameError && "error"}>
             <ControlLabel>Last Name</ControlLabel>
             <FormControl
               required
