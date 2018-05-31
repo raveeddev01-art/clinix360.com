@@ -25,14 +25,16 @@ class AuthenticationPage extends Component {
     const cardStyles = cx("authentication-card", className);
 
     return (
-      <div className={cardStyles}>
-        <AuthenticationHeader type={headerCTA} />
-        <div className="authentication-body">
-          {this.props.errorText && this._renderError()}
-          <h1>{title}</h1>
-          {this._renderDescription()}
-          {children}
-          {footer}
+      <div>
+        <div className={cardStyles}>
+          <AuthenticationHeader type={headerCTA} />
+          <div className="authentication-body">
+            {this.props.errorText && this._renderError()}
+            <h1>{title}</h1>
+            {this._renderDescription()}
+            {children}
+            {footer}
+          </div>
         </div>
       </div>
     );

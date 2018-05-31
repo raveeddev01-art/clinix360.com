@@ -38,7 +38,7 @@ class NamesCards extends Component {
     this.state = {
       firstName: "",
       lastName: "",
-      userName: "",
+      username: "",
       firstNameError: "",
       lastNameError: "",
       usernameError: "",
