@@ -11,10 +11,10 @@ export default class MacDesktop extends Component {
 
         <a
           href="https://teamstitch.com/download-mac"
-          className="btn btn-primary btn-lg btn-block m-b-40"
+          className="btn btn-onboarding btn-primary btn-lg btn-block m-b-40"
           alt="Download Stitch on iTunes store"
         >
-          Download
+          Download the Mac App
         </a>
       </div>
     );

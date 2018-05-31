@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 import browserDetails from "../../lib/browser_details";
 import WindowsDesktop from "./windows-desktop";
@@ -7,6 +8,7 @@ import MacDesktop from "./mac-desktop";
 import LinuxDesktop from "./linux-desktop";
 import IOSMobile from "./ios-mobile";
 import AndroidMobile from "./android-mobile";
+import MinimalHeader from "../components/header/minimal_header";
 
 @inject("registrationStore", "invitationStore", "titleStore")
 @observer
@@ -36,7 +38,7 @@ export default class DownloadApps extends Component {
 
   renderHeader() {
     const { mobile } = browserDetails;
-    return <h2>{mobile ? "Mobile App" : "Desktop App"}</h2>;
+    return <h1>{mobile ? "Mobile App" : "Desktop App"}</h1>;
   }
 
   renderAlternateOS() {
@@ -85,36 +87,32 @@ export default class DownloadApps extends Component {
     const { shouldRedirect, os, mobile } = this.state;
     return (
       !shouldRedirect && (
-        <div className="authentication-main">
-          <div className="authentication-card text-center m-b-20">
+        <div className="authentication-card m-b-20">
+          <MinimalHeader type="no-cta" />
+
+          <div className="authentication-body">
             {this.renderHeader()}
 
-            <h5 className="text-muted url-heading">
-              {this.props.registrationStore.teamSlug ||
-                this.props.invitationStore.subdomain}.teamstitch.com
-            </h5>
-
             {os === "Windows" && !mobile && <WindowsDesktop />}
-
             {os === "Mac OS X" && !mobile && <MacDesktop />}
-
             {os === "Linux" && !mobile && <LinuxDesktop />}
-
             {os === "iOS" && mobile && <IOSMobile />}
-
             {os === "Android" && mobile && <AndroidMobile />}
-
             {!mobile && (
-              <h5>
-                Looking for web app?{" "}
+              <HelpBlock className="onboarding-hint m-b-20">
+                or{" "}
                 <a href="/">
-                  <strong>Skip & Launch</strong>
+                  <strong>continue in the browser</strong>
                 </a>
-              </h5>
+              </HelpBlock>
             )}
           </div>
 
-          {this.renderAlternateOS()}
+          <div className="authentication-footer">
+            <HelpBlock className="onboarding-hint m-b-20">
+              {this.renderAlternateOS()}
+            </HelpBlock>
+          </div>
         </div>
       )
     );

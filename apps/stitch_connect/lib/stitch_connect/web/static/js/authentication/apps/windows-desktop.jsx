@@ -11,9 +11,9 @@ export default class WindowsDesktop extends Component {
 
         <a
           href="https://teamstitch.com/download-win"
-          className="btn btn-primary btn-lg btn-block m-b-40"
+          className="btn btn-onboarding btn-primary btn-lg btn-block m-b-40"
         >
-          Download
+          Download the Windows App
         </a>
       </div>
     );
