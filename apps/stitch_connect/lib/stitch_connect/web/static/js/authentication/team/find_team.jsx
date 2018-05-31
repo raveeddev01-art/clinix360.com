@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-// import Button from "react-bootstrap/lib/Button";
 import { Link } from "react-router-dom";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
@@ -38,10 +37,10 @@ export default class FindTeam extends Component {
     });
   };
 
-  render() {
-    const { email, sent } = this.state;
+  renderFindTeam() {
+    const { email } = this.state;
 
-    return !sent ? (
+    return (
       <OnboardPage
         title="Find Your Team"
         headerCTA="signin"
@@ -71,7 +70,13 @@ export default class FindTeam extends Component {
           </Link>
         </div>
       </OnboardPage>
-    ) : (
+    );
+  }
+
+  renderCheckEmail() {
+    const { email } = this.state;
+
+    return (
       <OnboardPage
         title="Check your email!"
         headerCTA="signin"
@@ -85,5 +90,9 @@ export default class FindTeam extends Component {
         hideFooter
       />
     );
+  }
+
+  render() {
+    return !this.state.sent ? this.renderFindTeam() : this.renderCheckEmail();
   }
 }
