@@ -38,7 +38,6 @@ class TeamNameCard extends Component {
 
   render() {
     const { value } = this.state;
-    const { disableNext } = this.props;
 
     return (
       <OnboardPage
@@ -46,7 +45,7 @@ class TeamNameCard extends Component {
         title="What is your team name?"
         onNext={this._onNext}
         description={this.renderDesc()}
-        disableNext={disableNext || !value}
+        disableNext={!value}
       >
         <FormGroup bsSize="large">
           <ControlLabel>Team Name</ControlLabel>
@@ -71,8 +70,7 @@ TeamNameCard.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  value: PropTypes.string,
-  disableNext: PropTypes.bool.isRequired
+  value: PropTypes.string
 };
 
 TeamNameCard.defaultProps = {
