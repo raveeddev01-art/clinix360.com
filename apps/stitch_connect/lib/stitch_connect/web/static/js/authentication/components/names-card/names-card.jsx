@@ -4,7 +4,8 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
-import { OnboardPage } from "common/components";
+
+import { OnboardPage, InputErrorBlock } from "common/components";
 import { isValidUnicodeString } from "lib/utils";
 
 function formatUsername(givenUsername) {
@@ -13,6 +14,7 @@ function formatUsername(givenUsername) {
 }
 
 function formatName(givenUsername) {
+  // get rid of emoji-esque characters (pictographs)
   return givenUsername.replace(
     /[\uD83D[\uDC00-\uDDFF]|\uD83C[\uDF00-\uDFFF]|:|\\]/g,
     ""
@@ -64,54 +66,11 @@ class NamesCards extends Component {
 
   onNext = () => {
     const { firstName, lastName, username } = this.state;
-    this.setState({
-      usernameError: "",
-      firstNameError: "",
-      lastNameError: "",
-      generalError: ""
-    });
 
-    if (!firstName) {
-      this.setState({
-        firstNameError: "You must provide a first name"
-      });
-      return;
-    }
-
-    if (!isValidUnicodeString(firstName)) {
-      this.setState({
-        firstNameError: "First name contains invalid characters."
-      });
-      return;
-    }
-
-    if (!lastName) {
-      this.setState({
-        lastNameError: "You must provide a last name"
-      });
-      return;
-    }
-
-    if (!isValidUnicodeString(lastName)) {
-      this.setState({
-        lastNameError: "Last name contains invalid characters."
-      });
-
-      return;
-    }
-
-    if (!username) {
-      this.setState({
-        usernameError: "You must provide a username"
-      });
-      return;
-    }
-
-    if (!isValidUsername(username)) {
-      this.setState({
-        usernameError:
-          "The username should be lowercase and only use alphanumeric characters."
-      });
+    // clear any existing errors
+    this.resetErrors();
+    if (this.checkForAndSetError()) {
+      // short circuit if error gets set
       return;
     }
 
@@ -139,6 +98,63 @@ class NamesCards extends Component {
           loading: false
         });
       });
+  };
+
+  resetErrors = () => {
+    this.setState({
+      usernameError: "",
+      firstNameError: "",
+      lastNameError: "",
+      generalError: ""
+    });
+  };
+
+  checkForAndSetError = () => {
+    const { firstName, lastName, username } = this.state;
+
+    if (!firstName) {
+      this.setState({
+        firstNameError: "You must provide a first name"
+      });
+      return true;
+    }
+
+    if (!isValidUnicodeString(firstName)) {
+      this.setState({
+        firstNameError: "First name contains invalid characters."
+      });
+      return true;
+    }
+
+    if (!lastName) {
+      this.setState({
+        lastNameError: "You must provide a last name"
+      });
+      return true;
+    }
+
+    if (!isValidUnicodeString(lastName)) {
+      this.setState({
+        lastNameError: "Last name contains invalid characters."
+      });
+
+      return true;
+    }
+
+    if (!username) {
+      this.setState({
+        usernameError: "You must provide a username"
+      });
+      return true;
+    }
+
+    if (!isValidUsername(username)) {
+      this.setState({
+        usernameError:
+          "The username should be lowercase and only use alphanumeric characters."
+      });
+      return true;
+    }
   };
 
   render() {
@@ -183,9 +199,7 @@ class NamesCards extends Component {
               onKeyPress={this.onKeyPress}
             />
             {firstNameError && (
-              <HelpBlock className="text-left">
-                <i className="fa fa-exclamation-circle" /> {firstNameError}
-              </HelpBlock>
+              <InputErrorBlock>{firstNameError}</InputErrorBlock>
             )}
           </FormGroup>
           <FormGroup
@@ -202,9 +216,7 @@ class NamesCards extends Component {
               onKeyPress={this.onKeyPress}
             />
             {lastNameError && (
-              <HelpBlock className="text-left">
-                <i className="fa fa-exclamation-circle" /> {lastNameError}
-              </HelpBlock>
+              <InputErrorBlock>{lastNameError}</InputErrorBlock>
             )}
           </FormGroup>
           <FormGroup
@@ -223,10 +235,9 @@ class NamesCards extends Component {
               onKeyPress={this.onKeyPress}
             />
             {(usernameError || generalError) && (
-                <HelpBlock className="text-left">
-                  <i className="fa fa-exclamation-circle" />{" "}
+                <InputErrorBlock>
                   {usernameError || generalError}
-                </HelpBlock>
+                </InputErrorBlock>
               )}
           </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">
@@ -241,10 +252,6 @@ class NamesCards extends Component {
 
 NamesCards.propTypes = {
   onNext: PropTypes.func.isRequired
-};
-
-NamesCards.defaultProps = {
-  onNext: () => {}
 };
 
 export default NamesCards;
