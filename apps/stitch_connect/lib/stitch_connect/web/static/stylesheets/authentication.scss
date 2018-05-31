@@ -242,21 +242,6 @@ $dark-gray: #333;
   // ======================
   // ======================
 
-  // ============
-  //  NAMES PAGE
-  // ============
-
-  .inline-input-holder {
-    display: inline-flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .inline-half-input {
-    width: 48%;
-  }
-
-
   // ==========
   //  PIN PAGE
   // ==========
@@ -289,7 +274,7 @@ $dark-gray: #333;
   //  GET STARTED PAGE
   // ==================
 
-  .get-started-links {
+  .get-started-card {
     width: 100%;
     max-width: 500px;
     display: flex;
@@ -298,47 +283,45 @@ $dark-gray: #333;
     align-items: center;
     margin: 40px 0px;
 
-    .get-started-link-separator{
+    &-link-separator{
       margin: 25px;
-    }
-  }
-
-  .get-started-link-separator{
-    width: 100%;
-    text-align: center;
-    font-size: 18px;
-    display: inline-flex;
-    align-items: center;
-
-    .get-started-link-separator-line {
-      flex: 5;
-      height: 1px;
-      border-top: solid 1px $light-gray;
-    }
-    .get-started-link-separator-text {
-      flex: 1
-    }
-  }
-
-  .get-started-link-wrapper{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-
-    .btn-onboarding {
-      width: 200px;
+      width: 100%;
+      text-align: center;
       font-size: 18px;
-      margin-bottom: 5px;
+      display: inline-flex;
+      align-items: center;
+  
+      &-line {
+        flex: 5;
+        height: 1px;
+        border-top: solid 1px $light-gray;
+      }
+      &-text {
+        flex: 1;
+      }
+    }
+  
+    &-link-wrapper{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      width: 100%;
+  
+      .btn-onboarding {
+        width: 200px;
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
+    }
+  
+    &-link-description{
+      text-align: center;
+      width: 100%;
+      font-size: 16px;
     }
   }
-
-  .get-started-link-description{
-    text-align: center;
-    width: 100%;
-    font-size: 16px;
-  }
+  
 
   // ==============
   //  INVITES PAGE
@@ -387,10 +370,6 @@ $dark-gray: #333;
       flex-basis: 160px;
       flex-grow: 0.2;
       flex-shrink: 0;
-      
-      // @media (max-width: 4440px) {
-      //   flex: 1 0 auto;
-      // }
     }
   }
 

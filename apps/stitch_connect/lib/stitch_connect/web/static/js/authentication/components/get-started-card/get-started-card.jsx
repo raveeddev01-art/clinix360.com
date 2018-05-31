@@ -22,27 +22,27 @@ export default class GetStartedCard extends Component {
           }
           headerCTA="signin"
         >
-          <div className="get-started-links">
-            <div className="get-started-link-wrapper">
+          <div className="get-started-card">
+            <div className="get-started-card-link-wrapper">
               <Link
                 to="/signup/email"
                 className="btn btn-onboarding btn-onboarding-primary"
               >
                 Create a New Team
               </Link>
-              <div className="get-started-link-description">
+              <div className="get-started-card-link-description">
                 Set up your team on Stitch
               </div>
             </div>
             <OrLine />
-            <div className="get-started-link-wrapper">
+            <div className="get-started-card-link-wrapper">
               <Link
                 to="/find-your-team"
                 className="btn btn-onboarding btn-onboarding-inverse"
               >
                 Find Your Team
               </Link>
-              <div className="get-started-link-description">
+              <div className="get-started-card-link-description">
                 Join or sign in to an existing team
               </div>
             </div>
