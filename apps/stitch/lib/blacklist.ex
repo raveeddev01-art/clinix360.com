@@ -490,6 +490,7 @@ defmodule Stitch.Blacklist do
     [
       "www",
       "admin",
+      "avatars",
       "help",
       "support",
       "billing",
