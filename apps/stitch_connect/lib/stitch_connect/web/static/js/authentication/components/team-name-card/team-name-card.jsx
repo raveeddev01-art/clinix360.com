@@ -38,7 +38,7 @@ class TeamNameCard extends Component {
 
   render() {
     const { value } = this.state;
-    const { type, isRequired, disableNext } = this.props;
+    const { disableNext } = this.props;
 
     return (
       <div>
@@ -47,14 +47,14 @@ class TeamNameCard extends Component {
           title="What is your team name?"
           onNext={this._onNext}
           description={this.renderDesc()}
-          disableNext={disableNext || (isRequired && !value)}
+          disableNext={disableNext || !value}
         >
           <FormGroup bsSize="large">
             <ControlLabel>Team Name</ControlLabel>
             <FormControl
-              required={isRequired}
+              required
               autoFocus
-              type={type}
+              type="text"
               placeholder="Ex. Care Clinic."
               value={value}
               onChange={this._onChange}
@@ -73,19 +73,13 @@ TeamNameCard.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  type: PropTypes.string.isRequired,
   value: PropTypes.string,
-  disableNext: PropTypes.bool.isRequired,
-  isRequired: PropTypes.bool
+  disableNext: PropTypes.bool.isRequired
 };
 
 TeamNameCard.defaultProps = {
-  onNext: () => {},
   children: "",
-  type: "text",
-  value: "",
-  disableNext: false,
-  isRequired: true
+  value: ""
 };
 
 export default TeamNameCard;
