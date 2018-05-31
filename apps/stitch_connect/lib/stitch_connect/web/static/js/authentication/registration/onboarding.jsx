@@ -16,8 +16,8 @@ const stepList = [
   { field: "names", component: Names },
   { field: "password", component: Password },
   { field: "pin", component: Pin },
-  { field: "teamname", component: TeamName },
-  { field: "teamurl", component: TeamUrl },
+  { field: "carespace_name", component: TeamName },
+  { field: "carespace_url", component: TeamUrl },
   { field: "hipaa", component: Hipaa },
   { field: "invites", component: Invites }
 ];
@@ -40,7 +40,7 @@ class Onboarding extends Component {
     const { registrationStore, history } = this.props;
     registrationStore.createTeam().catch(() => {
       alertModal({
-        title: "Error in creating team",
+        title: "Error in creating carespace",
         message:
           "Sorry, we had an issue completing your onboarding. Could you please start over?",
         okLabel: "Restart"
