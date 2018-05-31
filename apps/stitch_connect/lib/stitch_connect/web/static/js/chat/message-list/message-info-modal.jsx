@@ -52,7 +52,7 @@ class MessageInfoModal extends Component {
           {moment
             .utc(item.timestamp)
             .local()
-            .format("hh:mm A")}
+            .format("h:mm A")}
         </td>
       </tr>
     );
