@@ -181,8 +181,7 @@ class NamesCards extends Component {
             />
             {firstNameError && (
               <HelpBlock className="text-left">
-                <i className="fa fa-exclamation-circle" />
-                {firstNameError}
+                <i className="fa fa-exclamation-circle" /> {firstNameError}
               </HelpBlock>
             )}
           </FormGroup>
@@ -198,8 +197,7 @@ class NamesCards extends Component {
             />
             {lastNameError && (
               <HelpBlock className="text-left">
-                <i className="fa fa-exclamation-circle" />
-                {lastNameError}
+                <i className="fa fa-exclamation-circle" /> {lastNameError}
               </HelpBlock>
             )}
           </FormGroup>
@@ -218,7 +216,7 @@ class NamesCards extends Component {
             />
             {(usernameError || generalError) && (
                 <HelpBlock className="text-left">
-                  <i className="fa fa-exclamation-circle" />
+                  <i className="fa fa-exclamation-circle" />{" "}
                   {usernameError || generalError}
                 </HelpBlock>
               )}
