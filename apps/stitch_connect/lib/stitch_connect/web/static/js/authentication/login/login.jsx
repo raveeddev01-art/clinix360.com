@@ -98,7 +98,7 @@ class Login extends Component {
         title={`Sign in to ${teamName}`}
         description={
           <span>
-            Enter your team’s <b>email address</b> and <b>password</b>.
+            Enter your <b>email address</b> and <b>password</b>.
           </span>
         }
       >
@@ -158,15 +158,15 @@ class Login extends Component {
           </div>
 
           <div>
-            <b>Don't have an account with this team?</b>
+            <b>Don't have an account with this carespace?</b>
             <br />
-            Contact the team administrator for an invitation.
+            Contact the carespace administrator for an invitation.
           </div>
 
           <div>
             Just getting started?{" "}
             <a href={`https://${applicationHost}/signup/email`}>
-              Create a new team.
+              Create a new carespace.
             </a>
           </div>
         </div>

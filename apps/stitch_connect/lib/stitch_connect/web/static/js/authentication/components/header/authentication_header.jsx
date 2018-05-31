@@ -30,7 +30,10 @@ class AuthenticationHeader extends Component {
     if (this.props.type === "signin") {
       return (
         <Nav pullRight className="hidden-xs">
-          <NavItem onClick={this.goToSignIn}> Already on a team? </NavItem>
+          <NavItem onClick={this.goToSignIn}>
+            {" "}
+            Already part of a carespace?{" "}
+          </NavItem>
           <NavItem onClick={this.goToSignIn} className="btn-trial">
             Sign In
           </NavItem>
@@ -46,7 +49,7 @@ class AuthenticationHeader extends Component {
             Looking to set up a new workspace?{" "}
           </NavItem>
           <NavItem onClick={this.goToCreate} className="btn-trial">
-            Create a new team
+            Create a new carespace
           </NavItem>
         </Nav>
       );
@@ -59,7 +62,7 @@ class AuthenticationHeader extends Component {
           Looking to join an existing team?{" "}
         </NavItem>
         <NavItem onClick={this.goToFindTeam} className="btn-trial">
-          Find Your Team
+          Find Your Carespace
         </NavItem>
       </Nav>
     );

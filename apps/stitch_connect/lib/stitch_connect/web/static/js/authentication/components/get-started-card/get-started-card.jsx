@@ -28,10 +28,10 @@ export default class GetStartedCard extends Component {
                 to="/signup/email"
                 className="btn btn-onboarding btn-onboarding-primary"
               >
-                Create a New Team
+                Create a New Carespace
               </Link>
               <div className="get-started-card-link-description">
-                Set up your team on Stitch
+                Set up your carespace on Stitch
               </div>
             </div>
             <OrLine />
@@ -40,7 +40,7 @@ export default class GetStartedCard extends Component {
                 to="/find-your-team"
                 className="btn btn-onboarding btn-onboarding-inverse"
               >
-                Find Your Team
+                Find Your Carespace
               </Link>
               <div className="get-started-card-link-description">
                 Join or sign in to an existing team
