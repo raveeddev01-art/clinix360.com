@@ -168,7 +168,9 @@ class Login extends Component {
 
           <div>
             Just getting started?{" "}
-            <Link to="/signup/email">Create a new team.</Link>
+            <a href={`https://${applicationHost}/signup/email`}>
+              Create a new team.
+            </a>
           </div>
         </div>
       </AuthenticationPage>
