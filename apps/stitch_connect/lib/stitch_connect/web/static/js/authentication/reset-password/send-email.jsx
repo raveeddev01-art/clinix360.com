@@ -56,7 +56,6 @@ class SendEmail extends Component {
           headerType="create"
           errorText={error}
           title="Password Reset"
-          footer={<div />}
           description={
             <span>
               Enter the email address you use to sign in to{" "}
@@ -97,7 +96,6 @@ class SendEmail extends Component {
         headerType="create"
         title="Check Your Email!"
         className="password-reset-check-email wide"
-        footer={<div />}
         description={
           <span>
             We've emailed instructions on how to reset your password to{" "}

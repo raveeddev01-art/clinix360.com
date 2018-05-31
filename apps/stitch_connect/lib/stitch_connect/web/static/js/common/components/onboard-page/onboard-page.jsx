@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Form from "react-bootstrap/lib/Form";
-import LoadingButton from "../loading-button";
+
 import { AuthenticationPage } from "common/components";
+import LoadingButton from "../loading-button";
 
 // OnboardingPage wraps AuthPage and provides some shared
 // functionality and a standard next button in the footer

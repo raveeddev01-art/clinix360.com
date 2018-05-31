@@ -63,7 +63,6 @@ class SetPassword extends Component {
             Enter a <strong>password</strong>.
           </span>
         }
-        footer={<div />}
       >
         <Form onSubmit={this._onSubmit}>
           <FormGroup bsSize="large">
