@@ -39,7 +39,7 @@ class OnboardingPage extends Component {
         type="submit"
         bsStyle="primary"
         bsSize="lg"
-        className="btn m-b-40"
+        className="btn btn-block"
         disabled={this.props.disableNext}
         loading={this.props.loading}
         onClick={this._onNext}

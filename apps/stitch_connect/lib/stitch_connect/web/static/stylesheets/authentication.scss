@@ -141,16 +141,9 @@ $dark-gray: #333;
   }
 
   .authentication-header {
-    padding: 0px 20px;
-    flex: 1;
     .navbar-header {
       padding-left: 25px;
       padding-right: 25px;
-    }
-
-    @media (min-width: $screen-sm) {
-      flex: 0;
-      padding: 40px 60px 50px;
     }
   }
 
@@ -176,15 +169,13 @@ $dark-gray: #333;
 
   .authentication-card {
     width: 100%;
-    min-height: 100vh;
     max-width: 1230px;
     position: relative;
     padding: 20px 0px;
     margin: 0 auto;
-    margin-top: 20px;
 
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     flex-direction: column;
 

@@ -32,8 +32,8 @@ class AuthenticationPage extends Component {
           <h1>{title}</h1>
           {this._renderDescription()}
           {children}
+          {footer}
         </div>
-        <div className="authentication-footer">{footer}</div>
       </div>
     );
   }
