@@ -4,7 +4,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import { OnboardPage } from "common/components";
+import { InputErrorBlock, OnboardPage } from "common/components";
 
 function formatTeamUrl(givenTeamName) {
   return givenTeamName.replace(/[^0-9a-zA-Z|-]/g, "").toLowerCase();
@@ -14,6 +14,7 @@ const uniquenessErrorText =
   "This team URL is taken. Please choose another one.";
 const patternErrorText =
   "Your team URL can only contain lowercase letters, numbers and dashes. It also must start with a letter or number.";
+
 class TeamUrlCard extends Component {
   constructor(...args) {
     super(...args);
@@ -112,12 +113,7 @@ class TeamUrlCard extends Component {
               />
               <span className="domain">.teamstitch.com</span>
             </div>
-            {error && (
-              <HelpBlock className="text-left">
-                <i className="fa fa-exclamation-circle" />
-                {error}
-              </HelpBlock>
-            )}
+            {error && <InputErrorBlock> {error} </InputErrorBlock>}
           </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">
             Team URL must be letters, numbers, or dashes.
@@ -130,10 +126,6 @@ class TeamUrlCard extends Component {
 
 TeamUrlCard.propTypes = {
   onNext: PropTypes.func.isRequired
-};
-
-TeamUrlCard.defaultProps = {
-  onNext: () => {}
 };
 
 export default TeamUrlCard;
