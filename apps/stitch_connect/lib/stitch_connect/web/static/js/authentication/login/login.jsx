@@ -142,9 +142,9 @@ class Login extends Component {
             type="submit"
             bsStyle="primary"
             bsSize="lg"
-            className="btn-lg btn-block"
+            className="btn-lg btn-onboarding btn-block"
           >
-            Login
+            Sign In
             {this.renderLoadingIcon()}
           </Button>
         </Form>

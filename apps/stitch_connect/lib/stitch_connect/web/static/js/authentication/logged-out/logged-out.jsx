@@ -22,7 +22,10 @@ export default class LoggedOut extends Component {
           </span>
         }
       >
-        <Link to="/login" className="btn btn-block btn-lg btn-primary">
+        <Link
+          to="/login"
+          className="btn btn-block btn-onboarding btn-lg btn-primary"
+        >
           Sign Back In
         </Link>
       </AuthenticationPage>
