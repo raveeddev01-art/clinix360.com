@@ -99,7 +99,7 @@ export default class DownloadApps extends Component {
             {os === "iOS" && mobile && <IOSMobile />}
             {os === "Android" && mobile && <AndroidMobile />}
             {!mobile && (
-              <HelpBlock className="onboarding-hint m-b-20">
+              <HelpBlock className="onboarding-hint m-b-20 text-center">
                 or{" "}
                 <a href="/">
                   <strong>continue in the browser</strong>
