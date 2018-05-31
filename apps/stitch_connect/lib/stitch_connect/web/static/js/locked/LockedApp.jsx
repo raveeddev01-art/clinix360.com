@@ -56,7 +56,7 @@ class LockedApp extends Component {
   };
 
   render() {
-    const authWrapperClass = cx("authentication-wrapper", "locked-out", {
+    const authWrapperClass = cx("authentication-page", "locked-out", {
       "on-electron": window.electronApp
     });
     const { hasError, isSaving } = this.state;

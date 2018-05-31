@@ -24,7 +24,7 @@ import HardRedirect from "../common/components/hard-redirect/hard-redirect";
 class AuthenticationRouter extends Component {
   render() {
     const { titleStore } = this.props;
-    const authWrapperClass = cx("authentication-wrapper", {
+    const authWrapperClass = cx("authentication-page", {
       "on-electron": window.electronApp
     });
 

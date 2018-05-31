@@ -41,28 +41,26 @@ class TeamNameCard extends Component {
     const { disableNext } = this.props;
 
     return (
-      <div>
-        <OnboardPage
-          {...this.props}
-          title="What is your team name?"
-          onNext={this._onNext}
-          description={this.renderDesc()}
-          disableNext={disableNext || !value}
-        >
-          <FormGroup bsSize="large">
-            <ControlLabel>Team Name</ControlLabel>
-            <FormControl
-              required
-              autoFocus
-              type="text"
-              placeholder="Ex. Care Clinic."
-              value={value}
-              onChange={this._onChange}
-              maxLength={80}
-            />
-          </FormGroup>
-        </OnboardPage>
-      </div>
+      <OnboardPage
+        {...this.props}
+        title="What is your team name?"
+        onNext={this._onNext}
+        description={this.renderDesc()}
+        disableNext={disableNext || !value}
+      >
+        <FormGroup bsSize="large">
+          <ControlLabel>Team Name</ControlLabel>
+          <FormControl
+            required
+            autoFocus
+            type="text"
+            placeholder="Ex. Care Clinic."
+            value={value}
+            onChange={this._onChange}
+            maxLength={80}
+          />
+        </FormGroup>
+      </OnboardPage>
     );
   }
 }

@@ -130,7 +130,7 @@ class InvitesCard extends Component {
     const { invites, validationResults, showError } = this.state;
 
     return (
-      <div>
+      <div className="invites-card">
         <AuthenticationPage
           title="Send Invitations"
           description={
@@ -149,13 +149,13 @@ class InvitesCard extends Component {
             </InputErrorBlock>
           )}
           <Form onSubmit={this.onNext}>
-            <div className="invite-form-label-wrapper">
+            <div className="invites-card-form-label-wrapper">
               <span>Email Address</span>
               <Button className="link" onClick={this.onAddEmail}>
                 Add Invitation
               </Button>
             </div>
-            <div className="invite-form-input-wrapper">
+            <div className="invites-card-form-input-wrapper">
               {invites.map((email, index) => {
                 const validationState = validationResults[email]
                   ? "error"
