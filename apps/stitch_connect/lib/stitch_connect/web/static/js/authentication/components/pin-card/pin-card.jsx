@@ -70,9 +70,4 @@ PinCard.propTypes = {
   saving: PropTypes.bool.isRequired
 };
 
-PinCard.defaultProps = {
-  onNext: () => {},
-  saving: false
-};
-
 export default PinCard;
