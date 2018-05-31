@@ -198,7 +198,6 @@ class NamesCards extends Component {
             <ControlLabel>Last Name</ControlLabel>
             <FormControl
               required
-              autoFocus
               placeholder="Last Name"
               value={lastName}
               maxLength={80}
