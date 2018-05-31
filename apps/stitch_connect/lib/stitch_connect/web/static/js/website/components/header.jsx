@@ -79,7 +79,9 @@ class Header extends Component {
             <NavDropdown
               title="Products"
               id="products-dropdown"
-              onClick={e => e.stopPropagation()}
+              onMouseEnter={this.toggleProductsMenu}
+              onMouseLeave={this.toggleProductsMenu}
+              open={this.state.productsMenuOpened}
               noCaret
             >
               <LinkContainer to="/connect">
