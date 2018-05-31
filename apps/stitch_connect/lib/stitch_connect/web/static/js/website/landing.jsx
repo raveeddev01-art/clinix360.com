@@ -66,11 +66,7 @@ export default class Landing extends Component {
                     collaborate on any device.
                   </h3>
 
-                  <Button
-                    bsSize="lg"
-                    bsStyle="primary"
-                    href={`https://${applicationHost}/getstarted`}
-                  >
+                  <Button bsSize="lg" bsStyle="primary" href="/getstarted">
                     Get Started
                   </Button>
                 </div>

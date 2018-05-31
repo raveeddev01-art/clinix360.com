@@ -116,7 +116,7 @@ class InvitesCard extends Component {
           loading={this.state.loading}
         >
           <div className="next-button-interior">
-            <div>Send Invites </div>
+            <div> {this.state.loading ? "Creating Team" : "Send Invites"} </div>
             <div className="next-arrow-wrapper">
               <i className="fa fa-arrow-right" />
             </div>
