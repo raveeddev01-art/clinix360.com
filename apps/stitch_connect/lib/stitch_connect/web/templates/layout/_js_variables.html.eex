@@ -7,9 +7,10 @@ session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
 user = Map.get(@conn.assigns, :current_user)
 intercom_user_hash = Plug.Conn.get_session(@conn, :intercom_user_hash)
-public_bucket_name = System.get_env("S3_PUBLIC_BUCKET_NAME")
+public_bucket_name = Application.fetch_env!(:stitch, :public_cdn)[:bucket]
 app_settings = Poison.encode!(%{
-  notification_sounds: Stitch.Accounts.User.notification_sounds()
+  notification_sounds: Stitch.Accounts.User.notification_sounds(),
+  cdn_origin: Application.fetch_env!(:stitch, :public_cdn)[:origin]
 })
 current_user =
   case user do
