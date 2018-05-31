@@ -5,7 +5,7 @@ export default class IOSMobile extends Component {
     return (
       <div>
         <h5 className="m-b-40">
-          Download the <strong>iOS mobile app</strong> to get the best
+          Download the <strong>iOS Mobile App</strong> to get the best
           experience using Stitch.
         </h5>
 

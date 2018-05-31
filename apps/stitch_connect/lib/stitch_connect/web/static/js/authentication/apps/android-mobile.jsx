@@ -5,7 +5,7 @@ export default class AndroidMobile extends Component {
     return (
       <div>
         <h5>
-          Download the <strong>Android mobile app</strong> to get the best
+          Download the <strong>Android Mobile App</strong> to get the best
           experience using Stitch.
         </h5>
 
