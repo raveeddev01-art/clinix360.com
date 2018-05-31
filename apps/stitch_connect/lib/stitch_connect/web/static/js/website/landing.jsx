@@ -69,7 +69,7 @@ export default class Landing extends Component {
                   <Button
                     bsSize="lg"
                     bsStyle="primary"
-                    href="https://teamstitch.com/getstarted"
+                    href={`https://${applicationHost}/getstarted`}
                   >
                     Get Started
                   </Button>
