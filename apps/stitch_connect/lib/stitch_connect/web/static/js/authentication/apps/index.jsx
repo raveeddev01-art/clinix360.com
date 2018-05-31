@@ -41,54 +41,6 @@ export default class DownloadApps extends Component {
     return <h1>{mobile ? "Mobile App" : "Desktop App"}</h1>;
   }
 
-  renderAlternateOS() {
-    const { os, mobile } = this.state;
-    const macButton = (
-      <a onClick={() => this._changeOS("Mac OS X")}>
-        <strong>Mac</strong>
-      </a>
-    );
-    const winButton = (
-      <a onClick={() => this._changeOS("Windows")}>
-        <strong>Windows</strong>
-      </a>
-    );
-    const linuxButton = (
-      <a onClick={() => this._changeOS("Linux")}>
-        <strong>Linux</strong>
-      </a>
-    );
-    if (!mobile) {
-      if (os === "Mac OS X") {
-        return (
-          <h5>
-            <div className="card-description">
-              Looking for {winButton} or {linuxButton} desktop apps?
-            </div>
-          </h5>
-        );
-      } else if (os === "Windows") {
-        return (
-          <h5>
-            <div className="card-description">
-              Looking for {macButton} or {linuxButton} desktop apps?
-            </div>
-          </h5>
-        );
-      } else if (os === "Linux") {
-        return (
-          <h5>
-            <div className="card-description">
-              Looking for {macButton} or {winButton} desktop apps?
-            </div>
-          </h5>
-        );
-      }
-    }
-
-    return null;
-  }
-
   render() {
     const { shouldRedirect, os, mobile } = this.state;
     return (
@@ -112,9 +64,6 @@ export default class DownloadApps extends Component {
                   </a>
                 </HelpBlock>
               )}
-              <HelpBlock className="onboarding-hint m-b-20">
-                {this.renderAlternateOS()}
-              </HelpBlock>
             </div>
           </div>
         </div>
