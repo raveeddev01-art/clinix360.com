@@ -8,6 +8,9 @@ locked = !!Plug.Conn.get_session(@conn, :locked)
 user = Map.get(@conn.assigns, :current_user)
 intercom_user_hash = Plug.Conn.get_session(@conn, :intercom_user_hash)
 public_bucket_name = System.get_env("S3_PUBLIC_BUCKET_NAME")
+app_settings = Poison.encode!(%{
+  notification_sounds: Stitch.Accounts.User.notification_sounds()
+})
 current_user =
   case user do
     nil ->
@@ -51,4 +54,5 @@ current_user =
   window.intercomUserHash = "<%= intercom_user_hash %>";
   window.dr_chrono_client_id = "<%= System.get_env("DRCHRONO_CLIENT_ID") %>";
   window.publicBucket = "https://s3.amazonaws.com/<%=public_bucket_name%>";
+  window.appSettings = <%= raw app_settings %>
 </script>

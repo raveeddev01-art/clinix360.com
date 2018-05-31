@@ -11,6 +11,7 @@ defmodule Stitch.Accounts.User do
 
   @type t :: %__MODULE__{}
   @guest_roles Stitch.Accounts.Role.guests()
+  @notification_sounds ["ding"]
 
   schema "users" do
     field(:email, :string)
@@ -94,7 +95,8 @@ defmodule Stitch.Accounts.User do
     |> cast(params, [
       :desktop_notification_preference,
       :mobile_notification_preference,
-      :email_notification_preference
+      :email_notification_preference,
+      :desktop_sound
     ])
     |> validate_required([
       :desktop_notification_preference,
@@ -104,6 +106,7 @@ defmodule Stitch.Accounts.User do
     |> validate_inclusion(:desktop_notification_preference, ["everything", "mentions", "nothing"])
     |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing"])
     |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
+    |> validate_inclusion(:desktop_sound, @notification_sounds)
   end
 
   def update_preference(%User{} = user, params) do
@@ -362,4 +365,6 @@ defmodule Stitch.Accounts.User do
       false
     end
   end
+
+  def notification_sounds, do: @notification_sounds
 end
