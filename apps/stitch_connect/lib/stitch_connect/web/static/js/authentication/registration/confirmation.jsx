@@ -5,7 +5,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import { OnboardPage } from "common/components";
+import { OnboardPage, InputErrorBlock } from "common/components";
 
 @inject("registrationStore")
 @observer
@@ -74,10 +74,6 @@ class Confirmation extends Component {
       });
     }
   };
-
-  get errorText() {
-    return "The confirmation code doesn't match the one we have on record. Please check your email again.";
-  }
 
   digitComponents = {};
 
@@ -188,9 +184,11 @@ class Confirmation extends Component {
               <div className="clearfix" />
             </div>
             {this.state.error && (
-              <HelpBlock className="text-left error-text">
-                <i className="fa fa-exclamation-circle" /> {this.errorText}
-              </HelpBlock>
+              <InputErrorBlock>
+                {" "}
+                The confirmation code doesn't match the one we have on record.
+                Please check your email again.{" "}
+              </InputErrorBlock>
             )}
           </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">

@@ -6,11 +6,14 @@ import Alert from "react-bootstrap/lib/Alert";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 import Cookies from "js-cookie";
 
-import { AuthenticationPage, LoadingIcon } from "common/components";
+import {
+  AuthenticationPage,
+  LoadingIcon,
+  InputErrorBlock
+} from "common/components";
 
 @inject("registrationStore", "titleStore")
 @observer
@@ -81,10 +84,6 @@ class Login extends Component {
       });
   };
 
-  get errorText() {
-    return this.state.errorMessage;
-  }
-
   renderLoadingIcon = () => {
     const { saving } = this.state;
 
@@ -111,7 +110,7 @@ class Login extends Component {
 
           <FormGroup
             bsSize="large"
-            validationState={(this.errorText && "error") || null}
+            validationState={(this.state.errorMessage && "error") || null}
           >
             <FormControl
               name="email"
@@ -126,7 +125,7 @@ class Login extends Component {
 
           <FormGroup
             bsSize="large"
-            validationState={(this.errorText && "error") || null}
+            validationState={(this.state.errorMessage && "error") || null}
           >
             <FormControl
               name="password"
@@ -138,10 +137,8 @@ class Login extends Component {
             />
           </FormGroup>
 
-          {this.errorText && (
-            <HelpBlock className="text-left error-text">
-              <i className="fa fa-exclamation-circle" /> {this.errorText}
-            </HelpBlock>
+          {this.state.errorMessage && (
+            <InputErrorBlock> {this.state.errorMessage} </InputErrorBlock>
           )}
 
           <Button

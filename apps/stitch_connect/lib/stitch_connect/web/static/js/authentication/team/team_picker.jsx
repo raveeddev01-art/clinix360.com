@@ -6,8 +6,7 @@ import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import { AuthenticationPage } from "common/components";
+import { AuthenticationPage, InputErrorBlock } from "common/components";
 
 @inject("titleStore")
 export default class TeamPicker extends Component {
@@ -97,13 +96,7 @@ export default class TeamPicker extends Component {
             />
             <span className="domain">.teamstitch.com</span>
           </FormGroup>
-          {/* TODO: extract the new button? */}
-
-          {showAlert && (
-            <HelpBlock className="text-left error-text">
-              <i className="fa fa-exclamation-circle" /> {this.errorText}
-            </HelpBlock>
-          )}
+          {showAlert && <InputErrorBlock>{this.errorText}</InputErrorBlock>}
 
           <Button
             bsStyle="primary"

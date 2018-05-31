@@ -6,12 +6,12 @@ import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
 import FormGroup from "react-bootstrap/lib/FormGroup";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-import { AuthenticationPage, LoadingButton } from "common/components";
-
-const emailErrorText =
-  "There was an issue with one or more of your emails. Please ensure they are valid.";
+import {
+  AuthenticationPage,
+  LoadingButton,
+  InputErrorBlock
+} from "common/components";
 
 class InvitesCard extends Component {
   constructor(...args) {
@@ -142,9 +142,11 @@ class InvitesCard extends Component {
           footer={this.renderFooter()}
         >
           {showError && (
-            <HelpBlock className="text-left error-text">
-              <i className="fa fa-exclamation-circle" /> {emailErrorText}
-            </HelpBlock>
+            <InputErrorBlock>
+              {" "}
+              There was an issue with one or more of your emails. Please ensure
+              they are valid.{" "}
+            </InputErrorBlock>
           )}
           <Form onSubmit={this.onNext}>
             <div className="invite-form-label-wrapper">
@@ -173,10 +175,9 @@ class InvitesCard extends Component {
                       placeholder="Email address"
                     />
                     {validationState === "error" && (
-                      <HelpBlock className="text-left">
-                        <i className="fa fa-exclamation-circle" />{" "}
+                      <InputErrorBlock>
                         {validationResults[email]}
-                      </HelpBlock>
+                      </InputErrorBlock>
                     )}
                   </FormGroup>
                 );
