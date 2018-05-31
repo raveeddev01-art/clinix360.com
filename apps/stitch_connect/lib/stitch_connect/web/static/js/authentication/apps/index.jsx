@@ -62,19 +62,25 @@ export default class DownloadApps extends Component {
       if (os === "Mac OS X") {
         return (
           <h5>
-            Looking for {winButton} or {linuxButton} desktop apps?
+            <div className="card-description">
+              Looking for {winButton} or {linuxButton} desktop apps?
+            </div>
           </h5>
         );
       } else if (os === "Windows") {
         return (
           <h5>
-            Looking for {macButton} or {linuxButton} desktop apps?
+            <div className="card-description">
+              Looking for {macButton} or {linuxButton} desktop apps?
+            </div>
           </h5>
         );
       } else if (os === "Linux") {
         return (
           <h5>
-            Looking for {macButton} or {winButton} desktop apps?
+            <div className="card-description">
+              Looking for {macButton} or {winButton} desktop apps?
+            </div>
           </h5>
         );
       }
@@ -87,31 +93,29 @@ export default class DownloadApps extends Component {
     const { shouldRedirect, os, mobile } = this.state;
     return (
       !shouldRedirect && (
-        <div className="authentication-card m-b-20">
-          <AuthenticationHeader type="no-cta" />
+        <div>
+          <div className="authentication-card">
+            <AuthenticationHeader type="no-cta" />
+            <div className="authentication-body">
+              {this.renderHeader()}
 
-          <div className="authentication-body">
-            {this.renderHeader()}
-
-            {os === "Windows" && !mobile && <WindowsDesktop />}
-            {os === "Mac OS X" && !mobile && <MacDesktop />}
-            {os === "Linux" && !mobile && <LinuxDesktop />}
-            {os === "iOS" && mobile && <IOSMobile />}
-            {os === "Android" && mobile && <AndroidMobile />}
-            {!mobile && (
-              <HelpBlock className="onboarding-hint m-b-20 text-center">
-                or{" "}
-                <a href="/">
-                  <strong>continue in the browser</strong>
-                </a>
+              {os === "Windows" && !mobile && <WindowsDesktop />}
+              {os === "Mac OS X" && !mobile && <MacDesktop />}
+              {os === "Linux" && !mobile && <LinuxDesktop />}
+              {os === "iOS" && mobile && <IOSMobile />}
+              {os === "Android" && mobile && <AndroidMobile />}
+              {!mobile && (
+                <HelpBlock className="onboarding-hint m-b-20 text-center">
+                  or{" "}
+                  <a href="/">
+                    <strong>continue in the browser</strong>
+                  </a>
+                </HelpBlock>
+              )}
+              <HelpBlock className="onboarding-hint m-b-20">
+                {this.renderAlternateOS()}
               </HelpBlock>
-            )}
-          </div>
-
-          <div className="authentication-footer">
-            <HelpBlock className="onboarding-hint m-b-20">
-              {this.renderAlternateOS()}
-            </HelpBlock>
+            </div>
           </div>
         </div>
       )
