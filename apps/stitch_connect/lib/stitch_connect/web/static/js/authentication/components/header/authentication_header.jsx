@@ -5,17 +5,21 @@ import Nav from "react-bootstrap/lib/Nav";
 import Navbar from "react-bootstrap/lib/Navbar";
 import NavItem from "react-bootstrap/lib/NavItem";
 
+function goToPath(path) {
+  window.location.href = `https://${applicationHost}/${path}`;
+}
+
 class AuthenticationHeader extends Component {
   goToFindTeam() {
-    window.location.href = `https://${applicationHost}/find-your-team`;
+    goToPath("find-your-team");
   }
 
   goToSignIn() {
-    window.location.href = `https://${applicationHost}/signin`;
+    goToPath("signin");
   }
 
   goToCreate() {
-    window.location.href = `https://${applicationHost}/signup/email`;
+    goToPath("signup/email");
   }
 
   renderCTA() {
@@ -68,10 +72,7 @@ class AuthenticationHeader extends Component {
           <Navbar.Header>
             <Navbar.Brand>
               <a href={`https://${applicationHost}/`} className="brand">
-                <img
-                  src="https://dha4w82d62smt.cloudfront.net/items/3V2j19013l3O0k3p1v2v/Image%202018-05-29%20at%201.50.36%20PM.png?X-CloudApp-Visitor-Id=2995866&v=27c5a31f"
-                  alt="Stitch"
-                />
+                <img src="/images/stitch-brand.png" alt="Stitch" />
               </a>
             </Navbar.Brand>
           </Navbar.Header>

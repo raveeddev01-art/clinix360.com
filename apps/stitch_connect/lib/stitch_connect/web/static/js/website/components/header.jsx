@@ -73,10 +73,7 @@ class Header extends Component {
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/" className="brand">
-                <img
-                  src="https://dha4w82d62smt.cloudfront.net/items/3V2j19013l3O0k3p1v2v/Image%202018-05-29%20at%201.50.36%20PM.png?X-CloudApp-Visitor-Id=2995866&v=27c5a31f"
-                  alt="Stitch"
-                />
+                <img src="/images/stitch-brand.png" alt="Stitch" />
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle onClick={this.mobileNavToggle} />
