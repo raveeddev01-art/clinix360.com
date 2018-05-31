@@ -158,6 +158,7 @@ $dark-gray: #333;
   }
 
   .authentication-body {
+    width: 100%;
     max-width: 550px;
     min-width: 200px;
     padding: 70px;
@@ -165,6 +166,10 @@ $dark-gray: #333;
     background-color: white;
     border: solid 1px $light-gray;
     border-radius: 5px;
+
+    form {
+      width: auto;
+    }
 
     @media(max-width: $screen-sm) {
       border: none;

@@ -56,7 +56,7 @@ class LockedApp extends Component {
   };
 
   render() {
-    const authWrapperClass = cx("authentication-page", "locked-out", {
+    const authWrapperClass = cx("authentication-page", {
       "on-electron": window.electronApp
     });
     const { hasError, isSaving } = this.state;
@@ -69,43 +69,46 @@ class LockedApp extends Component {
             title="Locked Out"
             description="Enter your PIN to resume using Stitch."
           >
-            <Form onSubmit={this.handleSubmit}>
-              <FormGroup
-                bsSize="large"
-                validationState={(this.state.hasError && "error") || null}
-              >
-                <ControlLabel>PIN</ControlLabel>
-                <PinInput
-                  className="m-b-20 m-center"
-                  pin={this.state.pin}
-                  onValid={this.onValid}
-                  onInvalid={this.onInvalid}
-                />
-                {hasError && (
-                  <HelpBlock className="text-left">
-                    <i className="fa fa-exclamation-circle" /> PIN is incorrect
-                  </HelpBlock>
-                )}
-              </FormGroup>
+            <div className="locked-out">
+              <Form onSubmit={this.handleSubmit}>
+                <FormGroup
+                  bsSize="large"
+                  validationState={(this.state.hasError && "error") || null}
+                >
+                  <ControlLabel>PIN</ControlLabel>
+                  <PinInput
+                    className="m-b-20 m-center"
+                    pin={this.state.pin}
+                    onValid={this.onValid}
+                    onInvalid={this.onInvalid}
+                  />
+                  {hasError && (
+                    <HelpBlock className="text-left">
+                      <i className="fa fa-exclamation-circle" /> PIN is
+                      incorrect
+                    </HelpBlock>
+                  )}
+                </FormGroup>
 
-              <Button
-                type="submit"
-                bsStyle="primary"
-                bsSize="lg"
-                className="btn btn-block btn-onboarding m-center m-b-20"
-                disabled={isSaving}
-              >
-                Unlock
-                {this.renderLoadingIcon()}
-              </Button>
-            </Form>
+                <Button
+                  type="submit"
+                  bsStyle="primary"
+                  bsSize="lg"
+                  className="btn btn-block btn-onboarding m-center m-b-20"
+                  disabled={isSaving}
+                >
+                  Unlock
+                  {this.renderLoadingIcon()}
+                </Button>
+              </Form>
 
-            <HelpBlock className="onboarding-hint m-b-20">
-              Can't remember your PIN?{" "}
-              <a href="/logout">
-                <strong>Sign Out</strong>
-              </a>
-            </HelpBlock>
+              <HelpBlock className="onboarding-hint m-b-20">
+                Can't remember your PIN?{" "}
+                <a href="/logout">
+                  <strong>Sign Out</strong>
+                </a>
+              </HelpBlock>
+            </div>
           </AuthenticationPage>
         </div>
       </div>

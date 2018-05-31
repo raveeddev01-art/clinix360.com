@@ -6,20 +6,20 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import { InputErrorBlock, OnboardPage } from "common/components";
 
-function formatTeamUrl(givenTeamName) {
-  return givenTeamName.replace(/[^0-9a-zA-Z|-]/g, "").toLowerCase();
+function formatUrl(givenName) {
+  return givenName.replace(/[^0-9a-zA-Z|-]/g, "").toLowerCase();
 }
 
 const uniquenessErrorText =
-  "This team URL is taken. Please choose another one.";
+  "This carespace URL is taken. Please choose another one.";
 const patternErrorText =
-  "Your team URL can only contain lowercase letters, numbers and dashes. It also must start with a letter or number.";
+  "Your carespace URL can only contain lowercase letters, numbers and dashes. It also must start with a letter or number.";
 
-class TeamUrlCard extends Component {
+class CarespaceUrlCard extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      teamUrl: "",
+      carespaceUrl: "",
       error: "",
       loading: false
     };
@@ -27,7 +27,7 @@ class TeamUrlCard extends Component {
 
   onChange = evt => {
     this.setState({
-      teamUrl: formatTeamUrl(evt.target.value)
+      carespaceUrl: formatUrl(evt.target.value)
     });
   };
 
@@ -41,13 +41,13 @@ class TeamUrlCard extends Component {
     this.setState({ loading: true });
 
     post("/api/v1/teams/url-available", {
-      body: { url: this.state.teamUrl },
+      body: { url: this.state.carespaceUrl },
       hideNotify: true
     })
       .then(response => {
         this.setState({ loading: false });
         if (response.data.available) {
-          this.props.onNext(this.state.teamUrl);
+          this.props.onNext(this.state.carespaceUrl);
         } else {
           this.setState({
             error: uniquenessErrorText,
@@ -64,13 +64,13 @@ class TeamUrlCard extends Component {
   };
 
   validatePattern = () => {
-    const { teamUrl } = this.state;
+    const { carespaceUrl } = this.state;
 
-    if (!/^[a-z0-9]/.test(teamUrl)) {
+    if (!/^[a-z0-9]/.test(carespaceUrl)) {
       // starts with letter or number
       this.setState({ error: patternErrorText });
       return false;
-    } else if (/[^0-9a-z-]/.test(teamUrl)) {
+    } else if (/[^0-9a-z-]/.test(carespaceUrl)) {
       // has only letter, number, dash
       this.setState({ error: patternErrorText });
       return false;
@@ -80,34 +80,34 @@ class TeamUrlCard extends Component {
   };
 
   render() {
-    const { teamUrl, loading, error } = this.state;
+    const { carespaceUrl, loading, error } = this.state;
 
     return (
       <div>
         <OnboardPage
           {...this.props}
-          title="What URL do you want for your Stitch team?"
+          title="What URL do you want for your Stitch carespace?"
           description={
             <span>
-              This is the address you and your team will use to sign in to
+              This is the address you and your carespace will use to sign in to
               Stitch.
             </span>
           }
           onNext={this.onNext}
           loading={loading}
-          disableNext={!teamUrl}
+          disableNext={!carespaceUrl}
         >
           <FormGroup
             bsSize="large"
             className=""
             validationState={(error && "error") || null}
           >
-            <ControlLabel>Team URL</ControlLabel>
+            <ControlLabel>Carespace URL</ControlLabel>
             <div className="team-form">
               <FormControl
                 required
                 autoFocus
-                value={teamUrl}
+                value={carespaceUrl}
                 onChange={this.onChange}
                 maxLength={80}
               />
@@ -116,7 +116,7 @@ class TeamUrlCard extends Component {
             {error && <InputErrorBlock> {error} </InputErrorBlock>}
           </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">
-            Team URL must be letters, numbers, or dashes.
+            Carespace URL must be letters, numbers, or dashes.
           </HelpBlock>
         </OnboardPage>
       </div>
@@ -124,8 +124,8 @@ class TeamUrlCard extends Component {
   }
 }
 
-TeamUrlCard.propTypes = {
+CarespaceUrlCard.propTypes = {
   onNext: PropTypes.func.isRequired
 };
 
-export default TeamUrlCard;
+export default CarespaceUrlCard;

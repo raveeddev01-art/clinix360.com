@@ -60,10 +60,11 @@ class EmailCard extends Component {
     return (
       <div>
         <OnboardPage
-          title="Create a new team"
+          title="Create a new carespace"
           description={
             <span>
-              Enter your email address to start creating your team on Stitch
+              Enter your email address to start creating your carespace on
+              Stitch.
             </span>
           }
           onNext={this.onNext}

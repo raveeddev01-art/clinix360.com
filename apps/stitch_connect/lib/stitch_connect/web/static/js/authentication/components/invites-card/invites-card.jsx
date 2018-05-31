@@ -116,7 +116,7 @@ class InvitesCard extends Component {
           loading={this.state.loading}
         >
           <div className="next-button-interior">
-            <div> {this.state.loading ? "Creating Team" : "Send Invites"} </div>
+            <div> {this.state.loading ? "Loading" : "Send Invites"} </div>
             <div className="next-arrow-wrapper">
               <i className="fa fa-arrow-right" />
             </div>
@@ -135,8 +135,8 @@ class InvitesCard extends Component {
           title="Send Invitations"
           description={
             <span>
-              Your Stitch team is all set. Get started by bringing in your team
-              members to explore Stitch with you.
+              Your Stitch carespace is all set. Get started by bringing in your
+              team members to explore Stitch with you.
             </span>
           }
           footer={this.renderFooter()}

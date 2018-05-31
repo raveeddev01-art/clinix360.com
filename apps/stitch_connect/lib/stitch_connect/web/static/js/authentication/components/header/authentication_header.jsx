@@ -59,7 +59,7 @@ class AuthenticationHeader extends Component {
       <Nav pullRight className="hidden-xs">
         <NavItem onClick={this.goToFindTeam}>
           {" "}
-          Looking to join an existing team?{" "}
+          Looking to join an existing carespace?{" "}
         </NavItem>
         <NavItem onClick={this.goToFindTeam} className="btn-trial">
           Find Your Carespace

@@ -7,7 +7,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 
 import { OnboardPage } from "common/components";
 
-class TeamNameCard extends Component {
+class CarespaceNameCard extends Component {
   constructor(props) {
     super(props);
 
@@ -30,8 +30,8 @@ class TeamNameCard extends Component {
   renderDesc() {
     return (
       <span>
-        Name your team after the group that will be using Stitch together (You
-        can change this later).
+        Name your carespace after the group that will be using Stitch together
+        (you can change this later).
       </span>
     );
   }
@@ -42,13 +42,13 @@ class TeamNameCard extends Component {
     return (
       <OnboardPage
         {...this.props}
-        title="What is your team name?"
+        title="What is your carespace name?"
         onNext={this._onNext}
         description={this.renderDesc()}
         disableNext={!value}
       >
         <FormGroup bsSize="large">
-          <ControlLabel>Team Name</ControlLabel>
+          <ControlLabel>Carespace Name</ControlLabel>
           <FormControl
             required
             autoFocus
@@ -64,7 +64,7 @@ class TeamNameCard extends Component {
   }
 }
 
-TeamNameCard.propTypes = {
+CarespaceNameCard.propTypes = {
   onNext: PropTypes.func.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -73,9 +73,9 @@ TeamNameCard.propTypes = {
   value: PropTypes.string
 };
 
-TeamNameCard.defaultProps = {
+CarespaceNameCard.defaultProps = {
   children: "",
   value: ""
 };
 
-export default TeamNameCard;
+export default CarespaceNameCard;
