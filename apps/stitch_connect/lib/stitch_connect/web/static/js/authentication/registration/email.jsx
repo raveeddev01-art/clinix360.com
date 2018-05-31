@@ -70,7 +70,10 @@ class EmailCard extends Component {
           loading={this.state.loading}
           disableNext={!this.state.formValid}
         >
-          <FormGroup bsSize="large" validationState={errorMessage && "error"}>
+          <FormGroup
+            bsSize="large"
+            validationState={(errorMessage && "error") || null}
+          >
             <ControlLabel>Email Address</ControlLabel>
             <FormControl
               name={`email_${new Date().getTime()}`}

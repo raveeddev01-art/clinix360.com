@@ -99,7 +99,7 @@ class TeamUrlCard extends Component {
           <FormGroup
             bsSize="large"
             className=""
-            validationState={error && "error"}
+            validationState={(error && "error") || null}
           >
             <ControlLabel>Team URL</ControlLabel>
             <div className="team-form">

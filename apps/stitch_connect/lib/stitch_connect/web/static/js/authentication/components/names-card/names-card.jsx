@@ -168,7 +168,10 @@ class NamesCards extends Component {
           loading={loading}
           onNext={this.onNext}
         >
-          <FormGroup bsSize="large" validationState={firstNameError && "error"}>
+          <FormGroup
+            bsSize="large"
+            validationState={(firstNameError && "error") || null}
+          >
             <ControlLabel>First Name</ControlLabel>
             <FormControl
               required
@@ -185,7 +188,10 @@ class NamesCards extends Component {
               </HelpBlock>
             )}
           </FormGroup>
-          <FormGroup bsSize="large" validationState={lastNameError && "error"}>
+          <FormGroup
+            bsSize="large"
+            validationState={(lastNameError && "error") || null}
+          >
             <ControlLabel>Last Name</ControlLabel>
             <FormControl
               required
@@ -203,7 +209,9 @@ class NamesCards extends Component {
           </FormGroup>
           <FormGroup
             bsSize="large"
-            validationState={(usernameError || generalError) && "error"}
+            validationState={
+              ((usernameError || generalError) && "error") || null
+            }
           >
             <ControlLabel>Username</ControlLabel>
             <FormControl

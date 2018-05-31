@@ -84,7 +84,7 @@ export default class TeamPicker extends Component {
           <FormGroup
             bsSize="large"
             className="team-form"
-            validationState={showAlert && "error"}
+            validationState={(showAlert && "error") || null}
           >
             <FormControl
               required

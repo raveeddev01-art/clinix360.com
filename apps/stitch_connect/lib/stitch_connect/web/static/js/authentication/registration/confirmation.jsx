@@ -173,7 +173,7 @@ class Confirmation extends Component {
           onNext={this.onNext}
           disableNext={!this.hasSixDigits}
         >
-          <FormGroup validationState={this.state.error && "error"}>
+          <FormGroup validationState={(this.state.error && "error") || null}>
             <ControlLabel>Confirmation Code</ControlLabel>
             <div className="confirmation-code m-b-20">
               <InputGroup className="code-group">
