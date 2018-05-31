@@ -1,6 +1,7 @@
 import AppAlert from "./app-alert";
 import Avatar from "./avatar/avatar";
 import AvatarUploader from "./avatar-uploader";
+import AuthenticationHeader from "../../authentication/components/header/authentication_header";
 import AuthenticationPage from "./card/card";
 import Groups from "./groups/groups";
 import Loading from "./loading";
@@ -33,6 +34,7 @@ export {
   Avatar,
   AppAlert,
   AvatarUploader,
+  AuthenticationHeader,
   AuthenticationPage,
   Groups,
   Loading,

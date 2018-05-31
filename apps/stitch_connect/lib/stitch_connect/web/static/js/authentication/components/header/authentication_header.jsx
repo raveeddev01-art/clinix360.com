@@ -5,7 +5,7 @@ import Nav from "react-bootstrap/lib/Nav";
 import Navbar from "react-bootstrap/lib/Navbar";
 import NavItem from "react-bootstrap/lib/NavItem";
 
-class MinimalHeader extends Component {
+class AuthenticationHeader extends Component {
   goToFindTeam() {
     window.location.href = `https://${applicationHost}/find-your-team`;
   }
@@ -83,8 +83,8 @@ class MinimalHeader extends Component {
   }
 }
 
-MinimalHeader.propTypes = {
+AuthenticationHeader.propTypes = {
   type: PropTypes.string.isRequired
 };
 
-export default MinimalHeader;
+export default AuthenticationHeader;

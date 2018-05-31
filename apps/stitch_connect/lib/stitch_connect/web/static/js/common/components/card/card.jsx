@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import Alert from "react-bootstrap/lib/Alert";
-import MinimalHeader from "../../../authentication/components/header/minimal_header";
+import { AuthenticationHeader } from "common/components";
 
 class AuthenticationPage extends Component {
   _renderDescription = () => {
@@ -26,7 +26,7 @@ class AuthenticationPage extends Component {
 
     return (
       <div className={cardStyles}>
-        <MinimalHeader type={headerType} />
+        <AuthenticationHeader type={headerType} />
         <div className="authentication-body">
           {this.props.errorText && this._renderError()}
           <h1>{title}</h1>
