@@ -2,7 +2,7 @@ import AppAlert from "./app-alert";
 import Avatar from "./avatar/avatar";
 import AvatarUploader from "./avatar-uploader";
 import AuthenticationHeader from "../../authentication/components/header/authentication_header";
-import AuthenticationPage from "./card/card";
+import AuthenticationPage from "./authentication-page/authentication-page";
 import InputErrorBlock from "./input-error-block/input-error-block";
 import Groups from "./groups/groups";
 import Loading from "./loading";
