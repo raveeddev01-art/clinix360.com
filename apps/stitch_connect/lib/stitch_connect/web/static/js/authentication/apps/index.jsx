@@ -65,6 +65,7 @@ export default class DownloadApps extends Component {
                 </HelpBlock>
               )}
             </div>
+            <div className="authentication-spacer" />
           </div>
         </div>
       )

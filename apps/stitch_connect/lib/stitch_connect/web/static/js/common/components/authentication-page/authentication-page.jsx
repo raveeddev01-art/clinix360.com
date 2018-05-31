@@ -35,6 +35,7 @@ class AuthenticationPage extends Component {
             {children}
             {footer}
           </div>
+          <div className="authentication-spacer" />
         </div>
       </div>
     );
