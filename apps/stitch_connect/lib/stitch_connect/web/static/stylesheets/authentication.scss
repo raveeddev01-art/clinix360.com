@@ -147,6 +147,11 @@ $dark-gray: #333;
       padding-left: 25px;
       padding-right: 25px;
     }
+
+    @media (min-width: $screen-sm) {
+      flex: 0;
+      padding: 40px 60px 50px;
+    }
   }
 
   .authentication-body {
