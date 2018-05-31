@@ -32,6 +32,11 @@ $dark-gray: #333;
   .error-text {
     color: $error;
     font-weight: 700;
+
+    a {
+      color: $brand-primary;
+      font-weight: 700;
+    }
   }
 
   label {
@@ -370,10 +375,23 @@ $dark-gray: #333;
   .invites-card-footer {
     width: 100%;
     max-width: 500px;
+
     display: flex;
+    flex-wrap: wrap-reverse;
     justify-content: space-between;
     align-items: center;
+    
     padding: 20px;
+
+    button {
+      flex-basis: 160px;
+      flex-grow: 0.2;
+      flex-shrink: 0;
+      
+      // @media (max-width: 4440px) {
+      //   flex: 1 0 auto;
+      // }
+    }
   }
 
   // =========================

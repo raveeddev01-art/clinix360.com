@@ -4,9 +4,7 @@ import cx from "classnames";
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 
-import { PinInput, LoadingIcon } from "common/components";
-import Header from "../authentication/components/header/header";
-import Footer from "../authentication/components/footer/footer";
+import { AuthenticationPage, PinInput, LoadingIcon } from "common/components";
 
 @inject("presenceStore", "teamStore")
 @observer
@@ -62,50 +60,42 @@ class LockedApp extends Component {
     return (
       <div className={authWrapperClass}>
         <div>
-          <Header />
+          <AuthenticationPage
+            title="Session Locked"
+            description={`${this.props.teamStore.slug}.teamstitch.com`}
+            errorText={hasError && "PIN is incorrect"}
+          >
+            <h5>
+              Enter <strong>PIN</strong> to resume Stitch.
+            </h5>
 
-          <div className="authentication-main">
-            {hasError && <Alert bsStyle="danger">PIN is incorrect.</Alert>}
-            <div id="lockout" className="authentication-card text-center">
-              <h2>Session Locked</h2>
-              <h5 className="text-muted url-heading">
-                {this.props.teamStore.slug}.teamstitch.com
-              </h5>
+            <form className="m-b-40" onSubmit={this.handleSubmit}>
+              <PinInput
+                className="m-b-20 m-center"
+                pin={this.state.pin}
+                onValid={this.onValid}
+                onInvalid={this.onInvalid}
+              />
 
-              <h5>
-                Enter <strong>PIN</strong> to resume Stitch.
-              </h5>
+              <Button
+                type="submit"
+                bsStyle="primary"
+                bsSize="lg"
+                className="btn-block m-center"
+                disabled={isSaving}
+              >
+                Unlock
+                {this.renderLoadingIcon()}
+              </Button>
+            </form>
 
-              <form className="m-b-40" onSubmit={this.handleSubmit}>
-                <PinInput
-                  className="m-b-20 m-center"
-                  pin={this.state.pin}
-                  onValid={this.onValid}
-                  onInvalid={this.onInvalid}
-                />
-
-                <Button
-                  type="submit"
-                  bsStyle="primary"
-                  bsSize="lg"
-                  className="btn-block m-center"
-                  disabled={isSaving}
-                >
-                  Unlock
-                  {this.renderLoadingIcon()}
-                </Button>
-              </form>
-
-              <h5>
-                Can't remember your PIN?{" "}
-                <a href="/logout">
-                  <strong>Sign Out</strong>
-                </a>
-              </h5>
-            </div>
-          </div>
-
-          {!window.electronApp && <Footer />}
+            <h5>
+              Can't remember your PIN?{" "}
+              <a href="/logout">
+                <strong>Sign Out</strong>
+              </a>
+            </h5>
+          </AuthenticationPage>
         </div>
       </div>
     );

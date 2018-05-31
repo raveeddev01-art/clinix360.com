@@ -171,38 +171,46 @@ class NamesCards extends Component {
           <FormGroup
             inline
             bsSize="large"
-            validationState={(firstNameError || lastNameError) && "error"}
+            validationState={firstNameError && "error"}
           >
-            <ControlLabel>Full Name</ControlLabel>
-            <div className="inline-input-holder">
-              <div className="inline-half-input">
-                <FormControl
-                  required
-                  autoFocus
-                  placeholder="First Name"
-                  value={firstName}
-                  maxLength={80}
-                  onChange={this.onChange("firstName")}
-                  onKeyPress={this.onKeyPress}
-                />
-              </div>
-              <div className="inline-half-input">
-                <FormControl
-                  required
-                  placeholder="Last Name"
-                  value={lastName}
-                  maxLength={80}
-                  onChange={this.onChange("lastName")}
-                  onKeyPress={this.onKeyPress}
-                />
-              </div>
-            </div>
-            {(firstNameError || lastNameError) && (
-                <HelpBlock className="text-left">
-                  <i className="fa fa-exclamation-circle" />
-                  {firstNameError || lastNameError}
-                </HelpBlock>
-              )}
+            <ControlLabel>First Name</ControlLabel>
+            <FormControl
+              required
+              autoFocus
+              placeholder="First Name"
+              value={firstName}
+              maxLength={80}
+              onChange={this.onChange("firstName")}
+              onKeyPress={this.onKeyPress}
+            />
+            {firstNameError && (
+              <HelpBlock className="text-left">
+                <i className="fa fa-exclamation-circle" />
+                {firstNameError}
+              </HelpBlock>
+            )}
+          </FormGroup>
+          <FormGroup
+            inline
+            bsSize="large"
+            validationState={lastNameError && "error"}
+          >
+            <ControlLabel>Last Name</ControlLabel>
+            <FormControl
+              required
+              autoFocus
+              placeholder="Last Name"
+              value={lastName}
+              maxLength={80}
+              onChange={this.onChange("lastName")}
+              onKeyPress={this.onKeyPress}
+            />
+            {lastNameError && (
+              <HelpBlock className="text-left">
+                <i className="fa fa-exclamation-circle" />
+                {lastNameError}
+              </HelpBlock>
+            )}
           </FormGroup>
           <FormGroup
             bsSize="large"
