@@ -151,6 +151,13 @@ $dark-gray: #333;
       padding-left: 25px;
       padding-right: 25px;
     }
+
+    .navbar-text {
+      color: $brand-primary;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 14px;
+    }
   }
 
   .authentication-spacer {
@@ -330,7 +337,7 @@ $dark-gray: #333;
       width: 100%;
 
       .btn-onboarding {
-        width: 200px;
+        width: 240px;
         font-size: 18px;
         margin-bottom: 5px;
       }

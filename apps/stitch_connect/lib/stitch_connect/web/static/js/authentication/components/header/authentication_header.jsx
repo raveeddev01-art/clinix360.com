@@ -22,6 +22,18 @@ class AuthenticationHeader extends Component {
     goToPath("signup/email");
   }
 
+  renderBrand() {
+    if (window.electronApp) {
+      return <img src="/images/stitch-brand.png" alt="Stitch" />;
+    }
+
+    return (
+      <a href={`https://${applicationHost}/`} className="brand">
+        <img src="/images/stitch-brand.png" alt="Stitch" />
+      </a>
+    );
+  }
+
   renderCTA() {
     if (this.props.type === "no-cta") {
       return null;
@@ -30,10 +42,7 @@ class AuthenticationHeader extends Component {
     if (this.props.type === "signin") {
       return (
         <Nav pullRight className="hidden-xs">
-          <NavItem onClick={this.goToSignIn}>
-            {" "}
-            Already part of a carespace?{" "}
-          </NavItem>
+          <Navbar.Text> Already part of a carespace? </Navbar.Text>
           <NavItem onClick={this.goToSignIn} className="btn-trial">
             Sign In
           </NavItem>
@@ -44,10 +53,7 @@ class AuthenticationHeader extends Component {
     if (this.props.type === "create") {
       return (
         <Nav pullRight className="hidden-xs">
-          <NavItem onClick={this.goToCreate}>
-            {" "}
-            Looking to set up a new workspace?{" "}
-          </NavItem>
+          <Navbar.Text> Looking to set up a new carespace? </Navbar.Text>
           <NavItem onClick={this.goToCreate} className="btn-trial">
             Create a new carespace
           </NavItem>
@@ -57,10 +63,7 @@ class AuthenticationHeader extends Component {
 
     return (
       <Nav pullRight className="hidden-xs">
-        <NavItem onClick={this.goToFindTeam}>
-          {" "}
-          Looking to join an existing carespace?{" "}
-        </NavItem>
+        <Navbar.Text> Looking to join an existing carespace? </Navbar.Text>
         <NavItem onClick={this.goToFindTeam} className="btn-trial">
           Find Your Carespace
         </NavItem>
@@ -73,11 +76,7 @@ class AuthenticationHeader extends Component {
       <div className="authentication-header">
         <Navbar id="header" inverse fixedTop>
           <Navbar.Header>
-            <Navbar.Brand>
-              <a href={`https://${applicationHost}/`} className="brand">
-                <img src="/images/stitch-brand.png" alt="Stitch" />
-              </a>
-            </Navbar.Brand>
+            <Navbar.Brand>{this.renderBrand()}</Navbar.Brand>
           </Navbar.Header>
 
           {this.renderCTA()}
