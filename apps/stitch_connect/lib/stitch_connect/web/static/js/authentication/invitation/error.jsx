@@ -30,7 +30,10 @@ class InvalidInvite extends Component {
           </span>
         }
       >
-        <a href="/" className="btn btn-lg btn-block btn-primary m-b-40">
+        <a
+          href="/"
+          className="btn btn-onboarding btn-lg btn-block btn-primary m-b-40"
+        >
           Back
         </a>
       </AuthenticationPage>
