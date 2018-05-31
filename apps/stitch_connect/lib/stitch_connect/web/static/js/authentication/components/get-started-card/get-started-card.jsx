@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import { AuthenticationPage } from "common/components";
-import OrLine from "./components/or-line/or-line";
+import OrLine from "../or-line/or-line";
 
-export default class GetStarted extends Component {
+export default class GetStartedCard extends Component {
   render() {
     return (
       <div>

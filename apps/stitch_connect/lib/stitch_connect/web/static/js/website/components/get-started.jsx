@@ -1,9 +1,8 @@
-// TODO: RENAME THIS!
 import React, { Component } from "react";
 
 import CreateTeam from "./create-team";
 
-export default class GetStarted extends Component {
+export default class GetStartedCTA extends Component {
   render() {
     return (
       <div className="get-started">

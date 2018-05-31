@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 import cx from "classnames";
 
-import GetStarted from "./get_started";
+import GetStarted from "./components/get-started-card/get-started-card";
 import TeamPicker from "./team/team_picker";
 import FindTeam from "./team/find_team";
 import FindTeamError from "./team/find_team_error";
