@@ -5,7 +5,7 @@ import Form from "react-bootstrap/lib/Form";
 import { AuthenticationPage } from "common/components";
 import LoadingButton from "../loading-button";
 
-// OnboardingPage wraps AuthPage and provides some shared
+// OnboardingPage wraps AuthenticationPage and provides some shared
 // functionality and a standard next button in the footer
 class OnboardingPage extends Component {
   _onNext = evt => {

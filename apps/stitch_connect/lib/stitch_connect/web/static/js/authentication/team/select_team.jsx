@@ -49,7 +49,7 @@ export default class SelectTeam extends Component {
       <AuthenticationPage
         title="Your Teams"
         headerCTA="no-cta"
-        description={<span>You are a member of of these Stitch teams:</span>}
+        description="You are a member of of these Stitch teams:"
       >
         <div className="select-team-list m-b-40">
           {this.state.teams.map(this.renderTeamLink)}

@@ -11,7 +11,6 @@ import LoadingIcon from "./loading-icon";
 import Members from "./members/members";
 import MemberType from "./member-type";
 import OnboardPage from "./onboard-page/onboard-page";
-import OnboardInputCard from "./onboard-input-card/onboard-input-card";
 import PasswordValidator from "./password-validator";
 import PinInput from "./pin-input";
 import RoleText from "./role-text";
@@ -45,7 +44,6 @@ export {
   Members,
   MemberType,
   OnboardPage,
-  OnboardInputCard,
   PasswordValidator,
   PinInput,
   RoleText,
