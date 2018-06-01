@@ -4,7 +4,6 @@ import withTitle from "../util/with_document_title";
 
 import ScrollToTop from "./components/scrollToTop";
 
-// import Landing from "./landing";
 import Homepage from "./homepage";
 import Connect from "./products/connect";
 import Engage from "./products/engage";
@@ -28,6 +27,20 @@ import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";
 import Industry from "./industries/industry";
 
+// PAGE TITLES
+// if changed, sync with backend (home_controller)
+const defaultTitle = "Care Coordination | Stitch";
+const demoTitle = "Request a Demo | Stitch";
+const connectTitle = "Connect | Stitch";
+const engageTitle = "Engage | Stitch";
+const manageTitle = "Manage | Stitch";
+const pricingTitle = "Pricing | Stitch";
+const downloadsTitle = "Downloads | Stitch";
+const jobsTitle = "Jobs | Stitch";
+const customersTitle = "Customers | Stitch";
+const hipaaTitle = "HIPAA Compliance | Stitch";
+const notFoundTitle = "404 | Page Not Found";
+
 class WebsiteRouter extends Component {
   render() {
     return (
@@ -39,88 +52,77 @@ class WebsiteRouter extends Component {
               path="/"
               render={() => <Homepage team={this.props.team} />}
             />
-            <Route
-              exact
-              path="/demo"
-              component={withTitle("Request a Demo | Stitch", Demo)}
-            />
+            <Route exact path="/demo" component={withTitle(demoTitle, Demo)} />
             <Route
               exact
               path="/connect"
-              component={withTitle("Connect | Stitch", Connect)}
+              component={withTitle(connectTitle, Connect)}
             />
             <Route
               exact
               path="/engage"
-              component={withTitle("Engage | Stitch", Engage)}
+              component={withTitle(engageTitle, Engage)}
             />
             <Route
               exact
               path="/manage"
-              component={withTitle("Manage | Stitch", Manage)}
+              component={withTitle(manageTitle, Manage)}
             />
             <Route
               exact
               path="/pricing"
-              component={withTitle("Pricing | Stitch", Pricing)}
+              component={withTitle(pricingTitle, Pricing)}
             />
             <Route
               exact
               path="/downloads"
-              component={withTitle("Downloads | Stitch", Downloads)}
+              component={withTitle(downloadsTitle, Downloads)}
             />
             <Route exact path="/pilot" component={Pilot} />
-            <Route
-              exact
-              path="/jobs"
-              component={withTitle("Jobs | Stitch", Jobs)}
-            />
+            <Route exact path="/jobs" component={withTitle(jobsTitle, Jobs)} />
             <Route
               exact
               path="/customers"
-              component={withTitle("Customers | Stitch", Customers)}
+              component={withTitle(customersTitle, Customers)}
             />
             <Route exact path="/blog" component={Blog} />
             <Route
               exact
               path="/customers/luminance-recovery"
-              component={withTitle("Customers | Stitch", CaseLuminance)}
+              component={withTitle(customersTitle, CaseLuminance)}
             />
             <Route
               exact
               path="/customers/princeton-brain-spine"
-              component={withTitle("Customers | Stitch", CasePBSC)}
+              component={withTitle(customersTitle, CasePBSC)}
             />
             <Route
               exact
               path="/customers/dermatology-skin-surgery-institute"
-              component={withTitle("Customers | Stitch", CaseDSSI)}
+              component={withTitle(customersTitle, CaseDSSI)}
             />
             <Route
               exact
               path="/customers/UCSF-citywide"
-              component={withTitle("Customers | Stitch", CaseUCSF)}
+              component={withTitle(customersTitle, CaseUCSF)}
             />
             <Route
               exact
               path="/customers/orchard-medical-associates"
-              component={withTitle("Customers | Stitch", CaseOrchardMedical)}
+              component={withTitle(customersTitle, CaseOrchardMedical)}
             />
             <Route exact path="/baa" component={Baa} />
             <Route
               exact
               path="/hipaa"
-              component={withTitle("HIPAA Compliance | Stitch", Hipaa)}
+              component={withTitle(hipaaTitle, Hipaa)}
             />
             <Route exact path="/privacy-policy" component={PrivacyPolicy} />
             <Route exact path="/terms-of-service" component={TermsOfService} />
 
             <Route exact path="/industries/*" component={Industry} />
 
-            <Route
-              path="*"
-              component={withTitle("404 | Page Not Found", NotFound)}
-            />
+            <Route path="*" component={withTitle(notFoundTitle, NotFound)} />
           </Switch>
         </ScrollToTop>
       </div>
@@ -128,6 +130,4 @@ class WebsiteRouter extends Component {
   }
 }
 
-export default withRouter(
-  withTitle("Care Coordination | Stitch", WebsiteRouter)
-);
+export default withRouter(withTitle(defaultTitle, WebsiteRouter));

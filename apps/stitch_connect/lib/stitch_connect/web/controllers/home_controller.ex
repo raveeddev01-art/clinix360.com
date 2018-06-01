@@ -23,6 +23,7 @@ defmodule StitchConnect.Web.HomeController do
     end
   end
 
+  # IF you change a title, sync it with frontend (website_router)
   @connect_title "Connect | Stitch"
   @connect_description "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
 
