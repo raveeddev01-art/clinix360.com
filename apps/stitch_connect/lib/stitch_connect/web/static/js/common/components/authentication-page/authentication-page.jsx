@@ -37,6 +37,8 @@ class AuthenticationPage extends Component {
             <h1>{title}</h1>
             {this._renderDescription()}
             {children}
+            {/* we may end up moving the footer away from the children, so keeping them
+            separated for flexibility */}
             {footer}
           </div>
           <div className="authentication-spacer" />
