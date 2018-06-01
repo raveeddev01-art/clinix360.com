@@ -184,11 +184,4 @@ defmodule Stitch.TeamQueries do
 
     Repo.update_all(query, [], returning: true)
   end
-
-  @spec get_by_ids([pos_integer]) :: [Team.t()]
-  def get_by_ids(team_ids) do
-    Team
-    |> where([t], t.id in ^team_ids)
-    |> Repo.all()
-  end
 end
