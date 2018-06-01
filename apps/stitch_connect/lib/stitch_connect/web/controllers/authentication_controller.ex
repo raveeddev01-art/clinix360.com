@@ -4,6 +4,7 @@ defmodule StitchConnect.Web.AuthenticationController do
   alias Stitch.FindYourTeam
   alias Stitch.Accounts.{PasswordResetToken}
 
+  # If you change a title, sync it with frontend (website_router)
   @login_title "Sign In | Stitch"
   @login_description "Sign in to your Stitch team by entering your team’s Stitch URL. Don't know your team URL? Enter your email address and we’ll send you a list of your teams."
 
