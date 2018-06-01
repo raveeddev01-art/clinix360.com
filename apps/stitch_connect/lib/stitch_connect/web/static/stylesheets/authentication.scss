@@ -147,10 +147,6 @@ $dark-gray: #333;
   .authentication-header {
     height: 80px;
 
-    @media(max-width: $screen-sm) {
-      height: 20px;
-    }
-
     .navbar-header {
       padding-left: 25px;
       padding-right: 25px;
@@ -166,10 +162,6 @@ $dark-gray: #333;
 
   .authentication-spacer {
     height: 80px;
-
-    @media(max-width: $screen-sm) {
-      height: 20px;
-    }
   }
 
   .authentication-body {
