@@ -8,20 +8,20 @@
     <meta name="author" content="">
     <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token %>">
 
-    <title><%= if assigns[:title], do: @title, else: "The Healthcare Workspace | Stitch" %></title>
+    <title><%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %></title>
 
-    <meta name="description" content="<%= if assigns[:description], do: @description, else: "Stitch is a workspace for healthcare teams to send internal messages, communicate with patients and track daily tasks — fully HIPAA compliant and free to use." %>" />
+    <meta name="description" content="<%= if assigns[:description], do: @description, else: "Stitch is care coordination platform for healthcare teams to send internal messages, communicate with patients and track daily tasks — fully HIPAA compliant and free to use." %>" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Stitch" />
-    <meta property="og:title" content="<%= if assigns[:title], do: @title, else: "The Healthcare Workspace | Stitch" %>" />
-    <meta property="og:description" content="<%= if assigns[:description], do: @description, else: "Stitch is a workspace for healthcare teams to send internal messages, communicate with patients and track daily tasks — fully HIPAA compliant and free to use." %>" />
+    <meta property="og:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %>" />
+    <meta property="og:description" content="<%= if assigns[:description], do: @description, else: "Stitch is care coordination platform for healthcare teams to send internal messages, communicate with patients and track daily tasks — fully HIPAA compliant and free to use." %>" />
     <meta property="og:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@stitchhq" />
-    <meta name="twitter:title" content="<%= if assigns[:title], do: @title, else: "The Healthcare Workspace | Stitch" %>" />
-    <meta name="twitter:description" content="<%= if assigns[:description], do: @description, else: "Stitch is a workspace for healthcare teams to send internal messages, communicate with patients and track daily tasks — fully HIPAA compliant and free to use." %>" />
+    <meta name="twitter:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %>" />
+    <meta name="twitter:description" content="<%= if assigns[:description], do: @description, else: "Stitch is care coordination platform for healthcare teams to send internal messages, communicate with patients and track daily tasks — fully HIPAA compliant and free to use." %>" />
     <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
 
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">

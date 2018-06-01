@@ -129,5 +129,5 @@ class WebsiteRouter extends Component {
 }
 
 export default withRouter(
-  withTitle("The Healthcare Workspace | Stitch", WebsiteRouter)
+  withTitle("Care Coordination | Stitch", WebsiteRouter)
 );

@@ -39,7 +39,7 @@ defmodule StitchConnect.Web.HomeController do
   @engage_description "Stitch Engage is a simple system for talking to your patients. From messages and forms to files and tasks, Stitch lets you engage with patients on every level."
 
   @hipaa_title "HIPAA Compliance | Stitch"
-  @hipaa_description "Stitch is fully HIPAA compliant. Relax knowing we’ve got you covered. Directly name patients and share files in our secure workspace."
+  @hipaa_description "Stitch is fully HIPAA compliant. Relax knowing we’ve got you covered. Directly name patients and share files in our secure carespace."
 
   @jobs_title "Jobs | Stitch"
   @jobs_description "We’re hiring! If you’re passionate about making an impact in healthcare by building great technology, then we want to meet you."
