@@ -406,10 +406,18 @@ $dark-gray: #333;
 
       padding: 20px;
 
+      @media(max-width: $screen-sm) {
+        padding: 20px 0px;
+      }
+
       button {
         flex-basis: 160px;
         flex-grow: 0.2;
         flex-shrink: 0;
+
+        @media(max-width: $screen-sm) {
+          flex-basis: 100%;
+        }
       }
     }
   }
