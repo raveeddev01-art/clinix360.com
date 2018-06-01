@@ -85,7 +85,7 @@ defmodule StitchConnect.Web.TeamControllerTest do
       assert message =~ "Address line one can't be blank"
     end
 
-    test "Should throw country and zip validation errprs", %{conn: conn} do
+    test "Should throw country and zip validation errors", %{conn: conn} do
       team = insert(:team)
       admin = insert(:user, team: team, roles: ["admin"])
 
