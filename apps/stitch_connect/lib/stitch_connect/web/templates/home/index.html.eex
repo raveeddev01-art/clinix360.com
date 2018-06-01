@@ -1,1 +1,2 @@
-<div data-component="Website"></div>
+<div data-component="Website" data-react-props='<%= raw @login_params %>'></div>
+

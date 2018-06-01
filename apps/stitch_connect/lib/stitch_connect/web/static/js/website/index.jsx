@@ -5,10 +5,12 @@ import WebsiteRouter from "./website_router";
 
 class Website extends Component {
   render() {
+    let teams = this.props.teams || []
+
     return (
       <div>
         <Router>
-          <WebsiteRouter />
+          <WebsiteRouter teams={teams} />
         </Router>
       </div>
     );

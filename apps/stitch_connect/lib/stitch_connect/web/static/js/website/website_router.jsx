@@ -72,7 +72,7 @@ class WebsiteRouter extends Component {
 
             <Route exact path="/industries/*" component={Industry} />
 
-            <Route path="*" component={NotFound}/>
+            <Route path="*" component={NotFound} />
           </Switch>
         </ScrollToTop>
       </div>
