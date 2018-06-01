@@ -201,15 +201,15 @@ const getMonthlyPrice = (tier, frequencyIndex) => {
 
 const getCountries = () => {
   const alpha2Map = countries.getNames("en");
+  const withAlpha3s = Object.keys(alpha2Map).map(alpha2Key => {
+    return {
+      alpha2: alpha2Key,
+      alpha3: countries.alpha2ToAlpha3(alpha2Key),
+      name: alpha2Map[alpha2Key]
+    };
+  });
 
-  return flow(
-    map((name, alpha2) => ({
-      alpha2,
-      alpha3: countries.alpha2ToAlpha3(alpha2),
-      name
-    })),
-    sortBy("name")
-  )(alpha2Map);
+  return sortBy("name", withAlpha3s);
 };
 
 const getProvinces = () => {

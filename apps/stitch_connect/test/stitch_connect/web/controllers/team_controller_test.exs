@@ -85,7 +85,7 @@ defmodule StitchConnect.Web.TeamControllerTest do
       assert message =~ "Address line one can't be blank"
     end
 
-    test "Should throw country and zip validation errprs", %{conn: conn} do
+    test "Should throw country and zip validation errors", %{conn: conn} do
       team = insert(:team)
       admin = insert(:user, team: team, roles: ["admin"])
 
@@ -94,7 +94,7 @@ defmodule StitchConnect.Web.TeamControllerTest do
         "city" => "My City",
         "state" => "CA",
         "country" => "XYZ",
-        "zip_code" => "55555",
+        "zip_code" => "55555555555",
         "company_name" => "My Test Company",
         "address_line_one" => "Street 123, chapel road"
       }
