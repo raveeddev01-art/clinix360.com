@@ -47,6 +47,10 @@ class NamesCards extends Component {
     };
   }
 
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
+
   onKeyPress = e => {
     const hitEnter = e.charCode === 13 || e.keyCode === 13;
 
