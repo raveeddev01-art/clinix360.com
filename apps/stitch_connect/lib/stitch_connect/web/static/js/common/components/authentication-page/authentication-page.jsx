@@ -5,6 +5,10 @@ import Alert from "react-bootstrap/lib/Alert";
 import { AuthenticationHeader } from "common/components";
 
 class AuthenticationPage extends Component {
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
+
   _renderDescription = () => {
     const { description } = this.props;
     return (
