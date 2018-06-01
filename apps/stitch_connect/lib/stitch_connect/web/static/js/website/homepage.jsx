@@ -15,19 +15,12 @@ import Footer from "./components/footer";
 
 export default class Homepage extends Component {
   render() {
-    let team = this.props.team;
-
     return (
       <div className="homepage">
         <Header />
 
         <div className="subheader text-center">
           <div className="container">
-            {team ?
-              <a class="btn btn-fancy btn-large btn-default" key={team.id} href={"#"}>
-                {team.name}
-              </a> : undefined
-            }
             <h1>Care Coordination</h1>
             <h3 className="m-b-30">
               Communicate, write notes, track tasks and upload files on any
