@@ -290,6 +290,13 @@ $dark-gray: #333;
         width: 60px;
       }
     }
+
+    .form-control {
+      &:focus {
+        border-left: 2px solid $brand-primary;
+        border-right: 2px solid $brand-primary;
+      }
+    }
   }
 
   // ============
