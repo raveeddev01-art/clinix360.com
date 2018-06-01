@@ -79,15 +79,11 @@ class RegistrationStore {
           body: {
             first_name: this.firstname,
             last_name: this.lastname,
-            phone_number: this.phone,
             username: this.username,
             password: this.password,
             pin: this.pin,
             team_id: response.data.id,
-            invites: emails,
-            team_ehr: this.teamEhr,
-            team_size: this.teamSize,
-            team_industry: this.teamIndustry
+            invites: emails
           }
         });
       })

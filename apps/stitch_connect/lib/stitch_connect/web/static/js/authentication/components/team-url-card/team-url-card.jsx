@@ -19,7 +19,7 @@ class CarespaceUrlCard extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      carespaceUrl: "",
+      teamUrl: "",
       error: "",
       loading: false
     };
@@ -27,7 +27,7 @@ class CarespaceUrlCard extends Component {
 
   onChange = evt => {
     this.setState({
-      carespaceUrl: formatUrl(evt.target.value)
+      teamUrl: formatUrl(evt.target.value)
     });
   };
 
@@ -41,13 +41,13 @@ class CarespaceUrlCard extends Component {
     this.setState({ loading: true });
 
     post("/api/v1/teams/url-available", {
-      body: { url: this.state.carespaceUrl },
+      body: { url: this.state.teamUrl },
       hideNotify: true
     })
       .then(response => {
         this.setState({ loading: false });
         if (response.data.available) {
-          this.props.onNext(this.state.carespaceUrl);
+          this.props.onNext(this.state.teamUrl);
         } else {
           this.setState({
             error: uniquenessErrorText,
@@ -64,13 +64,13 @@ class CarespaceUrlCard extends Component {
   };
 
   validatePattern = () => {
-    const { carespaceUrl } = this.state;
+    const { teamUrl } = this.state;
 
-    if (!/^[a-z0-9]/.test(carespaceUrl)) {
+    if (!/^[a-z0-9]/.test(teamUrl)) {
       // starts with letter or number
       this.setState({ error: patternErrorText });
       return false;
-    } else if (/[^0-9a-z-]/.test(carespaceUrl)) {
+    } else if (/[^0-9a-z-]/.test(teamUrl)) {
       // has only letter, number, dash
       this.setState({ error: patternErrorText });
       return false;
@@ -80,7 +80,7 @@ class CarespaceUrlCard extends Component {
   };
 
   render() {
-    const { carespaceUrl, loading, error } = this.state;
+    const { teamUrl, loading, error } = this.state;
 
     return (
       <div>
@@ -95,7 +95,7 @@ class CarespaceUrlCard extends Component {
           }
           onNext={this.onNext}
           loading={loading}
-          disableNext={!carespaceUrl}
+          disableNext={!teamUrl}
         >
           <FormGroup
             bsSize="large"
@@ -107,7 +107,7 @@ class CarespaceUrlCard extends Component {
               <FormControl
                 required
                 autoFocus
-                value={carespaceUrl}
+                value={teamUrl}
                 onChange={this.onChange}
                 maxLength={80}
               />
