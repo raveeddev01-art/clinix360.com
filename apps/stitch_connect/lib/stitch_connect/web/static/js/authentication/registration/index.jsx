@@ -9,7 +9,7 @@ import Onboarding from "./onboarding";
 @inject("titleStore")
 class Registration extends Component {
   componentWillMount() {
-    this.props.titleStore.setPageName("Sign Up");
+    this.props.titleStore.setPageName("Create a Team");
   }
 
   render() {
