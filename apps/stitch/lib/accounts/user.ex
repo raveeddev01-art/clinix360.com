@@ -11,7 +11,21 @@ defmodule Stitch.Accounts.User do
 
   @type t :: %__MODULE__{}
   @guest_roles Stitch.Accounts.Role.guests()
-  @notification_sounds ["ding"]
+  @notification_sounds [
+    "bubbling-up",
+    "case-closed",
+    "definite",
+    "hold-on",
+    "isnt-it",
+    "light",
+    "open-ended",
+    "plucky",
+    "pop",
+    "quite-impressed",
+    "to-the-point",
+    "unconvinced",
+    "unsure"
+  ]
 
   schema "users" do
     field(:email, :string)
@@ -39,7 +53,7 @@ defmodule Stitch.Accounts.User do
     field(:timezone, :map, default: %{})
     field(:whats_new_last_seen_at, :utc_datetime)
     field(:slack_import_id, :string)
-    field(:desktop_sound_setting, :string)
+    field(:desktop_sound, :string, default: "pop")
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
     has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)

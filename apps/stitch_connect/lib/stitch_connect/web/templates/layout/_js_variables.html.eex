@@ -29,6 +29,7 @@ current_user =
         "phone" => user.phone_number,
         "avatar" => StitchConnect.PresignedUrlCache.fetch(user.profile_image_url),
         "avatar_thumb" => StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url),
+        "desktop_sound" => user.desktop_sound,
         "team" => %{
           "securityLockoutEnabled" => user.team.security_lockout,
           "secondsToLockout" => user.team.seconds_to_lockout,
