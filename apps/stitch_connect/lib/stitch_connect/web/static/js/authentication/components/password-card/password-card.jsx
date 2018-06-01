@@ -5,6 +5,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 
 import { OnboardPage, PasswordValidator } from "common/components";
+import { mobile } from "../../../lib/browser_details";
 
 class PasswordCard extends Component {
   constructor(...args) {
@@ -46,7 +47,7 @@ class PasswordCard extends Component {
             <ControlLabel>Password</ControlLabel>
             <FormControl
               required
-              autoFocus
+              autoFocus={!mobile}
               name={`password_${new Date().getTime()}`}
               autoComplete="off"
               type="password"

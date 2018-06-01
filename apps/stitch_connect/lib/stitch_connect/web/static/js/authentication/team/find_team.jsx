@@ -7,6 +7,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 
 import { OnboardPage } from "common/components";
+import { mobile } from "../../lib/browser_details";
 
 @inject("titleStore")
 @observer
@@ -56,7 +57,7 @@ export default class FindTeam extends Component {
         <FormGroup bsSize="large">
           <FormControl
             required
-            autoFocus
+            autoFocus={!mobile}
             type="email"
             placeholder="Email"
             value={email}

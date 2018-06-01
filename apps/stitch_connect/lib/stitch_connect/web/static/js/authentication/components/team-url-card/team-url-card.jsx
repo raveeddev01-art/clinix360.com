@@ -5,6 +5,7 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import { InputErrorBlock, OnboardPage } from "common/components";
+import { mobile } from "../../../lib/browser_details";
 
 function formatUrl(givenName) {
   return givenName.replace(/[^0-9a-zA-Z|-]/g, "").toLowerCase();
@@ -106,7 +107,7 @@ class CarespaceUrlCard extends Component {
             <div className="team-form">
               <FormControl
                 required
-                autoFocus
+                autoFocus={!mobile}
                 value={teamUrl}
                 onChange={this.onChange}
                 maxLength={80}

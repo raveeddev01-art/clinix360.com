@@ -12,6 +12,7 @@ import {
   LoadingButton,
   InputErrorBlock
 } from "common/components";
+import { mobile } from "../../../lib/browser_details";
 
 class InvitesCard extends Component {
   constructor(...args) {
@@ -167,7 +168,7 @@ class InvitesCard extends Component {
                     validationState={validationState}
                   >
                     <FormControl
-                      autoFocus={index === 0}
+                      autoFocus={!mobile && index === 0}
                       type="text"
                       value={email}
                       onChange={this.onChange(index)}

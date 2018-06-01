@@ -6,7 +6,9 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 
 import { OnboardPage, InputErrorBlock } from "common/components";
+
 import { isValidUnicodeString } from "lib/utils";
+import { mobile } from "../../../lib/browser_details";
 
 function formatUsername(givenUsername) {
   // letters, numbers, periods, hyphens, and underscores
@@ -195,7 +197,7 @@ class NamesCards extends Component {
             <ControlLabel>First Name</ControlLabel>
             <FormControl
               required
-              autoFocus
+              autoFocus={!mobile}
               placeholder="First Name"
               value={firstName}
               maxLength={80}
