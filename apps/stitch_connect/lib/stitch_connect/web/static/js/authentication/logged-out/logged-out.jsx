@@ -15,6 +15,7 @@ export default class LoggedOut extends Component {
     return (
       <AuthenticationPage
         title="Signed Out"
+        headerCTA="no-cta"
         description={
           <span>
             You are signed out of{" "}
