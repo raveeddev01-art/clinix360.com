@@ -33,7 +33,7 @@ class WebsiteRouter extends Component {
       <div className="website-wrapper">
         <ScrollToTop>
           <Switch>
-            <Route exact path="/" component={Homepage} />
+            <Route exact path="/" render={() => <Homepage teams={this.props.teams || []} />} />
             <Route exact path="/demo" component={Demo} />
             <Route exact path="/connect" component={Connect} />
             <Route exact path="/engage" component={Engage} />

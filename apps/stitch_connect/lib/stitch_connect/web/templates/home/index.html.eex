@@ -1,2 +1,6 @@
-<div data-component="Website" data-react-props='<%= raw @login_params %>'></div>
+<%= if assigns[:login_params] do %>
+  <div data-component="Website" data-react-props='<%= raw @login_params %>'></div>
+<% else %>
+  <div data-component="Website"></div>
+<% end %>
 

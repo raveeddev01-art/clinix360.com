@@ -21,6 +21,9 @@ export default class Homepage extends Component {
 
         <div className="subheader text-center">
           <div className="container">
+            {this.props.teams.map(team =>
+              <a class="btn btn-fancy btn-large btn-default" key={team.id} href={"#"}>{team.name}</a>
+            )}
             <h1>Care Coordination</h1>
             <h3 className="m-b-30">
               Communicate, write notes, track tasks and upload files on any
