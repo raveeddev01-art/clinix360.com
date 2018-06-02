@@ -7,6 +7,7 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
 
+import browserDetails from "../lib/browser_details";
 import Header from "./components/header";
 import CreateTeam from "./components/create-team";
 import OurCustomers from "./components/our-customers";
@@ -19,7 +20,8 @@ export default class Homepage extends Component {
     super(props);
 
     this.state = {
-      modal: ""
+      modal: "",
+      os: browserDetails.os
     };
   }
 
@@ -36,6 +38,8 @@ export default class Homepage extends Component {
   };
 
   render() {
+    const { mobile, os } = browserDetails;
+
     return (
       <div className="homepage">
         <Header />
@@ -52,7 +56,28 @@ export default class Homepage extends Component {
                   fully HIPAA compliant and free to use.
                 </h3>
 
-                <CreateTeam />
+                {!mobile && <CreateTeam />}
+
+                {mobile &&
+                  os === "iOS" && (
+                    <a
+                      href="http://stitch.app.link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary appstore-btn"
+                    >
+                      Get Stitch for iOS
+                    </a>
+                  )}
+
+                {mobile && os === "Android" && <a
+                      href="http://stitch.app.link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary appstore-btn"
+                    >
+                      Get Stitch for Android
+                    </a>}
 
                 <a
                   className="play-video-link hidden-xs hidden-sm"

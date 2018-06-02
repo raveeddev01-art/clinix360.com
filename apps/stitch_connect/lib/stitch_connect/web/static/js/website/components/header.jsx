@@ -9,8 +9,6 @@ import NavItem from "react-bootstrap/lib/NavItem";
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
-import browserDetails from "../../lib/browser_details";
-
 class Header extends Component {
   constructor(props) {
     super(props);
