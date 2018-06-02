@@ -20,8 +20,7 @@ export default class Homepage extends Component {
     super(props);
 
     this.state = {
-      modal: "",
-      os: browserDetails.os
+      modal: ""
     };
   }
 
@@ -70,14 +69,17 @@ export default class Homepage extends Component {
                     </a>
                   )}
 
-                {mobile && os === "Android" && <a
+                {mobile &&
+                  os === "Android" && (
+                    <a
                       href="http://stitch.app.link"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-primary appstore-btn"
                     >
                       Get Stitch for Android
-                    </a>}
+                    </a>
+                  )}
 
                 <a
                   className="play-video-link hidden-xs hidden-sm"

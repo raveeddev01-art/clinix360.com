@@ -9,6 +9,8 @@ import NavItem from "react-bootstrap/lib/NavItem";
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
+import browserDetails from "../../lib/browser_details";
+
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -56,6 +58,8 @@ class Header extends Component {
   };
 
   render() {
+    const { mobile, os } = browserDetails;
+
     const mobileNavClasses = cx("navbar navbar-default", {
       "is-open": this.state.mobileNavOpened === true,
       "is-hidden": this.state.mobileNavOpened === false
@@ -235,9 +239,35 @@ class Header extends Component {
 
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
-              <NavItem onClick={this.goToStartTrial} className="btn-trial">
-                Get Started
-              </NavItem>
+              {!mobile && (
+                <NavItem onClick={this.goToStartTrial} className="btn-trial">
+                  Get Started
+                </NavItem>
+              )}
+
+              {mobile &&
+                os === "iOS" && (
+                  <NavItem
+                    href="http://stitch.app.link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="appstore-btn"
+                  >
+                    Get Stitch for iOS
+                  </NavItem>
+                )}
+
+              {mobile &&
+                os === "Android" && (
+                  <NavItem
+                    href="http://stitch.app.link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="appstore-btn"
+                  >
+                    Get Stitch for Android
+                  </NavItem>
+                )}
             </Nav>
           </Navbar>
         </nav>

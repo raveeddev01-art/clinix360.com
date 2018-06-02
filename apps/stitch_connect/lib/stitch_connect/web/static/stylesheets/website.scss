@@ -1157,6 +1157,13 @@
         margin: 0;
       }
     }
+
+    .appstore-btn {
+      display: block;
+      text-transform: uppercase;
+      padding: 16px 30px;
+      margin: 25px 0 15px;
+    }
   }
 }
 
@@ -1537,7 +1544,8 @@
         }
       }
 
-      .btn-trial > a {
+      .btn-trial > a,
+      .appstore-btn > a {
         color: $brand-primary;
         font-size: 20px;
         font-weight: 700;
