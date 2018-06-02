@@ -25,7 +25,7 @@ defmodule StitchConnect.Web.HomeController do
 
   # If you change a title, sync it with frontend (website_router)
   @connect_title "Connect | Stitch"
-  @connect_description "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
+  @connect_description "Stitch Connect is a team messaging app for healthcare teams. Bring your team together with rooms and direct messages on any device."
 
   @customers_title "Customers | Stitch"
   @customers_description "Trusted by the best healthcare teams, big and small. See how customers have improved care coordination on our platform."
@@ -37,7 +37,7 @@ defmodule StitchConnect.Web.HomeController do
   @downloads_description "Download Stitch for free for mobile devices or desktop. Stay in the loop with our apps for iPhone, Android, Mac and Windows."
 
   @engage_title "Engage | Stitch"
-  @engage_description "Stitch Engage is a simple system for talking to your patients. From messages and forms to files and tasks, Stitch lets you engage with patients on every level."
+  @engage_description "Stitch Engage is a patient communication app for healthcare teams. From messages and forms to files and tasks, engage your patients on every level."
 
   @hipaa_title "HIPAA Compliance | Stitch"
   @hipaa_description "Stitch is fully HIPAA compliant. Relax knowing we’ve got you covered. Directly name patients and share files in our secure carespace."
@@ -46,7 +46,7 @@ defmodule StitchConnect.Web.HomeController do
   @jobs_description "We’re hiring! If you’re passionate about making an impact in healthcare by building great technology, then we want to meet you."
 
   @manage_title "Manage | Stitch"
-  @manage_description "Stitch Manage is a simple system for tracking tasks. Instantly know what your team is doing and ensure every patient task goes from start to done."
+  @manage_description "Stitch Manage is a task management app for healthcare teams. Instantly know what your team is doing and ensure every patient task goes from start to done."
 
   @pricing_title "Pricing | Stitch"
   @pricing_description "Free to start, with upgradeable plans available. Our products work together in a single place. Start with one or many."
