@@ -328,7 +328,7 @@ Connect.propTypes = {
 
 Connect.defaultProps = {
   flipped: false,
-  header: "Team Messaging for Healthcare",
+  header: "Send messages, share files and stay in sync",
   subHeader:
     "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
   // industryBodyText: "healthcare"

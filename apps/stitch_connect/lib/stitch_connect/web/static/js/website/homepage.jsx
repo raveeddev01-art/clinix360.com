@@ -47,7 +47,7 @@ export default class Homepage extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <h1>The Workspace for Healthcare Teams</h1>
+                <h1>Deliver your patients a great experience</h1>
 
                 <h3 className="m-b-30">
                   Stitch is an app for healthcare teams to send internal
