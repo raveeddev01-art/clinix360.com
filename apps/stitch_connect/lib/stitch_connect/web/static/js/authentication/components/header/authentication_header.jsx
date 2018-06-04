@@ -41,8 +41,8 @@ class AuthenticationHeader extends Component {
 
     if (this.props.type === "signin") {
       return [
-        <Navbar.Text> Already part of a carespace? </Navbar.Text>,
-        <Nav>
+        <Navbar.Text key="nav-text">Already part of a carespace?</Navbar.Text>,
+        <Nav key="nav-cta">
           <NavItem onClick={this.goToSignIn} className="btn-trial">
             Sign In
           </NavItem>
@@ -52,8 +52,10 @@ class AuthenticationHeader extends Component {
 
     if (this.props.type === "create") {
       return [
-        <Navbar.Text> Looking to set up a new carespace? </Navbar.Text>,
-        <Nav>
+        <Navbar.Text key="nav-text">
+          Looking to set up a new carespace?
+        </Navbar.Text>,
+        <Nav key="nav-cta">
           <NavItem onClick={this.goToCreate} className="btn-trial">
             Create a new carespace
           </NavItem>
@@ -62,8 +64,10 @@ class AuthenticationHeader extends Component {
     }
 
     return [
-      <Navbar.Text> Looking to join an existing carespace? </Navbar.Text>,
-      <Nav>
+      <Navbar.Text key="nav-text">
+        Looking to join an existing carespace?
+      </Navbar.Text>,
+      <Nav key="nav-cta">
         <NavItem onClick={this.goToFindTeam} className="btn-trial">
           Find Your Carespace
         </NavItem>
