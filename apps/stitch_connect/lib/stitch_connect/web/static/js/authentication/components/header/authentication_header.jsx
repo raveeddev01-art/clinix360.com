@@ -5,6 +5,8 @@ import Nav from "react-bootstrap/lib/Nav";
 import Navbar from "react-bootstrap/lib/Navbar";
 import NavItem from "react-bootstrap/lib/NavItem";
 
+import browserDetails from "../../../lib/browser_details";
+
 function goToPath(path) {
   window.location.href = `https://${applicationHost}/${path}`;
 }
@@ -35,7 +37,9 @@ class AuthenticationHeader extends Component {
   }
 
   renderCTA() {
-    if (this.props.type === "no-cta") {
+    const { mobile } = browserDetails;
+
+    if (mobile || this.props.type === "no-cta") {
       return null;
     }
 
