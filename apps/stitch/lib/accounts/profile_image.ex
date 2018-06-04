@@ -2,6 +2,7 @@ defmodule Stitch.Accounts.ProfileImage do
   alias Stitch.AWS.S3
   import Mogrify
   alias Stitch.Accounts.User
+  alias Stitch.Rand
 
   @thumb %{height: 72, width: 72}
 
@@ -52,15 +53,16 @@ defmodule Stitch.Accounts.ProfileImage do
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
   def create_thumb(url) do
     with {:ok, fullname} <- S3.basepath(url),
-         dirname = Path.dirname(fullname),
          {:ok, filename} <- get_filename(url),
+         extname = Path.extname(fullname),
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(fullname, dest),
          %Mogrify.Image{path: preview_path} <- generate_preview(dest),
-         {:ok, %{status_code: 200}} <- S3.upload(preview_path),
+         avatar_name = String.downcase(Rand.token(32)) <> extname,
+         {:ok, %{status_code: 200}} <- S3.upload_avatar(preview_path, avatar_name),
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
-      {:ok, S3.fullpath(preview_path, dirname)}
+      {:ok, S3.avatar_path(avatar_name)}
     else
       error ->
         {:error, error}
