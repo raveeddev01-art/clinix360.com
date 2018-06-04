@@ -40,35 +40,33 @@ class AuthenticationHeader extends Component {
     }
 
     if (this.props.type === "signin") {
-      return (
-        <Nav pullRight className="hidden-xs">
-          <Navbar.Text> Already part of a carespace? </Navbar.Text>
+      return [
+        <Navbar.Text> Already part of a carespace? </Navbar.Text>,
+        <Nav>
           <NavItem onClick={this.goToSignIn} className="btn-trial">
             Sign In
           </NavItem>
         </Nav>
-      );
+      ];
     }
 
     if (this.props.type === "create") {
-      return (
-        <Nav pullRight className="hidden-xs">
-          <Navbar.Text> Looking to set up a new carespace? </Navbar.Text>
+      return [
+        <Navbar.Text> Looking to set up a new carespace? </Navbar.Text>,
+        <Nav>
           <NavItem onClick={this.goToCreate} className="btn-trial">
             Create a new carespace
           </NavItem>
         </Nav>
-      );
+      ];
     }
 
-    return (
-      <Nav pullRight className="hidden-xs">
-        <Navbar.Text> Looking to join an existing carespace? </Navbar.Text>
-        <NavItem onClick={this.goToFindTeam} className="btn-trial">
-          Find Your Carespace
-        </NavItem>
-      </Nav>
-    );
+    return [
+      <Navbar.Text> Looking to join an existing carespace? </Navbar.Text>,
+      <NavItem onClick={this.goToFindTeam} className="btn-trial">
+        Find Your Carespace
+      </NavItem>
+    ];
   }
 
   render() {
@@ -79,7 +77,9 @@ class AuthenticationHeader extends Component {
             <Navbar.Brand>{this.renderBrand()}</Navbar.Brand>
           </Navbar.Header>
 
-          {this.renderCTA()}
+          <div className="cta-wrapper pull-right hidden-xs">
+            {this.renderCTA()}
+          </div>
         </Navbar>
       </div>
     );
