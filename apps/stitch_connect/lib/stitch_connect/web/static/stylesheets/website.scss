@@ -176,9 +176,6 @@
 
     .flex-box {
       align-items: center;
-      // @media (max-width: 992px) {
-      //   flex-direction: column;
-      // }
     }
 
     .product-heading {
@@ -1431,7 +1428,7 @@
       border: 1px solid $brand-primary;
       border-radius: 3px;
       padding: 11px 16px;
-      margin: 0 0 0 5px;
+      margin: 0 0 0 10px;
 
       &:hover,
       &:focus {
