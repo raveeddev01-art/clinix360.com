@@ -66,7 +66,7 @@ class Header extends Component {
     });
 
     return (
-      <div style={{ overflowY: "auto" }}>
+      <div>
         <Navbar id="header" inverse fixedTop>
           <Navbar.Header>
             <Navbar.Brand>

@@ -7,7 +7,6 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
 
-import browserDetails from "../lib/browser_details";
 import Header from "./components/header";
 import CreateTeam from "./components/create-team";
 import OurCustomers from "./components/our-customers";
@@ -37,8 +36,6 @@ export default class Homepage extends Component {
   };
 
   render() {
-    const { mobile, os } = browserDetails;
-
     return (
       <div className="homepage">
         <Header />

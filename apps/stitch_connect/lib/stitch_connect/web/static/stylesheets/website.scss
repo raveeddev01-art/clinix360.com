@@ -1,3 +1,5 @@
+$screen-sm: 768px;
+
 .mobile-menu-open {
   overflow: hidden;
   height: 100%;
@@ -19,7 +21,7 @@
     margin: 0 auto;
     padding: 0 6vw;
     
-    @media screen and (min-width: 48rem) {
+    @media screen and (min-width: $screen-sm) {
       padding: 0 5vw;
     }
 
@@ -102,7 +104,7 @@
   h3 { 
     font-size: 18px;
     line-height: 1.5; 
-    @media (min-width: 768px) {
+    @media (min-width: $screen-sm) {
       font-size: 20px;
     }
   }
@@ -114,14 +116,14 @@
     border-width: 4px;
     border-color: $brand-primary;
     margin: 40px 0;
-    @media (min-width: 768px) {
+    @media (min-width: $screen-sm) {
       margin: 40px auto 70px;
     }
   }
 
   .create-team-form {
     margin: 20px auto 50px;
-    @media(min-width: 768px) {
+    @media(min-width: $screen-sm) {
       margin-bottom: 25px;
     }
 
@@ -246,19 +248,19 @@
   //----------------- HOMEPAGE -----------------
   .homepage .subheader {
     .create-team-form {
-      @media (min-width: 768px) and (max-width: 991px) {
+      @media (min-width: $screen-sm) and (max-width: 991px) {
         margin-bottom: 45px;
       }
     }
   }
   .our-customers {
     padding: 0 0 50px;
-    @media (min-width: 768px) {
+    @media (min-width: $screen-sm) {
       padding: 50px 0 80px;
     }
 
     h2, h3 {
-      @media (min-width: 768px) {
+      @media (min-width: $screen-sm) {
         text-align: center;
       }
     }
@@ -299,12 +301,12 @@
 
   .stitch-products {
     padding: 20px 0 50px;
-    @media (min-width: 768px) {
+    @media (min-width: $screen-sm) {
       padding: 50px 0 80px;
     }
 
     h2, h3 {
-      @media (min-width: 768px) {
+      @media (min-width: $screen-sm) {
         text-align: center;
       }
     }
@@ -346,7 +348,7 @@
       display: block;
       color: $brand-primary;
       text-decoration: none;
-      border: 1px solid #F0F1F3;
+      border: 1px solid $medium-gray;
       box-shadow: 2px 4px 15px rgba(0, 0, 0, 0.1);
       transition: box-shadow .3s;
       position: relative;
@@ -498,15 +500,6 @@
       padding: 16px 30px;
     }
 
-    // .flex-box {
-    //   .flex-item {
-    //     flex: 1 0 auto;
-    //     @media (min-width: 992px) {
-    //       flex: 1;
-    //     }
-    //   }
-    // }
-
     .subheader {
       .product-heading {
         color: $brand-primary;
@@ -524,7 +517,7 @@
     .feature {
       background: #fff;
       padding: 60px 0;
-      @media (min-width: 768px) {
+      @media (min-width: $screen-sm) {
         padding: 95px 0;  
       }
 
@@ -547,7 +540,7 @@
       }
   
       &.alt {
-        background: #f0f1f3;
+        background: $medium-gray;
 
         @media (min-width: 992px) {
           .flex-box {
@@ -563,16 +556,16 @@
     }
 
     .additional-features {
-      background: #f0f1f3;
+      background: $medium-gray;
       padding: 60px 0;
-      @media (min-width: 768px) {
+      @media (min-width: $screen-sm) {
         padding: 95px 0;  
       }
   
       h2 {
         margin: 0;
         
-        @media(min-width: 768px) {
+        @media(min-width: $screen-sm) {
           margin: 0 0 40px;
           text-align: center;
         }
@@ -581,7 +574,7 @@
       .feature-block {
         font-size: 18px;
         margin: 50px auto 0;
-        @media (min-width: 768px) {
+        @media (min-width: $screen-sm) {
           max-width: 300px;
         }
   
@@ -608,7 +601,7 @@
       position: relative;
       overflow: hidden;
       padding: 60px 0;
-      @media (min-width: 768px) {
+      @media (min-width: $screen-sm) {
         padding: 95px 0;  
       }
 
@@ -910,7 +903,7 @@
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: $screen-sm) {
     .pricing-page, .downloads-page {
       .nav-tabs li a img {
         width: 72px;
@@ -1024,13 +1017,13 @@
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: $screen-sm) {
     .pilot-section h3 {
       font-size: 24px;
     }
   }
 
-  @media (min-width: 768px) and (max-width: 992px) {
+  @media (min-width: $screen-sm) and (max-width: 992px) {
     .pilot-section .panel {
       min-height: 321px;
     }
@@ -1098,13 +1091,13 @@
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: $screen-sm) {
     .customer-studies h3 {
       font-size: 24px;
     }
   }
 
-  @media (min-width: 768px) and (max-width: 992px) {
+  @media (min-width: $screen-sm) and (max-width: 992px) {
     .customer-studies .pbs-card p {
       margin-bottom: 48px;
     }
@@ -1131,7 +1124,7 @@
     background-color: #fff;
     box-shadow: 0 -1px 0 #eaeaea;
     padding: 50px 0;
-    @media (min-width: 768px) {
+    @media (min-width: $screen-sm) {
       padding: 60px 0;
     }
 
@@ -1192,7 +1185,7 @@
       border-radius: 4px;
       padding: 8px 20px;
       margin: 0 auto 10px;
-      @media (min-width: 768px) {
+      @media (min-width: $screen-sm) {
         font-size: 14px;
       }
     }
@@ -1263,7 +1256,7 @@
   }
 }
 
-@media (min-width: 538px) and (max-width: 768px) {
+@media (min-width: 538px) and (max-width: $screen-sm) {
   .case-study .overview .row {
     width: 85%;
     margin: 0 auto;
@@ -1281,7 +1274,7 @@
 
   .navbar-header {
     padding: 10px 0;
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+    @media only screen and (min-device-width: $screen-sm) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
       float: none;
     }
 
@@ -1301,7 +1294,7 @@
     padding: 8px 0px;
     margin-right: 0;
     position: relative;
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+    @media only screen and (min-device-width: $screen-sm) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
       display: block;
     }
 
@@ -1319,10 +1312,10 @@
   .navbar-nav {
     display: none;
     margin: 8px 0;
-    @media (min-width: 768px) {
+    @media (min-width: $screen-sm) {
       display: block;
     }
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+    @media only screen and (min-device-width: $screen-sm) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
       display: none;
     }
 
@@ -1355,7 +1348,7 @@
       &:hover,
       &:focus {
         color: $brand-primary;
-        background: #f0f1f3;
+        background: $medium-gray;
         border-radius: 3px;
       }
     }
@@ -1411,7 +1404,7 @@
         }
 
         &:hover {
-          background: #f0f1f3;
+          background: $medium-gray;
           border-color: $brand-primary;
           box-shadow: 0 2px 5px rgba(0,0,0, .15);
         }
@@ -1449,10 +1442,10 @@
   top: 0;
   z-index: 2147483648;
   overflow-y: auto;
-  @media(min-width: 768px) {
+  @media(min-width: $screen-sm) {
     display: none;
   }
-  @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+  @media only screen and (min-device-width: $screen-sm) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
     display: block;
   }
 
@@ -1520,7 +1513,7 @@
         }
       }
 
-      @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+      @media only screen and (min-device-width: $screen-sm) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
         float: none;
         
         li {
