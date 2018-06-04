@@ -14,19 +14,21 @@ defmodule Stitch.Accounts.Email do
   Sends confirmation code email to the user.
   """
   def confirmation_code_email(user) do
+    # code looks like "123-456" in email only
+    code_string =
+      String.to_charlist(user.confirmation_code)
+      |> List.insert_at(3, "-")
+      |> List.to_string()
+
     new_email()
     |> template("Sign-Up 1: Authenticate Provider Code (Connect)")
     |> to(user.email)
     |> from(@from_address)
-    |> subject("Confirm your email")
+    |> subject("Stitch confirmation code: #{code_string}")
     |> put_param("global_merge_vars", [
       %{
         name: "confirmationCode",
-        # code looks like "123 - 456" in email only
-        content:
-          String.to_charlist(user.confirmation_code)
-          |> List.insert_at(3, " - ")
-          |> List.to_string()
+        content: code_string
       }
     ])
     |> Stitch.Mailer.deliver_later()

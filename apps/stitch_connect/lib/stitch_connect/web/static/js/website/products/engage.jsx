@@ -61,7 +61,7 @@ export default class Engage extends Component {
                   <i className="fa fa-bullhorn" /> Engage
                 </h4>
 
-                <h1>Communicate Securely With Patients</h1>
+                <h1>Communicate securely with patients</h1>
 
                 <h3 className="m-b-30">
                   Stitch Engage is a simple system for talking to your patients.

@@ -58,6 +58,9 @@ export S3_REGION=us-east-1
 export S3_AVATAR_BUCKET_NAME="stitch-avatars"
 export AVATAR_ORIGIN="https://avatars.teamstitch.com"
 
+export S3_PUBLIC_BUCKET_NAME="stitch-content-public"
+export PUBLIC_CDN_ORIGIN="https://public.teamstitch.com"
+
 export APNS_TOPIC=
 export APNS_CERT_B64=
 export APNS_KEY_B64=

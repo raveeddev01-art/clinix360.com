@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+import { AuthenticationHeader } from "common/components";
 import browserDetails from "../../lib/browser_details";
 import WindowsDesktop from "./windows-desktop";
 import MacDesktop from "./mac-desktop";
 import LinuxDesktop from "./linux-desktop";
 import IOSMobile from "./ios-mobile";
 import AndroidMobile from "./android-mobile";
-
-import Header from "../components/header/header";
-import Footer from "../components/footer/footer";
 
 @inject("registrationStore", "invitationStore", "titleStore")
 @observer
@@ -39,85 +38,35 @@ export default class DownloadApps extends Component {
 
   renderHeader() {
     const { mobile } = browserDetails;
-    return <h2>{mobile ? "Mobile App" : "Desktop App"}</h2>;
-  }
-
-  renderAlternateOS() {
-    const { os, mobile } = this.state;
-    const macButton = (
-      <a onClick={() => this._changeOS("Mac OS X")}>
-        <strong>Mac</strong>
-      </a>
-    );
-    const winButton = (
-      <a onClick={() => this._changeOS("Windows")}>
-        <strong>Windows</strong>
-      </a>
-    );
-    const linuxButton = (
-      <a onClick={() => this._changeOS("Linux")}>
-        <strong>Linux</strong>
-      </a>
-    );
-    if (!mobile) {
-      if (os === "Mac OS X") {
-        return (
-          <h5>
-            Looking for {winButton} or {linuxButton} desktop apps?
-          </h5>
-        );
-      } else if (os === "Windows") {
-        return (
-          <h5>
-            Looking for {macButton} or {linuxButton} desktop apps?
-          </h5>
-        );
-      } else if (os === "Linux") {
-        return (
-          <h5>
-            Looking for {macButton} or {winButton} desktop apps?
-          </h5>
-        );
-      }
-    }
-
-    return null;
+    return <h1>{mobile ? "Mobile App" : "Desktop App"}</h1>;
   }
 
   render() {
     const { shouldRedirect, os, mobile } = this.state;
     return (
       !shouldRedirect && (
-        <div className="authentication-main">
-          <div className="authentication-card text-center m-b-20">
-            {this.renderHeader()}
+        <div>
+          <div className="authentication-card">
+            <AuthenticationHeader type="no-cta" />
+            <div className="authentication-body">
+              {this.renderHeader()}
 
-            <h5 className="text-muted url-heading">
-              {this.props.registrationStore.teamSlug ||
-                this.props.invitationStore.subdomain}.teamstitch.com
-            </h5>
-
-            {os === "Windows" && !mobile && <WindowsDesktop />}
-
-            {os === "Mac OS X" && !mobile && <MacDesktop />}
-
-            {os === "Linux" && !mobile && <LinuxDesktop />}
-
-            {os === "iOS" && mobile && <IOSMobile />}
-
-            {os === "Android" && mobile && <AndroidMobile />}
-
-            {!mobile && (
-              <h5>
-                Looking for web app?{" "}
-                <a href="/">
-                  <strong>Skip & Launch</strong>
-                </a>
-              </h5>
-            )}
+              {os === "Windows" && !mobile && <WindowsDesktop />}
+              {os === "Mac OS X" && !mobile && <MacDesktop />}
+              {os === "Linux" && !mobile && <LinuxDesktop />}
+              {os === "iOS" && mobile && <IOSMobile />}
+              {os === "Android" && mobile && <AndroidMobile />}
+              {!mobile && (
+                <HelpBlock className="onboarding-hint m-b-20 text-center">
+                  or{" "}
+                  <a href="/">
+                    <strong>continue in the browser</strong>
+                  </a>
+                </HelpBlock>
+              )}
+            </div>
+            <div className="authentication-spacer" />
           </div>
-
-          {this.renderAlternateOS()}
         </div>
       )
     );

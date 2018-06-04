@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Link } from "react-router-dom";
 
-import Form from "react-bootstrap/lib/Form";
+import { Link } from "react-router-dom";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import Button from "react-bootstrap/lib/Button";
 
-import { Card } from "common/components";
-import Header from "../components/header/header";
-import Footer from "../components/footer/footer";
+import { OnboardPage } from "common/components";
+import { mobile } from "../../lib/browser_details";
 
 @inject("titleStore")
 @observer
@@ -23,7 +21,7 @@ export default class FindTeam extends Component {
   }
 
   componentWillMount() {
-    this.props.titleStore.setPageName("Find Team");
+    this.props.titleStore.setPageName("Find Carespace");
   }
 
   _onChange = event => {
@@ -40,82 +38,62 @@ export default class FindTeam extends Component {
     });
   };
 
-  render() {
-    const { email, sent } = this.state;
+  renderFindTeam() {
+    const { email } = this.state;
 
     return (
-      <div>
-        <Header />
-        <div className="authentication-main">
-          {!sent ? (
-            <Card
-              title="Find Your Team"
-              description={
-                <span>
-                  Enter your email address and we'll send you links to your
-                  existing teams.
-                </span>
-              }
-            >
-              <Form onSubmit={this._onSubmit}>
-                <FormGroup bsSize="large">
-                  <FormControl
-                    required
-                    autoFocus
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={this._onChange}
-                  />
-                </FormGroup>
-                <Button
-                  type="submit"
-                  bsStyle="primary"
-                  bsSize="lg"
-                  className="btn-block m-b-40"
-                >
-                  Submit
-                </Button>
-              </Form>
-
-              <h5>
-                Just getting started?{" "}
-                <a href={`https://${applicationHost}/signup/email`}>
-                  <strong>Create a new team</strong>
-                </a>
-              </h5>
-            </Card>
-          ) : (
-            <Card
-              title="Check Your Email"
-              className="wide"
-              description={
-                <span>
-                  We sent an email to <strong>{email}</strong> if we found your
-                  account in our system. This email will link you to a page
-                  where you can access all of your Stitch teams.
-                </span>
-              }
-            >
-              <hr />
-              <h5>
-                Just getting started?{" "}
-                <a href={`https://${applicationHost}/signup/email`}>
-                  <strong>Create a new team</strong>
-                </a>
-              </h5>
-            </Card>
-          )}
-
-          <h5>
-            Looking to join an existing team?{" "}
-            <Link to="/signin">
-              <strong>Sign In</strong>
-            </Link>
-          </h5>
+      <OnboardPage
+        title="Find Your Carespace"
+        headerCTA="signin"
+        description={
+          <span>
+            We’ll send you an email to confirm your address and find existing
+            carespaces you’ve joined or can join.
+          </span>
+        }
+        onNext={this._onSubmit}
+      >
+        <ControlLabel>Email</ControlLabel>
+        <FormGroup bsSize="large">
+          <FormControl
+            required
+            autoFocus={!mobile}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={this._onChange}
+          />
+        </FormGroup>
+        <div className="team-picker-find-team-helper">
+          Know your carespace URL?{" "}
+          <Link to="/signin">
+            <strong>Sign In</strong>
+          </Link>
         </div>
-        {!window.electronApp && <Footer />}
-      </div>
+      </OnboardPage>
     );
+  }
+
+  renderCheckEmail() {
+    const { email } = this.state;
+
+    return (
+      <OnboardPage
+        title="Check your email!"
+        headerCTA="signin"
+        description={
+          <span>
+            We've emailed a confirmation link to {email}. Click the link to
+            confirm your address and get started. <br /> <br />Wrong email?{" "}
+            <a href="/find-your-team">Please re-enter your address. </a>
+          </span>
+        }
+        hideFooter
+      />
+    );
+  }
+
+  render() {
+    return !this.state.sent ? this.renderFindTeam() : this.renderCheckEmail();
   }
 }

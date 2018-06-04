@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Alert from "react-bootstrap/lib/Alert";
+
 import isEmail from "validator/lib/isEmail";
-import { OnboardCard } from "common/components";
+import { OnboardPage } from "common/components";
 
 @inject("registrationStore")
 @observer
@@ -54,40 +56,44 @@ class EmailCard extends Component {
   };
 
   render() {
+    const { errorMessage } = this.state;
     return (
       <div>
-        {this.state.errorMessage && (
-          <Alert bsStyle="danger">{this.state.errorMessage}</Alert>
-        )}
-        <OnboardCard
-          title="Email"
+        <OnboardPage
+          title="Create a new carespace"
           description={
             <span>
-              Enter your <strong>email address</strong>.
+              Enter your email address to start creating your carespace on
+              Stitch.
             </span>
           }
           onNext={this.onNext}
           loading={this.state.loading}
           disableNext={!this.state.formValid}
         >
-          <FormGroup bsSize="large">
+          <FormGroup
+            bsSize="large"
+            validationState={(errorMessage && "error") || null}
+          >
+            <ControlLabel>Email Address</ControlLabel>
             <FormControl
               name={`email_${new Date().getTime()}`}
               required
               autoFocus
               autoComplete="off"
               type="email"
-              placeholder="Email"
+              placeholder="Email address"
               value={this.state.email}
               onChange={this.onChange}
             />
+            {errorMessage && (
+              <HelpBlock className="text-left">
+                <i className="fa fa-exclamation-circle" />
+                {errorMessage}
+              </HelpBlock>
+            )}
           </FormGroup>
-          <HelpBlock className="m-b-20">
-            We will send you a confirmation code to verify your email. If your
-            team already has an account, ask your administrator for an
-            invitation.
-          </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

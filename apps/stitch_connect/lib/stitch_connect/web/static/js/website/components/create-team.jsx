@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 
-import Form from "react-bootstrap/lib/Form";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
+import Form from "react-bootstrap/lib/Form";
+import FormControl from "react-bootstrap/lib/FormControl";
+import FormGroup from "react-bootstrap/lib/FormGroup";
 import Cookies from "js-cookie";
+
+import browserDetails from "../../lib/browser_details";
 
 class CreateTeam extends Component {
   constructor(...args) {
@@ -41,25 +43,52 @@ class CreateTeam extends Component {
 
   render() {
     const { email } = this.state;
+    const { mobile, os } = browserDetails;
 
     return (
-      <Form inline className="create-team-form" onSubmit={this.onSubmit}>
-        <FormGroup>
-          <FormControl
-            required
-            id="createTeam"
-            placeholder="Email address"
-            type="email"
-            value={email}
-            onChange={this.onChange}
-          />
-          <Button type="submit" bsStyle="primary" className="btn-form">
-            Get Started
-          </Button>
-        </FormGroup>
+      <div>
+        {!mobile && (
+          <Form inline className="create-team-form" onSubmit={this.onSubmit}>
+            <FormGroup>
+              <FormControl
+                required
+                id="createTeam"
+                placeholder="Email address"
+                type="email"
+                value={email}
+                onChange={this.onChange}
+              />
+              <Button type="submit" bsStyle="primary" className="btn-form">
+                Get Started
+              </Button>
+            </FormGroup>
+          </Form>
+        )}
 
-        {/* <Button type="submit">Get Started</Button> */}
-      </Form>
+        {mobile &&
+          os === "iOS" && (
+            <a
+              href="http://stitch.app.link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary appstore-btn"
+            >
+              Get Stitch for iOS
+            </a>
+          )}
+
+        {mobile &&
+          os === "Android" && (
+            <a
+              href="http://stitch.app.link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary appstore-btn"
+            >
+              Get Stitch for Android
+            </a>
+          )}
+      </div>
     );
   }
 }
