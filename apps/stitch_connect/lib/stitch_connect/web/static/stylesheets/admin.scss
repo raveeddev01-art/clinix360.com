@@ -60,6 +60,7 @@ $admin-topbar-height-sm: 65px;
   .sidebar {
     display: block;
     flex-basis: $admin-sidebar-width;
+    max-width: $admin-sidebar-width;
     overflow: visible;
     z-index: 1;
     display: flex;

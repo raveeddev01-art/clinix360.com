@@ -12,10 +12,8 @@ class Switcher extends Component {
     const path = history.location.pathname;
     let active = "connect";
 
-    if (path === "/admin/you/home") {
+    if (path.startsWith("/admin")) {
       active = "home";
-    } else if (path.startsWith("/admin")) {
-      active = "settings";
     } else if (path === "/engage") {
       active = "engage";
     } else if (path === "/manage") {
@@ -113,20 +111,6 @@ class Switcher extends Component {
         </div>
 
         <div className="switcher__bottom">
-          <NavLink
-            to="/admin/you/account"
-            isActive={() => active === "settings"}
-            className="switcher__link"
-          >
-            <OverlayTrigger
-              placement="right"
-              container={this}
-              overlay={<Tooltip id="tooltip-info">Settings</Tooltip>}
-            >
-              <i className="fa fa-cog" />
-            </OverlayTrigger>
-          </NavLink>
-
           <a
             role="link"
             onClick={this.props.presenceStore.lock}
