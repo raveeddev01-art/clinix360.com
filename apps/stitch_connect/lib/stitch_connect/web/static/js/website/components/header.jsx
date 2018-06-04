@@ -73,7 +73,7 @@ class Header extends Component {
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/" className="brand">
-                <img src="/images/stitch-brand.png" alt="Stitch" />
+                <img src="/images/stitch-brand.svg" alt="Stitch" />
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle onClick={this.mobileNavToggle} />
@@ -168,7 +168,7 @@ class Header extends Component {
           <div className="header">
             <div className="container">
               <Link className="brand" to="/">
-                <img src="/images/stitch-brand-alt.png" alt="Stitch" />
+                <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
               </Link>
 
               <a className="close-menu" onClick={this.mobileNavToggle}>
