@@ -25,12 +25,12 @@ class AuthenticationHeader extends Component {
   }
 
   renderBrand() {
-    if (window.electronApp) {
-      return <img src="/images/stitch-brand.svg" alt="Stitch" />;
-    }
+    const dest = window.electronApp
+      ? `https://${applicationHost}/signin`
+      : `https://${applicationHost}/`;
 
     return (
-      <a href={`https://${applicationHost}/`} className="brand">
+      <a href={dest} className="brand">
         <img src="/images/stitch-brand.svg" alt="Stitch" />
       </a>
     );
