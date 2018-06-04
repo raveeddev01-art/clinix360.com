@@ -63,9 +63,11 @@ class AuthenticationHeader extends Component {
 
     return [
       <Navbar.Text> Looking to join an existing carespace? </Navbar.Text>,
-      <NavItem onClick={this.goToFindTeam} className="btn-trial">
-        Find Your Carespace
-      </NavItem>
+      <Nav>
+        <NavItem onClick={this.goToFindTeam} className="btn-trial">
+          Find Your Carespace
+        </NavItem>
+      </Nav>
     ];
   }
 
