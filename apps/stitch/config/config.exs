@@ -37,6 +37,11 @@ config :stitch, :user_upload_settings, %{
   max_preview_height: 720
 }
 
+config :stitch, :public_cdn, %{
+  origin: System.get_env("PUBLIC_CDN_ORIGIN"),
+  bucket: System.get_env("S3_PUBLIC_BUCKET_NAME")
+}
+
 config :porcelain, :goon_warn_if_missing, false
 
 config :stitch, :redix, %{

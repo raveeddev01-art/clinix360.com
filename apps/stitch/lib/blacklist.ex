@@ -515,6 +515,7 @@ defmodule Stitch.Blacklist do
       "updater",
       "thread",
       "connector",
+      "public",
       "push",
       "loop",
       "stage",
