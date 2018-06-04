@@ -6,16 +6,23 @@ import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
 
 class VideoModal extends Component {
   render() {
-    const { state, closeModal } = this.props;
+    const { state, closeModal, connectVideo } = this.props;
+
+    let videoSrc;
+
+    if (connectVideo) {
+      videoSrc =
+        "https://www.youtube.com/embed/lDnzr-OrYWU?rel=0&amp;autoplay=1&amp;showinfo=0";
+    } else {
+      videoSrc =
+        "https://www.youtube.com/embed/v1fjEFYMiyA?rel=0&amp;autoplay=1&amp;showinfo=0";
+    }
 
     return (
       <Modal show={!!state} onHide={closeModal} className="video-modal">
         <Modal.Body>
           <ResponsiveEmbed a16by9>
-            <embed
-              src="https://www.youtube.com/embed/lDnzr-OrYWU?rel=0&amp;autoplay=1&amp;showinfo=0"
-              allowFullScreen
-            />
+            <embed src={videoSrc} allowFullScreen />
           </ResponsiveEmbed>
         </Modal.Body>
       </Modal>
@@ -23,9 +30,14 @@ class VideoModal extends Component {
   }
 }
 
+VideoModal.defaultProps = {
+  connectVideo: false
+};
+
 VideoModal.propTypes = {
   state: PropTypes.string.isRequired,
-  closeModal: PropTypes.func.isRequired
+  closeModal: PropTypes.func.isRequired,
+  connectVideo: PropTypes.bool
 };
 
 export default VideoModal;
