@@ -20,7 +20,7 @@ export default class TeamImport extends Component {
         <br />
         <Row className="m-b-20">
           <Col md={10} className="import-app-option">
-            <img src="/images/import-stitch-logo.png" alt="stitch logo" />
+            <img src="/images/logo-blue.svg" alt="stitch logo" />
             <div>
               <h4>
                 <strong>Stitch</strong>
