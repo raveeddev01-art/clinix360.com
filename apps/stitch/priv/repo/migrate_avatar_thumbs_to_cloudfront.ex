@@ -13,7 +13,7 @@ defmodule Stitch.Repo.Scripts.MigrateAvatarThumbsToCloudFront do
 
   defp migrat_avatar_thumb_to_cloudfront(users) do
     Enum.each(users, fn user ->
-      if user.profile_image_thumb_url && user.team_id == 10 do
+      if user.profile_image_thumb_url do
         Logger.info("Migrating avatar thumb for user_id #{user.id}")
 
         case Stitch.Accounts.ProfileImage.create_thumb(user.profile_image_url) do
