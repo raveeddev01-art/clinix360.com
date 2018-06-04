@@ -11,6 +11,8 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import browserDetails from "../../lib/browser_details";
 
+function noop() {}
+
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -83,6 +85,7 @@ class Header extends Component {
               id="products-dropdown"
               onMouseEnter={this.toggleProductsMenu}
               onMouseLeave={this.toggleProductsMenu}
+              onToggle={noop}
               open={this.state.productsMenuOpened}
               noCaret
             >
@@ -117,6 +120,7 @@ class Header extends Component {
               id="resources-dropdown"
               onMouseEnter={this.toggleResourcesMenu}
               onMouseLeave={this.toggleResourcesMenu}
+              onToggle={noop}
               open={this.state.resourcesMenuOpened}
               noCaret
             >
