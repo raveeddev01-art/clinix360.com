@@ -13,17 +13,23 @@ defmodule Stitch.Repo.Scripts.MigrateAvatarThumbsToCloudFront do
 
   defp migrat_avatar_thumb_to_cloudfront(users) do
     Enum.each(users, fn user ->
-      if user.profile_image_thumb_url do
+      if user.profile_image_thumb_url &&
+           String.starts_with?(user.profile_image_thumb_url, "https://s3.amazonaws.com") do
         Logger.info("Migrating avatar thumb for user_id #{user.id}")
 
-        case Stitch.Accounts.ProfileImage.create_thumb(user.profile_image_url) do
-          {:ok, profile_image_thumb_url} ->
-            user
-            |> Ecto.Changeset.change(profile_image_thumb_url: profile_image_thumb_url)
-            |> Repo.update()
+        try do
+          case Stitch.Accounts.ProfileImage.create_thumb(user.profile_image_url) do
+            {:ok, profile_image_thumb_url} ->
+              user
+              |> Ecto.Changeset.change(profile_image_thumb_url: profile_image_thumb_url)
+              |> Repo.update()
 
-          {:error, error} ->
-            Logger.error("Error migrating avatar for user #{user.id}: #{inspect(error)}")
+            {:error, error} ->
+              Logger.error("Error migrating avatar for user #{user.id}: #{inspect(error)}")
+          end
+        rescue
+          error ->
+            Logger.error("#{user.id} #{user.profile_image_thumb_url} #{inspect(error)}")
         end
       end
     end)
