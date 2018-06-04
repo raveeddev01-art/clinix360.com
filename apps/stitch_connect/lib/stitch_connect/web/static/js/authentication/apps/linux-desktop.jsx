@@ -5,11 +5,16 @@ export default class WindowsDesktop extends Component {
     return (
       <div>
         <h5>
-          Download the <strong>Linux desktop app</strong> to get the best
-          experience using Stitch.
+          <div className="card-description">
+            Download the <strong>Linux desktop app</strong> to get the best
+            experience using Stitch.
+          </div>
         </h5>
 
-        <a disabled className="btn btn-primary btn-lg btn-block m-b-40">
+        <a
+          disabled
+          className="btn btn-primary btn-onboarding btn-lg btn-block m-b-40"
+        >
           Coming Soon
         </a>
       </div>

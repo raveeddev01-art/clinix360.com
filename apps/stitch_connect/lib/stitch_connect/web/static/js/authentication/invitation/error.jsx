@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 
 @inject("invitationStore")
 @observer
-class Welcome extends Component {
+class InvalidInvite extends Component {
   componentWillMount() {
     const { invitationStore } = this.props;
     invitationStore.verifyInvitation();
@@ -19,7 +19,7 @@ class Welcome extends Component {
 
   render() {
     return (
-      <Card
+      <AuthenticationPage
         title="Invalid Invite"
         description={
           <span>
@@ -30,12 +30,15 @@ class Welcome extends Component {
           </span>
         }
       >
-        <a href="/" className="btn btn-lg btn-block btn-primary m-b-40">
+        <a
+          href="/"
+          className="btn btn-onboarding btn-lg btn-block btn-primary m-b-40"
+        >
           Back
         </a>
-      </Card>
+      </AuthenticationPage>
     );
   }
 }
 
-export default withRouter(Welcome);
+export default withRouter(InvalidInvite);

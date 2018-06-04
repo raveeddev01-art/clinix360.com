@@ -26,11 +26,11 @@ class Header extends Component {
   }
 
   goToSignIn() {
-    window.location.href = "https://teamstitch.com/signin";
+    window.location.href = `https://${applicationHost}/signin`;
   }
 
-  goToStartTrial() {
-    window.location.href = "https://teamstitch.com/signup/email";
+  goToGetStarted() {
+    window.location.href = `https://${applicationHost}/getstarted`;
   }
 
   toggleProductsMenu = () => {
@@ -78,7 +78,6 @@ class Header extends Component {
             </Navbar.Brand>
             <Navbar.Toggle onClick={this.mobileNavToggle} />
           </Navbar.Header>
-
           <Nav pullRight>
             <NavDropdown
               title="Products"
@@ -159,7 +158,7 @@ class Header extends Component {
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
-            <NavItem onClick={this.goToStartTrial} className="btn-trial">
+            <NavItem onClick={this.goToGetStarted} className="btn-trial">
               Get Started
             </NavItem>
           </Nav>
@@ -242,9 +241,8 @@ class Header extends Component {
               </NavDropdown>
 
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
-
               {!mobile && (
-                <NavItem onClick={this.goToStartTrial} className="btn-trial">
+                <NavItem onClick={this.goToGetStarted} className="btn-trial">
                   Get Started
                 </NavItem>
               )}

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { observer, inject } from "mobx-react";
-import Alert from "react-bootstrap/lib/Alert";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormGroup from "react-bootstrap/lib/FormGroup";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import { OnboardCard } from "common/components";
+import { OnboardPage, InputErrorBlock } from "common/components";
 
 @inject("registrationStore")
 @observer
@@ -116,7 +117,7 @@ class Confirmation extends Component {
       })
         .then(() => {
           registrationStore.verified = true;
-          history.push("/signup/onboarding/teamname");
+          history.push("/signup/onboarding/names");
         })
         .catch(() => {
           this.setState({ error: true, loading: false });
@@ -124,11 +125,17 @@ class Confirmation extends Component {
     }
   };
 
+  hasSixDigits() {
+    return this.state.digits && this.state.digits.join("").length === 6;
+  }
+
   renderCodeInput = (from, to) => {
     const comps = [];
     for (let i = from; i < to; i += 1) {
       comps.push(
         <input
+          pattern="\d*"
+          inputMode="numeric"
           className="form-control"
           autoFocus={i === 0}
           key={`code_${i}`}
@@ -149,41 +156,45 @@ class Confirmation extends Component {
   render() {
     return (
       <div>
-        {this.state.error && (
-          <Alert bsStyle="danger">
-            The confirmation code doesn&#39;t match the one we have on record.
-            Please check your email again.
-          </Alert>
-        )}
-
-        <OnboardCard
-          title="Confirmation Code"
+        <OnboardPage
+          title="Check your email!"
           description={
             <span>
-              Enter your <strong>confirmation code</strong>.
+              We've sent a six-digit confirmation code to{" "}
+              <strong>{this.props.registrationStore.email}</strong>. Enter it
+              below to confirm your email address.
             </span>
           }
           loading={this.state.loading}
           onNext={this.onNext}
+          disableNext={!this.hasSixDigits()}
         >
-          <div className="confirmation-code m-b-20">
-            <InputGroup className="code-group">
-              {this.renderCodeInput(0, 3)}
-            </InputGroup>
+          <FormGroup validationState={(this.state.error && "error") || null}>
+            <ControlLabel>Confirmation Code</ControlLabel>
+            <div className="confirmation-code m-b-20">
+              <InputGroup className="code-group">
+                {this.renderCodeInput(0, 3)}
+              </InputGroup>
 
-            <div className="code-separator">—</div>
+              <div className="code-separator">—</div>
 
-            <InputGroup className="code-group">
-              {this.renderCodeInput(3, 6)}
-            </InputGroup>
-            <div className="clearfix" />
-          </div>
-          <HelpBlock className="m-b-20">
-            We sent a six-digit confirmation code to&nbsp;
-            <strong>{this.props.registrationStore.email}</strong> to verify your
-            email address.
+              <InputGroup className="code-group">
+                {this.renderCodeInput(3, 6)}
+              </InputGroup>
+              <div className="clearfix" />
+            </div>
+            {this.state.error && (
+              <InputErrorBlock>
+                {" "}
+                The confirmation code doesn't match the one we have on record.
+                Please check your email again.{" "}
+              </InputErrorBlock>
+            )}
+          </FormGroup>
+          <HelpBlock className="onboarding-hint m-b-20">
+            Keep this window open while you check for your code.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }

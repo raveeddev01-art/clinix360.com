@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Button from "react-bootstrap/lib/Button";
-import { Card } from "common/components";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+import { AuthenticationPage } from "common/components";
 import FindTeam from "./find_team";
 
 export default class SelectTeam extends Component {
@@ -22,31 +23,43 @@ export default class SelectTeam extends Component {
       .catch(() => this.setState({ tokenFound: false }));
   }
 
+  renderTeamLink(team) {
+    return (
+      <div className="select-team-item">
+        <div className="select-team-item-name">{team.name}</div>
+        <div className="select-team-item-link-holder">
+          <Button
+            key={team.slug}
+            href={`https://${team.slug}.${applicationHost}/find-your-team/${team.login_token}/login`}
+            bsStyle="primary"
+          >
+            Launch
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     if (!this.state.tokenFound) {
       return <FindTeam />;
     }
 
     return (
-      <Card
-        title="Select Team"
-        description={<span>Select one of your teams:</span>}
+      <AuthenticationPage
+        title="Your Teams"
+        headerCTA="no-cta"
+        description="You are a member of of these Stitch teams:"
       >
-        <div className="m-b-40">
-          {this.state.teams.map(team => {
-            return (
-              <Button
-                key={team.slug}
-                href={`https://${team.slug}.${applicationHost}/find-your-team/${team.login_token}/login`}
-                bsSize="large"
-                block
-              >
-                {team.name}
-              </Button>
-            );
-          })}
+        <div className="select-team-list m-b-40">
+          {this.state.teams.map(this.renderTeamLink)}
         </div>
-      </Card>
+        <HelpBlock className="onboarding-hint m-b-20">
+          If you are looking for a different team, you can{" "}
+          <a href="/find-your-team">try a different email address</a> or request
+          an invitation from your Team Administrator.
+        </HelpBlock>
+      </AuthenticationPage>
     );
   }
 }

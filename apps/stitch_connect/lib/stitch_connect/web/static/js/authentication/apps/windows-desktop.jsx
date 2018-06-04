@@ -5,15 +5,17 @@ export default class WindowsDesktop extends Component {
     return (
       <div>
         <h5>
-          Download the <strong>Windows desktop app</strong> to get the best
-          experience using Stitch.
+          <div className="card-description">
+            Download the <strong>Windows Desktop App</strong> to get the best
+            experience using Stitch.
+          </div>
         </h5>
 
         <a
           href="https://teamstitch.com/download-win"
-          className="btn btn-primary btn-lg btn-block m-b-40"
+          className="btn btn-onboarding btn-primary btn-lg btn-block m-b-40"
         >
-          Download
+          Download the Windows App
         </a>
       </div>
     );

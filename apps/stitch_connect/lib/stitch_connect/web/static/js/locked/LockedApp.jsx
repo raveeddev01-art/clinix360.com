@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
-import Alert from "react-bootstrap/lib/Alert";
-import Button from "react-bootstrap/lib/Button";
 
-import { PinInput, LoadingIcon } from "common/components";
-import Header from "../authentication/components/header/header";
-import Footer from "../authentication/components/footer/footer";
+import Button from "react-bootstrap/lib/Button";
+import Form from "react-bootstrap/lib/Form";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
+
+import { AuthenticationPage, PinInput, LoadingIcon } from "common/components";
 
 @inject("presenceStore", "teamStore")
 @observer
@@ -54,60 +56,60 @@ class LockedApp extends Component {
   };
 
   render() {
-    const lockAppWrapperClass = cx("locked-app-wrapper", {
+    const authWrapperClass = cx("authentication-page", {
       "on-electron": window.electronApp
     });
     const { hasError, isSaving } = this.state;
 
     return (
-      <div className={lockAppWrapperClass}>
-        <div className="authentication-wrapper">
-          <div>
-            <Header />
-
-            <div className="authentication-main">
-              {hasError && <Alert bsStyle="danger">PIN is incorrect.</Alert>}
-              <div id="lockout" className="authentication-card text-center">
-                <h2>Session Locked</h2>
-                <h5 className="text-muted url-heading">
-                  {this.props.teamStore.slug}.teamstitch.com
-                </h5>
-
-                <h5>
-                  Enter <strong>PIN</strong> to resume Stitch.
-                </h5>
-
-                <form className="m-b-40" onSubmit={this.handleSubmit}>
+      <div className={authWrapperClass}>
+        <div>
+          <AuthenticationPage
+            headerCTA="no-cta"
+            title="Locked Out"
+            description="Enter your PIN to resume using Stitch."
+          >
+            <div className="locked-out">
+              <Form onSubmit={this.handleSubmit}>
+                <FormGroup
+                  bsSize="large"
+                  validationState={(this.state.hasError && "error") || null}
+                >
+                  <ControlLabel>PIN</ControlLabel>
                   <PinInput
                     className="m-b-20 m-center"
                     pin={this.state.pin}
                     onValid={this.onValid}
                     onInvalid={this.onInvalid}
                   />
+                  {hasError && (
+                    <HelpBlock className="text-left">
+                      <i className="fa fa-exclamation-circle" /> PIN is
+                      incorrect
+                    </HelpBlock>
+                  )}
+                </FormGroup>
 
-                  <Button
-                    type="submit"
-                    bsStyle="primary"
-                    bsSize="lg"
-                    className="btn-block m-center"
-                    disabled={isSaving}
-                  >
-                    Unlock
-                    {this.renderLoadingIcon()}
-                  </Button>
-                </form>
+                <Button
+                  type="submit"
+                  bsStyle="primary"
+                  bsSize="lg"
+                  className="btn btn-block btn-onboarding m-center m-b-20"
+                  disabled={isSaving}
+                >
+                  Unlock
+                  {this.renderLoadingIcon()}
+                </Button>
+              </Form>
 
-                <h5>
-                  Can't remember your PIN?{" "}
-                  <a href="/logout">
-                    <strong>Sign Out</strong>
-                  </a>
-                </h5>
-              </div>
+              <HelpBlock className="onboarding-hint m-b-20">
+                Can't remember your PIN?{" "}
+                <a href="/logout">
+                  <strong>Sign Out</strong>
+                </a>
+              </HelpBlock>
             </div>
-
-            {!window.electronApp && <Footer />}
-          </div>
+          </AuthenticationPage>
         </div>
       </div>
     );

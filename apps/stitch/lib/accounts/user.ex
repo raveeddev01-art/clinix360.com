@@ -187,7 +187,7 @@ defmodule Stitch.Accounts.User do
     |> Stitch.Validators.validate_no_emojis(:last_name)
     |> ensure_role()
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
-    |> validate_required([:phone_number, :pin, :team_id, :roles])
+    |> validate_required([:pin, :team_id, :roles])
     |> default_profile_image_changeset(params)
     |> put_change(:onboarded, true)
     |> put_change(:whats_new_last_seen_at, DateTime.utc_now())
