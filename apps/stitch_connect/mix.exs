@@ -43,6 +43,7 @@ defmodule StitchConnect.Mixfile do
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.1", only: :dev},
       {:phoenix_ecto, "~> 3.0"},
+      {:phoenix_etag, "~> 0.1"},
       {:gettext, "~> 0.13"},
       {:cowboy, "~> 1.1"},
       {:guardian, "~> 0.14"},

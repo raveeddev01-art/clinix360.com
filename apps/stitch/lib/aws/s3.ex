@@ -72,6 +72,26 @@ defmodule Stitch.AWS.S3 do
 
   def expires_in, do: @expires_in
 
+  def stream(filename, f) do
+    op = ExAws.S3.download_file(@s3.bucket, filename, "")
+    config = ExAws.Config.new(:s3)
+
+    op
+    |> ExAws.S3.Download.build_chunk_stream(config)
+    |> Task.async_stream(
+      fn boundaries ->
+        chunk = ExAws.S3.Download.get_chunk(op, boundaries, config)
+        {_, bytes} = chunk
+        f.(bytes)
+      end,
+      max_concurrency: Keyword.get(op.opts, :max_concurrency, 8),
+      timeout: Keyword.get(op.opts, :timeout, 60_000)
+    )
+    |> Stream.run()
+
+    {:ok, :done}
+  end
+
   def signature(filename, mimetype) do
     policy = policy(filename, mimetype)
 

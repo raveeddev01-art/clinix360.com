@@ -12,11 +12,12 @@ defmodule StitchConnect.Plug.ApiAuthenticate do
          %User{} = user <- UserQueries.get_active_by_token(token) do
       conn
       |> authenticate_user(user, opts)
-    else nil ->
-      conn
-      |> put_status(:forbidden)
-      |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
-      |> halt
+    else
+      nil ->
+        conn
+        |> put_status(:forbidden)
+        |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
+        |> halt
     end
   end
 

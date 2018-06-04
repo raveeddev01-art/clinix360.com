@@ -13,6 +13,11 @@ defmodule StitchConnect.Plug.Subdomain do
         |> router.call(router.init({}))
         |> halt
 
+      "files" ->
+        conn
+        |> router.call(router.init({}))
+        |> halt
+
       subdomain when byte_size(subdomain) > 0 ->
         case Stitch.TeamQueries.get_by_slug(subdomain) do
           nil ->

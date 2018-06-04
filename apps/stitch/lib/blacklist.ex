@@ -499,6 +499,7 @@ defmodule Stitch.Blacklist do
       "app",
       "manage",
       "mail",
+      "files",
       "ftp",
       "cpanel",
       "webdisk",

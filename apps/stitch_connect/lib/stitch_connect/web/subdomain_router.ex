@@ -63,6 +63,20 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug(StitchConnect.Plug.ActivityTracker)
   end
 
+  pipeline :files do
+    plug(StitchConnect.Plug.PlugAttack)
+    plug(:fetch_session)
+    plug(StitchConnect.Plug.FileAuthenticate)
+    # TODO: verify
+    plug(StitchConnect.Plug.EnsureUnlocked)
+  end
+
+  scope "/", StitchConnect.Web.Files, as: :files, host: "files." do
+    pipe_through([:files])
+
+    get("/file/:upload_id", FileController, :stream)
+  end
+
   # Stitch Staff Admin subdomain routes
   scope "/", StitchConnect.Web.Admin, as: :admin, host: "admin." do
     pipe_through([:browser, :admin])
