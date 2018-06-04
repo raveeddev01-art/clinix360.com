@@ -7,7 +7,11 @@ session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
 user = Map.get(@conn.assigns, :current_user)
 intercom_user_hash = Plug.Conn.get_session(@conn, :intercom_user_hash)
-public_bucket_name = System.get_env("S3_PUBLIC_BUCKET_NAME")
+public_bucket_name = Application.fetch_env!(:stitch, :public_cdn)[:bucket]
+app_settings = Poison.encode!(%{
+  notification_sounds: Stitch.Accounts.User.notification_sounds(),
+  cdn_origin: Application.fetch_env!(:stitch, :public_cdn)[:origin] # https://public.teamstitch.com
+})
 current_user =
   case user do
     nil ->
@@ -24,13 +28,15 @@ current_user =
         "title" => user.title,
         "phone" => user.phone_number,
         "avatar" => StitchConnect.PresignedUrlCache.fetch(user.profile_image_url),
-        "avatar_thumb" => StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url),
+        "avatar_thumb" => StitchConnect.Web.Api.V1.UserView.avatar_thumb(user),
+        "desktop_sound" => user.desktop_sound,
         "team" => %{
           "securityLockoutEnabled" => user.team.security_lockout,
           "secondsToLockout" => user.team.seconds_to_lockout,
           "openInvitationsEnabled" => user.team.open_invitations_enabled,
           "name" => user.team.name,
           "slug" => user.team.slug,
+          "concealEnabled" => user.team.conceal_enabled,
           "id" => user.team.id
         }
       })
@@ -50,4 +56,5 @@ current_user =
   window.intercomUserHash = "<%= intercom_user_hash %>";
   window.dr_chrono_client_id = "<%= System.get_env("DRCHRONO_CLIENT_ID") %>";
   window.publicBucket = "https://s3.amazonaws.com/<%=public_bucket_name%>";
+  window.appSettings = <%= raw app_settings %>
 </script>

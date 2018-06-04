@@ -190,6 +190,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     # Team Settings admin routes
     scope "/teams/:id" do
       delete("/", TeamController, :delete_team)
+      put("/toggle-conceal", TeamController, :toggle_conceal)
       get("/contact", TeamController, :show_contact_info)
       put("/contact", TeamController, :update_contact_info)
       put("/update-open-invitation", TeamController, :update_open_invitation)

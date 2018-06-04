@@ -2,20 +2,18 @@ import React, { Component } from "react";
 import { inject } from "mobx-react";
 import { Link } from "react-router-dom";
 
-import Alert from "react-bootstrap/lib/Alert";
+import Button from "react-bootstrap/lib/Button";
+import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import Button from "react-bootstrap/lib/Button";
-
-import Header from "../components/header/header";
-import Footer from "../components/footer/footer";
+import { AuthenticationPage, InputErrorBlock } from "common/components";
 
 @inject("titleStore")
 export default class TeamPicker extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      teamName: "",
+      teamUrl: "",
       showAlert: false
     };
   }
@@ -24,10 +22,37 @@ export default class TeamPicker extends Component {
     this.props.titleStore.setPageName("Sign In");
   }
 
-  handleChange = event => {
-    const teamName = event.target.value;
-    this.setState({ teamName });
+  onChange = event => {
+    const teamUrl = event.target.value;
+    this.setState({ teamUrl });
   };
+
+  onSubmit = event => {
+    const { teamUrl } = this.state;
+    event.preventDefault();
+    Promise.all([this.checkBlacklist(teamUrl), this.checkAvailability(teamUrl)])
+      .then(resp => {
+        if (resp[0].data.available && !resp[1].data.available) {
+          window.location = `https://${teamUrl}.${applicationHost}`;
+        } else {
+          this.setState({
+            showAlert: true
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({ showAlert: true });
+      });
+  };
+
+  get errorText() {
+    return (
+      <span>
+        We don't have that team URL in our system. If you'd like, we can help
+        you <Link to="/find-your-team">find your team</Link>.
+      </span>
+    );
+  }
 
   checkBlacklist = url => {
     return post("/api/v1/teams/slug-exists", {
@@ -41,92 +66,60 @@ export default class TeamPicker extends Component {
     });
   };
 
-  handleSubmit = event => {
-    const { teamName } = this.state;
-    event.preventDefault();
-    Promise.all([
-      this.checkBlacklist(teamName),
-      this.checkAvailability(teamName)
-    ])
-      .then(resp => {
-        if (resp[0].data.available && !resp[1].data.available) {
-          window.location = `https://${teamName}.${applicationHost}`;
-        } else {
-          this.setState({
-            showAlert: true
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({ showAlert: true });
-      });
-  };
-
   render() {
-    const { showAlert, teamName } = this.state;
+    const { teamUrl, showAlert } = this.state;
 
     return (
-      <div>
-        <Header />
+      <AuthenticationPage
+        title="Sign in to your carespace"
+        headerCTA="create"
+        description={
+          <span>
+            Enter your carespace's <b> Stitch URL </b>
+          </span>
+        }
+      >
+        <Form onSubmit={this.onSubmit}>
+          <FormGroup
+            bsSize="large"
+            className="team-form"
+            validationState={(showAlert && "error") || null}
+          >
+            <FormControl
+              required
+              autoFocus
+              value={teamUrl}
+              onChange={this.onChange}
+              onFocus={this.moveCaretAtEnd}
+              placeholder="your-carespace-url"
+              maxLength={80}
+            />
+            <span className="domain">.teamstitch.com</span>
+          </FormGroup>
+          {showAlert && <InputErrorBlock>{this.errorText}</InputErrorBlock>}
 
-        <div className="authentication-main">
-          {showAlert && (
-            <Alert bsStyle="danger">
-              We don't have that team URL in our system. If you'd like, we can
-              help you <Link to="/find-your-team">find your team</Link>.
-            </Alert>
-          )}
+          <Button
+            bsStyle="primary"
+            bsSize="lg"
+            type="submit"
+            className="btn-lg btn-block"
+          >
+            <div className="next-button-interior">
+              <div>Next</div>
+              <div className="next-arrow-wrapper">
+                <i className="fa fa-arrow-right" />
+              </div>
+            </div>
+          </Button>
+        </Form>
 
-          <div className="authentication-card text-center team-picker-card">
-            <h2>Sign In</h2>
-
-            <h5>
-              Enter your team's <strong>Stitch URL</strong>.
-            </h5>
-
-            <form onSubmit={this.handleSubmit} className="m-b-40">
-              <FormGroup bsSize="large" className="team-form">
-                <FormControl
-                  name="teamName"
-                  required
-                  autoFocus
-                  type="text"
-                  autoComplete="off"
-                  placeholder="Subdomain"
-                  value={teamName}
-                  onChange={this.handleChange}
-                />
-                <span className="domain">.teamstitch.com</span>
-              </FormGroup>
-
-              <Button
-                bsStyle="primary"
-                bsSize="lg"
-                type="submit"
-                className="btn-block"
-              >
-                Continue
-              </Button>
-            </form>
-
-            <h5>
-              Don't know your team's URL?{" "}
-              <Link to="/find-your-team">
-                <strong>Find your team</strong>
-              </Link>
-            </h5>
-          </div>
-
-          <h5>
-            Just getting started? {" "}
-            <Link to="/signup/email">
-              <strong>Create a new team</strong>
-            </Link>
-          </h5>
+        <div className="team-picker-find-team-helper">
+          Don't know your carespace's URL?{" "}
+          <Link to="/find-your-team">
+            <strong>Find your carespace</strong>
+          </Link>
         </div>
-
-        {!window.electronApp && <Footer />}
-      </div>
+      </AuthenticationPage>
     );
   }
 }

@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 
 @inject("invitationStore")
 @observer
-class Welcome extends Component {
+class InvalidInvite extends Component {
   componentWillMount() {
     const { invitationStore } = this.props;
     invitationStore.verifyInvitation();
@@ -19,25 +19,26 @@ class Welcome extends Component {
 
   render() {
     return (
-      <div>
-        <Card
-          title="Invalid Invite"
-          description={
-            <span>
-              It seems like the invitation you are trying to accept is invalid,
-              because you joined the team already or your invitation has been
-              revoked. Try contacting your team administrator for more
-              information.
-            </span>
-          }
+      <AuthenticationPage
+        title="Invalid Invite"
+        description={
+          <span>
+            It seems like the invitation you are trying to accept is invalid,
+            because you joined the team already or your invitation has been
+            revoked. Try contacting your team administrator for more
+            information.
+          </span>
+        }
+      >
+        <a
+          href="/"
+          className="btn btn-onboarding btn-lg btn-block btn-primary m-b-40"
         >
-          <a href="/" className="btn btn-lg btn-block btn-primary m-b-40">
-            Back
-          </a>
-        </Card>
-      </div>
+          Back
+        </a>
+      </AuthenticationPage>
     );
   }
 }
 
-export default withRouter(Welcome);
+export default withRouter(InvalidInvite);

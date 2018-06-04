@@ -123,7 +123,7 @@ export function formatCurrency(money) {
  * @param {string} zipCode
  */
 export function isZipCode(zipCode) {
-  return /^\d{5}-\d{4}$/.test(zipCode);
+  return /^\d{5}(-\d{4})?$/.test(zipCode);
 }
 
 /**
@@ -133,8 +133,8 @@ export function isZipCode(zipCode) {
  */
 export function getTimezone() {
   try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
   } catch (_error) {
-    return "Etc/UTC"
+    return "Etc/UTC";
   }
 }

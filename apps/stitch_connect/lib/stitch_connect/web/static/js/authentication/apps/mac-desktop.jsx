@@ -5,16 +5,18 @@ export default class MacDesktop extends Component {
     return (
       <div>
         <h5>
-          Download the <strong>Mac desktop app</strong> to get the best
-          experience using Stitch.
+          <div className="card-description">
+            Download the <strong>Mac Desktop App</strong> to get the best
+            experience using Stitch.
+          </div>
         </h5>
 
         <a
           href="https://teamstitch.com/download-mac"
-          className="btn btn-primary btn-lg btn-block m-b-40"
+          className="btn btn-onboarding btn-primary btn-lg btn-block m-b-40"
           alt="Download Stitch on iTunes store"
         >
-          Download
+          Download the Mac App
         </a>
       </div>
     );

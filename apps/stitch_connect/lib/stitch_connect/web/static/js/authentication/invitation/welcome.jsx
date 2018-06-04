@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 
-import { Card } from "common/components";
+import { AuthenticationPage } from "common/components";
 
 @inject("invitationStore")
 @observer
@@ -19,15 +19,16 @@ class Welcome extends Component {
 
   onNext = () => {
     const { history, invitationStore } = this.props;
-    history.push(`/invitations/accept/${invitationStore.token}/name`);
+    history.push(`/invitations/accept/${invitationStore.token}/names`);
   };
 
   render() {
     const { invitationStore } = this.props;
     return (
       <div>
-        <Card
+        <AuthenticationPage
           title="Welcome!"
+          headerCTA="no-cta"
           description={
             <span>
               Time to join the <strong>{invitationStore.teamName}</strong> team.
@@ -47,7 +48,7 @@ class Welcome extends Component {
           >
             Continue
           </Button>
-        </Card>
+        </AuthenticationPage>
       </div>
     );
   }

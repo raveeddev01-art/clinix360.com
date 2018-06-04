@@ -11,6 +11,21 @@ defmodule Stitch.Accounts.User do
 
   @type t :: %__MODULE__{}
   @guest_roles Stitch.Accounts.Role.guests()
+  @notification_sounds [
+    "bubbling-up",
+    "case-closed",
+    "definite",
+    "hold-on",
+    "isnt-it",
+    "light",
+    "open-ended",
+    "plucky",
+    "pop",
+    "quite-impressed",
+    "to-the-point",
+    "unconvinced",
+    "unsure"
+  ]
 
   schema "users" do
     field(:email, :string)
@@ -38,6 +53,7 @@ defmodule Stitch.Accounts.User do
     field(:timezone, :map, default: %{})
     field(:whats_new_last_seen_at, :utc_datetime)
     field(:slack_import_id, :string)
+    field(:desktop_sound, :string, default: "pop")
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
     has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)
@@ -93,7 +109,8 @@ defmodule Stitch.Accounts.User do
     |> cast(params, [
       :desktop_notification_preference,
       :mobile_notification_preference,
-      :email_notification_preference
+      :email_notification_preference,
+      :desktop_sound
     ])
     |> validate_required([
       :desktop_notification_preference,
@@ -103,6 +120,7 @@ defmodule Stitch.Accounts.User do
     |> validate_inclusion(:desktop_notification_preference, ["everything", "mentions", "nothing"])
     |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing"])
     |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
+    |> validate_inclusion(:desktop_sound, @notification_sounds)
   end
 
   def update_preference(%User{} = user, params) do
@@ -187,7 +205,7 @@ defmodule Stitch.Accounts.User do
     |> Stitch.Validators.validate_no_emojis(:last_name)
     |> ensure_role()
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
-    |> validate_required([:phone_number, :pin, :team_id, :roles])
+    |> validate_required([:pin, :team_id, :roles])
     |> default_profile_image_changeset(params)
     |> put_change(:onboarded, true)
     |> put_change(:whats_new_last_seen_at, DateTime.utc_now())
@@ -348,7 +366,11 @@ defmodule Stitch.Accounts.User do
     end
   end
 
-  defp has_default_image(user) do
+  @spec has_default_image(User.t()) :: boolean
+  @doc """
+  Returns true if the user has the default image
+  """
+  def has_default_image(user) do
     if user.profile_image_url do
       # Default images look like this: https://s3.amazonaws.com/stitch-content/ST.png
       # We check if the image name length ST.png is equal to 6.
@@ -357,4 +379,6 @@ defmodule Stitch.Accounts.User do
       false
     end
   end
+
+  def notification_sounds, do: @notification_sounds
 end

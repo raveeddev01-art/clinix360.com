@@ -29,7 +29,10 @@ export default class Landing extends Component {
             <Row>
               <Col xs={5}>
                 <a href="/" className="brand">
-                  <img src="/images/stitch-brand.png" alt="Stitch" />
+                  <img
+                    src="apps/stitch_connect/lib/stitch_connect/web/static/js/authentication/team/select_team.jsx"
+                    alt="Stitch"
+                  />
                 </a>
               </Col>
 
@@ -42,7 +45,7 @@ export default class Landing extends Component {
                   </li>
 
                   <li>
-                    <a href="/signup/email" className="nav-link btn-outline">
+                    <a href="/getstarted" className="nav-link btn-outline">
                       Get Started
                     </a>
                   </li>
@@ -63,11 +66,7 @@ export default class Landing extends Component {
                     collaborate on any device.
                   </h3>
 
-                  <Button
-                    bsSize="lg"
-                    bsStyle="primary"
-                    href="https://teamstitch.com/signup/email"
-                  >
+                  <Button bsSize="lg" bsStyle="primary" href="/getstarted">
                     Get Started
                   </Button>
                 </div>

@@ -1,6 +1,7 @@
 defmodule Stitch.AWS.S3 do
   alias Timex
   @s3 Application.get_env(:stitch, :aws_user_upload)
+  @avatar Application.get_env(:stitch, :avatar)
   @expires_in 60_000
   require Logger
 
@@ -14,9 +15,22 @@ defmodule Stitch.AWS.S3 do
     |> ExAws.request()
   end
 
+  @spec upload_avatar(binary, binary) :: {:ok, map} | {:error, term}
+  def upload_avatar(path, object_name) do
+    path
+    |> ExAws.S3.Upload.stream_file()
+    |> ExAws.S3.upload(@avatar.bucket, object_name, encryption: "AES256")
+    |> ExAws.request()
+  end
+
   @spec download(binary, binary) :: {:ok, :done} | {:error, term}
   def download(filename, dest) do
     ExAws.S3.download_file(@s3.bucket, filename, dest) |> ExAws.request()
+  end
+
+  @spec avatar_path(binary) :: binary
+  def avatar_path(object_name) do
+    Path.join(@avatar.origin, object_name)
   end
 
   def fullpath(file \\ "", dir \\ "") do

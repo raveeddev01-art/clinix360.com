@@ -490,6 +490,7 @@ defmodule Stitch.Blacklist do
     [
       "www",
       "admin",
+      "avatars",
       "help",
       "support",
       "billing",
@@ -515,6 +516,7 @@ defmodule Stitch.Blacklist do
       "updater",
       "thread",
       "connector",
+      "public",
       "push",
       "loop",
       "stage",

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import { OnboardCard, PinInput } from "common/components";
+import { OnboardPage, PinInput } from "common/components";
 
 class PinCard extends Component {
   constructor(...args) {
@@ -23,34 +24,42 @@ class PinCard extends Component {
     });
   };
 
+  onKeyPress = e => {
+    const hitEnter = e.charCode === 13 || e.keyCode === 13;
+
+    if (hitEnter && this.state.formValid) {
+      this.onNext();
+    }
+  };
+
   onNext = () => this.props.onNext(this.state.pin);
 
   render() {
     const { saving, ...otherProps } = this.props;
     return (
       <div>
-        <OnboardCard
+        <OnboardPage
           {...otherProps}
-          title="PIN"
+          title="Set your PIN"
           description={
-            <span>
-              Enter a <strong>4-digit PIN</strong>.
-            </span>
+            <span>Set a 4 digit PIN for lockout access into Stitch.</span>
           }
           onNext={this.onNext}
           loading={saving}
           disableNext={!this.state.formValid}
         >
+          <ControlLabel>PIN</ControlLabel>
           <PinInput
-            className="m-b-20 m-center"
+            className="m-b-20"
             onValid={this.onValid}
             onInvalid={this.onInvalid}
+            onKeyPress={this.onKeyPress}
           />
-          <HelpBlock className="m-b-20">
+          <HelpBlock className="onboarding-hint m-b-20">
             You can use this PIN when your screen is locked after a period of
             inactivity.
           </HelpBlock>
-        </OnboardCard>
+        </OnboardPage>
       </div>
     );
   }
@@ -59,11 +68,6 @@ class PinCard extends Component {
 PinCard.propTypes = {
   onNext: PropTypes.func.isRequired,
   saving: PropTypes.bool.isRequired
-};
-
-PinCard.defaultProps = {
-  onNext: () => {},
-  saving: false
 };
 
 export default PinCard;

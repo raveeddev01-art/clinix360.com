@@ -47,7 +47,7 @@ export default class Manage extends Component {
                   <i className="fa fa-tasks" /> Manage
                 </h4>
 
-                <h1>Assign, Track and Complete Every Task</h1>
+                <h1>Assign, track and complete every task</h1>
 
                 <h3 className="m-b-30">
                   Stitch Manage is a simple system for tracking tasks. Instantly
