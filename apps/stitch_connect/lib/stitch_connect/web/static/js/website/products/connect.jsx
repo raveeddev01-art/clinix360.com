@@ -14,6 +14,8 @@ import Footer from "../components/footer";
 import Header from "../components/header";
 import VideoModal from "../components/video-modal";
 
+import browserDetails from "../../lib/browser_details";
+
 export default class Connect extends Component {
   constructor(props) {
     super(props);
@@ -44,6 +46,7 @@ export default class Connect extends Component {
 
   render() {
     const { header, flipped, subHeader } = this.props;
+    const { mobile, os } = browserDetails;
 
     const setupClass = cx("get-started-new", {
       visible: this.state.setupVisible
@@ -296,12 +299,38 @@ export default class Connect extends Component {
               </div>
 
               <div className="text-center">
-                <Button
-                  bsStyle="primary"
-                  href="https://teamstitch.com/signup/email"
-                >
-                  Get Started
-                </Button>
+                {!mobile && (
+                  <Button
+                    bsStyle="primary"
+                    href="https://teamstitch.com/signup/email"
+                  >
+                    Get Started
+                  </Button>
+                )}
+
+                {mobile &&
+                  os === "iOS" && (
+                    <a
+                      href="http://stitch.app.link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary appstore-btn"
+                    >
+                      Get Stitch for iOS
+                    </a>
+                  )}
+
+                {mobile &&
+                  os === "Android" && (
+                    <a
+                      href="http://stitch.app.link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary appstore-btn"
+                    >
+                      Get Stitch for Android
+                    </a>
+                  )}
               </div>
             </div>
           </div>

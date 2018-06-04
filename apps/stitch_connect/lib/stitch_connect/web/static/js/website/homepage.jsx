@@ -55,31 +55,7 @@ export default class Homepage extends Component {
                   fully HIPAA compliant and free to use.
                 </h3>
 
-                {!mobile && <CreateTeam />}
-
-                {mobile &&
-                  os === "iOS" && (
-                    <a
-                      href="http://stitch.app.link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-primary appstore-btn"
-                    >
-                      Get Stitch for iOS
-                    </a>
-                  )}
-
-                {mobile &&
-                  os === "Android" && (
-                    <a
-                      href="http://stitch.app.link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-primary appstore-btn"
-                    >
-                      Get Stitch for Android
-                    </a>
-                  )}
+                <CreateTeam />
 
                 <a
                   className="play-video-link hidden-xs hidden-sm"

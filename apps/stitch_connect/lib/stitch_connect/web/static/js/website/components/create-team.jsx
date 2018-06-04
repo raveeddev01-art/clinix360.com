@@ -6,6 +6,8 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import Cookies from "js-cookie";
 
+import browserDetails from "../../lib/browser_details";
+
 class CreateTeam extends Component {
   constructor(...args) {
     super(...args);
@@ -41,23 +43,52 @@ class CreateTeam extends Component {
 
   render() {
     const { email } = this.state;
+    const { mobile, os } = browserDetails;
 
     return (
-      <Form inline className="create-team-form" onSubmit={this.onSubmit}>
-        <FormGroup>
-          <FormControl
-            required
-            id="createTeam"
-            placeholder="Email address"
-            type="email"
-            value={email}
-            onChange={this.onChange}
-          />
-          <Button type="submit" bsStyle="primary" className="btn-form">
-            Get Started
-          </Button>
-        </FormGroup>
-      </Form>
+      <div>
+        {!mobile && (
+          <Form inline className="create-team-form" onSubmit={this.onSubmit}>
+            <FormGroup>
+              <FormControl
+                required
+                id="createTeam"
+                placeholder="Email address"
+                type="email"
+                value={email}
+                onChange={this.onChange}
+              />
+              <Button type="submit" bsStyle="primary" className="btn-form">
+                Get Started
+              </Button>
+            </FormGroup>
+          </Form>
+        )}
+
+        {mobile &&
+          os === "iOS" && (
+            <a
+              href="http://stitch.app.link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary appstore-btn"
+            >
+              Get Stitch for iOS
+            </a>
+          )}
+
+        {mobile &&
+          os === "Android" && (
+            <a
+              href="http://stitch.app.link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary appstore-btn"
+            >
+              Get Stitch for Android
+            </a>
+          )}
+      </div>
     );
   }
 }
