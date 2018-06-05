@@ -42,7 +42,7 @@ config :stitch_connect,
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
 
-# Guardian configuration.
+# Guardian configuration. (TODO: Move to parent)
 config :guardian, Guardian,
   allowed_algos: ["HS512"],
   verify_module: Guardian.JWT,
@@ -52,7 +52,7 @@ config :guardian, Guardian,
   # optional
   verify_issuer: true,
   secret_key: "daUyE9JOpu2Wqj4XGJ8Z7Gj/BHtQi+jWyRDtk31HWtdYu4FTUE7aimyONoeGIIBQ",
-  serializer: StitchConnect.GuardianSerializer
+  serializer: Stitch.GuardianSerializer
 
 config :phoenix, :filter_parameters, ["password", "pin"]
 
