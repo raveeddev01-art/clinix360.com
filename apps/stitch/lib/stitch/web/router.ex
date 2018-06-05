@@ -33,6 +33,30 @@ defmodule Stitch.Web.Router do
     plug(Stitch.Plug.ApiAuthenticate, without_team_subdomain: true)
   end
 
+  # ======================
+  #  SHARED FUNCTIONALITY
+  # ======================
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api)
+  end
+
+  scope "/stripe", StitchConnect.Web do
+    pipe_through(:api)
+  end
+
+  scope "/", StitchConnect.Web do
+    pipe_through(:no_csrf_browser)
+  end
+
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser)
+  end
+
+  # ============================
+  #  CONNECT-ONLY FUNCTIONALITY
+  # ============================
+
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
