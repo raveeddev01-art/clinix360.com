@@ -93,22 +93,22 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   # Routes which needs admin role
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:team_admin_api)
   end
 
   # API routes which need token.
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api_auth)
   end
 
   # Anonymous routes.
-  scope "/", StitchConnect.Web do
+  scope "/", Stitch.Web do
     pipe_through(:browser)
   end
 
   # Authenticated routes.
-  scope "/", StitchConnect.Web do
+  scope "/", Stitch.Web do
     pipe_through(:browser_authenticate)
   end
 

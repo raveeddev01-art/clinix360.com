@@ -37,19 +37,19 @@ defmodule Stitch.Web.Router do
   #  SHARED FUNCTIONALITY
   # ======================
 
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
   end
 
-  scope "/stripe", StitchConnect.Web do
+  scope "/stripe", Stitch.Web do
     pipe_through(:api)
   end
 
-  scope "/", StitchConnect.Web do
+  scope "/", Stitch.Web do
     pipe_through(:no_csrf_browser)
   end
 
-  scope "/", StitchConnect.Web do
+  scope "/", Stitch.Web do
     pipe_through(:browser)
   end
 
