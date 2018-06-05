@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.ReportView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 
   def render("show.json", %{report: report}), do: %{data: report(report)}
 
@@ -7,8 +7,7 @@ defmodule StitchConnect.Web.Api.V1.ReportView do
     %{
       type: report.type,
       time_period: report.time_period,
-      body: report.body,
+      body: report.body
     }
   end
-
 end

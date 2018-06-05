@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.IntegrationView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 
   def render("index.json", %{integrations: integrations}) do
     Enum.map(integrations, &integration_json/1)

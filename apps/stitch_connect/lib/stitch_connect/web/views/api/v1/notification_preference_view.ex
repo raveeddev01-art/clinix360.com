@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.NotificationPreferenceView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 
   def render("show_global.json", %{user: user, group_preferences: group_preferences}) do
     %{

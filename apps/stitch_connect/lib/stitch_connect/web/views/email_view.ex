@@ -1,3 +1,3 @@
 defmodule StitchConnect.EmailView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 end
