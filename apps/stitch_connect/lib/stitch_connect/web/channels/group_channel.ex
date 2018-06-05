@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupChannel do
-  use StitchConnect.Web, :channel
+  use Stitch.Web, :channel
   import Ecto.Query
   alias Stitch.Accounts.{User, ActivityTracker}
   alias StitchConnect.Web.Api.V1.MessageView

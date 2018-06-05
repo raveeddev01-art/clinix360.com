@@ -10,7 +10,7 @@ defmodule StitchConnect.Web.Presence do
   Presences can be tracked in your channel after joining:
 
       defmodule StitchConnect.MyChannel do
-        use StitchConnect.Web, :channel
+        use Stitch.Web, :channel
         alias StitchConnect.Presence
 
         def join("some:topic", _params, socket) do
@@ -72,6 +72,7 @@ defmodule StitchConnect.Web.Presence do
   information, while maintaining the required `:metas` field from the
   original presence data.
   """
-  use Phoenix.Presence, otp_app: :stitch_connect,
-                        pubsub_server: StitchConnect.PubSub
+  use Phoenix.Presence,
+    otp_app: :stitch_connect,
+    pubsub_server: StitchConnect.PubSub
 end
