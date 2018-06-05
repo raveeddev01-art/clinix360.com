@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.TeamChannel do
-  use StitchConnect.Web, :channel
+  use Stitch.Web, :channel
   alias Stitch.Accounts.User
   alias Stitch.{UserQueries, GroupQueries}
   alias StitchConnect.Web.Presence
