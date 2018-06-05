@@ -7,7 +7,7 @@
 import { observable, action, computed } from "mobx";
 import pick from "lodash/pick";
 import difference from "lodash/difference";
-import { getTimezone } from "../../lib/utils"
+import { getTimezone } from "../../lib/utils";
 
 // const defaultAvatars = ["/images/default-avatar.png"];
 
@@ -49,7 +49,11 @@ class UserStore {
 
   @computed
   get canInvite() {
-    return this.isAdmin || this.rootStore.teamStore.openInvitationsEnabled;
+    return (
+      this.isAdmin ||
+      (this.rootStore.teamStore.openInvitationsEnabled &&
+        this.roles.includes("member"))
+    );
   }
 
   @action

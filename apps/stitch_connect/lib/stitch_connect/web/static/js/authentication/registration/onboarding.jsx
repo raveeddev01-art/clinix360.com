@@ -50,6 +50,19 @@ class Onboarding extends Component {
     });
   };
 
+  setStoreValue(value) {
+    const {
+      registrationStore,
+      match: { params: { currentStep } }
+    } = this.props;
+
+    if (typeof value === "object") {
+      Object.assign(registrationStore, value);
+    } else {
+      registrationStore[currentStep] = value;
+    }
+  }
+
   render() {
     const {
       registrationStore,
@@ -65,14 +78,10 @@ class Onboarding extends Component {
     return React.createElement(stepList[stepIndex].component, {
       onNext: value => {
         if (stepList.length <= stepIndex + 1) {
+          this.setStoreValue(value);
           this.onSave();
         } else {
-          if (typeof value === "object") {
-            Object.assign(registrationStore, value);
-          } else {
-            registrationStore[currentStep] = value;
-          }
-
+          this.setStoreValue(value);
           history.push(`/signup/onboarding/${stepList[stepIndex + 1].field}`);
         }
       },

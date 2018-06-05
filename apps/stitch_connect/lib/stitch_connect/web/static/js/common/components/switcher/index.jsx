@@ -45,7 +45,11 @@ class Switcher extends Component {
               container={this}
               overlay={<Tooltip id="tooltip-info">Home</Tooltip>}
             >
-              <i className="fa fa-home" />
+              <img
+                className="switcher__top-home"
+                src="/images/logo-white.svg"
+                alt="Stitch"
+              />
             </OverlayTrigger>
           </NavLink>
 
