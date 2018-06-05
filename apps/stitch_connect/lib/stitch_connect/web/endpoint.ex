@@ -75,8 +75,8 @@ defmodule StitchConnect.Web.Endpoint do
   # Add AppSignal instrumentation
   use Appsignal.Phoenix
 
-  plug(StitchConnect.Plug.Subdomain, StitchConnect.Web.SubdomainRouter)
-  plug(StitchConnect.Web.Router)
+  plug(Stitch.Web.Plug.Subdomain, Stitch.Web.SubdomainRouter)
+  plug(Stitch.Web.Router)
 
   @doc """
   Dynamically loads configuration from the system environment

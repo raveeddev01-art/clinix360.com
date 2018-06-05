@@ -37,7 +37,7 @@ defmodule StitchConnect.Web.FeatureCase do
       import Ecto.Query
       import Stitch.Factory
       import StitchConnect.Web.FeatureCase
-      import StitchConnect.Web.Router.Helpers
+      import Stitch.Web.Router.Helpers
       import Wallaby.Browser
       import Wallaby.Query
       @moduletag timeout: unquote(@timeout)
@@ -81,15 +81,15 @@ defmodule StitchConnect.Web.FeatureCase do
 
   def repeat_till(session, fun, timeout \\ 500, interval \\ 25) do
     cond do
-      fun.(session) -> session
+      fun.(session) ->
+        session
 
       timeout > 0 ->
         :timer.sleep(interval)
         repeat_till(session, fun, timeout - interval, interval)
 
       true ->
-        raise Wallaby.ExpectationNotMet,
-          "Condition hasn't been meet"
+        raise Wallaby.ExpectationNotMet, "Condition hasn't been meet"
     end
   end
 end

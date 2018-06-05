@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
   use StitchConnect.Web.ConnCase, async: true
   use Bamboo.Test
   import Ecto.Query
-  alias StitchConnect.Web.Router.Helpers, as: Routes
+  alias Stitch.Web.Router.Helpers, as: Routes
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: SubdomainRoutes
   alias Stitch.{Accounts.User, Invitation, Repo, Group}
 
@@ -18,6 +18,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
       user = insert(:user, %{email: "user@example.com", onboarded: false})
 
       invited_emails = ["foo@email.com", "bar@email.com"]
+
       conn =
         conn
         |> patch(Routes.api_v1_user_path(conn, :complete_onboarding, user.id), %{
@@ -36,31 +37,41 @@ defmodule StitchConnect.Web.UserOnboardingTest do
       assert response["id"] == user.id
       assert response["onboarded"] == true
 
-      invitee_ids = Repo.all from u in User,
-        select: u.id,
-        where: u.team_id == ^team.id,
-        where: u.onboarded == false,
-        where: u.email in ^invited_emails
+      invitee_ids =
+        Repo.all(
+          from(
+            u in User,
+            select: u.id,
+            where: u.team_id == ^team.id,
+            where: u.onboarded == false,
+            where: u.email in ^invited_emails
+          )
+        )
 
-      invites = Repo.all from i in Invitation,
-        where: i.user_id in ^invitee_ids,
-        preload: [:user, :team]
+      invites =
+        Repo.all(
+          from(
+            i in Invitation,
+            where: i.user_id in ^invitee_ids,
+            preload: [:user, :team]
+          )
+        )
 
       assert length(invitee_ids) == 2
       assert length(invites) == 2
 
       inviter = Repo.get!(User, user.id)
       inviter_name = "#{inviter.first_name} #{inviter.last_name}"
+
       invites
       |> Enum.map(fn invite ->
         Invitation.Email.team_invitation(inviter_name, invite)
       end)
       |> Enum.each(fn email ->
-        assert_delivered_email email
+        assert_delivered_email(email)
       end)
 
-      [group] = Repo.all from g in Group,
-        where: g.team_id == ^team.id and g.is_default == ^true
+      [group] = Repo.all(from(g in Group, where: g.team_id == ^team.id and g.is_default == ^true))
 
       assert group.creator_user_id == user.id
     end
@@ -104,26 +115,30 @@ defmodule StitchConnect.Web.UserOnboardingTest do
     end
 
     test "accepts invitation", %{conn: conn, invite: invite} do
-      conn = post(conn, SubdomainRoutes.api_v1_invitation_path(conn, :accept, invite.invite_token), %{
-        username: "username",
-        first_name: "Admin",
-        last_name: "Admin",
-        phone_number: "1231231234",
-        pin: "0000",
-      })
+      conn =
+        post(conn, SubdomainRoutes.api_v1_invitation_path(conn, :accept, invite.invite_token), %{
+          username: "username",
+          first_name: "Admin",
+          last_name: "Admin",
+          phone_number: "1231231234",
+          pin: "0000"
+        })
+
       assert response = json_response(conn, 200)
       assert response["email"] == "user@example.com"
       assert response["onboarded"] == true
     end
 
     test "username is already taken", %{conn: conn, invite: invite} do
-      conn = post(conn, SubdomainRoutes.api_v1_invitation_path(conn, :accept, invite.invite_token), %{
-        username: "admin",
-        first_name: "Admin",
-        last_name: "Admin",
-        phone_number: "1231231234",
-        pin: "0000",
-      })
+      conn =
+        post(conn, SubdomainRoutes.api_v1_invitation_path(conn, :accept, invite.invite_token), %{
+          username: "admin",
+          first_name: "Admin",
+          last_name: "Admin",
+          phone_number: "1231231234",
+          pin: "0000"
+        })
+
       assert response = json_response(conn, 422)
       assert response["message"] == "Username has already been taken"
     end
