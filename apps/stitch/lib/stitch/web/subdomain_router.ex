@@ -75,6 +75,47 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/impersonate/:user_id", ImpersonationController, :impersonate)
   end
 
+  # ======================
+  #  SHARED FUNCTIONALITY
+  # ======================
+
+  # API routes which don't need token.
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api)
+  end
+
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_locked_api)
+  end
+
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_api)
+  end
+
+  # Routes which needs admin role
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:team_admin_api)
+  end
+
+  # API routes which need token.
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api_auth)
+  end
+
+  # Anonymous routes.
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser)
+  end
+
+  # Authenticated routes.
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser_authenticate)
+  end
+
+  # ============================
+  #  CONNECT-ONLY FUNCTIONALITY
+  # ============================
+
   # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
