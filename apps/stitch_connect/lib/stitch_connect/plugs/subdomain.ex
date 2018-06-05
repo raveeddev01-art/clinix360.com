@@ -1,6 +1,6 @@
-defmodule StitchConnect.Plug.Subdomain do
+defmodule Stitch.Plug.Subdomain do
   import Plug.Conn
-  alias StitchConnect.Web.Endpoint
+  alias Stitch.Web.Endpoint
 
   def init(default), do: default
 

@@ -74,7 +74,7 @@ defmodule StitchConnect.Web.Endpoint do
   # Add AppSignal instrumentation
   use Appsignal.Phoenix
 
-  plug(StitchConnect.Plug.Subdomain, StitchConnect.Web.SubdomainRouter)
+  plug(Stitch.Plug.Subdomain, Stitch.Web.SubdomainRouter)
   plug(Stitch.Web.Router)
 
   @doc """
