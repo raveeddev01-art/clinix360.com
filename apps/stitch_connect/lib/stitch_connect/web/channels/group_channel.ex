@@ -17,7 +17,7 @@ defmodule StitchConnect.Web.GroupChannel do
     MessageQueries
   }
 
-  @endpoint StitchConnect.Web.Endpoint
+  @endpoint Stitch.Web.Endpoint
 
   def join("groups:__dm:" <> id_pair_string, params, socket) do
     id_pair = id_pair_string |> String.split(".") |> Enum.map(&String.to_integer/1)

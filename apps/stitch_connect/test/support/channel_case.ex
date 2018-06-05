@@ -24,10 +24,9 @@ defmodule StitchConnect.Web.ChannelCase do
       alias Stitch.Repo
 
       # The default endpoint for testing
-      @endpoint StitchConnect.Web.Endpoint
+      @endpoint Stitch.Web.Endpoint
     end
   end
-
 
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)

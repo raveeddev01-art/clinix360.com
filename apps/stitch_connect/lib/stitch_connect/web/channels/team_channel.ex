@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.TeamChannel do
   alias Stitch.Accounts.ActivityTracker
   alias StitchConnect.Web.PushNotifications
 
-  @endpoint StitchConnect.Web.Endpoint
+  @endpoint Stitch.Web.Endpoint
 
   def join("team:lobby:" <> team_id, params, socket) do
     sync_timestamp = get_sync_users(params)

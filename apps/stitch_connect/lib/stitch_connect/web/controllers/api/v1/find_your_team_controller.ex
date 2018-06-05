@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Api.V1.FindYourTeamController do
 
   def create(conn, %{"email" => email}) do
     case FindYourTeam.create_team_list_token(email) do
-      {:ok, token} -> FindYourTeam.Email.email(token, StitchConnect.Web.Endpoint.url())
+      {:ok, token} -> FindYourTeam.Email.email(token, Stitch.Web.Endpoint.url())
       _ -> nil
     end
 

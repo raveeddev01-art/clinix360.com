@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.PageService do
   end
 
   def subdomain_url_struct(subdomain) do
-    struct_url = StitchConnect.Web.Endpoint.struct_url()
+    struct_url = Stitch.Web.Endpoint.struct_url()
     %{struct_url | host: "#{subdomain}.#{struct_url.host}"}
   end
 end
