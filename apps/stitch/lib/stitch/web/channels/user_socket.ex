@@ -4,7 +4,7 @@ defmodule Stitch.Web.UserSocket do
 
   ## Channels
   channel("groups:*", StitchConnect.Web.GroupChannel)
-  channel("team:lobby:*", StitchConnect.Web.TeamChannel)
+  channel("team:lobby:*", Stitch.Web.TeamChannel)
   channel("events:*", StitchConnect.Web.EventsChannel)
 
   ## Transports

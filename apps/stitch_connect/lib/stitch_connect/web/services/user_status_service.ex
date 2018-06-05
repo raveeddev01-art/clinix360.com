@@ -14,7 +14,7 @@ defmodule StitchConnect.Web.UserStatusService do
   """
 
   alias Stitch.Accounts.ActivityTracker
-  alias StitchConnect.Web.Presence
+  alias Stitch.Web.Presence
 
   def presence_user_ids(team_id) do
     active_user_ids_set =
