@@ -39,7 +39,7 @@ defmodule StitchConnect.Web do
       use Phoenix.HTML
 
       import Stitch.Web.Router.Helpers
-      alias StitchConnect.Web.SubdomainRouter.Helpers, as: SubdomainRouter
+      alias Stitch.Web.SubdomainRouter.Helpers, as: SubdomainRouter
       import StitchConnect.Web.ErrorHelpers
       import StitchConnect.Web.Gettext
     end

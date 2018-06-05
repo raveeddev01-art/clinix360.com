@@ -70,6 +70,6 @@ defmodule StitchConnect.MessageMailer do
 
   defp login_url(%Team{slug: slug}) do
     struct_url = subdomain_url(slug)
-    StitchConnect.Web.SubdomainRouter.Helpers.group_url(struct_url, :index, "general")
+    Stitch.Web.SubdomainRouter.Helpers.group_url(struct_url, :index, "general")
   end
 end

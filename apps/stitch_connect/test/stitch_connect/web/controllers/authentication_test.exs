@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.AuthenticationTest do
   use StitchConnect.Web.ConnCase, async: true
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.{FindYourTeam}
 
   describe "GET /login" do

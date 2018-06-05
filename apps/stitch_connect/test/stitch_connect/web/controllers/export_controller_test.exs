@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.ExportControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   describe "GET /exports/:id/download" do
     setup %{conn: conn} do

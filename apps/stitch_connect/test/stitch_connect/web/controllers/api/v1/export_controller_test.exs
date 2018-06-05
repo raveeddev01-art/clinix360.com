@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.ExportControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   describe "GET /api/v1/exports" do
     setup %{conn: conn} do
@@ -15,8 +15,11 @@ defmodule StitchConnect.Web.Api.V1.ExportControllerTest do
       {:ok, conn: conn, team: team, admin_user: admin_user, exports: exports}
     end
 
-    test "lists all the exports of a given type belonging to a team",
-    %{conn: conn, admin_user: user, exports: exports} do
+    test "lists all the exports of a given type belonging to a team", %{
+      conn: conn,
+      admin_user: user,
+      exports: exports
+    } do
       conn =
         conn
         |> with_api_user(user)
@@ -73,7 +76,7 @@ defmodule StitchConnect.Web.Api.V1.ExportControllerTest do
       assert response["message"] =~ "administrator"
     end
 
-    test "with export in the last 24 hrs", %{conn: conn, user: user, team: team}  do
+    test "with export in the last 24 hrs", %{conn: conn, user: user, team: team} do
       now = NaiveDateTime.utc_now()
       ten_hours_ago = NaiveDateTime.add(now, -36_000, :second)
       insert(:export, team: team, inserted_at: ten_hours_ago)
@@ -87,5 +90,4 @@ defmodule StitchConnect.Web.Api.V1.ExportControllerTest do
       assert response["message"] =~ "24 hour period"
     end
   end
-
 end

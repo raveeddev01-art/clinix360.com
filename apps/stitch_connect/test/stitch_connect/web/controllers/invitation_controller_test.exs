@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.InvitationControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   import Phoenix.ChannelTest, except: [connect: 2]
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "POST /invitations/accept/:token" do
     setup %{conn: conn} do

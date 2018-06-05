@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.VersionControllerTest do
   use StitchConnect.Web.ConnCase, async: true
 
   test "GET /api/v1/stitch-version", %{conn: conn} do
-    import StitchConnect.Web.SubdomainRouter.Helpers
+    import Stitch.Web.SubdomainRouter.Helpers
 
     team = insert(:team)
     user = insert(:user, team: team)
@@ -14,6 +14,6 @@ defmodule StitchConnect.Web.Api.V1.VersionControllerTest do
       |> get(api_v1_version_path(conn, :index))
       |> json_response(200)
 
-    assert json == StitchConnect.version
+    assert json == StitchConnect.version()
   end
 end

@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Admin.ImpersonationController do
   use Stitch.Web, :controller
   alias StitchConnect.Web.Endpoint
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.{TeamQueries, UserQueries}
 
   def impersonate(conn, %{"user_id" => id}) do

@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.MessageView do
   use StitchConnect.Web, :view
   alias Stitch.{Message, AWS.S3}
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   @endpoint StitchConnect.Web.Endpoint
 

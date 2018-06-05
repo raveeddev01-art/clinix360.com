@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.TeamControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   describe "GET /api/v1/teams/contact" do
     test "Return team's contact info", %{conn: conn} do

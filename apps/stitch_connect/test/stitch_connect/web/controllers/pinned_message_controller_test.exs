@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.PinnedMessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   test "GET /api/v1/pinned_messages", %{conn: conn} do
     team = insert(:team)
@@ -21,7 +21,11 @@ defmodule StitchConnect.Web.Api.V1.PinnedMessageControllerTest do
 
     result =
       conn
-      |> get(Routes.api_v1_pinned_message_path(conn, :index), %{"skip" => 2, "limit" => 4, "group_id" => group.id})
+      |> get(Routes.api_v1_pinned_message_path(conn, :index), %{
+        "skip" => 2,
+        "limit" => 4,
+        "group_id" => group.id
+      })
       |> json_response(200)
 
     assert %{"data" => messages, "meta" => meta} = result

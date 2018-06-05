@@ -17,7 +17,7 @@ defmodule StitchConnect.Web.OAuthIntegrationController do
       subdomain_struct = StitchConnect.Web.PageService.subdomain_url_struct(team.slug)
 
       url =
-        StitchConnect.Web.SubdomainRouter.Helpers.admin_integration_edit_url(
+        Stitch.Web.SubdomainRouter.Helpers.admin_integration_edit_url(
           subdomain_struct,
           :index,
           integration.id

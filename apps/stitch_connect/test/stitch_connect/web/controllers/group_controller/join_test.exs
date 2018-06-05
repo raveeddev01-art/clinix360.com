@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.GroupController.JoinTest do
   use StitchConnect.Web.ConnCase
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/:id/join" do
     setup %{conn: conn} do
@@ -40,10 +40,12 @@ defmodule StitchConnect.Web.GroupController.JoinTest do
     test "restricts guests from joining any group", %{conn: conn, team: team, group: group} do
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role])
+
         conn =
           conn
           |> with_api_user(guest)
           |> post(api_v1_group_path(conn, :join, group))
+
         assert response = json_response(conn, :forbidden)
         assert response["message"] =~ "authorized"
       end
