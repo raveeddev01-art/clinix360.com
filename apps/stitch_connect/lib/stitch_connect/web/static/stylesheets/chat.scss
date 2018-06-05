@@ -488,6 +488,9 @@
       .formatting-guide {
         right: 17px;
         left: auto;
+        @media(max-width: 800px) {
+          display: none;
+        }
 
         b, i , span, code {
           color: inherit;
