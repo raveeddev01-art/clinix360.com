@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.BotsController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.{Bot, BotAuthorization}
 
   def index(conn, _params) do

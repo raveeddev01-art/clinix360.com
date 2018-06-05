@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.AuthenticationController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias StitchConnect.Web.{EventsChannel}
   alias Stitch.FindYourTeam
   alias Stitch.Accounts.{PasswordResetToken}

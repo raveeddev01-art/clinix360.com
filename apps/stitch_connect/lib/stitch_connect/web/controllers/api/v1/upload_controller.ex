@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.UploadController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.{Repo, Group, MessageQueries, AWS.S3}
 
   def index(conn, %{"group_id" => group_id} = params) do

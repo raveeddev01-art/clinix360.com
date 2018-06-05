@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.NewsController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.{News, NewsQueries}
 
   action_fallback(StitchConnect.Web.Api.FallbackController)

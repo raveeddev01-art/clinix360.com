@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.HomeController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.{Accounts.User, UserQueries, Team, TeamQueries}
 
   def index(conn = %{request_path: path}, _params) do

@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Admin.ImpersonationController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias StitchConnect.Web.Endpoint
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.{TeamQueries, UserQueries}
@@ -20,6 +20,7 @@ defmodule StitchConnect.Web.Admin.ImpersonationController do
     else
       nil ->
         html(conn, "User does not exist.")
+
       _ ->
         html(conn, "Invalid user id provided.")
     end

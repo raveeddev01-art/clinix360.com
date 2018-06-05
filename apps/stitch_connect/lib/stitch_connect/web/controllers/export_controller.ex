@@ -1,10 +1,10 @@
 defmodule StitchConnect.Web.ExportController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.AWS.S3
   alias Stitch.Exports
   alias Stitch.Exports.Export
 
-  action_fallback StitchConnect.Web.Api.FallbackController
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def download(conn, %{"id" => id}) do
     team = conn.assigns.team
@@ -18,7 +18,7 @@ defmodule StitchConnect.Web.ExportController do
 
   defp authorize_download(id, team, current_user) do
     admin? = Enum.member?(current_user.roles, "admin")
-    export = Exports.get_export([id: id, team_id: team.id])
+    export = Exports.get_export(id: id, team_id: team.id)
 
     case {admin?, export} do
       {true, %Export{} = export} -> {:ok, export}

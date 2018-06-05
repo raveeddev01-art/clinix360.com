@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Admin.UserController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.Accounts.User
   alias Stitch.Paginator
 
@@ -10,6 +10,7 @@ defmodule StitchConnect.Web.Admin.UserController do
     %{data: users, meta: meta} = Paginator.new(User, skip: skip, limit: limit)
     render(conn, "index.html", users: users, meta: meta)
   end
+
   def index(conn, _params) do
     %{data: users, meta: meta} = Paginator.new(User, [])
     render(conn, "index.html", users: users, meta: meta)

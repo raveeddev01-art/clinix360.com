@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.TeamController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.Team.Admin
   alias Stitch.{Team, TeamQueries, TeamAuthorization}
   alias StitchConnect.Web.{TeamChannel}

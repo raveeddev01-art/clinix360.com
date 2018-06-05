@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.WebhookController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.Drchrono
   alias Stitch.{Integration, IntegrationQueries}
 
