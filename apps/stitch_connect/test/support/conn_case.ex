@@ -14,7 +14,7 @@ defmodule StitchConnect.Web.ConnCase do
   """
 
   use ExUnit.CaseTemplate
-  alias StitchConnect.Web.Endpoint
+  alias Stitch.Web.Endpoint
 
   using do
     quote do
@@ -34,7 +34,7 @@ defmodule StitchConnect.Web.ConnCase do
         ]
 
       # The default endpoint for testing
-      @endpoint StitchConnect.Web.Endpoint
+      @endpoint Stitch.Web.Endpoint
 
       def subdomain(conn, subdomain) do
         %{conn | host: "#{subdomain}.#{Endpoint.host()}"}

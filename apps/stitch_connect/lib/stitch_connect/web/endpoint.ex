@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Endpoint do
+defmodule Stitch.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :stitch_connect
 
   socket("/socket", StitchConnect.Web.UserSocket)

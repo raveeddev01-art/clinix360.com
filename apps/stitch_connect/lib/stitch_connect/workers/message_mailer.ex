@@ -64,7 +64,7 @@ defmodule StitchConnect.MessageMailer do
   end
 
   defp subdomain_url(subdomain) do
-    struct_url = StitchConnect.Web.Endpoint.struct_url()
+    struct_url = Stitch.Web.Endpoint.struct_url()
     %{struct_url | host: "#{subdomain}.#{struct_url.host}"}
   end
 

@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Admin.ImpersonationController do
   use Stitch.Web, :controller
-  alias StitchConnect.Web.Endpoint
+  alias Stitch.Web.Endpoint
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.{TeamQueries, UserQueries}
 

@@ -6,17 +6,27 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
-config :stitch_connect, StitchConnect.Web.Endpoint,
+config :stitch_connect, Stitch.Web.Endpoint,
   http: [port: 4000],
-  https: [port: 4443,
-          otp_app: :stitch_connect,
-          keyfile: "priv/keys/localhost.key",
-          certfile: "priv/keys/localhost.cert"],
+  https: [
+    port: 4443,
+    otp_app: :stitch_connect,
+    keyfile: "priv/keys/localhost.key",
+    certfile: "priv/keys/localhost.cert"
+  ],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
   force_ssl: [host: nil, rewrite_on: [:x_forwarded_proto]],
-  watchers: [node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--progress", "--color", cd: Path.expand("../", __DIR__)]]
+  watchers: [
+    node: [
+      "node_modules/webpack/bin/webpack.js",
+      "--watch-stdin",
+      "--progress",
+      "--color",
+      cd: Path.expand("../", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #
@@ -35,7 +45,7 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :stitch_connect, StitchConnect.Web.Endpoint,
+config :stitch_connect, Stitch.Web.Endpoint,
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},

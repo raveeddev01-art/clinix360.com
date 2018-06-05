@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   alias Stitch.{Message, AWS.S3}
   import Stitch.Web.SubdomainRouter.Helpers
 
-  @endpoint StitchConnect.Web.Endpoint
+  @endpoint Stitch.Web.Endpoint
 
   def render("index.json", %{messages: messages}) do
     Enum.map(messages, &message_json/1)
