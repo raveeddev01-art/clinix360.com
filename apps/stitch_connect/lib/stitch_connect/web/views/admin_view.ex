@@ -1,3 +1,3 @@
 defmodule StitchConnect.Web.AdminView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 end

@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.Billing.HistoryView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
   alias Stitch.AWS.S3
 
   def render("index.json", %{history: histories}) do

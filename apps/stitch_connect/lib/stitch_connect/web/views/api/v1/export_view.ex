@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.ExportView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 
   def render("index.json", %{exports: exports}) do
     Enum.map(exports, &export/1)
@@ -19,5 +19,4 @@ defmodule StitchConnect.Web.Api.V1.ExportView do
       updated_at: export.updated_at
     }
   end
-
 end

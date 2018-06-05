@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.UserView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
   alias Stitch.Accounts.User
 
   def render("index.json", %{users: users}) do

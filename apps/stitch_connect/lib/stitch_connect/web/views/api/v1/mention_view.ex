@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.MentionView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 
   def render("index.json", %{mentions: %Stitch.Paginator{data: data, meta: meta}}) do
     %{

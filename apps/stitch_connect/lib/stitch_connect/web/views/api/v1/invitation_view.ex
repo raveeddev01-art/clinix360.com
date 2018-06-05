@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.InvitationView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 
   def render("index.json", %{invitations: invitations}) do
     Enum.map(invitations, &invitation_json/1)

@@ -1,3 +1,3 @@
 defmodule StitchConnect.Web.PageView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 end

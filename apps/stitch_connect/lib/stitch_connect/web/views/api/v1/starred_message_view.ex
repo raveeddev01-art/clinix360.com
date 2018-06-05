@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.StarredMessageView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
   alias StitchConnect.Web.Api.V1.MessageView
 
   def render("index.json", %{starred_messages: starred_messages}) do

@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UploadView do
   alias Stitch.Paginator
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
   alias StitchConnect.Web.Api.V1.MessageView
 
   def render("index.json", %{uploads: %Paginator{data: data, meta: meta}}) do

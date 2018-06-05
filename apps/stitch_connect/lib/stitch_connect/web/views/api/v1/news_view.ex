@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.NewsView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 
   def render("index.json", %{news: news} = attrs) do
     Enum.map(news, &news_json/1)

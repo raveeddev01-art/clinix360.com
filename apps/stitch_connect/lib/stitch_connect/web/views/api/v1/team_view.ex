@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.TeamView do
-  use StitchConnect.Web, :view
+  use Stitch.Web, :view
 
   def render("contact_info.json", %{team: team}) do
     %{
@@ -31,7 +31,7 @@ defmodule StitchConnect.Web.Api.V1.TeamView do
       app_version: access_log.app_version,
       inserted_at: access_log.inserted_at,
       last_access_at: access_log.last_access_at,
-      access_count: access_log.access_count,
+      access_count: access_log.access_count
     }
   end
 end
