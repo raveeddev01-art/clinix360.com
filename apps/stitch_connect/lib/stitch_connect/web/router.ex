@@ -1,9 +1,9 @@
 defmodule Stitch.Web.Router do
-  use StitchConnect.Web, :router
+  use Stitch.Web, :router
 
   pipeline :browser do
     # reflect any changes in ErrorView.browser_pipeline_equivalent/1
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -13,7 +13,7 @@ defmodule Stitch.Web.Router do
 
   pipeline :no_csrf_browser do
     # reflect any changes in ErrorView.browser_pipeline_equivalent/1
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -21,19 +21,19 @@ defmodule Stitch.Web.Router do
   end
 
   pipeline :api do
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
   end
 
   pipeline :authenticated_api do
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
-    plug(StitchConnect.Plug.ApiAuthenticate, without_team_subdomain: true)
+    plug(Stitch.Plug.ApiAuthenticate, without_team_subdomain: true)
   end
 
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
     post("/request-demo", UserController, :request_demo)
@@ -56,13 +56,13 @@ defmodule Stitch.Web.Router do
     delete("/find-your-team/:token", FindYourTeamController, :delete)
   end
 
-  scope "/stripe", StitchConnect.Web do
+  scope "/stripe", Stitch.Web do
     pipe_through(:api)
 
     post("/", StripeWebhookController, :event)
   end
 
-  scope "/", StitchConnect.Web do
+  scope "/", Stitch.Web do
     pipe_through(:no_csrf_browser)
 
     # Webhook routes.
@@ -70,7 +70,7 @@ defmodule Stitch.Web.Router do
     post("/webhook/drchrono/:webhook_token", WebhookController, :drchrono)
   end
 
-  scope "/", StitchConnect.Web do
+  scope "/", Stitch.Web do
     pipe_through(:browser)
 
     get("/", HomeController, :index)
