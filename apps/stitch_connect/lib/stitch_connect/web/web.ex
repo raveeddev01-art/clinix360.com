@@ -20,8 +20,8 @@ defmodule StitchConnect.Web do
     quote do
       use Phoenix.Controller, namespace: StitchConnect.Web
       import Plug.Conn
-      import StitchConnect.Web.{Router.Helpers, ControllerHelpers}
-      import StitchConnect.Web.Gettext
+      import Stitch.Web.{Router.Helpers, ControllerHelpers}
+      import Stitch.Web.Gettext
     end
   end
 
@@ -40,8 +40,8 @@ defmodule StitchConnect.Web do
 
       import Stitch.Web.Router.Helpers
       alias Stitch.Web.SubdomainRouter.Helpers, as: SubdomainRouter
-      import StitchConnect.Web.ErrorHelpers
-      import StitchConnect.Web.Gettext
+      import Stitch.Web.ErrorHelpers
+      import Stitch.Web.Gettext
     end
   end
 
@@ -57,10 +57,10 @@ defmodule StitchConnect.Web do
     quote do
       use Phoenix.Channel
       use Appsignal.Instrumentation.Decorators
-      import StitchConnect.Web.Gettext
+      import Stitch.Web.Gettext
 
       if Application.get_env(:stitch_connect, :sql_sandbox) do
-        use StitchConnect.Web.ChannelSandbox
+        use Stitch.Web.ChannelSandbox
       end
     end
   end

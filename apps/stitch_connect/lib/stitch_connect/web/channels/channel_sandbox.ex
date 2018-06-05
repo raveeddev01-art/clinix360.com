@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.ChannelSandbox do
+defmodule Stitch.Web.ChannelSandbox do
   @moduledoc """
   Configures a normal Phoenix Channel to handle sandboxed SQL connections.
   """
@@ -12,8 +12,9 @@ defmodule StitchConnect.Web.ChannelSandbox do
   defmacro __before_compile__(_env) do
     quote do
       defoverridable join: 3
+
       def join(topic, params, socket) do
-        socket = StitchConnect.Web.ChannelSandbox.enable_channel_sandbox(socket)
+        socket = Stitch.Web.ChannelSandbox.enable_channel_sandbox(socket)
         super(topic, params, socket)
       end
     end
@@ -24,10 +25,13 @@ defmodule StitchConnect.Web.ChannelSandbox do
 
   This function is intended to be called at to top of `join/3`.
   """
-  def enable_channel_sandbox(%{assigns: %{sandbox_metadata: %{repo: repo, owner: owner}}} = socket) do
+  def enable_channel_sandbox(
+        %{assigns: %{sandbox_metadata: %{repo: repo, owner: owner}}} = socket
+      ) do
     Ecto.Adapters.SQL.Sandbox.allow(repo, owner, self())
     socket
   end
+
   def enable_channel_sandbox(socket), do: socket
 
   @doc """
@@ -41,5 +45,6 @@ defmodule StitchConnect.Web.ChannelSandbox do
       Phoenix.Socket.assign(socket, :sandbox_metadata, sandbox_metadata)
     end
   end
+
   def configure_channel_sandbox(_, socket), do: socket
 end

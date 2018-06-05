@@ -8,7 +8,7 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
   def start_link do
     GenServer.start_link(
       __MODULE__,
-      LinkPreview.messages_with_ungenerated_link_previews,
+      LinkPreview.messages_with_ungenerated_link_previews(),
       name: __MODULE__
     )
   end
@@ -39,8 +39,8 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
       {{:value, message}, queue} ->
         message =
           message
-          |> LinkPreview.generate_link_previews
-          |> MessageQueries.load_info
+          |> LinkPreview.generate_link_previews()
+          |> MessageQueries.load_info()
 
         if message.has_links do
           group = GroupQueries.get_by_id(message.group_id)
