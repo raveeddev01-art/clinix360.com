@@ -45,7 +45,7 @@ export default class Pricing extends Component {
                 <Col xs={12}>
                   <Nav bsStyle="tabs" justified>
                     <NavItem eventKey="first">
-                      <i className="fa fa fa-comments product-icon m-b-10">
+                      <i className="fa fa fa-comments product-icon m-b-10" />
                       <h3>Connect</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
                         Team Communication
@@ -53,7 +53,7 @@ export default class Pricing extends Component {
                     </NavItem>
 
                     <NavItem eventKey="second">
-                      <i className="fa fa fa-bullhorn product-icon m-b-10">
+                      <i className="fa fa fa-bullhorn product-icon m-b-10" />
                       <h3>Engage</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
                         Patient Engagement
@@ -61,7 +61,7 @@ export default class Pricing extends Component {
                     </NavItem>
 
                     <NavItem eventKey="third">
-                      <i className="fa fa fa-tasks product-icon m-b-10">
+                      <i className="fa fa fa-tasks product-icon m-b-10" />
                       <h3>Manage</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
                         Patient Management

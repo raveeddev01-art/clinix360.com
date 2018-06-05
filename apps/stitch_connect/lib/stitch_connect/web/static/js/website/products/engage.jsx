@@ -73,7 +73,6 @@ export default class Engage extends Component {
               </div>
 
               <div className="flex-item">
-                <i className="fa fa-bullhorn" />
                 <img
                   src="/images/engage-header.png"
                   alt="Stitch Platform"
