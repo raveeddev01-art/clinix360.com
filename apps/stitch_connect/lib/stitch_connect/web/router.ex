@@ -33,7 +33,7 @@ defmodule Stitch.Web.Router do
     plug(Stitch.Plug.ApiAuthenticate, without_team_subdomain: true)
   end
 
-  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
     post("/request-demo", UserController, :request_demo)
@@ -56,13 +56,13 @@ defmodule Stitch.Web.Router do
     delete("/find-your-team/:token", FindYourTeamController, :delete)
   end
 
-  scope "/stripe", Stitch.Web do
+  scope "/stripe", StitchConnect.Web do
     pipe_through(:api)
 
     post("/", StripeWebhookController, :event)
   end
 
-  scope "/", Stitch.Web do
+  scope "/", StitchConnect.Web do
     pipe_through(:no_csrf_browser)
 
     # Webhook routes.

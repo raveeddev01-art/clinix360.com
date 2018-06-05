@@ -33,7 +33,7 @@ defmodule StitchConnect.Web.UserSocket do
   def connect(%{"authenticationToken" => token} = params, socket) do
     channel_action(__MODULE__, :connect, socket, fn ->
       # Handle concurrent browser tests
-      socket = StitchConnect.Web.ChannelSandbox.configure_channel_sandbox(params, socket)
+      socket = Stitch.Web.ChannelSandbox.configure_channel_sandbox(params, socket)
 
       case Stitch.UserQueries.get_active_by_token(token) do
         nil ->
