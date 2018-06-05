@@ -1,7 +1,7 @@
-defmodule StitchConnect.Web.ControllerHelpersTest do
+defmodule Stitch.Web.ControllerHelpersTest do
   use ExUnit.Case, async: true
-  doctest StitchConnect.Web.ControllerHelpers, import: true
-  import StitchConnect.Web.ControllerHelpers
+  doctest Stitch.Web.ControllerHelpers, import: true
+  import Stitch.Web.ControllerHelpers
 
   describe "parse_pagination_params/2" do
     test "parses for :limit" do

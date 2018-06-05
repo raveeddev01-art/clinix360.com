@@ -1,5 +1,5 @@
-defmodule StitchConnect.Web.ControllerHelpers do
-  alias StitchConnect.Web.ErrorHelpers
+defmodule Stitch.Web.ControllerHelpers do
+  alias Stitch.Web.ErrorHelpers
   import Plug.Conn
 
   @doc """
