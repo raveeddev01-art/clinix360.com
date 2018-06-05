@@ -1,8 +1,8 @@
-defmodule StitchConnect.Web.SubdomainRouter do
-  use StitchConnect.Web, :router
+defmodule Stitch.Web.SubdomainRouter do
+  use Stitch.Web, :router
 
   pipeline :browser do
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -11,56 +11,56 @@ defmodule StitchConnect.Web.SubdomainRouter do
   end
 
   pipeline :browser_authenticate do
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
-    plug(StitchConnect.Plug.Authenticate)
-    plug(StitchConnect.Plug.ActivityTracker)
+    plug(Stitch.Plug.Authenticate)
+    plug(Stitch.Plug.ActivityTracker)
   end
 
   pipeline :admin do
-    plug(StitchConnect.Plug.PlugAttack)
-    plug(StitchConnect.Plug.StaffAuthenticate)
+    plug(Stitch.Plug.PlugAttack)
+    plug(Stitch.Plug.StaffAuthenticate)
     plug(:put_layout, {StitchConnect.Web.Admin.AppView, "layout.html"})
   end
 
   pipeline :api_auth do
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
   end
 
   pipeline :api do
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["json"])
   end
 
   pipeline :authenticated_api do
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
-    plug(StitchConnect.Plug.ApiAuthenticate)
-    plug(StitchConnect.Plug.EnsureUnlocked)
-    plug(StitchConnect.Plug.ActivityTracker)
+    plug(Stitch.Plug.ApiAuthenticate)
+    plug(Stitch.Plug.EnsureUnlocked)
+    plug(Stitch.Plug.ActivityTracker)
   end
 
   pipeline :authenticated_locked_api do
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
-    plug(StitchConnect.Plug.ApiAuthenticate)
+    plug(Stitch.Plug.ApiAuthenticate)
   end
 
   pipeline :team_admin_api do
     plug(:accepts, ["json"])
-    plug(StitchConnect.Plug.PlugAttack)
+    plug(Stitch.Plug.PlugAttack)
     plug(:fetch_session)
-    plug(StitchConnect.Plug.ApiAuthenticate)
-    plug(StitchConnect.Plug.TeamAdminOnly)
-    plug(StitchConnect.Plug.ActivityTracker)
+    plug(Stitch.Plug.ApiAuthenticate)
+    plug(Stitch.Plug.TeamAdminOnly)
+    plug(Stitch.Plug.ActivityTracker)
   end
 
   # Stitch Staff Admin subdomain routes

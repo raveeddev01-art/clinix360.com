@@ -1,4 +1,4 @@
-defmodule StitchConnect.Plug.PlugAttack do
+defmodule Stitch.Plug.PlugAttack do
   import Plug.Conn
   use PlugAttack
 

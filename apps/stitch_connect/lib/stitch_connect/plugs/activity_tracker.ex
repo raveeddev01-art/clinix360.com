@@ -1,4 +1,4 @@
-defmodule StitchConnect.Plug.ActivityTracker do
+defmodule Stitch.Plug.ActivityTracker do
   @moduledoc """
   A plug for tracking activity. Any HTTP request that goes through
   this plug updates activity status for the currently authenticated user.
@@ -20,6 +20,7 @@ defmodule StitchConnect.Plug.ActivityTracker do
     unless get_session(conn, :current_user_token) do
       ActivityTracker.async_update_activity(current_user)
     end
+
     conn
   end
 end
