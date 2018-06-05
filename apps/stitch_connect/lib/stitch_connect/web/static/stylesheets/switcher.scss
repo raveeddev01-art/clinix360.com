@@ -25,23 +25,27 @@
     margin-bottom: 20px;
     position: relative;
 
+    .switcher__top-home {
+      height: 24px;
+    }
+
     &:hover,
     &:focus,
     &:active {
       color: #fff;
       outline: none;
 
-      i {
+      i, .switcher__top-home {
         opacity: 1;
       }
     }
 
-    i {
+    i, .switcher__top-home{
       opacity: 0.6;
     }
 
     &.active {
-      i {
+      i, .switcher__top-home {
         opacity: 1;
       }
 
