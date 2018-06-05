@@ -91,21 +91,21 @@ class Header extends Component {
               <LinkContainer to="/connect">
                 <MenuItem>
                   <i className="fa fa-comments" />
-                  Connect <div className="subtext">Team messaging</div>
+                  Connect <div className="subtext">Team Messaging</div>
                 </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/engage">
                 <MenuItem>
                   <i className="fa fa-bullhorn" />
-                  Engage <div className="subtext">Patient communication</div>
+                  Engage <div className="subtext">Patient Communication</div>
                 </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/manage">
                 <MenuItem>
                   <i className="fa fa-tasks" />
-                  Manage <div className="subtext">Task management</div>
+                  Manage <div className="subtext">Task Management</div>
                 </MenuItem>
               </LinkContainer>
             </NavDropdown>

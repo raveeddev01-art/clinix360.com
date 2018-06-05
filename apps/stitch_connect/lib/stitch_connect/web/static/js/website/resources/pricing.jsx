@@ -48,7 +48,7 @@ export default class Pricing extends Component {
                       <i className="fa fa fa-comments product-icon m-b-10" />
                       <h3>Connect</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Team Communication
+                        Team Messaging
                       </p>
                     </NavItem>
 
@@ -56,7 +56,7 @@ export default class Pricing extends Component {
                       <i className="fa fa fa-bullhorn product-icon m-b-10" />
                       <h3>Engage</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Patient Engagement
+                        Patient Communication
                       </p>
                     </NavItem>
 
@@ -64,7 +64,7 @@ export default class Pricing extends Component {
                       <i className="fa fa fa-tasks product-icon m-b-10" />
                       <h3>Manage</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Patient Management
+                        Task Management
                       </p>
                     </NavItem>
                   </Nav>
