@@ -28,11 +28,11 @@ class TypingUsers extends Component {
         break;
 
       case 2:
+        console.log(usernames.map(user => <b>{user}</b>).join(" and "));
         content = (
           <span>
             {/* <b>{usernames.join(" and ")}</b> are typing... */}
-            {usernames.map(user => `<b>${user}</b>`).join(" and ")} are
-            typing...
+            {usernames.map(user => <b>{user}</b>).join(" and ")} are typing...
           </span>
         );
         break;
