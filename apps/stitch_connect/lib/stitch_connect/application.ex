@@ -10,7 +10,7 @@ defmodule StitchConnect.Application do
       supervisor(Stitch.Web.Endpoint, []),
       supervisor(StitchConnect.Web.Presence, []),
       worker(StitchConnect.MessageMailer, []),
-      worker(StitchConnect.PresignedUrlCache, []),
+      worker(Stitch.PresignedUrlCache, []),
       worker(StitchConnect.ActivityTrackerWorker, [])
       # Start your own worker by calling: StitchConnect.Worker.start_link(arg1, arg2, arg3)
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
