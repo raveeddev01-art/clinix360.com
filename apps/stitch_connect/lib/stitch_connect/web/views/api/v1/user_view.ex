@@ -73,7 +73,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     if user.is_bot do
       user.profile_image_url
     else
-      StitchConnect.PresignedUrlCache.fetch(user.profile_image_url)
+      Stitch.PresignedUrlCache.fetch(user.profile_image_url)
     end
   end
 
@@ -84,7 +84,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       user.profile_image_thumb_url
     else
       if String.starts_with?(user.profile_image_thumb_url, "https://s3.amazonaws.com") do
-        StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url)
+        Stitch.PresignedUrlCache.fetch(user.profile_image_thumb_url)
       else
         user.profile_image_thumb_url
       end

@@ -1,4 +1,4 @@
-defmodule StitchConnect.PresignedUrlCache do
+defmodule Stitch.PresignedUrlCache do
   use GenServer
   @tab :presigned_url_cache
 
@@ -10,11 +10,13 @@ defmodule StitchConnect.PresignedUrlCache do
 
   @spec fetch(binary | nil) :: binary | nil
   def fetch(nil), do: nil
+
   def fetch(object_name) do
     case get(object_name) do
       {:not_found} ->
         {_expires_at, value} = set(object_name)
         value
+
       {:found, {expires_at, result}} ->
         if time_now() > expires_at do
           {_expires_at, value} = set(object_name)
@@ -45,8 +47,7 @@ defmodule StitchConnect.PresignedUrlCache do
   # Server
 
   def init(_) do
-    :ets.new(@tab, [:set, :named_table, :public, read_concurrency: true,
-                                                 write_concurrency: true])
+    :ets.new(@tab, [:set, :named_table, :public, read_concurrency: true, write_concurrency: true])
 
     {:ok, %{}}
   end

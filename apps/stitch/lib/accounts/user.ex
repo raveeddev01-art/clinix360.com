@@ -362,7 +362,7 @@ defmodule Stitch.Accounts.User do
       grey_avatar_url = String.replace(user.profile_image_url, filepath, "#{name}-grey.png")
 
       # Fetch a presigned URL for this grey image.
-      StitchConnect.PresignedUrlCache.fetch(grey_avatar_url)
+      Stitch.PresignedUrlCache.fetch(grey_avatar_url)
     end
   end
 
