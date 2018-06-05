@@ -21,15 +21,23 @@ defmodule StitchConnect.Web.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       import StitchConnect.Web.ChannelsTestHelper
-      import StitchConnect.Web.Router.Helpers
+      import Stitch.Web.Router.Helpers
       import Stitch.Factory
-      import StitchConnect.Web.ConnCase, only: [with_session: 1, with_user_session: 2, with_team_subdomain: 2, with_api_user: 2, with_admin_subdomain: 1]
+
+      import StitchConnect.Web.ConnCase,
+        only: [
+          with_session: 1,
+          with_user_session: 2,
+          with_team_subdomain: 2,
+          with_api_user: 2,
+          with_admin_subdomain: 1
+        ]
 
       # The default endpoint for testing
       @endpoint StitchConnect.Web.Endpoint
 
       def subdomain(conn, subdomain) do
-        %{ conn | host: "#{subdomain}.#{Endpoint.host}" }
+        %{conn | host: "#{subdomain}.#{Endpoint.host()}"}
       end
 
       def get_as_user(conn, user, url, params \\ %{}) do
@@ -53,7 +61,7 @@ defmodule StitchConnect.Web.ConnCase do
   @doc """
   Adds a session with no user
   """
-  @spec with_session(Plug.Conn.t) :: Plug.Conn.t
+  @spec with_session(Plug.Conn.t()) :: Plug.Conn.t()
   def with_session(conn) do
     Plug.Test.init_test_session(conn, %{})
   end
@@ -61,7 +69,7 @@ defmodule StitchConnect.Web.ConnCase do
   @doc """
   Assigns the user to the sesion storage for the connection
   """
-  @spec with_user_session(Plug.Conn.t, Stitch.Accounts.User.t) :: Plug.Conn.t
+  @spec with_user_session(Plug.Conn.t(), Stitch.Accounts.User.t()) :: Plug.Conn.t()
   def with_user_session(conn, %Stitch.Accounts.User{} = user) do
     Plug.Test.init_test_session(conn, %{current_user_token: user.token})
   end
@@ -69,17 +77,17 @@ defmodule StitchConnect.Web.ConnCase do
   @doc """
   Mimics a connection being routed through a team's subdomain.
   """
-  @spec with_team_subdomain(Plug.Conn.t, Stitch.Team.t) :: Plug.Conn.t
+  @spec with_team_subdomain(Plug.Conn.t(), Stitch.Team.t()) :: Plug.Conn.t()
   def with_team_subdomain(conn, %Stitch.Team{slug: team_slug}) do
-    %Plug.Conn{conn | host: "#{team_slug}.#{Endpoint.host}"}
+    %Plug.Conn{conn | host: "#{team_slug}.#{Endpoint.host()}"}
   end
 
   @doc """
   Mimics a connection being routed to admin subdomain.
   """
-  @spec with_admin_subdomain(Plug.Conn.t) :: Plug.Conn.t
+  @spec with_admin_subdomain(Plug.Conn.t()) :: Plug.Conn.t()
   def with_admin_subdomain(conn) do
-    %Plug.Conn{conn | host: "admin.#{Endpoint.host}"}
+    %Plug.Conn{conn | host: "admin.#{Endpoint.host()}"}
   end
 
   @doc """
@@ -87,17 +95,18 @@ defmodule StitchConnect.Web.ConnCase do
 
   When calling this function, any existing query params on the conn will be overwritten.
   """
-  @spec with_api_user(Plug.Conn.t, Stitch.Accounts.User.t) :: Plug.Conn.t
+  @spec with_api_user(Plug.Conn.t(), Stitch.Accounts.User.t()) :: Plug.Conn.t()
   def with_api_user(conn, %Stitch.Accounts.User{token: token}) do
     %Plug.Conn{conn | query_params: %{"authenticationToken" => token}}
   end
 
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
     end
-    {:ok, conn: Phoenix.ConnTest.build_conn(:get, Endpoint.url <> "/", nil)}
-  end
 
+    {:ok, conn: Phoenix.ConnTest.build_conn(:get, Endpoint.url() <> "/", nil)}
+  end
 end

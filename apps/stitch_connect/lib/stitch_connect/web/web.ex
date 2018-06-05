@@ -38,7 +38,7 @@ defmodule StitchConnect.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import StitchConnect.Web.Router.Helpers
+      import Stitch.Web.Router.Helpers
       alias StitchConnect.Web.SubdomainRouter.Helpers, as: SubdomainRouter
       import StitchConnect.Web.ErrorHelpers
       import StitchConnect.Web.Gettext

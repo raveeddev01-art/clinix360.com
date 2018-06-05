@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Router do
+defmodule Stitch.Web.Router do
   use StitchConnect.Web, :router
 
   pipeline :browser do
