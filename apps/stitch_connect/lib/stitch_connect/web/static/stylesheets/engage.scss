@@ -163,6 +163,12 @@ $admin-topbar-height: 65px;
         }
       }
 
+      .icon-wrapper{
+        color: $brand-primary;
+        font-size: 175px;
+        margin-left: 40px;
+      }
+
       img {
         max-width: 160px;
         display: block;

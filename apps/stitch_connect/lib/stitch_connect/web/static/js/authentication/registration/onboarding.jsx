@@ -3,28 +3,23 @@ import { observer, inject } from "mobx-react";
 import { withRouter, Redirect } from "react-router-dom";
 
 import { alertModal } from "common/modals";
-import TeamName from "../components/team-name-card/team-name-card";
-import TeamUrl from "../components/team-url-card/team-url-card";
-import NameInput from "../components/name-card/name-card";
-import PhoneNumber from "../components/phone-number-card/phone-number-card";
-import Username from "../components/username-card/username-card";
+
+import Names from "../components/names-card/names-card";
 import Password from "../components/password-card/password-card";
 import Pin from "../components/pin-card/pin-card";
-import Invites from "../components/invites-card/invites-card";
-import TeamInfo from "../components/team-info-card/team-info-card";
+import TeamName from "../components/team-name-card/team-name-card";
+import TeamUrl from "../components/team-url-card/team-url-card";
 import Hipaa from "../components/hipaa-card/hipaa-card";
+import Invites from "../components/invites-card/invites-card";
 
 const stepList = [
-  { field: "teamname", component: TeamName },
-  { field: "teamurl", component: TeamUrl },
-  { field: "name", component: NameInput },
-  { field: "phone", component: PhoneNumber },
-  { field: "username", component: Username },
+  { field: "names", component: Names },
   { field: "password", component: Password },
   { field: "pin", component: Pin },
-  { field: "invites", component: Invites },
-  { field: "teaminfo", component: TeamInfo },
-  { field: "hipaa", component: Hipaa }
+  { field: "teamname", component: TeamName },
+  { field: "teamurl", component: TeamUrl },
+  { field: "hipaa", component: Hipaa },
+  { field: "invites", component: Invites }
 ];
 
 @inject("registrationStore")
@@ -45,7 +40,7 @@ class Onboarding extends Component {
     const { registrationStore, history } = this.props;
     registrationStore.createTeam().catch(() => {
       alertModal({
-        title: "Error in creating team",
+        title: "Error in creating carespace",
         message:
           "Sorry, we had an issue completing your onboarding. Could you please start over?",
         okLabel: "Restart"
@@ -54,6 +49,19 @@ class Onboarding extends Component {
       });
     });
   };
+
+  setStoreValue(value) {
+    const {
+      registrationStore,
+      match: { params: { currentStep } }
+    } = this.props;
+
+    if (typeof value === "object") {
+      Object.assign(registrationStore, value);
+    } else {
+      registrationStore[currentStep] = value;
+    }
+  }
 
   render() {
     const {
@@ -70,14 +78,10 @@ class Onboarding extends Component {
     return React.createElement(stepList[stepIndex].component, {
       onNext: value => {
         if (stepList.length <= stepIndex + 1) {
+          this.setStoreValue(value);
           this.onSave();
         } else {
-          if (typeof value === "object") {
-            Object.assign(registrationStore, value);
-          } else {
-            registrationStore[currentStep] = value;
-          }
-
+          this.setStoreValue(value);
           history.push(`/signup/onboarding/${stepList[stepIndex + 1].field}`);
         }
       },

@@ -47,7 +47,11 @@ class Switcher extends Component {
               container={this}
               overlay={<Tooltip id="tooltip-info">Home</Tooltip>}
             >
-              <i className="fa fa-home" />
+              <img
+                className="switcher__top-home"
+                src="/images/logo-white.svg"
+                alt="Stitch"
+              />
             </OverlayTrigger>
           </NavLink>
 
@@ -113,20 +117,6 @@ class Switcher extends Component {
         </div>
 
         <div className="switcher__bottom">
-          <NavLink
-            to="/admin/you/account"
-            isActive={() => active === "settings"}
-            className="switcher__link"
-          >
-            <OverlayTrigger
-              placement="right"
-              container={this}
-              overlay={<Tooltip id="tooltip-info">Settings</Tooltip>}
-            >
-              <i className="fa fa-cog" />
-            </OverlayTrigger>
-          </NavLink>
-
           <a
             role="link"
             onClick={this.props.presenceStore.lock}

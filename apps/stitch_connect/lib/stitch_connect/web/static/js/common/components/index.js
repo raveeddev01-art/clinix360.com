@@ -1,15 +1,16 @@
 import AppAlert from "./app-alert";
 import Avatar from "./avatar/avatar";
 import AvatarUploader from "./avatar-uploader";
-import Card from "./card/card";
+import AuthenticationHeader from "../../authentication/components/header/authentication_header";
+import AuthenticationPage from "./authentication-page/authentication-page";
+import InputErrorBlock from "./input-error-block/input-error-block";
 import Groups from "./groups/groups";
 import Loading from "./loading";
 import LoadingButton from "./loading-button";
 import LoadingIcon from "./loading-icon";
 import Members from "./members/members";
 import MemberType from "./member-type";
-import OnboardCard from "./onboard-card/onboard-card";
-import OnboardInputCard from "./onboard-input-card/onboard-input-card";
+import OnboardPage from "./onboard-page/onboard-page";
 import PasswordValidator from "./password-validator";
 import PinInput from "./pin-input";
 import RoleText from "./role-text";
@@ -33,15 +34,16 @@ export {
   Avatar,
   AppAlert,
   AvatarUploader,
-  Card,
+  AuthenticationHeader,
+  AuthenticationPage,
   Groups,
+  InputErrorBlock,
   Loading,
   LoadingButton,
   LoadingIcon,
   Members,
   MemberType,
-  OnboardCard,
-  OnboardInputCard,
+  OnboardPage,
   PasswordValidator,
   PinInput,
   RoleText,

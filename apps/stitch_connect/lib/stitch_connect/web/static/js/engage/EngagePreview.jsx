@@ -27,8 +27,7 @@ class EngagePreview extends Component {
         tagLine={this.renderTagline()}
         moduleDescription={this.renderDescription()}
         requestUrl="https://teamstitch.typeform.com/to/Ncn8x8"
-        moduleName="Stitch Engage"
-        imageSrc="/images/engage-logo.png"
+        iconClass="fa fa-bullhorn"
       />
     );
   }

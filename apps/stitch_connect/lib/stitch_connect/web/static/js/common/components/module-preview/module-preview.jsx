@@ -15,13 +15,11 @@ class ModulePreview extends Component {
     this.setState({ hideImage: true });
   };
 
-  renderImage() {
-    const { imageSrc, moduleName } = this.props;
-
+  renderIcon() {
     return (
       !this.state.hideImage && (
-        <div className="preview-image">
-          <img src={imageSrc} alt={moduleName} onError={this.onImageError} />
+        <div className="icon-wrapper hidden-sm hidden-sx">
+          <i className={this.props.iconClass} />
         </div>
       )
     );
@@ -49,7 +47,7 @@ class ModulePreview extends Component {
             </Button>
           </div>
 
-          {this.renderImage()}
+          {this.renderIcon()}
         </div>
       </div>
     );
@@ -58,9 +56,8 @@ class ModulePreview extends Component {
 
 ModulePreview.propTypes = {
   tagLine: PropTypes.node.isRequired,
-  imageSrc: PropTypes.string.isRequired,
   moduleDescription: PropTypes.node.isRequired,
-  moduleName: PropTypes.string.isRequired,
+  iconClass: PropTypes.string.isRequired,
   requestUrl: PropTypes.string.isRequired
 };
 

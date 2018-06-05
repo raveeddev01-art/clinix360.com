@@ -3,16 +3,12 @@ import { observer, inject } from "mobx-react";
 import { withRouter, Redirect } from "react-router-dom";
 
 import { alertModal } from "common/modals";
-import NameInput from "../components/name-card/name-card";
-import PhoneNumber from "../components/phone-number-card/phone-number-card";
-import Username from "../components/username-card/username-card";
+import Names from "../components/names-card/names-card";
 import Password from "../components/password-card/password-card";
 import Pin from "../components/pin-card/pin-card";
 
 const stepList = [
-  { field: "name", component: NameInput },
-  { field: "phone", component: PhoneNumber },
-  { field: "username", component: Username },
+  { field: "names", component: Names },
   { field: "password", component: Password },
   { field: "pin", component: Pin }
 ];
@@ -60,6 +56,7 @@ class JoinTeam extends Component {
     }
 
     return React.createElement(stepList[stepIndex].component, {
+      headerCTA: "no-cta",
       onNext: value => {
         if (typeof value === "object") {
           Object.assign(invitationStore, value);

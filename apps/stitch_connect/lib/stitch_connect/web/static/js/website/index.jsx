@@ -8,7 +8,7 @@ class Website extends Component {
     return (
       <div>
         <Router>
-          <WebsiteRouter />
+          <WebsiteRouter team={this.props.team} />
         </Router>
       </div>
     );

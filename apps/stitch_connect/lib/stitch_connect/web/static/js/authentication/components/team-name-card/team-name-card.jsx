@@ -1,29 +1,82 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { OnboardInputCard } from "common/components";
 
-class TeamNameCard extends Component {
-  render() {
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import FormControl from "react-bootstrap/lib/FormControl";
+
+import { OnboardPage } from "common/components";
+import { mobile } from "../../../lib/browser_details";
+
+class CarespaceNameCard extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      value: props.value
+    };
+  }
+
+  _onChange = evt => {
+    const value = evt.target.value;
+    this.setState({ value });
+  };
+
+  _onNext = () => {
+    if (this.state.value) {
+      this.props.onNext(this.state.value);
+    }
+  };
+
+  renderDesc() {
     return (
-      <OnboardInputCard
+      <span>
+        Name your carespace after the group that will be using Stitch together
+        (you can change this later).
+      </span>
+    );
+  }
+
+  render() {
+    const { value } = this.state;
+
+    return (
+      <OnboardPage
         {...this.props}
-        title="Team Name"
-        helperText="This is the name of your team. It will show up in menus and headings."
-        placeholder="Ex. Care Clinic"
-        maxLength={80}
+        title="What is your carespace name?"
+        onNext={this._onNext}
+        description={this.renderDesc()}
+        disableNext={!value}
       >
-        Enter your <strong>team name</strong>.
-      </OnboardInputCard>
+        <FormGroup bsSize="large">
+          <ControlLabel>Carespace Name</ControlLabel>
+          <FormControl
+            required
+            autoFocus={!mobile}
+            type="text"
+            placeholder="Ex. Care Clinic."
+            value={value}
+            onChange={this._onChange}
+            maxLength={80}
+          />
+        </FormGroup>
+      </OnboardPage>
     );
   }
 }
 
-TeamNameCard.propTypes = {
-  onNext: PropTypes.func.isRequired
+CarespaceNameCard.propTypes = {
+  onNext: PropTypes.func.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  value: PropTypes.string
 };
 
-TeamNameCard.defaultProps = {
-  onNext: () => {}
+CarespaceNameCard.defaultProps = {
+  children: "",
+  value: ""
 };
 
-export default TeamNameCard;
+export default CarespaceNameCard;

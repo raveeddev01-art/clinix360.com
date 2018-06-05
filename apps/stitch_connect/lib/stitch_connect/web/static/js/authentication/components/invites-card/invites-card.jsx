@@ -1,13 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Form from "react-bootstrap/lib/Form";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
-import Alert from "react-bootstrap/lib/Alert";
-import { Card } from "common/components";
 import isEmpty from "lodash/isEmpty";
+
+import Button from "react-bootstrap/lib/Button";
+import Form from "react-bootstrap/lib/Form";
+import FormControl from "react-bootstrap/lib/FormControl";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+
+import {
+  AuthenticationPage,
+  LoadingButton,
+  InputErrorBlock
+} from "common/components";
+import { mobile } from "../../../lib/browser_details";
 
 class InvitesCard extends Component {
   constructor(...args) {
@@ -15,14 +20,25 @@ class InvitesCard extends Component {
     this.state = {
       invites: ["", "", ""],
       validationResults: {},
-      alertMessage: ""
+      showError: false,
+      loading: false
     };
   }
+
+  onKeyPress = e => {
+    const hitEnter = e.charCode === 13 || e.keyCode === 13;
+
+    if (hitEnter) {
+      this.onNext(e);
+    }
+  };
 
   onNext = event => {
     event.preventDefault();
 
     const { invites } = this.state;
+    this.setState({ loading: true });
+
     post("/api/v1/users/validate-emails", {
       body: { emails: this.state.invites },
       hideNotify: true
@@ -35,6 +51,7 @@ class InvitesCard extends Component {
             validationResults[email] = e[email] || "Unexpected Error";
           }
         });
+
         if (isEmpty(validationResults)) {
           this.props.onNext({
             sendInvites: true,
@@ -42,17 +59,26 @@ class InvitesCard extends Component {
           });
         } else {
           this.setState({
+            loading: false,
             validationResults
           });
         }
       })
       .catch(() => {
-        this.setState({ alertMessage: "Emails validation has failed." });
+        this.setState({
+          showError: true,
+          loading: false
+        });
       });
   };
 
   onSkip = event => {
     event.preventDefault();
+
+    this.setState({
+      loading: true
+    });
+
     this.props.onNext({
       sendInvites: false,
       invites: this.state.invites
@@ -73,69 +99,93 @@ class InvitesCard extends Component {
     });
   };
 
+  renderFooter() {
+    return (
+      <div className="invites-card-footer m-b-40">
+        <Button
+          className="btn btn-lg btn-onboarding btn-onboarding-inverse m-b-10"
+          onClick={this.onSkip}
+        >
+          Skip for now
+        </Button>
+
+        <LoadingButton
+          type="submit"
+          bsStyle="primary"
+          className="btn btn-lg btn-onboarding m-b-10"
+          onClick={this.onNext}
+          loading={this.state.loading}
+        >
+          <div className="next-button-interior">
+            <div> {this.state.loading ? "Loading" : "Send Invites"} </div>
+            <div className="next-arrow-wrapper">
+              <i className="fa fa-arrow-right" />
+            </div>
+          </div>
+        </LoadingButton>
+      </div>
+    );
+  }
+
   render() {
-    const { invites, validationResults, alertMessage } = this.state;
+    const { invites, validationResults, showError } = this.state;
 
     return (
-      <div>
-        {alertMessage && <Alert bsStyle="danger">{alertMessage}</Alert>}
-        <Card
+      <div className="invites-card">
+        <AuthenticationPage
           title="Send Invitations"
           description={
             <span>
-              Enter <strong>invitations</strong> to email out.
+              Your Stitch carespace is all set. Get started by bringing in your
+              team members to explore Stitch with you.
             </span>
           }
+          footer={this.renderFooter()}
         >
+          {showError && (
+            <InputErrorBlock>
+              {" "}
+              There was an issue with one or more of your emails. Please ensure
+              they are valid.{" "}
+            </InputErrorBlock>
+          )}
           <Form onSubmit={this.onNext}>
-            {invites.map((email, index) => {
-              const validationState = validationResults[email] ? "error" : null;
-              return (
-                <FormGroup
-                  bsSize="large"
-                  key={`invite_email_${index}`}
-                  validationState={validationState}
-                >
-                  <FormControl
-                    type="text"
-                    value={email}
-                    onChange={this.onChange(index)}
-                    placeholder="name@example.com"
-                  />
-                  {validationState === "error" && (
-                    <HelpBlock className="text-left">
-                      <i className="fa fa-exclamation-circle" />{" "}
-                      {validationResults[email]}
-                    </HelpBlock>
-                  )}
-                </FormGroup>
-              );
-            })}
-
-            <Button block className="m-b-10" onClick={this.onAddEmail}>
-              Add Invitations
-            </Button>
-
-            <HelpBlock className="m-b-20">
-              Enter your team members&#39; email addresses so they can join your
-              team. You can also do this later after you set up your team.
-            </HelpBlock>
-
-            <Button block bsSize="lg" bsStyle="primary" type="submit">
-              Next
-            </Button>
-
-            <Button
-              block
-              bsSize="lg"
-              bsStyle="default"
-              className="m-b-40"
-              onClick={this.onSkip}
-            >
-              Skip this step
-            </Button>
+            <div className="invites-card-form-label-wrapper">
+              <span>Email Address</span>
+              <Button className="link" onClick={this.onAddEmail}>
+                Add Invitation
+              </Button>
+            </div>
+            <div className="invites-card-form-input-wrapper">
+              {invites.map((email, index) => {
+                const validationState = validationResults[email]
+                  ? "error"
+                  : null;
+                return (
+                  <FormGroup
+                    bsSize="large"
+                    key={`invite_email_${index}`}
+                    validationState={validationState}
+                  >
+                    <FormControl
+                      autoFocus={!mobile && index === 0}
+                      type="text"
+                      value={email}
+                      onChange={this.onChange(index)}
+                      onKeyPress={this.onKeyPress}
+                      placeholder="Email address"
+                    />
+                    {validationState === "error" && (
+                      <InputErrorBlock>
+                        {validationResults[email]}
+                      </InputErrorBlock>
+                    )}
+                  </FormGroup>
+                );
+              })}
+            </div>
           </Form>
-        </Card>
+        </AuthenticationPage>
       </div>
     );
   }

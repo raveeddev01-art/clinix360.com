@@ -77,11 +77,17 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     end
   end
 
-  defp avatar_thumb(user) do
+  def avatar_thumb(%{profile_image_thumb_url: nil}), do: nil
+
+  def avatar_thumb(user) do
     if user.is_bot do
       user.profile_image_thumb_url
     else
-      StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url)
+      if String.starts_with?(user.profile_image_thumb_url, "https://s3.amazonaws.com") do
+        StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url)
+      else
+        user.profile_image_thumb_url
+      end
     end
   end
 end

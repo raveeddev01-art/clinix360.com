@@ -45,38 +45,26 @@ export default class Pricing extends Component {
                 <Col xs={12}>
                   <Nav bsStyle="tabs" justified>
                     <NavItem eventKey="first">
-                      <img
-                        src="/images/connect-icon.png"
-                        alt="Stitch Connect"
-                        className="m-b-10"
-                      />
+                      <i className="fa fa fa-comments product-icon m-b-10" />
                       <h3>Connect</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Team Communication
+                        Team Messaging
                       </p>
                     </NavItem>
 
                     <NavItem eventKey="second">
-                      <img
-                        src="/images/engage-icon.png"
-                        alt="Stitch Connect"
-                        className="m-b-10"
-                      />
+                      <i className="fa fa fa-bullhorn product-icon m-b-10" />
                       <h3>Engage</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Patient Engagement
+                        Patient Communication
                       </p>
                     </NavItem>
 
                     <NavItem eventKey="third">
-                      <img
-                        src="/images/manage-icon.png"
-                        alt="Stitch Connect"
-                        className="m-b-10"
-                      />
+                      <i className="fa fa fa-tasks product-icon m-b-10" />
                       <h3>Manage</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Patient Management
+                        Task Management
                       </p>
                     </NavItem>
                   </Nav>
