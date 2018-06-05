@@ -1,5 +1,5 @@
-defmodule StitchConnect.Web.Admin.ImpersonationControllerTest do
-  use StitchConnect.Web.ConnCase, async: true
+defmodule Stitch.Web.Admin.ImpersonationControllerTest do
+  use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 
   describe "GET /impersonate/:user_id" do

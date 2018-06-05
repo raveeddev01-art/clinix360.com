@@ -1,7 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use Stitch.Web, :controller
   alias Stitch.{Invitation, FeatureGateway, TeamAuthorization}
-  alias StitchConnect.Web.{GroupChannel, EventsChannel, TeamChannel}
+  alias Stitch.Web.TeamChannel
+  alias StitchConnect.Web.{EventsChannel, GroupChannel}
 
   plug(:fetch_session when action in [:accept])
   action_fallback(StitchConnect.Web.Api.FallbackController)

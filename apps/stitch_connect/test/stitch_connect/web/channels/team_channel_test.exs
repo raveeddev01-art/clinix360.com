@@ -1,5 +1,5 @@
 defmodule Stitch.Web.TeamChannelTest do
-  use StitchConnect.Web.ChannelCase
+  use Stitch.Web.ChannelCase
 
   setup [:create_users, :connect_socket]
 

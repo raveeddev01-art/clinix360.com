@@ -1,7 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use Stitch.Web, :controller
   alias Stitch.Accounts.{Admin, User, Role}
-  alias StitchConnect.Web.{TeamChannel, EventsChannel, GroupChannel, Endpoint}
+  alias Stitch.Web.{TeamChannel, Endpoint}
+  alias StitchConnect.Web.{GroupChannel, EventsChannel}
   alias Stitch.Analytics.User, as: UserAnalytics
 
   alias Stitch.{

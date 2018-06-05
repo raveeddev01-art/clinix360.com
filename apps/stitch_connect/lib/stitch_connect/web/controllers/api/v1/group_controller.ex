@@ -1,7 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use Stitch.Web, :controller
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
-  alias StitchConnect.Web.{EventsChannel, TeamChannel, GroupChannel}
+  alias Stitch.Web.{TeamChannel}
+  alias StitchConnect.Web.{EventsChannel, GroupChannel}
   alias Stitch.{Group, GroupQueries, GroupAuthorization, SystemMessages}
 
   action_fallback(StitchConnect.Web.Api.FallbackController)

@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
   use Stitch.Web, :controller
   alias Stitch.Team.Admin
   alias Stitch.{Team, TeamQueries, TeamAuthorization}
-  alias StitchConnect.Web.{TeamChannel}
+  alias Stitch.Web.{TeamChannel}
 
   action_fallback(StitchConnect.Web.Api.FallbackController)
 

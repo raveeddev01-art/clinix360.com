@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Admin.UserController do
+defmodule Stitch.Web.Admin.UserController do
   use Stitch.Web, :controller
   alias Stitch.Accounts.User
   alias Stitch.Paginator

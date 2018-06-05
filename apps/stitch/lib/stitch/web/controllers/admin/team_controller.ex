@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Admin.TeamController do
+defmodule Stitch.Web.Admin.TeamController do
   use Stitch.Web, :controller
   alias Stitch.Paginator
   alias Stitch.TeamQueries

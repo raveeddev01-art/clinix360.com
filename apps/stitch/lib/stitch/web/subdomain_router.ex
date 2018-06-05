@@ -64,7 +64,7 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   # Stitch Staff Admin subdomain routes
-  scope "/", StitchConnect.Web.Admin, as: :admin, host: "admin." do
+  scope "/", Stitch.Web.Admin, as: :admin, host: "admin." do
     pipe_through([:browser, :admin])
     get("/", IndexController, :index)
 
