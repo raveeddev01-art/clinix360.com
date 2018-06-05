@@ -92,6 +92,7 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   defp notify_user_ios_devices(_user, _group, _message, _badge_value, []), do: nil
+
   defp notify_user_ios_devices(user, group, message, badge_value, ios_devices) do
     import APNS.Notification
 
@@ -114,13 +115,22 @@ defmodule StitchConnect.Web.PushNotifications do
         ejson: sanitize_notification_payload(message),
         device_id: device.id,
         user_id: user.id,
-        message_id: message.id,
+        message_id: message.id
       })
     end)
     |> apns_push(on_response: &handle_apns_push/1)
   end
 
-  defp notify_user_android_devices(_user, _group, _message, _badge_value, _room_notification_count, []), do: nil
+  defp notify_user_android_devices(
+         _user,
+         _group,
+         _message,
+         _badge_value,
+         _room_notification_count,
+         []
+       ),
+       do: nil
+
   defp notify_user_android_devices(
          user,
          group,
@@ -136,25 +146,25 @@ defmodule StitchConnect.Web.PushNotifications do
     message_body = notification_text_body(group, message, user)
     message_title = notification_title(group, message, user)
 
-    content =
-      %{
-        "badge" => to_string(badge_value),
-        "body" => message_body,
-        "ejson" => message |> sanitize_notification_payload |> Poison.encode!(),
-        "message_id" => message.id,
-        "message" => message_body,
-        "room_notification_count" => room_notification_count,
-        "title" => message_title,
-        "user_id" => user.id
-      }
+    content = %{
+      "badge" => to_string(badge_value),
+      "body" => message_body,
+      "ejson" => message |> sanitize_notification_payload |> Poison.encode!(),
+      "message_id" => message.id,
+      "message" => message_body,
+      "room_notification_count" => room_notification_count,
+      "title" => message_title,
+      "user_id" => user.id
+    }
 
     android_devices
     |> Enum.map(fn device ->
       Stitch.Mobile.NotificationLogger.send(message, user, device, "android")
+
       [device.token]
       |> new()
       |> put_data(Map.put(content, "device_id", device.id))
-      |> Map.update(:payload, %{}, &(Map.put(&1, "to", device.token)))
+      |> Map.update(:payload, %{}, &Map.put(&1, "to", device.token))
       |> fcm_push(on_response: &handle_fcm_push/1)
     end)
   end
@@ -174,14 +184,14 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   # Message - Single DM
-  defp notification_text_body(%{name: group_name}, %{user: author}, _receiver) when group_name == @single_dm_name do
+  defp notification_text_body(%{name: group_name}, %{user: author}, _receiver)
+       when group_name == @single_dm_name do
     name_for_notification(author) <> " sent you a direct message."
   end
 
   # Message - Multi DM
   defp notification_text_body(%{name: group_name}, %{user: author} = message, receiver)
-    when group_name == @multi_dm_name do
-
+       when group_name == @multi_dm_name do
     if user_was_mentioned(receiver, message) do
       name_for_notification(author) <> " mentioned you in a direct message."
     else
@@ -201,7 +211,8 @@ defmodule StitchConnect.Web.PushNotifications do
   # Notification Titles
 
   #  Single or Multi DM
-  defp notification_title(%{name: group_name} = group, _message, receiver) when group_name in @dm_groups do
+  defp notification_title(%{name: group_name} = group, _message, receiver)
+       when group_name in @dm_groups do
     users = Repo.preload(group, :users).users
     is_receiver = &(&1.id == receiver.id)
 
