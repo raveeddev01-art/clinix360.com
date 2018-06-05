@@ -70,7 +70,7 @@ defmodule Stitch.Web.Router do
     post("/webhook/drchrono/:webhook_token", WebhookController, :drchrono)
   end
 
-  scope "/", Stitch.Web do
+  scope "/", StitchConnect.Web do
     pipe_through(:browser)
 
     get("/", HomeController, :index)
