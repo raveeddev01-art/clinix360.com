@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias StitchConnect.MessageLinkPreviewGenerator
 
   alias StitchConnect.Web.{

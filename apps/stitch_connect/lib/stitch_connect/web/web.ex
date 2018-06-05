@@ -5,7 +5,7 @@ defmodule StitchConnect.Web do
 
   This can be used in your application as:
 
-      use StitchConnect.Web, :controller
+      use Stitch.Web, :controller
       use StitchConnect.Web, :view
 
   The definitions below will be executed for every view,

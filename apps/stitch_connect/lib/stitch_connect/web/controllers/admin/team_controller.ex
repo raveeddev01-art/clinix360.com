@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Admin.TeamController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.Paginator
   alias Stitch.TeamQueries
 
@@ -11,6 +11,7 @@ defmodule StitchConnect.Web.Admin.TeamController do
     %{data: teams, meta: meta} = Paginator.new(query, skip: skip, limit: limit)
     render(conn, "index.html", teams: teams, meta: meta)
   end
+
   def index(conn, _params) do
     query = TeamQueries.admin_teams_query()
     %{data: teams, meta: meta} = Paginator.new(query, [])

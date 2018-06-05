@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.MessageController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.{GroupAuthorization, MessageQueries, Message.Upload}
 
   def download(conn, %{"id" => message_id}) do

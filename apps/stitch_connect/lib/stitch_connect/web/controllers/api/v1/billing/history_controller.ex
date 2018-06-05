@@ -1,8 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.Billing.HistoryController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.Billing
 
-  action_fallback StitchConnect.Web.Api.FallbackController
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def index(conn, _params) do
     team = conn.assigns.team

@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.StripeWebhookController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
 
@@ -11,6 +11,7 @@ defmodule StitchConnect.Web.StripeWebhookController do
       _ -> json(conn, %{})
     end
   end
+
   def event(conn, _) do
     json(conn, %{})
   end

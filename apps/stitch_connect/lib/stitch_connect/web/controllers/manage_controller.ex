@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.ManageController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias StitchConnect.Web.PageService
 
   def index(conn, _params) do

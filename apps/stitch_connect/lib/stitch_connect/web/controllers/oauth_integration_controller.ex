@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.OAuthIntegrationController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.Drchrono
   alias Stitch.{Accounts.User, Team, Integration, IntegrationQueries}
 

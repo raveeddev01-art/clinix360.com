@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.IntegrationController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
 
   alias Stitch.{
     Integration,

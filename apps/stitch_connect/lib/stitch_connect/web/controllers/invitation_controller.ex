@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.InvitationController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
 
   def accept(conn, %{"token" => invite_token}) do
     with {:ok, invitation} <- Stitch.Invitation.get_by_invite_token(invite_token) do

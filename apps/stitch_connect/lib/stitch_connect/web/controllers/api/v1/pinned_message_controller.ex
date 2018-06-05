@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.PinnedMessageController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.{Repo, Group, GroupAuthorization, MessageQueries}
 
   def index(conn, %{"group_id" => group_id} = params) do

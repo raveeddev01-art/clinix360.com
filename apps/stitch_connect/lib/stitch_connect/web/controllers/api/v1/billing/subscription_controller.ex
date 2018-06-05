@@ -1,9 +1,9 @@
 defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias StitchConnect.Web.ErrorView
   alias Stitch.Billing
 
-  action_fallback StitchConnect.Web.Api.FallbackController
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def show(conn, _params) do
     team = conn.assigns.team
@@ -14,6 +14,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
   def update(conn, params) do
     team = conn.assigns.team
     subscription = Billing.get_subscription(team)
+
     with {:ok, subscription} <- Billing.modify_subscription(subscription, params) do
       render(conn, "show.json", subscription: subscription)
     else
@@ -21,13 +22,16 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422", errors: "At least one card on file is required.")
-      error -> error
+
+      error ->
+        error
     end
   end
 
   def cancel(conn, _) do
     team = conn.assigns.team
     subscription = Billing.get_subscription(team)
+
     with {:ok, subscription} <- Billing.cancel_subscription(subscription) do
       render(conn, "show.json", subscription: subscription)
     else
@@ -40,13 +44,16 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422", errors: "Cannot cancel a free subscription.")
-      error -> error
+
+      error ->
+        error
     end
   end
 
   def renew(conn, _) do
     team = conn.assigns.team
     subscription = Billing.get_subscription(team)
+
     with {:ok, subscription} <- Billing.renew_subscription(subscription) do
       render(conn, "show.json", subscription: subscription)
     else
@@ -54,7 +61,9 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422", errors: "Cannot renew a free subscription.")
-      error -> error
+
+      error ->
+        error
     end
   end
 end

@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.ExportController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.Exports
 
   def index(conn, _params) do
@@ -10,6 +10,7 @@ defmodule StitchConnect.Web.Api.V1.ExportController do
 
   def create(conn, _params) do
     team = conn.assigns.team
+
     if Exports.authorized_to_create_export?(team) do
       {:ok, export} = Exports.create_export(team)
       Exports.schedule_export(team, export)
@@ -20,5 +21,4 @@ defmodule StitchConnect.Web.Api.V1.ExportController do
       |> render("429.json")
     end
   end
-
 end

@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.SessionLockController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias Stitch.Accounts.ActivityTracker
 
   def lock(conn, _) do
@@ -13,8 +13,9 @@ defmodule StitchConnect.Web.Api.V1.SessionLockController do
     team = conn.assigns.team
 
     if pin == user.pin ||
-      Stitch.User.Authentication.validate_email_and_password(user.email, pin, team) do
+         Stitch.User.Authentication.validate_email_and_password(user.email, pin, team) do
       ActivityTracker.async_update_activity(user)
+
       conn
       |> put_session(:locked, false)
       |> json(nil)

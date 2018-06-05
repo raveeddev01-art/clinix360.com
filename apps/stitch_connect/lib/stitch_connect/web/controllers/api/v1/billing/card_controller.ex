@@ -1,9 +1,9 @@
 defmodule StitchConnect.Web.Api.V1.Billing.CardController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias StitchConnect.Web.ErrorView
   alias Stitch.Billing
 
-  action_fallback StitchConnect.Web.Api.FallbackController
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def index(conn, _params) do
     team = conn.assigns.team
@@ -13,6 +13,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardController do
 
   def create(conn, params) do
     team = conn.assigns.team
+
     with {:ok, card} <- Billing.add_card(team, params["source_token"]) do
       conn
       |> put_status(:created)
@@ -22,18 +23,23 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422", errors: %{"source_token" => ["is invalid"]})
-      error -> error
+
+      error ->
+        error
     end
   end
 
   def update(conn, %{"id" => card_id, "default" => true}) do
     team = conn.assigns.team
+
     with {:ok, card} <- Billing.set_card_as_default(team, card_id) do
       render(conn, "show.json", card: card)
     end
   end
+
   def update(conn, _) do
     errors = %{"default" => ["must be set to `true`"]}
+
     conn
     |> put_status(:unprocessable_entity)
     |> render(ErrorView, :"422", errors: errors)
@@ -51,7 +57,9 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422", errors: "Cannot delete the default card.")
-      error -> error
+
+      error ->
+        error
     end
   end
 end

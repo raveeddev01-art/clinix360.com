@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
-  use StitchConnect.Web, :controller
+  use Stitch.Web, :controller
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
   alias StitchConnect.Web.{EventsChannel, TeamChannel, GroupChannel}
   alias Stitch.{Group, GroupQueries, GroupAuthorization, SystemMessages}
