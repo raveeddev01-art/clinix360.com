@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.GroupController.HideTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
   alias Stitch.{Group, GroupUser, Repo}
 
   describe "PUT /api/v1/groups/:id/hide" do

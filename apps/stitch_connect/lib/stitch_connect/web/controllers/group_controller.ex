@@ -15,8 +15,7 @@ defmodule StitchConnect.Web.GroupController do
 
         redirect(
           conn,
-          to:
-            StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
+          to: Stitch.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
         )
     end
   end

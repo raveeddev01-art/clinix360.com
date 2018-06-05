@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.UserControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   import Phoenix.ChannelTest
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.Repo
   alias Stitch.Accounts.User
 
@@ -325,10 +325,10 @@ defmodule StitchConnect.Web.UserControllerTest do
         |> json_response(200)
 
       assert [
-        %{"furqan@mango.com" => true},
-        %{"furqan@apple.com" => true},
-        %{"furqan@banana.com" => true},
-      ] == result
+               %{"furqan@mango.com" => true},
+               %{"furqan@apple.com" => true},
+               %{"furqan@banana.com" => true}
+             ] == result
     end
 
     test "process multi invalid email format", %{conn: conn} do
@@ -339,11 +339,11 @@ defmodule StitchConnect.Web.UserControllerTest do
         |> post(api_v1_user_path(conn, :validate_emails, params))
         |> json_response(200)
 
-        assert [
-          %{"furqan@apple.com" => true},
-          %{"furqanmango.com" => "Email has invalid format"},
-          %{"furqan@sina.com" => "We do not allow emails from sina.com"},
-        ] == result
+      assert [
+               %{"furqan@apple.com" => true},
+               %{"furqanmango.com" => "Email has invalid format"},
+               %{"furqan@sina.com" => "We do not allow emails from sina.com"}
+             ] == result
     end
   end
 
@@ -596,31 +596,54 @@ defmodule StitchConnect.Web.UserControllerTest do
   describe "PUT /users/:id/update_password" do
     test "updates user password", %{conn: conn} do
       team = insert(:team)
-      user = insert(:user, team: team, password_hash: Stitch.User.Authentication.hash_password("Password!1"))
+
+      user =
+        insert(
+          :user,
+          team: team,
+          password_hash: Stitch.User.Authentication.hash_password("Password!1")
+        )
+
       @endpoint.subscribe("events:#{user.id}")
 
       json =
         conn
         |> with_team_subdomain(team)
         |> with_api_user(user)
-        |> put(Routes.api_v1_user_path(conn, :update_password, user.id), %{old_password: "Password!1", new_password: "Password!2"})
+        |> put(Routes.api_v1_user_path(conn, :update_password, user.id), %{
+          old_password: "Password!1",
+          new_password: "Password!2"
+        })
         |> json_response(200)
 
       user = Stitch.UserQueries.get_by_id(user.id)
       assert %{"token" => token} = json
       assert token == user.token
-      assert_broadcast "logout", %{logout_from_all_sessions: true, current_session_id: _current_session_id}
+
+      assert_broadcast("logout", %{
+        logout_from_all_sessions: true,
+        current_session_id: _current_session_id
+      })
     end
 
     test "when new password is same as old", %{conn: conn} do
       team = insert(:team)
-      user = insert(:user, team: team, password_hash: Stitch.User.Authentication.hash_password("Password!1"))
+
+      user =
+        insert(
+          :user,
+          team: team,
+          password_hash: Stitch.User.Authentication.hash_password("Password!1")
+        )
 
       json =
         conn
         |> with_team_subdomain(team)
         |> with_api_user(user)
-        |> put(Routes.api_v1_user_path(conn, :update_password, user.id), %{old_password: "Password!1", new_password: "Password!1"})
+        |> put(Routes.api_v1_user_path(conn, :update_password, user.id), %{
+          old_password: "Password!1",
+          new_password: "Password!1"
+        })
         |> json_response(422)
 
       assert json["errors"]["password"] == ["The new password must be different from the old one"]
@@ -628,13 +651,22 @@ defmodule StitchConnect.Web.UserControllerTest do
 
     test "when the old password is invalid", %{conn: conn} do
       team = insert(:team)
-      user = insert(:user, team: team, password_hash: Stitch.User.Authentication.hash_password("Password!1"))
+
+      user =
+        insert(
+          :user,
+          team: team,
+          password_hash: Stitch.User.Authentication.hash_password("Password!1")
+        )
 
       json =
         conn
         |> with_team_subdomain(team)
         |> with_api_user(user)
-        |> put(Routes.api_v1_user_path(conn, :update_password, user.id), %{old_password: "Password!2", new_password: "Password!1"})
+        |> put(Routes.api_v1_user_path(conn, :update_password, user.id), %{
+          old_password: "Password!2",
+          new_password: "Password!1"
+        })
         |> json_response(422)
 
       assert json["message"] == "Invalid password"

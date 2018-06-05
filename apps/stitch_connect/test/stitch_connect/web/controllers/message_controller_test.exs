@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.MessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   import Phoenix.ChannelTest, except: [connect: 2]
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
   alias Stitch.{MessageQueries}
 
   describe "POST /api/v1/groups/:group_id/messages" do
@@ -32,10 +32,11 @@ defmodule StitchConnect.Web.MessageControllerTest do
           text_content: "lorem ipsum"
         }
       }
+
       conn = post(conn, api_v1_message_path(conn, :create, group), payload)
 
-      assert_broadcast "new_msg", msg_json
-      assert_broadcast "new_message", msg2_json
+      assert_broadcast("new_msg", msg_json)
+      assert_broadcast("new_message", msg2_json)
       assert msg_json.text_content == "lorem ipsum"
       assert msg2_json.id == msg_json.id
 
@@ -54,10 +55,11 @@ defmodule StitchConnect.Web.MessageControllerTest do
           fields: %{
             filename: "foobar.pdf",
             mimetype: "pdf",
-            size_in_bytes: 123948
+            size_in_bytes: 123_948
           }
         }
       }
+
       conn = post(conn, api_v1_message_path(conn, :create, group), payload)
 
       assert response = json_response(conn, 201)
@@ -74,6 +76,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
           text_content: ""
         }
       }
+
       conn = post(conn, api_v1_message_path(conn, :create, group), payload)
       assert response = json_response(conn, 422)
       assert response["message"] == "Text content can't be blank"
@@ -86,19 +89,26 @@ defmodule StitchConnect.Web.MessageControllerTest do
           fields: %{}
         }
       }
+
       conn = post(conn, api_v1_message_path(conn, :create, group), payload)
       assert response = json_response(conn, 422)
       assert response["message"] == "Type is not supported"
     end
 
-    test "restricts guests from create messages in groups they aren't a member of", %{conn: conn, team: team, group: group} do
+    test "restricts guests from create messages in groups they aren't a member of", %{
+      conn: conn,
+      team: team,
+      group: group
+    } do
       payload = %{
         message: %{
           type: "user_message",
           text_content: "lorem ipsum"
         }
       }
+
       restricted_group = insert(:group, team: team)
+
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [restricted_group.id])
         insert(:group_user, group: restricted_group, user: guest)
@@ -141,9 +151,12 @@ defmodule StitchConnect.Web.MessageControllerTest do
         term: "lorem",
         limit: 2
       }
+
       conn = post(conn, api_v1_message_path(conn, :search), payload)
       assert response = json_response(conn, 200)
-      assert [%{"text_content" => "lorem ipsum 6"}, %{"text_content" => "lorem ipsum 5"}] = response
+
+      assert [%{"text_content" => "lorem ipsum 6"}, %{"text_content" => "lorem ipsum 5"}] =
+               response
     end
 
     test "with limit and skip", %{conn: conn} do
@@ -152,13 +165,20 @@ defmodule StitchConnect.Web.MessageControllerTest do
         limit: 2,
         skip: 2
       }
+
       conn = post(conn, api_v1_message_path(conn, :search), payload)
       assert response = json_response(conn, 200)
-      assert [%{"text_content" => "lorem ipsum 4"}, %{"text_content" => "lorem ipsum 3"}] = response
+
+      assert [%{"text_content" => "lorem ipsum 4"}, %{"text_content" => "lorem ipsum 3"}] =
+               response
     end
 
-    test "restricts guest from viewing messages in groups they aren't members of", %{conn: conn, team: team} do
+    test "restricts guest from viewing messages in groups they aren't members of", %{
+      conn: conn,
+      team: team
+    } do
       restricted_group = insert(:group, team: team)
+
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [restricted_group.id])
         insert(:message, user: guest, group: restricted_group, text_content: "test")

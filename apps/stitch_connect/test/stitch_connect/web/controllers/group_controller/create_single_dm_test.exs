@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
   use StitchConnect.Web.ConnCase, async: true
   import Phoenix.ChannelTest
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/dm" do
     setup %{conn: conn} do
@@ -36,16 +36,27 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
       assert %{"message" => "user_ids param should contain 2 ids"} = json
     end
 
-    test "gives error when there are more than 2 user_ids", %{conn: conn, bob: bob, joe: joe, tim: tim} do
+    test "gives error when there are more than 2 user_ids", %{
+      conn: conn,
+      bob: bob,
+      joe: joe,
+      tim: tim
+    } do
       json =
         conn
-        |> post(api_v1_group_path(conn, :create_single_dm), %{"user_ids" => [bob.id, joe.id, tim.id]})
+        |> post(api_v1_group_path(conn, :create_single_dm), %{
+          "user_ids" => [bob.id, joe.id, tim.id]
+        })
         |> json_response(:bad_request)
 
       assert %{"message" => "user_ids param should contain 2 ids"} = json
     end
 
-    test "gives error when users_ids is neither the current user's", %{conn: conn, joe: joe, tim: tim} do
+    test "gives error when users_ids is neither the current user's", %{
+      conn: conn,
+      joe: joe,
+      tim: tim
+    } do
       json =
         conn
         |> post(api_v1_group_path(conn, :create_single_dm), %{"user_ids" => [joe.id, tim.id]})
@@ -63,20 +74,20 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
       expected_slug = "__dm:#{bob.id}.#{joe.id}"
 
       assert %{
-        "id" => _,
-        "name" => _,
-        "slug" => ^expected_slug,
-        "public" => false,
-        "is_favorite" => false,
-        "description" => nil,
-        "joined" => true,
-        "users" => [_, _],
-        "type" => "dm",
-        "user_count" => 2,
-        "unread_messages_count" => 0,
-        "mentions_count" => 0,
-        "last_read_at" => _
-      } = json
+               "id" => _,
+               "name" => _,
+               "slug" => ^expected_slug,
+               "public" => false,
+               "is_favorite" => false,
+               "description" => nil,
+               "joined" => true,
+               "users" => [_, _],
+               "type" => "dm",
+               "user_count" => 2,
+               "unread_messages_count" => 0,
+               "mentions_count" => 0,
+               "last_read_at" => _
+             } = json
     end
 
     test "returns DM when DM already exists", %{conn: conn, bob: bob, joe: joe} do
@@ -92,37 +103,45 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
       expected_slug = "__dm:#{bob.id}.#{joe.id}"
 
       assert %{
-        "id" => ^group_id,
-        "name" => _,
-        "slug" => ^expected_slug,
-        "public" => false,
-        "is_favorite" => false,
-        "is_hidden" => false,
-        "description" => nil,
-        "joined" => true,
-        "users" => [_, _],
-        "type" => "dm",
-        "user_count" => 2,
-        "unread_messages_count" => 0,
-        "mentions_count" => 0,
-        "last_read_at" => _
-      } = json
+               "id" => ^group_id,
+               "name" => _,
+               "slug" => ^expected_slug,
+               "public" => false,
+               "is_favorite" => false,
+               "is_hidden" => false,
+               "description" => nil,
+               "joined" => true,
+               "users" => [_, _],
+               "type" => "dm",
+               "user_count" => 2,
+               "unread_messages_count" => 0,
+               "mentions_count" => 0,
+               "last_read_at" => _
+             } = json
     end
 
-    test "broadcast event to all users in the group on successful create", %{conn: conn, bob: bob, joe: joe} do
-      user_ids = Enum.map([bob, joe], &(&1.id))
-      Enum.each(user_ids, &(@endpoint.subscribe("events:#{&1}")))
+    test "broadcast event to all users in the group on successful create", %{
+      conn: conn,
+      bob: bob,
+      joe: joe
+    } do
+      user_ids = Enum.map([bob, joe], & &1.id)
+      Enum.each(user_ids, &@endpoint.subscribe("events:#{&1}"))
 
       %{"id" => group_id} =
         conn
         |> post(api_v1_group_path(conn, :create_single_dm), %{"user_ids" => user_ids})
         |> json_response(200)
 
-      assert_broadcast "created_group", %{id: ^group_id, name: "Bob Dylan"}
-      assert_broadcast "created_group", %{id: ^group_id, name: "Joe Schmo"}
+      assert_broadcast("created_group", %{id: ^group_id, name: "Bob Dylan"})
+      assert_broadcast("created_group", %{id: ^group_id, name: "Joe Schmo"})
     end
 
-    test "allows guests to invite users from mutually shared groups", %{conn: conn, team: team, bob: bob} do
+    test "allows guests to invite users from mutually shared groups", %{
+      conn: conn,
+      team: team,
+      bob: bob
+    } do
       group = insert(:group, team: team)
       guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
       insert(:group_user, group: group, user: bob)
@@ -136,7 +155,11 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
       assert json_response(conn, 200)
     end
 
-    test "errors when guests invite users from non-mutually shared groups", %{conn: conn, team: team, bob: bob} do
+    test "errors when guests invite users from non-mutually shared groups", %{
+      conn: conn,
+      team: team,
+      bob: bob
+    } do
       group = insert(:group, team: team)
       guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
       insert(:group_user, group: group, user: guest)

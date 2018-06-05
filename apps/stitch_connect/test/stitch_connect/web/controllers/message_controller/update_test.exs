@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.MessageController.UpdateTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
   import Phoenix.ChannelTest, except: [connect: 2]
 
   setup %{conn: conn} do
@@ -31,7 +31,7 @@ defmodule StitchConnect.Web.MessageController.UpdateTest do
       })
       |> json_response(200)
 
-    assert_broadcast "edit_msg", message
+    assert_broadcast("edit_msg", message)
     assert message.text_content == "new message text"
 
     assert json["text_content"] == "new message text"
@@ -44,7 +44,8 @@ defmodule StitchConnect.Web.MessageController.UpdateTest do
     insert(:group_user, user: user, group: group)
     message = insert(:message, user: user, group: group)
 
-    json = conn
+    json =
+      conn
       |> put(api_v1_message_path(conn, :update, message), %{
         message: %{
           text_content: "new message text"

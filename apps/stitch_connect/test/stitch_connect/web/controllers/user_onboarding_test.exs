@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
   use Bamboo.Test
   import Ecto.Query
   alias Stitch.Web.Router.Helpers, as: Routes
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: SubdomainRoutes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: SubdomainRoutes
   alias Stitch.{Accounts.User, Invitation, Repo, Group}
 
   describe "PATCH /users/:id/complete-onboarding" do

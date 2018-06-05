@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.MessageController.DeleteTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
   import Phoenix.ChannelTest, except: [connect: 2]
 
   setup %{conn: conn} do
@@ -29,8 +29,8 @@ defmodule StitchConnect.Web.MessageController.DeleteTest do
     |> delete(api_v1_message_path(conn, :delete, message))
     |> response(204)
 
-    assert_broadcast "delete_msg", %{id: message_id_1}
-    assert_broadcast "message_deleted", %{id: message_id_2}
+    assert_broadcast("delete_msg", %{id: message_id_1})
+    assert_broadcast("message_deleted", %{id: message_id_2})
 
     assert message.id == message_id_1
     assert message.id == message_id_2
@@ -47,8 +47,8 @@ defmodule StitchConnect.Web.MessageController.DeleteTest do
       |> delete(api_v1_message_path(conn, :delete, message))
       |> json_response(401)
 
-    refute_broadcast "delete_msg", %{}
-    refute_broadcast "message_deleted", %{}
+    refute_broadcast("delete_msg", %{})
+    refute_broadcast("message_deleted", %{})
 
     assert json["message"] == "You can't delete other users' messages"
     refute Stitch.MessageQueries.get_by_id(message.id) == nil

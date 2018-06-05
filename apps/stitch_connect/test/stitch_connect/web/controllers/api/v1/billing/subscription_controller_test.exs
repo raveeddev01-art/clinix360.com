@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "GET /api/v1/billing/subscription" do
     setup %{conn: conn} do
@@ -42,13 +42,13 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
 
   describe "PUT /api/v1/billing/subscription" do
     test "can convert from a free tier to a paid tier", %{conn: conn} do
-
       subscription = insert(:free_subscription)
       team = subscription.team
       insert(:card, team: team)
       user = insert(:user, team: team, roles: ["admin"])
 
       params = %{tier: "STANDARD", renewal_frequency: "MONTHLY"}
+
       conn =
         conn
         |> with_team_subdomain(team)
@@ -68,6 +68,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       user = insert(:user, team: team, roles: ["admin"])
 
       params = %{tier: "PREMIUM", renewal_frequency: "MONTHLY"}
+
       conn =
         conn
         |> with_team_subdomain(team)
@@ -109,6 +110,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       user = insert(:user, team: team, roles: ["member"])
 
       params = %{tier: "STANDARD", renewal_frequency: "MONTHLY"}
+
       conn =
         conn
         |> with_team_subdomain(team)
@@ -125,6 +127,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       user = insert(:user, team: team, roles: ["admin"])
 
       params = %{tier: "STANDARD", renewal_frequency: "MONTHLY"}
+
       conn =
         conn
         |> with_team_subdomain(team)

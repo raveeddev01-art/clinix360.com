@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.PasswordResetTest do
   import Phoenix.ChannelTest
   use Bamboo.Test
   alias StitchConnect.Web.Api.V1.{AuthenticationView}
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.Accounts.PasswordResetToken
   alias Stitch.Repo
 
@@ -24,7 +24,7 @@ defmodule StitchConnect.Web.PasswordResetTest do
       assert %{"status" => "ok"} = json
       assert [password_reset_token] = Repo.all(PasswordResetToken)
       reset_link = AuthenticationView.reset_password_link(password_reset_token, conn)
-      assert_delivered_email Stitch.Accounts.Email.reset_password_email(user, reset_link)
+      assert_delivered_email(Stitch.Accounts.Email.reset_password_email(user, reset_link))
     end
 
     test "when email doesn't exist", %{conn: conn} do
@@ -72,17 +72,27 @@ defmodule StitchConnect.Web.PasswordResetTest do
 
       json =
         conn
-        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password..123"})
+        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{
+          token: password_reset_token.token,
+          password: "Password..123"
+        })
         |> json_response(200)
 
       assert %{"message" => "Password was successfully changed"} = json
       assert [] = Repo.all(PasswordResetToken)
-      assert_broadcast "logout", %{logout_from_all_sessions: true}
+      assert_broadcast("logout", %{logout_from_all_sessions: true})
     end
 
     test "when new password is same as old", %{conn: conn} do
       team = insert(:team)
-      user = insert(:user, team: team, password_hash: Stitch.User.Authentication.hash_password("Password!1"))
+
+      user =
+        insert(
+          :user,
+          team: team,
+          password_hash: Stitch.User.Authentication.hash_password("Password!1")
+        )
+
       password_reset_token = insert(:password_reset_token, user: user)
 
       conn =
@@ -91,7 +101,10 @@ defmodule StitchConnect.Web.PasswordResetTest do
 
       json =
         conn
-        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password!1"})
+        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{
+          token: password_reset_token.token,
+          password: "Password!1"
+        })
         |> json_response(422)
 
       assert json["errors"]["password"] == ["The new password must be different from the old one"]
@@ -109,14 +122,20 @@ defmodule StitchConnect.Web.PasswordResetTest do
 
       json =
         conn
-        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password..123"})
+        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{
+          token: password_reset_token.token,
+          password: "Password..123"
+        })
         |> json_response(200)
 
       assert %{"message" => "Password was successfully changed"} = json
 
       json =
         conn
-        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password..123"})
+        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{
+          token: password_reset_token.token,
+          password: "Password..123"
+        })
         |> json_response(404)
 
       assert %{"message" => "Token is invalid or already used"} = json
@@ -192,7 +211,9 @@ defmodule StitchConnect.Web.PasswordResetTest do
     test "token's activation date is expired", %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team)
-      password_reset_token = insert(:password_reset_token, user: user, activated_at: half_an_hour_ago())
+
+      password_reset_token =
+        insert(:password_reset_token, user: user, activated_at: half_an_hour_ago())
 
       conn =
         conn
@@ -206,6 +227,6 @@ defmodule StitchConnect.Web.PasswordResetTest do
     end
   end
 
-  defp day_ago, do: Timex.shift(NaiveDateTime.utc_now, days: -1)
-  defp half_an_hour_ago, do: Timex.shift(NaiveDateTime.utc_now, minutes: -30)
+  defp day_ago, do: Timex.shift(NaiveDateTime.utc_now(), days: -1)
+  defp half_an_hour_ago, do: Timex.shift(NaiveDateTime.utc_now(), minutes: -30)
 end

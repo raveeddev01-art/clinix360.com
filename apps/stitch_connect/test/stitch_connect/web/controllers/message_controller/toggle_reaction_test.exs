@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.MessageController.ToggleReactionTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
   import Phoenix.ChannelTest, except: [connect: 2]
 
   setup %{conn: conn} do
@@ -27,7 +27,7 @@ defmodule StitchConnect.Web.MessageController.ToggleReactionTest do
       |> json_response(200)
 
     assert %{"status" => "ok"} = json
-    assert_broadcast "reactions_updated", %{message_id: message_id, reactions_web: reactions_web}
+    assert_broadcast("reactions_updated", %{message_id: message_id, reactions_web: reactions_web})
     assert message.id == message_id
     assert [user_id] = reactions_web[":cat:"]
     assert user_id == user.id

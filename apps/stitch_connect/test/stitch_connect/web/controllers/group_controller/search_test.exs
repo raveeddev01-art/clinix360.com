@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.GroupController.SearchTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/search" do
     setup %{conn: conn} do
@@ -46,10 +46,12 @@ defmodule StitchConnect.Web.GroupController.SearchTest do
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
         insert(:group_user, group: group, user: guest)
+
         conn =
           conn
           |> with_api_user(guest)
           |> post(api_v1_group_path(conn, :search), %{"term" => "test"})
+
         assert response = json_response(conn, 200)
         assert length(response) == 1
         assert Enum.at(response, 0)["id"] == group.id

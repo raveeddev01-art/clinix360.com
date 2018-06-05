@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.GroupController.InviteTest do
   use StitchConnect.Web.ConnCase
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/:id/invite" do
     setup %{conn: conn} do

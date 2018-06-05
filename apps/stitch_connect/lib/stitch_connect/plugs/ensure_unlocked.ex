@@ -1,4 +1,4 @@
-defmodule StitchConnect.Plug.EnsureUnlocked do
+defmodule Stitch.Plug.EnsureUnlocked do
   import Plug.Conn
 
   def init(default), do: default

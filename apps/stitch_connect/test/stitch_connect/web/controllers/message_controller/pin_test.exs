@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.MessageController.PinTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   setup %{conn: conn} do
     team = insert(:team)

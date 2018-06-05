@@ -27,7 +27,7 @@ defmodule StitchConnect.Web.AuthenticationController do
 
       redirect(
         conn,
-        to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
+        to: Stitch.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
       )
     else
       _error ->
@@ -52,7 +52,7 @@ defmodule StitchConnect.Web.AuthenticationController do
       conn
       |> login_user(user)
       |> redirect(
-        to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
+        to: Stitch.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
       )
     else
       _error ->

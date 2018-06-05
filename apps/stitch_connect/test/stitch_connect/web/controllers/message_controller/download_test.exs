@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.MessageController.DownloadTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   @url "https://s3/amazonaws.com/stitch-connect/some-file"
 
@@ -25,9 +25,16 @@ defmodule StitchConnect.Web.MessageController.DownloadTest do
       assert response["presigned_url"]
     end
 
-    test "restricts guests to downloading messages from groups they are members of", %{conn: conn, team: team, group: group, message: message} do
+    test "restricts guests to downloading messages from groups they are members of", %{
+      conn: conn,
+      team: team,
+      group: group,
+      message: message
+    } do
       other_group = insert(:group, team: team)
-      other_message = insert(:message, type: "upload", fields: %{"url" => @url}, group: other_group)
+
+      other_message =
+        insert(:message, type: "upload", fields: %{"url" => @url}, group: other_group)
 
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])

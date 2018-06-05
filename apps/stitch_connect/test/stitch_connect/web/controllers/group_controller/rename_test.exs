@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.GroupController.RenameTest do
   use StitchConnect.Web.ConnCase
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "PATCH /api/v1/groups/:id/rename" do
     setup %{conn: conn} do
@@ -45,7 +45,11 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
       assert response["message"] =~ "does not exist"
     end
 
-    test "doesn't allow admin to rename private group from another team", %{conn: conn, team: team, admin: admin} do
+    test "doesn't allow admin to rename private group from another team", %{
+      conn: conn,
+      team: team,
+      admin: admin
+    } do
       group = insert(:group, public: false)
 
       conn =
@@ -60,6 +64,7 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
 
     test "doesn't allow guests to rename groups", %{conn: base_conn, team: team, group: group} do
       other_group = insert(:group, team: team)
+
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
         insert(:group_user, group: group, user: guest)
@@ -69,7 +74,9 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
         assert response = json_response(conn, :forbidden)
         assert response["message"] =~ "not authorized"
 
-        conn = patch(base_conn, api_v1_group_path(base_conn, :rename, other_group), %{"name" => "Foo"})
+        conn =
+          patch(base_conn, api_v1_group_path(base_conn, :rename, other_group), %{"name" => "Foo"})
+
         assert response = json_response(conn, :not_found)
         assert response["message"] =~ "does not exist"
       end

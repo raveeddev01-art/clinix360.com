@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.GroupController.IndexTest do
   use StitchConnect.Web.ConnCase
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "GET /api/v1/groups" do
     setup %{conn: conn} do
@@ -44,7 +44,9 @@ defmodule StitchConnect.Web.GroupController.IndexTest do
       group1 = insert(:group, team: team)
       group2 = insert(:group, team: team)
 
-      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group1.id])
+      guest =
+        insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group1.id])
+
       insert(:group_user, group: group1, user: guest)
 
       base_conn = with_api_user(base_conn, guest)
@@ -72,21 +74,34 @@ defmodule StitchConnect.Web.GroupController.IndexTest do
         |> with_team_subdomain(team)
         |> with_user_session(user)
 
-      {:ok, conn: conn, default_group: default_group, public_group: public_group, private_group: private_group}
+      {:ok,
+       conn: conn,
+       default_group: default_group,
+       public_group: public_group,
+       private_group: private_group}
     end
 
-    test "redirects to default group when target group doesn't exist", %{conn: conn, default_group: default_group} do
+    test "redirects to default group when target group doesn't exist", %{
+      conn: conn,
+      default_group: default_group
+    } do
       conn = get(conn, group_path(conn, :index, "bad-id"))
       assert redirected_to(conn) == group_path(conn, :index, default_group.slug)
     end
 
-    test "redirects to default group when target group is private and user isn't a member",
-      %{conn: conn, default_group: default_group, private_group: private_group} do
+    test "redirects to default group when target group is private and user isn't a member", %{
+      conn: conn,
+      default_group: default_group,
+      private_group: private_group
+    } do
       conn = get(conn, group_path(conn, :index, private_group.slug))
       assert redirected_to(conn) == group_path(conn, :index, default_group.slug)
     end
 
-    test "renders the page for an existing public group", %{conn: conn, public_group: public_group} do
+    test "renders the page for an existing public group", %{
+      conn: conn,
+      public_group: public_group
+    } do
       expected_path = group_path(conn, :index, public_group.slug)
       conn = get(conn, expected_path)
       assert html_response(conn, 200) =~ "<div id=\"root\""

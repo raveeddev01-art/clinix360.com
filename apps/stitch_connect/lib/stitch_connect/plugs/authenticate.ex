@@ -1,8 +1,8 @@
-defmodule StitchConnect.Plug.Authenticate do
+defmodule Stitch.Plug.Authenticate do
   import Plug.Conn
   alias Stitch.UserQueries
   alias Stitch.Accounts.User
-  alias StitchConnect.Web.ControllerHelpers
+  alias Stitch.Web.ControllerHelpers
 
   def init(default), do: default
 

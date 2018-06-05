@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.GroupController.UsersTest do
   use StitchConnect.Web.ConnCase
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "GET /api/v1/groups/:id/users" do
     setup %{conn: conn} do
@@ -25,7 +25,11 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
       assert response["message"] =~ "does not exist"
     end
 
-    test "lists users when user isn't a member of a public group", %{conn: conn, team: team, joe: joe} do
+    test "lists users when user isn't a member of a public group", %{
+      conn: conn,
+      team: team,
+      joe: joe
+    } do
       group = insert(:group, team: team, public: true)
       insert(:group_user, group: group, user: joe)
 
@@ -34,7 +38,11 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
       assert [%{"username" => "joe"}] = response
     end
 
-    test "lists users when user is a member of a private group", %{conn: conn, team: team, bob: bob} do
+    test "lists users when user is a member of a private group", %{
+      conn: conn,
+      team: team,
+      bob: bob
+    } do
       group = insert(:group, team: team, public: false)
       insert(:group_user, group: group, user: bob)
 
@@ -43,7 +51,11 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
       assert [%{"username" => "bob"}] = response
     end
 
-    test "lists users when user is admin and isn't a member of a public group", %{conn: conn, team: team, admin: admin} do
+    test "lists users when user is admin and isn't a member of a public group", %{
+      conn: conn,
+      team: team,
+      admin: admin
+    } do
       group = insert(:group, team: team, public: true)
 
       conn =
@@ -55,7 +67,11 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
       assert response == []
     end
 
-    test "lists users when user is admin and isn't a member of a private group", %{conn: conn, team: team, admin: admin} do
+    test "lists users when user is admin and isn't a member of a private group", %{
+      conn: conn,
+      team: team,
+      admin: admin
+    } do
       group = insert(:group, team: team, public: false)
 
       conn =
@@ -67,7 +83,8 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
       assert response["message"] =~ "does not exist"
     end
 
-    test "gives error when user is admin and isn't a member of a public group belonging to another team", %{conn: conn, team: team, admin: admin} do
+    test "gives error when user is admin and isn't a member of a public group belonging to another team",
+         %{conn: conn, team: team, admin: admin} do
       conn =
         conn
         |> with_team_subdomain(team)
@@ -83,7 +100,15 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
     test "restricts guests to only their restricted groups", %{conn: base_conn, team: team} do
       restricted_group = insert(:group, team: team)
       other_group = insert(:group, team: team)
-      guest = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [restricted_group.id])
+
+      guest =
+        insert(
+          :user,
+          team: team,
+          roles: ["multi-room-guest"],
+          groups_as_guest: [restricted_group.id]
+        )
+
       insert(:group_user, user: guest, group: restricted_group)
 
       base_conn = with_api_user(base_conn, guest)

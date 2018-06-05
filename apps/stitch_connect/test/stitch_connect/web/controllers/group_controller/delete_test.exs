@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.GroupController.DeleteTest do
   use StitchConnect.Web.ConnCase
   import Phoenix.ChannelTest
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "DELETE /api/v1/groups/:id" do
     setup %{conn: conn} do
@@ -86,7 +86,11 @@ defmodule StitchConnect.Web.GroupController.DeleteTest do
       assert %{"message" => "You are not authorized to access this resource."} = json
     end
 
-    test "doesn't allow to remove a group when user is the creator but no longer a member", %{conn: conn, team: team, user: user} do
+    test "doesn't allow to remove a group when user is the creator but no longer a member", %{
+      conn: conn,
+      team: team,
+      user: user
+    } do
       group = insert(:group, creator: user, team: team)
 
       json =
@@ -98,7 +102,11 @@ defmodule StitchConnect.Web.GroupController.DeleteTest do
       assert %{"message" => "You are not authorized to access this resource."} = json
     end
 
-    test "doesn't allow full member to remove a group when he is a member of the group", %{conn: conn, user: user, team: team} do
+    test "doesn't allow full member to remove a group when he is a member of the group", %{
+      conn: conn,
+      user: user,
+      team: team
+    } do
       group = insert(:group, team: team, is_default: true)
       insert(:group_user, group: group, user: user)
 
@@ -111,7 +119,11 @@ defmodule StitchConnect.Web.GroupController.DeleteTest do
       assert %{"message" => "You are not authorized to access this resource."} = json
     end
 
-    test "doesn't allow admin to remove the default group", %{conn: conn, admin: admin, team: team} do
+    test "doesn't allow admin to remove the default group", %{
+      conn: conn,
+      admin: admin,
+      team: team
+    } do
       group = insert(:group, team: team, is_default: true)
 
       json =
@@ -139,8 +151,8 @@ defmodule StitchConnect.Web.GroupController.DeleteTest do
       assert %{"id" => group_id} = json
       assert group_id == group.id
 
-      assert_broadcast "deleted_group", %{group_id: ^group_id}
-      assert_broadcast "user_info", %{groups_as_guest: []}
+      assert_broadcast("deleted_group", %{group_id: ^group_id})
+      assert_broadcast("user_info", %{groups_as_guest: []})
     end
   end
 end

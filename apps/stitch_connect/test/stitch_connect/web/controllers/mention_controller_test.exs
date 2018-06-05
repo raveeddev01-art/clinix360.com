@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.MentionControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   describe "GET /api/v1/mentions" do
     setup %{conn: conn} do
@@ -11,10 +11,20 @@ defmodule StitchConnect.Web.Api.V1.MentionControllerTest do
       mentioned_user_ids = [mentioned_user.id]
 
       max_messages = 50
+
       messages =
         for i <- 1..max_messages, into: %{} do
           insert(:message, user: mentioned_user, group: group, text_content: "#{i}")
-          message = insert(:message, user: user, group: group, text_content: "@#{mentioned_user.username} #{i}", mentioned_user_ids: mentioned_user_ids)
+
+          message =
+            insert(
+              :message,
+              user: user,
+              group: group,
+              text_content: "@#{mentioned_user.username} #{i}",
+              mentioned_user_ids: mentioned_user_ids
+            )
+
           {i, message}
         end
 
@@ -28,6 +38,7 @@ defmodule StitchConnect.Web.Api.V1.MentionControllerTest do
 
     test "includes pagination metadata", %{conn: conn} do
       query_params = %{"skip" => 5, "limit" => 10}
+
       result =
         conn
         |> get(Routes.api_v1_mention_path(conn, :index), query_params)
@@ -47,6 +58,7 @@ defmodule StitchConnect.Web.Api.V1.MentionControllerTest do
         |> json_response(200)
 
       assert length(result["data"]) == 30
+
       for m <- result["data"] do
         assert m["id"] in expected_message_ids
       end
@@ -56,6 +68,7 @@ defmodule StitchConnect.Web.Api.V1.MentionControllerTest do
       expected_message_id = messages[50].id
 
       query_params = %{"limit" => 1}
+
       result =
         conn
         |> get(Routes.api_v1_mention_path(conn, :index), query_params)
@@ -69,12 +82,14 @@ defmodule StitchConnect.Web.Api.V1.MentionControllerTest do
       expected_message_ids = for {index, m} <- messages, index in 10..40, do: m.id
 
       query_params = %{"skip" => 10}
+
       result =
         conn
         |> get(Routes.api_v1_mention_path(conn, :index), query_params)
         |> json_response(200)
 
       assert length(result["data"]) == 30
+
       for m <- result["data"] do
         assert m["id"] in expected_message_ids
       end
@@ -84,12 +99,14 @@ defmodule StitchConnect.Web.Api.V1.MentionControllerTest do
       expected_message_ids = for {index, m} <- messages, index in 30..40, do: m.id
 
       query_params = %{"skip" => 10, "limit" => 10}
+
       result =
         conn
         |> get(Routes.api_v1_mention_path(conn, :index), query_params)
         |> json_response(200)
 
       assert length(result["data"]) == 10
+
       for m <- result["data"] do
         assert m["id"] in expected_message_ids
       end

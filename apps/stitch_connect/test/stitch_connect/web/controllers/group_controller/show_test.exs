@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.GroupController.ShowTest do
   use StitchConnect.Web.ConnCase
-  import StitchConnect.Web.SubdomainRouter.Helpers
+  import Stitch.Web.SubdomainRouter.Helpers
 
   describe "GET /api/v1/groups/:id" do
     setup %{conn: conn} do
@@ -25,7 +25,11 @@ defmodule StitchConnect.Web.GroupController.ShowTest do
       assert json_response(conn, :not_found)
     end
 
-    test "gets a private group by id if user is a member", %{conn: base_conn, team: team, user: user} do
+    test "gets a private group by id if user is a member", %{
+      conn: base_conn,
+      team: team,
+      user: user
+    } do
       group1 = insert(:group, team: team, public: false)
       group2 = insert(:group, team: team, public: false)
       insert(:group_user, user: user, group: group1)
