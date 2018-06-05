@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.ChannelAuthTest do
   use StitchConnect.Web.ChannelCase
-  alias StitchConnect.Web.UserSocket
+  alias Stitch.Web.UserSocket
 
   describe "connecting to socket with token" do
     test "connection denied with incorrect token" do
@@ -34,9 +34,9 @@ defmodule StitchConnect.Web.ChannelAuthTest do
       group = insert(:group, team: team)
       assert {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
 
-      ref = push socket1, "new_msg", %{text_content: "Hello, I'm not member"}
+      ref = push(socket1, "new_msg", %{text_content: "Hello, I'm not member"})
 
-      assert_reply ref, :error, reply
+      assert_reply(ref, :error, reply)
       assert reply.message == "Only members can write messages."
     end
 
@@ -45,7 +45,11 @@ defmodule StitchConnect.Web.ChannelAuthTest do
       assert %{message: "group not found"} == error
     end
 
-    test "only members can join private groups", %{socket1: socket1, private_group: group, user2: user2} do
+    test "only members can join private groups", %{
+      socket1: socket1,
+      private_group: group,
+      user2: user2
+    } do
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
       {:error, error2} = subscribe_and_join(socket2, "groups:#{group.slug}")
       assert %{message: "unauthorized"} == error2
@@ -53,7 +57,11 @@ defmodule StitchConnect.Web.ChannelAuthTest do
       assert {:ok, _, _} = subscribe_and_join(socket1, "groups:#{group.slug}")
     end
 
-    test "admins can join private groups", %{socket1: _socket1, private_group: group, user1: user1} do
+    test "admins can join private groups", %{
+      socket1: _socket1,
+      private_group: group,
+      user1: user1
+    } do
       {:ok, socket1} = connect(UserSocket, %{"authenticationToken" => user1.token})
       assert {:ok, _, _} = subscribe_and_join(socket1, "groups:#{group.slug}")
     end

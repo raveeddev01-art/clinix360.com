@@ -1,7 +1,7 @@
 defmodule Stitch.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :stitch_connect
 
-  socket("/socket", StitchConnect.Web.UserSocket)
+  socket("/socket", Stitch.Web.UserSocket)
 
   if Application.get_env(:stitch_connect, :sql_sandbox) do
     plug(Phoenix.Ecto.SQL.Sandbox)

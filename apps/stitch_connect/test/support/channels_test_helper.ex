@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.ChannelsTestHelper do
   use Phoenix.ChannelTest
-  alias StitchConnect.Web.UserSocket
+  alias Stitch.Web.UserSocket
   alias Stitch.{Repo, Group, GroupUser}
   import Stitch.Factory
 

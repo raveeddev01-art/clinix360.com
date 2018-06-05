@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.MessageReadStatusTest do
   use StitchConnect.Web.ChannelCase
-  alias StitchConnect.Web.UserSocket
+  alias Stitch.Web.UserSocket
   alias Stitch.Message
 
   setup [:create_users, :connect_socket, :create_group, :create_messages]
