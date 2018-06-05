@@ -16,12 +16,17 @@ defmodule StitchConnect.Plug.FileAuthenticate do
       nil ->
         conn
         |> Plug.Conn.put_session(:redirect_url, conn.request_path)
-        |> Phoenix.Controller.redirect(to: "/login")
+        |> Phoenix.Controller.redirect(external: login_url())
         |> halt
     end
   end
 
   def get_token_from_cookie_or_header(conn) do
     get_session(conn, :current_user_token) || conn.params["authenticationToken"]
+  end
+
+  def login_url do
+    struct_url = StitchConnect.Web.Endpoint.struct_url()
+    StitchConnect.Web.Router.Helpers.home_url(struct_url, :index)
   end
 end
