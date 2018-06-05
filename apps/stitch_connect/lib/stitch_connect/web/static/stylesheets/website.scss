@@ -158,7 +158,7 @@
   .subheader {
     color: #4c4c4c;
     background: #fff;
-    padding: 160px 0 110px;
+    padding: 130px 0 10px;
     @media (max-width: $screen-md) {
       padding: 130px 0 50px;
     }
@@ -786,10 +786,16 @@
   }
 
   //----------------- PRICING -----------------
+
   .pricing-page, .downloads-page {
     
     .pricing-content, .downloads-content {
       padding: 60px 0;
+
+      .product-icon {
+        font-size: 55px;
+        color: $brand-primary;
+      }
     }
 
     .nav-tabs {
@@ -844,7 +850,6 @@
     .tab-content {
       background: #fff;
       border: 1px solid #cacaca;
-      border-top: 0;
 
       h3 {
         font-size: 24px;
@@ -906,6 +911,12 @@
       .nav-tabs li a img {
         width: 72px;
       }
+    }
+  }
+
+  .pricing-page {
+    .tab-content {
+      border-top: 0px;
     }
   }
 
@@ -1277,12 +1288,12 @@
     }
 
     .navbar-brand {
-      padding: 12px 0;
+      padding: 15px 0;
       margin-left: 0;
 
       img {
         width: auto;
-        height: 26px;
+        height: 22px;
       }
     }
   }

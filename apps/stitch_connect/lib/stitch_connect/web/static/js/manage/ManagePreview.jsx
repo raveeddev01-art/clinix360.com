@@ -29,7 +29,7 @@ class ManagePreview extends Component {
         moduleDescription={this.renderDescription()}
         requestUrl="https://teamstitch.typeform.com/to/Yt22AI"
         moduleName="Stitch Manage"
-        imageSrc="/images/manage-logo.png"
+        iconClass="fa fa-tasks"
       />
     );
   }

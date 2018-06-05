@@ -149,7 +149,10 @@ $dark-gray: #333;
   }
 
   .authentication-header {
-    height: 80px;
+    height: 110px;
+    @media(max-width: $screen-sm) {
+      height: 80px;
+    }
 
     .navbar-header {
       padding-left: 25px;
@@ -171,7 +174,10 @@ $dark-gray: #333;
   }
 
   .authentication-spacer {
-    height: 80px;
+    height: 110px;
+    @media(max-width: $screen-sm) {
+      height: 80px;
+    }
   }
 
   .authentication-body {
@@ -215,7 +221,10 @@ $dark-gray: #333;
     max-width: 1230px;
     position: relative;
     margin: 0 auto;
-    margin-bottom: 60px;
+
+    @media(max-width: $screen-sm) {
+      margin-bottom: 60px;
+    }
 
     display: flex;
     justify-content: center;
