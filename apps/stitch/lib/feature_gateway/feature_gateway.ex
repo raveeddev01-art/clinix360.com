@@ -20,9 +20,9 @@ defmodule Stitch.FeatureGateway do
       ["tier.premium", "connect.guests", "engage.patients"]
   """
   def available_features(%Team{} = team) do
-    team = Repo.preload(team, :subscription)
+    team = Repo.preload(team, [:subscription, :team_features])
 
-    []
+    Enum.map(team.team_features, & &1.name)
     |> Connect.add_team_features(team)
     |> Engage.add_team_features(team)
     |> Manage.add_team_features(team)
