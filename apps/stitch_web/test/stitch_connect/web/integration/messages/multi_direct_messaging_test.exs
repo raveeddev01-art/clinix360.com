@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Messages.MultiDirectMessagingTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   defp message(msg), do: css(".message-container > .message", text: msg)
 

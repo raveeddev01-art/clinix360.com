@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Messages.StarTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   @tag :start_session
 #   test "user can star messages", %{session: session} do
