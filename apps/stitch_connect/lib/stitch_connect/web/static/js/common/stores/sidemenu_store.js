@@ -8,6 +8,7 @@ import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 import browserDetails from "lib/browser_details";
+import { isDev } from "lib/utils";
 
 import {
   NOTIFICATION_CARD_DURATION,
@@ -237,13 +238,15 @@ class SidemenuStore {
       return;
     }
 
+    const icon = isDev() ? "/notification-staging.png" : "/notification.png";
+
     const notification = new Notification(title, {
       body,
       tag,
       icon:
         window.electronApp && browserDetails.os === "Mac OS X"
           ? undefined
-          : "/favicon-192x192.png", // hide icon on mac electron
+          : icon, // hide icon on mac electron
       silent: true
     });
 
