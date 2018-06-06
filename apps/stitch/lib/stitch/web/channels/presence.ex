@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Presence do
+defmodule Stitch.Web.Presence do
   @moduledoc """
   Provides presence tracking to channels and processes.
 

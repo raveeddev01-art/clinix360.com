@@ -8,7 +8,7 @@ defmodule StitchConnect.Application do
     children = [
       # Start the endpoint when the application starts
       supervisor(Stitch.Web.Endpoint, []),
-      supervisor(StitchConnect.Web.Presence, []),
+      supervisor(Stitch.Web.Presence, []),
       worker(StitchConnect.MessageMailer, []),
       worker(Stitch.PresignedUrlCache, []),
       worker(StitchConnect.ActivityTrackerWorker, [])
