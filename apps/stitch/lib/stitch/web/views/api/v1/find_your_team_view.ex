@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.FindYourTeamView do
+defmodule Stitch.Web.Api.V1.FindYourTeamView do
   use Stitch.Web, :view
 
   def render("teams.json", %{teams: teams, login_token: login_token}) do

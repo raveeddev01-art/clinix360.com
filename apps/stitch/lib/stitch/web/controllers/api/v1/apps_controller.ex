@@ -1,6 +1,6 @@
-defmodule StitchConnect.Web.Api.V1.AppController do
+defmodule Stitch.Web.Api.V1.AppController do
   use Stitch.Web, :controller
-  alias Stitch.{App, AppQueries}
+  alias Stitch.AppQueries
 
   action_fallback(StitchConnect.Web.Api.FallbackController)
 
