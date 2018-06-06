@@ -24,8 +24,8 @@ defmodule Stitch.Drchrono.Token do
   end
 
   def create_access_token(integration, code) do
-    applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
-    applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
+    applicationHost = Application.fetch_env!(:stitch_web, :application_host)
+    applicationScheme = Application.fetch_env!(:stitch_web, :application_scheme)
 
     # https://bkkilaru.drchrono.com/api-docs/v2016_06/documentation#otoken
     params =
@@ -73,8 +73,8 @@ defmodule Stitch.Drchrono.Token do
   end
 
   def refresh_token(integration) do
-    applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
-    applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
+    applicationHost = Application.fetch_env!(:stitch_web, :application_host)
+    applicationScheme = Application.fetch_env!(:stitch_web, :application_scheme)
 
     params =
       [

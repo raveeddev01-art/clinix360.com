@@ -12,16 +12,16 @@ erl_crash.dump
 .env
 
 # Ignored compiled assets from stitch-connect app.
-/apps/stitch_connect/priv/static/
+/apps/stitch_web/priv/static/
 
 # Ignored integration test failures screenshots.
-/apps/stitch_connect/screenshots/
+/apps/stitch_web/screenshots/
 
 # Ignored webpack bundle statistics
-/apps/stitch_connect/stats.json
+/apps/stitch_web/stats.json
 
 # Ignored yarn logs
-/apps/stitch_connect/yarn-error.log
+/apps/stitch_web/yarn-error.log
 
 # Ignore Intellij IDEA files.
 .idea/
@@ -34,6 +34,6 @@ doc
 .DS_Store
 
 # integration test screenshots
-apps/stitch_connect/screenshots/
+apps/stitch_web/screenshots/
 
 dump.rdb
