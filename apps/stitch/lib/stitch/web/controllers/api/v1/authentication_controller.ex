@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.AuthenticationController do
+defmodule Stitch.Web.Api.V1.AuthenticationController do
   use Stitch.Web, :controller
   alias Stitch.User.{Authentication}
   alias Stitch.UserQueries

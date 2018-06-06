@@ -254,6 +254,9 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/teams/:id", TeamController, :show)
     put("/teams/:id", TeamController, :update)
+
+    post("/login", AuthenticationController, :submit_login)
+    post("/reset_password", AuthenticationController, :reset_password)
   end
 
   # API routes which need token.
@@ -261,9 +264,6 @@ defmodule Stitch.Web.SubdomainRouter do
     pipe_through(:api_auth)
 
     get("/invitations/:token", InvitationController, :show)
-
-    post("/login", AuthenticationController, :submit_login)
-    post("/reset_password", AuthenticationController, :reset_password)
   end
 
   # Anonymous routes.
