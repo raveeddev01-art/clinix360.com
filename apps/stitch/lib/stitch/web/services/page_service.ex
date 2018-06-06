@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.PageService do
+defmodule Stitch.Web.PageService do
   def app_params(conn) do
     conn |> app_params_map |> Poison.encode!()
   end

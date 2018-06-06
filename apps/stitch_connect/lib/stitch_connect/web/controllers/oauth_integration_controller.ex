@@ -14,7 +14,7 @@ defmodule StitchConnect.Web.OAuthIntegrationController do
          {:exists?, %Integration{} = integration} <-
            {:exists?, IntegrationQueries.find_by_webhook_token(webhook_token)},
          {:initialized?, :ok} <- {:initialized?, Drchrono.init_integration(integration, code)} do
-      subdomain_struct = StitchConnect.Web.PageService.subdomain_url_struct(team.slug)
+      subdomain_struct = Stitch.Web.PageService.subdomain_url_struct(team.slug)
 
       url =
         Stitch.Web.SubdomainRouter.Helpers.admin_integration_edit_url(
