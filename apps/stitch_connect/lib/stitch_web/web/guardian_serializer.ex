@@ -1,4 +1,4 @@
-defmodule Stitch.GuardianSerializer do
+defmodule Stitch.Web.GuardianSerializer do
   @behaviour Guardian.Serializer
 
   alias Stitch.Repo

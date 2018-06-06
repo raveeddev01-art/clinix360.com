@@ -52,7 +52,7 @@ config :guardian, Guardian,
   # optional
   verify_issuer: true,
   secret_key: "daUyE9JOpu2Wqj4XGJ8Z7Gj/BHtQi+jWyRDtk31HWtdYu4FTUE7aimyONoeGIIBQ",
-  serializer: Stitch.GuardianSerializer
+  serializer: Stitch.Web.GuardianSerializer
 
 config :phoenix, :filter_parameters, ["password", "pin"]
 
