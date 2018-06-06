@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.LeaveTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/:id/leave" do

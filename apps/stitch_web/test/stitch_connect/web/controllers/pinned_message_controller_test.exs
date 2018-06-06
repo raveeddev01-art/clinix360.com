@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.PinnedMessageControllerTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   test "GET /api/v1/pinned_messages", %{conn: conn} do

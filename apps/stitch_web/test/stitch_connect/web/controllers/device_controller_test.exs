@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.DeviceControllerTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   alias Stitch.Mobile
 
   describe "POST /api/v1/devices" do
@@ -27,12 +27,15 @@ defmodule StitchConnect.Web.DeviceControllerTest do
         |> json_response(:created)
 
       assert message == "Mobile device registered"
-      assert [%Mobile.Device{
-        user_id: ^user_id,
-        name: "Bob's iPad",
-        type: "ios",
-        token: "foobarbaz"
-      }] = Mobile.list_user_devices(bob.id)
+
+      assert [
+               %Mobile.Device{
+                 user_id: ^user_id,
+                 name: "Bob's iPad",
+                 type: "ios",
+                 token: "foobarbaz"
+               }
+             ] = Mobile.list_user_devices(bob.id)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -42,12 +45,12 @@ defmodule StitchConnect.Web.DeviceControllerTest do
         |> json_response(:unprocessable_entity)
 
       assert json == %{
-        "errors" => %{
-          "name" => ["can't be blank"],
-          "token" => ["can't be blank"]
-        },
-        "message" => "name can't be blank, and token can't be blank"
-      }
+               "errors" => %{
+                 "name" => ["can't be blank"],
+                 "token" => ["can't be blank"]
+               },
+               "message" => "name can't be blank, and token can't be blank"
+             }
     end
   end
 end

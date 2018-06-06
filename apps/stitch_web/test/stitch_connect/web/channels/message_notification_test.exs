@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.ChannelNotificationTest do
-  use StitchConnect.Web.ChannelCase
+  use Stitch.Web.ChannelCase
   alias Stitch.Web.UserSocket
 
   setup [:create_users, :connect_socket, :create_group, :create_dm]

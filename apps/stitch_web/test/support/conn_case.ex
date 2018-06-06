@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.ConnCase do
+defmodule Stitch.Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -24,7 +24,7 @@ defmodule StitchConnect.Web.ConnCase do
       import Stitch.Web.Router.Helpers
       import Stitch.Factory
 
-      import StitchConnect.Web.ConnCase,
+      import Stitch.Web.ConnCase,
         only: [
           with_session: 1,
           with_user_session: 2,

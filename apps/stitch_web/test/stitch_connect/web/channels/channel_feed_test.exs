@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.ChannelFeedTest do
-  use StitchConnect.Web.ChannelCase
+  use Stitch.Web.ChannelCase
   alias Stitch.Message
 
   setup [:create_users, :connect_socket, :create_group]

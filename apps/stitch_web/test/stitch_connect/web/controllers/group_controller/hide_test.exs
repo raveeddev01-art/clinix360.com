@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.HideTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
   alias Stitch.{Group, GroupUser, Repo}
 

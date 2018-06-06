@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.MentionControllerTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   describe "GET /api/v1/mentions" do

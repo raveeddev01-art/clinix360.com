@@ -1,5 +1,5 @@
-defmodule StitchConnect.Web.MessageController.IndexTest do
-  use StitchConnect.Web.ConnCase, async: true
+defmodule Stitch.Web.MessageController.IndexTest do
+  use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 
   describe "GET /api/v1/groups/:group_id/message" do

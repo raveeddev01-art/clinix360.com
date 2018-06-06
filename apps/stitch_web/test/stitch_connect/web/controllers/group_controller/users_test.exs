@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.UsersTest do
-  use StitchConnect.Web.ConnCase
+  use Stitch.Web.ConnCase
   import Stitch.Web.SubdomainRouter.Helpers
 
   describe "GET /api/v1/groups/:id/users" do
