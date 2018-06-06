@@ -76,13 +76,17 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   # API routes which don't need token.
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    get("/users/validate-username", UserController, :validate_username)
+    post("/users/exists", UserController, :exists?)
+    post("/users/validate-phone-number", UserController, :validate_phone_number)
+  end
+
+  # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
     get("/stitch-version", VersionController, :index)
-    get("/users/validate-username", UserController, :validate_username)
-    post("/users/exists", UserController, :exists?)
-    post("/users/validate-phone-number", UserController, :validate_phone_number)
     post("/invitations/accept/:token", InvitationController, :accept)
     get("/apps", AppController, :index)
     get("/news", NewsController, :index)
@@ -95,6 +99,19 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/session-unlock", SessionLockController, :unlock)
     get("/groups", GroupController, :index)
     get("/users/notification-preference", NotificationPreferenceController, :show_global)
+  end
+
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    get("/users/", UserController, :index)
+    post("/users/deactivate-my-account", UserController, :deactivate_my_account)
+    get("/users/:id", UserController, :show)
+    put("/users/:id", UserController, :update)
+    get("/users/:id/avatar", UserController, :profile_image)
+    put("/users/:id/update_password", UserController, :update_password)
+    put("/users/:id/upload_profile_image", UserController, :upload_profile_image)
+    delete("/users/:id/delete_profile_image", UserController, :delete_profile_image)
+    post("/users/search", UserController, :search)
+    post("/users/access", UserController, :access)
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -126,17 +143,7 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/integrations/:id/enable", IntegrationController, :enable)
     post("/integrations/:id/disable", IntegrationController, :disable)
 
-    get("/users/", UserController, :index)
     put("/users/notification-preference", NotificationPreferenceController, :update_global)
-    post("/users/deactivate-my-account", UserController, :deactivate_my_account)
-    get("/users/:id", UserController, :show)
-    put("/users/:id", UserController, :update)
-    get("/users/:id/avatar", UserController, :profile_image)
-    put("/users/:id/update_password", UserController, :update_password)
-    put("/users/:id/upload_profile_image", UserController, :upload_profile_image)
-    delete("/users/:id/delete_profile_image", UserController, :delete_profile_image)
-    post("/users/search", UserController, :search)
-    post("/users/access", UserController, :access)
 
     scope "/invitations" do
       get("/", InvitationController, :index)
@@ -174,10 +181,7 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/news/mark-as-read", NewsController, :mark_as_read)
   end
 
-  # Routes which needs admin role
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through(:team_admin_api)
-
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     # User Settings admin routes
     scope "/users/:id" do
       post("/activate", UserController, :activate)
@@ -186,6 +190,11 @@ defmodule Stitch.Web.SubdomainRouter do
       put("/revoke-admin", UserController, :revoke_admin)
       put("/promote-admin", UserController, :promote_admin)
     end
+  end
+
+  # Routes which needs admin role
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:team_admin_api)
 
     # Team Settings admin routes
     scope "/teams/:id" do

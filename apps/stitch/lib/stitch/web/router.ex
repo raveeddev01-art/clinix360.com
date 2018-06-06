@@ -33,12 +33,10 @@ defmodule Stitch.Web.Router do
     plug(Stitch.Plug.ApiAuthenticate, without_team_subdomain: true)
   end
 
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
-
-    post("/request-demo", UserController, :request_demo)
-
     # Onboarding routes for new users.
+    post("/request-demo", UserController, :request_demo)
     post("/users", UserController, :create)
     post("/users/validate-emails", UserController, :validate_emails)
     get("/users/validate-username", UserController, :validate_username)
@@ -47,6 +45,10 @@ defmodule Stitch.Web.Router do
     post("/users/submit-confirmation-code", UserController, :submit_confirmation_code)
     post("/users/send-invite", UserController, :send_invite)
     patch("/users/:id/complete-onboarding", UserController, :complete_onboarding)
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api)
 
     post("/teams", TeamController, :create)
     post("/teams/url-available", TeamController, :url_available)

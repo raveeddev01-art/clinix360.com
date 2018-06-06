@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.UserController do
+defmodule Stitch.Web.Api.V1.UserController do
   use Stitch.Web, :controller
   alias Stitch.Accounts.{Admin, User, Role}
   alias StitchConnect.Web.{TeamChannel, EventsChannel, GroupChannel, Endpoint}
