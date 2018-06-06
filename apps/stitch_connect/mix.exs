@@ -24,7 +24,7 @@ defmodule StitchConnect.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {StitchConnect.Application, []},
+      mod: {Stitch.Web.Application, []},
       extra_applications: [:logger, :runtime_tools, :appsignal]
     ]
   end
