@@ -41,9 +41,6 @@ defmodule StitchConnect.Web.MessageController.DownloadTest do
         insert(:group_user, group: group, user: guest)
         base_conn = with_api_user(conn, guest)
 
-        IO.puts("PATH!!")
-        IO.puts(api_v1_message_path(base_conn, :download, message))
-
         conn = get(base_conn, api_v1_message_path(base_conn, :download, message))
         assert response = json_response(conn, 200)
         assert response["presigned_url"]

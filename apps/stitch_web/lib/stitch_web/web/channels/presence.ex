@@ -9,9 +9,9 @@ defmodule Stitch.Web.Presence do
 
   Presences can be tracked in your channel after joining:
 
-      defmodule StitchConnect.MyChannel do
+      defmodule Stitch.Web.MyChannel do
         use Stitch.Web, :channel
-        alias StitchConnect.Presence
+        alias Stitch.Web.Presence
 
         def join("some:topic", _params, socket) do
           send(self, :after_join)
