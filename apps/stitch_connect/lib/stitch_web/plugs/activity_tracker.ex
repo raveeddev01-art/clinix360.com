@@ -1,4 +1,4 @@
-defmodule Stitch.Plug.ActivityTracker do
+defmodule Stitch.Web.Plug.ActivityTracker do
   @moduledoc """
   A plug for tracking activity. Any HTTP request that goes through
   this plug updates activity status for the currently authenticated user.

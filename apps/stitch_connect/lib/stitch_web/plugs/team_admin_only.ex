@@ -1,4 +1,4 @@
-defmodule Stitch.Plug.TeamAdminOnly do
+defmodule Stitch.Web.Plug.TeamAdminOnly do
   import Plug.Conn
 
   def init(default), do: default

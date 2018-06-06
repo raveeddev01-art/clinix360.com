@@ -6,7 +6,7 @@ defmodule Stitch.Web.SubdomainRouter do
   # =============
 
   pipeline :browser do
-    plug(Stitch.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -15,56 +15,56 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :browser_authenticate do
-    plug(Stitch.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
-    plug(Stitch.Plug.Authenticate)
-    plug(Stitch.Plug.ActivityTracker)
+    plug(Stitch.Web.Plug.Authenticate)
+    plug(Stitch.Web.Plug.ActivityTracker)
   end
 
   pipeline :admin do
-    plug(Stitch.Plug.PlugAttack)
-    plug(Stitch.Plug.StaffAuthenticate)
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.StaffAuthenticate)
     plug(:put_layout, {Stitch.Web.Admin.AppView, "layout.html"})
   end
 
   pipeline :api_auth do
-    plug(Stitch.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
   end
 
   pipeline :api do
-    plug(Stitch.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
   end
 
   pipeline :authenticated_api do
-    plug(Stitch.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
-    plug(Stitch.Plug.ApiAuthenticate)
-    plug(Stitch.Plug.EnsureUnlocked)
-    plug(Stitch.Plug.ActivityTracker)
+    plug(Stitch.Web.Plug.ApiAuthenticate)
+    plug(Stitch.Web.Plug.EnsureUnlocked)
+    plug(Stitch.Web.Plug.ActivityTracker)
   end
 
   pipeline :authenticated_locked_api do
-    plug(Stitch.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
-    plug(Stitch.Plug.ApiAuthenticate)
+    plug(Stitch.Web.Plug.ApiAuthenticate)
   end
 
   pipeline :team_admin_api do
     plug(:accepts, ["json"])
-    plug(Stitch.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.PlugAttack)
     plug(:fetch_session)
-    plug(Stitch.Plug.ApiAuthenticate)
-    plug(Stitch.Plug.TeamAdminOnly)
-    plug(Stitch.Plug.ActivityTracker)
+    plug(Stitch.Web.Plug.ApiAuthenticate)
+    plug(Stitch.Web.Plug.TeamAdminOnly)
+    plug(Stitch.Web.Plug.ActivityTracker)
   end
 
   # ================

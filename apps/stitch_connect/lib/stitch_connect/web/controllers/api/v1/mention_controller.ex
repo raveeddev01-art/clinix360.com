@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.MentionController do
   use Stitch.Web, :controller
 
-  plug(Stitch.Plug.ApiAuthenticate)
+  plug(Stitch.Web.Plug.ApiAuthenticate)
 
   def index(conn, params) do
     pagination_opts = parse_pagination_params(params, [:limit, :skip])

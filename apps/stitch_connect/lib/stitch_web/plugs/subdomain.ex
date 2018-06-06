@@ -1,4 +1,4 @@
-defmodule Stitch.Plug.Subdomain do
+defmodule Stitch.Web.Plug.Subdomain do
   import Plug.Conn
   alias Stitch.Web.Endpoint
 

@@ -1,4 +1,4 @@
-defmodule Stitch.Plug.ApiAuthenticate do
+defmodule Stitch.Web.Plug.ApiAuthenticate do
   import Plug.Conn
   alias Stitch.UserQueries
   alias Stitch.Accounts.User
