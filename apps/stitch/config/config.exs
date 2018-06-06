@@ -13,11 +13,6 @@ config :stitch, :twilio, %{
   auth_token: System.get_env("TWILIO_AUTH_TOKEN")
 }
 
-# Configure AppSignal Template Instrumentation
-config :phoenix, :template_engines,
-  eex: Appsignal.Phoenix.Template.EExEngine,
-  exs: Appsignal.Phoenix.Template.ExsEngine
-
 config :ex_aws,
   access_key_id: [{:system, "AWS_ACCESS_KEY_ID"}, :instance_role],
   secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, :instance_role],
