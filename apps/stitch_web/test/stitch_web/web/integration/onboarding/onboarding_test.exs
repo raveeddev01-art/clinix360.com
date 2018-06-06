@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.OnboardingTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   @user_attrs %{
 #     first_name: "John",

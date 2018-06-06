@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   defp mention_item(username), do: css(".user-mention-menu .item-text span", count: 1, text: username)
 #   defp selected_mention_item(username), do: css(".user-mention-menu .active .item-text span", count: 1, text: username)

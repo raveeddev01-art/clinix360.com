@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   @moduletag timeout: :timer.minutes(2)
 

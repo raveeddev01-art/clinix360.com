@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
-#     use StitchConnect.Web.FeatureCase
+#     use Stitch.Web.FeatureCase
 
 #     test "user can invite another user to a room", %{metadata: metadata} do
 #       team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")

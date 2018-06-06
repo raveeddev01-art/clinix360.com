@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Messages.SearchTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   defp search_result(msg), do: css(".message-search-addon .message", text: msg)
 

@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Rooms.FavoritesTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   test "favorite/unfavorite rooms and direct messages", %{metadata: metadata} do
 #     team = Stitch.Team.Onboarding.create_team("Care Clinic", "care-clinic")
@@ -23,7 +23,6 @@
 #     session
 #     |> assert_has(css(".favorite-rooms .item-text", text: "Emergency Room"))
 #     |> refute_has(css(".favorite-rooms .item-text", text: "Investors"))
-
 
 #     # Favoriting a private room.
 #     unfavorite(session, "Emergency Room")

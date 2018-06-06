@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.FeatureCase do
+defmodule Stitch.Web.FeatureCase do
   @moduledoc """
   Template for creating integration tests.
 
@@ -36,7 +36,7 @@ defmodule StitchConnect.Web.FeatureCase do
       import Ecto.Changeset
       import Ecto.Query
       import Stitch.Factory
-      import StitchConnect.Web.FeatureCase
+      import Stitch.Web.FeatureCase
       import Stitch.Web.Router.Helpers
       import Wallaby.Browser
       import Wallaby.Query

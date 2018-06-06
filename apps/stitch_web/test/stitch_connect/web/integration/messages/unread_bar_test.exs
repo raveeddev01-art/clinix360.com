@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Messages.UnreadBarTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   @vip_room xpath("//a[@href='/rooms/vip']")
 #   @unread_bar css(".container-bars .unread-messages-tooltip")

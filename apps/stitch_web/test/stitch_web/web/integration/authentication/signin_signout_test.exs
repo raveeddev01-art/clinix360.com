@@ -1,5 +1,5 @@
 # defmodule StitchConnect.Web.Authentication.SignInSignOutTest do
-#   use StitchConnect.Web.FeatureCase
+#   use Stitch.Web.FeatureCase
 
 #   @tag :start_session
 #   test "sign in with valid credentials and sign out", %{session: session} do
