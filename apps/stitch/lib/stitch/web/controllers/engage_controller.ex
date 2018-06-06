@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.EngageController do
+defmodule Stitch.Web.EngageController do
   use Stitch.Web, :controller
   alias StitchConnect.Web.PageService
 

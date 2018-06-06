@@ -304,18 +304,6 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/", PageController, :index)
 
-    get("/direct/:username", UserController, :index)
-    get("/apps", AuthenticationController, :apps)
-    get("/logout", AuthenticationController, :logout)
-  end
-
-  # Authenticated routes.
-  scope "/", StitchConnect.Web do
-    pipe_through(:browser_authenticate)
-
-    get("/rooms/:slug", GroupController, :index)
-    get("/messages/:id/download", MessageController, :download)
-
     # TODO: a wild card route can make all /admin routes to one line
     get("/admin/team", AdminController, :index)
     get("/admin/team/settings", AdminController, :index)
@@ -341,9 +329,21 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/admin/integrations/:slug", AdminController, :index)
     get("/admin/integrations/:slug/edit", AdminController, :index)
 
-    get("/exports/:id/download", ExportController, :download)
+    get("/direct/:username", UserController, :index)
+    get("/apps", AuthenticationController, :apps)
+    get("/logout", AuthenticationController, :logout)
 
     get("/engage", EngageController, :index)
     get("/manage", ManageController, :index)
+  end
+
+  # Authenticated routes.
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser_authenticate)
+
+    get("/rooms/:slug", GroupController, :index)
+    get("/messages/:id/download", MessageController, :download)
+
+    get("/exports/:id/download", ExportController, :download)
   end
 end
