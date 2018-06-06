@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.AuthenticationView do
+defmodule Stitch.Web.Api.V1.AuthenticationView do
   use Stitch.Web, :view
   alias Stitch.Accounts.PasswordResetToken
 

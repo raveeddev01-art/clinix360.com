@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.PasswordResetTest do
   use StitchConnect.Web.ConnCase, async: false
   import Phoenix.ChannelTest
   use Bamboo.Test
-  alias StitchConnect.Web.Api.V1.{AuthenticationView}
+  alias Stitch.Web.Api.V1.AuthenticationView
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.Accounts.PasswordResetToken
   alias Stitch.Repo
