@@ -464,8 +464,7 @@ defmodule StitchConnect.Web.GroupChannel do
           {:reply, {:ok, json}, socket}
 
         {:error, :message, changeset, _changeset_so_far} ->
-          error_message =
-            StitchConnect.Web.ControllerHelpers.changeset_errors_to_string(changeset)
+          error_message = Stitch.Web.ControllerHelpers.changeset_errors_to_string(changeset)
 
           {:reply, {:error, %{message: error_message, request_id: request_id}}, socket}
       end

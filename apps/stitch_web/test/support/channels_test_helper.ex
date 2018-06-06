@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.ChannelsTestHelper do
+defmodule Stitch.Web.ChannelsTestHelper do
   use Phoenix.ChannelTest
   alias Stitch.Web.UserSocket
   alias Stitch.{Repo, Group, GroupUser}
