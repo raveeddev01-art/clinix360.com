@@ -138,3 +138,12 @@ export function getTimezone() {
     return "Etc/UTC";
   }
 }
+
+/**
+ * Returns if it's dev environment or staging
+ *
+ * @return {boolean}
+ */
+export function isDev() {
+  return window.applicationHost === "teamstitchapp.com";
+}
