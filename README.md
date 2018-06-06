@@ -1,12 +1,12 @@
 # Stitch Umbrella
 
 This is the main umbrella application for
-[Stitch](https://connect.teamstitch.com/).
+[Stitch](https://teamstitch.com/).
 
 It contains two Elixir applications:
 
 - Stitch (supporting business rules)
-- StitchConnect (web api and frontend)
+- StitchWeb (web api and frontend)
 
 ---
 
