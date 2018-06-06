@@ -50,7 +50,7 @@ config :stitch_connect, Stitch.Web.Endpoint,
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{lib/stitch_connect/web/views/.*(ex)$},
-      ~r{lib/stitch_connect/web/templates/.*(eex)$}
+      ~r{lib/stitch_web/web/views/.*(ex)$},
+      ~r{lib/stitch_web/web/templates/.*(eex)$}
     ]
   ]

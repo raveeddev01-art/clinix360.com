@@ -6,8 +6,8 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = [
   {
     entry: {
-      index: "./lib/stitch_connect/web/static/js/index.js",
-      landing_app: "./lib/stitch_connect/web/static/js/landing_app.js",
+      index: "./lib/stitch_web/web/static/js/index.js",
+      landing_app: "./lib/stitch_web/web/static/js/landing_app.js"
     },
     output: {
       path: path.resolve(__dirname, "priv/static/js"),
@@ -15,7 +15,10 @@ module.exports = [
     },
     resolve: {
       extensions: [".js", ".jsx"],
-      modules: ["node_modules", path.resolve(__dirname, "./lib/stitch_connect/web/static/js")],
+      modules: [
+        "node_modules",
+        path.resolve(__dirname, "./lib/stitch_web/web/static/js")
+      ]
     },
     module: {
       loaders: [
@@ -37,15 +40,18 @@ module.exports = [
       }),
       new webpack.DefinePlugin({
         // @TODO use this key when implementing error page with react 16 error boundary
-        'process.env.SENTRY_PUBLIC_DSN': JSON.stringify(process.env.SENTRY_PUBLIC_DSN)
+        "process.env.SENTRY_PUBLIC_DSN": JSON.stringify(
+          process.env.SENTRY_PUBLIC_DSN
+        )
       })
     ]
   },
   {
     entry: {
-      app: "./lib/stitch_connect/web/static/stylesheets/app.scss",
-      landing: "./lib/stitch_connect/web/static/stylesheets/landing.scss",
-      "landing-non-critical": "./lib/stitch_connect/web/static/stylesheets/landing-non-critical.scss"
+      app: "./lib/stitch_web/web/static/stylesheets/app.scss",
+      landing: "./lib/stitch_web/web/static/stylesheets/landing.scss",
+      "landing-non-critical":
+        "./lib/stitch_web/web/static/stylesheets/landing-non-critical.scss"
     },
     output: {
       path: path.resolve(__dirname, "priv/static/css"),
@@ -71,34 +77,38 @@ module.exports = [
       ]
     },
     plugins: [
-      new ExtractTextPlugin('[name].css'),
+      new ExtractTextPlugin("[name].css"),
       new CopyWebpackPlugin([
         {
-          from: "./lib/stitch_connect/web/static/favicon.ico",
+          from: "./lib/stitch_web/web/static/favicon.ico",
           to: path.resolve(__dirname, "priv/static")
         },
         {
-          from: "./lib/stitch_connect/web/static/notification.png",
+          from: "./lib/stitch_web/web/static/notification.png",
           to: path.resolve(__dirname, "priv/static")
         },
         {
-          from: "./lib/stitch_connect/web/static/notification-staging.png",
+          from: "./lib/stitch_web/web/static/notification-staging.png",
           to: path.resolve(__dirname, "priv/static")
         },
         {
-          from: "./lib/stitch_connect/web/static/robots.txt",
+          from: "./lib/stitch_web/web/static/favicon-192x192.png",
           to: path.resolve(__dirname, "priv/static")
         },
         {
-          from: "./lib/stitch_connect/web/static/sitemap.xml",
+          from: "./lib/stitch_web/web/static/robots.txt",
           to: path.resolve(__dirname, "priv/static")
         },
         {
-          from: "./lib/stitch_connect/web/static/audios/pop.mp3",
+          from: "./lib/stitch_web/web/static/sitemap.xml",
+          to: path.resolve(__dirname, "priv/static")
+        },
+        {
+          from: "./lib/stitch_web/web/static/audios/pop.mp3",
           to: path.resolve(__dirname, "priv/static/audios")
         },
         {
-          from: "./lib/stitch_connect/web/static/images",
+          from: "./lib/stitch_web/web/static/images",
           to: path.resolve(__dirname, "priv/static/images")
         }
       ])

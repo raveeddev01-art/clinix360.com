@@ -30,7 +30,7 @@ export default class Landing extends Component {
               <Col xs={5}>
                 <a href="/" className="brand">
                   <img
-                    src="apps/stitch_connect/lib/stitch_connect/web/static/js/authentication/team/select_team.jsx"
+                    src="apps/stitch_connect/lib/stitch_web/web/static/js/authentication/team/select_team.jsx"
                     alt="Stitch"
                   />
                 </a>
