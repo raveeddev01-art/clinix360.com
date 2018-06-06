@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
+defmodule Stitch.Web.Api.V1.Billing.SubscriptionControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 

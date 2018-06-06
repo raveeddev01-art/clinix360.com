@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.Billing.CardControllerTest do
+defmodule Stitch.Web.Api.V1.Billing.CardControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 

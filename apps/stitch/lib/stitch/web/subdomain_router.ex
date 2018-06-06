@@ -213,11 +213,6 @@ defmodule Stitch.Web.SubdomainRouter do
       put("/update-security-lockout-time", TeamController, :update_security_lockout_time)
       get("/access_log", TeamController, :access_log)
     end
-  end
-
-  # Routes which needs admin role
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through(:team_admin_api)
 
     # Subscription/Billing routes
     scope "/billing", Billing, as: :billing do
@@ -231,6 +226,11 @@ defmodule Stitch.Web.SubdomainRouter do
       resources("/history", HistoryController, only: [:index])
       resources("/cards", CardController, only: [:index, :create, :update, :delete])
     end
+  end
+
+  # Routes which needs admin role
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:team_admin_api)
 
     # Guest invitation routes
     scope "/invitations" do

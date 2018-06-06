@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.Billing.HistoryController do
+defmodule Stitch.Web.Api.V1.Billing.HistoryController do
   use Stitch.Web, :controller
   alias Stitch.Billing
 

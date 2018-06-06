@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionView do
+defmodule Stitch.Web.Api.V1.Billing.SubscriptionView do
   use Stitch.Web, :view
 
   def render("show.json", %{subscription: subscription}) do

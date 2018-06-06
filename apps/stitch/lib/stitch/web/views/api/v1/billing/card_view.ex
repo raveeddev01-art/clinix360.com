@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.Billing.CardView do
+defmodule Stitch.Web.Api.V1.Billing.CardView do
   use Stitch.Web, :view
 
   def render("index.json", %{cards: cards}) do

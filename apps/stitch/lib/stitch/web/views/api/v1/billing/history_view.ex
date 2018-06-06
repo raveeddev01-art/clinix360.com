@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.Billing.HistoryView do
+defmodule Stitch.Web.Api.V1.Billing.HistoryView do
   use Stitch.Web, :view
   alias Stitch.AWS.S3
 

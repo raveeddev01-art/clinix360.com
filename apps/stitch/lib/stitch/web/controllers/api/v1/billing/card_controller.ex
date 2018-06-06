@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.Billing.CardController do
+defmodule Stitch.Web.Api.V1.Billing.CardController do
   use Stitch.Web, :controller
   alias StitchConnect.Web.ErrorView
   alias Stitch.Billing
