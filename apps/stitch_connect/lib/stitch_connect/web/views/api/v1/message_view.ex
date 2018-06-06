@@ -5,8 +5,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
 
   @endpoint StitchConnect.Web.Endpoint
 
-  def render("index.json", %{messages: messages}) do
-    Enum.map(messages, &message_json/1)
+  def render("index.json", %{messages: messages} = opts) do
+    Enum.map(messages, &message_json(&1, Map.get(opts, :authenticated_urls, false)))
   end
 
   def render("starred.json", %{message: message, user_id: user_id}) do
@@ -40,7 +40,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     }
   end
 
-  def message_json(message) do
+  def message_json(message, authenticated_url \\ false) do
     %{
       id: message.id,
       user_id: message.user_id,
@@ -48,7 +48,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       group_id: message.group_id,
       deleted: message.deleted,
       text_content: message.text_content,
-      fields: render_fields(message),
+      fields: render_fields(message, authenticated_url),
       type: message.type,
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,
@@ -84,14 +84,17 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     %{id: pinned_by.id, first_name: pinned_by.first_name, last_name: pinned_by.last_name}
   end
 
-  def render_fields(%Message{id: message_id, type: "upload", fields: %{"url" => url} = fields})
+  def render_fields(
+        %Message{id: message_id, type: "upload", fields: %{"url" => url} = fields},
+        authenticated_urls
+      )
       when is_map(fields) and is_binary(url) do
     fields
-    |> put_preview_presigned_url
+    |> put_preview_presigned_url(authenticated_urls)
     |> put_download_link(message_id)
   end
 
-  def render_fields(%Message{fields: fields}), do: fields
+  def render_fields(%Message{fields: fields}, _authenticated_urls), do: fields
 
   def put_download_link(fields, message_id) do
     Map.merge(fields, %{
@@ -101,7 +104,19 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   end
 
   def put_preview_presigned_url(
-        %{"preview_url" => url, "mimetype" => "image/" <> _image} = fields
+        %{"mimetype" => "image/" <> _image} = fields,
+        true,
+        message_id
+      ) do
+    url = files_file_url(:stream_preview, message_id, filename)
+
+    Map.put(fields, "preview_url", url)
+  end
+
+  def put_preview_presigned_url(
+        %{"url" => url, "mimetype" => "image/" <> _image} = fields,
+        true,
+        message_id
       ) do
     case S3.presign(url) do
       {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
@@ -109,12 +124,25 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     end
   end
 
-  def put_preview_presigned_url(%{"url" => url, "mimetype" => "image/" <> _image} = fields) do
+  def put_preview_presigned_url(
+        %{"preview_url" => url, "mimetype" => "image/" <> _image} = fields,
+        authenticated_urls
+      ) do
     case S3.presign(url) do
       {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
       :error -> fields
     end
   end
 
-  def put_preview_presigned_url(fields), do: fields
+  def put_preview_presigned_url(
+        %{"url" => url, "mimetype" => "image/" <> _image} = fields,
+        authenticated_urls
+      ) do
+    case S3.presign(url) do
+      {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
+      :error -> fields
+    end
+  end
+
+  def put_preview_presigned_url(fields, authenticated_urls), do: fields
 end

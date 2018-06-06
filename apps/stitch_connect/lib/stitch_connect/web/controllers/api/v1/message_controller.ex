@@ -25,15 +25,16 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   plug(:parse_query_params when action in [:index, :feed_recent, :search, :feed_surrounding])
 
-  def index(conn, %{"group_id" => group_id}) do
+  def index(conn, %{"group_id" => group_id} = params) do
     current_user = conn.assigns.current_user
+    authenticated_urls = Map.get(params, "authenticated_urls", false)
 
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)} do
       messages =
         MessageQueries.group_latest_messages(group_id, current_user, conn.assigns.query_opts)
 
-      render(conn, "index.json", messages: messages, user_id: current_user.id)
+      render(conn, "index.json", messages: messages, authenticated_urls: authenticated_urls)
     else
       {:group, _} ->
         {:error, :not_found, "The room you are looking for does not exist."}
