@@ -1,4 +1,4 @@
-defmodule Stitch.Web.Api.V1.AppView do
+defmodule StitchConnect.Web.Api.V1.AppView do
   use Stitch.Web, :view
 
   def render("index.json", %{apps: apps} = attrs) do

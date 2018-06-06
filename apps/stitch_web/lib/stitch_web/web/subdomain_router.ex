@@ -105,6 +105,23 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/session-unlock", SessionLockController, :unlock)
   end
 
+  # ====
+  # NOTE: Stitch-Connect route up here to pattern match first
+  # ====
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_locked_api)
+    get("/users/notification-preference", NotificationPreferenceController, :show_global)
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_api)
+    put("/users/notification-preference", NotificationPreferenceController, :update_global)
+  end
+
+  # ====
+  # End of connect-specific routes
+  # ====
+
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_api)
 
@@ -260,7 +277,6 @@ defmodule Stitch.Web.SubdomainRouter do
     pipe_through(:authenticated_locked_api)
 
     get("/groups", GroupController, :index)
-    get("/users/notification-preference", NotificationPreferenceController, :show_global)
   end
 
   # API routes which don't need token.
@@ -300,8 +316,6 @@ defmodule Stitch.Web.SubdomainRouter do
     delete("/integrations/:id", IntegrationController, :delete)
     post("/integrations/:id/enable", IntegrationController, :enable)
     post("/integrations/:id/disable", IntegrationController, :disable)
-
-    put("/users/notification-preference", NotificationPreferenceController, :update_global)
 
     scope "/invitations" do
       get("/", InvitationController, :index)
