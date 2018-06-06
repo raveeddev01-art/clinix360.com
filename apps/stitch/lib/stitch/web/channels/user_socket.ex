@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.UserSocket do
+defmodule Stitch.Web.UserSocket do
   use Phoenix.Socket
   import Appsignal.Phoenix.Channel, only: [channel_action: 4]
 
