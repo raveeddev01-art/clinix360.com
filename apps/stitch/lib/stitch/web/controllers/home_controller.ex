@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.HomeController do
+defmodule Stitch.Web.HomeController do
   use Stitch.Web, :controller
   alias Stitch.{Accounts.User, UserQueries, Team, TeamQueries}
 

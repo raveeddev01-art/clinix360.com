@@ -68,7 +68,7 @@ defmodule Stitch.Web.Router do
     post("/webhook/drchrono/:webhook_token", WebhookController, :drchrono)
   end
 
-  scope "/", StitchConnect.Web do
+  scope "/", Stitch.Web do
     pipe_through(:browser)
 
     get("/", HomeController, :index)
@@ -93,6 +93,10 @@ defmodule Stitch.Web.Router do
     get("/terms-of-service", HomeController, :index)
 
     get("/industries/*industry_name", HomeController, :index)
+  end
+
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser)
 
     get("/getstarted", AuthenticationController, :index)
     get("/signin", AuthenticationController, :index)
