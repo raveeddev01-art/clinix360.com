@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.GroupController do
   use Stitch.Web, :controller
-  alias StitchConnect.Web.{PageView, PageService}
+  alias Stitch.Web.PageView
+  alias StitchConnect.Web.PageService
   alias Stitch.GroupQueries
 
   def index(conn, %{"slug" => slug}) do

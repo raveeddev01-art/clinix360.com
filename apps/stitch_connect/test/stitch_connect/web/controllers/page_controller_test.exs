@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.PageControllerTest do
+defmodule Stitch.Web.PageControllerTest do
   use StitchConnect.Web.ConnCase
 
   # test "GET /", %{conn: conn} do

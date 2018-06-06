@@ -1,3 +1,3 @@
-defmodule StitchConnect.Web.PageViewTest do
+defmodule Stitch.Web.PageViewTest do
   use StitchConnect.Web.ConnCase, async: true
 end

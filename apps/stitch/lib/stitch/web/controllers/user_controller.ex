@@ -1,6 +1,7 @@
 defmodule Stitch.Web.UserController do
   use Stitch.Web, :controller
-  alias StitchConnect.Web.{PageView, PageService}
+  alias Stitch.Web.PageView
+  alias StitchConnect.Web.PageService
   alias Stitch.Web.Api.V1.UserView
   alias Stitch.{Repo, Accounts.User}
 

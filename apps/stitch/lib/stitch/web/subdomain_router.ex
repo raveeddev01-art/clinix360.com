@@ -302,8 +302,9 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/", Stitch.Web do
     pipe_through(:browser_authenticate)
 
-    get("/direct/:username", UserController, :index)
+    get("/", PageController, :index)
 
+    get("/direct/:username", UserController, :index)
     get("/apps", AuthenticationController, :apps)
     get("/logout", AuthenticationController, :logout)
   end
@@ -311,8 +312,6 @@ defmodule Stitch.Web.SubdomainRouter do
   # Authenticated routes.
   scope "/", StitchConnect.Web do
     pipe_through(:browser_authenticate)
-
-    get("/", PageController, :index)
 
     get("/rooms/:slug", GroupController, :index)
     get("/messages/:id/download", MessageController, :download)
