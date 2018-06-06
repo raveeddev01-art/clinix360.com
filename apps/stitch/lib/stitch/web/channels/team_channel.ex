@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.TeamChannel do
+defmodule Stitch.Web.TeamChannel do
   use Stitch.Web, :channel
   alias Stitch.Accounts.User
   alias Stitch.{UserQueries, GroupQueries}
