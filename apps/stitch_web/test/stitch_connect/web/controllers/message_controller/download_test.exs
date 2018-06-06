@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.MessageController.DownloadTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 
   @url "https://s3/amazonaws.com/stitch-connect/some-file"
@@ -40,6 +40,9 @@ defmodule StitchConnect.Web.MessageController.DownloadTest do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
         insert(:group_user, group: group, user: guest)
         base_conn = with_api_user(conn, guest)
+
+        IO.puts("PATH!!")
+        IO.puts(api_v1_message_path(base_conn, :download, message))
 
         conn = get(base_conn, api_v1_message_path(base_conn, :download, message))
         assert response = json_response(conn, 200)

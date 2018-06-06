@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.MessageController.PinTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 
   setup %{conn: conn} do

@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.DeleteTest do
-  use StitchConnect.Web.ConnCase
+  use Stitch.Web.ConnCase
   import Phoenix.ChannelTest
   import Stitch.Web.SubdomainRouter.Helpers
 

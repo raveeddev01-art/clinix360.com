@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.SearchTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/search" do

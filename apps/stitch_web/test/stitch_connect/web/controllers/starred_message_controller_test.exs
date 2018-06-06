@@ -1,14 +1,15 @@
 defmodule StitchConnect.Web.StarredMessageControllerTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   alias Stitch.MessageAction
 
   describe "GET /api/v1/starred_messages" do
     test "responds with 30 latest ", %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team)
+
       groups =
         fn -> insert(:group, team: team) end
-        |> Stream.repeatedly
+        |> Stream.repeatedly()
         |> Enum.take(5)
 
       [_oldest_starred_message | latest_starred_messages] =
@@ -17,12 +18,12 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
           {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
           message
         end
-        |> Stream.repeatedly
+        |> Stream.repeatedly()
         |> Enum.take(31)
 
       _latest_unstarred_messages =
         fn -> insert(:message, group: Enum.random(groups)) end
-        |> Stream.repeatedly
+        |> Stream.repeatedly()
         |> Enum.take(10)
 
       json =
@@ -32,21 +33,21 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
         |> json_response(200)
 
       assert Enum.map(json, &Map.fetch!(&1, "id")) ==
-        latest_starred_messages |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+               latest_starred_messages |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse()
 
-      Enum.each json, fn starred_message ->
+      Enum.each(json, fn starred_message ->
         assert %{
-          "id" => _,
-          "inserted_at" => _,
-          "text_content" => _,
-          "user" => %{
-            "id" => _,
-            "first_name" => _,
-            "last_name" => _
-          },
-          "group_id" => _
-        } = starred_message
-      end
+                 "id" => _,
+                 "inserted_at" => _,
+                 "text_content" => _,
+                 "user" => %{
+                   "id" => _,
+                   "first_name" => _,
+                   "last_name" => _
+                 },
+                 "group_id" => _
+               } = starred_message
+      end)
     end
 
     test "with limit", %{conn: conn} do
@@ -59,7 +60,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
         {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
         message
       end
-      |> Stream.repeatedly
+      |> Stream.repeatedly()
       |> Enum.take(3)
 
       json =
@@ -81,7 +82,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
         {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
         message
       end
-      |> Stream.repeatedly
+      |> Stream.repeatedly()
       |> Enum.take(31)
 
       json =
@@ -104,7 +105,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
           {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
           message
         end
-        |> Stream.repeatedly
+        |> Stream.repeatedly()
         |> Enum.take(33)
 
       unskipped = Enum.take(starred_messages, 31)
@@ -117,7 +118,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
         |> json_response(200)
 
       assert Enum.map(json, &Map.fetch!(&1, "id")) ==
-        latest_30_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+               latest_30_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse()
     end
 
     test "with limit and skip", %{conn: conn} do
@@ -131,7 +132,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
           {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
           message
         end
-        |> Stream.repeatedly
+        |> Stream.repeatedly()
         |> Enum.take(7)
 
       unskipped = Enum.take(starred_messages, 5)
@@ -144,7 +145,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
         |> json_response(200)
 
       assert Enum.map(json, &Map.fetch!(&1, "id")) ==
-        latest_two_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+               latest_two_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse()
     end
 
     test "with limit and skip as strings", %{conn: conn} do
@@ -158,7 +159,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
           {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
           message
         end
-        |> Stream.repeatedly
+        |> Stream.repeatedly()
         |> Enum.take(7)
 
       unskipped = Enum.take(starred_messages, 5)
@@ -171,7 +172,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
         |> json_response(200)
 
       assert Enum.map(json, &Map.fetch!(&1, "id")) ==
-        latest_two_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+               latest_two_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse()
     end
   end
 end

@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.MessageController.ToggleReactionTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
   import Phoenix.ChannelTest, except: [connect: 2]
 

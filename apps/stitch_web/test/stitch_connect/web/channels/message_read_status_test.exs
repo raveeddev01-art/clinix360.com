@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.MessageReadStatusTest do
-  use StitchConnect.Web.ChannelCase
+  use Stitch.Web.ChannelCase
   alias Stitch.Web.UserSocket
   alias Stitch.Message
 
