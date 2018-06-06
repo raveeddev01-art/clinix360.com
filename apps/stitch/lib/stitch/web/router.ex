@@ -49,10 +49,6 @@ defmodule Stitch.Web.Router do
     post("/teams", TeamController, :create)
     post("/teams/url-available", TeamController, :url_available)
     post("/teams/slug-exists", TeamController, :slug_exists)
-  end
-
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through(:api)
 
     post("/find-your-team", FindYourTeamController, :create)
     delete("/find-your-team/:token", FindYourTeamController, :delete)

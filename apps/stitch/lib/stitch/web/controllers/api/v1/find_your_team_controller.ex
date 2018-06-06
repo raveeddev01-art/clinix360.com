@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.FindYourTeamController do
+defmodule Stitch.Web.Api.V1.FindYourTeamController do
   use Stitch.Web, :controller
   alias Stitch.{FindYourTeam, TeamQueries}
   action_fallback(StitchConnect.Web.Api.FallbackController)

@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.FindYourTeamControllerTest do
+defmodule Stitch.Web.FindYourTeamControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   use Bamboo.Test
   alias Stitch.{FindYourTeam, FindYourTeam.Token, Repo}
@@ -16,16 +16,19 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
 
       assert token
       assert json["message"] == "Email has been sent to #{user.email}. Please check your inbox."
-      assert_delivered_email FindYourTeam.Email.email(token, @endpoint.url)
+      assert_delivered_email(FindYourTeam.Email.email(token, @endpoint.url))
     end
 
     test "when no user with the given email exists", %{conn: conn} do
       json =
         conn
-        |> post(api_v1_find_your_team_path(conn, :create), %{"email" => "nonexistentuer@example.com"})
+        |> post(api_v1_find_your_team_path(conn, :create), %{
+          "email" => "nonexistentuer@example.com"
+        })
         |> json_response(200)
 
-        assert json["message"] == "Email has been sent to nonexistentuer@example.com. Please check your inbox."
+      assert json["message"] ==
+               "Email has been sent to nonexistentuer@example.com. Please check your inbox."
     end
 
     test "when token has already been created", %{conn: conn} do
@@ -41,7 +44,7 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
 
       assert token
       assert json["message"] == "Email has been sent to #{user.email}. Please check your inbox."
-      assert_delivered_email FindYourTeam.Email.email(token, @endpoint.url)
+      assert_delivered_email(FindYourTeam.Email.email(token, @endpoint.url))
     end
   end
 
@@ -63,7 +66,9 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
 
       login_token = Repo.get_by!(Token, email: "foo@example.com", type: "login").token
       assert length(teams) == 2
+
       assert %{"name" => team_1.name, "slug" => team_1.slug, "login_token" => login_token} in teams
+
       assert %{"name" => team_2.name, "slug" => team_2.slug, "login_token" => login_token} in teams
 
       assert Repo.get_by(Token, email: "foo@example.com", type: "team_list") == nil
