@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.VersionControllerTest do
+defmodule Stitch.Web.Api.V1.VersionControllerTest do
   use StitchConnect.Web.ConnCase, async: true
 
   test "GET /api/v1/stitch-version", %{conn: conn} do

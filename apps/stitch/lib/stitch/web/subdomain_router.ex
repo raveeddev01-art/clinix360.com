@@ -82,13 +82,14 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/users/validate-username", UserController, :validate_username)
     post("/users/exists", UserController, :exists?)
     post("/users/validate-phone-number", UserController, :validate_phone_number)
+
+    get("/stitch-version", VersionController, :index)
   end
 
   # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
-    get("/stitch-version", VersionController, :index)
     post("/invitations/accept/:token", InvitationController, :accept)
     get("/apps", AppController, :index)
     get("/news", NewsController, :index)
