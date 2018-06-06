@@ -28,7 +28,7 @@ defmodule Stitch.Web do
   def view do
     quote do
       use Phoenix.View,
-        root: "../stitch_connect/lib/stitch_connect/web/templates",
+        root: "../stitch_connect/lib/stitch_web/web/templates",
         namespace: Stitch.Web,
         pattern: "**/*"
 
