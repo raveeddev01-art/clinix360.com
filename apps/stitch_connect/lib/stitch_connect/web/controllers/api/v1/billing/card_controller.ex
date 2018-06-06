@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardController do
   alias StitchConnect.Web.ErrorView
   alias Stitch.Billing
 
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(Stitch.Web.Api.FallbackController)
 
   def index(conn, _params) do
     team = conn.assigns.team

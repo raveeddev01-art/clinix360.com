@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.FallbackController do
+defmodule Stitch.Web.Api.FallbackController do
   @moduledoc """
   Controller fallback for handling common domain errors.
   """

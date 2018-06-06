@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.NewsController do
   use Stitch.Web, :controller
   alias Stitch.{News, NewsQueries}
 
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(Stitch.Web.Api.FallbackController)
 
   def index(conn, _params) do
     news = NewsQueries.all_news()

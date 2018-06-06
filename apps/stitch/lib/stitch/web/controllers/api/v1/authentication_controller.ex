@@ -6,7 +6,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
   alias Stitch.Web.Api.V1.UserView
   alias Stitch.Web.Api.V1.AuthenticationView
   alias StitchConnect.Web.{EventsChannel}
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(Stitch.Web.Api.FallbackController)
 
   def submit_login(conn, %{"email" => email, "password" => password}) do
     team = conn.assigns.team

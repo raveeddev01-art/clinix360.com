@@ -4,7 +4,7 @@ defmodule Stitch.Web.Api.V1.TeamController do
   alias Stitch.{Team, TeamQueries, TeamAuthorization}
   alias Stitch.Web.TeamChannel
 
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(Stitch.Web.Api.FallbackController)
 
   def show(conn, %{"id" => _}) do
     team = TeamQueries.get_by_id(conn.private[:team_id])

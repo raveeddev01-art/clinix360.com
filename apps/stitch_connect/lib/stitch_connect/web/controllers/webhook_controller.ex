@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.WebhookController do
   alias Stitch.Drchrono
   alias Stitch.{Integration, IntegrationQueries}
 
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(Stitch.Web.Api.FallbackController)
 
   def drchrono_get(conn, _params) do
     json(conn, %{secret_token: "stitch"})

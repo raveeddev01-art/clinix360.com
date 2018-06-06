@@ -4,7 +4,7 @@ defmodule StitchConnect.Web.ExportController do
   alias Stitch.Exports
   alias Stitch.Exports.Export
 
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(Stitch.Web.Api.FallbackController)
 
   def download(conn, %{"id" => id}) do
     team = conn.assigns.team

@@ -21,7 +21,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     Message.Upload
   }
 
-  action_fallback(StitchConnect.Web.Api.V1.FallbackController)
+  action_fallback(Stitch.Web.Api.V1.FallbackController)
 
   plug(:parse_query_params when action in [:index, :feed_recent, :search, :feed_surrounding])
 

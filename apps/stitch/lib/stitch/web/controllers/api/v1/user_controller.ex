@@ -19,7 +19,7 @@ defmodule Stitch.Web.Api.V1.UserController do
 
   import Stitch.UserAuthorization, only: [can_update_user?: 2]
 
-  action_fallback(StitchConnect.Web.Api.V1.FallbackController)
+  action_fallback(Stitch.Web.Api.V1.FallbackController)
 
   def index(conn, _) do
     users = UserQueries.users_for_team(conn.assigns.current_user.team_id)

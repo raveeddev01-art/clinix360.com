@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   alias StitchConnect.Web.{GroupChannel, EventsChannel}
 
   plug(:fetch_session when action in [:accept])
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(Stitch.Web.Api.FallbackController)
 
   def index(conn, _params) do
     with team = conn.assigns.team,

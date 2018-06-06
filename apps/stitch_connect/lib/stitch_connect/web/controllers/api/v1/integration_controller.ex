@@ -11,7 +11,7 @@ defmodule StitchConnect.Web.Api.V1.IntegrationController do
     AppQueries
   }
 
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(Stitch.Web.Api.FallbackController)
 
   def index(conn, _params) do
     user = conn.assigns.current_user
