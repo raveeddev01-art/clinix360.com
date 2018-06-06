@@ -20,4 +20,4 @@
   <% end %>
 </table>
 
-<%= render StitchConnect.Web.Admin.AppView, "_page_links.html", @meta %>
+<%= render Stitch.Web.Admin.AppView, "_page_links.html", @meta %>

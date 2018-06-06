@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Admin.ImpersonationController do
+defmodule Stitch.Web.Admin.ImpersonationController do
   use Stitch.Web, :controller
   alias Stitch.Web.Endpoint
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes

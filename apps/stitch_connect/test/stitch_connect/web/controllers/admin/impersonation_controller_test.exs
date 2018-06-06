@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Admin.ImpersonationControllerTest do
+defmodule Stitch.Web.Admin.ImpersonationControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 

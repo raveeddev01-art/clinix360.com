@@ -24,7 +24,7 @@ defmodule Stitch.Web.SubdomainRouter do
   pipeline :admin do
     plug(Stitch.Plug.PlugAttack)
     plug(Stitch.Plug.StaffAuthenticate)
-    plug(:put_layout, {StitchConnect.Web.Admin.AppView, "layout.html"})
+    plug(:put_layout, {Stitch.Web.Admin.AppView, "layout.html"})
   end
 
   pipeline :api_auth do
@@ -64,7 +64,7 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   # Stitch Staff Admin subdomain routes
-  scope "/", StitchConnect.Web.Admin, as: :admin, host: "admin." do
+  scope "/", Stitch.Web.Admin, as: :admin, host: "admin." do
     pipe_through([:browser, :admin])
     get("/", IndexController, :index)
 
