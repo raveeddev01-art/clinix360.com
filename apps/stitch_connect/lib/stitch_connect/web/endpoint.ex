@@ -21,7 +21,7 @@ defmodule StitchConnect.Web.Endpoint do
     from: :stitch_connect,
     gzip: false,
     only:
-      ~w(js css fonts images audios favicon.ico favicon-192x192.png robots.txt sitemap.xml notification.png notification-staging.png)
+      ~w(js css fonts images audios favicon.ico robots.txt sitemap.xml notification.png notification-staging.png)
   )
 
   # Code reloading can be explicitly enabled under the
