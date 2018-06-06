@@ -54,7 +54,7 @@ defmodule Stitch.Web.Router do
     delete("/find-your-team/:token", FindYourTeamController, :delete)
   end
 
-  scope "/stripe", StitchConnect.Web do
+  scope "/stripe", Stitch.Web do
     pipe_through(:api)
 
     post("/", StripeWebhookController, :event)
