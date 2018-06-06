@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.Api.V1.FallbackController do
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
-    |> render(StitchConnect.Web.Api.V1.ChangesetView, "error.json", changeset: changeset)
+    |> render(Stitch.Web.Api.V1.ChangesetView, "error.json", changeset: changeset)
   end
 
   def call(conn, {:error, :unprocessable_entity, message}) do

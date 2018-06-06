@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.ChangesetView do
+defmodule Stitch.Web.Api.V1.ChangesetView do
   use Stitch.Web, :view
 
   def translate_errors(changeset) do
