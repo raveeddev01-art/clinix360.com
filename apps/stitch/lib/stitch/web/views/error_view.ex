@@ -1,6 +1,6 @@
-defmodule StitchConnect.Web.ErrorView do
+defmodule Stitch.Web.ErrorView do
   use Stitch.Web, :view
-  alias StitchConnect.Web.{HomeView, LayoutView}
+  alias Stitch.Web.{HomeView, LayoutView}
 
   def render("404.html", assigns) do
     render_options =

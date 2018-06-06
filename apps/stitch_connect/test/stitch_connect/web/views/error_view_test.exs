@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.ErrorViewTest do
+defmodule Stitch.Web.ErrorViewTest do
   use StitchConnect.Web.ConnCase, async: true
   # Bring render_to_string/3 for testing custom views
   import Phoenix.View
@@ -17,7 +17,8 @@ defmodule StitchConnect.Web.ErrorViewTest do
 
   describe "System Errors" do
     setup %{conn: conn} do
-      new_conn = conn
+      new_conn =
+        conn
         |> with_session()
         |> get("/")
 
@@ -25,12 +26,12 @@ defmodule StitchConnect.Web.ErrorViewTest do
     end
 
     test "500 renders system error page", %{conn: conn} do
-      error_res = render_to_string(StitchConnect.Web.ErrorView, "500.html", [conn: conn])
+      error_res = render_to_string(Stitch.Web.ErrorView, "500.html", conn: conn)
       assert error_res =~ "Stitch failed to load correctly"
     end
 
     test "5** renders system error page", %{conn: conn} do
-      error_res = render_to_string(StitchConnect.Web.ErrorView, "505.html", [conn: conn])
+      error_res = render_to_string(Stitch.Web.ErrorView, "505.html", conn: conn)
       assert error_res =~ "Stitch failed to load correctly"
     end
   end

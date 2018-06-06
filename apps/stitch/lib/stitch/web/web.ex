@@ -18,7 +18,7 @@ defmodule Stitch.Web do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: StitchConnect.Web
+      use Phoenix.Controller, namespace: Stitch.Web
       import Plug.Conn
       import Stitch.Web.{Router.Helpers, ControllerHelpers}
       import Stitch.Web.Gettext

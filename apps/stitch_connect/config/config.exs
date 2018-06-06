@@ -15,7 +15,7 @@ config :stitch_connect, Stitch.Web.Endpoint,
   instrumenters: [Appsignal.Phoenix.Instrumenter],
   url: [host: System.get_env("APP_HOST")],
   secret_key_base: "rp9jtclD/mgOBBlbo+mFKHVZ0UKNdC6DoofvmAy0Z/gSmgPy0/73DhzLrDalDf/G",
-  render_errors: [view: StitchConnect.Web.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: Stitch.Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: StitchConnect.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configure AppSignal Template Instrumentation

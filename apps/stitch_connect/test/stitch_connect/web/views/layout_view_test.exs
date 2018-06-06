@@ -1,3 +1,3 @@
-defmodule StitchConnect.Web.LayoutViewTest do
-  use StitchConnect.Web.ConnCase, async: true
+defmodule Stitch.Web.LayoutViewTest do
+  use Stitch.Web.ConnCase, async: true
 end

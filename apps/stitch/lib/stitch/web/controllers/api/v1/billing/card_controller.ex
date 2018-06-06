@@ -1,6 +1,6 @@
 defmodule Stitch.Web.Api.V1.Billing.CardController do
   use Stitch.Web, :controller
-  alias StitchConnect.Web.ErrorView
+  alias Stitch.Web.ErrorView
   alias Stitch.Billing
 
   action_fallback(Stitch.Web.Api.FallbackController)
