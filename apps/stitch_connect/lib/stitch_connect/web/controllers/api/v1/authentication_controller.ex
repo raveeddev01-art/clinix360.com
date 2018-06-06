@@ -3,7 +3,8 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
   alias Stitch.User.{Authentication}
   alias Stitch.UserQueries
   alias Stitch.Accounts.{Email, User, PasswordResetToken}
-  alias StitchConnect.Web.Api.V1.{AuthenticationView, UserView}
+  alias Stitch.Web.Api.V1.UserView
+  alias StitchConnect.Web.Api.V1.AuthenticationView
   alias StitchConnect.Web.{EventsChannel}
   action_fallback(StitchConnect.Web.Api.FallbackController)
 

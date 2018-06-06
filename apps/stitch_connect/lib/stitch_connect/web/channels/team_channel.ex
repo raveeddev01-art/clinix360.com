@@ -2,8 +2,9 @@ defmodule StitchConnect.Web.TeamChannel do
   use Stitch.Web, :channel
   alias Stitch.Accounts.User
   alias Stitch.{UserQueries, GroupQueries}
+  alias Stitch.Web.Api.V1.UserView
   alias StitchConnect.Web.Presence
-  alias StitchConnect.Web.Api.V1.{UserView, GroupView}
+  alias StitchConnect.Web.Api.V1.GroupView
   alias Stitch.Accounts.ActivityTracker
   alias StitchConnect.Web.PushNotifications
 

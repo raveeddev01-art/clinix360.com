@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.TeamView do
+defmodule Stitch.Web.Api.V1.TeamView do
   use Stitch.Web, :view
 
   def render("contact_info.json", %{team: team}) do

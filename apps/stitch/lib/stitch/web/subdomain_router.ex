@@ -196,11 +196,6 @@ defmodule Stitch.Web.SubdomainRouter do
       put("/revoke-admin", UserController, :revoke_admin)
       put("/promote-admin", UserController, :promote_admin)
     end
-  end
-
-  # Routes which needs admin role
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through(:team_admin_api)
 
     # Team Settings admin routes
     scope "/teams/:id" do
@@ -212,6 +207,11 @@ defmodule Stitch.Web.SubdomainRouter do
       put("/update-security-lockout-time", TeamController, :update_security_lockout_time)
       get("/access_log", TeamController, :access_log)
     end
+  end
+
+  # Routes which needs admin role
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:team_admin_api)
 
     # Subscription/Billing routes
     scope "/billing", Billing, as: :billing do
@@ -248,13 +248,18 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   # API routes which need token.
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api_auth)
+
+    get("/teams/:id", TeamController, :show)
+    put("/teams/:id", TeamController, :update)
+  end
+
+  # API routes which need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:api_auth)
 
     get("/invitations/:token", InvitationController, :show)
-
-    get("/teams/:id", TeamController, :show)
-    put("/teams/:id", TeamController, :update)
 
     post("/login", AuthenticationController, :submit_login)
     post("/reset_password", AuthenticationController, :reset_password)
