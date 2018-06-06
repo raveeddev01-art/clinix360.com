@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.UserController do
   use Stitch.Web, :controller
   alias StitchConnect.Web.{PageView, PageService}
-  alias StitchConnect.Web.Api.V1.UserView
+  alias Stitch.Web.Api.V1.UserView
   alias Stitch.{Repo, Accounts.User}
 
   import Ecto.Query

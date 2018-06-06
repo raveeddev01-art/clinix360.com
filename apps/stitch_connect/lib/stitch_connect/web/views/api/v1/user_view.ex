@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.UserView do
+defmodule Stitch.Web.Api.V1.UserView do
   use Stitch.Web, :view
   alias Stitch.Accounts.User
 

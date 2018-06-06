@@ -95,7 +95,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     with {:ok, group} <- GroupQueries.get_by_id(group_id, user),
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
       {:ok, users} = GroupQueries.get_users(group_id)
-      render(conn, StitchConnect.Web.Api.V1.UserView, "index.json", users: users)
+      render(conn, Stitch.Web.Api.V1.UserView, "index.json", users: users)
     else
       {:error, _} -> {:error, :not_found}
       {:authorized?, false} -> {:error, :not_authorized}

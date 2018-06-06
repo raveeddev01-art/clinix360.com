@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.GroupView do
   use Stitch.Web, :view
-  alias StitchConnect.Web.Api.V1.UserView
+  alias Stitch.Web.Api.V1.UserView
   alias Stitch.Group
 
   def render("index.json", %{groups: groups, user_id: user_id} = attrs) do
