@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.SessionLockController do
+defmodule Stitch.Web.Api.V1.SessionLockController do
   use Stitch.Web, :controller
   alias Stitch.Accounts.ActivityTracker
 

@@ -95,11 +95,16 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/news", NewsController, :index)
   end
 
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_locked_api)
 
     post("/session-lock", SessionLockController, :lock)
     post("/session-unlock", SessionLockController, :unlock)
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_locked_api)
+
     get("/groups", GroupController, :index)
     get("/users/notification-preference", NotificationPreferenceController, :show_global)
   end
