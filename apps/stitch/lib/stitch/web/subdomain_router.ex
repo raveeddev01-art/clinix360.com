@@ -272,6 +272,19 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   # Anonymous routes.
+  scope "/", Stitch.Web do
+    pipe_through(:browser)
+
+    get("/login", AuthenticationController, :login)
+
+    get("/find-your-team/:token/login", AuthenticationController, :auto_login)
+    get("/logged-out", AuthenticationController, :logged_out)
+
+    get("/reset-password", AuthenticationController, :reset_password)
+    get("/reset-password/:token", AuthenticationController, :change_password)
+  end
+
+  # Anonymous routes.
   scope "/", StitchConnect.Web do
     pipe_through(:browser)
 
@@ -283,14 +296,15 @@ defmodule Stitch.Web.SubdomainRouter do
         get("/:token/:step", InvitationController, :accept)
       end
     end
+  end
 
-    get("/login", AuthenticationController, :login)
+  # Authenticated routes.
+  scope "/", Stitch.Web do
+    pipe_through(:browser_authenticate)
 
-    get("/find-your-team/:token/login", AuthenticationController, :auto_login)
-    get("/logged-out", AuthenticationController, :logged_out)
+    get("/apps", AuthenticationController, :apps)
 
-    get("/reset-password", AuthenticationController, :reset_password)
-    get("/reset-password/:token", AuthenticationController, :change_password)
+    get("/logout", AuthenticationController, :logout)
   end
 
   # Authenticated routes.
@@ -298,9 +312,6 @@ defmodule Stitch.Web.SubdomainRouter do
     pipe_through(:browser_authenticate)
 
     get("/", PageController, :index)
-    get("/apps", AuthenticationController, :apps)
-
-    get("/logout", AuthenticationController, :logout)
 
     get("/rooms/:slug", GroupController, :index)
     get("/direct/:username", UserController, :index)

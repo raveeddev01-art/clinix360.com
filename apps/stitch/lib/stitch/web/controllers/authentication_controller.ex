@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.AuthenticationController do
+defmodule Stitch.Web.AuthenticationController do
   use Stitch.Web, :controller
   alias StitchConnect.Web.{EventsChannel}
   alias Stitch.FindYourTeam

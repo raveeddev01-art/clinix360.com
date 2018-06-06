@@ -93,10 +93,6 @@ defmodule Stitch.Web.Router do
     get("/terms-of-service", HomeController, :index)
 
     get("/industries/*industry_name", HomeController, :index)
-  end
-
-  scope "/", StitchConnect.Web do
-    pipe_through(:browser)
 
     get("/getstarted", AuthenticationController, :index)
     get("/signin", AuthenticationController, :index)
@@ -110,10 +106,14 @@ defmodule Stitch.Web.Router do
     get("/signup/onboarding/:step", AuthenticationController, :index)
     get("/signup/app-download", AuthenticationController, :index)
 
+    # get "/signup/phone-number", AuthenticationController, :index
+  end
+
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser)
+
     # oAuth Integration routes.
     get("/_oauth/:provider/:webhook_token", OAuthIntegrationController, :provider_response)
-
-    # get "/signup/phone-number", AuthenticationController, :index
   end
 
   # Redirect for common URL misspellings
