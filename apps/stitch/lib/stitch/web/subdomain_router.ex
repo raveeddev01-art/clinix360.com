@@ -302,8 +302,9 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/", Stitch.Web do
     pipe_through(:browser_authenticate)
 
-    get("/apps", AuthenticationController, :apps)
+    get("/direct/:username", UserController, :index)
 
+    get("/apps", AuthenticationController, :apps)
     get("/logout", AuthenticationController, :logout)
   end
 
@@ -314,7 +315,6 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/", PageController, :index)
 
     get("/rooms/:slug", GroupController, :index)
-    get("/direct/:username", UserController, :index)
     get("/messages/:id/download", MessageController, :download)
 
     # TODO: a wild card route can make all /admin routes to one line

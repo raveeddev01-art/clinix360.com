@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.UserControllerTest do
+defmodule Stitch.Web.UserControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   import Phoenix.ChannelTest
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
