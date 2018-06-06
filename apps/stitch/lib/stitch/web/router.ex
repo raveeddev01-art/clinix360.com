@@ -1,6 +1,10 @@
 defmodule Stitch.Web.Router do
   use Stitch.Web, :router
 
+  # =============
+  #   PIPELINES
+  # =============
+
   pipeline :browser do
     # reflect any changes in ErrorView.browser_pipeline_equivalent/1
     plug(Stitch.Plug.PlugAttack)
@@ -33,6 +37,10 @@ defmodule Stitch.Web.Router do
     plug(Stitch.Plug.ApiAuthenticate, without_team_subdomain: true)
   end
 
+  # =================================
+  #   STITCH ROUTES (CROSS-PRODUCT)
+  # =================================
+
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
     # Onboarding routes for new users.
@@ -58,14 +66,6 @@ defmodule Stitch.Web.Router do
     pipe_through(:api)
 
     post("/", StripeWebhookController, :event)
-  end
-
-  scope "/", StitchConnect.Web do
-    pipe_through(:no_csrf_browser)
-
-    # Webhook routes.
-    get("/webhook/drchrono/:webhook_token", WebhookController, :drchrono_get)
-    post("/webhook/drchrono/:webhook_token", WebhookController, :drchrono)
   end
 
   scope "/", Stitch.Web do
@@ -107,6 +107,18 @@ defmodule Stitch.Web.Router do
     get("/signup/app-download", AuthenticationController, :index)
 
     # get "/signup/phone-number", AuthenticationController, :index
+  end
+
+  # =========================
+  #   STITCH CONNECT ROUTES
+  # =========================
+
+  scope "/", StitchConnect.Web do
+    pipe_through(:no_csrf_browser)
+
+    # Webhook routes.
+    get("/webhook/drchrono/:webhook_token", WebhookController, :drchrono_get)
+    post("/webhook/drchrono/:webhook_token", WebhookController, :drchrono)
   end
 
   scope "/", StitchConnect.Web do

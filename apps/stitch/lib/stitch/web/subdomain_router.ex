@@ -1,6 +1,10 @@
 defmodule Stitch.Web.SubdomainRouter do
   use Stitch.Web, :router
 
+  # =============
+  #   PIPELINES
+  # =============
+
   pipeline :browser do
     plug(Stitch.Plug.PlugAttack)
     plug(:accepts, ["html"])
@@ -63,6 +67,10 @@ defmodule Stitch.Web.SubdomainRouter do
     plug(Stitch.Plug.ActivityTracker)
   end
 
+  # ================
+  #   ADMIN ROUTES
+  # ================
+
   # Stitch Staff Admin subdomain routes
   scope "/", Stitch.Web.Admin, as: :admin, host: "admin." do
     pipe_through([:browser, :admin])
@@ -75,6 +83,10 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/impersonate/:user_id", ImpersonationController, :impersonate)
   end
 
+  # =================================
+  #   STITCH ROUTES (CROSS-PRODUCT)
+  # =================================
+
   # API routes which don't need token.
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
@@ -86,27 +98,11 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/stitch-version", VersionController, :index)
   end
 
-  # API routes which don't need token.
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through(:api)
-
-    post("/invitations/accept/:token", InvitationController, :accept)
-    get("/apps", AppController, :index)
-    get("/news", NewsController, :index)
-  end
-
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_locked_api)
 
     post("/session-lock", SessionLockController, :lock)
     post("/session-unlock", SessionLockController, :unlock)
-  end
-
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through(:authenticated_locked_api)
-
-    get("/groups", GroupController, :index)
-    get("/users/notification-preference", NotificationPreferenceController, :show_global)
   end
 
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
@@ -122,73 +118,6 @@ defmodule Stitch.Web.SubdomainRouter do
     delete("/users/:id/delete_profile_image", UserController, :delete_profile_image)
     post("/users/search", UserController, :search)
     post("/users/access", UserController, :access)
-  end
-
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through(:authenticated_api)
-
-    get("/groups/:group_id/messages", MessageController, :index)
-    get("/groups/:group_id/feed_recent", MessageController, :feed_recent)
-    get("/groups/:group_id/feed_surrounding", MessageController, :feed_surrounding)
-    post("/groups/:group_id/mark_as_read", MessageController, :mark_as_read)
-    post("/groups/:group_id/mark_as_unread", MessageController, :mark_as_unread)
-    post("/groups/:group_id/messages", MessageController, :create)
-    put("/messages/:id", MessageController, :update)
-    put("/messages/:id/delete_link_preview", MessageController, :delete_message_link_preview)
-    put("/messages/:id/toggle_reaction", MessageController, :toggle_reaction)
-    delete("/messages/:id", MessageController, :delete)
-    get("/messages/:id/download", MessageController, :download)
-    post("/messages/:id/toggle-star", MessageController, :toggle_star)
-    post("/messages/:id/toggle-pin", MessageController, :toggle_pin)
-    post("/messages/search", MessageController, :search)
-
-    get("/starred_messages", StarredMessageController, :index)
-    get("/pinned_messages", PinnedMessageController, :index)
-    get("/mentions", MentionController, :index)
-
-    get("/integrations", IntegrationController, :index)
-    post("/integrations", IntegrationController, :create)
-    post("/integrations/:id", IntegrationController, :update)
-    delete("/integrations/:id", IntegrationController, :delete)
-    post("/integrations/:id/enable", IntegrationController, :enable)
-    post("/integrations/:id/disable", IntegrationController, :disable)
-
-    put("/users/notification-preference", NotificationPreferenceController, :update_global)
-
-    scope "/invitations" do
-      get("/", InvitationController, :index)
-      post("/", InvitationController, :create)
-      patch("/:id/revoke", InvitationController, :revoke)
-      patch("/:id/resend", InvitationController, :resend)
-    end
-
-    get("/groups/:id", GroupController, :show)
-    post("/groups", GroupController, :create)
-    post("/groups/dm", GroupController, :create_single_dm)
-    post("/groups/multi_dm", GroupController, :create_multi_dm)
-    post("/groups/search", GroupController, :search)
-    post("/groups/:id/invite/", GroupController, :invite)
-    post("/groups/:id/remove_users", GroupController, :remove_users)
-    post("/groups/:id/toggle-favorite", GroupController, :toggle_favorite)
-    post("/groups/:id/toggle-public", GroupController, :toggle_public)
-    post("/groups/:id/join", GroupController, :join)
-    post("/groups/:id/leave", GroupController, :leave)
-    get("/groups/:id/users", GroupController, :users)
-    patch("/groups/:id/rename", GroupController, :rename)
-    delete("/groups/:id", GroupController, :delete)
-    put("/groups/:id/hide", GroupController, :hide)
-    put("/groups/:id/unhide", GroupController, :unhide)
-
-    get("/groups/:group_id/notification-preference", NotificationPreferenceController, :show)
-    put("/groups/:group_id/notification-preference", NotificationPreferenceController, :update)
-
-    get("/uploads", UploadController, :index)
-    post("/upload-signature", UploadController, :create)
-
-    resources("/devices", DeviceController, only: [:create, :delete])
-    post("/devices/unregister", DeviceController, :delete)
-
-    post("/news/mark-as-read", NewsController, :mark_as_read)
   end
 
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
@@ -284,20 +213,6 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/reset-password/:token", AuthenticationController, :change_password)
   end
 
-  # Anonymous routes.
-  scope "/", StitchConnect.Web do
-    pipe_through(:browser)
-
-    scope "/invitations" do
-      get("/error", InvitationController, :error)
-
-      scope "/accept" do
-        get("/:token", InvitationController, :accept)
-        get("/:token/:step", InvitationController, :accept)
-      end
-    end
-  end
-
   # Authenticated routes.
   scope "/", Stitch.Web do
     pipe_through(:browser_authenticate)
@@ -335,6 +250,107 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/engage", EngageController, :index)
     get("/manage", ManageController, :index)
+  end
+
+  # =========================
+  #   STITCH CONNECT ROUTES
+  # =========================
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_locked_api)
+
+    get("/groups", GroupController, :index)
+    get("/users/notification-preference", NotificationPreferenceController, :show_global)
+  end
+
+  # API routes which don't need token.
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api)
+
+    post("/invitations/accept/:token", InvitationController, :accept)
+    get("/apps", AppController, :index)
+    get("/news", NewsController, :index)
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_api)
+
+    get("/groups/:group_id/messages", MessageController, :index)
+    get("/groups/:group_id/feed_recent", MessageController, :feed_recent)
+    get("/groups/:group_id/feed_surrounding", MessageController, :feed_surrounding)
+    post("/groups/:group_id/mark_as_read", MessageController, :mark_as_read)
+    post("/groups/:group_id/mark_as_unread", MessageController, :mark_as_unread)
+    post("/groups/:group_id/messages", MessageController, :create)
+    put("/messages/:id", MessageController, :update)
+    put("/messages/:id/delete_link_preview", MessageController, :delete_message_link_preview)
+    put("/messages/:id/toggle_reaction", MessageController, :toggle_reaction)
+    delete("/messages/:id", MessageController, :delete)
+    get("/messages/:id/download", MessageController, :download)
+    post("/messages/:id/toggle-star", MessageController, :toggle_star)
+    post("/messages/:id/toggle-pin", MessageController, :toggle_pin)
+    post("/messages/search", MessageController, :search)
+
+    get("/starred_messages", StarredMessageController, :index)
+    get("/pinned_messages", PinnedMessageController, :index)
+    get("/mentions", MentionController, :index)
+
+    get("/integrations", IntegrationController, :index)
+    post("/integrations", IntegrationController, :create)
+    post("/integrations/:id", IntegrationController, :update)
+    delete("/integrations/:id", IntegrationController, :delete)
+    post("/integrations/:id/enable", IntegrationController, :enable)
+    post("/integrations/:id/disable", IntegrationController, :disable)
+
+    put("/users/notification-preference", NotificationPreferenceController, :update_global)
+
+    scope "/invitations" do
+      get("/", InvitationController, :index)
+      post("/", InvitationController, :create)
+      patch("/:id/revoke", InvitationController, :revoke)
+      patch("/:id/resend", InvitationController, :resend)
+    end
+
+    get("/groups/:id", GroupController, :show)
+    post("/groups", GroupController, :create)
+    post("/groups/dm", GroupController, :create_single_dm)
+    post("/groups/multi_dm", GroupController, :create_multi_dm)
+    post("/groups/search", GroupController, :search)
+    post("/groups/:id/invite/", GroupController, :invite)
+    post("/groups/:id/remove_users", GroupController, :remove_users)
+    post("/groups/:id/toggle-favorite", GroupController, :toggle_favorite)
+    post("/groups/:id/toggle-public", GroupController, :toggle_public)
+    post("/groups/:id/join", GroupController, :join)
+    post("/groups/:id/leave", GroupController, :leave)
+    get("/groups/:id/users", GroupController, :users)
+    patch("/groups/:id/rename", GroupController, :rename)
+    delete("/groups/:id", GroupController, :delete)
+    put("/groups/:id/hide", GroupController, :hide)
+    put("/groups/:id/unhide", GroupController, :unhide)
+
+    get("/groups/:group_id/notification-preference", NotificationPreferenceController, :show)
+    put("/groups/:group_id/notification-preference", NotificationPreferenceController, :update)
+
+    get("/uploads", UploadController, :index)
+    post("/upload-signature", UploadController, :create)
+
+    resources("/devices", DeviceController, only: [:create, :delete])
+    post("/devices/unregister", DeviceController, :delete)
+
+    post("/news/mark-as-read", NewsController, :mark_as_read)
+  end
+
+  # Anonymous routes.
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser)
+
+    scope "/invitations" do
+      get("/error", InvitationController, :error)
+
+      scope "/accept" do
+        get("/:token", InvitationController, :accept)
+        get("/:token/:step", InvitationController, :accept)
+      end
+    end
   end
 
   # Authenticated routes.
