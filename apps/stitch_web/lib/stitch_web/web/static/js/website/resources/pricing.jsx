@@ -63,7 +63,7 @@ export default class Pricing extends Component {
               <PriceTier product="CONNECT" tier="PREMIUM" />
             </div>
 
-            <h4 className="text-center">
+            <h4 className="text-center m-b-0">
               Need to deploy Connect across a large organization?{" "}
               <a href="mailto:support@teamstitch.com">Contact us</a> for
               Enterprise pricing.
@@ -91,7 +91,7 @@ export default class Pricing extends Component {
               <PriceTier product="ENGAGE" tier="PREMIUM" />
             </div>
 
-            <h4 className="text-center">
+            <h4 className="text-center m-b-0">
               Need to deploy Engage across a large organization?{" "}
               <a href="mailto:support@teamstitch.com">Contact us</a> for
               Enterprise pricing.
@@ -119,7 +119,7 @@ export default class Pricing extends Component {
               <PriceTier product="MANAGE" tier="PREMIUM" />
             </div>
 
-            <h4 className="text-center">
+            <h4 className="text-center m-b-0">
               Need to deploy Manage across a large organization?{" "}
               <a href="mailto:support@teamstitch.com">Contact us</a> for
               Enterprise pricing.

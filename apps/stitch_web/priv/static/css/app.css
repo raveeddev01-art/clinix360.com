@@ -16794,19 +16794,23 @@ i.file-data-separator {
     padding-bottom: 40px; }
     @media (min-width: 768px) {
       .website-wrapper .pricing-page .subheader {
-        padding-bottom: 80px; } }
+        padding-bottom: 60px; } }
+    .website-wrapper .pricing-page .subheader h3 {
+      margin-bottom: 0; }
   .website-wrapper .pricing-page .stitch-products {
     padding-bottom: 0; }
     @media (min-width: 768px) {
       .website-wrapper .pricing-page .stitch-products {
-        padding-bottom: 40px; } }
+        padding-bottom: 60px; } }
   .website-wrapper .pricing-page .product-section {
     padding-top: 40px; }
     @media (min-width: 768px) {
       .website-wrapper .pricing-page .product-section {
-        padding-top: 71px; } }
+        padding-top: 50px; } }
     .website-wrapper .pricing-page .product-section#manage {
-      padding-bottom: 70px; }
+      padding-bottom: 50px; }
+    .website-wrapper .pricing-page .product-section h4 {
+      font-size: 18px; }
     .website-wrapper .pricing-page .product-section .heading {
       background: #4f4f4f;
       padding: 50px 0; }
@@ -16891,6 +16895,8 @@ i.file-data-separator {
           .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier ul li i.fa {
             color: #036;
             margin-right: 8px; }
+          .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier ul li:last-of-type {
+            margin-bottom: 0; }
         .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier:not(:first-of-type) ul li:first-of-type {
           font-style: italic; }
   .website-wrapper .downloads-page .tab-content .plan {
@@ -17168,13 +17174,10 @@ i.file-data-separator {
       .navbar-inverse .navbar-nav .dropdown li > a .subtext {
         color: #696969;
         font-weight: normal; }
-      .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus,
+      .navbar-inverse .navbar-nav > li > a:hover,
       .navbar-inverse .navbar-nav > .active > a:hover,
-      .navbar-inverse .navbar-nav > .active > a:focus,
       .navbar-inverse .navbar-nav > .open > a:hover,
-      .navbar-inverse .navbar-nav > .open > a:focus,
-      .navbar-inverse .navbar-nav .dropdown li > a:hover,
-      .navbar-inverse .navbar-nav .dropdown li > a:focus {
+      .navbar-inverse .navbar-nav .dropdown li > a:hover {
         color: #036;
         background: #4f4f4f;
         border-radius: 3px; }

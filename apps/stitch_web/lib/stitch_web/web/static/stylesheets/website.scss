@@ -917,25 +917,33 @@
     .subheader {
       padding-bottom: 40px;
       @media (min-width: $screen-sm) {
-        padding-bottom: 80px;
+        padding-bottom: 60px;
+      }
+
+      h3 {
+        margin-bottom: 0;
       }
     }
 
     .stitch-products {
       padding-bottom: 0;
       @media (min-width: $screen-sm) {
-        padding-bottom: 40px;
+        padding-bottom: 60px;
       }
     }
 
     .product-section {
       padding-top: 40px;
       @media(min-width: $screen-sm) {
-        padding-top: 71px;
+        padding-top: 50px;
       }
 
       &#manage {
-        padding-bottom: 70px;
+        padding-bottom: 50px;
+      }
+
+      h4 {
+        font-size: 18px;
       }
 
       .heading {
@@ -1064,6 +1072,10 @@
             i.fa {
               color: $brand-primary;
               margin-right: 8px;
+            }
+
+            &:last-of-type {
+              margin-bottom: 0;
             }
           }
 
@@ -1509,8 +1521,7 @@
         font-weight: normal;
       }
 
-      &:hover,
-      &:focus {
+      &:hover {
         color: $brand-primary;
         background: $medium-gray;
         border-radius: 3px;

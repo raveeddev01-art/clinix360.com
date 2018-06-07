@@ -242,7 +242,11 @@ class Header extends Component {
 
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
               {!mobile && (
-                <NavItem onClick={this.goToGetStarted} className="btn-trial">
+                <NavItem
+                  onClick={this.goToGetStarted}
+                  className="btn-trial"
+                  id="get-started-btn"
+                >
                   Get Started
                 </NavItem>
               )}
