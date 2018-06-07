@@ -16810,7 +16810,8 @@ i.file-data-separator {
     .website-wrapper .pricing-page .product-section#manage {
       padding-bottom: 50px; }
     .website-wrapper .pricing-page .product-section h4 {
-      font-size: 18px; }
+      font-size: 18px;
+      line-height: 1.5; }
     .website-wrapper .pricing-page .product-section .heading {
       background: #4f4f4f;
       padding: 50px 0; }
@@ -16867,8 +16868,11 @@ i.file-data-separator {
             flex-direction: column; }
             .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .flex-box .btn {
               margin-bottom: 30px; } }
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier:first-of-type {
+          padding-top: 0; }
         .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier:last-of-type {
-          border: 0; }
+          border: 0;
+          padding-bottom: 0; }
         .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .tier,
         .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .price {
           color: #036;
