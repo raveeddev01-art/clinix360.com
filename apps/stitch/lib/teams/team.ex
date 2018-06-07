@@ -30,6 +30,8 @@ defmodule Stitch.Team do
     has_many(:payment_methods, Stitch.Billing.PaymentMethod, on_delete: :delete_all)
     has_many(:features, Stitch.TeamFeature, on_delete: :delete_all)
 
+    has_many(:patients, through: [:team_patients, :patient])
+
     timestamps()
   end
 

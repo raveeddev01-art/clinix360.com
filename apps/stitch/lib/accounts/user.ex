@@ -142,6 +142,7 @@ defmodule Stitch.Accounts.User do
     end)
   end
 
+  # TODO: Remove from usr and put in shared spot
   def valid_email_changeset(struct, attrs) do
     struct
     |> cast(attrs, [:email])
@@ -265,6 +266,7 @@ defmodule Stitch.Accounts.User do
     |> add_thumb()
   end
 
+  # TODO: Remove from usr and put in shared spot
   def default_profile_image_changeset(struct, params) do
     changeset =
       struct

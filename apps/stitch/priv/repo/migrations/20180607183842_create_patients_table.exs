@@ -7,8 +7,8 @@ defmodule Stitch.Repo.Migrations.CreatePatientsTable do
       add(:last_name, :string, null: false)
       add(:email, :citext, null: false)
 
-      add(:avatar, :string)
-      add(:avatar_thumb, :string)
+      add(:profile_image_url, :string)
+      add(:profile_image_thumb_url, :string)
       add(:phone_number, :string)
       add(:onboarded, :boolean, default: false)
 
