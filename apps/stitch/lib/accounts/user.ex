@@ -77,7 +77,7 @@ defmodule Stitch.Accounts.User do
     ])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
-    |> valid_email_changeset(attrs)
+    |> Stitch.Validators.valid_email_changeset(attrs)
     |> validate_required([:first_name, :last_name])
     |> default_profile_image_changeset(attrs)
     |> update_change(:email, &String.trim/1)
@@ -142,14 +142,6 @@ defmodule Stitch.Accounts.User do
     end)
   end
 
-  # TODO: Remove from usr and put in shared spot
-  def valid_email_changeset(struct, attrs) do
-    struct
-    |> cast(attrs, [:email])
-    |> validate_format(:email, ~r/[\w-]+@([\w-]+\.)+[\w-]+/)
-    |> Stitch.Validators.validate_email_domain(:email)
-  end
-
   @doc """
   Applies the attributes: email, confirmation_code and token
   to the Stitch.Accounts.User struct.
@@ -164,7 +156,7 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(attrs, [:email, :confirmation_code, :token])
     |> validate_required([:email, :confirmation_code, :token])
-    |> valid_email_changeset(attrs)
+    |> Stitch.Validators.valid_email_changeset(attrs)
     |> update_change(:email, &String.trim/1)
     |> update_change(:email, &String.downcase/1)
   end

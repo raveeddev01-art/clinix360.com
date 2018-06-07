@@ -39,21 +39,13 @@ defmodule Stitch.Patient do
   def changeset(%Stitch.Patient{} = struct, attrs) do
     struct
     |> cast(attrs, @cs_attributes)
-    |> valid_email_changeset(attrs)
+    |> Stitch.Validators.valid_email_changeset(attrs)
     |> validate_required(@required_attributes)
     |> default_profile_image_changeset(attrs)
     |> update_change(:email, &String.trim/1)
     |> unique_constraint(:email)
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
-  end
-
-  # TODO: Remove from usr and put in shared spot
-  def valid_email_changeset(struct, attrs) do
-    struct
-    |> cast(attrs, [:email])
-    |> validate_format(:email, ~r/[\w-]+@([\w-]+\.)+[\w-]+/)
-    |> Stitch.Validators.validate_email_domain(:email)
   end
 
   # TODO: Remove from usr and put in shared spot
