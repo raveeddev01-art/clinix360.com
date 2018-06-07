@@ -28,7 +28,7 @@ defmodule Stitch.Team do
     has_many(:exports, Stitch.Exports.Export, on_delete: :delete_all)
     has_one(:subscription, Stitch.Billing.Subscription, on_delete: :delete_all)
     has_many(:payment_methods, Stitch.Billing.PaymentMethod, on_delete: :delete_all)
-    has_many(:team_features, Stitch.TeamFeature, on_delete: :delete_all)
+    has_many(:features, Stitch.TeamFeature, on_delete: :delete_all)
 
     timestamps()
   end

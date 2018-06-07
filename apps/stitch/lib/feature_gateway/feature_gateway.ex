@@ -4,11 +4,14 @@ defmodule Stitch.FeatureGateway do
   ecosystem.
   """
 
-  alias Stitch.Repo
-  alias Stitch.Team
-  alias Stitch.FeatureGateway.Connect
-  alias Stitch.FeatureGateway.Engage
-  alias Stitch.FeatureGateway.Manage
+  alias Stitch.{
+    Repo,
+    Team,
+    TeamFeature,
+    FeatureGateway.Connect,
+    FeatureGateway.Engage,
+    FeatureGateway.Manage
+  }
 
   @doc """
   Returns available features for a team given it's current
@@ -20,9 +23,9 @@ defmodule Stitch.FeatureGateway do
       ["tier.premium", "connect.guests", "engage.patients"]
   """
   def available_features(%Team{} = team) do
-    team = Repo.preload(team, [:subscription, :team_features])
+    team = Repo.preload(team, [:subscription, :features])
 
-    Enum.map(team.team_features, & &1.name)
+    TeamFeature.enabled_for_team(team)
     |> Connect.add_team_features(team)
     |> Engage.add_team_features(team)
     |> Manage.add_team_features(team)
