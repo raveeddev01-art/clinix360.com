@@ -219,6 +219,8 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/teams/:id", TeamController, :show)
     put("/teams/:id", TeamController, :update)
 
+    get("/patients", PatientController, :index)
+
     post("/login", AuthenticationController, :submit_login)
     post("/reset_password", AuthenticationController, :reset_password)
   end

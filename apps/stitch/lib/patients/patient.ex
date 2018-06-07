@@ -5,7 +5,9 @@ defmodule Stitch.Patient do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Stitch.Team
+  alias Stitch.{Repo, TeamPatient, Patient}
+
+  @type t :: %__MODULE__{}
 
   @cs_attributes [
     :first_name,
@@ -15,7 +17,10 @@ defmodule Stitch.Patient do
     :onboarded
   ]
 
+  @required_attributes [:first_name, :last_name, :email]
+
   schema "patients" do
+    has_many(:team_patients, TeamPatient, on_delete: :delete_all)
     has_many(:teams, through: [:team_patients, :team])
 
     field(:first_name, :string)
@@ -35,9 +40,10 @@ defmodule Stitch.Patient do
     struct
     |> cast(attrs, @cs_attributes)
     |> valid_email_changeset(attrs)
-    |> validate_required([:first_name, :last_name])
+    |> validate_required(@required_attributes)
     |> default_profile_image_changeset(attrs)
     |> update_change(:email, &String.trim/1)
+    |> unique_constraint(:email)
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
   end
@@ -102,5 +108,15 @@ defmodule Stitch.Patient do
       _ ->
         changeset.data.last_name
     end
+  end
+
+  @doc """
+  TODO: REMOVE ME OR FILL OUT
+  """
+  @spec create(map) :: {:ok, Patient.t()} | {:error, Ecto.Changeset.t()}
+  def create(params) do
+    patient = %Patient{}
+    changeset = changeset(patient, params)
+    Repo.insert(changeset)
   end
 end
