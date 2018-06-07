@@ -16284,7 +16284,7 @@ i.file-data-separator {
   .website-wrapper .subheader {
     color: #4c4c4c;
     background: #fff;
-    padding: 130px 0 10px; }
+    padding: 160px 0 110px; }
     @media (max-width: 992px) {
       .website-wrapper .subheader {
         padding: 130px 0 50px; } }
@@ -16790,8 +16790,96 @@ i.file-data-separator {
   @media (min-width: 768px) {
     .website-wrapper .pricing-page .nav-tabs li a img, .website-wrapper .downloads-page .nav-tabs li a img {
       width: 72px; } }
-  .website-wrapper .pricing-page .tab-content {
-    border-top: 0px; }
+  .website-wrapper .pricing-page .product-section {
+    padding-top: 71px; }
+    .website-wrapper .pricing-page .product-section#manage {
+      padding-bottom: 70px; }
+    .website-wrapper .pricing-page .product-section .heading {
+      background: #4f4f4f;
+      padding: 50px 0; }
+      .website-wrapper .pricing-page .product-section .heading h2 {
+        margin: 0 0 20px; }
+        .website-wrapper .pricing-page .product-section .heading h2 i.fa {
+          font-size: calc(1.3rem + (6 * (100vw - 360px) / 624)); }
+          @media (min-width: 1200px) {
+            .website-wrapper .pricing-page .product-section .heading h2 i.fa {
+              font-size: 30px; } }
+      .website-wrapper .pricing-page .product-section .heading h4 {
+        font-size: 20px;
+        line-height: 1.5;
+        margin: 0; }
+    .website-wrapper .pricing-page .product-section .pricing-table {
+      display: flex;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      padding: 50px 0;
+      margin: 50px 0 30px; }
+      @media (max-width: 1103px) {
+        .website-wrapper .pricing-page .product-section .pricing-table {
+          flex-direction: column;
+          justify-content: center;
+          padding: 50px; } }
+      .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier {
+        flex: 1;
+        border-right: 1px solid #ddd;
+        padding: 0 50px; }
+        @media (max-width: 673px) {
+          .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .btn {
+            margin-bottom: 30px; } }
+        @media (max-width: 768px) {
+          .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier {
+            border-bottom: 1px solid #ddd;
+            border-right: 0;
+            padding: 40px 0; } }
+        @media (min-width: 673px) and (max-width: 1103px) {
+          .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier {
+            border-bottom: 1px solid #ddd;
+            border-right: 0;
+            padding: 50px 0; }
+            .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .flex-box {
+              flex-direction: row;
+              align-items: initial; }
+              .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .flex-box .flex-item {
+                flex: 1; }
+            .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier:first-of-type {
+              padding-top: 0; }
+            .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier:last-of-type {
+              padding-bottom: 0; } }
+        @media (min-width: 1104px) {
+          .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .flex-box {
+            flex-direction: column; }
+            .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .flex-box .btn {
+              margin-bottom: 30px; } }
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier:last-of-type {
+          border: 0; }
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .tier,
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .price {
+          color: #036;
+          font-size: 20px;
+          font-weight: 700; }
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .price {
+          font-size: 80px;
+          line-height: 1; }
+          .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .price span {
+            font-size: 40%;
+            vertical-align: super; }
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .text-muted, .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .message-container .message .message-content .message-header .time, .message-container .message .message-content .message-header .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .time {
+          font-size: 18px; }
+          .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .text-muted a, .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .message-container .message .message-content .message-header .time a, .message-container .message .message-content .message-header .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .time a {
+            color: #555459;
+            text-decoration: underline; }
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier ul, .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier .btn {
+          max-width: 230px;
+          margin-right: auto;
+          margin-left: auto; }
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier ul li {
+          font-size: 18px;
+          margin-bottom: 10px; }
+          .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier ul li i.fa {
+            color: #036;
+            margin-right: 8px; }
+        .website-wrapper .pricing-page .product-section .pricing-table .pricing-tier:not(:first-of-type) ul li:first-of-type {
+          font-style: italic; }
   .website-wrapper .downloads-page .tab-content .plan {
     margin: 20px 0; }
     .website-wrapper .downloads-page .tab-content .plan a {
