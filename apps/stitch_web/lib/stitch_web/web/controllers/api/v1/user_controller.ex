@@ -1,0 +1,456 @@
+defmodule Stitch.Web.Api.V1.UserController do
+  use Stitch.Web, :controller
+  alias Stitch.Accounts.{Admin, User, Role}
+  alias Stitch.Web.TeamChannel
+  alias Stitch.Web.Endpoint
+  alias StitchConnect.Web.{EventsChannel, GroupChannel}
+  alias Stitch.Analytics.User, as: UserAnalytics
+
+  alias Stitch.{
+    AWS.S3,
+    Accounts,
+    Billing,
+    FeatureGateway,
+    Group,
+    GroupQueries,
+    TeamQueries,
+    TimedMessage,
+    UserQueries
+  }
+
+  import Stitch.UserAuthorization, only: [can_update_user?: 2]
+
+  action_fallback(Stitch.Web.Api.V1.FallbackController)
+
+  def index(conn, _) do
+    users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
+    render(conn, "index.json", users: users)
+  end
+
+  def search(conn, %{"term" => term}) do
+    result_users = UserQueries.search(conn.assigns.current_user, term)
+    render(conn, "index.json", users: result_users)
+  end
+
+  def activate(conn, %{"id" => id}) do
+    with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
+         {:ok, _user} <- Admin.activate(conn.assigns.team, id) do
+      Billing.update_subscriber_count(conn.assigns.team)
+      TeamChannel.broadcast_activated(conn.assigns.team, String.to_integer(id))
+      json(conn, %{message: "Account has been activated."})
+    else
+      {:error, :not_found} ->
+        not_found_error(conn)
+
+      {:self, true} ->
+        unprocessable_entity_error(conn, %{message: "You cannot activate your own account."})
+    end
+  end
+
+  def deactivate_my_account(conn, _params) do
+    id = conn.assigns.current_user.id
+
+    with false <- Enum.member?(conn.assigns.current_user.roles, "admin"),
+         {:ok, _user} <- Admin.deactivate(conn.assigns.team, id) do
+      Billing.update_subscriber_count(conn.assigns.team)
+      TeamChannel.broadcast_deactivated(conn.assigns.team, id)
+      Endpoint.broadcast("user_socket:#{id}", "disconnect", %{})
+      json(conn, %{message: "Account has been deactivated."})
+    else
+      {:error, :not_found} ->
+        not_found_error(conn)
+
+      true ->
+        unprocessable_entity_error(conn, %{
+          message: "Only non-admins can deactivate their account."
+        })
+    end
+  end
+
+  def deactivate(conn, %{"id" => id}) do
+    with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
+         {:ok, _user} <- Admin.deactivate(conn.assigns.team, id) do
+      Billing.update_subscriber_count(conn.assigns.team)
+      TeamChannel.broadcast_deactivated(conn.assigns.team, String.to_integer(id))
+      Endpoint.broadcast("user_socket:#{id}", "disconnect", %{})
+      json(conn, %{message: "Account has been deactivated."})
+    else
+      {:error, :not_found} ->
+        not_found_error(conn)
+
+      {:self, true} ->
+        unprocessable_entity_error(conn, %{message: "You cannot deactivate your own account."})
+    end
+  end
+
+  def update(conn, %{"id" => user_id} = params) do
+    current_user = conn.assigns.current_user
+
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(current_user, user_id),
+         {:ok, user} <- Admin.update_user(user_id, params, user_id == current_user.id) do
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      render(conn, "update.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to update user profile."})
+        |> halt
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
+  def promote_admin(conn, %{"id" => user_id}) do
+    case Admin.promote_admin(conn.assigns.current_user, user_id) do
+      {:ok, user} ->
+        TeamChannel.broadcast_user_info(conn.assigns.team, user)
+
+        conn
+        |> render("show.json", user: user)
+
+      {:error, message} ->
+        conn
+        |> unprocessable_entity_error(%{message: message})
+    end
+  end
+
+  def revoke_admin(conn, %{"id" => user_id}) do
+    case Admin.revoke_admin(conn.assigns.current_user, user_id) do
+      {:ok, user} ->
+        TeamChannel.broadcast_user_info(conn.assigns.team, user)
+
+        conn
+        |> render("show.json", user: user)
+
+      {:error, message} ->
+        conn
+        |> unprocessable_entity_error(%{message: message})
+    end
+  end
+
+  def create(conn, %{"email" => email}) do
+    case Accounts.create_user_with_email_only(email) do
+      {:error, %Ecto.Changeset{errors: [email: {_, [host: host]}]}} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "We do not allow emails from #{host}"})
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+
+      {:error, message} ->
+        conn
+        |> unprocessable_entity_error(%{message: message})
+
+      user ->
+        conn
+        |> put_session(:user_id, user.id)
+        |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
+    end
+  end
+
+  def send_confirmation_code(conn, %{"id" => id}) when is_integer(id) do
+    case Stitch.User.Onboarding.send_confirmation_code(id) do
+      {:error, message} ->
+        conn
+        |> unprocessable_entity_error(%{message: message})
+
+      _ ->
+        conn
+        |> json(%{message: "Confirmation code sent."})
+    end
+  end
+
+  def submit_confirmation_code(conn, %{
+        "user_id" => user_id,
+        "confirmation_code" => confirmation_code
+      }) do
+    case Stitch.User.Onboarding.verify_confirmation_code(user_id, confirmation_code) do
+      true ->
+        conn
+        |> json(%{message: "Confirmation code accepted."})
+
+      false ->
+        conn
+        |> unprocessable_entity_error(%{message: "The confirmation code is incorrect."})
+    end
+  end
+
+  def complete_onboarding(conn, params) do
+    {id, params} = Map.pop(params, "id")
+    params = Map.put(params, "roles", ["admin"])
+
+    case Accounts.update_and_complete_user_onboarding(id, params) do
+      {:error, changeset} ->
+        conn
+        |> unprocessable_entity_error(%{changeset: changeset})
+
+      user ->
+        group = GroupQueries.default_group(user)
+        Group.add_user(group, user.id)
+        Group.assign_creator(group, user.id)
+        TimedMessage.Event.new_team_owner(user)
+
+        conn
+        |> login_user(user)
+        |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
+    end
+  end
+
+  def show(conn, %{"id" => user_id}) do
+    team = conn.assigns.team
+
+    with %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
+      render(conn, "show.json", user: user)
+    else
+      _ ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "No user found with ID: #{user_id}"})
+    end
+  end
+
+  def update_password(conn, %{
+        "id" => _id,
+        "new_password" => new_password,
+        "old_password" => old_password
+      }) do
+    case Stitch.User.Authentication.update_password(
+           conn.assigns.current_user,
+           old_password,
+           new_password
+         ) do
+      {:ok, user} ->
+        EventsChannel.broadcast_logout_from_all_sessions(user, get_session(conn, :session_id))
+
+        conn
+        |> update_session(user)
+        |> json(%{token: user.token})
+
+      {:error, message} when is_binary(message) ->
+        {:error, :unprocessable_entity, message}
+
+      {:error, message} ->
+        {:error, message}
+    end
+  end
+
+  def validate_phone_number(conn, %{"phone_number" => phone_number}) do
+    case Stitch.Twilio.lookup(phone_number) do
+      :ok ->
+        conn |> json(%{status: "ok"})
+
+      :error ->
+        {:error, :unprocessable_entity, "Phone number is invalid."}
+    end
+  end
+
+  def request_demo(conn, user_properties) do
+    UserAnalytics.track_demo_requested(user_properties)
+    json(conn, %{status: "ok"})
+  end
+
+  def profile_image(conn, %{"id" => user_id}) do
+    team = conn.assigns.team
+
+    with {:user, %User{} = user} <- {:user, UserQueries.team_member_by_id(team, user_id)},
+         {:ok, presigned_avatar} <- S3.presign(user.profile_image_url),
+         {:ok, presigned_avatar_thumb} <- S3.presign(user.profile_image_thumb_url),
+         presigned_grey_avatar <- User.grey_avatar(user) do
+      conn
+      |> json(%{
+        avatar: presigned_avatar,
+        avatar_thumb: presigned_avatar_thumb,
+        grey_avatar: presigned_grey_avatar
+      })
+    else
+      _error -> {:error, :not_found}
+    end
+  end
+
+  def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, user} <- Accounts.update_profile_image(user_id, url) do
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      conn |> render("show.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to upload profile image."})
+        |> halt
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
+  def delete_profile_image(conn, %{"id" => user_id}) do
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, user} <- Accounts.delete_profile_image(user_id) do
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      conn |> render("show.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to delete profile image."})
+        |> halt
+
+      {:error, _error} ->
+        conn |> unprocessable_entity_error(%{changeset: "Couldn't delete the profile image"})
+    end
+  end
+
+  def send_invite(_conn, %{"email" => _email}) do
+    # TODO
+  end
+
+  def exists?(conn, %{"email" => email}) do
+    team_id = conn.private[:team_id]
+
+    case UserQueries.team_member_with_email(team_id, email) do
+      %User{} -> json(conn, %{exists: true})
+      _ -> json(conn, %{exists: false})
+    end
+  end
+
+  def validate_username(conn, %{"username" => username}) do
+    params = %{username: username, team_id: conn.private[:team_id]}
+    json(conn, User.username_changeset(%User{}, params).valid?)
+  end
+
+  def validate_username(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{message: "Requires a username query."})
+  end
+
+  def validate_emails(conn, %{"emails" => emails}) when is_list(emails) do
+    result =
+      Enum.map(emails, fn email ->
+        changeset = User.valid_email_changeset(%User{}, %{email: email})
+
+        case changeset.errors do
+          [] ->
+            %{"#{email}": true}
+
+          [email: {_, [host: host]}] ->
+            %{"#{email}": "We do not allow emails from #{host}"}
+
+          _ ->
+            %{"#{email}": changeset_errors_to_string(changeset)}
+        end
+      end)
+
+    json(conn, result)
+  end
+
+  def validate_emails(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{message: "Requires list of emails."})
+  end
+
+  def access(conn, _params) do
+    conn
+    |> create_access_log_record(conn.assigns.current_user)
+    |> json(%{message: "ok"})
+  end
+
+  @member_role Role.member()
+  @guest_roles Role.guests()
+  def change_role(conn, %{"id" => user_id, "role" => role}) when role in @member_role do
+    do_change_role(conn, %{user_id: user_id, role: role})
+  end
+
+  def change_role(conn, %{"id" => user_id, "role" => role, "group_ids" => group_ids})
+      when role in @guest_roles do
+    with true <- FeatureGateway.Connect.allowed?(:guests, conn.assigns.team) do
+      do_change_role(conn, %{user_id: user_id, role: role, groups_as_guest: group_ids})
+    else
+      error -> handle_change_role_error(conn, error, role)
+    end
+  end
+
+  defp do_change_role(conn, %{user_id: user_id, role: role} = params) do
+    with team = conn.assigns.team,
+         {:user, user} when not is_nil(user) <-
+           {:user, UserQueries.team_member_by_id(team, user_id)},
+         {:ok, updated_user} <- Admin.change_role(user, params),
+         {:admins, team_admins} = {:admins, TeamQueries.list_admins(team)},
+         {removed_groups, added_groups} = Admin.update_user_groups(updated_user) do
+      Billing.update_subscriber_count(team)
+      TeamChannel.broadcast_user_info(team, updated_user)
+      GroupChannel.broadcast_members_update(user, removed_groups, added_groups)
+      send_role_changed_email(team_admins, user, updated_user)
+
+      json(conn, %{message: "User role updated."})
+    else
+      error -> handle_change_role_error(conn, error, role)
+    end
+  end
+
+  defp send_role_changed_email(team_admins, user, updated_user) do
+    if user.roles != updated_user.roles do
+      Enum.each(team_admins, fn admin ->
+        Accounts.Email.role_changed_email(admin, user.roles, updated_user.roles)
+      end)
+    end
+  end
+
+  defp handle_change_role_error(conn, {:user, nil}, _) do
+    not_found_error(conn)
+  end
+
+  defp handle_change_role_error(conn, {:insufficient_tier, _}, _) do
+    unprocessable_entity_error(conn, %{message: "Feature not available for your subscription."})
+  end
+
+  defp handle_change_role_error(conn, {:error, :invalid_group_ids}, _) do
+    unprocessable_entity_error(conn, %{message: "One or more provided group ids is invalid."})
+  end
+
+  defp handle_change_role_error(conn, {:error, :invalid_group_size}, "single-room-guest") do
+    unprocessable_entity_error(conn, %{
+      message: ~s(Expected exactly 1 group id in "group_ids" list.)
+    })
+  end
+
+  defp handle_change_role_error(conn, {:error, :invalid_group_size}, "multi-room-guest") do
+    unprocessable_entity_error(conn, %{
+      message: ~s(Expected at least 1 group ids in "group_ids" list.)
+    })
+  end
+
+  # TODO: Can be moved to some common helper later
+  defp not_found_error(conn) do
+    not_found_error(conn, "User does not exist.")
+  end
+
+  defp not_found_error(conn, %{message: message}) do
+    conn
+    |> put_status(:not_found)
+    |> json(%{message: message})
+  end
+
+  defp unprocessable_entity_error(conn, %{changeset: changeset}) do
+    message = changeset_errors_to_string(changeset)
+    unprocessable_entity_error(conn, %{message: message})
+  end
+
+  defp unprocessable_entity_error(conn, %{message: message}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{message: message})
+  end
+end
