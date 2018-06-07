@@ -76,8 +76,8 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/", Stitch.Web.Files, as: :files, host: "files." do
     pipe_through([:files])
 
-    get("/file/:upload_id/:filename", FileController, :stream)
-    get("/preview/:upload_id", FileController, :stream_preview)
+    get("/file/:upload_id/:filename", FileController, :download)
+    get("/preview/:upload_id", FileController, :download_preview)
   end
 
   # ================

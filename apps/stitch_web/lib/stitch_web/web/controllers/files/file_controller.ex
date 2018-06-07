@@ -2,7 +2,7 @@ defmodule Stitch.Web.Files.FileController do
   use Stitch.Web, :controller
   alias Stitch.{MessageQueries, GroupAuthorization, Message}
 
-  def stream(conn, %{"upload_id" => upload_id}) do
+  def download(conn, %{"upload_id" => upload_id}) do
     current_user = conn.assigns.current_user
 
     with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
@@ -19,7 +19,7 @@ defmodule Stitch.Web.Files.FileController do
     end
   end
 
-  def stream_preview(conn, %{"upload_id" => upload_id}) do
+  def download_preview(conn, %{"upload_id" => upload_id}) do
     current_user = conn.assigns.current_user
 
     with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
@@ -91,7 +91,7 @@ defmodule Stitch.Web.Files.FileController do
     end
   end
 
-  def generate_etag(filename) do
+  defp generate_etag(filename) do
     res =
       filename
       |> Murmur.hash_x86_128()
@@ -100,7 +100,7 @@ defmodule Stitch.Web.Files.FileController do
     "W/ \"" <> res <> "\""
   end
 
-  def generate_last_modified(upload) do
+  defp generate_last_modified(upload) do
     upload
     |> PhoenixETag.schema_last_modified()
     |> NaiveDateTime.to_erl()

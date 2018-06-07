@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
 
   def render("index.json", %{messages: messages} = opts) do
     authenticated_urls = Map.get(opts, :authenticated_urls, false)
-    Enum.map(messages, &message_json(&1, authenticated_urls, files_endpoint()))
+    Enum.map(messages, &message_json(&1, authenticated_urls, @endpoint.files_struct_url()))
   end
 
   def render("starred.json", %{message: message, user_id: user_id}) do
@@ -15,8 +15,9 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     |> Map.put(:starred_by_user_id, user_id)
   end
 
-  def render("show.json", %{message: message}) do
-    message_json(message)
+  def render("show.json", %{message: message} = opts) do
+    authenticated_urls = Map.get(opts, :authenticated_urls, false)
+    message_json(message, authenticated_urls, @endpoint.files_struct_url())
   end
 
   def render("feed_surrounding.json", %{
@@ -41,9 +42,9 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     }
   end
 
-  def message_json(message), do: message_json(message, false, files_endpoint())
+  def message_json(message), do: message_json(message, false, @endpoint.files_struct_url())
 
-  def message_json(message, authenticated_url, file_endpoint) do
+  def message_json(message, authenticated_url, files_url) do
     %{
       id: message.id,
       user_id: message.user_id,
@@ -51,7 +52,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       group_id: message.group_id,
       deleted: message.deleted,
       text_content: message.text_content,
-      fields: render_fields(message, authenticated_url, file_endpoint),
+      fields: render_fields(message, authenticated_url, files_url),
       type: message.type,
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,
@@ -102,7 +103,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
 
   def put_download_link(fields, true, message_id, files_endpoint) do
     filename = Map.get(fields, "filename", fn -> Stitch.Rand.token(8) end)
-    url = files_file_url(files_endpoint, :stream, message_id, filename)
+    url = files_file_url(files_endpoint, :download, message_id, filename)
 
     Map.merge(fields, %{
       "url" => url,
@@ -123,7 +124,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
         message_id,
         files_endpoint
       ) do
-    url = files_file_url(files_endpoint, :stream_preview, message_id)
+    url = files_file_url(files_endpoint, :download_preview, message_id)
     Map.put(fields, "preview_url", url)
   end
 
@@ -143,9 +144,4 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
 
   def put_preview_presigned_url(fields, _authenticated_urls, _message_id, _files_endpoint),
     do: fields
-
-  defp files_endpoint do
-    struct_url = Stitch.Web.Endpoint.struct_url()
-    %{struct_url | host: "files.#{struct_url.host}"}
-  end
 end

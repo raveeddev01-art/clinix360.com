@@ -634,7 +634,8 @@ class MessageStore {
 
     post(`/api/v1/groups/${this.group.id}/messages`, {
       body: {
-        message: newMsg
+        message: newMsg,
+        authenticated_urls: true
       }
     }).catch(() => {
       this.updateMessageData(tempMessage.id, {

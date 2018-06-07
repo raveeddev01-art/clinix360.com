@@ -100,6 +100,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     current_user = conn.assigns.current_user
+    authenticated_urls = Map.get(message_params, "authenticated_urls", false)
 
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
 
@@ -114,7 +115,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
       conn
       |> put_status(:created)
-      |> render("show.json", message: message)
+      |> render("show.json", message: message, authenticated_urls: authenticated_urls)
     else
       {:group, _} ->
         {:error, :not_found, "The room you are looking for does not exist."}
