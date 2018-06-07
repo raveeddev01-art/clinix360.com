@@ -32,6 +32,22 @@ defmodule Stitch.FeatureGateway do
     |> add_team_tier(team.subscription)
   end
 
+  @doc """
+  Returns bool based on whether feature enabled for team
+
+  ## Examples
+
+      iex> Stitch.FeatureGateway.enabled?(team, "engage.patients")
+      true
+  """
+  def enabled?(%Team{} = team, feature_name) do
+    feature_name in available_features(team)
+  end
+
+  defp add_team_tier(features, nil) do
+    features
+  end
+
   defp add_team_tier(features, subscription) do
     ["tier.#{subscription.tier}" | features]
   end
