@@ -80,7 +80,7 @@ export const PRODUCTS = {
         annual: 10
       },
       features: [
-        { name: "All features from Stadard" },
+        { name: "All features from Standard" },
         { name: "Voice & Video Calls" },
         { name: "Priority Messaging" },
         { name: "Custom Integrations" },
@@ -110,7 +110,7 @@ export const PRODUCTS = {
     STANDARD: {
       name: "Standard",
       price: {
-        monthly: 25,
+        monthly: 30,
         annual: 5
       },
       features: [
@@ -126,11 +126,11 @@ export const PRODUCTS = {
     PREMIUM: {
       name: "Premium",
       price: {
-        monthly: 50,
+        monthly: 60,
         annual: 10
       },
       features: [
-        { name: "All features from Stadard" },
+        { name: "All features from Standard" },
         { name: "Voice & Video Calls" },
         { name: "Payments Portals" },
         { name: "Custom Integrations" },
@@ -150,7 +150,7 @@ export const PRODUCTS = {
       features: [
         { name: "Full HIPAA Compliance" },
         { name: "Task Creation" },
-        { name: "Tasks Assignments" },
+        { name: "Task Assignments" },
         { name: "1GB Total File Storage" },
         { name: "Threaded Comments" },
         { name: "Mac & Windows Apps" },
@@ -160,8 +160,8 @@ export const PRODUCTS = {
     STANDARD: {
       name: "Standard",
       price: {
-        monthly: 8,
-        annual: 5
+        monthly: 10,
+        annual: 8
       },
       features: [
         { name: "All features from Free" },
@@ -176,11 +176,11 @@ export const PRODUCTS = {
     PREMIUM: {
       name: "Premium",
       price: {
-        monthly: 16,
-        annual: 10
+        monthly: 20,
+        annual: 16
       },
       features: [
-        { name: "All features from Stadard" },
+        { name: "All features from Standard" },
         { name: "Custom Workflows" },
         { name: "Custom Integrations" },
         { name: "Single Sign-On (SSO)" },
