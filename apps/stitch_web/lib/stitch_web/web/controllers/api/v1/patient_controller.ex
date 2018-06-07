@@ -1,7 +1,7 @@
-defmodule Stitch.Web.Api.V1.PatientController do
+defmodule Stitch.Web.Api.V1.TeamPatientController do
   use Stitch.Web, :controller
 
-  # TODO: Add analytics
+  # We should add analytics before activating
   # alias Stitch.Analytics.Patient, as: PatientAnalytics
 
   alias Stitch.PatientQueries
@@ -9,7 +9,7 @@ defmodule Stitch.Web.Api.V1.PatientController do
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
   def index(conn, _params) do
-    patients = PatientQueries.for_team(conn.private[:team_id])
-    render(conn, "index.json", patients: patients)
+    team_patients = PatientQueries.team_patients_for_team_id(conn.private[:team_id])
+    render(conn, "index.json", team_patients: team_patients)
   end
 end
