@@ -37,8 +37,7 @@ current_user =
           "name" => user.team.name,
           "slug" => user.team.slug,
           "concealEnabled" => user.team.conceal_enabled,
-          "id" => user.team.id,
-          "engageEnabled" => ("engage" in Stitch.FeatureGateway.available_features(user.team))
+          "id" => user.team.id
         }
       })
   end
