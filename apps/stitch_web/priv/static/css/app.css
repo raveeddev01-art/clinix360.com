@@ -16790,8 +16790,21 @@ i.file-data-separator {
   @media (min-width: 768px) {
     .website-wrapper .pricing-page .nav-tabs li a img, .website-wrapper .downloads-page .nav-tabs li a img {
       width: 72px; } }
+  .website-wrapper .pricing-page .subheader {
+    padding-bottom: 40px; }
+    @media (min-width: 768px) {
+      .website-wrapper .pricing-page .subheader {
+        padding-bottom: 80px; } }
+  .website-wrapper .pricing-page .stitch-products {
+    padding-bottom: 0; }
+    @media (min-width: 768px) {
+      .website-wrapper .pricing-page .stitch-products {
+        padding-bottom: 40px; } }
   .website-wrapper .pricing-page .product-section {
-    padding-top: 71px; }
+    padding-top: 40px; }
+    @media (min-width: 768px) {
+      .website-wrapper .pricing-page .product-section {
+        padding-top: 71px; } }
     .website-wrapper .pricing-page .product-section#manage {
       padding-bottom: 70px; }
     .website-wrapper .pricing-page .product-section .heading {

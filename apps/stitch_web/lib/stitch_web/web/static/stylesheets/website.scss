@@ -914,8 +914,25 @@
   }
 
   .pricing-page {
+    .subheader {
+      padding-bottom: 40px;
+      @media (min-width: $screen-sm) {
+        padding-bottom: 80px;
+      }
+    }
+
+    .stitch-products {
+      padding-bottom: 0;
+      @media (min-width: $screen-sm) {
+        padding-bottom: 40px;
+      }
+    }
+
     .product-section {
-      padding-top: 71px;
+      padding-top: 40px;
+      @media(min-width: $screen-sm) {
+        padding-top: 71px;
+      }
 
       &#manage {
         padding-bottom: 70px;
