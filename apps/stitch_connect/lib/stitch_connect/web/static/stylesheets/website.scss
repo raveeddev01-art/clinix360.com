@@ -923,10 +923,14 @@
 
       .heading {
         background: $medium-gray;
-        padding: 40px 0;
+        padding: 60px 0;
 
         h2 {
           margin-top: 0;
+        }
+
+        h4 {
+          font-size: 20px;
         }
       }
 
