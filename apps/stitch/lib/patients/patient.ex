@@ -17,7 +17,7 @@ defmodule Stitch.Patient do
     :onboarded
   ]
 
-  @required_attributes [:first_name, :last_name, :email]
+  @required_attributes [:first_name, :last_name, :email, :onboarded]
 
   schema "patients" do
     has_many(:team_patients, TeamPatient, on_delete: :delete_all)
@@ -39,71 +39,17 @@ defmodule Stitch.Patient do
   def changeset(%Stitch.Patient{} = struct, attrs) do
     struct
     |> cast(attrs, @cs_attributes)
-    |> Stitch.Validators.valid_email_changeset(attrs)
     |> validate_required(@required_attributes)
-    |> default_profile_image_changeset(attrs)
+    |> Stitch.Validators.valid_email_changeset(attrs)
+    |> Stitch.Accounts.ProfileImage.default_profile_image_changeset(attrs)
     |> update_change(:email, &String.trim/1)
     |> unique_constraint(:email)
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
   end
 
-  # TODO: Remove from usr and put in shared spot
-  def default_profile_image_changeset(struct, params) do
-    changeset =
-      struct
-      |> cast(params, [:profile_image_url, :profile_image_thumb_url])
-
-    cond do
-      Stitch.Accounts.ProfileImage.needs_avatar_regen(changeset) ->
-        add_default_profile_image(changeset)
-
-      true ->
-        changeset
-    end
-  end
-
-  def add_default_profile_image(%{valid?: true} = changeset) do
-    patient = %Stitch.Patient{
-      first_name: get_first_name(changeset),
-      last_name: get_last_name(changeset)
-    }
-
-    with {:ok, avatar} <- Stitch.Accounts.ProfileImage.pick_default_random(patient),
-         {:ok, avatar_thumb} <- Stitch.Accounts.ProfileImage.create_thumb(avatar) do
-      changeset
-      |> put_change(:profile_image_url, avatar)
-      |> put_change(:profile_image_thumb_url, avatar_thumb)
-    else
-      _ ->
-        changeset
-    end
-  end
-
-  def add_default_profile_image(changeset), do: changeset
-
-  defp get_first_name(changeset) do
-    case Ecto.Changeset.fetch_change(changeset, :first_name) do
-      {:ok, first_name} ->
-        first_name
-
-      _ ->
-        changeset.data.first_name
-    end
-  end
-
-  defp get_last_name(changeset) do
-    case Ecto.Changeset.fetch_change(changeset, :last_name) do
-      {:ok, last_name} ->
-        last_name
-
-      _ ->
-        changeset.data.last_name
-    end
-  end
-
   @doc """
-  TODO: REMOVE ME OR FILL OUT
+  Helper function to add a patient given a map of attributes
   """
   @spec create(map) :: {:ok, Patient.t()} | {:error, Ecto.Changeset.t()}
   def create(params) do

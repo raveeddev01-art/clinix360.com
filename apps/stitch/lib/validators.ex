@@ -7,7 +7,7 @@ defmodule Stitch.Validators do
     struct
     |> cast(attrs, [:email])
     |> validate_format(:email, ~r/[\w-]+@([\w-]+\.)+[\w-]+/)
-    |> Stitch.Validators.validate_email_domain(:email)
+    |> validate_email_domain(:email)
   end
 
   def validate_email_domain(changeset, field, opts \\ []) do

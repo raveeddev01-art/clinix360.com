@@ -32,7 +32,7 @@ defmodule Stitch.TeamPatient do
   end
 
   @doc """
-  TODO: MAKE ME
+  Helper function to add a team patient given a map of attributes
   """
   @spec create(map) :: {:ok, TeamPatient.t()} | {:error, Ecto.Changeset.t()}
   def create(params) do

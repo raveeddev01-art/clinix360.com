@@ -1,7 +1,7 @@
 defmodule Stitch.Accounts.ProfileImage do
   alias Stitch.AWS.S3
   import Mogrify
-  alias Stitch.Accounts.User
+  import Ecto.Changeset
   alias Stitch.Rand
 
   @thumb %{height: 72, width: 72}
@@ -226,5 +226,63 @@ defmodule Stitch.Accounts.ProfileImage do
     ])
 
     {:ok, image_path}
+  end
+
+  # =================
+  # CHANGESET HELPERS
+  # =================
+
+  # TODO: Remove from usr and put in shared spot
+  def default_profile_image_changeset(struct, params) do
+    changeset =
+      struct
+      |> cast(params, [:profile_image_url, :profile_image_thumb_url])
+
+    cond do
+      needs_avatar_regen(changeset) ->
+        add_default_profile_image(changeset)
+
+      true ->
+        changeset
+    end
+  end
+
+  defp add_default_profile_image(%{valid?: true} = changeset) do
+    user_or_patient = %{
+      first_name: get_first_name(changeset),
+      last_name: get_last_name(changeset)
+    }
+
+    with {:ok, avatar} <- pick_default_random(user_or_patient),
+         {:ok, avatar_thumb} <- create_thumb(avatar) do
+      changeset
+      |> put_change(:profile_image_url, avatar)
+      |> put_change(:profile_image_thumb_url, avatar_thumb)
+    else
+      _ ->
+        changeset
+    end
+  end
+
+  defp add_default_profile_image(changeset), do: changeset
+
+  defp get_first_name(changeset) do
+    case Ecto.Changeset.fetch_change(changeset, :first_name) do
+      {:ok, first_name} ->
+        first_name
+
+      _ ->
+        changeset.data.first_name
+    end
+  end
+
+  defp get_last_name(changeset) do
+    case Ecto.Changeset.fetch_change(changeset, :last_name) do
+      {:ok, last_name} ->
+        last_name
+
+      _ ->
+        changeset.data.last_name
+    end
   end
 end
