@@ -26,23 +26,28 @@ class CreateTeam extends Component {
 
   onSubmit = evt => {
     evt.preventDefault();
-    post("/api/v1/users", {
-      body: { email: this.state.email }
-    }).then(resp => {
-      return post("/api/v1/users/send-confirmation-code", {
-        body: { id: resp.data.id }
-      }).then(() => {
-        Cookies.set(
-          "registration",
-          {
-            userId: resp.data.id,
-            email: this.state.email
-          },
-          { expires: 1 }
-        ); // expires in a day
-        window.location.href = `/signup/confirmation-code`;
+    if (this.props.loginStore.hasLogin) {
+      // TODO: find a way not to reload the page
+      window.location.href = `https://${applicationHost}/getstarted`;
+    } else {
+      post("/api/v1/users", {
+        body: { email: this.state.email }
+      }).then(resp => {
+        return post("/api/v1/users/send-confirmation-code", {
+          body: { id: resp.data.id }
+        }).then(() => {
+          Cookies.set(
+            "registration",
+            {
+              userId: resp.data.id,
+              email: this.state.email
+            },
+            { expires: 1 }
+          ); // expires in a day
+          window.location.href = `/signup/confirmation-code`;
+        });
       });
-    });
+    }
   };
 
   render() {
