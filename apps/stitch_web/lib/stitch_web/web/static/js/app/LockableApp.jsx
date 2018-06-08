@@ -6,6 +6,7 @@ import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
 import EngageApp from "../engage/EngageApp";
 import ManageApp from "../manage/ManageApp";
+import PatientsRepoApp from "../patients/PatientsRepoApp";
 import ChatApp from "../chat/ChatApp";
 import SystemError from "../common/components/error/system-error";
 import browserDetails from "../lib/browser_details";
@@ -88,6 +89,7 @@ class LockableApp extends Component {
           <Route path="/admin" component={AdminApp} />
           <Route exact path="/engage" component={EngageApp} />
           <Route exact path="/manage" component={ManageApp} />
+          <Route exact path="/patients" component={PatientsRepoApp} />
           <Route path="/" component={ChatApp} />
         </Switch>
       );

@@ -5,7 +5,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import history from "lib/history";
 
-@inject("presenceStore", "groupsStore")
+@inject("presenceStore", "groupsStore", "teamStore")
 @observer
 class Switcher extends Component {
   componentWillMount() {
@@ -20,6 +20,8 @@ class Switcher extends Component {
       active = "engage";
     } else if (path === "/manage") {
       active = "manage";
+    } else if (path === "/patients") {
+      active = "patients";
     }
 
     this.setState({ active });
@@ -31,6 +33,8 @@ class Switcher extends Component {
       totalMentionsCount: mentionsCount,
       defaultGroup
     } = this.props.groupsStore;
+    const { engageEnabled } = this.props.teamStore;
+
     const { active } = this.state;
 
     return (
@@ -55,6 +59,24 @@ class Switcher extends Component {
             </OverlayTrigger>
           </NavLink>
 
+          {engageEnabled && (
+            <NavLink
+              to={`/patients`}
+              isActive={() => active === "patients"}
+              className="switcher__link"
+            >
+              <OverlayTrigger
+                placement="right"
+                container={this}
+                overlay={<Tooltip id="tooltip-info">Patients</Tooltip>}
+              >
+                <span className="switcher__link-wrapper">
+                  <i className="fa fa-users" />
+                </span>
+              </OverlayTrigger>
+            </NavLink>
+          )}
+
           <NavLink
             to={`/rooms/${defaultGroup.slug}`}
             isActive={() => active === "connect"}
@@ -63,7 +85,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Connect</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Connect</Tooltip>}
             >
               <span className="switcher__link-wrapper">
                 <i className="fa fa-comments" />
@@ -91,7 +113,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Engage</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Engage</Tooltip>}
             >
               <span className="switcher__link-wrapper">
                 <i className="fa fa-bullhorn" />
@@ -107,7 +129,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Manage</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Manage</Tooltip>}
             >
               <span className="switcher__link-wrapper">
                 <i className="fa fa-tasks" />

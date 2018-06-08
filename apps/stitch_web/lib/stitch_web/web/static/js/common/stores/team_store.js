@@ -9,6 +9,7 @@ class TeamStore {
   @observable securityLockoutEnabled = currentUser.team.securityLockoutEnabled;
   @observable secondsToLockout = currentUser.team.secondsToLockout;
   @observable openInvitationsEnabled = currentUser.team.openInvitationsEnabled;
+  @observable engageEnabled = currentUser.team.engageEnabled;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
