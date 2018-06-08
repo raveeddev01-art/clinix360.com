@@ -18,7 +18,7 @@
     width: 100%;
     margin: 0 auto;
     padding: 0 6vw;
-    
+
     @media screen and (min-width: $screen-sm) {
       padding: 0 5vw;
     }
@@ -48,9 +48,9 @@
       padding-left: 15px;
       padding-right: 15px;
     }
-    
-    @media(min-width: $screen-md) {
-      flex-direction: row; 
+
+    @media (min-width: $screen-md) {
+      flex-direction: row;
       -ms-flex-direction: row;
 
       .flex-item {
@@ -63,25 +63,27 @@
     font-size: 15px;
     font-weight: 700;
     border: 0;
-    box-shadow: 0 5px 15px 0 rgba(0,0,0,0.15);
+    box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.15);
     padding: 13px 20px;
   }
 
   .panel {
     border: 0;
-    box-shadow: 0 10px 40px -10px rgba(0,0,0,.1);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
 
-    h2, h4 {
+    h2,
+    h4 {
       color: #003366;
       font-weight: 700;
     }
   }
 
-  h1, h2 {
+  h1,
+  h2 {
     color: $brand-primary;
   }
 
-  h1 { 
+  h1 {
     font-size: calc(2rem + (12 * (100vw - 360px) / 624));
     font-weight: 900;
     line-height: 1.2;
@@ -91,23 +93,25 @@
     }
   }
 
-  h2 { 
+  h2 {
     font-size: calc(1.6rem + (6 * (100vw - 360px) / 624));
     font-weight: 900;
-    @media(min-width: $screen-lg) {
+    @media (min-width: $screen-lg) {
       font-size: 2.125rem;
     }
   }
-  
-  h3 { 
+
+  h3 {
     font-size: 18px;
-    line-height: 1.5; 
+    line-height: 1.5;
     @media (min-width: $screen-sm) {
       font-size: 20px;
     }
   }
 
-  h4 { font-size: 17px; }
+  h4 {
+    font-size: 17px;
+  }
 
   hr.section-line {
     width: 140px;
@@ -121,7 +125,7 @@
 
   .create-team-form {
     margin: 20px auto 50px;
-    @media(min-width: $screen-sm) {
+    @media (min-width: $screen-sm) {
       margin-bottom: 25px;
     }
 
@@ -170,7 +174,7 @@
       @media (min-width: $screen-md) {
         max-width: 85%;
         margin-left: auto;
-        margin-right: 0;   
+        margin-right: 0;
       }
     }
 
@@ -208,7 +212,7 @@
       font-size: 18px;
       font-weight: 700;
       text-decoration: none;
-      @media(max-width: 1024px) {
+      @media (max-width: 1024px) {
         display: none;
       }
 
@@ -221,7 +225,7 @@
         background: $brand-primary;
         border-radius: 50%;
         margin-right: 8px;
-        box-shadow: 0 0 0 0 rgba($brand-primary, .5);
+        box-shadow: 0 0 0 0 rgba($brand-primary, 0.5);
         animation: pulse 1.5s linear infinite;
 
         i.fa {
@@ -233,11 +237,11 @@
       }
 
       @keyframes pulse {
-        70% { 
-          box-shadow: 0 0 0 6px rgba($brand-primary, 0)
+        70% {
+          box-shadow: 0 0 0 6px rgba($brand-primary, 0);
         }
         100% {
-          box-shadow: 0 0 0 0 rgba($brand-primary, 0)
+          box-shadow: 0 0 0 0 rgba($brand-primary, 0);
         }
       }
     }
@@ -257,7 +261,8 @@
       padding: 50px 0 80px;
     }
 
-    h2, h3 {
+    h2,
+    h3 {
       @media (min-width: $screen-sm) {
         text-align: center;
       }
@@ -303,7 +308,8 @@
       padding: 50px 0 80px;
     }
 
-    h2, h3 {
+    h2,
+    h3 {
       @media (min-width: $screen-sm) {
         text-align: center;
       }
@@ -325,7 +331,7 @@
         flex: 1 0 auto;
         // padding: 0;
         margin-bottom: 25px;
-        @media(min-width: 769px) {
+        @media (min-width: 769px) {
           flex: 1;
           max-width: 310px;
           margin: 0 15px;
@@ -348,7 +354,7 @@
       text-decoration: none;
       border: 1px solid $medium-gray;
       box-shadow: 2px 4px 15px rgba(0, 0, 0, 0.1);
-      transition: box-shadow .3s;
+      transition: box-shadow 0.3s;
       position: relative;
       margin: 0;
 
@@ -362,7 +368,7 @@
         height: 6px;
         background: $brand-primary;
         border-radius: 4px 4px 0 0;
-        transition: opacity .3s;        
+        transition: opacity 0.3s;
         position: absolute;
         top: 0;
         left: 0;
@@ -405,13 +411,19 @@
 
         i.fa {
           margin-left: 5px;
-          transition: margin-left .3s;
+          transition: margin-left 0.3s;
         }
       }
 
-      &.connect-card .title i.fa { font-size: 22px; }
-      &.engage-card .title i.fa  { font-size: 21px; }
-      &.manage-card .title i.fa  { font-size: 20px; }
+      &.connect-card .title i.fa {
+        font-size: 22px;
+      }
+      &.engage-card .title i.fa {
+        font-size: 21px;
+      }
+      &.manage-card .title i.fa {
+        font-size: 20px;
+      }
 
       &:hover {
         box-shadow: 2px 4px 20px rgba(0, 0, 0, 0.25);
@@ -445,7 +457,7 @@
     .demo-form {
       color: #333;
       border: 0;
-      box-shadow: 0 4px 25px rgba(0,0,0,.20);
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
 
       .panel-body {
         padding: 40px;
@@ -471,7 +483,7 @@
     }
 
     .our-customers h4 {
-      margin-top: 20px
+      margin-top: 20px;
     }
   }
 
@@ -516,7 +528,7 @@
       background: #fff;
       padding: 60px 0;
       @media (min-width: $screen-sm) {
-        padding: 95px 0;  
+        padding: 95px 0;
       }
 
       .info {
@@ -536,7 +548,7 @@
         max-width: 100%;
         margin: 0 auto;
       }
-  
+
       &.alt {
         background: $medium-gray;
 
@@ -557,35 +569,35 @@
       background: $medium-gray;
       padding: 60px 0;
       @media (min-width: $screen-sm) {
-        padding: 95px 0;  
+        padding: 95px 0;
       }
-  
+
       h2 {
         margin: 0;
-        
-        @media(min-width: $screen-sm) {
+
+        @media (min-width: $screen-sm) {
           margin: 0 0 40px;
           text-align: center;
         }
       }
-  
+
       .feature-block {
         font-size: 18px;
         margin: 50px auto 0;
         @media (min-width: $screen-sm) {
           max-width: 300px;
         }
-  
+
         h4 {
           color: $brand-primary;
           font-size: 18px;
           font-weight: 700;
-  
+
           i.fa {
             margin-right: 5px;
           }
         }
-  
+
         a {
           color: $brand-primary;
           text-decoration: underline;
@@ -600,13 +612,13 @@
       overflow: hidden;
       padding: 60px 0;
       @media (min-width: $screen-sm) {
-        padding: 95px 0;  
+        padding: 95px 0;
       }
 
       h2 {
         color: $brand-primary;
         margin: 0 0 50px;
-        @media(min-width: 430px) {
+        @media (min-width: 430px) {
           text-align: center;
         }
 
@@ -632,7 +644,7 @@
         align-items: center;
         min-height: 310px;
         border: 2px solid #f0f0f0;
-        box-shadow: 2px 4px 15px rgba(155,155,155,.15);
+        box-shadow: 2px 4px 15px rgba(155, 155, 155, 0.15);
 
         .panel-body {
           padding: 15px 30px;
@@ -641,12 +653,12 @@
             font-size: 18px;
           }
         }
-        
+
         @media (max-width: 1000px) {
           max-width: 370px;
           margin: 0 auto 20px;
           transform: translateY(100%);
-          -webkit-transform: translateY(100%); 
+          -webkit-transform: translateY(100%);
         }
 
         @media (min-width: 1001px) {
@@ -665,7 +677,7 @@
           color: #fff;
           font-size: 18px;
           font-weight: 700;
-          line-height: 40px; 
+          line-height: 40px;
           background: $brand-primary;
           border-radius: 50%;
           margin: 0 auto;
@@ -697,35 +709,35 @@
         }
         .panel {
           @media (max-width: 1000px) {
-            animation: mobileAnimation .8s;
+            animation: mobileAnimation 0.8s;
             animation-delay: 0s;
             animation-fill-mode: forwards;
             animation-timing-function: ease-out;
-            -webkit-animation: mobileAnimation .8s;
+            -webkit-animation: mobileAnimation 0.8s;
             -webkit-animation-delay: 0s;
             -webkit-animation-fill-mode: forwards;
             -webkit-animation-timing-function: ease-out;
           }
 
           @media (min-width: 1001px) {
-            animation: desktopAnimation .8s;
+            animation: desktopAnimation 0.8s;
             animation-delay: 0s;
             animation-fill-mode: forwards;
             animation-timing-function: ease-out;
             -webkit-animation-delay: 0s;
-            -webkit-animation: desktopAnimation .8s;
+            -webkit-animation: desktopAnimation 0.8s;
             -webkit-animation-fill-mode: forwards;
             -webkit-animation-timing-function: ease-out;
           }
 
           &.step-2 {
-            animation-delay: .4s;
+            animation-delay: 0.4s;
           }
-  
+
           &.step-3 {
-            animation-delay: .8s;
+            animation-delay: 0.8s;
           }
-  
+
           &.step-4 {
             animation-delay: 1.2s;
           }
@@ -735,11 +747,11 @@
           width: 100%;
           max-width: 370px;
           opacity: 0;
-          animation: mobileAnimation .8s;
+          animation: mobileAnimation 0.8s;
           animation-delay: 1.6s;
           animation-fill-mode: forwards;
           animation-timing-function: ease-out;
-          -webkit-animation: mobileAnimation .8s;
+          -webkit-animation: mobileAnimation 0.8s;
           -webkit-animation-delay: 1.6s;
           -webkit-animation-fill-mode: forwards;
           -webkit-animation-timing-function: ease-out;
@@ -747,21 +759,25 @@
       }
 
       @keyframes lineAnimation {
-        0% { width: 0 }
-        to { width: 100% }
+        0% {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
       }
 
       @keyframes desktopAnimation {
         0% {
           opacity: 0;
           -webkit-transform: translateX(100%);
-          transform: translateX(100%)
+          transform: translateX(100%);
         }
-    
+
         to {
           opacity: 1;
           -webkit-transform: translateX(0);
-          transform: translateX(0)
+          transform: translateX(0);
         }
       }
 
@@ -769,13 +785,13 @@
         0% {
           opacity: 0;
           -webkit-transform: translateY(100%);
-          transform: translateY(100%)
+          transform: translateY(100%);
         }
 
         to {
           opacity: 1;
           -webkit-transform: translateY(0);
-          transform: translateY(0)
+          transform: translateY(0);
         }
       }
     }
@@ -787,8 +803,10 @@
 
   //----------------- PRICING -----------------
 
-  .pricing-page, .downloads-page {
-    .pricing-content, .downloads-content {
+  .pricing-page,
+  .downloads-page {
+    .pricing-content,
+    .downloads-content {
       padding: 60px 0;
 
       .product-icon {
@@ -877,7 +895,7 @@
           }
         }
 
-        .price-details{
+        .price-details {
           color: rgba(0, 0, 0, 0.3);
 
           span {
@@ -906,7 +924,8 @@
   }
 
   @media (min-width: $screen-sm) {
-    .pricing-page, .downloads-page {
+    .pricing-page,
+    .downloads-page {
       .nav-tabs li a img {
         width: 72px;
       }
@@ -934,7 +953,7 @@
 
     .product-section {
       padding-top: 40px;
-      @media(min-width: $screen-sm) {
+      @media (min-width: $screen-sm) {
         padding-top: 50px;
       }
 
@@ -1011,7 +1030,7 @@
                 flex: 1;
               }
             }
-            
+
             &:first-of-type {
               padding-top: 0;
             }
@@ -1020,7 +1039,7 @@
               padding-bottom: 0;
             }
           }
-          
+
           @media (min-width: 1104px) {
             .flex-box {
               flex-direction: column;
@@ -1065,7 +1084,8 @@
             }
           }
 
-          ul, .btn {
+          ul,
+          .btn {
             max-width: 230px;
             margin-right: auto;
             margin-left: auto;
@@ -1088,7 +1108,7 @@
           &:not(:first-of-type) ul li:first-of-type {
             font-style: italic;
           }
-        }   
+        }
       }
     }
   }
@@ -1183,7 +1203,7 @@
       hr {
         width: 30%;
         border-color: #adbdcb;
-      } 
+      }
     }
 
     &:first-child h4 {
@@ -1225,7 +1245,7 @@
   //----------------- CUSTOMERS -----------------
   .customers-page {
     section {
-      padding: 40px 0;
+      padding: 60px 0;
 
       &:first-of-type .panel-body {
         padding: 40px;
@@ -1240,16 +1260,26 @@
       }
     }
 
-    .luminance-card .flex-item:nth-child(2) {
-      width: 100%;
+    .luminance-section {
+      background: #f0f1f3;
+
+      .luminance-card {
+        .flex-item:nth-child(2) {
+          width: 100%;
+        }
+
+        h2 {
+          font-weight: 900;
+        }
+
+        p {
+          font-size: 18px;
+        }
+      }
     }
 
     .our-customers {
       padding: 30px 0;
-
-      h4 {
-        display: none;
-      }
 
       .logo-row {
         margin-bottom: 0;
@@ -1257,9 +1287,25 @@
     }
 
     .customer-studies {
+      background: #f0f1f3;
+      @media (min-width: $screen-sm) {
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 0;
+      }
+
       h3 {
-        color: #003366;
-        font-weight: 900;
+        margin-bottom: 70px;
+      }
+
+      .flex-box {
+        align-items: stretch;
+
+        .flex-item {
+          margin: 0 15px 30px;
+        }
       }
 
       .panel-body {
@@ -1269,13 +1315,19 @@
           max-height: 60px;
           margin: 0 0 10px;
         }
-      }
-    }
-  }
 
-  @media (min-width: $screen-sm) {
-    .customer-studies h3 {
-      font-size: 24px;
+        h4 {
+          font-size: 20px;
+        }
+
+        p {
+          font-size: 18px;
+        }
+
+        .btn {
+          text-transform: uppercase;
+        }
+      }
     }
   }
 
@@ -1323,7 +1375,7 @@
     }
 
     .create-team-form {
-      margin: 25px 0 0; 
+      margin: 25px 0 0;
 
       @media (min-width: $screen-md) {
         margin: 0;
@@ -1486,7 +1538,8 @@
       background: $brand-primary;
     }
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       background: transparent;
     }
   }
@@ -1505,7 +1558,7 @@
       margin-right: 0;
       padding: 5px 0;
     }
-    
+
     > li > a,
     > .active > a,
     > .open > a,
@@ -1521,7 +1574,7 @@
       i.fa {
         margin-right: 6px;
       }
-      
+
       .subtext {
         color: #696969;
         font-weight: normal;
@@ -1540,13 +1593,14 @@
       visibility: hidden;
       border-color: #ebebeb;
       border-radius: 3px;
-      box-shadow: 0 2px 15px rgba(0,0,0,.10);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
       padding: 15px;
       margin-top: 10px;
       left: 50%;
       right: auto;
       transform: translate(-50%, -5px);
-      transition: visibility 0.2s ease-out, opacity 0.2s ease-out, transform 0.2s ease-out;
+      transition: visibility 0.2s ease-out, opacity 0.2s ease-out,
+        transform 0.2s ease-out;
 
       &:before {
         content: "";
@@ -1587,7 +1641,7 @@
         &:hover {
           background: $medium-gray;
           border-color: $brand-primary;
-          box-shadow: 0 2px 5px rgba(0,0,0, .15);
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
       }
     }
@@ -1619,12 +1673,12 @@
   color: #fff;
   background: $brand-primary;
   border: 0;
-  transition: left .3s;
+  transition: left 0.3s;
   position: fixed;
   top: 0;
   z-index: 20000;
   overflow-y: auto;
-  @media(min-width: $screen-sm) {
+  @media (min-width: $screen-sm) {
     display: none;
   }
   @media only screen and (min-device-width: $screen-sm) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
@@ -1636,11 +1690,11 @@
   }
 
   &.is-open {
-    left: 0
+    left: 0;
   }
 
   .header {
-    border-bottom: 1px solid #35597C;
+    border-bottom: 1px solid #35597c;
     padding: 10px 0;
     position: relative;
 
@@ -1650,7 +1704,7 @@
       font-size: 18px;
       line-height: 20px;
       padding: 12px 0px;
-  
+
       img {
         width: auto;
         height: 26px;
@@ -1682,8 +1736,8 @@
       }
 
       .dropdown-menu {
-        border-top: 1px solid #35597C;
-        border-bottom: 1px solid #35597C;
+        border-top: 1px solid #35597c;
+        border-bottom: 1px solid #35597c;
         padding: 10px 0;
 
         li > a {
@@ -1697,9 +1751,9 @@
 
       @media only screen and (min-device-width: $screen-sm) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
         float: none;
-        
+
         li {
-          float: none
+          float: none;
         }
 
         .dropdown-menu {
@@ -1709,8 +1763,8 @@
           margin-top: 0;
           background-color: transparent;
           border: 0;
-          border-top: 1px solid #35597C;
-          border-bottom: 1px solid #35597C;
+          border-top: 1px solid #35597c;
+          border-bottom: 1px solid #35597c;
           -webkit-box-shadow: none;
           box-shadow: none;
         }

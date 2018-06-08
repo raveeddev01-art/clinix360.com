@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import cx from "classnames";
 
 import CUSTOMERS from "./customers-logos";
@@ -18,16 +19,23 @@ class OurCustomers extends Component {
   }
 
   render() {
+    const { withoutText } = this.props;
     return (
       <div className="our-customers">
         <div className="container">
-          <h2>Trusted by the best teams</h2>
-          <h3>
-            Healthcare organizations big and small have made Stitch their home
-            base for work.
-          </h3>
+          {withoutText ? (
+            ""
+          ) : (
+            <div>
+              <h2>Trusted by the best teams</h2>
+              <h3>
+                Healthcare organizations big and small have made Stitch their
+                home base for work.
+              </h3>
 
-          <hr className="section-line" />
+              <hr className="section-line" />
+            </div>
+          )}
 
           <div className="customer-logos text-center">
             <div className="row logo-row">{this.renderCustomers()}</div>
@@ -37,5 +45,13 @@ class OurCustomers extends Component {
     );
   }
 }
+
+OurCustomers.defaultProps = {
+  withoutText: false
+};
+
+OurCustomers.propTypes = {
+  withoutText: PropTypes.bool
+};
 
 export default OurCustomers;
