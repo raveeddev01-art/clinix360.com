@@ -3,10 +3,6 @@ defmodule Stitch.Web.HomeController do
   alias Stitch.{Accounts.User, UserQueries, Team, TeamQueries}
 
   def index(conn = %{request_path: path}, _params) do
-    # login_objects = get_session(conn, :login_objects) || %{}
-    # team_ids = login_objects |> Map.keys()
-    # teams = Stitch.TeamQueries.get_by_ids(team_ids)
-
     login_params = get_login_params(conn)
 
     conn
@@ -28,15 +24,6 @@ defmodule Stitch.Web.HomeController do
       end)
 
     Poison.encode!(%{teams: teams})
-
-    # with {:token, token} when is_binary(token) <-
-    #        {:token, get_session(conn, :current_user_token)},
-    #      {:user, %User{disabled: false} = user} <- {:user, UserQueries.get_by_token(token)},
-    #      {:team, %Team{} = team} <- {:team, TeamQueries.get_by_id(user.team_id)} do
-    #   Poison.encode!(%{team: %{id: team.id, name: team.name, slug: team.slug}})
-    # else
-    #   _ -> nil
-    # end
   end
 
   # If you change a title, sync it with frontend (website_router)

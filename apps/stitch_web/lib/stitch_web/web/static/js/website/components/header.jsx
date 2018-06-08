@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import cx from "classnames";
@@ -11,8 +12,10 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import browserDetails from "../../lib/browser_details";
 
-function noop() {}
+function noop() { }
 
+@inject("loginStore")
+@observer
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -66,6 +69,8 @@ class Header extends Component {
       "is-open": this.state.mobileNavOpened === true,
       "is-hidden": this.state.mobileNavOpened === false
     });
+
+    const hasLogins = this.props.loginStore.hasLogin;
 
     return (
       <div>
@@ -159,7 +164,7 @@ class Header extends Component {
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
             <NavItem onClick={this.goToGetStarted} className="btn-trial">
-              Get Started
+              {hasLogins ? "Your Carespaces" : "Get Started"}
             </NavItem>
           </Nav>
         </Navbar>
@@ -243,7 +248,7 @@ class Header extends Component {
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
               {!mobile && (
                 <NavItem onClick={this.goToGetStarted} className="btn-trial">
-                  Get Started
+                  {hasLogins ? "Your Carespaces" : "Get Started"}
                 </NavItem>
               )}
 

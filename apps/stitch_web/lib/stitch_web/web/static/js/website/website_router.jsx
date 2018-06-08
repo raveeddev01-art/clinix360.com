@@ -43,8 +43,6 @@ const notFoundTitle = "404 | Page Not Found";
 
 class WebsiteRouter extends Component {
   render() {
-    console.log(this.props.teams)
-
     return (
       <div className="website-wrapper">
         <ScrollToTop>
@@ -52,7 +50,7 @@ class WebsiteRouter extends Component {
             <Route
               exact
               path="/"
-              render={() => <Homepage teams={this.props.teams} />}
+              component={Homepage}
             />
             <Route exact path="/demo" component={withTitle(demoTitle, Demo)} />
             <Route
@@ -85,8 +83,7 @@ class WebsiteRouter extends Component {
             <Route
               exact
               path="/customers"
-              component={withTitle(customersTitle, Customers)}
-            />
+              component={withTitle(customersTitle, Customers)} />
             <Route exact path="/blog" component={Blog} />
             <Route
               exact

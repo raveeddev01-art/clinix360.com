@@ -86,9 +86,11 @@ defmodule Stitch.Web.AuthenticationController do
 
   def logout(conn, _) do
     session_id = get_session(conn, :session_id)
+    current_user = conn.assigns.current_user
 
     conn
-    |> configure_session(drop: true)
+    # |> configure_session(drop: true)
+    |> delete_current_user(current_user)
     |> broadcast_logout(session_id)
     |> redirect(to: "/logged-out")
   end
