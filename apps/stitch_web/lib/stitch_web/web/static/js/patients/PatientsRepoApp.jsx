@@ -21,16 +21,18 @@ class PatientsRepoApp extends Component {
     return (
       <div id="app" className="preview-app">
         <AppAlert />
-        <div className="manage-wrapper appContainer">
+        <div className="admin-wrapper appContainer">
           <Helmet>
             <title>{titleStore.title}</title>
           </Helmet>
           <Switcher />
-          <div className="manage-content">
-            <Switch>
-              <Route path="/patients" component={PatientsRepo} />
-              <Redirect to="/" />
-            </Switch>
+          <div className="admin-content">
+            <div className="admin-content-wrapper">
+              <Switch>
+                <Route path="/patients" component={PatientsRepo} />
+                <Redirect to="/" />
+              </Switch>
+            </div>
           </div>
         </div>
       </div>
