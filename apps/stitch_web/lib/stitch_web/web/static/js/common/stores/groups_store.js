@@ -442,8 +442,8 @@ class GroupsStore {
 
     return userIds.length > 2
       ? post(`/api/v1/groups/multi_dm`, {
-          body
-        })
+        body
+      })
       : post(`/api/v1/groups/dm`, { body });
   };
 
@@ -526,7 +526,7 @@ class GroupsStore {
 
     // Join group channel
     channelStore
-      .joinGroupChannel()
+      .joinGroupChannel({ authenticated_urls: true })
       .receive("ok", messageStore.onJoinGroupChannel)
       .receive("error", err => notify.show(err.message, "error"));
 

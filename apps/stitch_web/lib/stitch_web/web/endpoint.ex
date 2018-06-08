@@ -90,4 +90,9 @@ defmodule Stitch.Web.Endpoint do
     port = System.get_env("PORT") || raise "expected the PORT environment variable to be set"
     {:ok, Keyword.put(config, :http, [:inet6, port: port])}
   end
+
+  def files_struct_url do
+    struct_url = Stitch.Web.Endpoint.struct_url()
+    %{struct_url | host: "files.#{struct_url.host}"}
+  end
 end

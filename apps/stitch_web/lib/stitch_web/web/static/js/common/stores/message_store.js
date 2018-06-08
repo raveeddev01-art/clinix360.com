@@ -634,7 +634,8 @@ class MessageStore {
 
     post(`/api/v1/groups/${this.group.id}/messages`, {
       body: {
-        message: newMsg
+        message: newMsg,
+        authenticated_urls: true
       }
     }).catch(() => {
       this.updateMessageData(tempMessage.id, {
@@ -676,7 +677,7 @@ class MessageStore {
       this.isLoadingPast = true;
       get(
         `/api/v1/groups/${this.group.id}/messages?fetchUsers=false&max_id=${this
-          .messages[this.messages.length - 1].id}`
+          .messages[this.messages.length - 1].id}&authenticated_urls=true`
       )
         .then(response => {
           const users = this.rootStore.usersStore.users.toJS();
