@@ -17,14 +17,26 @@ defmodule Stitch.Web.HomeController do
   end
 
   def get_login_params(conn) do
-    with {:token, token} when is_binary(token) <-
-           {:token, get_session(conn, :current_user_token)},
-         {:user, %User{disabled: false} = user} <- {:user, UserQueries.get_by_token(token)},
-         {:team, %Team{} = team} <- {:team, TeamQueries.get_by_id(user.team_id)} do
-      Poison.encode!(%{team: %{id: team.id, name: team.name, slug: team.slug}})
-    else
-      _ -> nil
-    end
+    login_objects = get_session(conn, :login_objects) || %{}
+
+    teams =
+      login_objects
+      |> Map.keys()
+      |> Stitch.TeamQueries.get_by_ids()
+      |> Enum.map(fn team ->
+        %{id: team.id, name: team.name, slug: team.slug}
+      end)
+
+    Poison.encode!(%{teams: teams})
+
+    # with {:token, token} when is_binary(token) <-
+    #        {:token, get_session(conn, :current_user_token)},
+    #      {:user, %User{disabled: false} = user} <- {:user, UserQueries.get_by_token(token)},
+    #      {:team, %Team{} = team} <- {:team, TeamQueries.get_by_id(user.team_id)} do
+    #   Poison.encode!(%{team: %{id: team.id, name: team.name, slug: team.slug}})
+    # else
+    #   _ -> nil
+    # end
   end
 
   # If you change a title, sync it with frontend (website_router)
