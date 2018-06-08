@@ -163,4 +163,11 @@ defmodule Stitch.Factory do
       email: sequence(:email, &"email-#{&1}@example.com")
     }
   end
+
+  def team_feature_factory do
+    %Stitch.TeamFeature{
+      team: build(:team),
+      name: "a-beta-feature"
+    }
+  end
 end
