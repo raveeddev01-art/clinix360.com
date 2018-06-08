@@ -14,7 +14,7 @@ export default class CaseDSSI extends Component {
         <Header />
         <div className="case-study">
           <Subheader
-            title="Customers"
+            title="Customer Stories"
             subtitle="Dermatology & Skin Surgery Institute"
           />
 

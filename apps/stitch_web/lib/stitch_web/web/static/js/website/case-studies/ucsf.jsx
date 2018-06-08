@@ -13,7 +13,7 @@ export default class CaseUCSF extends Component {
       <div>
         <Header />
         <div className="case-study">
-          <Subheader title="Customers" subtitle="UCSF Citywide" />
+          <Subheader title="Customer Stories" subtitle="UCSF Citywide" />
 
           <div className="overview text-center">
             <div className="container">

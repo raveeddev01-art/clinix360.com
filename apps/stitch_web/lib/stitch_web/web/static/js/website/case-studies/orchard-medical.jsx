@@ -13,7 +13,10 @@ export default class CaseOrchardMedical extends Component {
       <div>
         <Header />
         <div className="case-study">
-          <Subheader title="Customers" subtitle="Orchard Medical Associates" />
+          <Subheader
+            title="Customer Stories"
+            subtitle="Orchard Medical Associates"
+          />
 
           <div className="overview text-center">
             <div className="container">

@@ -67,13 +67,21 @@ class Header extends Component {
       "is-hidden": this.state.mobileNavOpened === false
     });
 
+    const blueNav = cx({
+      blueNav: this.props.blueNav
+    });
+
     return (
       <div>
-        <Navbar id="header" inverse fixedTop>
+        <Navbar id="header" inverse fixedTop className={blueNav}>
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/" className="brand">
-                <img src="/images/stitch-brand.svg" alt="Stitch" />
+                {this.props.blueNav ? (
+                  <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
+                ) : (
+                  <img src="/images/stitch-brand.svg" alt="Stitch" />
+                )}
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle onClick={this.mobileNavToggle} />

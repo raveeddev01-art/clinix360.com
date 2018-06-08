@@ -13,7 +13,10 @@ export default class CasePBSC extends Component {
       <div>
         <Header />
         <div className="case-study">
-          <Subheader title="Customers" subtitle="Princeton Brain & Spine" />
+          <Subheader
+            title="Customer Stories"
+            subtitle="Princeton Brain & Spine"
+          />
 
           <div className="overview text-center">
             <div className="container">

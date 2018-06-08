@@ -11,9 +11,9 @@ export default class CaseLuminance extends Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header blueNav />
         <div className="case-study">
-          <Subheader title="Customers" subtitle="Luminance Recovery" />
+          <Subheader title="Customer Stories" subtitle="Luminance Recovery" />
 
           <div className="overview text-center">
             <div className="container">

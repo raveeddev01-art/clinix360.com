@@ -3,7 +3,6 @@ import { LinkContainer } from "react-router-bootstrap";
 import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
 import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
-import cx from "classnames";
 
 import Header from "../components/header";
 import Subheader from "../components/subheader";
@@ -12,23 +11,11 @@ import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
 
 export default class Customers extends Component {
-  renderCustomers() {
-    return CUSTOMERS.map((c, index) => {
-      const className = cx("col-lg-5ths col-md-3 col-xs-4", {
-        "visible-lg": index % 5 === 4
-      });
-      return (
-        <div className={className} key={`customer_${index}`}>
-          <img src={c.img} alt={c.title} />
-        </div>
-      );
-    });
-  }
-
   render() {
     return (
       <div>
         <Header />
+
         <div className="customers-page">
           <Subheader
             title="Trusted by the best teams"

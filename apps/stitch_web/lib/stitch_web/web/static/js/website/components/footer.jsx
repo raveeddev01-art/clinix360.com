@@ -10,7 +10,7 @@ export default class Footer extends Component {
       <footer id="footer">
         <div className="container">
           <Row>
-            <Col md={3}>
+            <Col sm={2} md={3}>
               <img
                 className="stitch-logo"
                 src="/images/logo-blue.svg"
@@ -18,9 +18,9 @@ export default class Footer extends Component {
               />
             </Col>
 
-            <Col md={9}>
+            <Col sm={10} md={9}>
               <Row>
-                <Col xs={6} md={3}>
+                <Col xs={6} sm={3} md={3}>
                   <h5>Platform</h5>
                   <ul className="list-unstyled">
                     <li>
@@ -38,7 +38,7 @@ export default class Footer extends Component {
                   </ul>
                 </Col>
 
-                <Col xs={6} md={3}>
+                <Col xs={6} sm={3} md={3}>
                   <h5>Resources</h5>
                   <ul className="list-unstyled">
                     <li>
@@ -71,7 +71,7 @@ export default class Footer extends Component {
                   </ul>
                 </Col>
 
-                <Col xs={6} md={3}>
+                <Col xs={6} sm={3} xsPush={6} smPush={0}>
                   <h5>Legal</h5>
                   <ul className="list-unstyled">
                     <li>
@@ -86,7 +86,7 @@ export default class Footer extends Component {
                   </ul>
                 </Col>
 
-                <Col xs={6} md={3}>
+                <Col xs={6} sm={3} xsPull={6} smPull={0}>
                   <h5>Contact</h5>
                   <address>
                     Stitch Technologies, Inc.
@@ -94,6 +94,7 @@ export default class Footer extends Component {
                     156 2nd Street #201<br />
                     San Francisco, CA 94105<br />
                     <a href="tel:+16502823388">+1 (650) 282-3388</a>
+                    <br />
                     <a href="mailto:support@teamstitch.com">
                       support@teamstitch.com
                     </a>

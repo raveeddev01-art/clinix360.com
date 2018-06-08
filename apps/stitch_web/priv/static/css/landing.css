@@ -7032,7 +7032,7 @@ i.fa.on-right {
     padding-top: 40px; }
     @media (min-width: 768px) {
       .website-wrapper .pricing-page .product-section {
-        padding-top: 50px; } }
+        padding-top: 71px; } }
     .website-wrapper .pricing-page .product-section#manage {
       padding-bottom: 50px; }
     .website-wrapper .pricing-page .product-section h4 {
@@ -7205,6 +7205,8 @@ i.fa.on-right {
       min-height: 259px; } }
   .website-wrapper #grnhse_app {
     flex-grow: 1; }
+  .website-wrapper .customers-page .navbar-inverse {
+    background: #036; }
   .website-wrapper .customers-page section {
     padding: 60px 0; }
     .website-wrapper .customers-page section:first-of-type .panel-body {
@@ -7296,41 +7298,47 @@ i.fa.on-right {
   padding-bottom: 70px; }
 
 .case-study {
-  color: #036; }
+  color: #036;
+  background: #f0f1f3; }
+  .case-study .subheader {
+    color: #fff;
+    background: #036; }
+    .case-study .subheader h1 {
+      color: #fff; }
   .case-study .overview {
     background: #fff;
-    padding: 25px 0 0; }
+    padding: 35px 0 0; }
     .case-study .overview .flex-item {
       padding: 10px 15px; }
     .case-study .overview h5 {
       max-width: 200px;
-      font-size: 13px;
+      font-size: 18px;
       font-weight: 700;
       background: #e8ecef;
-      border-radius: 4px;
+      border-radius: 2px;
       padding: 8px 20px;
       margin: 0 auto 10px; }
-      @media (min-width: 768px) {
-        .case-study .overview h5 {
-          font-size: 14px; } }
     .case-study .overview p {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
-      margin: 0 0 20px; }
+      margin: 0 0 35px; }
   .case-study .case-study-content {
     max-width: 880px;
     margin: 0 auto;
     padding: 40px 0; }
     .case-study .case-study-content h3 {
       width: 80%;
-      font-weight: 700;
+      font-size: 30px;
+      font-weight: 900;
       margin: 0 auto; }
     .case-study .case-study-content hr {
       width: 30%;
       margin: 50px auto; }
     .case-study .case-study-content h4 {
+      font-size: 20px;
       font-weight: 700; }
     .case-study .case-study-content p {
+      font-size: 18px;
       line-height: 1.75; }
     .case-study .case-study-content .quote {
       max-width: 545px;
@@ -7487,6 +7495,29 @@ i.fa.on-right {
       .navbar-inverse .navbar-nav .btn-trial a:hover, .navbar-inverse .navbar-nav .btn-trial a:focus {
         color: #fff;
         background: #036; }
+  .navbar-inverse.blueNav {
+    background: #036;
+    border-color: #036; }
+    .navbar-inverse.blueNav .navbar-nav > li > a,
+    .navbar-inverse.blueNav .navbar-nav > .active > a,
+    .navbar-inverse.blueNav .navbar-nav > .open > a {
+      color: #fff; }
+      .navbar-inverse.blueNav .navbar-nav > li > a .subtext,
+      .navbar-inverse.blueNav .navbar-nav > .active > a .subtext,
+      .navbar-inverse.blueNav .navbar-nav > .open > a .subtext {
+        color: #aaa; }
+      .navbar-inverse.blueNav .navbar-nav > li > a:hover, .navbar-inverse.blueNav .navbar-nav > li > a:focus,
+      .navbar-inverse.blueNav .navbar-nav > .active > a:hover,
+      .navbar-inverse.blueNav .navbar-nav > .active > a:focus,
+      .navbar-inverse.blueNav .navbar-nav > .open > a:hover,
+      .navbar-inverse.blueNav .navbar-nav > .open > a:focus {
+        color: #fff;
+        background: transparent; }
+    .navbar-inverse.blueNav .btn-trial a {
+      border-color: #fff; }
+      .navbar-inverse.blueNav .btn-trial a:hover {
+        color: #036;
+        background: #fff; }
 
 #mobile-nav {
   width: 100%;
@@ -7576,28 +7607,30 @@ i.fa.on-right {
 #footer {
   background-color: #fff;
   box-shadow: 0 -1px 0 #eaeaea;
-  padding: 40px 0; }
+  padding: 80px 0 60px; }
   #footer .stitch-logo {
     display: block;
     max-width: 50px; }
     @media (max-width: 768px) {
       #footer .stitch-logo {
-        margin-bottom: 30px; } }
+        margin-bottom: 50px; } }
   #footer h5 {
     color: #036;
     font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
     margin-top: 20px; }
-    @media (min-width: 992px) {
+    @media (min-width: 768px) {
       #footer h5 {
         margin-top: 0; } }
   #footer a {
     display: inline-block;
     color: #333;
+    font-size: 17px;
+    line-height: 2.2;
     text-decoration: none; }
   #footer address {
-    line-height: 1.5; }
+    line-height: 2.2; }
   #footer i.fa {
     color: #999;
     font-size: 20px;

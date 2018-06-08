@@ -954,7 +954,7 @@
     .product-section {
       padding-top: 40px;
       @media (min-width: $screen-sm) {
-        padding-top: 50px;
+        padding-top: 71px;
       }
 
       &#manage {
@@ -1244,6 +1244,10 @@
 
   //----------------- CUSTOMERS -----------------
   .customers-page {
+    .navbar-inverse {
+      background: $brand-primary;
+    }
+
     section {
       padding: 60px 0;
 
@@ -1401,11 +1405,21 @@
 }
 
 .case-study {
-  color: #036;
+  color: $brand-primary;
+  background: $medium-gray;
+
+  .subheader {
+    color: #fff;
+    background: $brand-primary;
+
+    h1 {
+      color: #fff;
+    }
+  }
 
   .overview {
     background: #fff;
-    padding: 25px 0 0;
+    padding: 35px 0 0;
 
     .flex-item {
       padding: 10px 15px;
@@ -1413,21 +1427,18 @@
 
     h5 {
       max-width: 200px;
-      font-size: 13px;
+      font-size: 18px;
       font-weight: 700;
       background: #e8ecef;
-      border-radius: 4px;
+      border-radius: 2px;
       padding: 8px 20px;
       margin: 0 auto 10px;
-      @media (min-width: $screen-sm) {
-        font-size: 14px;
-      }
     }
 
     p {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
-      margin: 0 0 20px;
+      margin: 0 0 35px;
     }
   }
 
@@ -1438,7 +1449,8 @@
 
     h3 {
       width: 80%;
-      font-weight: 700;
+      font-size: 30px;
+      font-weight: 900;
       margin: 0 auto;
     }
 
@@ -1448,10 +1460,12 @@
     }
 
     h4 {
+      font-size: 20px;
       font-weight: 700;
     }
 
     p {
+      font-size: 18px;
       line-height: 1.75;
     }
 
@@ -1665,6 +1679,36 @@
       }
     }
   }
+
+  &.blueNav {
+    background: $brand-primary;
+    border-color: $brand-primary;
+
+    .navbar-nav > li > a,
+    .navbar-nav > .active > a,
+    .navbar-nav > .open > a {
+      color: #fff;
+
+      .subtext {
+        color: #aaa;
+      }
+
+      &:hover,
+      &:focus {
+        color: #fff;
+        background: transparent;
+      }
+    }
+
+    .btn-trial a {
+      border-color: #fff;
+
+      &:hover {
+        color: $brand-primary;
+        background: #fff;
+      }
+    }
+  }
 }
 
 #mobile-nav {
@@ -1788,13 +1832,13 @@
 #footer {
   background-color: #fff;
   box-shadow: 0 -1px 0 #eaeaea;
-  padding: 40px 0;
+  padding: 80px 0 60px;
 
   .stitch-logo {
     display: block;
     max-width: 50px;
     @media (max-width: $screen-sm) {
-      margin-bottom: 30px;
+      margin-bottom: 50px;
     }
   }
 
@@ -1804,7 +1848,7 @@
     font-weight: 700;
     text-transform: uppercase;
     margin-top: 20px;
-    @media (min-width: $screen-md) {
+    @media (min-width: $screen-sm) {
       margin-top: 0;
     }
   }
@@ -1812,11 +1856,13 @@
   a {
     display: inline-block;
     color: #333;
+    font-size: 17px;
+    line-height: 2.2;
     text-decoration: none;
   }
 
   address {
-    line-height: 1.5;
+    line-height: 2.2;
   }
 
   i.fa {
