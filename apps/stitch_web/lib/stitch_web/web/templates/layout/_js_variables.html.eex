@@ -2,10 +2,10 @@
 applicationHost = Application.fetch_env!(:stitch_web, :application_host)
 applicationScheme = Application.fetch_env!(:stitch_web, :application_scheme)
 websocketScheme = Application.fetch_env!(:stitch_web, :websocket_scheme)
-authenticationToken = Plug.Conn.get_session(@conn, :current_user_token)
 session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
 user = Map.get(@conn.assigns, :current_user)
+authenticationToken = user.token
 intercom_user_hash = Plug.Conn.get_session(@conn, :intercom_user_hash)
 public_bucket_name = Application.fetch_env!(:stitch, :public_cdn)[:bucket]
 app_settings = Poison.encode!(%{

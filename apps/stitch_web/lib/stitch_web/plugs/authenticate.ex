@@ -7,8 +7,7 @@ defmodule Stitch.Web.Plug.Authenticate do
   def init(default), do: default
 
   def call(conn, _) do
-    with {:token, token} when is_binary(token) <-
-           {:token, get_session(conn, :current_user_token)},
+    with {:token, token} when is_binary(token) <- {:token, get_login(conn)},
          {:user, %User{disabled: false} = user} <- {:user, UserQueries.get_by_token(token)},
          {:team_member?, true} <- {:team_member?, user.team_id == conn.assigns.team.id} do
       conn
@@ -20,6 +19,12 @@ defmodule Stitch.Web.Plug.Authenticate do
       {:user, _disabled_user} -> handle_disabled_user(conn)
       {:team_member?, false} -> force_login(conn)
     end
+  end
+
+  def get_login(conn) do
+    team_id = conn.assigns.team.id
+    login_objects = get_session(conn, :login_objects) || %{}
+    Map.get(login_objects, team_id)
   end
 
   def force_login(conn) do

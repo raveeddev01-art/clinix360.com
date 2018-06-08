@@ -3,6 +3,10 @@ defmodule Stitch.Web.HomeController do
   alias Stitch.{Accounts.User, UserQueries, Team, TeamQueries}
 
   def index(conn = %{request_path: path}, _params) do
+    # login_objects = get_session(conn, :login_objects) || %{}
+    # team_ids = login_objects |> Map.keys()
+    # teams = Stitch.TeamQueries.get_by_ids(team_ids)
+
     login_params = get_login_params(conn)
 
     conn
