@@ -1594,6 +1594,11 @@
         font-weight: normal;
       }
 
+      &:focus {
+        color: $brand-primary;
+        background: transparent;
+      }
+
       &:hover {
         color: $brand-primary;
         background: $medium-gray;

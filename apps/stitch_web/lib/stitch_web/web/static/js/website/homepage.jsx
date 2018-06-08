@@ -38,7 +38,7 @@ export default class Homepage extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <h1>Deliver your patients a great experience</h1>
+                <h1>Deliver a great patient experience</h1>
 
                 <h3 className="m-b-30">
                   Stitch is an app for healthcare teams to send internal
@@ -55,7 +55,7 @@ export default class Homepage extends Component {
                   <span className="play-btn">
                     <i className="fa fa-play" />
                   </span>
-                  <span>Watch The Video</span>
+                  <span>Watch the video</span>
                 </a>
               </div>
 
