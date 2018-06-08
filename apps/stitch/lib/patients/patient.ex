@@ -53,8 +53,33 @@ defmodule Stitch.Patient do
   """
   @spec create(map) :: {:ok, Patient.t()} | {:error, Ecto.Changeset.t()}
   def create(params) do
-    patient = %Patient{}
-    changeset = changeset(patient, params)
+    changeset = changeset(%Patient{}, params)
     Repo.insert(changeset)
+  end
+
+  @doc """
+  Creates the patient as a provider. Removed any given onboarded value.
+  """
+  @spec create_as_provider(map) :: {:ok, Patient.t()} | {:error, Ecto.Changeset.t()}
+  def create_as_provider(params) do
+    overridden_params = params |> Map.delete("onboarded")
+    create(overridden_params)
+  end
+
+  @doc """
+  Updates the patient as a provider.
+  """
+  @spec update_as_provider(Patient.t(), map) :: {:ok, Patient.t()} | {:error, Ecto.Changeset.t()}
+  def update_as_provider(patient, params) do
+    case patient.onboarded do
+      true ->
+        # Don't update if onboarded (and now in user's control)
+        {:ok, patient}
+
+      false ->
+        patient
+        |> changeset(Map.delete(params, "onboarded"))
+        |> Repo.update()
+    end
   end
 end
