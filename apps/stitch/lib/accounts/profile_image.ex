@@ -102,8 +102,6 @@ defmodule Stitch.Accounts.ProfileImage do
   @doc """
   Given a user returns an S3 url pointing to a default avatar
   url that can be set for the user.
-
-  TODO: clean this up?
   """
   # @spec pick_default_random(User.t()) :: {:ok, binary}
   def pick_default_random(%{first_name: first_name, last_name: last_name} = _user) do
@@ -232,7 +230,10 @@ defmodule Stitch.Accounts.ProfileImage do
   # CHANGESET HELPERS
   # =================
 
-  # TODO: Remove from usr and put in shared spot
+  @doc """
+  Given a changeset struct and params. Cast profile urls and regen if needed.
+  Used on Users and Patients.
+  """
   def default_profile_image_changeset(struct, params) do
     changeset =
       struct
