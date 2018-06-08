@@ -11,7 +11,7 @@ import ChatApp from "../chat/ChatApp";
 import SystemError from "../common/components/error/system-error";
 import browserDetails from "../lib/browser_details";
 
-@inject("presenceStore", "sidemenuStore")
+@inject("presenceStore", "sidemenuStore", "teamStore")
 @observer
 class LockableApp extends Component {
   constructor(props) {
@@ -72,7 +72,11 @@ class LockableApp extends Component {
   }
 
   render() {
-    const { presenceStore, sidemenuStore } = this.props;
+    const {
+      presenceStore,
+      sidemenuStore,
+      teamStore: { engageEnabled }
+    } = this.props;
     const { shouldRedirect } = this.state;
 
     if (this.state.hasError) {
@@ -89,7 +93,9 @@ class LockableApp extends Component {
           <Route path="/admin" component={AdminApp} />
           <Route exact path="/engage" component={EngageApp} />
           <Route exact path="/manage" component={ManageApp} />
-          <Route exact path="/patients" component={PatientsRepoApp} />
+          {engageEnabled && (
+            <Route exact path="/patients" component={PatientsRepoApp} />
+          )}
           <Route path="/" component={ChatApp} />
         </Switch>
       );
