@@ -11,7 +11,7 @@ export default class CasePBSC extends Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header blueNav />
         <div className="case-study">
           <Subheader
             title="Customer Stories"
@@ -46,7 +46,7 @@ export default class CasePBSC extends Component {
 
           <div className="container">
             <div className="case-study-content">
-              <h3 className="text-center">
+              <h3>
                 Princeton Brain & Spine uses Stitch to coordinate care across
                 multiple locations and improve the patient experience
               </h3>

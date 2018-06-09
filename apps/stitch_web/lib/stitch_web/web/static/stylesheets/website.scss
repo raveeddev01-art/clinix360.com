@@ -245,6 +245,12 @@
         }
       }
     }
+
+    .landing-message {
+      @media (min-width: $screen-sm) {
+        text-align: center;
+      }
+    }
   }
 
   //----------------- HOMEPAGE -----------------
@@ -1244,12 +1250,8 @@
 
   //----------------- CUSTOMERS -----------------
   .customers-page {
-    .navbar-inverse {
-      background: $brand-primary;
-    }
-
     section {
-      padding: 60px 0;
+      padding: 95px 0;
 
       &:first-of-type .panel-body {
         padding: 40px;
@@ -1275,15 +1277,11 @@
         h2 {
           font-weight: 900;
         }
-
-        p {
-          font-size: 18px;
-        }
       }
     }
 
     .our-customers {
-      padding: 30px 0;
+      padding: 95px 0;
 
       .logo-row {
         margin-bottom: 0;
@@ -1306,32 +1304,32 @@
 
       .flex-box {
         align-items: stretch;
-
-        .flex-item {
-          margin: 0 15px 30px;
-        }
       }
 
-      .panel-body {
-        padding: 40px;
+      .panel {
+        margin-bottom: 30px;
 
-        img {
-          max-height: 60px;
-          margin: 0 0 10px;
-        }
+        .panel-body {
+          padding: 40px;
 
-        h4 {
-          font-size: 20px;
-        }
+          img {
+            max-height: 60px;
+            margin: 0 0 10px;
+          }
 
-        p {
-          font-size: 18px;
-        }
-
-        .btn {
-          text-transform: uppercase;
+          h4 {
+            font-size: 20px;
+          }
         }
       }
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    .btn {
+      text-transform: uppercase;
     }
   }
 
@@ -1421,10 +1419,6 @@
     background: #fff;
     padding: 35px 0 0;
 
-    .flex-item {
-      padding: 10px 15px;
-    }
-
     h5 {
       max-width: 200px;
       font-size: 18px;
@@ -1436,22 +1430,28 @@
     }
 
     p {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       margin: 0 0 35px;
+      @media (min-width: $screen-sm) {
+        font-size: 18px;
+      }
     }
   }
 
   .case-study-content {
-    max-width: 880px;
     margin: 0 auto;
     padding: 40px 0;
 
     h3 {
-      width: 80%;
-      font-size: 30px;
+      font-size: calc(1.4rem + (6 * (100vw - 360px) / 624));
       font-weight: 900;
-      margin: 0 auto;
+      @media (min-width: $screen-sm) {
+        text-align: center;
+      }
+      @media (min-width: $screen-lg) {
+        font-size: 30px;
+      }
     }
 
     hr {
@@ -1688,6 +1688,10 @@
   &.blueNav {
     background: $brand-primary;
     border-color: $brand-primary;
+
+    .navbar-toggle .icon-bar {
+      background: #fff;
+    }
 
     .navbar-nav > li > a,
     .navbar-nav > .active > a,

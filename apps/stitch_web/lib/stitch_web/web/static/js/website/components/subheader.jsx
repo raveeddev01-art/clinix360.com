@@ -5,7 +5,7 @@ class Subheader extends Component {
     return (
       <div className="subheader">
         <div className="container">
-          <div className="landing-message text-center">
+          <div className="landing-message">
             <h1>{this.props.title}</h1>
             <h3>{this.props.subtitle}</h3>
           </div>

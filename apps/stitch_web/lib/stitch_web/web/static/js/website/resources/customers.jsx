@@ -19,7 +19,7 @@ export default class Customers extends Component {
         <div className="customers-page">
           <Subheader
             title="Trusted by the best teams"
-            subtitle="Healthcare organizations big and small have made Stitch their home base for work"
+            subtitle="Healthcare organizations big and small have made Stitch their home base for work."
           />
 
           <section className="luminance-section">
@@ -70,85 +70,94 @@ export default class Customers extends Component {
               </h3>
 
               <div className="flex-box">
-                <Panel className="flex-item pbs-card">
-                  <Panel.Body>
-                    <img src="/images/customer-pbsc.png" alt="" />
-                    <h4 className="m-b-20">Princeton Brain & Spine</h4>
-                    <p className="m-b-30">
-                      Princeton Brain & Spine is one of America's leading
-                      neurosurgical practices. As a multi-site practice, PB&S
-                      sought out Stitch to improve the collaboration between
-                      providers in different locations.
-                    </p>
+                <div className="flex-item">
+                  <Panel>
+                    <Panel.Body>
+                      <img src="/images/customer-pbsc.png" alt="" />
+                      <h4 className="m-b-20">Princeton Brain & Spine</h4>
+                      <p className="m-b-30">
+                        Princeton Brain & Spine is one of America's leading
+                        neurosurgical practices. As a multi-site practice, PB&S
+                        sought out Stitch to improve the collaboration between
+                        providers in different locations.
+                      </p>
 
-                    <LinkContainer to="/customers/princeton-brain-spine">
-                      <Button bsStyle="primary" block>
-                        Read More
-                      </Button>
-                    </LinkContainer>
-                  </Panel.Body>
-                </Panel>
+                      <LinkContainer to="/customers/princeton-brain-spine">
+                        <Button bsStyle="primary" block>
+                          Read More
+                        </Button>
+                      </LinkContainer>
+                    </Panel.Body>
+                  </Panel>
+                </div>
 
-                <Panel className="flex-item">
-                  <Panel.Body>
-                    <img src="/images/customer-dssi.png" alt="" />
-                    <h4 className="m-b-20">
-                      Dermatology & Skin Surgery Institute
-                    </h4>
-                    <p className="m-b-30">
-                      DSSI provides state-of-the-art procedures for skin cancer
-                      removal, microscopic tissue analysis, and advanced
-                      reconstructive techniques. DSSI used Stitch to sync
-                      providers and staff during patient consultations.
-                    </p>
+                <div className="flex-item">
+                  <Panel>
+                    <Panel.Body>
+                      <img src="/images/customer-dssi.png" alt="" />
+                      <h4 className="m-b-20">
+                        Dermatology & Skin Surgery Institute
+                      </h4>
+                      <p className="m-b-30">
+                        DSSI provides state-of-the-art procedures for skin
+                        cancer removal, microscopic tissue analysis, and
+                        advanced reconstructive techniques. DSSI used Stitch to
+                        sync providers and staff during patient consultations.
+                      </p>
 
-                    <LinkContainer to="/customers/dermatology-skin-surgery-institute">
-                      <Button bsStyle="primary" block>
-                        Read More
-                      </Button>
-                    </LinkContainer>
-                  </Panel.Body>
-                </Panel>
+                      <LinkContainer to="/customers/dermatology-skin-surgery-institute">
+                        <Button bsStyle="primary" block>
+                          Read More
+                        </Button>
+                      </LinkContainer>
+                    </Panel.Body>
+                  </Panel>
+                </div>
               </div>
 
               <div className="flex-box">
-                <Panel className="flex-item">
-                  <Panel.Body>
-                    <img src="/images/customer-citywide.png" alt="" />
-                    <h4 className="m-b-20">UCSF Citywide</h4>
-                    <p className="m-b-30">
-                      Citywide Case Management is a division of UCSF's
-                      Department of Psychiatry, providing comprehensive services
-                      to 200 severely mentally ill adults. Citywide sought
-                      Stitch to manage field communication during client work.
-                    </p>
+                <div className="flex-item">
+                  <Panel>
+                    <Panel.Body>
+                      <img src="/images/customer-citywide.png" alt="" />
+                      <h4 className="m-b-20">UCSF Citywide</h4>
+                      <p className="m-b-30">
+                        Citywide Case Management is a division of UCSF's
+                        Department of Psychiatry, providing comprehensive
+                        services to 200 severely mentally ill adults. Citywide
+                        sought Stitch to manage field communication during
+                        client work.
+                      </p>
 
-                    <LinkContainer to="/customers/UCSF-citywide">
-                      <Button bsStyle="primary" block>
-                        Read More
-                      </Button>
-                    </LinkContainer>
-                  </Panel.Body>
-                </Panel>
+                      <LinkContainer to="/customers/UCSF-citywide">
+                        <Button bsStyle="primary" block>
+                          Read More
+                        </Button>
+                      </LinkContainer>
+                    </Panel.Body>
+                  </Panel>
+                </div>
 
-                <Panel className="flex-item">
-                  <Panel.Body>
-                    <img src="/images/customer-orchard.png" alt="" />
-                    <h4 className="m-b-20">Orchard Medical Associates</h4>
-                    <p className="m-b-30">
-                      Orchard Medical Associates is a primary care practice
-                      focused on expert medical care and attentive disease
-                      prevention. Orchard Medical integrated Stitch to improve
-                      the flow of patient care throughout the office.
-                    </p>
+                <div className="flex-item">
+                  <Panel>
+                    <Panel.Body>
+                      <img src="/images/customer-orchard.png" alt="" />
+                      <h4 className="m-b-20">Orchard Medical Associates</h4>
+                      <p className="m-b-30">
+                        Orchard Medical Associates is a primary care practice
+                        focused on expert medical care and attentive disease
+                        prevention. Orchard Medical integrated Stitch to improve
+                        the flow of patient care throughout the office.
+                      </p>
 
-                    <LinkContainer to="/customers/orchard-medical-associates">
-                      <Button bsStyle="primary" block>
-                        Read More
-                      </Button>
-                    </LinkContainer>
-                  </Panel.Body>
-                </Panel>
+                      <LinkContainer to="/customers/orchard-medical-associates">
+                        <Button bsStyle="primary" block>
+                          Read More
+                        </Button>
+                      </LinkContainer>
+                    </Panel.Body>
+                  </Panel>
+                </div>
               </div>
             </div>
           </section>

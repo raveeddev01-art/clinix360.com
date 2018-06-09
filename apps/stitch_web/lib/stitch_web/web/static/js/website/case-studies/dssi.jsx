@@ -11,7 +11,7 @@ export default class CaseDSSI extends Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header blueNav />
         <div className="case-study">
           <Subheader
             title="Customer Stories"
@@ -46,7 +46,7 @@ export default class CaseDSSI extends Component {
 
           <div className="container">
             <div className="case-study-content">
-              <h3 className="text-center">
+              <h3>
                 DSSI uses Stitch to offer a world-class patient experience and
                 boost clinical efficiency
               </h3>

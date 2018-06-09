@@ -43,7 +43,7 @@ export default class CaseLuminance extends Component {
 
           <div className="container">
             <div className="case-study-content">
-              <h3 className="text-center">
+              <h3>
                 Luminance Recovery uses Stitch to improve critical
                 communications and decrease program drop-out rate by 70%
               </h3>

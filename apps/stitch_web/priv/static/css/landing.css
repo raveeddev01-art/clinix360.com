@@ -6542,6 +6542,9 @@ i.fa.on-right {
     box-shadow: 0 0 0 6px rgba(0, 51, 102, 0); }
   100% {
     box-shadow: 0 0 0 0 rgba(0, 51, 102, 0); } }
+    @media (min-width: 768px) {
+      .website-wrapper .subheader .landing-message {
+        text-align: center; } }
   @media (min-width: 768px) and (max-width: 991px) {
     .website-wrapper .homepage .subheader .create-team-form {
       margin-bottom: 45px; } }
@@ -7205,10 +7208,8 @@ i.fa.on-right {
       min-height: 259px; } }
   .website-wrapper #grnhse_app {
     flex-grow: 1; }
-  .website-wrapper .customers-page .navbar-inverse {
-    background: #036; }
   .website-wrapper .customers-page section {
-    padding: 60px 0; }
+    padding: 95px 0; }
     .website-wrapper .customers-page section:first-of-type .panel-body {
       padding: 40px; }
       .website-wrapper .customers-page section:first-of-type .panel-body .flex-box {
@@ -7221,10 +7222,8 @@ i.fa.on-right {
       width: 100%; }
     .website-wrapper .customers-page .luminance-section .luminance-card h2 {
       font-weight: 900; }
-    .website-wrapper .customers-page .luminance-section .luminance-card p {
-      font-size: 18px; }
   .website-wrapper .customers-page .our-customers {
-    padding: 30px 0; }
+    padding: 95px 0; }
     .website-wrapper .customers-page .our-customers .logo-row {
       margin-bottom: 0; }
   .website-wrapper .customers-page .customer-studies {
@@ -7238,19 +7237,19 @@ i.fa.on-right {
       margin-bottom: 70px; }
     .website-wrapper .customers-page .customer-studies .flex-box {
       align-items: stretch; }
-      .website-wrapper .customers-page .customer-studies .flex-box .flex-item {
-        margin: 0 15px 30px; }
-    .website-wrapper .customers-page .customer-studies .panel-body {
-      padding: 40px; }
-      .website-wrapper .customers-page .customer-studies .panel-body img {
-        max-height: 60px;
-        margin: 0 0 10px; }
-      .website-wrapper .customers-page .customer-studies .panel-body h4 {
-        font-size: 20px; }
-      .website-wrapper .customers-page .customer-studies .panel-body p {
-        font-size: 18px; }
-      .website-wrapper .customers-page .customer-studies .panel-body .btn {
-        text-transform: uppercase; }
+    .website-wrapper .customers-page .customer-studies .panel {
+      margin-bottom: 30px; }
+      .website-wrapper .customers-page .customer-studies .panel .panel-body {
+        padding: 40px; }
+        .website-wrapper .customers-page .customer-studies .panel .panel-body img {
+          max-height: 60px;
+          margin: 0 0 10px; }
+        .website-wrapper .customers-page .customer-studies .panel .panel-body h4 {
+          font-size: 20px; }
+  .website-wrapper .customers-page p {
+    font-size: 18px; }
+  .website-wrapper .customers-page .btn {
+    text-transform: uppercase; }
   @media (min-width: 768px) and (max-width: 992px) {
     .website-wrapper .customer-studies .pbs-card p {
       margin-bottom: 48px; } }
@@ -7308,8 +7307,6 @@ i.fa.on-right {
   .case-study .overview {
     background: #fff;
     padding: 35px 0 0; }
-    .case-study .overview .flex-item {
-      padding: 10px 15px; }
     .case-study .overview h5 {
       max-width: 200px;
       font-size: 18px;
@@ -7319,18 +7316,24 @@ i.fa.on-right {
       padding: 8px 20px;
       margin: 0 auto 10px; }
     .case-study .overview p {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       margin: 0 0 35px; }
+      @media (min-width: 768px) {
+        .case-study .overview p {
+          font-size: 18px; } }
   .case-study .case-study-content {
-    max-width: 880px;
     margin: 0 auto;
     padding: 40px 0; }
     .case-study .case-study-content h3 {
-      width: 80%;
-      font-size: 30px;
-      font-weight: 900;
-      margin: 0 auto; }
+      font-size: calc(1.4rem + (6 * (100vw - 360px) / 624));
+      font-weight: 900; }
+      @media (min-width: 768px) {
+        .case-study .case-study-content h3 {
+          text-align: center; } }
+      @media (min-width: 1200px) {
+        .case-study .case-study-content h3 {
+          font-size: 30px; } }
     .case-study .case-study-content hr {
       width: 30%;
       margin: 50px auto; }
@@ -7504,6 +7507,8 @@ i.fa.on-right {
   .navbar-inverse.blueNav {
     background: #036;
     border-color: #036; }
+    .navbar-inverse.blueNav .navbar-toggle .icon-bar {
+      background: #fff; }
     .navbar-inverse.blueNav .navbar-nav > li > a,
     .navbar-inverse.blueNav .navbar-nav > .active > a,
     .navbar-inverse.blueNav .navbar-nav > .open > a {
