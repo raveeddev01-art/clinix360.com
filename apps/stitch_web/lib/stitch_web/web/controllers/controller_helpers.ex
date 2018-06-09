@@ -17,19 +17,19 @@ defmodule Stitch.Web.ControllerHelpers do
   end
 
   def put_current_user(conn, user) do
-    login_objects = get_session(conn, :login_objects) || %{}
-    login_objects = Map.put(login_objects, user.team_id, user.token)
+    login_map = get_session(conn, :login_map) || %{}
+    login_map = Map.put(login_map, user.team_id, user.token)
 
     conn
-    |> put_session(:login_objects, login_objects)
+    |> put_session(:login_map, login_map)
   end
 
   def delete_current_user(conn, user) do
-    login_objects = get_session(conn, :login_objects) || %{}
-    login_objects = Map.delete(login_objects, user.team_id)
+    login_map = get_session(conn, :login_map) || %{}
+    login_map = Map.delete(login_map, user.team_id)
 
     conn
-    |> put_session(:login_objects, login_objects)
+    |> put_session(:login_map, login_map)
   end
 
   def update_session(conn, user) do

@@ -23,8 +23,8 @@ defmodule Stitch.Web.Plug.Authenticate do
 
   def get_login(conn) do
     team_id = conn.assigns.team.id
-    login_objects = get_session(conn, :login_objects) || %{}
-    Map.get(login_objects, team_id)
+    login_map = get_session(conn, :login_map) || %{}
+    Map.get(login_map, team_id)
   end
 
   def force_login(conn) do

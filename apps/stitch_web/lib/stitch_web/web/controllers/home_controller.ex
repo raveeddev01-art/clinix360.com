@@ -13,10 +13,10 @@ defmodule Stitch.Web.HomeController do
   end
 
   def get_login_params(conn) do
-    login_objects = get_session(conn, :login_objects) || %{}
+    login_map = get_session(conn, :login_map) || %{}
 
     teams =
-      login_objects
+      login_map
       |> Map.keys()
       |> Stitch.TeamQueries.get_by_ids()
       |> Enum.map(fn team ->
