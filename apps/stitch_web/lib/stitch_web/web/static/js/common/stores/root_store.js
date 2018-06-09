@@ -66,7 +66,7 @@ class RootStore {
     this.accessLogsStore = new AccessLogsStore(this);
     this.integrationStore = new IntegrationStore(this);
     this.newsStore = new NewsStore(this);
-    this.loginStore = new LoginStore(this);
+    this.loginStore = new LoginStore(this, this.appParams);
   }
 
   onStoreInit() {

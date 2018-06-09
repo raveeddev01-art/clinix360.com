@@ -3,27 +3,13 @@ defmodule Stitch.Web.HomeController do
   alias Stitch.{Accounts.User, UserQueries, Team, TeamQueries}
 
   def index(conn = %{request_path: path}, _params) do
-    login_params = get_login_params(conn)
+    login_params = Stitch.Web.PageService.get_logins_json(conn)
 
     conn
     |> put_layout("home_layout.html")
     |> assign(:title, title_for_path(path))
     |> assign(:description, description_for_path(path))
     |> render("index.html", login_params: login_params)
-  end
-
-  def get_login_params(conn) do
-    login_map = get_session(conn, :login_map) || %{}
-
-    teams =
-      login_map
-      |> Map.keys()
-      |> Stitch.TeamQueries.get_by_ids()
-      |> Enum.map(fn team ->
-        %{id: team.id, name: team.name, slug: team.slug}
-      end)
-
-    Poison.encode!(%{teams: teams})
   end
 
   # If you change a title, sync it with frontend (website_router)
