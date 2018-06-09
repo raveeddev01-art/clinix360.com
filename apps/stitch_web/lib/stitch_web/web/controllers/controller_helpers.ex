@@ -24,9 +24,9 @@ defmodule Stitch.Web.ControllerHelpers do
     |> put_session(:login_map, login_map)
   end
 
-  def delete_current_user(conn, user) do
+  def delete_team_session(conn, team_id) do
     login_map = get_session(conn, :login_map) || %{}
-    login_map = Map.delete(login_map, user.team_id)
+    login_map = Map.delete(login_map, team_id)
 
     conn
     |> put_session(:login_map, login_map)
