@@ -4,7 +4,7 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
   # We should add analytics before activating
   # alias Stitch.Analytics.Patient, as: PatientAnalytics
 
-  alias Stitch.{TeamPatient, PatientAuthorization, PatientQueries}
+  alias Stitch.{TeamPatient, PatientAuthorization, PatientQueries, Web.TeamChannel}
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
@@ -33,6 +33,7 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
            {:authorized?, PatientAuthorization.can_create_as_provider?(team.id, current_user)},
          {:ok, %{team_patient: team_patient, patient: patient}} <-
            TeamPatient.create_as_provider(team, params) do
+      TeamChannel.broadcast_team_patient_added(conn.assigns.team.id, team_patient, patient)
       render(conn, "show.json", team_patient: team_patient, patient: patient)
     else
       {:authorized?, false} ->
@@ -54,6 +55,12 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
            {:ok, PatientQueries.get_team_patient(id)},
          {:ok, %{team_patient: updated_team_patient, patient: patient}} <-
            TeamPatient.update_as_provider(team_patient, params) do
+      TeamChannel.broadcast_team_patient_updated(
+        conn.assigns.team.id,
+        updated_team_patient,
+        patient
+      )
+
       render(conn, "show.json", team_patient: updated_team_patient, patient: patient)
     else
       {:authorized?, false} ->

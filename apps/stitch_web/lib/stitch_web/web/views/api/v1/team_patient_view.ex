@@ -31,6 +31,7 @@ defmodule Stitch.Web.Api.V1.TeamPatientView do
   end
 
   def team_patient_json(team_patient) do
+    team_patient = Stitch.Repo.preload(team_patient, :patient)
     team_patient_json(team_patient, team_patient.patient)
   end
 end

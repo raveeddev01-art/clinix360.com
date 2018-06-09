@@ -5,6 +5,7 @@ defmodule Stitch.Web.TeamChannel do
   alias Stitch.Web.Api.V1.UserView
   alias Stitch.Web.Presence
   alias StitchConnect.Web.Api.V1.GroupView
+  alias Stitch.Web.Api.V1.TeamPatientView
   alias Stitch.Accounts.ActivityTracker
   alias StitchConnect.Web.PushNotifications
 
@@ -184,63 +185,6 @@ defmodule Stitch.Web.TeamChannel do
     end
   end
 
-  def broadcast_user_joined(team_id, %Stitch.Accounts.User{} = user) when is_number(team_id) do
-    user_json = UserView.user_json(user)
-    @endpoint.broadcast("team:lobby:#{team_id}", "user_joined", user_json)
-  end
-
-  def broadcast_user_joined(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
-    broadcast_user_joined(team.id, user)
-  end
-
-  def broadcast_conceal_toggled(%Stitch.Team{} = team) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "conceal_switch_toggled", %{
-      conceal_enabled: team.conceal_enabled
-    })
-  end
-
-  def broadcast_team_rename(%Stitch.Team{} = team) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "team_renamed", %{
-      name: team.name,
-      slug: team.slug
-    })
-  end
-
-  def broadcast_user_info(%Stitch.Team{} = team, users) when is_list(users) do
-    for user <- users, do: broadcast_user_info(team, user)
-  end
-
-  def broadcast_user_info(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
-    user_json = UserView.user_json(user)
-    @endpoint.broadcast("team:lobby:#{team.id}", "user_info", user_json)
-  end
-
-  def broadcast_group_public_status(%Stitch.Team{} = team, %Stitch.Group{} = group) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "group_public_status", %{
-      group_id: group.id,
-      public: group.public
-    })
-  end
-
-  def broadcast_deactivated(team, user_id) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "user_deactivated", %{user_id: user_id})
-  end
-
-  def broadcast_activated(team, user_id) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "user_activated", %{user_id: user_id})
-  end
-
-  def broadcast_team_deleted(%Stitch.Team{} = team) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "team_deleted", %{})
-  end
-
-  def broadcast_security_lockout_update(team) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "security_lockout_updated", %{
-      security_lockout_enabled: team.security_lockout,
-      seconds_to_lockout: team.seconds_to_lockout
-    })
-  end
-
   def terminate(_reason, socket) do
     remove_activity(socket.assigns.current_user)
     {:ok, socket}
@@ -257,5 +201,106 @@ defmodule Stitch.Web.TeamChannel do
     )
 
     assign(socket, :meta, merged_meta)
+  end
+
+  # ================
+  #   BROADCASTING
+  # ================
+
+  # =========
+  #   GROUP
+  # =========
+
+  def broadcast_group_public_status(%Stitch.Team{} = team, %Stitch.Group{} = group) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "group_public_status", %{
+      group_id: group.id,
+      public: group.public
+    })
+  end
+
+  # ========
+  #   USER
+  # ========
+
+  def broadcast_user_joined(team_id, %Stitch.Accounts.User{} = user) when is_number(team_id) do
+    user_json = UserView.user_json(user)
+    @endpoint.broadcast("team:lobby:#{team_id}", "user_joined", user_json)
+  end
+
+  def broadcast_user_joined(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
+    broadcast_user_joined(team.id, user)
+  end
+
+  def broadcast_user_info(%Stitch.Team{} = team, users) when is_list(users) do
+    for user <- users, do: broadcast_user_info(team, user)
+  end
+
+  def broadcast_user_info(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
+    user_json = UserView.user_json(user)
+    @endpoint.broadcast("team:lobby:#{team.id}", "user_info", user_json)
+  end
+
+  def broadcast_deactivated(team, user_id) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "user_deactivated", %{user_id: user_id})
+  end
+
+  def broadcast_activated(team, user_id) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "user_activated", %{user_id: user_id})
+  end
+
+  # ===========
+  #   PATIENT
+  # ===========
+
+  def broadcast_team_patient_added(
+        team_id,
+        %Stitch.TeamPatient{} = team_patient,
+        %Stitch.Patient{} = patient
+      )
+      when is_number(team_id) do
+    team_patient_json = TeamPatientView.team_patient_json(team_patient, patient)
+    @endpoint.broadcast("team:lobby:#{team_id}", "patient_added", team_patient_json)
+  end
+
+  def broadcast_team_patient_updated(
+        team_id,
+        %Stitch.TeamPatient{} = team_patient,
+        %Stitch.Patient{} = patient
+      )
+      when is_number(team_id) do
+    team_patient_json = TeamPatientView.team_patient_json(team_patient, patient)
+    @endpoint.broadcast("team:lobby:#{team_id}", "patient_updated", team_patient_json)
+  end
+
+  # ========
+  #   TEAM
+  # ========
+
+  def broadcast_conceal_toggled(%Stitch.Team{} = team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "conceal_switch_toggled", %{
+      conceal_enabled: team.conceal_enabled
+    })
+  end
+
+  def broadcast_team_rename(%Stitch.Team{} = team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "team_renamed", %{
+      name: team.name,
+      slug: team.slug
+    })
+  end
+
+  def broadcast_team_deleted(%Stitch.Team{} = team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "team_deleted", %{})
+  end
+
+  def broadcast_team_deleted(%Stitch.Team{} = team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "team_deleted", %{})
+  end
+
+  def broadcast_security_lockout_update(team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "security_lockout_updated", %{
+      security_lockout_enabled: team.security_lockout,
+      seconds_to_lockout: team.seconds_to_lockout
+    })
   end
 end
