@@ -10,6 +10,8 @@ class LoginStore {
 
   @computed
   get hasLogin() {
+    console.log("hasLogin")
+    console.log(this.teams)
     return this.teams.length > 0;
   }
 }

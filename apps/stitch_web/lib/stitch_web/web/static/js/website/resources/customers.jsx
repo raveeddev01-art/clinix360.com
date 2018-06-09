@@ -28,7 +28,7 @@ export default class Customers extends Component {
   render() {
     return (
       <div>
-        <Header teams={this.props.teams} />
+        <Header />
         <div className="customers-page">
           <Subheader
             title="Customers"

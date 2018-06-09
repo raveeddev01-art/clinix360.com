@@ -12,10 +12,12 @@ defmodule Stitch.Web.AuthenticationController do
   @signup_description "Create your Stitch team for free. Get started with our apps for internal team messaging, patient communication and task management."
 
   def index(conn = %{request_path: path}, _params) do
+    login_params = Stitch.Web.HomeController.get_login_params(conn)
+
     conn
     |> assign(:title, title_for_path(path))
     |> assign(:description, description_for_path(path))
-    |> render("index.html", subdomain: conn.private[:subdomain])
+    |> render("index.html", subdomain: conn.private[:subdomain], login_params: login_params)
   end
 
   def login(conn, _params) do
