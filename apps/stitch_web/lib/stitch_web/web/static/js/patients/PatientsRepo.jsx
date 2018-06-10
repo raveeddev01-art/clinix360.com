@@ -2,30 +2,19 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import PatientsHeader from "./PatientsHeader";
-import MemberItem from "../admin/users/member-item";
-
-function noop() {}
+import PatientListItem from "./PatientListItem";
 
 @inject("patientsStore")
 @observer
 class PatientsRepo extends Component {
   render() {
-    const { patientsStore } = this.props;
+    const { patientsStore: { patients } } = this.props;
 
     return (
       <div className="patients-repo">
         <PatientsHeader />
-        <div className="patients-table">
-          {patientsStore.patients.map(patient => (
-            <MemberItem
-              onSuccess={noop}
-              onError={noop}
-              hideAlert={noop}
-              user={Object.assign({ roles: [] }, patient)}
-              online={false}
-              key={patient.id}
-            />
-          ))}
+        <div className="patients-list">
+          {patients.map(patient => <PatientListItem patient={patient} />)}
         </div>
       </div>
     );

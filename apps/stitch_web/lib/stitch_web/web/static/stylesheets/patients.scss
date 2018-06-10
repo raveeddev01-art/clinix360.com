@@ -5,8 +5,6 @@
 
 // MAIN PANEL
 $header-height: 60px;
-$light-gray: #fff;
-$medium-gray: #ccc;
 
 // EXTRACT
 $admin-sidebar-width: 220px;
@@ -33,6 +31,7 @@ $admin-topbar-height-sm: 65px;
     flex-direction: column;
     background-color: $brand-primary;
 
+    // EXTRACT THIS
     .flex-header {
       padding: 0 15px;
 
@@ -41,6 +40,48 @@ $admin-topbar-height-sm: 65px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        font-weight: 900;
+      }
+
+      .team-user {
+        flex: 1;
+        min-width: 0;
+        padding-top: 6px;
+
+        .team-name {
+          font-size: 18px;
+          line-height: 24px;
+          font-weight: 900;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .user-name {
+          color: #fff;
+          display: flex;
+          align-items: center;
+
+          i {
+            font-size: 10.5px;
+            line-height: 20px;
+          }
+
+          span {
+            line-height: 20px;
+          }
+
+          &__text {
+            opacity: 0.6;
+          }
+
+          &__status-icon {
+            width: 16px;
+            display: inline-block;
+            text-align: center;
+            margin-right: 6px;
+          }
+        }
       }
     }
 
@@ -149,8 +190,8 @@ $admin-topbar-height-sm: 65px;
   .patients-header {
     width: 100%;
     height: $header-height;
-    border-bottom: 1px solid $medium-gray;
-    background-color: $light-gray;
+    border-bottom: 1px solid #ccc;
+    background-color: $almost-white;
 
     padding: 15px;
 
@@ -176,15 +217,54 @@ $admin-topbar-height-sm: 65px;
     }
   }
 
-  .patients-table {
-    .table-item {
+  .patients-list {
+    .patient-list-item {
       padding: 15px;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      .patient-list-info {
+        flex: 0 1 auto;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .patient-list-info-avatar {
+          padding: 0px 10px;
+
+          img {
+            height: 40px;
+          }
+        }
+
+        .patient-list-info-name {
+          font-weight: 900;
+        }
+
+        .patient-list-info-mrn {
+          color: #999;
+          font-weight: 500;
+        }
+      }
+
+      .patient-list-actions {
+        flex: 0 1 auto;
+      }
+
+      .patient-list-spacer {
+        flex: 1 1 auto;
+      }
     }
 
-    .table-item:nth-child(even) {
+    .patient-list-item:nth-child(even) {
       background-color: #fff;
     }
-    .table-item:nth-child(odd) {
+    .patient-list-item:nth-child(odd) {
       background-color: #e7eaf0;
     }
   }

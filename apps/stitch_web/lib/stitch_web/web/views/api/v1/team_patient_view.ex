@@ -1,4 +1,5 @@
 defmodule Stitch.Web.Api.V1.TeamPatientView do
+  alias Stitch.AWS.S3
   use Stitch.Web, :view
 
   def render("index.json", %{team_patients: team_patients}) do
@@ -14,6 +15,9 @@ defmodule Stitch.Web.Api.V1.TeamPatientView do
   end
 
   def team_patient_json(team_patient, patient) do
+    {:ok, avatar} = S3.presign(patient.profile_image_url)
+    {:ok, avatar_thumb} = S3.presign(patient.profile_image_thumb_url)
+
     %{
       id: team_patient.id,
       active: team_patient.active,
@@ -25,8 +29,8 @@ defmodule Stitch.Web.Api.V1.TeamPatientView do
       email: patient.email,
       phone: patient.phone_number,
       onboarded: patient.onboarded,
-      avatar: patient.profile_image_url,
-      avatar_thumb: patient.profile_image_thumb_url
+      avatar: avatar,
+      avatar_thumb: avatar_thumb
     }
   end
 
