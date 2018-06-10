@@ -17097,10 +17097,31 @@ i.file-data-separator {
 
 .terms-of-service,
 .privacy-policy,
-.baa-page,
-.security-page {
+.baa-page {
   padding-top: 70px;
   padding-bottom: 70px; }
+
+.security-page .copy-section {
+  border-bottom: 1px solid #f5f5f5;
+  padding: 40px 0; }
+  .security-page .copy-section:last-of-type {
+    border: 0;
+    margin-bottom: 60px; }
+  .security-page .copy-section h2 {
+    margin: 0 0 30px; }
+  .security-page .copy-section p {
+    font-size: 18px;
+    margin-bottom: 0; }
+  .security-page .copy-section ul {
+    color: #036;
+    font-size: 18px;
+    font-weight: 700;
+    padding-left: 25px; }
+    .security-page .copy-section ul li {
+      margin-bottom: 10px; }
+    .security-page .copy-section ul span {
+      color: #4c4c4c;
+      font-weight: normal; }
 
 .case-study {
   color: #036;
