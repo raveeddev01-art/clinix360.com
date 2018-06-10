@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
 import { Switcher, AppAlert } from "common/components";
+import Sidebar from "./sidebar";
 
 import PatientsRepo from "./PatientsRepo";
 
@@ -19,20 +20,19 @@ class PatientsRepoApp extends Component {
     const { titleStore } = this.props;
 
     return (
-      <div id="app" className="preview-app">
+      <div id="app">
         <AppAlert />
-        <div className="admin-wrapper appContainer">
+        <div className="patients-wrapper appContainer">
           <Helmet>
             <title>{titleStore.title}</title>
           </Helmet>
           <Switcher />
-          <div className="admin-content">
-            <div className="admin-content-wrapper">
-              <Switch>
-                <Route path="/patients" component={PatientsRepo} />
-                <Redirect to="/" />
-              </Switch>
-            </div>
+          <Sidebar />
+          <div className="patients-content">
+            <Switch>
+              <Route path="/patients" component={PatientsRepo} />
+              <Redirect to="/" />
+            </Switch>
           </div>
         </div>
       </div>

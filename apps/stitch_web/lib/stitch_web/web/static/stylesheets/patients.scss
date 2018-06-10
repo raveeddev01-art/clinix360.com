@@ -1,3 +1,213 @@
-.patients-panel-wrapper {
+// TODO:
+// EXTRACT ALL THE CSS THAT RELIES ON ADMIN BEING THERE
+// ADD PROPER NAMESPACING
+// MAKE EVERYTHING VARIABLE-BASED
+
+// MAIN PANEL
+$header-height: 60px;
+$light-gray: #fff;
+$medium-gray: #ccc;
+
+// EXTRACT
+$admin-sidebar-width: 220px;
+$admin-topbar-height: 65px;
+$admin-topbar-height-sm: 65px;
+
+.patients-wrapper {
+  display: flex;
+  height: auto;
+  min-width: 840px;
+  background: #fff;
+
+  .patients-content {
+    flex: 1 1 auto;
+  }
+
+  // EXTRACT SIDEBAR
+  .sidebar {
+    display: block;
+    flex-basis: $admin-sidebar-width;
+    overflow: visible;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: $brand-primary;
+
+    .flex-header {
+      padding: 0 15px;
+
+      h4 {
+        max-width: 230px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .flex-container {
+      @include stitch-scroll();
+      background-color: $brand-primary;
+      flex-grow: 1;
+      position: relative;
+      overflow: hidden;
+
+      .scrollbar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .simplebar-scrollbar {
+        background-color: #fff;
+      }
+
+      .simplebar-scroll-content {
+        position: relative;
+      }
+
+      h5 {
+        font-size: 16px;
+        line-height: 1.5;
+        text-transform: capitalize;
+        color: #fff;
+        font-weight: 500;
+        padding-left: 15px;
+        opacity: 0.6;
+        margin: 0 0 5px;
+
+        &.you-heading {
+          padding-top: 10px;
+        }
+      }
+
+      .list-group {
+        margin-bottom: 32px;
+      }
+
+      .list-group-item {
+        font-size: 16px;
+        font-weight: 500;
+        background-color: inherit;
+        border-radius: 0;
+        border: none;
+        padding: 0;
+
+        &.active {
+          background-color: #fff;
+
+          a {
+            color: $brand-primary;
+            opacity: 1;
+          }
+        }
+
+        &:hover:not(.active) {
+          background-color: #001935;
+        }
+      }
+
+      a {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 1.4;
+        padding: 3px 15px !important;
+        color: #fff;
+        opacity: 0.6;
+
+        i {
+          width: 16px;
+          margin-right: 6px;
+          font-size: 13px;
+          &.sm {
+            font-size: 12px;
+            color: #9e9ea6;
+            vertical-align: baseline;
+          }
+        }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+          outline: none;
+        }
+      }
+
+      &:hover {
+        overflow: auto;
+      }
+    }
+  }
+}
+
+.patients-repo {
   flex-direction: row !important;
+
+  .patients-header {
+    width: 100%;
+    height: $header-height;
+    border-bottom: 1px solid $medium-gray;
+    background-color: $light-gray;
+
+    padding: 15px;
+
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .patients-header-count,
+    .patients-header-search {
+      flex: 0 1 auto;
+    }
+
+    .patients-header-count {
+      h4 {
+        font-weight: 900;
+      }
+    }
+
+    .patients-header-center {
+      flex: 1 1 auto;
+    }
+  }
+
+  .patients-table {
+    .table-item {
+      padding: 15px;
+    }
+
+    .table-item:nth-child(even) {
+      background-color: #fff;
+    }
+    .table-item:nth-child(odd) {
+      background-color: #e7eaf0;
+    }
+  }
+}
+
+// SIDEBAR
+
+.patients-sidebar {
+  .patients-select-option {
+    font-size: 14px !important;
+
+    .Select-control {
+      .Select-value {
+        color: $brand-primary;
+      }
+    }
+  }
+
+  .patients-sidebar-options {
+    padding: 0px 15px;
+
+    h5 {
+      padding-left: 0px !important;
+    }
+  }
 }

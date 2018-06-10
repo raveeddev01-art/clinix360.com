@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import Panel from "react-bootstrap/lib/Panel";
-import Button from "react-bootstrap/lib/Button";
+import PatientsHeader from "./PatientsHeader";
 import MemberItem from "../admin/users/member-item";
 
 function noop() {}
@@ -14,39 +13,20 @@ class PatientsRepo extends Component {
     const { patientsStore } = this.props;
 
     return (
-      <div className="admin-panel-wrapper patients-panel-wrapper">
-        <Panel className="admin-panel">
-          <Panel.Heading>
-            <h1>
-              <i className="fa fa-users" /> Patients
-            </h1>
-          </Panel.Heading>
-
-          <Panel.Body>
-            <div className="pull-right m-u-58">
-              <Button
-                bsStyle="primary"
-                onClick={noop}
-                className="btn-invite-members"
-              >
-                Add Patient
-              </Button>
-            </div>
-
-            <div className="admin-table m-b-20">
-              {patientsStore.patients.map(patient => (
-                <MemberItem
-                  onSuccess={noop}
-                  onError={noop}
-                  hideAlert={noop}
-                  user={Object.assign({ roles: [] }, patient)}
-                  online={false}
-                  key={patient.id}
-                />
-              ))}
-            </div>
-          </Panel.Body>
-        </Panel>
+      <div className="patients-repo">
+        <PatientsHeader />
+        <div className="patients-table">
+          {patientsStore.patients.map(patient => (
+            <MemberItem
+              onSuccess={noop}
+              onError={noop}
+              hideAlert={noop}
+              user={Object.assign({ roles: [] }, patient)}
+              online={false}
+              key={patient.id}
+            />
+          ))}
+        </div>
       </div>
     );
   }
