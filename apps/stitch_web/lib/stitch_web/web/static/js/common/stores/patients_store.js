@@ -4,16 +4,44 @@
  * Keeps track of patients for a team
  */
 
-import { observable, action, extendObservable } from "mobx";
+import { observable, action, computed, extendObservable } from "mobx";
+
+const stringSort = stringAttrName => (patientA, patientB) => {
+  if (
+    patientA[stringAttrName].toLowerCase() <
+    patientB[stringAttrName].toLowerCase()
+  )
+    return -1;
+  if (
+    patientA[stringAttrName].toLowerCase() >
+    patientB[stringAttrName].toLowerCase()
+  )
+    return 1;
+};
+
+const insertedAtSort = (patientA, patientB) => {
+  if (patientA.inserted_at < patientB.inserted_at) return -1;
+  if (patientA.inserted_at > patientB.inserted_at) return 1;
+  return 0;
+};
 
 class PatientsStore {
   @observable patients = [];
+  @observable listSort = "first_name";
+  @observable sortDirection = "asc";
+  @observable statusFilter = "any";
+  @observable searchFilter = "";
+
   constructor(rootStore) {
     this.rootStore = rootStore;
     if (this.rootStore.teamStore.engageEnabled) {
       this.loadPatients();
     }
   }
+
+  // ===========
+  //   ACTIONS
+  // ===========
 
   @action
   loadPatients = () => {
@@ -28,7 +56,6 @@ class PatientsStore {
       return p.id === updatedPatient.id;
     });
 
-    console.log("updatedPatient", updatedPatient);
     extendObservable(patient, updatedPatient);
   };
 
@@ -36,6 +63,63 @@ class PatientsStore {
   onPatientAdded = patient => {
     this.patients.push(patient);
   };
+
+  @action
+  setOption = optionName => ({ id: val }) => {
+    this[optionName] = val;
+  };
+
+  @action
+  getOption = optionName => {
+    return this[optionName];
+  };
+
+  // ======================
+  //   COMPUTED PROPERTIES
+  // ======================
+
+  @computed
+  get sortedAndFilteredPatients() {
+    return this.patients.filter(this.patientsFiler).sort(this.patientsSorter);
+  }
+
+  @computed
+  get patientsFiler() {
+    // function of statusFilter && searchFilter
+    const patientsFilter = p => p;
+    return patientsFilter;
+  }
+
+  @computed
+  get patientsSorter() {
+    return (patientA, patientB) => {
+      let sortVal;
+
+      switch (this.listSort) {
+        case "first_name":
+          sortVal =
+            stringSort("first_name")(patientA, patientB) ||
+            stringSort("last_name")(patientA, patientB) ||
+            insertedAtSort(patientA, patientB);
+          break;
+        case "last_name":
+          sortVal =
+            stringSort("last_name")(patientA, patientB) ||
+            stringSort("first_name")(patientA, patientB) ||
+            insertedAtSort(patientA, patientB);
+          break;
+        case "mrn":
+          sortVal =
+            stringSort("mrn")(patientA, patientB) ||
+            insertedAtSort(patientA, patientB);
+          break;
+        default:
+          sortVal = insertedAtSort(patientA, patientB);
+      }
+
+      return this.sortDirection === "asc" ? sortVal : sortVal * -1;
+    };
+  }
 }
 
 export default PatientsStore;

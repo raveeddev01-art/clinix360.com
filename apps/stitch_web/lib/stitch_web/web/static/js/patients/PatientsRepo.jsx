@@ -8,13 +8,15 @@ import PatientListItem from "./PatientListItem";
 @observer
 class PatientsRepo extends Component {
   render() {
-    const { patientsStore: { patients } } = this.props;
+    const { patientsStore } = this.props;
 
     return (
       <div className="patients-repo">
         <PatientsHeader />
         <div className="patients-list">
-          {patients.map(patient => <PatientListItem patient={patient} />)}
+          {patientsStore.sortedAndFilteredPatients.map((patient, i) => (
+            <PatientListItem key={i} patient={patient} />
+          ))}
         </div>
       </div>
     );

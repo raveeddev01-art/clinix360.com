@@ -1,24 +1,23 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 
-import Dropdown from "react-bootstrap/lib/Dropdown";
-import MenuItem from "react-bootstrap/lib/MenuItem";
 import Select from "react-select";
 
 function noop() {}
 
 const sortOptions = [
   {
-    name: "list_sort",
+    name: "listSort",
     title: "List Sort",
     values: [
       { id: "first_name", display: "First Name" },
       { id: "last_name", display: "Last Name" },
-      { id: "mrn", display: "MRN" }
+      { id: "mrn", display: "MRN" },
+      { id: "inserted_at", display: "Date Added" }
     ]
   },
   {
-    name: "direction",
+    name: "sortDirection",
     title: "Direction",
     values: [
       { id: "asc", display: "Ascending" },
@@ -26,7 +25,7 @@ const sortOptions = [
     ]
   },
   {
-    name: "status",
+    name: "statusFilter",
     title: "Status",
     values: [
       { id: "active", display: "Active" },
@@ -37,37 +36,11 @@ const sortOptions = [
   }
 ];
 
-@inject("teamStore", "userStore")
+@inject("userStore", "patientsStore")
 @observer
 class Sidebar extends Component {
-  renderOption({ name, title, values }) {
-    return (
-      <div className="menu-nav m-b-20">
-        <div className="heading">
-          <h5>{title}:</h5>
-          <div className="patients-dropdown-wrapper">
-            <Select
-              searchable={false}
-              clearable={false}
-              className="patients-select-option"
-              placeholder={title}
-              onChange={noop}
-              value={values[0].id}
-              valueKey="id"
-              labelKey="display"
-              options={values}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderOptions() {}
-
   render() {
-    const { userStore } = this.props;
-
+    const { patientsStore, userStore } = this.props;
     return (
       <div className="sidebar patients-sidebar">
         <div className="flex-header m-b-10">
@@ -82,7 +55,36 @@ class Sidebar extends Component {
           </div>
         </div>
         <div className="flex-container patients-sidebar-options">
-          {sortOptions.map(this.renderOption)}
+          {sortOptions.map(({ name, title, values }) => {
+            const setValue = values.find(
+              v => v.id === patientsStore.getOption(name)
+            );
+            return (
+              <div className="menu-nav m-b-20">
+                <div className="hidden">
+                  {/* forcing mobx to re-render */}
+                  {/* TODO: figure out a nicer way */}
+                  {patientsStore.listSort} {patientsStore.sortDirection}{" "}
+                  {patientsStore.searchFilter} {patientsStore.statusFilter}
+                </div>
+                <div className="heading">
+                  <h5>{title}:</h5>
+                  <div className="patients-dropdown-wrapper">
+                    <Select
+                      searchable={false}
+                      clearable={false}
+                      className="patients-select-option"
+                      onChange={patientsStore.setOption(name)}
+                      value={setValue}
+                      valueKey="id"
+                      labelKey="display"
+                      options={values}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     );

@@ -442,8 +442,8 @@ class GroupsStore {
 
     return userIds.length > 2
       ? post(`/api/v1/groups/multi_dm`, {
-        body
-      })
+          body
+        })
       : post(`/api/v1/groups/dm`, { body });
   };
 
