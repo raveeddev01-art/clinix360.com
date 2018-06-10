@@ -21,6 +21,7 @@ defmodule Stitch.Web.Api.V1.TeamPatientView do
     %{
       id: team_patient.id,
       active: team_patient.active,
+      inserted_at: team_patient.inserted_at,
       metadata: team_patient.metadata,
       mrn: team_patient.mrn,
       first_name: patient.first_name,
