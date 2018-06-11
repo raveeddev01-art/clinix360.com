@@ -22,6 +22,7 @@ defmodule Stitch.Web.ConnCase do
       use Phoenix.ConnTest
       import Stitch.Web.ChannelsTestHelper
       import Stitch.Web.Router.Helpers
+      import Stitch.Web.SessionService
       import Stitch.Factory
 
       import Stitch.Web.ConnCase,
@@ -71,7 +72,9 @@ defmodule Stitch.Web.ConnCase do
   """
   @spec with_user_session(Plug.Conn.t(), Stitch.Accounts.User.t()) :: Plug.Conn.t()
   def with_user_session(conn, %Stitch.Accounts.User{} = user) do
-    Plug.Test.init_test_session(conn, %{current_user_token: user.token})
+    Plug.Test.init_test_session(conn, %{
+      login_map: %{user.team_id => Stitch.Web.UserSession.new(user)}
+    })
   end
 
   @doc """

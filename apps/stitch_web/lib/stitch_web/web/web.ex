@@ -20,7 +20,7 @@ defmodule Stitch.Web do
     quote do
       use Phoenix.Controller, namespace: Stitch.Web
       import Plug.Conn
-      import Stitch.Web.{Router.Helpers, ControllerHelpers}
+      import Stitch.Web.{Router.Helpers, ControllerHelpers, SessionService}
       import Stitch.Web.Gettext
     end
   end
@@ -62,6 +62,13 @@ defmodule Stitch.Web do
       if Application.get_env(:stitch_web, :sql_sandbox) do
         use Stitch.Web.ChannelSandbox
       end
+    end
+  end
+
+  def plug do
+    quote do
+      import Plug.Conn
+      import Stitch.Web.SessionService
     end
   end
 

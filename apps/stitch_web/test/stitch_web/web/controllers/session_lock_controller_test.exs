@@ -1,5 +1,6 @@
 defmodule Stitch.Web.SessionLockControllerTest do
   use Stitch.Web.ConnCase, async: true
+  import Stitch.Web.SubdomainRouter.Helpers
 
   test "POST /api/v1/session-lock", %{conn: conn} do
     team = insert(:team)
@@ -7,9 +8,11 @@ defmodule Stitch.Web.SessionLockControllerTest do
 
     locked =
       conn
-      |> subdomain(team.slug)
-      |> post_as_user(user, "/api/v1/session-lock")
-      |> get_session(:locked)
+      |> with_team_subdomain(team)
+      |> with_user_session(user)
+      |> with_api_user(user)
+      |> post(api_v1_session_lock_path(conn, :lock))
+      |> get_user_session_lock_status()
 
     assert locked
   end
@@ -21,48 +24,39 @@ defmodule Stitch.Web.SessionLockControllerTest do
 
       locked =
         conn
-        |> subdomain(team.slug)
-        |> post_as_user(user, "/api/v1/session-lock")
+        |> with_team_subdomain(team)
+        |> with_user_session(user)
+        |> with_api_user(user)
+        |> post(api_v1_session_lock_path(conn, :lock))
         |> recycle
-        |> subdomain(team.slug)
-        |> post_as_user(user, "/api/v1/session-unlock", %{pin: "1234"})
-        |> get_session(:locked)
+        |> with_team_subdomain(team)
+        |> with_user_session(user)
+        |> with_api_user(user)
+        |> post(api_v1_session_lock_path(conn, :unlock), %{pin: "1234"})
+        |> get_user_session_lock_status()
 
       refute locked
     end
 
-    test "with incorrect PIN not matching password", %{conn: conn} do
+    test "with incorrect PIN", %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team, pin: "1234")
 
       conn =
         conn
-        |> subdomain(team.slug)
-        |> post_as_user(user, "/api/v1/session-lock")
+        |> with_team_subdomain(team)
+        |> with_user_session(user)
+        |> with_api_user(user)
+        |> post(api_v1_session_lock_path(conn, :lock))
         |> recycle
-        |> subdomain(team.slug)
-        |> post_as_user(user, "/api/v1/session-unlock", %{pin: "4321"})
-
-      assert get_session(conn, :locked)
+        |> with_team_subdomain(team)
+        |> with_user_session(user)
+        |> with_api_user(user)
+        |> post(api_v1_session_lock_path(conn, :unlock), %{pin: "4321"})
 
       assert %{
                "message" => "PIN is incorrect"
              } = json_response(conn, 403)
-    end
-
-    test "with incorrect PIN matching password", %{conn: conn} do
-      team = insert(:team)
-      user = insert(:user, team: team, pin: "1234")
-
-      conn =
-        conn
-        |> subdomain(team.slug)
-        |> post_as_user(user, "/api/v1/session-lock")
-        |> recycle
-        |> subdomain(team.slug)
-        |> post_as_user(user, "/api/v1/session-unlock", %{pin: "password"})
-
-      refute get_session(conn, :locked)
     end
   end
 end

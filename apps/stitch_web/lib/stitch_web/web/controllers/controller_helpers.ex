@@ -8,17 +8,23 @@ defmodule Stitch.Web.ControllerHelpers do
   def login_user(conn, user) do
     conn
     |> create_access_log_record(user)
-    |> put_session(:current_user_token, user.token)
+    |> put_current_user(user)
     |> put_session(:session_id, Stitch.Rand.token(12))
     |> put_session(:locked, false)
     |> put_session(:intercom_user_hash, Stitch.Intercom.identity_verification_user_hash(user.id))
     |> configure_session(renew: true)
   end
 
-  def update_session(conn, user) do
-    conn
-    |> put_session(:current_user_token, user.token)
-    |> configure_session(renew: true)
+  def put_current_user(conn, user) do
+    Stitch.Web.SessionService.add_user_session(conn, user)
+  end
+
+  def delete_team_session(conn, team_id) do
+    Stitch.Web.SessionService.delete_user_session(conn, team_id)
+  end
+
+  def get_session_token(conn) do
+    Stitch.Web.SessionService.get_user_session_token(conn)
   end
 
   def create_access_log_record(conn, user) do

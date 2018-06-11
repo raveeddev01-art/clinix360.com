@@ -1,1 +1,5 @@
-<div data-component="AuthenticationRouter"></div>
+<%= if assigns[:login_params] do %>
+  <div data-component="AuthenticationRouter" data-react-props='<%= raw @login_params %>'></div>
+<% else %>
+  <div data-component="AuthenticationRouter"></div>
+<% end %>
