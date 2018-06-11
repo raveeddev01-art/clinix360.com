@@ -14,6 +14,15 @@ import browserDetails from "../../lib/browser_details";
 
 function noop() { }
 
+const YourCarespaces = ({ teams }) =>
+  <NavDropdown title="Your Carespaces" id="yourcarespaces-dropdown">
+    {teams.map(team =>
+      <MenuItem href={`https://${team.slug}.${applicationHost}/`} key={team.slug} >
+        <i className="fa fa-comments" />{team.name}
+      </MenuItem>
+    )}
+  </NavDropdown>
+
 @inject("loginStore")
 @observer
 class Header extends Component {
@@ -163,9 +172,9 @@ class Header extends Component {
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
-            <NavItem onClick={this.goToGetStarted} className="btn-trial">
-              {hasLogins ? "Your Carespaces" : "Get Started"}
-            </NavItem>
+            {hasLogins ?
+              (<YourCarespaces teams={this.props.loginStore.teams} />) :
+              (<NavItem onClick={this.goToGetStarted} className="btn-trial">Get Started</NavItem>)}
           </Nav>
         </Navbar>
 
@@ -247,9 +256,9 @@ class Header extends Component {
 
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
               {!mobile && (
-                <NavItem onClick={this.goToGetStarted} className="btn-trial">
-                  {hasLogins ? "Your Carespaces" : "Get Started"}
-                </NavItem>
+                hasLogins ?
+                  (<YourCarespaces teams={this.props.loginStore.teams} />) :
+                  (<NavItem onClick={this.goToGetStarted} className="btn-trial">Get Started</NavItem>)
               )}
 
               {mobile &&
