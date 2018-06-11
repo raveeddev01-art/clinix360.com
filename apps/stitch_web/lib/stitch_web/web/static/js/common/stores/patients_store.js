@@ -25,6 +25,24 @@ const insertedAtSort = (patientA, patientB) => {
   return 0;
 };
 
+const matchesFilter = (string, searchFilter) => {
+  return string.includes(searchFilter);
+};
+
+const patientMatch = (patient, searchFilter) => {
+  const filterString = searchFilter.toLowerCase();
+  if (!filterString) {
+    return true;
+  }
+
+  return (
+    matchesFilter(patient.first_name.toLowerCase(), filterString) ||
+    matchesFilter(patient.last_name.toLowerCase(), filterString) ||
+    matchesFilter(patient.email.toLowerCase(), filterString) ||
+    matchesFilter(patient.mrn.toLowerCase(), filterString)
+  );
+};
+
 class PatientsStore {
   @observable patients = [];
   @observable listSort = "first_name";
@@ -74,6 +92,11 @@ class PatientsStore {
     return this[optionName];
   };
 
+  @action
+  setSearchFilter = filterString => {
+    this.searchFilter = filterString.trim();
+  };
+
   // ======================
   //   COMPUTED PROPERTIES
   // ======================
@@ -86,8 +109,7 @@ class PatientsStore {
   @computed
   get patientsFiler() {
     // function of statusFilter && searchFilter
-    const patientsFilter = p => p;
-    return patientsFilter;
+    return p => patientMatch(p, this.searchFilter);
   }
 
   @computed

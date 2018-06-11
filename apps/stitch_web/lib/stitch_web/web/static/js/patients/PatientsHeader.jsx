@@ -4,6 +4,11 @@ import { inject, observer } from "mobx-react";
 @inject("patientsStore")
 @observer
 class PatientsHeader extends Component {
+  onFilterChange = e => {
+    const { setSearchFilter } = this.props.patientsStore;
+    setSearchFilter(e.target.value);
+  };
+
   render() {
     const { patients } = this.props.patientsStore;
 
@@ -18,6 +23,7 @@ class PatientsHeader extends Component {
             type="text"
             className="form-control input-sm"
             placeholder="Filter patients"
+            onChange={this.onFilterChange}
           />
         </div>
       </div>
