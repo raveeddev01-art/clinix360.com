@@ -20,7 +20,7 @@ export default class CaseLuminance extends Component {
               <Row>
                 <Col xs={6} sm={3}>
                   <h5 className="text-uppercase">Specialty</h5>
-                  <p>Addiction Treatment</p>
+                  <p>Drug Rehab</p>
                 </Col>
 
                 <Col xs={6} sm={3}>

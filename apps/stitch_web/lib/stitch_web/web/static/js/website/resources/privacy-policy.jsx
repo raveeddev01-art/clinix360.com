@@ -15,6 +15,8 @@ export default class PrivacyPolicy extends Component {
 
         <div className="container">
           <div className="copy-section">
+            <h2>Introduction</h2>
+
             <p>
               Welcome to Stitch! Your privacy is important to us. Stitch
               Technologies, Inc. (“Stitch”) provides this Privacy Policy to

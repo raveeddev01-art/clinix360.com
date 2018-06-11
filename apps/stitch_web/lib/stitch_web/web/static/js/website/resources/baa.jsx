@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 
 import Header from "../components/header";
 import Subheader from "../components/subheader";
@@ -19,6 +17,8 @@ export default class Baa extends Component {
 
         <div className="container">
           <div className="copy-section">
+            <h2>Introduction</h2>
+
             <p>
               This Business Associate Agreement Addendum (this “Agreement”) by
               and between you (the “Covered Entity”) and Stitch Technologies,
