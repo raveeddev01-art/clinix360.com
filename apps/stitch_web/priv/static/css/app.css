@@ -16837,10 +16837,7 @@ i.file-data-separator {
       .website-wrapper .pricing-page .stitch-products {
         padding-bottom: 60px; } }
   .website-wrapper .pricing-page .product-section {
-    padding-top: 40px; }
-    @media (min-width: 768px) {
-      .website-wrapper .pricing-page .product-section {
-        padding-top: 71px; } }
+    padding-top: 71px; }
     .website-wrapper .pricing-page .product-section#manage {
       padding-bottom: 50px; }
     .website-wrapper .pricing-page .product-section h4 {
@@ -17014,7 +17011,10 @@ i.file-data-separator {
   .website-wrapper #grnhse_app {
     flex-grow: 1; }
   .website-wrapper .customers-page section {
-    padding: 95px 0; }
+    padding: 60px 0; }
+    @media (min-width: 768px) {
+      .website-wrapper .customers-page section {
+        padding: 95px 0; } }
     .website-wrapper .customers-page section:first-of-type .panel-body {
       padding: 40px; }
       .website-wrapper .customers-page section:first-of-type .panel-body .flex-box {
@@ -17028,7 +17028,10 @@ i.file-data-separator {
     .website-wrapper .customers-page .luminance-section .luminance-card h2 {
       font-weight: 900; }
   .website-wrapper .customers-page .our-customers {
-    padding: 95px 0; }
+    padding: 60px 0; }
+    @media (min-width: 768px) {
+      .website-wrapper .customers-page .our-customers {
+        padding: 95px 0; } }
     .website-wrapper .customers-page .our-customers .logo-row {
       margin-bottom: 0; }
   .website-wrapper .customers-page .customer-studies {
@@ -17100,27 +17103,48 @@ i.file-data-separator {
   padding-top: 70px;
   padding-bottom: 70px; }
 
-.security-page .copy-section {
+.security-page .copy-section,
+.legal-page .copy-section {
   border-bottom: 1px solid #f5f5f5;
   padding: 40px 0; }
-  .security-page .copy-section:last-of-type {
+  .security-page .copy-section:last-of-type,
+  .legal-page .copy-section:last-of-type {
     border: 0;
     margin-bottom: 60px; }
-  .security-page .copy-section h2 {
+  .security-page .copy-section h2,
+  .legal-page .copy-section h2 {
     margin: 0 0 30px; }
-  .security-page .copy-section p {
+  .security-page .copy-section p,
+  .legal-page .copy-section p {
     font-size: 18px;
     margin-bottom: 0; }
-  .security-page .copy-section ul {
+  .security-page .copy-section ul,
+  .legal-page .copy-section ul {
     color: #036;
     font-size: 18px;
     font-weight: 700;
     padding-left: 25px; }
-    .security-page .copy-section ul li {
+    .security-page .copy-section ul li,
+    .legal-page .copy-section ul li {
       margin-bottom: 10px; }
-    .security-page .copy-section ul span {
+    .security-page .copy-section ul span,
+    .legal-page .copy-section ul span {
       color: #4c4c4c;
       font-weight: normal; }
+
+.legal-page .copy-section p {
+  margin-bottom: 30px; }
+  .legal-page .copy-section p:last-of-type {
+    margin-bottom: 0; }
+
+.legal-page .copy-section ul li {
+  margin-bottom: 20px; }
+  .legal-page .copy-section ul li:last-of-type {
+    margin-bottom: 0; }
+
+.legal-page .copy-section address {
+  font-size: 18px;
+  line-height: 1.5; }
 
 .case-study {
   color: #036;
@@ -17130,6 +17154,8 @@ i.file-data-separator {
     background: #036; }
     .case-study .subheader h1 {
       color: #fff; }
+    .case-study .subheader h3 {
+      font-weight: 600; }
   .case-study .overview {
     background: #fff;
     padding: 35px 0 0; }
@@ -17161,7 +17187,7 @@ i.file-data-separator {
         .case-study .case-study-content h3 {
           font-size: 30px; } }
     .case-study .case-study-content hr {
-      width: 30%;
+      width: 50%;
       margin: 50px auto; }
     .case-study .case-study-content h4 {
       font-size: 20px;
