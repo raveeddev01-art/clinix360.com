@@ -1,5 +1,5 @@
 import Joyride from "react-joyride";
-import JoyRideToolTip from './tooltip';
+import JoyRideToolTip from "./tooltip";
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { ACTIONS, EVENTS } from "react-joyride/es/constants";
@@ -28,37 +28,73 @@ class ConnectTour extends Component {
       callback: this.callback,
       disableOverlayClose: true,
       tooltipComponent: JoyRideToolTip,
-      run: props.userStore.connectTourStatus === 'pending',
+      run: props.userStore.connectTourStatus === "pending"
     };
   }
 
   steps = () => {
-    const steps = [{
-      placement: "center",
-      disableBeacon: true,
-      title: "Welcome to Stitch Connect",
-      target: ".message-form-action-item",
-      content: <p>Message your team, from any device.
-        Stitch Connect is HIPAA compliant and free to use with an unlimited number of people.</p>
-    }, {
-      placement: "right",
-      disableBeacon: true,
-      title: "Create Room",
-      target: ".create-room-button",
-      content: <p>Conversations take place in <b>rooms</b> so your team communications happens in the right place.</p>
-    }, {
-      placement: "top",
-      disableBeacon: true,
-      title: "Send Messages",
-      target: ".message-input-wrapper",
-      content: <p>Send messages by typing into the message input box and pressing <b>Enter</b>.</p>
-    }, {
-      placement: "top",
-      disableBeacon: true,
-      title: "Upload Files",
-      target: ".message-form-action-item",
-      content: <p>You can upload all types of files, including documents, presentations, videos, images, and more.</p>
-    }];
+    const steps = [
+      {
+        placement: "center",
+        disableBeacon: true,
+        title: "Welcome to Stitch Connect",
+        target: ".message-form-action-item",
+        content: (
+          <p>
+            Message your team, from any device. Stitch Connect is HIPAA
+            compliant and free to use with an unlimited number of people.
+          </p>
+        )
+      },
+      {
+        placement: "right",
+        disableBeacon: true,
+        title: "Create Room",
+        target: ".create-room-button",
+        content: (
+          <p>
+            Conversations take place in <b>rooms</b> so your team communications
+            happens in the right place.
+          </p>
+        )
+      },
+      {
+        placement: "top",
+        disableBeacon: true,
+        title: "Send Messages",
+        target: ".message-input-wrapper",
+        content: (
+          <p>
+            Send messages by typing into the message input box and pressing{" "}
+            <b>Enter</b>.
+          </p>
+        )
+      },
+      {
+        placement: "top",
+        disableBeacon: true,
+        title: "Upload Files",
+        target: ".message-form-action-item",
+        content: (
+          <p>
+            You can upload all types of files, including documents,
+            presentations, videos, images, and more.
+          </p>
+        )
+      },
+      {
+        placement: "right",
+        disableBeacon: true,
+        title: "Invite Members",
+        target: ".invite-link",
+        content: (
+          <p>
+            Invite your team members into Stitch so you can bring all your
+            communication into one place.
+          </p>
+        )
+      }
+    ];
 
     if (this.props.userStore.canInvite) {
       steps.push({
@@ -66,12 +102,17 @@ class ConnectTour extends Component {
         disableBeacon: true,
         title: "Invite Members",
         target: ".invite-link",
-        content: <p>Invite your team members into Stitch so you can bring all your communication into one place.</p>
+        content: (
+          <p>
+            Invite your team members into Stitch so you can bring all your
+            communication into one place.
+          </p>
+        )
       });
     }
 
     return steps;
-  }
+  };
 
   callback = data => {
     const { callback } = this.props;
@@ -109,7 +150,7 @@ class ConnectTour extends Component {
   }
 
   render() {
-    return (<Joyride {...this.state} {...this.props} />);
+    return <Joyride {...this.state} {...this.props} />;
   }
 }
 

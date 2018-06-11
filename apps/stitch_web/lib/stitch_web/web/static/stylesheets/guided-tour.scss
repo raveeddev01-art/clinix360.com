@@ -1,0 +1,48 @@
+.tour-tooltip {
+  min-width: 200px;
+  max-width: 340px;
+  padding: 5px;
+  padding-bottom: 20px;
+  background-color: #ffffff;
+  border-radius: 5px;
+
+  &__close-wrapper {
+    width: 100%;
+
+    button {
+      float: right;
+      background: none;
+      font-weight: 700;
+      border: none;
+      margin-left: 5px;
+    }
+  }
+
+  &__content {
+    color: #333;
+    padding: 0 20px;
+    clear: both;
+  }
+
+  &__title {
+    margin: 0;
+    color: #036;
+    padding: 20px;
+    font-weight: 700;
+  }
+
+  &__close-options {
+    width: 190px;
+    border-radius: 5px;
+    font-family: inherit;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+    button {
+      margin-left: 5px;
+    }
+  }
+}
