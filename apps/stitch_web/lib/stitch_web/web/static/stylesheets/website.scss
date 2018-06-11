@@ -874,7 +874,8 @@
 
     .tab-content {
       background: #fff;
-      border: 1px solid #cacaca;
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
 
       h3 {
         font-size: 24px;
@@ -1128,9 +1129,9 @@
   //----------------- DOWNLOADS -----------------
   .downloads-page {
     .subheader {
-      padding-bottom: 40px;
+      padding: 130px 0 50px;
       @media (min-width: $screen-sm) {
-        padding-bottom: 60px;
+        padding: 160px 0 110px;
       }
 
       h3 {
@@ -1138,10 +1139,11 @@
       }
     }
 
-    .download-content {
-      padding: 20px 0 50px;
+    .downloads-content {
+      background: $medium-gray;
+      padding: 60px 0;
       @media (min-width: $screen-sm) {
-        padding: 50px 0 80px;
+        padding: 95px 0;
       }
     }
 
