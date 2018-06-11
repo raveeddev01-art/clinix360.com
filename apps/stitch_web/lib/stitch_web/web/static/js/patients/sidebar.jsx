@@ -28,10 +28,10 @@ const sortOptions = [
     name: "statusFilter",
     title: "Status",
     values: [
+      { id: "all", display: "All" },
       { id: "active", display: "Active" },
-      { id: "inactive", display: "Inactive" },
       { id: "pending", display: "Pending" },
-      { id: "any", display: "Any" }
+      { id: "disabled", display: "Disabled" }
     ]
   }
 ];

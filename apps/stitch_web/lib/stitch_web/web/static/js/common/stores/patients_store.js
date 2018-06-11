@@ -29,7 +29,7 @@ const matchesFilter = (string, searchFilter) => {
   return string.includes(searchFilter);
 };
 
-const patientMatch = (patient, searchFilter) => {
+const searchFilterMatch = (patient, searchFilter) => {
   const filterString = searchFilter.toLowerCase();
   if (!filterString) {
     return true;
@@ -43,11 +43,26 @@ const patientMatch = (patient, searchFilter) => {
   );
 };
 
+const statusMatch = (patient, statusFilter) => {
+  switch (statusFilter) {
+    case "all":
+      return true;
+    case "active":
+      return patient.onboared && patient.active;
+    case "pending":
+      return patient.active && !patient.onboarded;
+    case "disabled":
+      return !patient.active;
+    default:
+      return true;
+  }
+};
+
 class PatientsStore {
   @observable patients = [];
   @observable listSort = "first_name";
   @observable sortDirection = "asc";
-  @observable statusFilter = "any";
+  @observable statusFilter = "all";
   @observable searchFilter = "";
 
   constructor(rootStore) {
@@ -109,7 +124,9 @@ class PatientsStore {
   @computed
   get patientsFiler() {
     // function of statusFilter && searchFilter
-    return p => patientMatch(p, this.searchFilter);
+    return p =>
+      statusMatch(p, this.statusFilter) &&
+      searchFilterMatch(p, this.searchFilter);
   }
 
   @computed

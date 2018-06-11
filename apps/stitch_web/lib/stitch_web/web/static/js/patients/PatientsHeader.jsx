@@ -10,12 +10,12 @@ class PatientsHeader extends Component {
   };
 
   render() {
-    const { patients } = this.props.patientsStore;
-
     return (
       <div className="patients-header">
         <div className="patients-header-count">
-          <h4>{patients.length} Patients</h4>
+          <h4>
+            {this.props.patientsStore.sortedAndFilteredPatients.length} Patients
+          </h4>
         </div>
         <div className="patients-header-center" />
         <div className="patients-header-search">
