@@ -11,7 +11,7 @@ defmodule Stitch.Web.SessionService do
   def add_user_session(conn, user) do
     login_map = get_session(conn, :login_map) || %{}
     user_session = UserSession.new(user)
-    login_map = Map.put(login_map, user.team_id, user_session) |> IO.inspect()
+    login_map = Map.put(login_map, user.team_id, user_session)
     put_session(conn, :login_map, login_map)
   end
 
