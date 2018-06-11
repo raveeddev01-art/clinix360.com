@@ -5,7 +5,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 function TooltipBody(props) {
   const style = {
     minWidth: '200px',
-    maxWidth: '300px',
+    maxWidth: '325px',
     paddingBottom: '20px',
     backgroundColor: '#FFFFFF',
   };

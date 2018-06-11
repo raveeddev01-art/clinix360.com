@@ -55,6 +55,7 @@ defmodule Stitch.Accounts.User do
     field(:desktop_sound, :string, default: "pop")
     # Pending, Later, Skipped, Completed
     field(:connect_tour_status, :string, default: "Pending")
+    field(:platform_tour_status, :string, default: "Pending")
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
     has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)
@@ -75,7 +76,8 @@ defmodule Stitch.Accounts.User do
       :title,
       :username,
       :timezone,
-      :connect_tour_status
+      :connect_tour_status,
+      :platform_tour_status
     ])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)

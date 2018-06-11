@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet";
 import { Switcher, AppAlert } from "common/components";
 import { isAdmin, isMemberOrAdmin } from "lib/utils";
 import RoleChangedModal from "common/modals/role-changed-modal";
+import PlatformTour from "../common/components/joy-ride/platform-tour";
 
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
@@ -100,6 +101,7 @@ class AdminApp extends Component {
     return (
       <div id="app">
         <AppAlert />
+        <PlatformTour isAdmin={isAdmin} />
         <div className={adminWrapperClass}>
           <Helmet>
             <title>{titleStore.title}</title>

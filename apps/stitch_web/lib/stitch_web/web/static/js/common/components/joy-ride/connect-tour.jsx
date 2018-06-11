@@ -36,7 +36,7 @@ class ConnectTour extends Component {
     const steps = [{
       placement: "center",
       disableBeacon: true,
-      title: "Welcome to Stitch",
+      title: "Welcome to Stitch Connect",
       target: ".message-form-action-item",
       content: <p>Message your team, from any device.
         Stitch Connect is HIPAA compliant and free to use with an unlimited number of people.</p>
@@ -55,20 +55,16 @@ class ConnectTour extends Component {
     }, {
       placement: "top",
       disableBeacon: true,
-      title: "Upload File",
+      title: "Upload Files",
       target: ".message-form-action-item",
       content: <p>You can upload all types of files, including documents, presentations, videos, images, and more.</p>
+    }, {
+      placement: "right",
+      disableBeacon: true,
+      title: "Invite Members",
+      target: ".invite-link",
+      content: <p>Invite your team members into Stitch so you can bring all your communication into one place.</p>
     }];
-
-    if (this.props.userStore.canInvite) {
-      steps.push({
-        placement: "right",
-        disableBeacon: true,
-        title: "Invite Members",
-        target: ".invite-link",
-        content: <p>Invite your team members into Stitch so you can bring all your communication into one place.</p>
-      });
-    }
 
     return steps;
   }
