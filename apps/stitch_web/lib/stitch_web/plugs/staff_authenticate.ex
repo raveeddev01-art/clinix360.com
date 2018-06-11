@@ -10,7 +10,7 @@ defmodule Stitch.Web.Plug.StaffAuthenticate do
   end
 
   def do_auth(conn) do
-    case get_staff_member(conn) do
+    case get_impersonator(conn) || get_staff_member(conn) do
       nil ->
         unauthorized(conn)
 
@@ -26,10 +26,15 @@ defmodule Stitch.Web.Plug.StaffAuthenticate do
   end
 
   def get_staff_member(conn) do
-    (get_session(conn, :login_map) || %{})
-    |> Map.values()
-    |> Enum.map(& &1.token)
-    |> Kernel.++([get_session(conn, :impersonator_user_token)])
-    |> UserQueries.find_staff()
+    tokens =
+      (get_session(conn, :login_map) || %{})
+      |> Map.values()
+      |> Enum.map(& &1.token)
+      |> UserQueries.find_staff()
+  end
+
+  def get_impersonator(conn) do
+    token = get_session(conn, :impersonator_user_token)
+    token && UserQueries.get_active_by_token(token)
   end
 end
