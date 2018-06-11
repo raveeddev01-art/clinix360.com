@@ -1437,6 +1437,18 @@
         font-weight: normal;
       }
     }
+
+    ol {
+      font-size: 18px;
+
+      li {
+        margin-bottom: 20px;
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+      }
+    }
   }
 }
 

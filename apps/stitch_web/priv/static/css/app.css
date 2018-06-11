@@ -17131,6 +17131,15 @@ i.file-data-separator {
     .legal-page .copy-section ul span {
       color: #4c4c4c;
       font-weight: normal; }
+  .security-page .copy-section ol,
+  .legal-page .copy-section ol {
+    font-size: 18px; }
+    .security-page .copy-section ol li,
+    .legal-page .copy-section ol li {
+      margin-bottom: 20px; }
+      .security-page .copy-section ol li:last-of-type,
+      .legal-page .copy-section ol li:last-of-type {
+        margin-bottom: 0; }
 
 .legal-page .copy-section p {
   margin-bottom: 30px; }
