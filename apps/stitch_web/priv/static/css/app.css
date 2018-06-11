@@ -17140,6 +17140,28 @@ i.file-data-separator {
       .security-page .copy-section ol li:last-of-type,
       .legal-page .copy-section ol li:last-of-type {
         margin-bottom: 0; }
+  .security-page .copy-section dl,
+  .legal-page .copy-section dl {
+    font-size: 18px; }
+    .security-page .copy-section dl dt,
+    .legal-page .copy-section dl dt {
+      color: #036;
+      font-weight: 700;
+      margin-bottom: 10px; }
+    .security-page .copy-section dl dd,
+    .legal-page .copy-section dl dd {
+      margin-bottom: 30px; }
+      .security-page .copy-section dl dd:last-of-type,
+      .legal-page .copy-section dl dd:last-of-type {
+        margin-bottom: 0; }
+
+.security-page.tos-page .copy-section ul,
+.legal-page.tos-page .copy-section ul {
+  color: #4c4c4c;
+  font-weight: normal; }
+  .security-page.tos-page .copy-section ul li:last-of-type,
+  .legal-page.tos-page .copy-section ul li:last-of-type {
+    margin-bottom: 20px; }
 
 .legal-page .copy-section p {
   margin-bottom: 30px; }

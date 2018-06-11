@@ -1449,6 +1449,33 @@
         }
       }
     }
+
+    dl {
+      font-size: 18px;
+
+      dt {
+        color: $brand-primary;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      dd {
+        margin-bottom: 30px;
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  &.tos-page .copy-section ul {
+    color: #4c4c4c;
+    font-weight: normal;
+
+    li:last-of-type {
+      margin-bottom: 20px;
+    }
   }
 }
 

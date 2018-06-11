@@ -8,7 +8,7 @@ import Footer from "../components/footer";
 export default class TermsOfService extends Component {
   render() {
     return (
-      <div className="legal-page">
+      <div className="legal-page tos-page">
         <Header />
 
         <Subheader title="Terms of Service" subtitle="Subtext to be changed" />
@@ -754,7 +754,7 @@ export default class TermsOfService extends Component {
           <div className="copy-section">
             <h2>Dispute Resolution</h2>
 
-            <p>
+            <p className="m-b-30">
               You and Stitch agree that any dispute, claim or controversy
               arising out of or relating to these Terms or the breach,
               termination, enforcement, interpretation or validity thereof or
@@ -915,11 +915,11 @@ export default class TermsOfService extends Component {
             <p />
 
             <address className="m-b-30">
-              <strong>Stitch Technologies, Inc.</strong>
+              <strong>Stitch Health</strong>
               <br />
-              156 2nd Street #201<br />
-              San Francisco, CA 94105<br />
-              <a href="tel:+16502823388">+1 (650) 282-3388</a>
+              156 2nd St #201<br />
+              San Francisco, CA<br />
+              <a href="tel:+16502823388">(650) 282-3388</a>
               <br />
               <a href="mailto:support@teamstitch.com">support@teamstitch.com</a>
             </address>
