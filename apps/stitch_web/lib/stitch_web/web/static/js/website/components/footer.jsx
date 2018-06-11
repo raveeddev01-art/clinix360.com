@@ -35,15 +35,15 @@ export default class Footer extends Component {
                     <li>
                       <Link to="/downloads">Downloads</Link>
                     </li>
+                    <li>
+                      <Link to="/pricing">Pricing</Link>
+                    </li>
                   </ul>
                 </Col>
 
                 <Col xs={6} sm={3} md={3}>
                   <h5>Resources</h5>
                   <ul className="list-unstyled">
-                    <li>
-                      <Link to="/pricing">Pricing</Link>
-                    </li>
                     <li>
                       <Link to="/customers">Customers</Link>
                     </li>

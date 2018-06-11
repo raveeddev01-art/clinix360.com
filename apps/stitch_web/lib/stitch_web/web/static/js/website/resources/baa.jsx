@@ -14,7 +14,7 @@ export default class Baa extends Component {
 
         <Subheader
           title="HIPAA Business Associate Agreement (BAA)"
-          subtitle="Subtext to be changed"
+          subtitle=""
         />
 
         <div className="container">

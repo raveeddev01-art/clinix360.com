@@ -11,7 +11,7 @@ export default class PrivacyPolicy extends Component {
       <div className="legal-page">
         <Header />
 
-        <Subheader title="Privacy Policy" subtitle="Subtext to be changed" />
+        <Subheader title="Privacy Policy" subtitle="" />
 
         <div className="container">
           <div className="copy-section">
