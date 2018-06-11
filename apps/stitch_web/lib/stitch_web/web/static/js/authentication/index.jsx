@@ -17,8 +17,6 @@ const stores = { resetPasswordStore, registrationStore, invitationStore };
 class Auth extends Component {
   constructor(props) {
     super(props);
-    console.log('Auth')
-    console.log(props);
   }
 
   componentWillMount() {
