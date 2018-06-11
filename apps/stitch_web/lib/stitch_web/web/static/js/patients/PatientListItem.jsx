@@ -1,9 +1,14 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import Button from "react-bootstrap/lib/Button";
 
-function noop() {}
-
+@inject("patientsStore")
+@observer
 class PatientListItem extends Component {
+  openPatientManageModal = () => {
+    this.props.patientsStore.openModal(this.props.patient.id);
+  };
+
   render() {
     const { patient: { avatar, full_name, mrn } } = this.props;
 
@@ -24,7 +29,7 @@ class PatientListItem extends Component {
         </div>
         <div className="patient-list-spacer" />
         <div className="patient-list-actions">
-          <Button bsStyle="primary" onClick={noop}>
+          <Button bsStyle="primary" onClick={this.openPatientManageModal}>
             Manage
           </Button>
         </div>

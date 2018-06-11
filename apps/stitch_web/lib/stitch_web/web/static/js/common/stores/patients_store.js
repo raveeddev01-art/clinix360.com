@@ -4,7 +4,11 @@
  * Keeps track of patients for a team
  */
 
-import { observable, action, computed, extendObservable } from "mobx";
+import { action, computed, extendObservable, observable } from "mobx";
+
+// ====================
+//   HELPER FUNCTIONS
+// ====================
 
 const stringSort = stringAttrName => (patientA, patientB) => {
   if (
@@ -58,12 +62,18 @@ const statusMatch = (patient, statusFilter) => {
   }
 };
 
+// ===============
+//   BEGIN STORE
+// ===============
+
 class PatientsStore {
   @observable patients = [];
   @observable listSort = "first_name";
   @observable sortDirection = "asc";
   @observable statusFilter = "all";
   @observable searchFilter = "";
+  @observable modalOpen = false;
+  @observable modalPatient = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -72,9 +82,23 @@ class PatientsStore {
     }
   }
 
+  // ====================
+  //   STATEFUL HELPERS
+  // ====================
+
+  getPatient = id => {
+    return this.patients.find(p => p.id === id);
+  };
+
+  getModalPatient = () => {
+    return this.getPatient(this.modalPatientId);
+  };
+
   // ===========
   //   ACTIONS
   // ===========
+
+  // api calls
 
   @action
   loadPatients = () => {
@@ -82,6 +106,18 @@ class PatientsStore {
       this.patients = response.data;
     });
   };
+
+  @action
+  createPatient = params => {
+    return post(`/api/v1/patients/`, { body: params });
+  };
+
+  @action
+  updatePatient = (id, params) => {
+    return put(`/api/v1/patients/${id}`, { body: params });
+  };
+
+  // channel and api res handlers
 
   @action
   onPatientUpdated = updatedPatient => {
@@ -97,6 +133,8 @@ class PatientsStore {
     this.patients.push(patient);
   };
 
+  // filtering and sorting
+
   @action
   setOption = optionName => ({ id: val }) => {
     this[optionName] = val;
@@ -110,6 +148,20 @@ class PatientsStore {
   @action
   setSearchFilter = filterString => {
     this.searchFilter = filterString.trim();
+  };
+
+  // Modal-related
+
+  @action
+  closeModal = () => {
+    this.modalOpen = false;
+    this.modalPatient = null;
+  };
+
+  @action
+  openModal = patientId => {
+    this.modalOpen = true;
+    this.modalPatientId = patientId;
   };
 
   // ======================

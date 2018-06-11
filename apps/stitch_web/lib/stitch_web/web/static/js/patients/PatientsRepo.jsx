@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import PatientsHeader from "./PatientsHeader";
 import PatientListItem from "./PatientListItem";
+import PatientModal from "./PatientModal";
+import PatientsHeader from "./PatientsHeader";
 
 @inject("patientsStore")
 @observer
@@ -18,6 +19,7 @@ class PatientsRepo extends Component {
             <PatientListItem key={i} patient={patient} />
           ))}
         </div>
+        <PatientModal />
       </div>
     );
   }
