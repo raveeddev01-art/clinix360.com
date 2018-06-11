@@ -61,7 +61,7 @@ class CreateTeam extends Component {
         {!mobile && (
           <Form inline className="create-team-form" onSubmit={this.onSubmit}>
             <FormGroup>
-              {!this.props.loginStore.hasLogin &&
+              {!this.props.loginStore.hasLogin && (
                 <FormControl
                   required
                   id="createTeam"
@@ -69,7 +69,8 @@ class CreateTeam extends Component {
                   type="email"
                   value={email}
                   onChange={this.onChange}
-                />}
+                />
+              )}
               <Button type="submit" bsStyle="primary" className="btn-form">
                 Get Started
               </Button>

@@ -6,7 +6,7 @@ import Button from "react-bootstrap/lib/Button";
 import { AuthenticationPage } from "common/components";
 import OrLine from "../or-line/or-line";
 
-const TeamLink = ({ name, slug }) =>
+const TeamLink = ({ name, slug }) => (
   <div className="select-team-item">
     <div className="select-team-item-name">{name}</div>
     <div className="select-team-item-link-holder">
@@ -16,22 +16,25 @@ const TeamLink = ({ name, slug }) =>
         bsStyle="primary"
       >
         Launch
-    </Button>
+      </Button>
     </div>
   </div>
+);
 
-const YourTeams = ({ teams }) =>
+const YourTeams = ({ teams }) => (
   <div>
-    <h1>Your Teams</h1>
-    <p>{"You are a member of these Stitch teams:"}</p>
+    <h1>Your Carespaces</h1>
+    <p>{"You are a member of these Stitch carespaces:"}</p>
     <div className="select-team-list m-b-40">
       {teams.map(team => <TeamLink key={team.slug} {...team} />)}
     </div>
     <p>
-      If you are looking for a different team, you can try a <Link to="/find-your-team"> different email address</Link> or
-      request an invitation from your Team Administrator.
+      If you are looking for a different carespace, you can try a{" "}
+      <Link to="/find-your-team"> different email address</Link> or request an
+      invitation from your carespace administrator.
     </p>
   </div>
+);
 
 @inject("loginStore")
 @observer
@@ -43,12 +46,12 @@ export default class GetStartedCard extends Component {
           title="Get Started"
           description={
             <span>
-              A Stitch team is a group of people using Stitch together for team
-              communication, patient communication, patient management, and
+              A Stitch carespace is a group of people using Stitch together for
+              team communication, patient communication, patient management, and
               more.
               <br />
               <br />
-              Are you looking to join an existing team or create a new one?
+              Are you looking to join an existing carespace or create a new one?
             </span>
           }
           headerCTA="signin"
@@ -74,11 +77,13 @@ export default class GetStartedCard extends Component {
                 Find Your Carespace
               </Link>
               <div className="get-started-card-link-description">
-                Join or sign in to an existing team
+                Join or sign in to an existing carespace
               </div>
             </div>
           </div>
-          {this.props.loginStore.hasLogin && <YourTeams teams={this.props.loginStore.teams} />}
+          {this.props.loginStore.hasLogin && (
+            <YourTeams teams={this.props.loginStore.teams} />
+          )}
         </AuthenticationPage>
       </div>
     );

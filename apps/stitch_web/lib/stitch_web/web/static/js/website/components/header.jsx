@@ -12,17 +12,7 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import browserDetails from "../../lib/browser_details";
 
-function noop() { }
-
-const YourCarespaces = ({ teams }) =>
-  <NavDropdown title="Your Carespaces" id="yourcarespaces-dropdown">
-    {teams.map(team =>
-      <MenuItem href={`https://${team.slug}.${applicationHost}/`} key={team.slug} >
-        <i className="fa fa-comments" />{team.name}
-      </MenuItem>
-    )}
-  </NavDropdown>
-
+function noop() {}
 @inject("loginStore")
 @observer
 class Header extends Component {
@@ -57,6 +47,12 @@ class Header extends Component {
     });
   };
 
+  toggleCarespacesMenu = () => {
+    this.setState({
+      carespacesMenuOpened: !this.state.carespacesMenuOpened
+    });
+  };
+
   mobileNavToggle = () => {
     this.setState({
       mobileNavOpened: !this.state.mobileNavOpened
@@ -70,6 +66,35 @@ class Header extends Component {
       html.classList.add("mobile-menu-open");
     }
   };
+
+  renderYourCarespaces(teams, inSmallMenu) {
+    const navProps = inSmallMenu
+      ? {}
+      : {
+          open: this.state.carespacesMenuOpened,
+          onMouseEnter: this.toggleCarespacesMenu,
+          onMouseLeave: this.toggleCarespacesMenu,
+          onToggle: noop,
+          noCaret: true
+        };
+
+    return (
+      <NavDropdown
+        title="Your Carespaces"
+        id="yourcarespaces-dropdown"
+        {...navProps}
+      >
+        {teams.map(team => (
+          <MenuItem
+            href={`https://${team.slug}.${applicationHost}/`}
+            key={team.slug}
+          >
+            {team.name}
+          </MenuItem>
+        ))}
+      </NavDropdown>
+    );
+  }
 
   render() {
     const { mobile, os } = browserDetails;
@@ -172,9 +197,13 @@ class Header extends Component {
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
-            {hasLogins ?
-              (<YourCarespaces teams={this.props.loginStore.teams} />) :
-              (<NavItem onClick={this.goToGetStarted} className="btn-trial">Get Started</NavItem>)}
+            {hasLogins ? (
+              this.renderYourCarespaces(this.props.loginStore.teams, false)
+            ) : (
+              <NavItem onClick={this.goToGetStarted} className="btn-trial">
+                Get Started
+              </NavItem>
+            )}
           </Nav>
         </Navbar>
 
@@ -255,11 +284,18 @@ class Header extends Component {
               </NavDropdown>
 
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
-              {!mobile && (
-                hasLogins ?
-                  (<YourCarespaces teams={this.props.loginStore.teams} />) :
-                  (<NavItem onClick={this.goToGetStarted} className="btn-trial">Get Started</NavItem>)
-              )}
+              {!mobile &&
+                (hasLogins ? (
+                  this.renderYourCarespaces(this.props.loginStore.teams, true)
+                ) : (
+                  <NavItem onClick={this.goToGetStarted} className="btn-trial">
+                    Get Started
+                  </NavItem>
+                ))}
+
+              {mobile &&
+                hasLogins &&
+                this.renderYourCarespaces(this.props.loginStore.teams, true)}
 
               {mobile &&
                 os === "iOS" && (
