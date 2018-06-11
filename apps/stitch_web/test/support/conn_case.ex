@@ -22,6 +22,7 @@ defmodule Stitch.Web.ConnCase do
       use Phoenix.ConnTest
       import Stitch.Web.ChannelsTestHelper
       import Stitch.Web.Router.Helpers
+      import Stitch.Web.SessionService
       import Stitch.Factory
 
       import Stitch.Web.ConnCase,

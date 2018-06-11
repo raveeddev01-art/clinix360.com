@@ -70,7 +70,7 @@ defmodule Stitch.Web.SessionService do
       login_map = Map.put(login_map, team.id, user_session)
       put_session(conn, :login_map, login_map)
     else
-      _ -> nil
+      _ -> conn
     end
   end
 end
