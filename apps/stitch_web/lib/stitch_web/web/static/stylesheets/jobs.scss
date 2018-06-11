@@ -1,3 +1,7 @@
+body {
+  background: $medium-gray;
+}
+
 #app_body {
   font-size: 18px;
   padding: 0 !important;
@@ -137,6 +141,7 @@
 #wrapper > section {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 15px;
 }
 
 #wrapper > section h2 {
@@ -147,7 +152,7 @@
   margin: 10px 0;
   padding: 0 10px;
   @media (min-width: $screen-lg) {
-    font-size: 2.125rem;
+    font-size: 2rem;
   }
 }
 
@@ -175,6 +180,7 @@
   &:active {
     color: #fff;
     background: $brand-primary;
+    border-color: $brand-primary;
   }
 }
 
