@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.OAuthIntegrationController do
         "webhook_token" => webhook_token,
         "code" => code
       }) do
-    with user_token when not is_nil(user_token) <- get_session(conn, :current_user_token),
+    with user_token when not is_nil(user_token) <- get_user_session_token(conn),
          %User{} = user <- Stitch.UserQueries.get_by_token(user_token),
          %Team{} = team <- Stitch.TeamQueries.get_by_id(user.team_id),
          {:exists?, %Integration{} = integration} <-

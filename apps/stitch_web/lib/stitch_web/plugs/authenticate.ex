@@ -23,7 +23,9 @@ defmodule Stitch.Web.Plug.Authenticate do
 
       {:user, _disabled_user} ->
         handle_disabled_user(conn)
-        {:team_member?, false} - force_login(conn)
+
+      {:team_member?, false} ->
+        force_login(conn)
     end
   end
 
