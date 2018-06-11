@@ -17,3 +17,5 @@ erl_crash.dump
 
 # Ignore webpack related files.
 /node_modules
+
+/apps/stitch_web/priv/static/
