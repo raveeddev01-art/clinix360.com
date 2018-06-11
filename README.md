@@ -155,6 +155,15 @@ https://localhost.app:4443/
 
 Note: depending on your browser, you may have to add an SSL certificate exception to access the site.
 
+To always trust the ssl certificate:
+
+- Open Keychain Access
+- Go to the Certificates
+- Import (click on `+`) this file `apps/stitch_web/priv/keys/localhost.cert`
+- Double click on the certificate that you have just imported
+- Click on "Trust"
+- At "When using this certificate:", select "Always Trust"
+
 ---
 
 We're using Dialyzer to write typed Elixir. To run Dialyzer
