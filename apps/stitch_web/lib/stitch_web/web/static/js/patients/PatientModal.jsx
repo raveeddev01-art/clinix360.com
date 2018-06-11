@@ -1,8 +1,18 @@
 import React, { Component } from "react";
 // import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import Modal from "react-bootstrap/lib/Modal";
+
+import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
+import Col from "react-bootstrap/lib/Col";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import Form from "react-bootstrap/lib/Form";
+import FormControl from "react-bootstrap/lib/FormControl";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import Modal from "react-bootstrap/lib/Modal";
+import Row from "react-bootstrap/lib/Row";
+
+import { AvatarUploader } from "common/components";
 
 @inject("patientsStore")
 @observer
@@ -46,6 +56,19 @@ class PatientModal extends Component {
 
   render() {
     const { modalOpen } = this.props.patientsStore;
+    const alertVisible = false;
+    const alertStyle = "danger";
+    const alertMessage = "oh noes";
+
+    const {
+      avatar_url,
+      first_name,
+      last_name,
+      phone_number
+    } = this.state.patientParams;
+    const hasAvatar = (avatar_url || "").includes(
+      "stitch-content/default-avatar.png"
+    );
 
     return (
       <Modal
@@ -60,8 +83,65 @@ class PatientModal extends Component {
           </a>
         </Modal.Header>
         <Modal.Body>
-          {/* {error && <Alert bsStyle="danger">{error}</Alert>} */}
-          <h1> {this.state.patientParams.first_name} </h1>
+          {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+          <Row>
+            <Col sm={6}>
+              <Form
+                className="edit-profile-form"
+                onSubmit={this.onSubmit}
+                noValidate
+              >
+                <FormGroup bsSize="large">
+                  <ControlLabel>First Name</ControlLabel>
+                  <FormControl
+                    name="first_name"
+                    required
+                    autoFocus
+                    type="text"
+                    value={first_name}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+                <FormGroup bsSize="large">
+                  <ControlLabel>Last Name</ControlLabel>
+                  <FormControl
+                    name="last_name"
+                    required
+                    type="text"
+                    value={last_name}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+
+                <FormGroup bsSize="large">
+                  <ControlLabel>Phone Number</ControlLabel>
+                  <FormControl
+                    name="phone_number"
+                    required
+                    type="text"
+                    value={phone_number}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+              </Form>
+            </Col>
+            <Col sm={6} smOffset={0}>
+              <h4>
+                <strong>Profile Photo</strong>
+              </h4>
+              <AvatarUploader
+                className="profile-image-form"
+                onCrop={this.onCrop}
+                onCropping={this.onCropping}
+                onDelete={this.onDeleteProfileImage}
+                hasAvatar={hasAvatar}
+                onError={this.showError}
+                isUploading={false}
+                url={avatar_url}
+                size={400}
+              />
+            </Col>
+          </Row>
         </Modal.Body>
 
         <Modal.Footer>
