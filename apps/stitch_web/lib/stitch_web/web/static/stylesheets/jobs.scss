@@ -8,12 +8,12 @@
 
   h1 {
     color: $brand-primary;
-    font-size: calc(2rem + (12 * (100vw - 360px) / 624));
+    font-size: calc(1.6rem + (6 * (100vw - 360px) / 624));
     font-weight: 900;
     line-height: 1.2;
     margin-top: 0;
     @media (min-width: $screen-lg) {
-      font-size: 3.125rem;
+      font-size: 2.125rem;
     }
   }
 }
@@ -45,17 +45,20 @@
   font-size: 18px;
 
   p strong {
+    display: block;
     color: $brand-primary;
     font-size: 20px;
+    margin: 30px 0 10px;
   }
 }
 
 #application {
+  background: #fff;
   font-size: 16px;
   margin: 0 auto;
   border-radius: 4px;
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
-  margin-top: 30px;
+  margin-top: 50px;
 }
 
 #main_fields div.field {
@@ -126,7 +129,11 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-
+#wrapper .location,
+#wrapper .company-name {
+  font-size: 20px;
+  font-weight: 700;
+}
 #wrapper > section {
   display: flex;
   flex-wrap: wrap;
@@ -136,6 +143,9 @@
   color: $brand-primary;
   font-size: calc(1.6rem + (6 * (100vw - 360px) / 624));
   font-weight: 900;
+  width: 100%;
+  margin: 10px 0;
+  padding: 0 10px;
   @media (min-width: $screen-lg) {
     font-size: 2.125rem;
   }
