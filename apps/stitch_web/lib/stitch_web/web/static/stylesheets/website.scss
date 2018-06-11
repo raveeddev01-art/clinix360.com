@@ -333,7 +333,6 @@
 
       .flex-item {
         flex: 1 0 auto;
-        // padding: 0;
         margin-bottom: 25px;
         @media (min-width: 769px) {
           flex: 1;
@@ -347,6 +346,11 @@
           &:last-of-type {
             margin-right: 15px;
           }
+        }
+
+        @media screen and (-ms-high-contrast: active),
+          (-ms-high-contrast: none) {
+          flex: 1 0 auto;
         }
       }
     }
@@ -1058,6 +1062,13 @@
           &:last-of-type {
             border: 0;
             padding-bottom: 0;
+          }
+
+          .flex-item {
+            @media screen and (-ms-high-contrast: active),
+              (-ms-high-contrast: none) {
+              flex: 1 0 auto;
+            }
           }
 
           .tier,
