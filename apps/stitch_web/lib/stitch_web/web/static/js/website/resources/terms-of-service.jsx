@@ -11,7 +11,7 @@ export default class TermsOfService extends Component {
       <div className="legal-page tos-page">
         <Header />
 
-        <Subheader title="Terms of Service" subtitle="Subtext to be changed" />
+        <Subheader title="Terms of Service" />
 
         <div className="container">
           <div className="copy-section">
