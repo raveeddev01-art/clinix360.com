@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 
-// import { CONNECT_TIERS } from "lib/constants";
-
 import Header from "../components/header";
 import Subheader from "../components/subheader";
 import ProductCards from "../components/product-cards";
@@ -26,8 +24,6 @@ export default class Pricing extends Component {
   }
 
   render() {
-    // const { FREE, STANDARD, PREMIUM } = CONNECT_TIERS;
-
     return (
       <div className="pricing-page">
         <Header />

@@ -14,6 +14,16 @@ class PriceTier extends Component {
     }));
   };
 
+  renderButtonText = () => {
+    const { product, tier } = this.props;
+
+    if (product !== "MANAGE") {
+      return tier === "FREE" ? "Get Started" : "Try Free";
+    }
+
+    return "Coming Soon";
+  };
+
   render() {
     const { product, tier } = this.props;
     const { annual } = this.state;
@@ -38,7 +48,7 @@ class PriceTier extends Component {
             </div>
 
             <a href="/getstarted" className="btn btn-primary btn-block btn-lg">
-              {tier === "FREE" ? "Get Started" : "Try Free"}
+              {this.renderButtonText()}
             </a>
           </div>
 
