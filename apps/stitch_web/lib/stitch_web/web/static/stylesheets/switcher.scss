@@ -85,7 +85,7 @@
       width: 18px;
       line-height: 18px;
       border-radius: 50%;
-      
+
       i {
         opacity: 1;
       }
@@ -101,6 +101,7 @@
 
   &__bottom {
     display: flex;
+    padding-top: 20px;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;

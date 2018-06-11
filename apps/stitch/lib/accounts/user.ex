@@ -53,6 +53,9 @@ defmodule Stitch.Accounts.User do
     field(:whats_new_last_seen_at, :utc_datetime)
     field(:slack_import_id, :string)
     field(:desktop_sound, :string, default: "pop")
+    # Pending, Later, Skipped, Completed
+    field(:connect_tour_status, :string, default: "pending")
+    field(:platform_tour_status, :string, default: "pending")
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
     has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)
@@ -72,7 +75,9 @@ defmodule Stitch.Accounts.User do
       :phone_number,
       :title,
       :username,
-      :timezone
+      :timezone,
+      :connect_tour_status,
+      :platform_tour_status
     ])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)

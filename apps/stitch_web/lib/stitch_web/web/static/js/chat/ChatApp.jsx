@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Dropzone from "react-dropzone";
-
+import ConnectTour from '../common/components/joy-ride/connect-tour';
 import UploadModal from "file-upload/upload-modal";
 import { AppAlert, Loading, Switcher } from "common/components";
 import RoleChangedModal from "common/modals/role-changed-modal";
@@ -18,7 +18,7 @@ class ChatApp extends Component {
     super(props);
 
     this.state = {
-      dropzoneActive: false
+      dropzoneActive: false,
     };
   }
 
@@ -79,7 +79,7 @@ class ChatApp extends Component {
       this.props.sidemenuStore.setModal("search");
       e.preventDefault();
     }
-  };
+  }
 
   render() {
     const { groupsStore: { defaultGroup }, messageStore } = this.props;
@@ -102,6 +102,7 @@ class ChatApp extends Component {
               <div>Drop to Upload File</div>
             </div>
           )}
+          <ConnectTour />
           <UploadModal />
           <AppAlert />
           <div className="appContainer">
