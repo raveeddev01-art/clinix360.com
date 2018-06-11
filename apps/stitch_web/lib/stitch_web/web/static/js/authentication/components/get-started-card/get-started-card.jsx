@@ -28,7 +28,7 @@ const YourTeams = ({ teams }) =>
       {teams.map(team => <TeamLink key={team.slug} {...team} />)}
     </div>
     <p>
-      If you are looking for a different team, you can try a <a href="#">different email address</a> or
+      If you are looking for a different team, you can try a <Link to="/find-your-team"> different email address</Link> or
       request an invitation from your Team Administrator.
     </p>
   </div>

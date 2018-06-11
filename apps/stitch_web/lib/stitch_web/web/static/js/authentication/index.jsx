@@ -15,10 +15,6 @@ const stores = { resetPasswordStore, registrationStore, invitationStore };
 // @TODO refactor authentication_store and provide by using provider
 
 class Auth extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     registrationStore.teamName = this.props.teamName;
     registrationStore.teamSlug = this.props.teamSlug;
