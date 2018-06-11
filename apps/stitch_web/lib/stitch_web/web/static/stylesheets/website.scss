@@ -1116,6 +1116,24 @@
 
   //----------------- DOWNLOADS -----------------
   .downloads-page {
+    .subheader {
+      padding-bottom: 40px;
+      @media (min-width: $screen-sm) {
+        padding-bottom: 60px;
+      }
+
+      h3 {
+        margin-bottom: 0;
+      }
+    }
+
+    .download-content {
+      padding: 20px 0 50px;
+      @media (min-width: $screen-sm) {
+        padding: 50px 0 80px;
+      }
+    }
+
     .tab-content .plan {
       margin: 20px 0;
 
