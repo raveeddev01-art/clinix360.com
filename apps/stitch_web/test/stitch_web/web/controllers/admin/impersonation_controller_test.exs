@@ -4,7 +4,8 @@ defmodule Stitch.Web.Admin.ImpersonationControllerTest do
 
   describe "GET /impersonate/:user_id" do
     setup %{conn: conn} do
-      staff_user = insert(:user, is_staff: true)
+      team = insert(:team)
+      staff_user = insert(:user, is_staff: true, team: team)
 
       conn =
         conn
@@ -20,7 +21,7 @@ defmodule Stitch.Web.Admin.ImpersonationControllerTest do
       conn = get(conn, admin_impersonation_path(conn, :impersonate, target_user))
       assert redirected_to(conn) =~ "#{team.slug}.localhost:4001"
       assert get_session(conn, :impersonator_user_token) == staff_user.token
-      assert get_session(conn, :current_user_token) == target_user.token
+      assert get_session(conn, :login_map)[target_user.team_id].token == target_user.token
     end
 
     test "gives error for a user that doesn't exist", %{conn: conn} do
@@ -41,7 +42,7 @@ defmodule Stitch.Web.Admin.ImpersonationControllerTest do
         |> with_user_session(user)
         |> get(admin_impersonation_path(conn, :impersonate, 9_999_999))
 
-      assert response(conn, 403) == "Forbidden"
+      assert response(conn, 401) == "Unauthorized"
     end
   end
 
@@ -64,7 +65,7 @@ defmodule Stitch.Web.Admin.ImpersonationControllerTest do
         |> get(admin_impersonation_path(conn, :stop))
 
       assert redirected_to(conn) =~ "admin.localhost:4001"
-      assert get_session(conn, :current_user_token) == staff_user.token
+      assert get_session(conn, :login_map)[staff_user.team_id].token == staff_user.token
       refute get_session(conn, :impersonator_user_token)
     end
 
@@ -74,7 +75,7 @@ defmodule Stitch.Web.Admin.ImpersonationControllerTest do
     } do
       conn = get(conn, admin_impersonation_path(conn, :stop))
       assert redirected_to(conn) =~ "admin.localhost:4001"
-      assert get_session(conn, :current_user_token) == staff_user.token
+      assert get_session(conn, :login_map)[staff_user.team_id].token == staff_user.token
       refute get_session(conn, :impersonator_user_token)
     end
 
@@ -86,7 +87,7 @@ defmodule Stitch.Web.Admin.ImpersonationControllerTest do
         |> with_user_session(user)
         |> get(admin_impersonation_path(conn, :stop))
 
-      assert response(conn, 403) == "Forbidden"
+      assert response(conn, 401) == "Unauthorized"
     end
   end
 end
