@@ -50,7 +50,8 @@ class FilesStore {
     const params = stringify({
       skip: this.files.length,
       limit: this.limit,
-      group_id: this.groupId
+      group_id: this.groupId,
+      authenticated_urls: true
     });
 
     this.loading = true;

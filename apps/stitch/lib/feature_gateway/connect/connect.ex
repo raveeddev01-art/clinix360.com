@@ -31,7 +31,7 @@ defmodule Stitch.FeatureGateway.Connect do
   end
 
   defp guests(features, team) do
-    if team.subscription.tier in ["STANDARD", "PREMIUM"] do
+    if team.subscription && team.subscription.tier in ["STANDARD", "PREMIUM"] do
       ["connect.guests" | features]
     else
       features
@@ -39,7 +39,7 @@ defmodule Stitch.FeatureGateway.Connect do
   end
 
   defp private_rooms(features, team) do
-    if team.subscription.tier in ["FREE", "STANDARD", "PREMIUM"] do
+    if team.subscription && team.subscription.tier in ["FREE", "STANDARD", "PREMIUM"] do
       ["connect.private_rooms" | features]
     else
       features

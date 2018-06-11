@@ -338,7 +338,7 @@ defmodule Stitch.Web.Api.V1.UserController do
   def validate_emails(conn, %{"emails" => emails}) when is_list(emails) do
     result =
       Enum.map(emails, fn email ->
-        changeset = User.valid_email_changeset(%User{}, %{email: email})
+        changeset = Stitch.Validators.valid_email_changeset(%User{}, %{email: email})
 
         case changeset.errors do
           [] ->

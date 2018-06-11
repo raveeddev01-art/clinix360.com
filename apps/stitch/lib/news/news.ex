@@ -1,8 +1,7 @@
 defmodule Stitch.News do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Stitch.Repo
-  alias Stitch.{News}
+  alias Stitch.{Repo, News}
 
   @type t :: %__MODULE__{}
 

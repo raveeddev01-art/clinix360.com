@@ -65,6 +65,7 @@ class Login extends Component {
       .then(response => {
         Cookies.remove("last_activity");
         if (window.electronApp) {
+          window.dispatchEvent(new CustomEvent("logged-in"));
           window.location.href = "/";
           return;
         }

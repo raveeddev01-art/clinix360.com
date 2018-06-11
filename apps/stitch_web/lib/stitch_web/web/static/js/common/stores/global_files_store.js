@@ -25,7 +25,8 @@ class GlobalFilesStore {
 
     const params = stringify({
       skip: this.files.length,
-      limit: this.limit
+      limit: this.limit,
+      authenticated_urls: true
     });
 
     this.loading = true;

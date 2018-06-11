@@ -67,6 +67,19 @@ defmodule Stitch.Web.SubdomainRouter do
     plug(Stitch.Web.Plug.ActivityTracker)
   end
 
+  pipeline :files do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:fetch_session)
+    plug(Stitch.Web.Plug.FileAuthenticate)
+  end
+
+  scope "/", Stitch.Web.Files, as: :files, host: "files." do
+    pipe_through([:files])
+
+    get("/file/:upload_id/:filename", FileController, :download)
+    get("/preview/:upload_id", FileController, :download_preview)
+  end
+
   # ================
   #   ADMIN ROUTES
   # ================
@@ -205,6 +218,8 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/teams/:id", TeamController, :show)
     put("/teams/:id", TeamController, :update)
+
+    get("/patients", TeamPatientController, :index)
 
     post("/login", AuthenticationController, :submit_login)
     post("/reset_password", AuthenticationController, :reset_password)

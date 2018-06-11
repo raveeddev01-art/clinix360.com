@@ -1,4 +1,0 @@
-User-agent: * 
-Disallow: 
-
-Sitemap: https://www.teamstitch.com/sitemap.xml
