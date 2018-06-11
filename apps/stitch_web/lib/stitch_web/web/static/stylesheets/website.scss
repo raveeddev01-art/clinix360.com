@@ -1270,7 +1270,21 @@
   }
 
   //----------------- JOBS -----------------
+  .jobs-page {
+    .subheader {
+      padding: 130px 0 50px;
+      @media (min-width: $screen-sm) {
+        padding: 160px 0 110px;
+      }
+
+      h3 {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   #grnhse_app {
+    background: $medium-gray;
     flex-grow: 1;
   }
 

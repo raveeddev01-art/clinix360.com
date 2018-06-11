@@ -14,7 +14,7 @@ export default class Jobs extends Component {
 
   render() {
     return (
-      <div>
+      <div className="jobs-page">
         <Header />
 
         <Subheader
