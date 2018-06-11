@@ -1,5 +1,4 @@
 defmodule Stitch.Web.Api.V1.TeamPatientView do
-  alias Stitch.AWS.S3
   use Stitch.Web, :view
 
   def render("index.json", %{team_patients: team_patients}) do
@@ -15,8 +14,9 @@ defmodule Stitch.Web.Api.V1.TeamPatientView do
   end
 
   def team_patient_json(team_patient, patient) do
-    {:ok, avatar} = S3.presign(patient.profile_image_url)
-    {:ok, avatar_thumb} = S3.presign(patient.profile_image_thumb_url)
+    # TODO: using the thumb twice to get around needless
+    # S3 pre-signing. Use the non-thumb once you allow for
+    # CDN'ed main avatars
 
     %{
       id: team_patient.id,
@@ -30,8 +30,8 @@ defmodule Stitch.Web.Api.V1.TeamPatientView do
       email: patient.email,
       phone: patient.phone_number,
       onboarded: patient.onboarded,
-      avatar: avatar,
-      avatar_thumb: avatar_thumb
+      avatar: patient.profile_image_thumb_url,
+      avatar_thumb: patient.profile_image_thumb_url
     }
   end
 
