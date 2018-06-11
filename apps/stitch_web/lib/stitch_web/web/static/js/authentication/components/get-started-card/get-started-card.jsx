@@ -36,8 +36,6 @@ const YourTeams = ({ teams }) => (
   </div>
 );
 
-@inject("loginStore")
-@observer
 export default class GetStartedCard extends Component {
   render() {
     return (
@@ -81,8 +79,8 @@ export default class GetStartedCard extends Component {
               </div>
             </div>
           </div>
-          {this.props.loginStore.hasLogin && (
-            <YourTeams teams={this.props.loginStore.teams} />
+          {appSettings.hasLogin && (
+            <YourTeams teams={appSettings.teams} />
           )}
         </AuthenticationPage>
       </div>

@@ -8,7 +8,6 @@ import resetPasswordStore from "./stores/reset_password_store";
 import registrationStore from "./stores/registration_store";
 import invitationStore from "./stores/invitation_store";
 import TitleStore from "../common/stores/title_store";
-import LoginStore from "../common/stores/login_store"
 import AuthenticationRouter from "./authentication_router";
 
 const stores = { resetPasswordStore, registrationStore, invitationStore };
@@ -23,9 +22,6 @@ class Auth extends Component {
 
     const titleStore = new TitleStore(null, this.props);
     stores.titleStore = titleStore;
-
-    const loginStore = new LoginStore(null, this.props);
-    stores.loginStore = loginStore;
   }
 
   render() {

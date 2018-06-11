@@ -8,7 +8,10 @@ user = Map.get(@conn.assigns, :current_user)
 authenticationToken = user && user.token
 intercom_user_hash = Plug.Conn.get_session(@conn, :intercom_user_hash)
 public_bucket_name = Application.fetch_env!(:stitch, :public_cdn)[:bucket]
+teams = Stitch.Web.PageService.get_logins(@conn)
 app_settings = Poison.encode!(%{
+  hasLogin: Enum.any?(teams),
+  teams: teams,
   notification_sounds: Stitch.Accounts.User.notification_sounds(),
   cdn_origin: Application.fetch_env!(:stitch, :public_cdn)[:origin] # https://public.teamstitch.com
 })

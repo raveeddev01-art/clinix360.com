@@ -12,9 +12,8 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import browserDetails from "../../lib/browser_details";
 
-function noop() {}
-@inject("loginStore")
-@observer
+function noop() { }
+
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -71,12 +70,12 @@ class Header extends Component {
     const navProps = inSmallMenu
       ? {}
       : {
-          open: this.state.carespacesMenuOpened,
-          onMouseEnter: this.toggleCarespacesMenu,
-          onMouseLeave: this.toggleCarespacesMenu,
-          onToggle: noop,
-          noCaret: true
-        };
+        open: this.state.carespacesMenuOpened,
+        onMouseEnter: this.toggleCarespacesMenu,
+        onMouseLeave: this.toggleCarespacesMenu,
+        onToggle: noop,
+        noCaret: true
+      };
 
     return (
       <NavDropdown
@@ -104,7 +103,7 @@ class Header extends Component {
       "is-hidden": this.state.mobileNavOpened === false
     });
 
-    const hasLogins = this.props.loginStore.hasLogin;
+    const hasLogins = appSettings.hasLogin;
 
     return (
       <div>
@@ -198,12 +197,12 @@ class Header extends Component {
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
             {hasLogins ? (
-              this.renderYourCarespaces(this.props.loginStore.teams, false)
+              this.renderYourCarespaces(appSettings.teams, false)
             ) : (
-              <NavItem onClick={this.goToGetStarted} className="btn-trial">
-                Get Started
+                <NavItem onClick={this.goToGetStarted} className="btn-trial">
+                  Get Started
               </NavItem>
-            )}
+              )}
           </Nav>
         </Navbar>
 
@@ -286,16 +285,16 @@ class Header extends Component {
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
               {!mobile &&
                 (hasLogins ? (
-                  this.renderYourCarespaces(this.props.loginStore.teams, true)
+                  this.renderYourCarespaces(appSettings.teams, true)
                 ) : (
-                  <NavItem onClick={this.goToGetStarted} className="btn-trial">
-                    Get Started
+                    <NavItem onClick={this.goToGetStarted} className="btn-trial">
+                      Get Started
                   </NavItem>
-                ))}
+                  ))}
 
               {mobile &&
                 hasLogins &&
-                this.renderYourCarespaces(this.props.loginStore.teams, true)}
+                this.renderYourCarespaces(appSettings.teams, true)}
 
               {mobile &&
                 os === "iOS" && (

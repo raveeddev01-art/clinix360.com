@@ -10,8 +10,6 @@ import Cookies from "js-cookie";
 
 import browserDetails from "../../lib/browser_details";
 
-@inject("loginStore")
-@observer
 class CreateTeam extends Component {
   constructor(...args) {
     super(...args);
@@ -26,7 +24,7 @@ class CreateTeam extends Component {
 
   onSubmit = evt => {
     evt.preventDefault();
-    if (this.props.loginStore.hasLogin) {
+    if (appSettings.hasLogin) {
       // TODO: find a way not to reload the page
       window.location.href = `https://${applicationHost}/getstarted`;
     } else {
@@ -61,7 +59,7 @@ class CreateTeam extends Component {
         {!mobile && (
           <Form inline className="create-team-form" onSubmit={this.onSubmit}>
             <FormGroup>
-              {!this.props.loginStore.hasLogin && (
+              {!appSettings.hasLogin && (
                 <FormControl
                   required
                   id="createTeam"

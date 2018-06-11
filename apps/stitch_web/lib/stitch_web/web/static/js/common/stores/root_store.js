@@ -26,7 +26,6 @@ import DesktopStore from "./desktop_store";
 import AccessLogsStore from "./access_logs_store";
 import IntegrationStore from "./integration_store";
 import NewsStore from "./news_store";
-import LoginStore from "./login_store";
 
 class RootStore {
   constructor(props) {
@@ -66,7 +65,6 @@ class RootStore {
     this.accessLogsStore = new AccessLogsStore(this);
     this.integrationStore = new IntegrationStore(this);
     this.newsStore = new NewsStore(this);
-    this.loginStore = new LoginStore(this, this.appParams);
   }
 
   onStoreInit() {
