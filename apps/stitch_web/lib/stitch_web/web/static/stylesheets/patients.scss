@@ -92,6 +92,13 @@ $admin-topbar-height-sm: 65px;
       position: relative;
       overflow: hidden;
 
+      .patients-add-link {
+        display: inline-flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
       .scrollbar {
         position: absolute;
         left: 0;
@@ -155,7 +162,6 @@ $admin-topbar-height-sm: 65px;
         white-space: nowrap;
         text-overflow: ellipsis;
         line-height: 1.4;
-        padding: 3px 15px !important;
         color: #fff;
         opacity: 0.6;
 
@@ -185,7 +191,7 @@ $admin-topbar-height-sm: 65px;
 }
 
 .patients-repo {
-  flex-direction: row !important;
+  height: 100%;
 
   .patients-header {
     width: 100%;
@@ -218,6 +224,8 @@ $admin-topbar-height-sm: 65px;
   }
 
   .patients-list {
+    overflow-y: scroll;
+
     .patient-list-item {
       padding: 15px;
       width: 100%;

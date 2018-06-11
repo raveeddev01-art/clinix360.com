@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 
 import Select from "react-select";
-
-function noop() {}
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
 const sortOptions = [
   {
@@ -85,6 +85,33 @@ class Sidebar extends Component {
               </div>
             );
           })}
+          <div className="patients-add-link">
+            <h5>
+              <OverlayTrigger
+                placement="top"
+                overlay={
+                  <Tooltip id="open-a-direct-message">Add Patient</Tooltip>
+                }
+              >
+                <a role="button" onClick={patientsStore.openModal}>
+                  Add Patient
+                </a>
+              </OverlayTrigger>
+            </h5>
+
+            <div className="patients-add-link__action">
+              <OverlayTrigger
+                placement="top"
+                overlay={
+                  <Tooltip id="open-a-direct-message">Add Patient</Tooltip>
+                }
+              >
+                <a onClick={patientsStore.openModal}>
+                  <i className="fa fa-plus-square-o" />
+                </a>
+              </OverlayTrigger>
+            </div>
+          </div>
         </div>
       </div>
     );

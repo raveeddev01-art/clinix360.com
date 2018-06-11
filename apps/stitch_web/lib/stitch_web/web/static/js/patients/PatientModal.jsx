@@ -46,10 +46,26 @@ class PatientModal extends Component {
     this.props.patientsStore.closeModal();
   };
 
-  handleSubmit = () => {
-    const { createPatient, closeModal } = this.props.patientsStore;
+  handleChange = attr => e => {
+    const newParams = Object.assign({}, this.state.patientParams, {
+      [attr]: e.target.value
+    });
 
-    createPatient(this.state.patientParams).then(() => {
+    this.setState({ patientParams: newParams });
+  };
+
+  handleSubmit = () => {
+    const {
+      createPatient,
+      closeModal,
+      updatePatient
+    } = this.props.patientsStore;
+
+    const apiCall = this.state.patientParams.id
+      ? updatePatient(this.state.patientParams.id, this.state.patientParams)
+      : createPatient(this.state.patientParams);
+
+    apiCall.then(() => {
       closeModal();
     });
   };
@@ -61,12 +77,15 @@ class PatientModal extends Component {
     const alertMessage = "oh noes";
 
     const {
-      avatar_url,
+      avatar,
       first_name,
       last_name,
-      phone_number
+      phone_number,
+      email,
+      id,
+      mrn
     } = this.state.patientParams;
-    const hasAvatar = (avatar_url || "").includes(
+    const hasAvatar = (avatar || "").includes(
       "stitch-content/default-avatar.png"
     );
 
@@ -75,6 +94,7 @@ class PatientModal extends Component {
         show={modalOpen}
         onHide={this.closeModal}
         className="patient-modal"
+        bsSize="large"
       >
         <Modal.Header>
           <Modal.Title>Patient Info</Modal.Title>
@@ -92,6 +112,18 @@ class PatientModal extends Component {
                 noValidate
               >
                 <FormGroup bsSize="large">
+                  <ControlLabel>Email</ControlLabel>
+                  <FormControl
+                    name="email"
+                    disabled={!!id}
+                    required
+                    autoFocus
+                    type="text"
+                    value={email}
+                    onChange={this.handleChange("email")}
+                  />
+                </FormGroup>
+                <FormGroup bsSize="large">
                   <ControlLabel>First Name</ControlLabel>
                   <FormControl
                     name="first_name"
@@ -99,7 +131,7 @@ class PatientModal extends Component {
                     autoFocus
                     type="text"
                     value={first_name}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange("first_name")}
                   />
                 </FormGroup>
                 <FormGroup bsSize="large">
@@ -109,10 +141,19 @@ class PatientModal extends Component {
                     required
                     type="text"
                     value={last_name}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange("last_name")}
                   />
                 </FormGroup>
-
+                <FormGroup bsSize="large">
+                  <ControlLabel>MRN</ControlLabel>
+                  <FormControl
+                    name="mrn"
+                    required
+                    type="text"
+                    value={mrn}
+                    onChange={this.handleChange("mrn")}
+                  />
+                </FormGroup>
                 <FormGroup bsSize="large">
                   <ControlLabel>Phone Number</ControlLabel>
                   <FormControl
@@ -120,7 +161,7 @@ class PatientModal extends Component {
                     required
                     type="text"
                     value={phone_number}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange("phone_number")}
                   />
                 </FormGroup>
               </Form>
@@ -131,13 +172,13 @@ class PatientModal extends Component {
               </h4>
               <AvatarUploader
                 className="profile-image-form"
-                onCrop={this.onCrop}
-                onCropping={this.onCropping}
-                onDelete={this.onDeleteProfileImage}
                 hasAvatar={hasAvatar}
                 onError={this.showError}
                 isUploading={false}
-                url={avatar_url}
+                url={
+                  avatar ||
+                  "https://s3.amazonaws.com/stitch-content-public/default-avatar.png"
+                }
                 size={400}
               />
             </Col>
