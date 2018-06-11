@@ -22,12 +22,48 @@ defmodule Stitch.Web.SessionService do
     put_session(conn, :login_map, login_map)
   end
 
-  @spec get_user_session_token(Conn.t()) :: Conn.t()
+  @spec get_user_session_token(Conn.t()) :: String.t() | nil
   def get_user_session_token(conn) do
+    with {:ok, %{user_session: %UserSession{} = user_session}} <- get_user_session(conn) do
+      user_session.token
+    else
+      _ -> nil
+    end
+  end
+
+  @spec lock_user_session(Conn.t()) :: Conn.t()
+  def lock_user_session(conn), do: update_user_session(conn, &UserSession.lock/1)
+
+  @spec unlock_user_session(Conn.t()) :: Conn.t()
+  def unlock_user_session(conn), do: update_user_session(conn, &UserSession.unlock/1)
+
+  @spec get_user_session_lock_status(Conn.t()) :: boolean | nil
+  def get_user_session_lock_status(conn) do
+    with {:ok, %{user_session: %UserSession{} = user_session}} <- get_user_session(conn) do
+      user_session.locked
+    else
+      _ -> nil
+    end
+  end
+
+  @spec get_user_session(Conn.t()) :: UserSession.t() | {:ok, map} | :error
+  def get_user_session(conn) do
     with %Team{} = team <- Map.get(conn.assigns, :team),
          login_map = get_session(conn, :login_map) || %{},
          %UserSession{} = user_session <- Map.get(login_map, team.id) do
-      user_session.token
+      {:ok, %{user_session: user_session, team: team, login_map: login_map}}
+    else
+      _ -> :error
+    end
+  end
+
+  @spec update_user_session(Conn.t(), (UserSession.t() -> UserSession.t())) :: Conn.t()
+  def update_user_session(conn, update_fn) do
+    with {:ok, %{user_session: user_session, login_map: login_map, team: team}} <-
+           get_user_session(conn) do
+      user_session = update_fn.(user_session)
+      login_map = Map.put(login_map, team.id, user_session)
+      put_session(conn, :login_map, login_map)
     else
       _ -> nil
     end
