@@ -37,6 +37,11 @@ defmodule Stitch.Web.SessionService do
   @spec unlock_user_session(Conn.t()) :: Conn.t()
   def unlock_user_session(conn), do: update_user_session(conn, &UserSession.unlock/1)
 
+  @spec update_user_session_token(Conn.t(), User.t()) :: Conn.t()
+  def update_user_session_token(conn, user) do
+    update_user_session(conn, fn user_session -> UserSession.update_token(user_session, user) end)
+  end
+
   @spec get_user_session_lock_status(Conn.t()) :: boolean | nil
   def get_user_session_lock_status(conn) do
     with {:ok, %{user_session: %UserSession{} = user_session}} <- get_user_session(conn) do

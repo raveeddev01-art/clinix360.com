@@ -29,6 +29,7 @@ defmodule Stitch.Web.Plug.StaffAuthenticate do
     (get_session(conn, :login_map) || %{})
     |> Map.values()
     |> Enum.map(& &1.token)
+    |> Kernel.++([get_session(conn, :impersonator_user_token)])
     |> UserQueries.find_staff()
   end
 end

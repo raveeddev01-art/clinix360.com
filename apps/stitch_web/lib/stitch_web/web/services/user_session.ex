@@ -25,4 +25,9 @@ defmodule Stitch.Web.UserSession do
   def unlock(%UserSession{} = user_session) do
     %{user_session | locked: false}
   end
+
+  @spec update_token(UserSession.t(), User.t()) :: UserSession.t()
+  def update_token(%UserSession{} = user_session, %User{} = user) do
+    %{user_session | token: user.token}
+  end
 end

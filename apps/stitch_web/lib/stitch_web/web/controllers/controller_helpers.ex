@@ -8,7 +8,6 @@ defmodule Stitch.Web.ControllerHelpers do
   def login_user(conn, user) do
     conn
     |> create_access_log_record(user)
-    |> put_session(:current_user_token, user.token)
     |> put_current_user(user)
     |> put_session(:session_id, Stitch.Rand.token(12))
     |> put_session(:locked, false)
@@ -26,13 +25,6 @@ defmodule Stitch.Web.ControllerHelpers do
 
   def get_session_token(conn) do
     Stitch.Web.SessionService.get_user_session_token(conn)
-  end
-
-  def update_session(conn, user) do
-    conn
-    |> put_session(:current_user_token, user.token)
-    |> put_current_user(user)
-    |> configure_session(renew: true)
   end
 
   def create_access_log_record(conn, user) do

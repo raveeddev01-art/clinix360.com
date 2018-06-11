@@ -229,7 +229,7 @@ defmodule Stitch.Web.Api.V1.UserController do
         EventsChannel.broadcast_logout_from_all_sessions(user, get_session(conn, :session_id))
 
         conn
-        |> update_session(user)
+        |> update_user_session_token(user)
         |> json(%{token: user.token})
 
       {:error, message} when is_binary(message) ->
