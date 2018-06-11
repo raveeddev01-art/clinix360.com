@@ -3,9 +3,9 @@ defmodule Stitch.Repo.Migrations.AddTourStatusesToUsers do
 
   def change do
     alter table(:users) do
-      # Pending, Later, Skipped, Completed
-      add(:connect_tour_status, :string, default: "Pending")
-      add(:platform_tour_status, :string, default: "Pending")
+      # pending, later, skipped, completed
+      add(:connect_tour_status, :string, default: "pending")
+      add(:platform_tour_status, :string, default: "pending")
     end
   end
 end

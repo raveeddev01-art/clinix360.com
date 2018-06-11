@@ -62,8 +62,6 @@ class UserStore {
   onUserInfo = user => {
     this.avatar = user.avatar;
     this.avatarThumb = user.avatar_thumb;
-    this.connectTourStatus = user.connect_tour_status;
-    this.platformTourStatus = user.platform_tour_status;
 
     // show role change modal if groups assigned as guests or roles has changed
     if (
@@ -88,12 +86,14 @@ class UserStore {
 
   @action
   markConnectTourCompleted = () => {
-    return this.save({ connect_tour_status: "Completed" });
+    this.connectTourStatus = "completed";
+    return this.save({ connect_tour_status: "completed" });
   };
 
   @action
   markPlatformTourCompleted = () => {
-    return this.save({ platform_tour_status: "Completed" });
+    this.platformTourStatus = "completed";
+    return this.save({ platform_tour_status: "completed" });
   };
 
   @action

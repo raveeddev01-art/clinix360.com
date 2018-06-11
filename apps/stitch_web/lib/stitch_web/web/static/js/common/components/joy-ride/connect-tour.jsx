@@ -25,10 +25,10 @@ class ConnectTour extends Component {
       spotlightClicks: false,
       disableCloseOnEsc: true,
       scrollToFirstStep: true,
+      callback: this.callback,
       disableOverlayClose: true,
       tooltipComponent: JoyRideToolTip,
-      callback: this.callback.bind(this),
-      run: props.userStore.connectTourStatus === 'Pending',
+      run: props.userStore.connectTourStatus === 'pending',
     };
   }
 
@@ -58,13 +58,17 @@ class ConnectTour extends Component {
       title: "Upload Files",
       target: ".message-form-action-item",
       content: <p>You can upload all types of files, including documents, presentations, videos, images, and more.</p>
-    }, {
-      placement: "right",
-      disableBeacon: true,
-      title: "Invite Members",
-      target: ".invite-link",
-      content: <p>Invite your team members into Stitch so you can bring all your communication into one place.</p>
     }];
+
+    if (this.props.userStore.canInvite) {
+      steps.push({
+        placement: "right",
+        disableBeacon: true,
+        title: "Invite Members",
+        target: ".invite-link",
+        content: <p>Invite your team members into Stitch so you can bring all your communication into one place.</p>
+      });
+    }
 
     return steps;
   }

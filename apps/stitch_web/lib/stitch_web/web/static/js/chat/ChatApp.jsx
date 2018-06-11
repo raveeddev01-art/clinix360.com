@@ -9,12 +9,7 @@ import RoleChangedModal from "common/modals/role-changed-modal";
 import Sidemenu from "sidemenu/sidemenu";
 import Chat from "./Chat";
 
-@inject(
-  "uploadStore",
-  "sidemenuStore",
-  "groupsStore",
-  "messageStore",
-)
+@inject("uploadStore", "sidemenuStore", "groupsStore", "messageStore")
 @observer
 class ChatApp extends Component {
   static requiresAdmin = false;

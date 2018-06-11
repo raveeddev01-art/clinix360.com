@@ -25,10 +25,10 @@ class PlatformTour extends Component {
       spotlightClicks: false,
       disableCloseOnEsc: true,
       scrollToFirstStep: true,
+      callback: this.callback,
       disableOverlayClose: true,
       tooltipComponent: JoyRideToolTip,
-      callback: this.callback.bind(this),
-      run: props.userStore.platformTourStatus === 'Pending',
+      run: props.userStore.platformTourStatus === 'pending',
     };
   }
 
@@ -41,20 +41,20 @@ class PlatformTour extends Component {
       content: <p>Stitch is a care coordination platform for healthcare teams.
         Communicate, write notes, track tasks and upload files on any device.</p>
     }, {
-      placement: "left",
+      placement: "top",
       disableBeacon: true,
       title: "Launch Products",
       target: ".admin-products-wrapper",
       content: <p>Choose which products you want to launch and get started
         with our apps: Connect, Engage, and Manage.</p>
     }, {
-      placement: "left",
+      placement: "top",
       disableBeacon: true,
       title: "Personal Settings",
       target: ".admin-account-wrapper",
       content: <p>Manage and view your account, profile, notifications, and more from here.</p>
     }, {
-      placement: "left",
+      placement: "top",
       disableBeacon: true,
       title: "Administration Settings",
       target: ".admin-admin-wrapper",

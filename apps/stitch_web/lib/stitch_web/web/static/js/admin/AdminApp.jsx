@@ -101,7 +101,7 @@ class AdminApp extends Component {
     return (
       <div id="app">
         <AppAlert />
-        <PlatformTour isAdmin={isAdmin} />
+        <PlatformTour />
         <div className={adminWrapperClass}>
           <Helmet>
             <title>{titleStore.title}</title>
