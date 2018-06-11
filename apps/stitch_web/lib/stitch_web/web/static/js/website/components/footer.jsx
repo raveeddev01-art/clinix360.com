@@ -89,15 +89,11 @@ export default class Footer extends Component {
                 <Col xs={6} sm={3} xsPull={6} smPull={0}>
                   <h5>Contact</h5>
                   <address>
-                    Stitch Technologies, Inc.
+                    Stitch Health
                     <br />
-                    156 2nd Street #201<br />
-                    San Francisco, CA 94105<br />
-                    <a href="tel:+16502823388">+1 (650) 282-3388</a>
-                    <br />
-                    <a href="mailto:support@teamstitch.com">
-                      support@teamstitch.com
-                    </a>
+                    156 2nd St #201<br />
+                    San Francisco, CA<br />
+                    <a href="tel:+16502823388">(650) 282-3388</a>
                   </address>
                 </Col>
               </Row>
