@@ -8,7 +8,7 @@ defmodule Stitch.FeatureGateway.Engage do
   """
   @spec add_team_features(list(binary), Team.t()) :: list(binary)
   def add_team_features(features, team) do
-    team = Repo.preload(team, :subscription)
+    # team = Repo.preload(team, :subscription)
 
     features
   end

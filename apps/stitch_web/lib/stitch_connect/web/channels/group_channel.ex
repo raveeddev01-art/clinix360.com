@@ -71,8 +71,16 @@ defmodule StitchConnect.Web.GroupChannel do
 
   defp render_messages(group, user, socket, params) do
     opts = [limit: params["limit"]]
+    authenticated_urls = Map.get(params, "authenticated_urls", false)
+
     messages = MessageQueries.group_latest_messages(group.id, user, opts)
-    messages_json = MessageView.render("index.json", %{messages: messages})
+
+    messages_json =
+      MessageView.render("index.json", %{
+        messages: messages,
+        authenticated_urls: authenticated_urls
+      })
+
     group_user = GroupUser.get(group.id, user.id)
 
     json =

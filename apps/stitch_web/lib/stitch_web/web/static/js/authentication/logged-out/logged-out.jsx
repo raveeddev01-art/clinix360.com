@@ -9,6 +9,7 @@ import { AuthenticationPage } from "common/components";
 export default class LoggedOut extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Signed Out");
+    window.dispatchEvent(new CustomEvent("logged-out"));
   }
 
   render() {

@@ -3,6 +3,13 @@ defmodule Stitch.Validators do
   import Stitch.Blacklist
   alias Stitch.Countries
 
+  def valid_email_changeset(struct, attrs) do
+    struct
+    |> cast(attrs, [:email])
+    |> validate_format(:email, ~r/[\w-]+@([\w-]+\.)+[\w-]+/)
+    |> validate_email_domain(:email)
+  end
+
   def validate_email_domain(changeset, field, opts \\ []) do
     validate_change(changeset, field, fn _, email ->
       host =

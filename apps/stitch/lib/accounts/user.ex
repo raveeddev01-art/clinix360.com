@@ -6,8 +6,7 @@ defmodule Stitch.Accounts.User do
   import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.User
-  alias Stitch.GroupUser
-  alias Stitch.Repo
+  alias Stitch.{Repo, Accounts.ProfileImage, GroupUser}
 
   @type t :: %__MODULE__{}
   @guest_roles Stitch.Accounts.Role.guests()
@@ -77,9 +76,9 @@ defmodule Stitch.Accounts.User do
     ])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
-    |> valid_email_changeset(attrs)
+    |> Stitch.Validators.valid_email_changeset(attrs)
     |> validate_required([:first_name, :last_name])
-    |> default_profile_image_changeset(attrs)
+    |> ProfileImage.default_profile_image_changeset(attrs)
     |> update_change(:email, &String.trim/1)
     |> validate_timezone()
     |> Stitch.Validators.validate_no_emojis(:first_name)
@@ -92,7 +91,7 @@ defmodule Stitch.Accounts.User do
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> validate_required([:first_name, :last_name])
-    |> default_profile_image_changeset(attrs)
+    |> ProfileImage.default_profile_image_changeset(attrs)
     |> validate_timezone()
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
@@ -142,13 +141,6 @@ defmodule Stitch.Accounts.User do
     end)
   end
 
-  def valid_email_changeset(struct, attrs) do
-    struct
-    |> cast(attrs, [:email])
-    |> validate_format(:email, ~r/[\w-]+@([\w-]+\.)+[\w-]+/)
-    |> Stitch.Validators.validate_email_domain(:email)
-  end
-
   @doc """
   Applies the attributes: email, confirmation_code and token
   to the Stitch.Accounts.User struct.
@@ -163,7 +155,7 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(attrs, [:email, :confirmation_code, :token])
     |> validate_required([:email, :confirmation_code, :token])
-    |> valid_email_changeset(attrs)
+    |> Stitch.Validators.valid_email_changeset(attrs)
     |> update_change(:email, &String.trim/1)
     |> update_change(:email, &String.downcase/1)
   end
@@ -206,7 +198,7 @@ defmodule Stitch.Accounts.User do
     |> ensure_role()
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:pin, :team_id, :roles])
-    |> default_profile_image_changeset(params)
+    |> ProfileImage.default_profile_image_changeset(params)
     |> put_change(:onboarded, true)
     |> put_change(:whats_new_last_seen_at, DateTime.utc_now())
   end
@@ -265,58 +257,8 @@ defmodule Stitch.Accounts.User do
     |> add_thumb()
   end
 
-  def default_profile_image_changeset(struct, params) do
-    changeset =
-      struct
-      |> cast(params, [:profile_image_url, :profile_image_thumb_url])
-
-    cond do
-      Stitch.Accounts.ProfileImage.needs_avatar_regen(changeset) ->
-        add_default_profile_image(changeset)
-
-      true ->
-        changeset
-    end
-  end
-
-  def add_default_profile_image(%{valid?: true} = changeset) do
-    user = %User{first_name: get_first_name(changeset), last_name: get_last_name(changeset)}
-
-    with {:ok, avatar} <- Stitch.Accounts.ProfileImage.pick_default_random(user),
-         {:ok, avatar_thumb} <- Stitch.Accounts.ProfileImage.create_thumb(avatar) do
-      changeset
-      |> put_change(:profile_image_url, avatar)
-      |> put_change(:profile_image_thumb_url, avatar_thumb)
-    else
-      _ ->
-        changeset
-    end
-  end
-
-  def add_default_profile_image(changeset), do: changeset
-
-  defp get_first_name(changeset) do
-    case Ecto.Changeset.fetch_change(changeset, :first_name) do
-      {:ok, first_name} ->
-        first_name
-
-      _ ->
-        changeset.data.first_name
-    end
-  end
-
-  defp get_last_name(changeset) do
-    case Ecto.Changeset.fetch_change(changeset, :last_name) do
-      {:ok, last_name} ->
-        last_name
-
-      _ ->
-        changeset.data.last_name
-    end
-  end
-
   def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
-    case Stitch.Accounts.ProfileImage.create_thumb(url) do
+    case ProfileImage.create_thumb(url) do
       {:ok, profile_image_thumb_url} ->
         put_change(changeset, :profile_image_thumb_url, profile_image_thumb_url)
 
