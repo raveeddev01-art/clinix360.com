@@ -21,8 +21,7 @@ defmodule Stitch.Web.AuthenticationController do
   end
 
   def login(conn, _params) do
-    with current_user_token when is_binary(current_user_token) <-
-           get_session(conn, :current_user_token),
+    with current_user_token when is_binary(current_user_token) <- get_session_token(conn),
          %Stitch.Accounts.User{} = current_user <-
            Stitch.UserQueries.get_by_token(current_user_token) do
       default_group = Stitch.GroupQueries.default_group(current_user)

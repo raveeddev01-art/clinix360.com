@@ -47,6 +47,12 @@ defmodule Stitch.Web.ControllerHelpers do
     conn
   end
 
+  def get_session_token(conn) do
+    team_id = conn.assigns.team.id
+    login_map = get_session(conn, :login_map) || %{}
+    Map.get(login_map, team_id)
+  end
+
   defp fetch_user_ip(conn) do
     conn.remote_ip
     |> :inet_parse.ntoa()
