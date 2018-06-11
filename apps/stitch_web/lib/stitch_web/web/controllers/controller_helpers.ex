@@ -17,19 +17,15 @@ defmodule Stitch.Web.ControllerHelpers do
   end
 
   def put_current_user(conn, user) do
-    login_map = get_session(conn, :login_map) || %{}
-    login_map = Map.put(login_map, user.team_id, user.token)
-
-    conn
-    |> put_session(:login_map, login_map)
+    Stitch.Web.SessionService.add_user_session(conn, user)
   end
 
   def delete_team_session(conn, team_id) do
-    login_map = get_session(conn, :login_map) || %{}
-    login_map = Map.delete(login_map, team_id)
+    Stitch.Web.SessionService.delete_user_session(conn, team_id)
+  end
 
-    conn
-    |> put_session(:login_map, login_map)
+  def get_session_token(conn) do
+    Stitch.Web.SessionService.get_user_session_token(conn)
   end
 
   def update_session(conn, user) do
@@ -45,12 +41,6 @@ defmodule Stitch.Web.ControllerHelpers do
     app_version = fetch_app_version(conn)
     Stitch.Accounts.AccessLog.async_create_or_update(user, ip_address, user_agent, app_version)
     conn
-  end
-
-  def get_session_token(conn) do
-    team_id = conn.assigns.team.id
-    login_map = get_session(conn, :login_map) || %{}
-    Map.get(login_map, team_id)
   end
 
   defp fetch_user_ip(conn) do
