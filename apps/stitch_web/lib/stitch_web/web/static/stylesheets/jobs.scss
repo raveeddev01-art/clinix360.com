@@ -34,6 +34,10 @@ body {
   @media (min-width: $screen-sm) {
     padding: 95px 0;
   }
+
+  #wrapper {
+    padding: 0 !important;
+  }
 }
 
 #header {
@@ -43,6 +47,10 @@ body {
 
 #header .app_title {
   font-size: 32px;
+}
+
+#filter-count {
+  display: none;
 }
 
 #content {
@@ -154,6 +162,10 @@ body {
   @media (min-width: $screen-lg) {
     font-size: 2rem;
   }
+}
+
+#wrapper > section:first-of-type h2 {
+  margin-top: 0;
 }
 
 #wrapper > section .opening {
