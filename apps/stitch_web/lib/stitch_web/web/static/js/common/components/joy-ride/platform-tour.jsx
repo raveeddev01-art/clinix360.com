@@ -1,5 +1,5 @@
 import Joyride from "react-joyride";
-import JoyRideToolTip from './tooltip';
+import JoyRideToolTip from "./tooltip";
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { ACTIONS, EVENTS } from "react-joyride/es/constants";
@@ -28,47 +28,72 @@ class PlatformTour extends Component {
       callback: this.callback,
       disableOverlayClose: true,
       tooltipComponent: JoyRideToolTip,
-      run: props.userStore.platformTourStatus === 'pending',
+      run: props.userStore.platformTourStatus === "pending"
     };
   }
 
   steps = () => {
-    const steps = [{
-      placement: "center",
-      disableBeacon: true,
-      title: "Welcome to Stitch",
-      target: ".admin-content-wrapper",
-      content: <p>Stitch is a care coordination platform for healthcare teams.
-        Communicate, write notes, track tasks and upload files on any device.</p>
-    }, {
-      placement: "top",
-      disableBeacon: true,
-      title: "Launch Products",
-      target: ".admin-products-wrapper",
-      content: <p>Choose which products you want to launch and get started
-        with our apps: Connect, Engage, and Manage.</p>
-    }, {
-      placement: "top",
-      disableBeacon: true,
-      title: "Personal Settings",
-      target: ".admin-account-wrapper",
-      content: <p>Manage and view your account, profile, notifications, and more from here.</p>
-    }, {
-      placement: "top",
-      disableBeacon: true,
-      title: "Administration Settings",
-      target: ".admin-admin-wrapper",
-      content: <p>Manage and view your Carespace settings, security, membership, and more.</p>
-    }, {
-      placement: "right",
-      disableBeacon: true,
-      title: "Stitch Controls",
-      target: ".switcher__bottom",
-      content: <p>Sign out, lock your app, and invite more members.</p>
-    }];
+    const steps = [
+      {
+        placement: "center",
+        disableBeacon: true,
+        title: "Welcome to Stitch",
+        target: ".admin-content-wrapper",
+        content: (
+          <p>
+            Stitch is a care coordination platform for healthcare teams.
+            Communicate, write notes, track tasks and upload files on any
+            device.
+          </p>
+        )
+      },
+      {
+        placement: "top",
+        disableBeacon: true,
+        title: "Launch Products",
+        target: ".admin-products-wrapper",
+        content: (
+          <p>
+            Choose which products you want to launch and get started with our
+            apps: Connect, Engage, and Manage.
+          </p>
+        )
+      },
+      {
+        placement: "top",
+        disableBeacon: true,
+        title: "Personal Settings",
+        target: ".admin-account-wrapper",
+        content: (
+          <p>
+            Manage and view your account, profile, notification settings, and
+            more.
+          </p>
+        )
+      },
+      {
+        placement: "top",
+        disableBeacon: true,
+        title: "Administration Settings",
+        target: ".admin-admin-wrapper",
+        content: (
+          <p>
+            Manage and view your Carespace settings, security, membership, and
+            more.
+          </p>
+        )
+      },
+      {
+        placement: "right",
+        disableBeacon: true,
+        title: "Stitch Controls",
+        target: ".switcher__bottom",
+        content: <p>Sign out or lock the app.</p>
+      }
+    ];
 
     return steps;
-  }
+  };
 
   callback = data => {
     const { callback } = this.props;
@@ -106,7 +131,7 @@ class PlatformTour extends Component {
   }
 
   render() {
-    return (<Joyride {...this.state} {...this.props} />);
+    return <Joyride {...this.state} {...this.props} />;
   }
 }
 
