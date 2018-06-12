@@ -31,6 +31,15 @@ defmodule Stitch.Web.SessionService do
     end
   end
 
+  def get_user_token_from_team(conn, team_id) do
+    with %{} = login_map <- get_session(conn, :login_map),
+         {:ok, user_session} <- Map.fetch(login_map, team_id) do
+      user_session.token
+    else
+      _ -> nil
+    end
+  end
+
   @spec lock_user_session(Conn.t()) :: Conn.t()
   def lock_user_session(conn), do: update_user_session(conn, &UserSession.lock/1)
 

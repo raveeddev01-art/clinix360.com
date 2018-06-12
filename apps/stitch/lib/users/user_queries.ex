@@ -79,6 +79,10 @@ defmodule Stitch.UserQueries do
     Repo.get_by(User, id: user_id, team_id: team_id)
   end
 
+  def team_member_by_token(team_id, token) do
+    Repo.get_by(User, token: token, team_id: team_id)
+  end
+
   def get_all do
     Repo.all(from(User))
   end

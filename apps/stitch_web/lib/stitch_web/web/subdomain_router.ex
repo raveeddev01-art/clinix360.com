@@ -70,7 +70,6 @@ defmodule Stitch.Web.SubdomainRouter do
   pipeline :files do
     plug(Stitch.Web.Plug.PlugAttack)
     plug(:fetch_session)
-    plug(Stitch.Web.Plug.FileAuthenticate)
   end
 
   scope "/", Stitch.Web.Files, as: :files, host: "files." do
