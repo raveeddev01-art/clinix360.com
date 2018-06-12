@@ -31,7 +31,7 @@ const sortOptions = [
       { id: "all", display: "All" },
       { id: "active", display: "Active" },
       { id: "pending", display: "Pending" },
-      { id: "disabled", display: "Disabled" }
+      { id: "deactivated", display: "Deactivated" }
     ]
   }
 ];

@@ -67,7 +67,7 @@ const statusMatch = (patient, statusFilter) => {
       return patient.onboared && patient.active;
     case "pending":
       return patient.active && !patient.onboarded;
-    case "disabled":
+    case "deactivated":
       return !patient.active;
     default:
       return true;

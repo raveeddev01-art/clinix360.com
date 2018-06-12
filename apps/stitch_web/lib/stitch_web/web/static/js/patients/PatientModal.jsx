@@ -12,7 +12,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import Modal from "react-bootstrap/lib/Modal";
 import Row from "react-bootstrap/lib/Row";
 
-import { AvatarUploader } from "common/components";
+import { AvatarUploader, LoadingIcon } from "common/components";
 
 const patientStatusText = patient => {
   if (!patient.active) {
@@ -29,6 +29,7 @@ class PatientModal extends Component {
     super(props);
     this.state = {
       modalPatientId: null,
+      isSaving: false,
       patientParams: {}
     };
   }
@@ -51,6 +52,7 @@ class PatientModal extends Component {
   }
 
   closeModal = () => {
+    this.setState({ isSaving: false });
     this.props.patientsStore.closeModal();
   };
 
@@ -63,22 +65,30 @@ class PatientModal extends Component {
   };
 
   handleSubmit = () => {
-    const {
-      createPatient,
-      closeModal,
-      updatePatient
-    } = this.props.patientsStore;
+    const { createPatient, updatePatient } = this.props.patientsStore;
+    this.setState({ isSaving: true });
 
     const apiCall = this.state.patientParams.id
       ? updatePatient(this.state.patientParams.id, this.state.patientParams)
       : createPatient(this.state.patientParams);
 
-    apiCall.then(() => {
-      closeModal();
-    });
+    apiCall
+      .then(() => {
+        this.closeModal();
+      })
+      .catch(() => {
+        this.setState({ isSaving: false });
+      });
+  };
+
+  renderLoadingIcon = () => {
+    const { isSaving } = this.state;
+
+    return isSaving && <LoadingIcon className="on-right" />;
   };
 
   render() {
+    const { isSaving } = this.state;
     const { modalOpen } = this.props.patientsStore;
     const alertVisible = false;
     const alertStyle = "danger";
@@ -205,11 +215,17 @@ class PatientModal extends Component {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button bsSize="large" onClick={this.closeModal}>
+          <Button disabled={isSaving} bsSize="large" onClick={this.closeModal}>
             Close
           </Button>
-          <Button bsSize="large" bsStyle="primary" onClick={this.handleSubmit}>
+          <Button
+            disabled={isSaving}
+            bsSize="large"
+            bsStyle="primary"
+            onClick={this.handleSubmit}
+          >
             Save
+            {this.renderLoadingIcon()}
           </Button>
         </Modal.Footer>
       </Modal>
