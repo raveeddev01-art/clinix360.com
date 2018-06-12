@@ -1,5 +1,6 @@
 body {
   background: $medium-gray;
+  font-family: "Source Sans Pro", sans-serif;
 }
 
 #app_body {
@@ -7,8 +8,9 @@ body {
   padding: 0 !important;
   /*width: auto;*/
   max-width: initial;
-  width: 66.666666%;
-  margin-left: 16.666666%;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
 
   h1 {
     color: $brand-primary;
@@ -59,7 +61,6 @@ body {
   p strong {
     display: block;
     color: $brand-primary;
-    font-size: 20px;
     margin: 30px 0 10px;
   }
 }
@@ -141,8 +142,12 @@ body {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-#wrapper .location,
+
 #wrapper .company-name {
+  display: none;
+}
+
+#wrapper .location {
   font-size: 20px;
   font-weight: 700;
 }
