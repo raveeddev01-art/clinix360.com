@@ -19,12 +19,20 @@ class RoomsList extends Component {
     this.state = { roomName: "" };
   }
 
+  onCreateRoomClick = () => {
+    this.showRoomCreateModal();
+  };
+
   get currentModal() {
     return this.props.sidemenuStore.currentModal;
   }
 
   get isShowing() {
-    return this.currentModal === "list" || this.currentModal === "create" || this.currentModal === "search"
+    return (
+      this.currentModal === "list" ||
+      this.currentModal === "create" ||
+      this.currentModal === "search"
+    );
   }
 
   showRoomsListModal = () => {
@@ -98,7 +106,7 @@ class RoomsList extends Component {
                 <a
                   role="button"
                   className="create-room-button"
-                  onClick={this.showRoomCreateModal}
+                  onClick={this.onCreateRoomClick}
                 >
                   <i className="fa fa-plus-square-o" />
                 </a>
