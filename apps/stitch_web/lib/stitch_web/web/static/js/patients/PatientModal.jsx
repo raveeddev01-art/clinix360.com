@@ -14,6 +14,14 @@ import Row from "react-bootstrap/lib/Row";
 
 import { AvatarUploader } from "common/components";
 
+const patientStatusText = patient => {
+  if (!patient.active) {
+    return "deactivated";
+  }
+
+  return patient.onboarded ? "active" : "pending";
+};
+
 @inject("patientsStore")
 @observer
 class PatientModal extends Component {
@@ -111,13 +119,24 @@ class PatientModal extends Component {
                 onSubmit={this.onSubmit}
                 noValidate
               >
+                {id && (
+                  <FormGroup bsSize="large">
+                    <ControlLabel>Status</ControlLabel>
+                    <FormControl
+                      disabled
+                      name="status"
+                      type="text"
+                      value={patientStatusText(this.state.patientParams)}
+                    />
+                  </FormGroup>
+                )}
                 <FormGroup bsSize="large">
                   <ControlLabel>Email</ControlLabel>
                   <FormControl
                     name="email"
                     disabled={!!id}
                     required
-                    autoFocus
+                    autoFocus={!id}
                     type="text"
                     value={email}
                     onChange={this.handleChange("email")}
@@ -128,7 +147,7 @@ class PatientModal extends Component {
                   <FormControl
                     name="first_name"
                     required
-                    autoFocus
+                    autoFocus={!!id}
                     type="text"
                     value={first_name}
                     onChange={this.handleChange("first_name")}
