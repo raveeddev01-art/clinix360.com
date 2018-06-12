@@ -111,7 +111,7 @@ export const PRODUCTS = {
       name: "Standard",
       price: {
         monthly: 30,
-        annual: 5
+        annual: 25
       },
       features: [
         { name: "All features from Free" },
@@ -127,7 +127,7 @@ export const PRODUCTS = {
       name: "Premium",
       price: {
         monthly: 60,
-        annual: 10
+        annual: 50
       },
       features: [
         { name: "All features from Standard" },
