@@ -457,7 +457,7 @@ export default class PrivacyPolicy extends Component {
             <address className="m-b-30">
               Stitch Health
               <br />
-              156 2nd Street #201<br />
+              156 2nd Street<br />
               San Francisco, CA 94105<br />
               <a href="tel:+16502823388">+1 (650) 282-3388</a>
               <br />

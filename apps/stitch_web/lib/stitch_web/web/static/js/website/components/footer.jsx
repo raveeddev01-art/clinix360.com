@@ -91,7 +91,7 @@ export default class Footer extends Component {
                   <address>
                     Stitch Health
                     <br />
-                    156 2nd St #201<br />
+                    156 2nd Street<br />
                     San Francisco, CA<br />
                     <a href="tel:+16502823388">(650) 282-3388</a>
                   </address>
