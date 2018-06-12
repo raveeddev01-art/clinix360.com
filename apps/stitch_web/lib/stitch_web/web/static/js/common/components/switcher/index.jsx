@@ -12,10 +12,8 @@ class Switcher extends Component {
     const path = history.location.pathname;
     let active = "connect";
 
-    if (path === "/admin/you/home") {
+    if (path.startsWith("/admin")) {
       active = "home";
-    } else if (path.startsWith("/admin")) {
-      active = "settings";
     } else if (path === "/engage") {
       active = "engage";
     } else if (path === "/manage") {

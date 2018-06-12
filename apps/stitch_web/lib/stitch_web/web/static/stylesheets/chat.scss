@@ -489,8 +489,14 @@
       .formatting-guide {
         right: 17px;
         left: auto;
+        @media (max-width: 800px) {
+          display: none;
+        }
 
-        b, i , span, code {
+        b,
+        i,
+        span,
+        code {
           color: inherit;
           font-size: 12px;
           margin-right: 5px;
@@ -512,6 +518,7 @@
       }
 
       .editing-commands {
+        background: #fff;
         position: absolute;
         left: 0;
         right: 0;
@@ -772,7 +779,7 @@
     padding: 2px 40px 3px 0;
 
     .message-body-search-highlight {
-      background: #FBF1D1;
+      background: #fbf1d1;
     }
 
     .message-body-highlight {
@@ -906,7 +913,9 @@
             }
           }
 
-          b, i, s {
+          b,
+          i,
+          s {
             display: inline-block;
           }
 
