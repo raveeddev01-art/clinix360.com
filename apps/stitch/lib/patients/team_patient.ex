@@ -9,8 +9,8 @@ defmodule Stitch.TeamPatient do
 
   @type t :: %__MODULE__{}
 
-  @cs_attributes [:mrn, :metadata, :active, :team_id, :patient_id]
-  @required_attributes [:mrn, :metadata, :active, :team_id, :patient_id]
+  @cs_attributes [:mrn, :metadata, :active]
+  @required_attributes [:mrn, :metadata, :active]
 
   schema "team_patients" do
     belongs_to(:team, Team)
@@ -36,7 +36,9 @@ defmodule Stitch.TeamPatient do
   """
   @spec create(map) :: {:ok, TeamPatient.t()} | {:error, Ecto.Changeset.t()}
   def create(params) do
-    changeset = changeset(%TeamPatient{}, params)
+    changeset =
+      changeset(%TeamPatient{patient_id: params.patient_id, team_id: params.team_id}, params)
+
     Repo.insert(changeset)
   end
 
@@ -50,7 +52,12 @@ defmodule Stitch.TeamPatient do
       find_or_create_patient_as_provider(params)
     end)
     |> Ecto.Multi.run(:team_patient, fn %{patient: patient} ->
-      changeset = changeset(%TeamPatient{patient_id: patient.id, team_id: team.id}, params)
+      changeset =
+        changeset(
+          %TeamPatient{patient_id: patient.id, team_id: team.id},
+          params
+        )
+
       Repo.insert(changeset)
     end)
     |> Repo.transaction()
