@@ -727,6 +727,9 @@
       flex-grow: 1;
       display: flex;
       align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
 
       .avatar img {
         width: 20px;
@@ -741,6 +744,12 @@
 
         &.username {
           font-weight: 700;
+        }
+
+        &.text-muted {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
     }
