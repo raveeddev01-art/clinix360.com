@@ -53,8 +53,8 @@ class ConnectTour extends Component {
         target: ".create-room-button",
         content: (
           <p>
-            Conversations take place in <b>rooms</b> so your team communications
-            happens in the right place.
+            Conversations in Stitch Connect take place in <b>rooms</b>. Create
+            rooms for common topics of discussion.
           </p>
         )
       },
@@ -81,18 +81,6 @@ class ConnectTour extends Component {
             presentations, videos, images, and more.
           </p>
         )
-      },
-      {
-        placement: "right",
-        disableBeacon: true,
-        title: "Invite Members",
-        target: ".invite-link",
-        content: (
-          <p>
-            Invite your team members into Stitch so you can bring all your
-            communication into one place.
-          </p>
-        )
       }
     ];
 
@@ -104,7 +92,7 @@ class ConnectTour extends Component {
         target: ".invite-link",
         content: (
           <p>
-            Invite your team members into Stitch so you can bring all your
+            Invite your team members into Stitch, so you can bring all your
             communication into one place.
           </p>
         )
