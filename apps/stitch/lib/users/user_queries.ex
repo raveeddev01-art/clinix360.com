@@ -162,4 +162,13 @@ defmodule Stitch.UserQueries do
 
     enabled_users_count > 0
   end
+
+  def find_staff(tokens) do
+    User
+    |> where([u], u.token in ^tokens)
+    |> where([u], u.disabled == false)
+    |> where([u], u.is_staff == true)
+    |> limit(1)
+    |> Repo.one()
+  end
 end

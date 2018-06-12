@@ -28,8 +28,8 @@ class HipaaCard extends Component {
           title="HIPAA"
           description={
             <span>
-              By checking the box above, you represent that your team agrees to
-              the terms of the HIPAA Business Associate Agreement.
+              By checking the box above, you represent that you agree to the
+              terms of the HIPAA Business Associate Agreement.
             </span>
           }
           loading={saving}

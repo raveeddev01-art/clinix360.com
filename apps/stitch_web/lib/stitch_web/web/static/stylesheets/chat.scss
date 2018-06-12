@@ -397,6 +397,7 @@
 
       .message-form-actions,
       .message-form-upload {
+        z-index: 1;
         position: absolute;
         right: 10px;
         top: 0;

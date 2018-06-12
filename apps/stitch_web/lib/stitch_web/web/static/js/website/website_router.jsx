@@ -50,7 +50,7 @@ class WebsiteRouter extends Component {
             <Route
               exact
               path="/"
-              render={() => <Homepage team={this.props.team} />}
+              component={Homepage}
             />
             <Route exact path="/demo" component={withTitle(demoTitle, Demo)} />
             <Route
@@ -83,8 +83,7 @@ class WebsiteRouter extends Component {
             <Route
               exact
               path="/customers"
-              component={withTitle(customersTitle, Customers)}
-            />
+              component={withTitle(customersTitle, Customers)} />
             <Route exact path="/blog" component={Blog} />
             <Route
               exact

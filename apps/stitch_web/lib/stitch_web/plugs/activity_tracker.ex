@@ -17,7 +17,7 @@ defmodule Stitch.Web.Plug.ActivityTracker do
     # Update activity only for mobile apps (that don't use HTTP session) and
     # skip the activity update for request coming from the web/electron apps.
     # (Web/electron apps send "became_active" via WebSocket as a single source of truth of user activity).
-    unless get_session(conn, :current_user_token) do
+    unless get_session(conn, :login_map) do
       ActivityTracker.async_update_activity(current_user)
     end
 

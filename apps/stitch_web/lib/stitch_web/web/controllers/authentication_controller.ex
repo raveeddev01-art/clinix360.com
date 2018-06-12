@@ -12,15 +12,16 @@ defmodule Stitch.Web.AuthenticationController do
   @signup_description "Create your Stitch team for free. Get started with our apps for internal team messaging, patient communication and task management."
 
   def index(conn = %{request_path: path}, _params) do
+    login_params = Stitch.Web.PageService.get_logins_json(conn)
+
     conn
     |> assign(:title, title_for_path(path))
     |> assign(:description, description_for_path(path))
-    |> render("index.html", subdomain: conn.private[:subdomain])
+    |> render("index.html", subdomain: conn.private[:subdomain], login_params: login_params)
   end
 
   def login(conn, _params) do
-    with current_user_token when is_binary(current_user_token) <-
-           get_session(conn, :current_user_token),
+    with current_user_token when is_binary(current_user_token) <- get_session_token(conn),
          %Stitch.Accounts.User{} = current_user <-
            Stitch.UserQueries.get_by_token(current_user_token) do
       default_group = Stitch.GroupQueries.default_group(current_user)
@@ -88,7 +89,7 @@ defmodule Stitch.Web.AuthenticationController do
     session_id = get_session(conn, :session_id)
 
     conn
-    |> configure_session(drop: true)
+    |> delete_team_session(conn.assigns.team.id)
     |> broadcast_logout(session_id)
     |> redirect(to: "/logged-out")
   end
@@ -101,7 +102,7 @@ defmodule Stitch.Web.AuthenticationController do
       })
 
     conn
-    |> configure_session(drop: true)
+    |> delete_team_session(conn.assigns.team.id)
     |> render("logged_out.html", logged_out_params: logged_out_params)
   end
 

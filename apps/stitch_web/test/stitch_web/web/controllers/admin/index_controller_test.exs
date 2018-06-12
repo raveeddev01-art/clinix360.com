@@ -18,7 +18,7 @@ defmodule Stitch.Web.Admin.IndexControllerTest do
     |> with_user_session(regular_user)
     |> with_admin_subdomain()
     |> get("/")
-    |> response(403)
+    |> response(401)
   end
 
   test "visitor cannot access admin tool", %{conn: conn} do

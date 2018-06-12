@@ -27,6 +27,8 @@ class UserStore {
   @observable timezone = getTimezone();
   @observable hasAvatar = this.userHasAvatar();
   @observable roleChanged = false;
+  @observable connectTourStatus = currentUser.connect_tour_status;
+  @observable platformTourStatus = currentUser.platform_tour_status;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -80,6 +82,18 @@ class UserStore {
       body: data,
       hideNotify: true
     });
+  };
+
+  @action
+  markConnectTourCompleted = () => {
+    this.connectTourStatus = "completed";
+    return this.save({ connect_tour_status: "completed" });
+  };
+
+  @action
+  markPlatformTourCompleted = () => {
+    this.platformTourStatus = "completed";
+    return this.save({ platform_tour_status: "completed" });
   };
 
   @action

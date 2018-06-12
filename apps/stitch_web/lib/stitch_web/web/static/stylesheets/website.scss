@@ -146,15 +146,19 @@
       &:focus {
         border-color: $brand-primary;
       }
+
+      @media (min-width: 531px) {
+        margin-right: 10px;
+      }
+
+      @media (max-width: 531px) {
+        margin-bottom: 10px;
+      }
     }
 
     .btn-form {
       text-transform: uppercase;
       padding: 16px 30px;
-      margin: 10px 0 0 0;
-      @media (min-width: 531px) {
-        margin: 0 0 0 10px;
-      }
     }
   }
 
@@ -1406,6 +1410,11 @@
     background-color: #fff;
     box-shadow: 0 -1px 0 #eaeaea;
     padding: 50px 0;
+
+    .flex-item {
+      flex: 1 1 auto;
+    }
+
     @media (min-width: $screen-sm) {
       padding: 60px 0;
     }
@@ -1426,6 +1435,10 @@
       margin: 25px 0 0;
 
       @media (min-width: $screen-md) {
+        .form-group {
+          justify-content: flex-end;
+        }
+
         margin: 0;
       }
     }
@@ -1800,6 +1813,10 @@
         border-left: 4px solid transparent;
         border-radius: 1.5px;
         margin: 0;
+
+        max-width: 210px;
+        text-overflow: ellipsis;
+        overflow: hidden;
 
         i.fa {
           width: 20px;

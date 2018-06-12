@@ -4,7 +4,7 @@ defmodule Stitch.Web.Api.V1.SessionLockController do
 
   def lock(conn, _) do
     conn
-    |> put_session(:locked, true)
+    |> lock_user_session()
     |> json(nil)
   end
 
@@ -17,7 +17,7 @@ defmodule Stitch.Web.Api.V1.SessionLockController do
       ActivityTracker.async_update_activity(user)
 
       conn
-      |> put_session(:locked, false)
+      |> unlock_user_session()
       |> json(nil)
     else
       conn

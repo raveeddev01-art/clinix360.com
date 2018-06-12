@@ -3,16 +3,15 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import WebsiteRouter from "./website_router";
 
-class Website extends Component {
-  render() {
-    return (
-      <div>
-        <Router>
-          <WebsiteRouter team={this.props.team} />
-        </Router>
-      </div>
-    );
-  }
-}
+const Website = props => {
+  return (
+    <div>
+      <Router>
+        <WebsiteRouter />
+      </Router>
+    </div>
+  );
+};
 
 export default Website;
+
