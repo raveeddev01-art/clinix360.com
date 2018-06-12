@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
+import flatten from "lodash/flatten";
+
 @inject("usersStore", "groupStore")
 @observer
 class TypingUsers extends Component {
@@ -30,7 +32,10 @@ class TypingUsers extends Component {
       case 2:
         content = (
           <span>
-            <b>{usernames.join(" and ")}</b> are typing...
+            {flatten(
+              usernames.map(user => [<b>{user}</b>, <span> and </span>])
+            ).slice(0, -1)}{" "}
+            are typing...
           </span>
         );
         break;
