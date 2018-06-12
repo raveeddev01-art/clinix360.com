@@ -5,7 +5,7 @@ defmodule Stitch.Web.Files.FileController do
   def download(conn, %{"upload_id" => upload_id}) do
     with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
          {:valid?, true} <- {:valid?, valid_upload?(upload.fields)},
-         {:user_token, user_token} <-
+         {:user_token, user_token} when is_binary(user_token) <-
            {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
          {:team_user, current_user = %User{}} <-
            {:team_user, UserQueries.team_member_by_token(upload.group.team_id, user_token)},
@@ -24,7 +24,7 @@ defmodule Stitch.Web.Files.FileController do
   def download_preview(conn, %{"upload_id" => upload_id}) do
     with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
          {:valid?, true} <- {:valid?, valid_upload_with_preview?(upload.fields)},
-         {:user_token, user_token} <-
+         {:user_token, user_token} when is_binary(user_token) <-
            {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
          {:team_user, current_user = %User{}} <-
            {:team_user, UserQueries.team_member_by_token(upload.group.team_id, user_token)},
