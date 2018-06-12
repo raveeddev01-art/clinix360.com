@@ -1,12 +1,14 @@
 defmodule Stitch.Web.Files.FileController do
   use Stitch.Web, :controller
-  alias Stitch.{MessageQueries, GroupAuthorization, Message}
+  alias Stitch.{MessageQueries, GroupAuthorization, Message, Accounts.User, UserQueries}
 
   def download(conn, %{"upload_id" => upload_id}) do
-    current_user = conn.assigns.current_user
-
     with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
          {:valid?, true} <- {:valid?, valid_upload?(upload.fields)},
+         {:user_token, user_token} <-
+           {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
+         {:team_user, current_user = %User{}} <-
+           {:team_user, UserQueries.team_member_by_token(upload.group.team_id, user_token)},
          {:authenticated, true} <-
            {:authenticated, GroupAuthorization.can_view?(upload.group, current_user)} do
       stream_full_file(conn, upload)
@@ -14,16 +16,18 @@ defmodule Stitch.Web.Files.FileController do
       _ ->
         conn
         |> put_session(:redirect_url, conn.request_path)
-        |> redirect(external: login_url(current_user))
+        |> redirect(external: login_url())
         |> halt
     end
   end
 
   def download_preview(conn, %{"upload_id" => upload_id}) do
-    current_user = conn.assigns.current_user
-
     with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
          {:valid?, true} <- {:valid?, valid_upload_with_preview?(upload.fields)},
+         {:user_token, user_token} <-
+           {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
+         {:team_user, current_user = %User{}} <-
+           {:team_user, UserQueries.team_member_by_token(upload.group.team_id, user_token)},
          {:authenticated, true} <-
            {:authenticated, GroupAuthorization.can_view?(upload.group, current_user)} do
       stream_preview(conn, upload)
@@ -31,7 +35,7 @@ defmodule Stitch.Web.Files.FileController do
       _ ->
         conn
         |> put_session(:redirect_url, conn.request_path)
-        |> redirect(external: login_url(current_user))
+        |> redirect(external: login_url())
         |> halt
     end
   end
@@ -116,10 +120,8 @@ defmodule Stitch.Web.Files.FileController do
 
   defp valid_upload_with_preview?(_upload), do: false
 
-  defp login_url(user) do
-    team = Stitch.TeamQueries.get_by_id(user.team_id)
+  defp login_url() do
     struct_url = Stitch.Web.Endpoint.struct_url()
-    struct_url = %{struct_url | host: "#{team.slug}.#{struct_url.host}"}
-    Stitch.Web.SubdomainRouter.Helpers.page_url(struct_url, :index)
+    Stitch.Web.Router.Helpers.authentication_url(struct_url, :index)
   end
 end
