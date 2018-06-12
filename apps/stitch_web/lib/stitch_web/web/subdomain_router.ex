@@ -148,6 +148,11 @@ defmodule Stitch.Web.SubdomainRouter do
     delete("/users/:id/delete_profile_image", UserController, :delete_profile_image)
     post("/users/search", UserController, :search)
     post("/users/access", UserController, :access)
+
+    get("/patients", TeamPatientController, :index)
+    get("/patients/:id", TeamPatientController, :show)
+    post("/patients", TeamPatientController, :create)
+    put("/patients/:id", TeamPatientController, :update)
   end
 
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
@@ -219,8 +224,6 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/teams/:id", TeamController, :show)
     put("/teams/:id", TeamController, :update)
 
-    get("/patients", TeamPatientController, :index)
-
     post("/login", AuthenticationController, :submit_login)
     post("/reset_password", AuthenticationController, :reset_password)
   end
@@ -282,6 +285,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/engage", EngageController, :index)
     get("/manage", ManageController, :index)
+    get("/patients", PageController, :index)
   end
 
   # =========================

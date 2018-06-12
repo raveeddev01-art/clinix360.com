@@ -157,7 +157,12 @@ class ChannelStore {
   }
 
   joinTeamChannel(options = {}) {
-    const { presenceStore, sidemenuStore, usersStore } = this.rootStore;
+    const {
+      presenceStore,
+      sidemenuStore,
+      usersStore,
+      patientsStore
+    } = this.rootStore;
 
     const timezone = this.getTimezoneInfo();
     const joined = this.join(this.teamChannelTopic, { ...options, timezone });
@@ -180,6 +185,9 @@ class ChannelStore {
 
     this.teamChannel.on("user_deactivated", usersStore.onUserDeactivated);
     this.teamChannel.on("user_activated", usersStore.onUserActivated);
+
+    this.teamChannel.on("patient_added", patientsStore.onPatientAdded);
+    this.teamChannel.on("patient_updated", patientsStore.onPatientUpdated);
 
     return joined;
   }
