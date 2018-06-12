@@ -39,6 +39,10 @@ const sortOptions = [
 @inject("userStore", "patientsStore")
 @observer
 class Sidebar extends Component {
+  onSelectChange = name => ({ id: val }) => {
+    this.props.patientsStore.setOption(name, val);
+  };
+
   render() {
     const { patientsStore, userStore } = this.props;
     return (
@@ -74,7 +78,7 @@ class Sidebar extends Component {
                       searchable={false}
                       clearable={false}
                       className="patients-select-option"
-                      onChange={patientsStore.setOption(name)}
+                      onChange={this.onSelectChange(name)}
                       value={setValue}
                       valueKey="id"
                       labelKey="display"

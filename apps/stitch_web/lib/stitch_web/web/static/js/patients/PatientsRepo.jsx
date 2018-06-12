@@ -16,7 +16,7 @@ class PatientsRepo extends Component {
         <PatientsHeader />
         <div className="patients-list-wrapper">
           <div className="patients-list">
-            {patientsStore.sortedAndFilteredPatients.map((patient, i) => (
+            {patientsStore.patientsForPage.map((patient, i) => (
               <PatientListItem key={i} patient={patient} />
             ))}
           </div>

@@ -6,6 +6,12 @@
 
 import { action, computed, extendObservable, observable } from "mobx";
 
+// =============
+//   CONSTANTS
+// =============
+
+const pageLength = 10;
+
 // ====================
 //   HELPER FUNCTIONS
 // ====================
@@ -47,6 +53,12 @@ const searchFilterMatch = (patient, searchFilter) => {
   );
 };
 
+const forPage = (list, pageNumber) => {
+  const startingIndex = pageLength * pageNumber;
+  const endingIndex = startingIndex + pageLength;
+  return list.slice(startingIndex, endingIndex);
+};
+
 const statusMatch = (patient, statusFilter) => {
   switch (statusFilter) {
     case "all":
@@ -68,6 +80,7 @@ const statusMatch = (patient, statusFilter) => {
 
 class PatientsStore {
   @observable patients = [];
+  @observable page = 0;
   @observable listSort = "first_name";
   @observable sortDirection = "asc";
   @observable statusFilter = "all";
@@ -136,7 +149,22 @@ class PatientsStore {
   // filtering and sorting
 
   @action
-  setOption = optionName => ({ id: val }) => {
+  setPage = newPage => {
+    this.page = newPage;
+  };
+
+  @action
+  incPage = () => {
+    this.page = this.page + 1;
+  };
+
+  @action
+  decPage = () => {
+    this.page = this.page - 1;
+  };
+
+  @action
+  setOption = (optionName, val) => {
     this[optionName] = val;
   };
 
@@ -171,6 +199,11 @@ class PatientsStore {
   @computed
   get sortedAndFilteredPatients() {
     return this.patients.filter(this.patientsFiler).sort(this.patientsSorter);
+  }
+
+  @computed
+  get patientsForPage() {
+    return forPage(this.sortedAndFilteredPatients, this.page);
   }
 
   @computed
