@@ -11,9 +11,9 @@ export default class CaseUCSF extends Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header blueNav />
         <div className="case-study">
-          <Subheader title="Customers" subtitle="UCSF Citywide" />
+          <Subheader title="Customer Stories" subtitle="UCSF Citywide" />
 
           <div className="overview text-center">
             <div className="container">
@@ -43,7 +43,7 @@ export default class CaseUCSF extends Component {
 
           <div className="container">
             <div className="case-study-content">
-              <h3 className="text-center">
+              <h3>
                 UCSF Citywide implements Stitch to unite team communication
                 across the city and improve client care
               </h3>

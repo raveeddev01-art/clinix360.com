@@ -11,9 +11,12 @@ export default class CaseOrchardMedical extends Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header blueNav />
         <div className="case-study">
-          <Subheader title="Customers" subtitle="Orchard Medical Associates" />
+          <Subheader
+            title="Customer Stories"
+            subtitle="Orchard Medical Associates"
+          />
 
           <div className="overview text-center">
             <div className="container">
@@ -43,7 +46,7 @@ export default class CaseOrchardMedical extends Component {
 
           <div className="container">
             <div className="case-study-content">
-              <h3 className="text-center">
+              <h3>
                 Orchard Medical uses Stitch as a phone system replacement to
                 improve the efficiency of clinical coordination
               </h3>

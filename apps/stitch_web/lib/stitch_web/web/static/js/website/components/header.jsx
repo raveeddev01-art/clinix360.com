@@ -103,15 +103,23 @@ class Header extends Component {
       "is-hidden": this.state.mobileNavOpened === false
     });
 
+    const blueNav = cx({
+      blueNav: this.props.blueNav
+    });
+    
     const hasLogins = appSettings.hasLogin;
 
     return (
       <div>
-        <Navbar id="header" inverse fixedTop>
+        <Navbar id="header" inverse fixedTop className={blueNav}>
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/" className="brand">
-                <img src="/images/stitch-brand.svg" alt="Stitch" />
+                {this.props.blueNav ? (
+                  <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
+                ) : (
+                  <img src="/images/stitch-brand.svg" alt="Stitch" />
+                )}
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle onClick={this.mobileNavToggle} />
@@ -283,11 +291,12 @@ class Header extends Component {
               </NavDropdown>
 
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
+
               {!mobile &&
                 (hasLogins ? (
                   this.renderYourCarespaces(appSettings.teams, true)
                 ) : (
-                    <NavItem onClick={this.goToGetStarted} className="btn-trial">
+                    <NavItem onClick={this.goToGetStarted} className="btn-trial" id="get-started-btn">
                       Get Started
                   </NavItem>
                   ))}

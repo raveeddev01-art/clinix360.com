@@ -11,16 +11,16 @@ export default class CaseLuminance extends Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header blueNav />
         <div className="case-study">
-          <Subheader title="Customers" subtitle="Luminance Recovery" />
+          <Subheader title="Customer Stories" subtitle="Luminance Recovery" />
 
           <div className="overview text-center">
             <div className="container">
               <Row>
                 <Col xs={6} sm={3}>
                   <h5 className="text-uppercase">Specialty</h5>
-                  <p>Addiction Treatment</p>
+                  <p>Drug Rehab</p>
                 </Col>
 
                 <Col xs={6} sm={3}>
@@ -43,7 +43,7 @@ export default class CaseLuminance extends Component {
 
           <div className="container">
             <div className="case-study-content">
-              <h3 className="text-center">
+              <h3>
                 Luminance Recovery uses Stitch to improve critical
                 communications and decrease program drop-out rate by 70%
               </h3>

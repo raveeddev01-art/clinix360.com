@@ -103,6 +103,7 @@ class InvitesCard extends Component {
     return (
       <div className="invites-card-footer m-b-40">
         <Button
+          id="invites-skip-btn"
           className="btn btn-lg btn-onboarding btn-onboarding-inverse m-b-10"
           onClick={this.onSkip}
         >
@@ -112,6 +113,7 @@ class InvitesCard extends Component {
         <LoadingButton
           type="submit"
           bsStyle="primary"
+          id="invites-submit-btn"
           className="btn btn-lg btn-onboarding m-b-10"
           onClick={this.onNext}
           loading={this.state.loading}

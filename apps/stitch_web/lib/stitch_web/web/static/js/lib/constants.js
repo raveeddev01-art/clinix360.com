@@ -39,6 +39,163 @@ export const MEMBER_TYPE_OPTIONS = [
   }
 ];
 
+export const PRODUCTS = {
+  CONNECT: {
+    FREE: {
+      name: "Free",
+      price: {
+        monthly: 0,
+        annual: 0
+      },
+      features: [
+        { name: "HIPAA Compliance" },
+        { name: "Public & Private Rooms" },
+        { name: "Group & Direct Messaging" },
+        { name: "1K Message Access" },
+        { name: "1GB File Storage" },
+        { name: "Mac & Windows Apps" },
+        { name: "iOS & Android Apps" }
+      ]
+    },
+    STANDARD: {
+      name: "Standard",
+      price: {
+        monthly: 6,
+        annual: 5
+      },
+      features: [
+        { name: "All features from Free" },
+        { name: "Advanced Security Controls" },
+        { name: "Guest Access" },
+        { name: "Unlimited Search Archives" },
+        { name: "Unlimited File Storage" },
+        { name: "Custom Profiles" },
+        { name: "Priority Support" }
+      ]
+    },
+    PREMIUM: {
+      name: "Premium",
+      price: {
+        monthly: 12,
+        annual: 10
+      },
+      features: [
+        { name: "All features from Standard" },
+        { name: "Voice & Video Calls" },
+        { name: "Priority Messaging" },
+        { name: "Custom Integrations" },
+        { name: "Custom Data Retention" },
+        { name: "On-Site Training" },
+        { name: "Dedicated Support" }
+      ]
+    }
+  },
+  ENGAGE: {
+    FREE: {
+      name: "Free",
+      price: {
+        monthly: 0,
+        annual: 0
+      },
+      features: [
+        { name: "Full HIPAA Compliance" },
+        { name: "Patient Messaging" },
+        { name: "Custom Inboxes" },
+        { name: "Search & File Uploads" },
+        { name: "Custom URL" },
+        { name: "Mac & Windows Apps" },
+        { name: "iOS & Android Apps" }
+      ]
+    },
+    STANDARD: {
+      name: "Standard",
+      price: {
+        monthly: 30,
+        annual: 5
+      },
+      features: [
+        { name: "All features from Free" },
+        { name: "Advanced Security Controls" },
+        { name: "Family Access" },
+        { name: "Internal Notes" },
+        { name: "Patient Education Content" },
+        { name: "Custom Forms" },
+        { name: "Priority Support" }
+      ]
+    },
+    PREMIUM: {
+      name: "Premium",
+      price: {
+        monthly: 60,
+        annual: 10
+      },
+      features: [
+        { name: "All features from Standard" },
+        { name: "Voice & Video Calls" },
+        { name: "Payments Portals" },
+        { name: "Custom Integrations" },
+        { name: "Patient Scheduling" },
+        { name: "Live Website Chat" },
+        { name: "Dedicated Support" }
+      ]
+    }
+  },
+  MANAGE: {
+    FREE: {
+      name: "Free",
+      price: {
+        monthly: 0,
+        annual: 0
+      },
+      features: [
+        { name: "Full HIPAA Compliance" },
+        { name: "Task Creation" },
+        { name: "Task Assignments" },
+        { name: "1GB Total File Storage" },
+        { name: "Threaded Comments" },
+        { name: "Mac & Windows Apps" },
+        { name: "iOS & Android Apps" }
+      ]
+    },
+    STANDARD: {
+      name: "Standard",
+      price: {
+        monthly: 10,
+        annual: 8
+      },
+      features: [
+        { name: "All features from Free" },
+        { name: "Advanced Security Controls" },
+        { name: "Guest Access" },
+        { name: "Unlimited File Storage" },
+        { name: "Due Date Reminders" },
+        { name: "Usage Analytics" },
+        { name: "Priority Support" }
+      ]
+    },
+    PREMIUM: {
+      name: "Premium",
+      price: {
+        monthly: 20,
+        annual: 16
+      },
+      features: [
+        { name: "All features from Standard" },
+        { name: "Custom Workflows" },
+        { name: "Custom Integrations" },
+        { name: "Single Sign-On (SSO)" },
+        { name: "Custom Data Retention" },
+        { name: "Dedicated Support" },
+        { name: "On-Site Training" }
+      ]
+    }
+  }
+};
+
+export const getProduct = product => {
+  return PRODUCTS[product];
+};
+
 // Amount of waiting period in milliseconds used in debouncing presence update
 export const PRESENCE_DEBOUNCE_WAIT = 2 * 1000;
 
