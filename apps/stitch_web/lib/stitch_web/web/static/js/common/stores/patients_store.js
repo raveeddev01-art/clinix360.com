@@ -208,7 +208,23 @@ class PatientsStore {
 
   @computed
   get pageCount() {
-    return this.sortedAndFilteredPatients.length / pageLength + 1;
+    return Math.floor(this.sortedAndFilteredPatients.length / pageLength) + 1;
+  }
+
+  @computed
+  get lowestVisibleIndex() {
+    return this.page * pageLength + 1;
+  }
+
+  @computed
+  get highestVisibleIndex() {
+    const endOfPage = (this.page + 1) * pageLength;
+    return Math.min(endOfPage, this.totalVisiblePatients);
+  }
+
+  @computed
+  get totalVisiblePatients() {
+    return this.sortedAndFilteredPatients.length;
   }
 
   @computed

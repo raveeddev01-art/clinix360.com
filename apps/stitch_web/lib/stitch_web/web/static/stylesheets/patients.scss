@@ -44,7 +44,27 @@ $patients-header-height: 60px;
       }
 
       &-center {
-        flex: 1 1 auto;
+        flex: 1 1 300px;
+      }
+
+      &-pager {
+        flex: 0 0 300px;
+        padding: 0px 20px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        &-text {
+          color: $brand-primary;
+          padding: 0px 10px;
+        }
+
+        &-buttons {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
       }
     }
 

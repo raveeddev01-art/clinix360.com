@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import times from "lodash/times";
 import { inject, observer } from "mobx-react";
 
 @inject("patientsStore")
@@ -10,26 +9,54 @@ class PatientsHeader extends Component {
     setSearchFilter(e.target.value);
   };
 
-  renderPageButton = pageIndex => {
-    const { setPage } = this.props.patientsStore;
-    return <button onClick={() => setPage(pageIndex)}>{pageIndex + 1}</button>;
-  };
+  renderPagerButtons() {
+    const { page, incPage, decPage, pageCount } = this.props.patientsStore;
+
+    if (pageCount === 1) return <div />;
+
+    return (
+      <div className="patients-header-pager-buttons">
+        {page !== 0 && (
+          <button className="btn btn-sm btn-default" onClick={decPage}>
+            {" "}
+            <i className="fa fa-chevron-left" />{" "}
+          </button>
+        )}
+        {page + 1 !== pageCount && (
+          <button className="btn btn-sm btn-default" onClick={incPage}>
+            {" "}
+            <i className="fa fa-chevron-right" />{" "}
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  renderPagerText() {
+    const {
+      lowestVisibleIndex,
+      highestVisibleIndex,
+      totalVisiblePatients
+    } = this.props.patientsStore;
+
+    return (
+      <div className="patients-header-pager-text">
+        {lowestVisibleIndex}-{highestVisibleIndex} of {totalVisiblePatients}
+      </div>
+    );
+  }
 
   render() {
-    const { page, incPage, decPage } = this.props.patientsStore;
-    const pages = this.props.patientsStore.pageCount;
-
     return (
       <div className="patients-header">
         <div className="patients-header-count">
-          <h4>
-            {this.props.patientsStore.sortedAndFilteredPatients.length} Patients
-          </h4>
+          <h4>{this.props.patientsStore.totalVisiblePatients} Patients</h4>
         </div>
-        <div className="patients-header-center">
-          <div> Page: {page + 1} </div>
-          <div>{times(pages).map(this.renderPageButton)}</div>
+        <div className="patients-header-pager">
+          {this.renderPagerButtons()}
+          {this.renderPagerText()}
         </div>
+        <div className="patients-header-center" />
         <div className="patients-header-search">
           <input
             type="text"
