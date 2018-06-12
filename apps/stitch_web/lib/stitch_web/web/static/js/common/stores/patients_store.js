@@ -207,6 +207,11 @@ class PatientsStore {
   }
 
   @computed
+  get pageCount() {
+    return this.sortedAndFilteredPatients.length / pageLength + 1;
+  }
+
+  @computed
   get patientsFiler() {
     // function of statusFilter && searchFilter
     return p =>
