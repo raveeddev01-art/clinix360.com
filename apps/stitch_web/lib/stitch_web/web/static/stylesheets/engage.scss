@@ -62,6 +62,7 @@ $admin-topbar-height: 65px;
   .sidebar {
     background-color: $brand-primary;
     flex-basis: $admin-sidebar-width;
+    max-width: $admin-sidebar-width;
     overflow: visible;
     z-index: 1;
     display: flex;
@@ -97,12 +98,12 @@ $admin-topbar-height: 65px;
           border-radius: 4px;
           margin-bottom: 15px;
         }
-  
+
         .placeholder-item-list {
           display: flex;
           align-items: center;
           margin: 0 0 12px;
-  
+
           .placeholder-avatar {
             width: 20px;
             height: 20px;
@@ -110,7 +111,7 @@ $admin-topbar-height: 65px;
             border-radius: 50%;
             margin-right: 10px;
           }
-  
+
           .placeholder-name {
             height: 16px;
             flex: 1 0 auto;
@@ -152,7 +153,7 @@ $admin-topbar-height: 65px;
           font-weight: bold;
           line-height: 1.25;
         }
-    
+
         h4 {
           font-weight: 600;
           line-height: 1.4;
@@ -163,7 +164,7 @@ $admin-topbar-height: 65px;
         }
       }
 
-      .icon-wrapper{
+      .icon-wrapper {
         color: $brand-primary;
         font-size: 175px;
         margin-left: 40px;
