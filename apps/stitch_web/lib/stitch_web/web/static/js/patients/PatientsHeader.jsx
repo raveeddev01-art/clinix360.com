@@ -27,7 +27,7 @@ class PatientsHeader extends Component {
           </h4>
         </div>
         <div className="patients-header-center">
-          <div> Page: {page} </div>
+          <div> Page: {page + 1} </div>
           <div>{times(pages).map(this.renderPageButton)}</div>
         </div>
         <div className="patients-header-search">

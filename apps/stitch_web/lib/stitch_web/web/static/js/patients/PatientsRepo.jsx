@@ -12,7 +12,7 @@ class PatientsRepo extends Component {
     const { patientsStore } = this.props;
 
     return (
-      <div className="patients-repo">
+      <div className="patients">
         <PatientsHeader />
         <div className="patients-list-wrapper">
           <div className="patients-list">

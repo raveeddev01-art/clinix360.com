@@ -89,7 +89,8 @@ class Sidebar extends Component {
               </div>
             );
           })}
-          <div className="patients-add-link">
+
+          <div className="patients-sidebar-add-link">
             <h5>
               <OverlayTrigger
                 placement="top"
@@ -103,7 +104,7 @@ class Sidebar extends Component {
               </OverlayTrigger>
             </h5>
 
-            <div className="patients-add-link__action">
+            <div className="patients-sidebar-add-link__action">
               <OverlayTrigger
                 placement="top"
                 overlay={
