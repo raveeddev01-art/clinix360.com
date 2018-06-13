@@ -12,7 +12,7 @@ class PatientsHeader extends Component {
   renderPagerButtons() {
     const { page, incPage, decPage, pageCount } = this.props.patientsStore;
 
-    if (pageCount === 1) return <div />;
+    if (pageCount <= 1) return <div />;
 
     return (
       <div className="patients-header-pager-buttons">
@@ -38,6 +38,8 @@ class PatientsHeader extends Component {
       highestVisibleIndex,
       totalVisiblePatients
     } = this.props.patientsStore;
+
+    if (totalVisiblePatients <= 1) return <div />;
 
     return (
       <div className="patients-header-pager-text">
