@@ -29,9 +29,9 @@ const sortOptions = [
     title: "Status",
     values: [
       { id: "all", display: "All" },
-      { id: "active", display: "Active" },
+      { id: "onboarded", display: "Onboarded" },
       { id: "pending", display: "Pending" },
-      { id: "disabled", display: "Disabled" }
+      { id: "deactivated", display: "Deactivated" }
     ]
   }
 ];
@@ -39,8 +39,13 @@ const sortOptions = [
 @inject("userStore", "patientsStore")
 @observer
 class Sidebar extends Component {
+  onSelectChange = name => ({ id: val }) => {
+    this.props.patientsStore.setOption(name, val);
+  };
+
   render() {
     const { patientsStore, userStore } = this.props;
+
     return (
       <div className="sidebar patients-sidebar">
         <div className="flex-header m-b-10">
@@ -60,7 +65,7 @@ class Sidebar extends Component {
               v => v.id === patientsStore.getOption(name)
             );
             return (
-              <div className="menu-nav m-b-20">
+              <div className="menu-nav m-b-20" key={name}>
                 <div className="hidden">
                   {/* forcing mobx to re-render */}
                   {/* TODO: figure out a nicer way */}
@@ -74,7 +79,7 @@ class Sidebar extends Component {
                       searchable={false}
                       clearable={false}
                       className="patients-select-option"
-                      onChange={patientsStore.setOption(name)}
+                      onChange={this.onSelectChange(name)}
                       value={setValue}
                       valueKey="id"
                       labelKey="display"
@@ -85,7 +90,8 @@ class Sidebar extends Component {
               </div>
             );
           })}
-          <div className="patients-add-link">
+
+          <div className="patients-sidebar-add-link">
             <h5>
               <OverlayTrigger
                 placement="top"
@@ -99,7 +105,7 @@ class Sidebar extends Component {
               </OverlayTrigger>
             </h5>
 
-            <div className="patients-add-link__action">
+            <div className="patients-sidebar-add-link__action">
               <OverlayTrigger
                 placement="top"
                 overlay={
