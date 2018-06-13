@@ -63,7 +63,7 @@ const statusMatch = (patient, statusFilter) => {
   switch (statusFilter) {
     case "all":
       return true;
-    case "active":
+    case "onboarded":
       return patient.onboared && patient.active;
     case "pending":
       return patient.active && !patient.onboarded;
@@ -128,6 +128,16 @@ class PatientsStore {
   @action
   updatePatient = (id, params) => {
     return put(`/api/v1/patients/${id}`, { body: params });
+  };
+
+  @action
+  activatePatient = (id, params) => {
+    return put(`/api/v1/patients/${id}/activate`, {});
+  };
+
+  @action
+  deactivatePatient = (id, params) => {
+    return put(`/api/v1/patients/${id}/deactivate`, {});
   };
 
   // channel and api res handlers

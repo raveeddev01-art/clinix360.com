@@ -152,6 +152,8 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/patients/:id", TeamPatientController, :show)
     post("/patients", TeamPatientController, :create)
     put("/patients/:id", TeamPatientController, :update)
+    put("/patients/:id/activate", TeamPatientController, :activate)
+    put("/patients/:id/deactivate", TeamPatientController, :deactivate)
   end
 
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do

@@ -31,6 +31,10 @@ defmodule Stitch.TeamPatient do
     |> unique_constraint(:patient_id, name: :team_patients_patient_id_team_id_index)
   end
 
+  def active_changeset(%Stitch.TeamPatient{} = struct, active) do
+    struct |> cast(%{active: active}, [:active])
+  end
+
   @doc """
   Helper function to add a team patient given a map of attributes
   """
@@ -46,7 +50,7 @@ defmodule Stitch.TeamPatient do
   end
 
   @doc """
-  Helper function to add a team patient given a map of attributes
+  Handles team_patient (and potentially patient) creation as a provider
   """
   @spec create_as_provider(Team.t(), map) :: {:ok, map} | {:error, map}
   def create_as_provider(team, params) do
@@ -67,7 +71,17 @@ defmodule Stitch.TeamPatient do
   end
 
   @doc """
-  Helper function to add a team patient given a map of attributes
+  Handles team_patient activation/deactivation as a provider
+  """
+  @spec change_active_status_as_provider(TeamPatient.t(), boolean) :: {:ok, map} | {:error, map}
+  def change_active_status_as_provider(team_patient, active_status) do
+    team_patient
+    |> active_changeset(active_status)
+    |> Repo.update()
+  end
+
+  @doc """
+  Handles team_patient (and potentially patient) updates as a provider
   """
   @spec update_as_provider(TeamPatient.t(), map) :: {:ok, map} | {:error, map}
   def update_as_provider(team_patient, params) do

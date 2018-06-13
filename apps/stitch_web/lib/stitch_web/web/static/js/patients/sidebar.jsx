@@ -29,7 +29,7 @@ const sortOptions = [
     title: "Status",
     values: [
       { id: "all", display: "All" },
-      { id: "active", display: "Active" },
+      { id: "onboarded", display: "Onboarded" },
       { id: "pending", display: "Pending" },
       { id: "deactivated", display: "Deactivated" }
     ]
@@ -64,7 +64,7 @@ class Sidebar extends Component {
               v => v.id === patientsStore.getOption(name)
             );
             return (
-              <div className="menu-nav m-b-20">
+              <div className="menu-nav m-b-20" key={name}>
                 <div className="hidden">
                   {/* forcing mobx to re-render */}
                   {/* TODO: figure out a nicer way */}

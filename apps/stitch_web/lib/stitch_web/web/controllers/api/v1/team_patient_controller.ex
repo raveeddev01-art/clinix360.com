@@ -4,7 +4,7 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
   # We should add analytics before activating
   # alias Stitch.Analytics.Patient, as: PatientAnalytics
 
-  alias Stitch.{TeamPatient, PatientAuthorization, PatientQueries, Web.TeamChannel}
+  alias Stitch.{Repo, TeamPatient, PatientAuthorization, PatientQueries, Web.TeamChannel}
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
@@ -62,6 +62,43 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
       )
 
       render(conn, "show.json", team_patient: updated_team_patient, patient: patient)
+    else
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot update this patient."}
+
+      {:error, _model_errored, changeset, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+    end
+  end
+
+  def activate(conn, params = %{"id" => id}) do
+    change_active_value(conn, params, true)
+  end
+
+  def deactivate(conn, params) do
+    change_active_value(conn, params, false)
+  end
+
+  defp change_active_value(conn, params = %{"id" => id}, active_status) do
+    current_user = conn.assigns.current_user
+
+    with {:authorized?, true} <-
+           {:authorized?, PatientAuthorization.can_update_as_provider?(id, current_user)},
+         {:ok, team_patient} when not is_nil(team_patient) <-
+           {:ok, PatientQueries.get_team_patient(id)},
+         {:ok, team_patient} <-
+           TeamPatient.change_active_status_as_provider(team_patient, active_status) do
+      team_patient = Repo.preload(team_patient, :patient)
+
+      TeamChannel.broadcast_team_patient_updated(
+        conn.assigns.team.id,
+        team_patient,
+        team_patient.patient
+      )
+
+      render(conn, "show.json", team_patient: team_patient)
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot update this patient."}

@@ -52,7 +52,11 @@ class PatientModal extends Component {
   }
 
   closeModal = () => {
-    this.setState({ isSaving: false });
+    this.setState({
+      isSaving: false,
+      modalPatientId: null
+    });
+
     this.props.patientsStore.closeModal();
   };
 
@@ -66,13 +70,27 @@ class PatientModal extends Component {
 
   handleSubmit = () => {
     const { createPatient, updatePatient } = this.props.patientsStore;
-    this.setState({ isSaving: true });
-
     const apiCall = this.state.patientParams.id
       ? updatePatient(this.state.patientParams.id, this.state.patientParams)
       : createPatient(this.state.patientParams);
 
-    apiCall
+    this.makeApiCall(apiCall);
+  };
+
+  handleDeactivate = () => {
+    const { deactivatePatient } = this.props.patientsStore;
+    this.makeApiCall(deactivatePatient(this.state.patientParams.id));
+  };
+
+  handleActivate = () => {
+    const { activatePatient } = this.props.patientsStore;
+    this.makeApiCall(activatePatient(this.state.patientParams.id));
+  };
+
+  makeApiCall = callPromise => {
+    this.setState({ isSaving: true });
+
+    return callPromise
       .then(() => {
         this.closeModal();
       })
@@ -85,6 +103,22 @@ class PatientModal extends Component {
     const { isSaving } = this.state;
 
     return isSaving && <LoadingIcon className="on-right" />;
+  };
+
+  renderActiveChange = () => {
+    const { isSaving, patientParams } = this.state;
+    const cb = patientParams.active
+      ? this.handleDeactivate
+      : this.handleActivate;
+    const text = patientParams.active
+      ? "Deactivate Patient"
+      : "Activate Patient";
+
+    return (
+      <Button disabled={isSaving} bsSize="large" onClick={cb}>
+        {text}
+      </Button>
+    );
   };
 
   render() {
@@ -193,6 +227,7 @@ class PatientModal extends Component {
                     onChange={this.handleChange("phone_number")}
                   />
                 </FormGroup>
+                {this.renderActiveChange()}
               </Form>
             </Col>
             <Col sm={6} smOffset={0}>
