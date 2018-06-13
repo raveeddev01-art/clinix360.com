@@ -27,7 +27,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def index(conn, %{"group_id" => group_id} = params) do
     current_user = conn.assigns.current_user
-    authenticated_urls = Map.get(params, "authenticated_urls", false)
+    authenticated_urls = get_authenticated_urls(params)
 
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)} do
@@ -43,6 +43,9 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         {:error, :not_authorized, "You can't see the messages for this room."}
     end
   end
+
+  def get_authenticated_urls(%{"authenticated_urls" => "true"}), do: true
+  def get_authenticated_urls(_params), do: false
 
   def feed_recent(conn, %{"group_id" => group_id}) do
     current_user = conn.assigns.current_user
@@ -100,7 +103,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     current_user = conn.assigns.current_user
-    authenticated_urls = Map.get(message_params, "authenticated_urls", false)
+    authenticated_urls = get_authenticated_urls(message_params)
 
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
 
