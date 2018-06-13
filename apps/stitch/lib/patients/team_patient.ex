@@ -37,7 +37,10 @@ defmodule Stitch.TeamPatient do
   @spec create(map) :: {:ok, TeamPatient.t()} | {:error, Ecto.Changeset.t()}
   def create(params) do
     changeset =
-      changeset(%TeamPatient{patient_id: params.patient_id, team_id: params.team_id}, params)
+      changeset(
+        %TeamPatient{active: true, patient_id: params.patient_id, team_id: params.team_id},
+        params
+      )
 
     Repo.insert(changeset)
   end
@@ -54,7 +57,7 @@ defmodule Stitch.TeamPatient do
     |> Ecto.Multi.run(:team_patient, fn %{patient: patient} ->
       changeset =
         changeset(
-          %TeamPatient{patient_id: patient.id, team_id: team.id},
+          %TeamPatient{active: true, patient_id: patient.id, team_id: team.id},
           params
         )
 
