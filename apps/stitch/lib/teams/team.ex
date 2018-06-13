@@ -23,15 +23,21 @@ defmodule Stitch.Team do
     field(:conceal_enabled, :boolean, default: true)
 
     has_many(:users, Stitch.Accounts.User, on_delete: :delete_all)
-    has_many(:groups, Stitch.Group, on_delete: :delete_all)
     has_many(:invitations, Stitch.Invitation, on_delete: :delete_all)
-    has_many(:exports, Stitch.Exports.Export, on_delete: :delete_all)
     has_one(:subscription, Stitch.Billing.Subscription, on_delete: :delete_all)
     has_many(:payment_methods, Stitch.Billing.PaymentMethod, on_delete: :delete_all)
     has_many(:features, Stitch.TeamFeature, on_delete: :delete_all)
 
+    # Connect
+    has_many(:groups, Stitch.Group, on_delete: :delete_all)
+    has_many(:exports, Stitch.Exports.Export, on_delete: :delete_all)
+
+    # Patients
     has_many(:team_patients, Stitch.TeamPatient, on_delete: :delete_all)
     has_many(:patients, through: [:team_patients, :patient])
+
+    # Engage
+    has_many(:inboxes, Stitch.Engage.Inboxes, on_delete: :delete_all)
 
     timestamps()
   end
