@@ -45,6 +45,7 @@ class Sidebar extends Component {
 
   render() {
     const { patientsStore, userStore } = this.props;
+
     return (
       <div className="sidebar patients-sidebar">
         <div className="flex-header m-b-10">

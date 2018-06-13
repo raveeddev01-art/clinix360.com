@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import Button from "react-bootstrap/lib/Button";
 
@@ -37,5 +38,14 @@ class PatientListItem extends Component {
     );
   }
 }
+
+PatientListItem.propTypes = {
+  patient: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    avatar: PropTypes.string.isRequired,
+    full_name: PropTypes.string.isRequired,
+    mrn: PropTypes.string.isRequired
+  }).isRequired
+};
 
 export default PatientListItem;

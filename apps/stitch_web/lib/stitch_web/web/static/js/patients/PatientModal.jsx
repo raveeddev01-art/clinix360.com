@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
 import Alert from "react-bootstrap/lib/Alert";
@@ -69,12 +68,14 @@ class PatientModal extends Component {
   };
 
   handleSubmit = () => {
+    const { patientParams } = this.state;
     const { createPatient, updatePatient } = this.props.patientsStore;
-    const apiCall = this.state.patientParams.id
-      ? updatePatient(this.state.patientParams.id, this.state.patientParams)
-      : createPatient(this.state.patientParams);
 
-    this.makeApiCall(apiCall);
+    const callPromise = patientParams.id
+      ? updatePatient(patientParams.id, patientParams)
+      : createPatient(patientParams);
+
+    this.makeApiCall(callPromise);
   };
 
   handleDeactivate = () => {
@@ -141,6 +142,8 @@ class PatientModal extends Component {
       "stitch-content/default-avatar.png"
     );
 
+    const creatingNewPatient = !id;
+
     return (
       <Modal
         show={modalOpen}
@@ -163,7 +166,7 @@ class PatientModal extends Component {
                 onSubmit={this.onSubmit}
                 noValidate
               >
-                {id && (
+                {!creatingNewPatient && (
                   <FormGroup bsSize="large">
                     <ControlLabel>Status</ControlLabel>
                     <FormControl
@@ -178,9 +181,9 @@ class PatientModal extends Component {
                   <ControlLabel>Email</ControlLabel>
                   <FormControl
                     name="email"
-                    disabled={!!id}
+                    disabled={!creatingNewPatient}
                     required
-                    autoFocus={!id}
+                    autoFocus={creatingNewPatient}
                     type="text"
                     value={email}
                     onChange={this.handleChange("email")}
@@ -191,7 +194,7 @@ class PatientModal extends Component {
                   <FormControl
                     name="first_name"
                     required
-                    autoFocus={!!id}
+                    autoFocus={!creatingNewPatient}
                     type="text"
                     value={first_name}
                     onChange={this.handleChange("first_name")}

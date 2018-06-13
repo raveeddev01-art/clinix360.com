@@ -14,15 +14,19 @@ class PatientsHeader extends Component {
 
     if (pageCount <= 1) return <div />;
 
+    const onFirstPage = page === 0;
+    const onFinalPage = page + 1 === pageCount;
+
     return (
       <div className="patients-header-pager-buttons">
-        {page !== 0 && (
+        {!onFirstPage && (
           <button className="btn btn-sm btn-default" onClick={decPage}>
             {" "}
             <i className="fa fa-chevron-left" />{" "}
           </button>
         )}
-        {page + 1 !== pageCount && (
+
+        {!onFinalPage && (
           <button className="btn btn-sm btn-default" onClick={incPage}>
             {" "}
             <i className="fa fa-chevron-right" />{" "}

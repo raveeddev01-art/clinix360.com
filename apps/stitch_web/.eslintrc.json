@@ -78,6 +78,7 @@
           "userStore",
           "usersStore",
           "newsStore",
+          "patientsStore",
 
           "match",
           "location",
