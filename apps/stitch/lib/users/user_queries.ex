@@ -79,6 +79,10 @@ defmodule Stitch.UserQueries do
     Repo.get_by(User, id: user_id, team_id: team_id)
   end
 
+  def team_member_by_token(team_id, token) do
+    Repo.get_by(User, token: token, team_id: team_id)
+  end
+
   def get_all do
     Repo.all(from(User))
   end
@@ -161,5 +165,14 @@ defmodule Stitch.UserQueries do
       |> Repo.one()
 
     enabled_users_count > 0
+  end
+
+  def find_staff(tokens) do
+    User
+    |> where([u], u.token in ^tokens)
+    |> where([u], u.disabled == false)
+    |> where([u], u.is_staff == true)
+    |> limit(1)
+    |> Repo.one()
   end
 end

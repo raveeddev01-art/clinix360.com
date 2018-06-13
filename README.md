@@ -1,12 +1,12 @@
 # Stitch Umbrella
 
 This is the main umbrella application for
-[Stitch](https://connect.teamstitch.com/).
+[Stitch](https://teamstitch.com/).
 
 It contains two Elixir applications:
 
-* Stitch (supporting business rules)
-* StitchConnect (web api and frontend)
+- Stitch (supporting business rules)
+- StitchWeb (web api and frontend)
 
 ---
 
@@ -20,13 +20,13 @@ Set up and launch postgres if you have not yet done so.
 
 Install external dependencies
 
-* `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
+- `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
 
-* `wkhtmltopdf` (https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF) Needed to generate PDFs.
+- `wkhtmltopdf` (https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF) Needed to generate PDFs.
 
-* `chromedriver` (https://sites.google.com/a/chromium.org/chromedriver/) Needed to run automated tests. (`brew install chromedriver`)
+- `chromedriver` (https://sites.google.com/a/chromium.org/chromedriver/) Needed to run automated tests. (`brew install chromedriver`)
 
-* `redis` (`brew install redis`)
+- `redis` (`brew install redis`)
 
 Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
@@ -106,11 +106,11 @@ MIX_ENV=test mix ecto.create
 MIX_ENV=test mix ecto.migrate
 ```
 
-Change directory to the `stitch_connect` project folder, and install the frontend
+Change directory to the `stitch_web` project folder, and install the frontend
 dependencies using yarn.
 
 ```sh
-cd ~/Work/stitch-phoenix/apps/stitch_connect/
+cd ~/Work/stitch-phoenix/apps/stitch_web/
 yarn
 ```
 
@@ -131,7 +131,7 @@ Finished in 0.2 seconds
 29 tests, 0 failures
 
 Randomized with seed 381823
-==> stitch_connect
+==> stitch_web
 ....
 
 Finished in 0.06 seconds
@@ -155,6 +155,15 @@ https://localhost.app:4443/
 
 Note: depending on your browser, you may have to add an SSL certificate exception to access the site.
 
+To always trust the ssl certificate:
+
+- Open Keychain Access
+- Go to the Certificates
+- Import (click on `+`) this file `apps/stitch_web/priv/keys/localhost.cert`
+- Double click on the certificate that you have just imported
+- Click on "Trust"
+- At "When using this certificate:", select "Always Trust"
+
 ---
 
 We're using Dialyzer to write typed Elixir. To run Dialyzer
@@ -169,7 +178,7 @@ mix dialyzer
 When working on maintaining or extending `Stitch.Analytics` consider these
 recommendations to more easily test or debug as needed.
 
-1. Edit `config/dev.exs` for `Stitch.Analytics` to push events to `Segment`:
+1.  Edit `config/dev.exs` for `Stitch.Analytics` to push events to `Segment`:
 
 In dev env `Stitch` is configured to use `Stitch.Analytics.Segment.InMemory`.
 This means that analytics events will be created in the `segment_events` DB
@@ -179,7 +188,7 @@ analytics system in dev env without hitting the Segment API. In prod env
 test/debug in dev env, while hitting the Segment API and the associated destinations
 configured on Segment, edit `config/dev.exs to use the`HTTPClient`module. If you do this, remember to use the Segment API keys for the`Staging`source and not`Production`.
 
-2. Edit `config/dev.exs` to enable `Stitch.Analytics.Sync.RecurringSync`:
+2.  Edit `config/dev.exs` to enable `Stitch.Analytics.Sync.RecurringSync`:
 
 In dev env `Stitch.Analytics.Sync.RecurringSync` is disabled. This means
 analytics events are created in the `segment_events` DB table but never move

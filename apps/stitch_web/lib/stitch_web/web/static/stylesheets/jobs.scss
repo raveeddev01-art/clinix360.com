@@ -1,0 +1,227 @@
+body {
+  background: $medium-gray;
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+#app_body {
+  font-size: 18px;
+  padding: 0 !important;
+  /*width: auto;*/
+  max-width: initial;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+
+  h1 {
+    color: $brand-primary;
+    font-size: calc(1.6rem + (6 * (100vw - 360px) / 624));
+    font-weight: 900;
+    line-height: 1.2;
+    margin-top: 0;
+    @media (min-width: $screen-lg) {
+      font-size: 2.125rem;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  #app_body {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+#main {
+  padding: 60px 0;
+  @media (min-width: $screen-sm) {
+    padding: 95px 0;
+  }
+
+  #wrapper {
+    padding: 0 !important;
+  }
+}
+
+#header {
+  padding: 0;
+  text-align: center;
+}
+
+#header .app_title {
+  font-size: 32px;
+}
+
+#filter-count {
+  display: none;
+}
+
+#content {
+  font-size: 18px;
+
+  p strong {
+    display: block;
+    color: $brand-primary;
+    margin: 30px 0 10px;
+  }
+}
+
+#application {
+  background: #fff;
+  font-size: 16px;
+  margin: 0 auto;
+  border-radius: 4px;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  margin-top: 50px;
+}
+
+#main_fields div.field {
+  display: flex;
+}
+
+#main_fields div.field label,
+#custom_fields div.field label,
+#eeoc_fields div.field label {
+  font-size: 15px;
+  line-height: 36px;
+}
+
+#main_fields div.field input[type="text"],
+#main_fields div.field textarea,
+#eeoc_fields div.field input[type="text"],
+#eeoc_fields div.field textarea {
+  font-size: 15px;
+  line-height: 34px;
+  padding: 0 8px;
+  border-radius: 4px;
+  flex-grow: 1;
+}
+
+#custom_fields div.field input[type="text"],
+#custom_fields div.field textarea,
+#custom_fields div.field .text-field,
+#custom_fields div.field .select2-container-multi {
+  font-size: 15px;
+  line-height: 34px;
+  padding: 0 8px;
+  border-radius: 4px;
+  margin-top: 2px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.link-container {
+  line-height: 36px;
+}
+
+#submit_app {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 16.1px;
+  background: #036;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+  border: 1px solid #036;
+}
+
+.attach-or-paste {
+  flex-grow: 1;
+}
+
+.attach-or-paste div[data-messages="uploaders"] {
+  line-height: 36px;
+  color: #9e9ea6;
+}
+
+#resume_text {
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#wrapper {
+  padding: 0 6vw;
+}
+
+#wrapper .company-name {
+  display: none;
+}
+
+#wrapper .location {
+  font-size: 20px;
+  font-weight: 700;
+}
+#wrapper > section {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+#wrapper > section h2 {
+  color: $brand-primary;
+  font-size: calc(1.25rem + (6 * (100vw - 360px) / 624));
+  font-weight: 900;
+  width: 100%;
+  margin: 10px 0;
+  padding: 0 10px;
+  @media (min-width: $screen-lg) {
+    font-size: 1.8rem;
+  }
+}
+
+#wrapper > section:first-of-type h2 {
+  margin-top: 0;
+}
+
+#wrapper > section .opening {
+  margin: 10px;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 15px;
+  display: flex;
+}
+
+#wrapper > section .opening a {
+  font-size: 18px;
+  color: $brand-primary;
+  text-decoration: none;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 100%;
+  padding: 15px 20px;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: #fff;
+    background: $brand-primary;
+    border-color: $brand-primary;
+  }
+}
+
+#wrapper > section .opening a:active {
+  position: relative;
+  top: 3px;
+}
+
+#wrapper > section .opening .location {
+  color: #555459;
+  margin: 10px 0;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+#wrapper > section .opening .location,
+#wrapper > section .opening br {
+  display: none;
+}
+
+#board_title {
+  display: none;
+}

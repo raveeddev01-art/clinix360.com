@@ -2,7 +2,8 @@ defmodule Stitch.Drchrono.Bot do
   import Ecto.Query
   alias Stitch.{Accounts.User, Message}
   alias Stitch.Repo
-  alias StitchConnect.Web.{TeamChannel, UserStatusService}
+  alias Stitch.Web.TeamChannel
+  alias StitchConnect.Web.UserStatusService
   require Logger
 
   @spec init_or_enable_bot(number) :: {:ok, User.t()} | {:error, term}

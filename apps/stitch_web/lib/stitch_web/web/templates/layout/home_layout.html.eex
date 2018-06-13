@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MMLMP6C');</script>
+    <!-- End Google Tag Manager -->
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://teamstitch.com" rel="canonical">
+    <meta name="author" content="">
+    <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token %>">
+
+    <title><%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %></title>
+
+    <meta name="description" content="<%= if assigns[:description], do: @description, else: "Stitch is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Stitch" />
+    <meta property="og:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %>" />
+    <meta property="og:description" content="<%= if assigns[:description], do: @description, else: "Stitch is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
+    <meta property="og:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@stitchhq" />
+    <meta name="twitter:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %>" />
+    <meta name="twitter:description" content="<%= if assigns[:description], do: @description, else: "Stitch is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
+    <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
+
+    <link rel="shortcut icon" type="image/png" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/landing.css") %>">
+    <%= render "_google_analytics.html", conn: @conn %>
+    <%= render "_structured_data.html", conn: @conn %>
+    <!--[if lt IE 9]>
+    <script>
+      (function(){
+        var ef = function(){};
+        window.console = window.console || {log:ef,warn:ef,error:ef,dir:ef};
+      }());
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv-printshiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-sham.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MMLMP6C"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <%= render @view_module, @view_template, assigns %>
+
+    <!-- <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+    <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+
+    <main role="main">
+      <%= render @view_module, @view_template, assigns %>
+    </main> -->
+
+    <%= render "_js_variables.html", conn: @conn %>
+    <%= render "_sentry.html", conn: @conn %>
+    <script src="<%= static_path(@conn, "/js/landing_app.js") %>"></script>
+    <%= render "_intercom_website.html", conn: @conn %>
+    <%= render "_segment.html", conn: @conn %>
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/landing-non-critical.css") %>">
+  </body>
+</html>

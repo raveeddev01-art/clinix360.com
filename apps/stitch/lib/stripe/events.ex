@@ -4,7 +4,7 @@ defmodule Stitch.Stripe.Events do
   """
   alias Stitch.Billing.{Plan, Notifications}
   alias Stitch.{Billing, TeamQueries, AWS.S3}
-  alias StitchConnect.Web.Api.V1.Billing.HistoryView
+  alias Stitch.Web.Api.V1.Billing.HistoryView
 
   # Successful payment
   def handle_event(%{type: "invoice.payment_succeeded"} = event) do

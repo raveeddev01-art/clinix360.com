@@ -1,0 +1,397 @@
+defmodule Stitch.Web.SubdomainRouter do
+  use Stitch.Web, :router
+
+  # =============
+  #   PIPELINES
+  # =============
+
+  pipeline :browser do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_flash)
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
+  end
+
+  pipeline :browser_authenticate do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_flash)
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
+    plug(Stitch.Web.Plug.Authenticate)
+    plug(Stitch.Web.Plug.ActivityTracker)
+  end
+
+  pipeline :admin do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(Stitch.Web.Plug.StaffAuthenticate)
+    plug(:put_layout, {Stitch.Web.Admin.AppView, "layout.html"})
+  end
+
+  pipeline :api_auth do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:accepts, ["json"])
+    plug(:fetch_session)
+  end
+
+  pipeline :api do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:accepts, ["json"])
+  end
+
+  pipeline :authenticated_api do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:accepts, ["json"])
+    plug(:fetch_session)
+    plug(Stitch.Web.Plug.ApiAuthenticate)
+    plug(Stitch.Web.Plug.EnsureUnlocked)
+    plug(Stitch.Web.Plug.ActivityTracker)
+  end
+
+  pipeline :authenticated_locked_api do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:accepts, ["json"])
+    plug(:fetch_session)
+    plug(Stitch.Web.Plug.ApiAuthenticate)
+  end
+
+  pipeline :team_admin_api do
+    plug(:accepts, ["json"])
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:fetch_session)
+    plug(Stitch.Web.Plug.ApiAuthenticate)
+    plug(Stitch.Web.Plug.TeamAdminOnly)
+    plug(Stitch.Web.Plug.ActivityTracker)
+  end
+
+  pipeline :files do
+    plug(Stitch.Web.Plug.PlugAttack)
+    plug(:fetch_session)
+  end
+
+  scope "/", Stitch.Web.Files, as: :files, host: "files." do
+    pipe_through([:files])
+
+    get("/file/:upload_id/:filename", FileController, :download)
+    get("/preview/:upload_id", FileController, :download_preview)
+  end
+
+  # ================
+  #   ADMIN ROUTES
+  # ================
+
+  # Stitch Staff Admin subdomain routes
+  scope "/", Stitch.Web.Admin, as: :admin, host: "admin." do
+    pipe_through([:browser, :admin])
+    get("/", IndexController, :index)
+
+    resources("/users", UserController, only: [:index])
+    resources("/teams", TeamController, only: [:index])
+
+    get("/impersonate/stop", ImpersonationController, :stop)
+    get("/impersonate/:user_id", ImpersonationController, :impersonate)
+  end
+
+  # =================================
+  #   STITCH ROUTES (CROSS-PRODUCT)
+  # =================================
+
+  # API routes which don't need token.
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api)
+
+    get("/users/validate-username", UserController, :validate_username)
+    post("/users/exists", UserController, :exists?)
+    post("/users/validate-phone-number", UserController, :validate_phone_number)
+
+    get("/stitch-version", VersionController, :index)
+  end
+
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_locked_api)
+
+    post("/session-lock", SessionLockController, :lock)
+    post("/session-unlock", SessionLockController, :unlock)
+  end
+
+  # ====
+  # NOTE: Stitch-Connect route up here to pattern match first
+  # ====
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_locked_api)
+    get("/users/notification-preference", NotificationPreferenceController, :show_global)
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_api)
+    put("/users/notification-preference", NotificationPreferenceController, :update_global)
+  end
+
+  # ====
+  # End of connect-specific routes
+  # ====
+
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_api)
+
+    get("/users/", UserController, :index)
+    post("/users/deactivate-my-account", UserController, :deactivate_my_account)
+    get("/users/:id", UserController, :show)
+    put("/users/:id", UserController, :update)
+    get("/users/:id/avatar", UserController, :profile_image)
+    put("/users/:id/update_password", UserController, :update_password)
+    put("/users/:id/upload_profile_image", UserController, :upload_profile_image)
+    delete("/users/:id/delete_profile_image", UserController, :delete_profile_image)
+    post("/users/search", UserController, :search)
+    post("/users/access", UserController, :access)
+
+    get("/patients", TeamPatientController, :index)
+    get("/patients/:id", TeamPatientController, :show)
+    post("/patients", TeamPatientController, :create)
+    put("/patients/:id", TeamPatientController, :update)
+  end
+
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:team_admin_api)
+
+    # User Settings admin routes
+    scope "/users/:id" do
+      post("/activate", UserController, :activate)
+      post("/deactivate", UserController, :deactivate)
+      put("/roles", UserController, :change_role)
+      put("/revoke-admin", UserController, :revoke_admin)
+      put("/promote-admin", UserController, :promote_admin)
+    end
+
+    # Team Settings admin routes
+    scope "/teams/:id" do
+      delete("/", TeamController, :delete_team)
+      put("/toggle-conceal", TeamController, :toggle_conceal)
+      get("/contact", TeamController, :show_contact_info)
+      put("/contact", TeamController, :update_contact_info)
+      put("/update-open-invitation", TeamController, :update_open_invitation)
+      put("/update-security-lockout-time", TeamController, :update_security_lockout_time)
+      get("/access_log", TeamController, :access_log)
+    end
+
+    # Subscription/Billing routes
+    scope "/billing", Billing, as: :billing do
+      scope "/subscription" do
+        get("/", SubscriptionController, :show)
+        put("/", SubscriptionController, :update)
+        put("/renew", SubscriptionController, :renew)
+        put("/cancel", SubscriptionController, :cancel)
+      end
+
+      resources("/history", HistoryController, only: [:index])
+      resources("/cards", CardController, only: [:index, :create, :update, :delete])
+    end
+  end
+
+  # Routes which needs admin role
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:team_admin_api)
+
+    # Guest invitation routes
+    scope "/invitations" do
+      post("/single-room-guest", InvitationController, :invite_single_room_guest)
+      post("/single-room-guests", InvitationController, :invite_single_room_guests)
+      post("/multi-room-guest", InvitationController, :invite_multi_room_guest)
+      post("/multi-room-guests", InvitationController, :invite_multi_room_guests)
+    end
+
+    scope "/bots" do
+      get("/", BotsController, :index)
+      post("/", BotsController, :create)
+      put("/:id", BotsController, :update)
+    end
+
+    # Initiate export by admin
+    resources("/exports", ExportController, only: [:index, :create])
+
+    # Admin repotes route
+    resources("/reports", ReportController, only: [:create])
+  end
+
+  # API routes which need token.
+  scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api_auth)
+
+    get("/teams/:id", TeamController, :show)
+    put("/teams/:id", TeamController, :update)
+
+    post("/login", AuthenticationController, :submit_login)
+    post("/reset_password", AuthenticationController, :reset_password)
+  end
+
+  # API routes which need token.
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api_auth)
+
+    get("/invitations/:token", InvitationController, :show)
+  end
+
+  # Anonymous routes.
+  scope "/", Stitch.Web do
+    pipe_through(:browser)
+
+    get("/login", AuthenticationController, :login)
+
+    get("/find-your-team/:token/login", AuthenticationController, :auto_login)
+    get("/logged-out", AuthenticationController, :logged_out)
+
+    get("/reset-password", AuthenticationController, :reset_password)
+    get("/reset-password/:token", AuthenticationController, :change_password)
+  end
+
+  # Authenticated routes.
+  scope "/", Stitch.Web do
+    pipe_through(:browser_authenticate)
+
+    get("/", PageController, :index)
+
+    # TODO: a wild card route can make all /admin routes to one line
+    get("/admin/team", AdminController, :index)
+    get("/admin/team/settings", AdminController, :index)
+    get("/admin/team/security", AdminController, :index)
+    get("/admin/you/home", AdminController, :index)
+    get("/admin/you/profile", AdminController, :index)
+    get("/admin/you/account", AdminController, :index)
+    get("/admin/you/notifications", AdminController, :index)
+    get("/admin/members", AdminController, :index)
+    get("/admin/billing", AdminController, :index)
+    get("/admin/analytics", AdminController, :index)
+
+    get("/admin/integrations", AdminController, :index, as: :admin_integrations)
+    get("/admin/integrations/:integration/new", AdminController, :index)
+
+    get(
+      "/admin/integrations/drchrono/:integration_config_id/edit",
+      AdminController,
+      :index,
+      as: :admin_integration_edit
+    )
+
+    get("/admin/integrations/:slug", AdminController, :index)
+    get("/admin/integrations/:slug/edit", AdminController, :index)
+
+    get("/direct/:username", UserController, :index)
+    get("/apps", AuthenticationController, :apps)
+    get("/logout", AuthenticationController, :logout)
+
+    get("/engage", EngageController, :index)
+    get("/manage", ManageController, :index)
+    get("/patients", PageController, :index)
+  end
+
+  # =========================
+  #   STITCH CONNECT ROUTES
+  # =========================
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_locked_api)
+
+    get("/groups", GroupController, :index)
+  end
+
+  # API routes which don't need token.
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:api)
+
+    post("/invitations/accept/:token", InvitationController, :accept)
+    get("/apps", AppController, :index)
+    get("/news", NewsController, :index)
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_api)
+
+    get("/groups/:group_id/messages", MessageController, :index)
+    get("/groups/:group_id/feed_recent", MessageController, :feed_recent)
+    get("/groups/:group_id/feed_surrounding", MessageController, :feed_surrounding)
+    post("/groups/:group_id/mark_as_read", MessageController, :mark_as_read)
+    post("/groups/:group_id/mark_as_unread", MessageController, :mark_as_unread)
+    post("/groups/:group_id/messages", MessageController, :create)
+    put("/messages/:id", MessageController, :update)
+    put("/messages/:id/delete_link_preview", MessageController, :delete_message_link_preview)
+    put("/messages/:id/toggle_reaction", MessageController, :toggle_reaction)
+    delete("/messages/:id", MessageController, :delete)
+    get("/messages/:id/download", MessageController, :download)
+    post("/messages/:id/toggle-star", MessageController, :toggle_star)
+    post("/messages/:id/toggle-pin", MessageController, :toggle_pin)
+    post("/messages/search", MessageController, :search)
+
+    get("/starred_messages", StarredMessageController, :index)
+    get("/pinned_messages", PinnedMessageController, :index)
+    get("/mentions", MentionController, :index)
+
+    get("/integrations", IntegrationController, :index)
+    post("/integrations", IntegrationController, :create)
+    post("/integrations/:id", IntegrationController, :update)
+    delete("/integrations/:id", IntegrationController, :delete)
+    post("/integrations/:id/enable", IntegrationController, :enable)
+    post("/integrations/:id/disable", IntegrationController, :disable)
+
+    scope "/invitations" do
+      get("/", InvitationController, :index)
+      post("/", InvitationController, :create)
+      patch("/:id/revoke", InvitationController, :revoke)
+      patch("/:id/resend", InvitationController, :resend)
+    end
+
+    get("/groups/:id", GroupController, :show)
+    post("/groups", GroupController, :create)
+    post("/groups/dm", GroupController, :create_single_dm)
+    post("/groups/multi_dm", GroupController, :create_multi_dm)
+    post("/groups/search", GroupController, :search)
+    post("/groups/:id/invite/", GroupController, :invite)
+    post("/groups/:id/remove_users", GroupController, :remove_users)
+    post("/groups/:id/toggle-favorite", GroupController, :toggle_favorite)
+    post("/groups/:id/toggle-public", GroupController, :toggle_public)
+    post("/groups/:id/join", GroupController, :join)
+    post("/groups/:id/leave", GroupController, :leave)
+    get("/groups/:id/users", GroupController, :users)
+    patch("/groups/:id/rename", GroupController, :rename)
+    delete("/groups/:id", GroupController, :delete)
+    put("/groups/:id/hide", GroupController, :hide)
+    put("/groups/:id/unhide", GroupController, :unhide)
+
+    get("/groups/:group_id/notification-preference", NotificationPreferenceController, :show)
+    put("/groups/:group_id/notification-preference", NotificationPreferenceController, :update)
+
+    get("/uploads", UploadController, :index)
+    post("/upload-signature", UploadController, :create)
+
+    resources("/devices", DeviceController, only: [:create, :delete])
+    post("/devices/unregister", DeviceController, :delete)
+
+    post("/news/mark-as-read", NewsController, :mark_as_read)
+  end
+
+  # Anonymous routes.
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser)
+
+    scope "/invitations" do
+      get("/error", InvitationController, :error)
+
+      scope "/accept" do
+        get("/:token", InvitationController, :accept)
+        get("/:token/:step", InvitationController, :accept)
+      end
+    end
+  end
+
+  # Authenticated routes.
+  scope "/", StitchConnect.Web do
+    pipe_through(:browser_authenticate)
+
+    get("/rooms/:slug", GroupController, :index)
+    get("/messages/:id/download", MessageController, :download)
+
+    get("/exports/:id/download", ExportController, :download)
+  end
+end

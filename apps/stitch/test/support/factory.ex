@@ -163,4 +163,28 @@ defmodule Stitch.Factory do
       email: sequence(:email, &"email-#{&1}@example.com")
     }
   end
+
+  def team_feature_factory do
+    %Stitch.TeamFeature{
+      team: build(:team),
+      name: "a-beta-feature"
+    }
+  end
+
+  def patient_factory do
+    %Stitch.Patient{
+      first_name: "Gilbert",
+      last_name: "Motier",
+      email: sequence(:email, &"email-#{&1}@example.com"),
+      onboarded: true
+    }
+  end
+
+  def team_patient_factory do
+    %Stitch.TeamPatient{
+      team: build(:team),
+      patient: build(:patient),
+      mrn: Stitch.Rand.token(32)
+    }
+  end
 end

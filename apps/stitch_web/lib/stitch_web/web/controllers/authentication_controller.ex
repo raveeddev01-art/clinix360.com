@@ -1,0 +1,166 @@
+defmodule Stitch.Web.AuthenticationController do
+  use Stitch.Web, :controller
+  alias StitchConnect.Web.{EventsChannel}
+  alias Stitch.FindYourTeam
+  alias Stitch.Accounts.{PasswordResetToken}
+
+  # If you change a title, sync it with frontend (website_router)
+  @login_title "Sign In | Stitch"
+  @login_description "Sign in to your Stitch team by entering your team’s Stitch URL. Don't know your team URL? Enter your email address and we’ll send you a list of your teams."
+
+  @signup_title "Create a Team | Stitch"
+  @signup_description "Create your Stitch team for free. Get started with our apps for internal team messaging, patient communication and task management."
+
+  def index(conn = %{request_path: path}, _params) do
+    login_params = Stitch.Web.PageService.get_logins_json(conn)
+
+    conn
+    |> assign(:title, title_for_path(path))
+    |> assign(:description, description_for_path(path))
+    |> render("index.html", subdomain: conn.private[:subdomain], login_params: login_params)
+  end
+
+  def login(conn, _params) do
+    with current_user_token when is_binary(current_user_token) <- get_session_token(conn),
+         %Stitch.Accounts.User{} = current_user <-
+           Stitch.UserQueries.get_by_token(current_user_token) do
+      default_group = Stitch.GroupQueries.default_group(current_user)
+
+      redirect(
+        conn,
+        to: Stitch.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
+      )
+    else
+      _error ->
+        login_params =
+          Poison.encode!(%{
+            "teamName" => conn.private[:team_name],
+            "teamSlug" => conn.private[:team_slug],
+            "invalidLogin" => get_flash(conn, :invalid_login)
+          })
+
+        conn
+        |> assign(:title, @login_title)
+        |> assign(:description, @login_description)
+        |> render("login.html", login_params: login_params)
+    end
+  end
+
+  def auto_login(conn, %{"token" => token}) do
+    with {:ok, user} <- FindYourTeam.activate_login_token(conn.assigns.team, token) do
+      default_group = Stitch.GroupQueries.default_group(user)
+
+      conn
+      |> login_user(user)
+      |> redirect(
+        to: Stitch.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
+      )
+    else
+      _error ->
+        render(conn, "auto_login_error.html")
+    end
+  end
+
+  def submit_login(conn, %{"email" => email, "password" => password}) do
+    team_slug = conn.private[:team_slug]
+
+    case Stitch.User.Authentication.validate_email_and_password(email, password, team_slug) do
+      false ->
+        conn
+        |> put_flash(:invalid_login, "Sorry, you entered an invalid email or password.")
+        |> redirect(to: "/login")
+
+      user ->
+        case user.disabled do
+          false ->
+            conn
+            |> login_user(user)
+            |> redirect(to: "/apps")
+
+          true ->
+            conn
+            |> put_flash(:invalid_login, "This account is disabled - contact your team admin.")
+            |> redirect(to: "/login")
+        end
+    end
+  end
+
+  def logout(conn, _) do
+    session_id = get_session(conn, :session_id)
+
+    conn
+    |> delete_team_session(conn.assigns.team.id)
+    |> broadcast_logout(session_id)
+    |> redirect(to: "/logged-out")
+  end
+
+  def logged_out(conn, _) do
+    logged_out_params =
+      Poison.encode!(%{
+        "teamName" => conn.private[:team_name],
+        "teamSlug" => conn.private[:team_slug]
+      })
+
+    conn
+    |> delete_team_session(conn.assigns.team.id)
+    |> render("logged_out.html", logged_out_params: logged_out_params)
+  end
+
+  def reset_password(conn, _) do
+    reset_password_params =
+      Poison.encode!(%{
+        "teamName" => conn.private[:team_name],
+        "teamSlug" => conn.private[:team_slug]
+      })
+
+    render(conn, "reset_password.html", reset_password_params: reset_password_params)
+  end
+
+  def change_password(conn, %{"token" => token}) do
+    team = conn.assigns.team
+
+    with %PasswordResetToken{} = password_reset_token <-
+           PasswordResetToken.get_valid_token(token),
+         true <- password_reset_token.user.team_id == team.id do
+      PasswordResetToken.activate(password_reset_token)
+
+      change_password_params =
+        Poison.encode!(%{
+          "teamName" => conn.private[:team_name],
+          "teamSlug" => conn.private[:team_slug],
+          "user_id" => password_reset_token.user.id,
+          "token" => password_reset_token.token
+        })
+
+      render(conn, "change_password.html", change_password_params: change_password_params)
+    else
+      _e ->
+        conn
+        |> put_flash(:invalid_login, "Invalid Token.")
+        |> redirect(to: "/login")
+    end
+  end
+
+  defp broadcast_logout(conn, session_id) do
+    EventsChannel.broadcast_logout(conn.assigns.current_user, session_id)
+    conn
+  end
+
+  def apps(conn, _) do
+    apps_page_params =
+      Poison.encode!(%{
+        "teamName" => conn.private[:team_name],
+        "teamSlug" => conn.private[:team_slug]
+      })
+
+    render(conn, "apps_page.html", apps_page_params: apps_page_params)
+  end
+
+  defp title_for_path("/signup" <> _rest), do: @signup_title
+  defp title_for_path("/signin" <> _rest), do: @login_title
+  defp title_for_path(_path), do: nil
+
+  defp description_for_path("/signup" <> _rest), do: @signup_description
+  defp description_for_path("/signin" <> _rest), do: @login_description
+  defp description_for_path(_path), do: nil
+end
