@@ -398,4 +398,49 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/exports/:id/download", ExportController, :download)
   end
+
+  # =========================
+  #   STITCH ENGAGE ROUTES
+  # =========================
+
+  scope "/api/v1", StitchEngage.Web.Api.V1, as: :api_v1 do
+    pipe_through(:authenticated_api)
+
+    get("/inboxes/default", InboxController, :show_default)
+    put("/inboxes/:id", InboxController, :update)
+
+    # Expected engage routes:
+
+    # get("/inboxes", InboxController, :index)
+    # get("/inboxes/:inbox_id/conversations", ConversationController, :index)
+    # get("/conversations/:id", ConversationController, :show)
+    # put("/conversations/:id", ConversationController, :update)
+    # put("/conversations/:id/open", ConversationController, :open)
+    # put("/conversations/:id/close", ConversationController, :close)
+    # post("/conversations/:id/mark_as_read", ConversationController, :mark_as_read)
+    # post("/conversations/:id/mark_as_unread", ConversationController, :mark_as_unread)
+
+    # get("/conversations/:conversation_id/messages", ConversationMessageController, :index)
+    # post("/conversations/:conversation_id/messages", ConversationMessageController, :create)
+    # put("/conversation_messages/:id", ConversationMessageController, :update)
+    # get("/conversation_messages/:id", ConversationMessageController, :show)
+    # delete("/conversation_messages/:id", ConversationMessageController, :delete)
+
+    # get("/conversation_messages/:id/download", ConversationMessageController, :download)
+    # get("/conversations/:conversation_id/feed_recent", ConversationMessageController, :feed_recent)
+    # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
+    # post("/conversation_messages/search", ConversationMessageController, :search)
+
+    # put(
+    #   "/conversation_messages/:id/delete_link_preview",
+    #   ConversationMessageController,
+    #   :delete_message_link_preview
+    # )
+
+    # put(
+    #   "/conversation_messages/:id/toggle_reaction",
+    #   ConversationMessageController,
+    #   :toggle_reaction
+    # )
+  end
 end

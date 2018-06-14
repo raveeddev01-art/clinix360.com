@@ -10,7 +10,7 @@ defmodule Stitch.Engage.Inbox do
 
   @type t :: %__MODULE__{}
 
-  @castable_attributes [:name, :is_default]
+  @castable_attributes [:name]
   @required_attributes [:name, :is_default]
 
   schema "inboxes" do
@@ -40,10 +40,20 @@ defmodule Stitch.Engage.Inbox do
     )
   end
 
+  @doc """
+  Updates the inbox.
+  """
+  @spec update(t(), map) :: {:ok, t()} | {:error, Changeset.t()}
+  def update(inbox, params) do
+    inbox
+    |> changeset(params)
+    |> Repo.update()
+  end
+
   # Helper function for development.
   # TODO: Remove once inboxes are created by default
   def create_for_team(team_id, params \\ %{is_default: true, name: "General"}) do
-    %Inbox{team_id: team_id}
+    %Inbox{team_id: team_id, is_default: true}
     |> changeset(params)
     |> Repo.insert()
   end
