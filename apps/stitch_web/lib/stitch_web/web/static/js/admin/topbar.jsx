@@ -20,7 +20,7 @@ class Topbar extends Component {
         <ul className="nav navbar-nav">
           <li>
             <a
-              href="https://intercom.help/teamstitch"
+              href="https://help.teamstitch.com"
               rel="noopener noreferrer"
               target="_blank"
             >
