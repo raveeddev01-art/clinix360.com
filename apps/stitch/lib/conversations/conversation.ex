@@ -27,8 +27,8 @@ defmodule Stitch.Engage.Conversation do
     has_many(:conversation_providers, ConversationProvider, on_delete: :delete_all)
     has_many(:providers, through: [:conversation_providers, :provider])
 
-    has_many(:conversation_patient, ConversationPatient, on_delete: :delete_all)
-    has_many(:team_patients, through: [:conversation_patient, :team_patient])
+    has_many(:conversation_patients, ConversationPatient, on_delete: :delete_all)
+    has_many(:team_patients, through: [:conversation_patients, :team_patient])
 
     has_many(:conversation_messages, ConversationMessage, on_delete: :delete_all)
 
@@ -49,8 +49,6 @@ defmodule Stitch.Engage.Conversation do
     )
   end
 
-  # Helper function for development.
-  # TODO: Remove once inboxes are created by default
   def create_for_inbox(inbox_id, params) do
     %Conversation{inbox_id: inbox_id}
     |> changeset(params)

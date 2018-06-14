@@ -9,8 +9,8 @@ defmodule Stitch.Repo.Migrations.CreateConversationMessagesTable do
       add(:provider_id, references(:users, on_delete: :delete_all))
 
       add(:text_content, :text)
-      add(:type, :string, default: false, null: false)
       add(:fields, :map)
+      add(:type, :string, default: false, null: false)
       add(:read_status, :map, default: "{}")
       add(:deleted, :boolean, default: false)
       add(:edited_at, :utc_datetime, null: true)

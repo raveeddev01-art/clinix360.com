@@ -6,6 +6,10 @@ defmodule Stitch.Repo.Migrations.CreateConversationProvidersTable do
       add(:conversation_id, references(:conversations, on_delete: :delete_all))
       add(:provider_id, references(:users, on_delete: :delete_all))
 
+      add(:assigned, :boolean, default: false)
+      add(:unread_messages_count, :integer, default: 0, null: false)
+      add(:last_read_at, :utc_datetime, null: true)
+
       timestamps()
     end
 
