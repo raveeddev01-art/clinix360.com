@@ -26,7 +26,7 @@ class Room extends Component {
 
           <div className="message">
             I have a question about my recent medication. I’m not sure how about
-            what dosage I should be taking. Can you
+            what dosage I should be taking...
           </div>
         </div>
       </Link>
