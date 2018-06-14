@@ -12,7 +12,7 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import browserDetails from "../../lib/browser_details";
 
-function noop() { }
+function noop() {}
 
 class Header extends Component {
   constructor(props) {
@@ -70,12 +70,12 @@ class Header extends Component {
     const navProps = inSmallMenu
       ? {}
       : {
-        open: this.state.carespacesMenuOpened,
-        onMouseEnter: this.toggleCarespacesMenu,
-        onMouseLeave: this.toggleCarespacesMenu,
-        onToggle: noop,
-        noCaret: true
-      };
+          open: this.state.carespacesMenuOpened,
+          onMouseEnter: this.toggleCarespacesMenu,
+          onMouseLeave: this.toggleCarespacesMenu,
+          onToggle: noop,
+          noCaret: true
+        };
 
     return (
       <NavDropdown
@@ -106,7 +106,7 @@ class Header extends Component {
     const blueNav = cx({
       blueNav: this.props.blueNav
     });
-    
+
     const hasLogins = appSettings.hasLogin;
 
     return (
@@ -182,7 +182,7 @@ class Header extends Component {
               </LinkContainer>
 
               <MenuItem
-                href="https://intercom.help/teamstitch"
+                href="https://help.teamstitch.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -207,10 +207,10 @@ class Header extends Component {
             {hasLogins ? (
               this.renderYourCarespaces(appSettings.teams, false)
             ) : (
-                <NavItem onClick={this.goToGetStarted} className="btn-trial">
-                  Get Started
+              <NavItem onClick={this.goToGetStarted} className="btn-trial">
+                Get Started
               </NavItem>
-              )}
+            )}
           </Nav>
         </Navbar>
 
@@ -264,7 +264,7 @@ class Header extends Component {
                 </LinkContainer>
 
                 <MenuItem
-                  href="https://intercom.help/teamstitch"
+                  href="https://help.teamstitch.com"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -296,10 +296,14 @@ class Header extends Component {
                 (hasLogins ? (
                   this.renderYourCarespaces(appSettings.teams, true)
                 ) : (
-                    <NavItem onClick={this.goToGetStarted} className="btn-trial" id="get-started-btn">
-                      Get Started
+                  <NavItem
+                    onClick={this.goToGetStarted}
+                    className="btn-trial"
+                    id="get-started-btn"
+                  >
+                    Get Started
                   </NavItem>
-                  ))}
+                ))}
 
               {mobile &&
                 hasLogins &&

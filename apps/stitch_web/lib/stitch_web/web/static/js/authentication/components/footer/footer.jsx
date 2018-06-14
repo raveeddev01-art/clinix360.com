@@ -43,7 +43,7 @@ export default class Footer extends Component {
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://intercom.help/teamstitch"
+                    href="https://help.teamstitch.com"
                   >
                     Help Center
                   </a>
