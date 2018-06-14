@@ -29,8 +29,8 @@ export default class Pricing extends Component {
         <Header />
 
         <Subheader
-          title="Pay only for what you need"
-          subtitle="Our products work together in a single place. Start with one or many."
+          title="Free to use, upgrade any time"
+          subtitle="Get started for free with our connected family of products."
         />
 
         <div className="stitch-products">
