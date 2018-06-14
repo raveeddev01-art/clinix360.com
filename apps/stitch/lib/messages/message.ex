@@ -32,6 +32,7 @@ defmodule Stitch.Message do
     field(:client_name, :string, default: "unknown")
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
+    belongs_to(:upload, Stitch.Files.Upload)
     embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
     timestamps()

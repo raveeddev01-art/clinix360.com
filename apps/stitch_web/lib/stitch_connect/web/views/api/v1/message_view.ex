@@ -1,7 +1,12 @@
 defmodule StitchConnect.Web.Api.V1.MessageView do
   use Stitch.Web, :view
-  alias Stitch.{Message, AWS.S3}
   import Stitch.Web.SubdomainRouter.Helpers
+
+  alias Stitch.{
+    Message,
+    AWS.S3,
+    Files.Upload
+  }
 
   @endpoint Stitch.Web.Endpoint
 
@@ -88,15 +93,31 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     %{id: pinned_by.id, first_name: pinned_by.first_name, last_name: pinned_by.last_name}
   end
 
-  def render_fields(
-        %Message{id: message_id, type: "upload", fields: %{"url" => url} = fields},
-        authenticated_urls,
-        files_endpoint
-      )
-      when is_map(fields) and is_binary(url) do
-    fields
-    |> put_preview_presigned_url(authenticated_urls, message_id, files_endpoint)
-    |> put_download_link(authenticated_urls, message_id, files_endpoint)
+  def render_fields(%Message{fields: nil}, _authenticated_urls, _files_endpoint), do: nil
+
+  def render_fields(%Message{type: "upload"} = message, authenticated_urls, files_endpoint) do
+    message.fields
+    |> put_preview_presigned_url(authenticated_urls, message.id, files_endpoint)
+    |> put_download_link(authenticated_urls, message.id, files_endpoint)
+  end
+
+  def render_fields(%Message{type: "file_share"} = message, false, files_endpoint) do
+    message.fields
+    |> put_preview_presigned_url(false, message.id, files_endpoint)
+    |> put_download_link(false, message.id, files_endpoint)
+  end
+
+  def render_fields(%Message{type: "file_share", upload: upload} = message, true, files_endpoint) do
+    encoded_file_id = Upload.encode_url_id(upload)
+    url = files_file_url(files_endpoint, :download, encoded_file_id, upload.filename)
+    preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
+
+    %{
+      "filename" => upload.filename,
+      "url" => url,
+      "api_url" => api_v1_message_path(@endpoint, :download, message.id),
+      "preview_url" => files_file_url(files_endpoint, :download_preview, preview_url)
+    }
   end
 
   def render_fields(%Message{fields: fields}, _authenticated_urls, _files_endpoint), do: fields

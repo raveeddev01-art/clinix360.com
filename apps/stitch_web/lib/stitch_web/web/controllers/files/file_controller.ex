@@ -5,14 +5,15 @@ defmodule Stitch.Web.Files.FileController do
   def download(conn, %{"upload_id" => upload_id}) do
     with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
          {:valid?, true} <- {:valid?, valid_upload?(upload.fields)},
-         {:user_token, user_token} when is_binary(user_token) <-
-           {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
-         {:team_user, current_user = %User{}} <-
-           {:team_user, UserQueries.team_member_by_token(upload.group.team_id, user_token)},
-         {:authenticated, true} <-
-           {:authenticated, GroupAuthorization.can_view?(upload.group, current_user)} do
+         {:authenticated, true} <- authenticated(conn, upload) do
       stream_full_file(conn, upload)
     else
+      {:authenticated, false, upload} ->
+        conn
+        |> put_session(:redirect_url, conn.request_path)
+        |> redirect(external: login_url(upload))
+        |> halt
+
       _ ->
         conn
         |> put_session(:redirect_url, conn.request_path)
@@ -24,19 +25,33 @@ defmodule Stitch.Web.Files.FileController do
   def download_preview(conn, %{"upload_id" => upload_id}) do
     with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
          {:valid?, true} <- {:valid?, valid_upload_with_preview?(upload.fields)},
-         {:user_token, user_token} when is_binary(user_token) <-
-           {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
-         {:team_user, current_user = %User{}} <-
-           {:team_user, UserQueries.team_member_by_token(upload.group.team_id, user_token)},
-         {:authenticated, true} <-
-           {:authenticated, GroupAuthorization.can_view?(upload.group, current_user)} do
+         {:authenticated, true} <- authenticated(conn, upload) do
       stream_preview(conn, upload)
     else
+      {:authenticated, false, upload} ->
+        conn
+        |> put_session(:redirect_url, conn.request_path)
+        |> redirect(external: login_url(upload))
+        |> halt
+
       _ ->
         conn
         |> put_session(:redirect_url, conn.request_path)
         |> redirect(external: login_url())
         |> halt
+    end
+  end
+
+  def authenticated(conn, upload) do
+    with {:user_token, user_token} when is_binary(user_token) <-
+           {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
+         {:team_user, current_user = %User{}} <-
+           {:team_user, UserQueries.team_member_by_token(upload.group.team_id, user_token)},
+         {:authenticated, true} <-
+           {:authenticated, GroupAuthorization.can_view?(upload.group, current_user)} do
+      {:authenticated, true}
+    else
+      _ -> {:authenticated, false, upload}
     end
   end
 
@@ -119,6 +134,16 @@ defmodule Stitch.Web.Files.FileController do
        do: true
 
   defp valid_upload_with_preview?(_upload), do: false
+
+  # Redirect to the team login page. The team is inferred from the message.
+  defp login_url(%{group: %{team_id: team_id}}) do
+    team = Stitch.TeamQueries.get_by_id(team_id)
+    struct_url = Stitch.Web.Endpoint.struct_url()
+    struct_url = %{struct_url | host: "#{team.slug}.#{struct_url.host}"}
+    Stitch.Web.SubdomainRouter.Helpers.authentication_url(struct_url, :login)
+  end
+
+  defp login_url(_upload), do: login_url()
 
   defp login_url() do
     struct_url = Stitch.Web.Endpoint.struct_url()
