@@ -28,5 +28,13 @@ defmodule Stitch.Repo.Migrations.CreateConversationMessagesTable do
 
       timestamps()
     end
+
+    create(
+      constraint(
+        :conversation_messages,
+        :conversation_messages_have_provider_or_patient,
+        check: "(team_patient_id IS NOT NULL)::integer + (provider_id IS NOT NULL)::integer = 1"
+      )
+    )
   end
 end
