@@ -13,6 +13,7 @@ defmodule Stitch.Engage.InboxProvider do
   alias Stitch.{
     Accounts.User,
     Engage.Inbox,
+    Engage.InboxProvider,
     Repo
   }
 
@@ -25,7 +26,7 @@ defmodule Stitch.Engage.InboxProvider do
     timestamps()
   end
 
-  def changeset(%Stitch.Engage.InboxProvider{} = struct, params \\ %{}) do
+  def changeset(%InboxProvider{} = struct, params \\ %{}) do
     struct
     |> cast(params, [])
     |> unique_constraint(
@@ -36,7 +37,7 @@ defmodule Stitch.Engage.InboxProvider do
   end
 
   def create_for_team_and_provider(inbox_id, user_id) do
-    %Stitch.Engage.InboxProvider{inbox_id: inbox_id, provider_id: user_id}
+    %InboxProvider{inbox_id: inbox_id, provider_id: user_id}
     |> changeset()
     |> Repo.insert()
   end

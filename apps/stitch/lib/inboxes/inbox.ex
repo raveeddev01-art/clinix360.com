@@ -6,10 +6,11 @@ defmodule Stitch.Engage.Inbox do
   use Ecto.Schema
   import Ecto.Changeset
   alias Stitch.{Repo, Team}
-  alias Stitch.Engage.{InboxProvider}
+  alias Stitch.Engage.{Inbox, InboxProvider}
 
   @type t :: %__MODULE__{}
 
+  @castable_attributes [:name, :is_default]
   @required_attributes [:name, :is_default]
 
   schema "inboxes" do
@@ -23,9 +24,9 @@ defmodule Stitch.Engage.Inbox do
     timestamps()
   end
 
-  def changeset(%Stitch.Engage.Inbox{} = struct, params) do
+  def changeset(%Inbox{} = struct, params) do
     struct
-    |> cast(params, @required_attributes)
+    |> cast(params, @castable_attributes)
     |> validate_required(@required_attributes)
     |> unique_constraint(
       :name,
@@ -42,7 +43,7 @@ defmodule Stitch.Engage.Inbox do
   # Helper function for development.
   # TODO: Remove once inboxes are created by default
   def create_for_team(team_id, params \\ %{is_default: true, name: "General"}) do
-    %Stitch.Engage.Inbox{team_id: team_id}
+    %Inbox{team_id: team_id}
     |> changeset(params)
     |> Repo.insert()
   end

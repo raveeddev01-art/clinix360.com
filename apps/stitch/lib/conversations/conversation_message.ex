@@ -74,6 +74,8 @@ defmodule Stitch.Engage.ConversationMessage do
     timestamps()
   end
 
+  # TODO: Do not cast all attributes.
+  # This is temporarily the case as we develop engage.
   def changeset(%ConversationMessage{} = struct, params) do
     struct
     |> cast(params, @all_attributes)
