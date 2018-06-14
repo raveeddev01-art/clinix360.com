@@ -37,7 +37,7 @@ defmodule Stitch.Team do
     has_many(:patients, through: [:team_patients, :patient])
 
     # Engage
-    has_many(:inboxes, Stitch.Engage.Inboxes, on_delete: :delete_all)
+    has_many(:inboxes, Stitch.Engage.Inbox, on_delete: :delete_all)
 
     timestamps()
   end

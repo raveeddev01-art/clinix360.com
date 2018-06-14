@@ -12,5 +12,14 @@ defmodule Stitch.Repo.Migrations.CreateInboxesTable do
     end
 
     create(unique_index(:inboxes, [:name, :team_id], name: :name_team_id_index))
+
+    create(
+      unique_index(
+        :inboxes,
+        :team_id,
+        where: "is_default = TRUE",
+        name: :default_inbox_team_id_index
+      )
+    )
   end
 end
