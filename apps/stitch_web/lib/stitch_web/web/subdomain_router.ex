@@ -407,10 +407,11 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/inboxes/default", InboxController, :show_default)
     put("/inboxes/:id", InboxController, :update)
 
-    # Expected engage routes:
+    get("/inboxes/:inbox_id/conversations", ConversationController, :index)
+
+    # Expected Engage routes:
 
     # get("/inboxes", InboxController, :index)
-    # get("/inboxes/:inbox_id/conversations", ConversationController, :index)
     # get("/conversations/:id", ConversationController, :show)
     # put("/conversations/:id", ConversationController, :update)
     # put("/conversations/:id/open", ConversationController, :open)
