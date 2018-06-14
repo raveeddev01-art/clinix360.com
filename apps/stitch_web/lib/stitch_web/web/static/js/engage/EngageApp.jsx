@@ -5,8 +5,8 @@ import { Helmet } from "react-helmet";
 
 import { Switcher, AppAlert } from "common/components";
 import EmptySidebar from "../common/components/sidebar/empty-sidebar";
-import Sidebar from "./sidebar";
-import InboxMenu from "./inbox-menu";
+import Sidebar from "./sidebar/sidebar";
+import InboxMenu from "./inbox/inbox";
 
 import EngagePreview from "./EngagePreview";
 

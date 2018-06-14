@@ -72,7 +72,6 @@
                 }
               }
 
-
               .member-count {
                 flex-basis: 40px;
               }
@@ -85,7 +84,9 @@
               }
             }
 
-            &:hover, &:focus, &.manual-focus {
+            &:hover,
+            &:focus,
+            &.manual-focus {
               background: #edf7fd;
               border-color: #d3ecfa;
               border-radius: 3px;
@@ -321,6 +322,20 @@
           margin-right: 6px;
         }
       }
+    }
+  }
+}
+
+.inbox-modal {
+  .modal-dialog .modal-content .modal-body .form-group .mrn-field {
+    .form-control {
+      border-radius: 6px 0 0 6px;
+    }
+
+    button {
+      font-size: 16px;
+      padding: 11px 16px;
+      border-radius: 0 6px 6px 0;
     }
   }
 }
