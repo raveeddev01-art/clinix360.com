@@ -4,11 +4,13 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
 import { Switcher, AppAlert } from "common/components";
-import Sidebar from "../common/components/sidebar/empty-sidebar";
+import EmptySidebar from "../common/components/sidebar/empty-sidebar";
+import Sidebar from "./sidebar";
+import InboxMenu from "./inbox-menu";
 
 import EngagePreview from "./EngagePreview";
 
-@inject("titleStore")
+@inject("titleStore", "teamStore")
 @observer
 class EngageApp extends Component {
   componentWillMount() {
@@ -18,6 +20,7 @@ class EngageApp extends Component {
 
   render() {
     const { titleStore } = this.props;
+    const { engageEnabled } = this.props.teamStore;
 
     return (
       <div id="app" className="preview-app">
@@ -27,7 +30,11 @@ class EngageApp extends Component {
             <title>{titleStore.title}</title>
           </Helmet>
           <Switcher />
-          <Sidebar />
+
+          {engageEnabled ? <Sidebar /> : <EmptySidebar />}
+
+          {engageEnabled && <InboxMenu />}
+
           <div className="engage-content">
             <Switch>
               <Route path="/engage" component={EngagePreview} />

@@ -1,5 +1,4 @@
-$admin-sidebar-width: 220px;
-$admin-topbar-height: 65px;
+$inbox-menu-width: 410px;
 
 .preview-app {
   min-width: auto !important;
@@ -62,6 +61,133 @@ $admin-topbar-height: 65px;
         display: block;
         @media (min-width: 992px) {
           margin-left: 100px;
+        }
+      }
+    }
+  }
+}
+
+.inbox-menu {
+  max-width: $inbox-menu-width;
+  flex-basis: $inbox-menu-width;
+  background: #fafafa;
+  border-right: 1px solid #ccc;
+
+  .flex-header {
+    color: #333;
+    background: transparent;
+    padding: 18px 15px;
+
+    form {
+      flex: 1;
+      position: relative;
+
+      i.fa {
+        font-size: 16px;
+        color: #8f8f8f;
+        line-height: 34px;
+        position: absolute;
+        top: 0;
+        left: 12px;
+      }
+
+      .form-control {
+        border-radius: 4px;
+        box-shadow: none;
+        padding-left: 34px;
+
+        &:focus {
+          border-color: $brand-primary;
+        }
+      }
+    }
+
+    button {
+      color: #c2c2c2;
+      background: #fff;
+      border-color: #ccc;
+      margin-left: 12px;
+    }
+  }
+
+  .status-filter {
+    display: flex;
+    box-shadow: inset 0 -1px 0 #ccc;
+
+    a {
+      flex: 1;
+      display: block;
+      color: #a1a1a1;
+      text-align: center;
+      text-transform: uppercase;
+      padding-bottom: 5px;
+
+      &.active {
+        color: $brand-primary;
+        font-weight: 600;
+        box-shadow: inset 0 -2px 0 $brand-primary;
+      }
+    }
+  }
+
+  .menu-nav {
+    padding-left: 1px;
+
+    .item {
+      display: flex;
+      padding: 12px 0 0 15px;
+
+      &:hover {
+        background: #f5f5f5;
+        text-decoration: none;
+      }
+
+      &__icon {
+        color: $brand-primary;
+        margin-right: 15px;
+        visibility: hidden;
+      }
+
+      &__content {
+        flex: 1;
+        color: #808080;
+        font-size: 15px;
+        border-bottom: 1px solid #e2e2e2;
+        padding: 0 15px 12px 0;
+
+        .heading {
+          display: flex;
+          flex-direction: row;
+          align-items: baseline;
+
+          .user {
+            flex: 1;
+            color: $brand-primary;
+            font-weight: 600;
+          }
+
+          .date {
+            font-size: 12px;
+          }
+
+          .closed {
+            color: $brand-primary;
+            font-size: 15px;
+            font-weight: 600;
+          }
+        }
+      }
+
+      &.unread .item__icon {
+        visibility: visible;
+      }
+
+      &.active {
+        background: #fff;
+        box-shadow: inset 4px 0 0 $brand-primary;
+
+        .item__content {
+          color: #333;
         }
       }
     }
