@@ -4,8 +4,13 @@ defmodule Stitch.Engage.Conversation do
   """
 
   use Ecto.Schema
+  import Ecto.Changeset
+
+  alias Stitch.Repo
 
   alias Stitch.Engage.{
+    Inbox,
+    Conversation,
     ConversationProvider,
     ConversationPatient,
     ConversationMessage
@@ -13,7 +18,12 @@ defmodule Stitch.Engage.Conversation do
 
   @type t :: %__MODULE__{}
 
+  @castable_attributes [:slug, :open]
+  @required_attributes [:slug]
+
   schema "conversations" do
+    belongs_to(:inbox, Inbox)
+
     has_many(:conversation_providers, ConversationProvider, on_delete: :delete_all)
     has_many(:providers, through: [:conversation_providers, :provider])
 
@@ -26,5 +36,24 @@ defmodule Stitch.Engage.Conversation do
     field(:open, :boolean, default: true)
 
     timestamps()
+  end
+
+  def changeset(%Conversation{} = struct, params) do
+    struct
+    |> cast(params, @castable_attributes)
+    |> validate_required(@required_attributes)
+    |> unique_constraint(
+      :slug,
+      name: :conversations_inbox_id_slug_index,
+      message: "has already been taken"
+    )
+  end
+
+  # Helper function for development.
+  # TODO: Remove once inboxes are created by default
+  def create_for_inbox(inbox_id, params) do
+    %Conversation{inbox_id: inbox_id}
+    |> changeset(params)
+    |> Repo.insert()
   end
 end
