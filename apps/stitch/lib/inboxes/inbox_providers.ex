@@ -8,7 +8,13 @@ defmodule Stitch.Engage.InboxProvider do
   """
 
   use Ecto.Schema
-  alias Stitch.{Accounts.User, Engage.Inbox}
+  import Ecto.Changeset
+
+  alias Stitch.{
+    Accounts.User,
+    Engage.Inbox,
+    Repo
+  }
 
   @type t :: %__MODULE__{}
 
@@ -17,5 +23,21 @@ defmodule Stitch.Engage.InboxProvider do
     belongs_to(:provider, User)
 
     timestamps()
+  end
+
+  def changeset(%Stitch.Engage.InboxProvider{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [])
+    |> unique_constraint(
+      :provider_id,
+      name: :inbox_providers_inbox_id_provider_id_index,
+      message: "provider is already part of this inbox"
+    )
+  end
+
+  def create_for_team_and_provider(inbox_id, user_id) do
+    %Stitch.Engage.InboxProvider{inbox_id: inbox_id, provider_id: user_id}
+    |> changeset()
+    |> Repo.insert()
   end
 end
