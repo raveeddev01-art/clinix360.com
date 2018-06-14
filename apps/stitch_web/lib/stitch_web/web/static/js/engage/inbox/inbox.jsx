@@ -6,6 +6,8 @@ import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import Modal from "react-bootstrap/lib/Modal";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Scrollbar from "common/components/scrollbar";
 
@@ -81,9 +83,14 @@ class InboxMenu extends Component {
             <FormControl type="email" placeholder="Search" />
           </Form>
 
-          <Button onClick={this.onComposeClick}>
-            <i className="fa fa-pencil-square-o" />
-          </Button>
+          <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="compose-message">Compose Message</Tooltip>}
+          >
+            <Button onClick={this.onComposeClick}>
+              <i className="fa fa-pencil-square-o" />
+            </Button>
+          </OverlayTrigger>
         </div>
 
         <div className="flex-content">

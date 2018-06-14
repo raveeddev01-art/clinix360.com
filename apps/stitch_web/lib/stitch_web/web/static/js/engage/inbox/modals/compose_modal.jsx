@@ -47,7 +47,11 @@ class ComposeModal extends Component {
     return (
       <Modal.Header>
         <Modal.Title>Compose</Modal.Title>
-        <Button bsSize="xsmall" onClick={this.props.showAddPatientModal}>
+        <Button
+          bsSize="xsmall"
+          onClick={this.props.showAddPatientModal}
+          className="m-r-10"
+        >
           New Patient
         </Button>
         <a role="link" onClick={closeModal}>
@@ -91,7 +95,7 @@ class ComposeModal extends Component {
               <FormControl
                 name="patient"
                 type="text"
-                placeholder="Enter name, email, MRN"
+                placeholder="Enter name, email or MRN"
                 value={patient}
                 onChange={this.updateValue("patient")}
               />
