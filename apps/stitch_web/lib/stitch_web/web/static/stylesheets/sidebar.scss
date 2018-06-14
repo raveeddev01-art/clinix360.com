@@ -1,0 +1,163 @@
+$admin-sidebar-width: 220px;
+
+.sidebar {
+  display: block;
+  flex-basis: $admin-sidebar-width;
+  max-width: $admin-sidebar-width;
+  overflow: visible;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: $brand-primary;
+
+  .flex-header {
+    padding: 0 15px;
+    flex-basis: $admin-topbar-height;
+
+    h4 {
+      max-width: 230px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-weight: 900;
+    }
+
+    .team-user {
+      flex: 1;
+      min-width: 0;
+      padding-top: 6px;
+
+      .team-name {
+        font-size: 18px;
+        line-height: 24px;
+        font-weight: 900;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .user-name {
+        color: #fff;
+        display: flex;
+        align-items: center;
+
+        i {
+          font-size: 10.5px;
+          line-height: 20px;
+        }
+
+        span {
+          line-height: 20px;
+        }
+
+        &__text {
+          opacity: 0.6;
+        }
+
+        &__status-icon {
+          width: 16px;
+          display: inline-block;
+          text-align: center;
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+
+  .flex-container {
+    @include stitch-scroll();
+    background-color: $brand-primary;
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+
+    .scrollbar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    .simplebar-scrollbar {
+      background-color: #fff;
+    }
+
+    .simplebar-scroll-content {
+      position: relative;
+    }
+
+    h5 {
+      font-size: 16px;
+      line-height: 1.5;
+      text-transform: capitalize;
+      color: #fff;
+      font-weight: 500;
+      padding-left: 15px;
+      opacity: 0.6;
+      margin: 0 0 5px;
+
+      &.you-heading {
+        padding-top: 10px;
+      }
+    }
+
+    .list-group {
+      margin-bottom: 32px;
+    }
+
+    .list-group-item {
+      font-size: 16px;
+      font-weight: 500;
+      background-color: inherit;
+      border-radius: 0;
+      border: none;
+      padding: 0;
+
+      &.active {
+        background-color: #fff;
+
+        a {
+          color: $brand-primary;
+          opacity: 1;
+        }
+      }
+
+      &:hover:not(.active) {
+        background-color: #001935;
+      }
+    }
+
+    a {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+      padding: 3px 15px !important;
+      color: #fff;
+      opacity: 0.6;
+
+      i {
+        width: 16px;
+        margin-right: 6px;
+        font-size: 13px;
+        &.sm {
+          font-size: 12px;
+          color: #9e9ea6;
+          vertical-align: baseline;
+        }
+      }
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+        outline: none;
+      }
+    }
+
+    &:hover {
+      overflow: auto;
+    }
+  }
+}

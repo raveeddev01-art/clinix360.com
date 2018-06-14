@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
 import Alert from "react-bootstrap/lib/Alert";
@@ -12,7 +11,15 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import Modal from "react-bootstrap/lib/Modal";
 import Row from "react-bootstrap/lib/Row";
 
-import { AvatarUploader } from "common/components";
+import { AvatarUploader, LoadingIcon } from "common/components";
+
+const patientStatusText = patient => {
+  if (!patient.active) {
+    return "deactivated";
+  }
+
+  return patient.onboarded ? "active" : "pending";
+};
 
 @inject("patientsStore")
 @observer
@@ -21,6 +28,7 @@ class PatientModal extends Component {
     super(props);
     this.state = {
       modalPatientId: null,
+      isSaving: false,
       patientParams: {}
     };
   }
@@ -43,6 +51,11 @@ class PatientModal extends Component {
   }
 
   closeModal = () => {
+    this.setState({
+      isSaving: false,
+      modalPatientId: null
+    });
+
     this.props.patientsStore.closeModal();
   };
 
@@ -55,22 +68,62 @@ class PatientModal extends Component {
   };
 
   handleSubmit = () => {
-    const {
-      createPatient,
-      closeModal,
-      updatePatient
-    } = this.props.patientsStore;
+    const { patientParams } = this.state;
+    const { createPatient, updatePatient } = this.props.patientsStore;
 
-    const apiCall = this.state.patientParams.id
-      ? updatePatient(this.state.patientParams.id, this.state.patientParams)
-      : createPatient(this.state.patientParams);
+    const callPromise = patientParams.id
+      ? updatePatient(patientParams.id, patientParams)
+      : createPatient(patientParams);
 
-    apiCall.then(() => {
-      closeModal();
-    });
+    this.makeApiCall(callPromise);
+  };
+
+  handleDeactivate = () => {
+    const { deactivatePatient } = this.props.patientsStore;
+    this.makeApiCall(deactivatePatient(this.state.patientParams.id));
+  };
+
+  handleActivate = () => {
+    const { activatePatient } = this.props.patientsStore;
+    this.makeApiCall(activatePatient(this.state.patientParams.id));
+  };
+
+  makeApiCall = callPromise => {
+    this.setState({ isSaving: true });
+
+    return callPromise
+      .then(() => {
+        this.closeModal();
+      })
+      .catch(() => {
+        this.setState({ isSaving: false });
+      });
+  };
+
+  renderLoadingIcon = () => {
+    const { isSaving } = this.state;
+
+    return isSaving && <LoadingIcon className="on-right" />;
+  };
+
+  renderActiveChange = () => {
+    const { isSaving, patientParams } = this.state;
+    const cb = patientParams.active
+      ? this.handleDeactivate
+      : this.handleActivate;
+    const text = patientParams.active
+      ? "Deactivate Patient"
+      : "Activate Patient";
+
+    return (
+      <Button disabled={isSaving} bsSize="large" onClick={cb}>
+        {text}
+      </Button>
+    );
   };
 
   render() {
+    const { isSaving } = this.state;
     const { modalOpen } = this.props.patientsStore;
     const alertVisible = false;
     const alertStyle = "danger";
@@ -88,6 +141,8 @@ class PatientModal extends Component {
     const hasAvatar = (avatar || "").includes(
       "stitch-content/default-avatar.png"
     );
+
+    const creatingNewPatient = !id;
 
     return (
       <Modal
@@ -111,13 +166,24 @@ class PatientModal extends Component {
                 onSubmit={this.onSubmit}
                 noValidate
               >
+                {!creatingNewPatient && (
+                  <FormGroup bsSize="large">
+                    <ControlLabel>Status</ControlLabel>
+                    <FormControl
+                      disabled
+                      name="status"
+                      type="text"
+                      value={patientStatusText(this.state.patientParams)}
+                    />
+                  </FormGroup>
+                )}
                 <FormGroup bsSize="large">
                   <ControlLabel>Email</ControlLabel>
                   <FormControl
                     name="email"
-                    disabled={!!id}
+                    disabled={!creatingNewPatient}
                     required
-                    autoFocus
+                    autoFocus={creatingNewPatient}
                     type="text"
                     value={email}
                     onChange={this.handleChange("email")}
@@ -128,7 +194,7 @@ class PatientModal extends Component {
                   <FormControl
                     name="first_name"
                     required
-                    autoFocus
+                    autoFocus={!creatingNewPatient}
                     type="text"
                     value={first_name}
                     onChange={this.handleChange("first_name")}
@@ -164,6 +230,7 @@ class PatientModal extends Component {
                     onChange={this.handleChange("phone_number")}
                   />
                 </FormGroup>
+                {this.renderActiveChange()}
               </Form>
             </Col>
             <Col sm={6} smOffset={0}>
@@ -186,11 +253,17 @@ class PatientModal extends Component {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button bsSize="large" onClick={this.closeModal}>
+          <Button disabled={isSaving} bsSize="large" onClick={this.closeModal}>
             Close
           </Button>
-          <Button bsSize="large" bsStyle="primary" onClick={this.handleSubmit}>
+          <Button
+            disabled={isSaving}
+            bsSize="large"
+            bsStyle="primary"
+            onClick={this.handleSubmit}
+          >
             Save
+            {this.renderLoadingIcon()}
           </Button>
         </Modal.Footer>
       </Modal>

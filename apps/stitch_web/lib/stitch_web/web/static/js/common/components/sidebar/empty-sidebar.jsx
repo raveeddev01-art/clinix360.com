@@ -8,7 +8,7 @@ class EmptySidebar extends Component {
     const { teamStore, userStore } = this.props;
 
     return (
-      <div className="sidebar">
+      <div className="sidebar__empty">
         <div className="flex-header">
           <div className="team-user">
             <h4 className="team-name">{teamStore.name}</h4>

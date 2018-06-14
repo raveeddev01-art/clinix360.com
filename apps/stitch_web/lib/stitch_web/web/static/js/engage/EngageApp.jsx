@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
 import { Switcher, AppAlert } from "common/components";
-import Sidebar from "./sidebar";
+import Sidebar from "../common/components/sidebar/empty-sidebar";
 
 import EngagePreview from "./EngagePreview";
 

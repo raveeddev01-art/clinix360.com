@@ -31,19 +31,26 @@ defmodule Stitch.TeamPatient do
     |> unique_constraint(:patient_id, name: :team_patients_patient_id_team_id_index)
   end
 
+  def active_changeset(%Stitch.TeamPatient{} = struct, active) do
+    struct |> cast(%{active: active}, [:active])
+  end
+
   @doc """
   Helper function to add a team patient given a map of attributes
   """
   @spec create(map) :: {:ok, TeamPatient.t()} | {:error, Ecto.Changeset.t()}
   def create(params) do
     changeset =
-      changeset(%TeamPatient{patient_id: params.patient_id, team_id: params.team_id}, params)
+      changeset(
+        %TeamPatient{active: true, patient_id: params.patient_id, team_id: params.team_id},
+        params
+      )
 
     Repo.insert(changeset)
   end
 
   @doc """
-  Helper function to add a team patient given a map of attributes
+  Handles team_patient (and potentially patient) creation as a provider
   """
   @spec create_as_provider(Team.t(), map) :: {:ok, map} | {:error, map}
   def create_as_provider(team, params) do
@@ -54,7 +61,7 @@ defmodule Stitch.TeamPatient do
     |> Ecto.Multi.run(:team_patient, fn %{patient: patient} ->
       changeset =
         changeset(
-          %TeamPatient{patient_id: patient.id, team_id: team.id},
+          %TeamPatient{active: true, patient_id: patient.id, team_id: team.id},
           params
         )
 
@@ -64,7 +71,17 @@ defmodule Stitch.TeamPatient do
   end
 
   @doc """
-  Helper function to add a team patient given a map of attributes
+  Handles team_patient activation/deactivation as a provider
+  """
+  @spec change_active_status_as_provider(TeamPatient.t(), boolean) :: {:ok, map} | {:error, map}
+  def change_active_status_as_provider(team_patient, active_status) do
+    team_patient
+    |> active_changeset(active_status)
+    |> Repo.update()
+  end
+
+  @doc """
+  Handles team_patient (and potentially patient) updates as a provider
   """
   @spec update_as_provider(TeamPatient.t(), map) :: {:ok, map} | {:error, map}
   def update_as_provider(team_patient, params) do

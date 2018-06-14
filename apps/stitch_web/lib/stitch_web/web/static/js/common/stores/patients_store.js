@@ -6,6 +6,12 @@
 
 import { action, computed, extendObservable, observable } from "mobx";
 
+// =============
+//   CONSTANTS
+// =============
+
+const pageLength = 20;
+
 // ====================
 //   HELPER FUNCTIONS
 // ====================
@@ -47,15 +53,21 @@ const searchFilterMatch = (patient, searchFilter) => {
   );
 };
 
+const forPage = (list, pageNumber) => {
+  const startingIndex = pageLength * pageNumber;
+  const endingIndex = startingIndex + pageLength;
+  return list.slice(startingIndex, endingIndex);
+};
+
 const statusMatch = (patient, statusFilter) => {
   switch (statusFilter) {
     case "all":
       return true;
-    case "active":
+    case "onboarded":
       return patient.onboared && patient.active;
     case "pending":
       return patient.active && !patient.onboarded;
-    case "disabled":
+    case "deactivated":
       return !patient.active;
     default:
       return true;
@@ -68,6 +80,7 @@ const statusMatch = (patient, statusFilter) => {
 
 class PatientsStore {
   @observable patients = [];
+  @observable page = 0;
   @observable listSort = "first_name";
   @observable sortDirection = "asc";
   @observable statusFilter = "all";
@@ -117,6 +130,16 @@ class PatientsStore {
     return put(`/api/v1/patients/${id}`, { body: params });
   };
 
+  @action
+  activatePatient = (id, params) => {
+    return put(`/api/v1/patients/${id}/activate`, {});
+  };
+
+  @action
+  deactivatePatient = (id, params) => {
+    return put(`/api/v1/patients/${id}/deactivate`, {});
+  };
+
   // channel and api res handlers
 
   @action
@@ -136,7 +159,22 @@ class PatientsStore {
   // filtering and sorting
 
   @action
-  setOption = optionName => ({ id: val }) => {
+  setPage = newPage => {
+    this.page = newPage;
+  };
+
+  @action
+  incPage = () => {
+    this.page = this.page + 1;
+  };
+
+  @action
+  decPage = () => {
+    this.page = this.page - 1;
+  };
+
+  @action
+  setOption = (optionName, val) => {
     this[optionName] = val;
   };
 
@@ -171,6 +209,32 @@ class PatientsStore {
   @computed
   get sortedAndFilteredPatients() {
     return this.patients.filter(this.patientsFiler).sort(this.patientsSorter);
+  }
+
+  @computed
+  get patientsForPage() {
+    return forPage(this.sortedAndFilteredPatients, this.page);
+  }
+
+  @computed
+  get pageCount() {
+    return Math.floor(this.sortedAndFilteredPatients.length / pageLength) + 1;
+  }
+
+  @computed
+  get lowestVisibleIndex() {
+    return this.page * pageLength + 1;
+  }
+
+  @computed
+  get highestVisibleIndex() {
+    const endOfPage = (this.page + 1) * pageLength;
+    return Math.min(endOfPage, this.totalVisiblePatients);
+  }
+
+  @computed
+  get totalVisiblePatients() {
+    return this.sortedAndFilteredPatients.length;
   }
 
   @computed

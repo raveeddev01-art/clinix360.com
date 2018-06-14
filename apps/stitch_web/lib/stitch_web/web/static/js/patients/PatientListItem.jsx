@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import Button from "react-bootstrap/lib/Button";
 
@@ -13,22 +14,22 @@ class PatientListItem extends Component {
     const { patient: { avatar, full_name, mrn } } = this.props;
 
     return (
-      <div className="patient-list-item">
-        <div className="patient-list-info">
-          <div className="patient-list-info-avatar">
+      <div className="patients-list-item">
+        <div className="patients-list-item-info">
+          <div className="patients-list-item-info-avatar">
             <img
               alt={full_name}
               className="img-responsive img-circle"
               src={avatar}
             />
           </div>
-          <div className="patient-list-info-text-wrapper">
-            <div className="patient-list-info-name">{full_name}</div>
-            <div className="patient-list-info-mrn">#{mrn}</div>
+          <div className="patients-list-item-info-text-wrapper">
+            <div className="patients-list-item-info-name">{full_name}</div>
+            <div className="patients-list-item-info-mrn">#{mrn}</div>
           </div>
         </div>
-        <div className="patient-list-spacer" />
-        <div className="patient-list-actions">
+        <div className="patients-list-item-spacer" />
+        <div className="patients-list-item-actions">
           <Button bsStyle="primary" onClick={this.openPatientManageModal}>
             Manage
           </Button>
@@ -37,5 +38,14 @@ class PatientListItem extends Component {
     );
   }
 }
+
+PatientListItem.propTypes = {
+  patient: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    avatar: PropTypes.string.isRequired,
+    full_name: PropTypes.string.isRequired,
+    mrn: PropTypes.string.isRequired
+  }).isRequired
+};
 
 export default PatientListItem;

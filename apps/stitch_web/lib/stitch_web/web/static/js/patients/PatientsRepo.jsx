@@ -12,12 +12,14 @@ class PatientsRepo extends Component {
     const { patientsStore } = this.props;
 
     return (
-      <div className="patients-repo">
+      <div className="patients">
         <PatientsHeader />
-        <div className="patients-list">
-          {patientsStore.sortedAndFilteredPatients.map((patient, i) => (
-            <PatientListItem key={i} patient={patient} />
-          ))}
+        <div className="patients-list-wrapper">
+          <div className="patients-list">
+            {patientsStore.patientsForPage.map((patient, i) => (
+              <PatientListItem key={i} patient={patient} />
+            ))}
+          </div>
         </div>
         <PatientModal />
       </div>
