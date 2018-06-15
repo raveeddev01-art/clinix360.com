@@ -12,9 +12,12 @@ defmodule Stitch.Engage.ConversationQueries do
     Engage.ConversationMessage
   }
 
-  def for_inbox_view(inbox_id) do
+  def for_index(inbox_id, updated_before, open_value) do
     Conversation
     |> for_inbox(inbox_id)
+    |> with_open_value(open_value)
+    |> updated_before(updated_before)
+    |> most_recent(Conversation.page_length())
     |> with_patients()
     |> with_latest_messages(1)
     |> Repo.all()
@@ -28,9 +31,24 @@ defmodule Stitch.Engage.ConversationQueries do
     |> Repo.one()
   end
 
-  @doc """
-  Given an inbox or inbox_id and optional sub-query. Return a list of conversations for that inbox.
-  """
+  def latest_open_for_inbox(inbox) do
+    inbox.id
+    |> for_inbox()
+    |> where(open: true)
+    |> most_recent(Conversation.page_length())
+    |> with_patients()
+    |> with_latest_messages(1)
+    |> Repo.all()
+  end
+
+  def open_count_for_inbox(inbox) do
+    count_by_open_val(inbox, true)
+  end
+
+  def closed_count_for_inbox(inbox) do
+    count_by_open_val(inbox, false)
+  end
+
   def for_inbox(query \\ Conversation, inbox_id)
 
   def for_inbox(query, %Inbox{} = inbox) do
@@ -52,25 +70,6 @@ defmodule Stitch.Engage.ConversationQueries do
     from(convo in query, preload: [conversation_messages: ^latest_message_query])
   end
 
-  def latest_open_for_inbox(inbox) do
-    # TODO: extract this a bit better
-    inbox.id
-    |> for_inbox()
-    |> where(open: true)
-    |> most_recent(Conversation.page_length())
-    |> with_patients()
-    |> with_latest_messages(1)
-    |> Repo.all()
-  end
-
-  def open_count_for_inbox(inbox) do
-    count_by_open_val(inbox, true)
-  end
-
-  def closed_count_for_inbox(inbox) do
-    count_by_open_val(inbox, false)
-  end
-
   defp count_by_open_val(inbox, open_val) do
     query =
       inbox.id
@@ -80,9 +79,18 @@ defmodule Stitch.Engage.ConversationQueries do
     Repo.one(from(c in query, select: count("*")))
   end
 
+  defp with_open_value(query, nil), do: query
+
+  defp with_open_value(query, open_val) do
+    query |> where(open: ^open_val)
+  end
+
+  defp updated_before(query, updated_at_limit) do
+    from(m in query, where: m.updated_at < ^updated_at_limit)
+  end
+
   defp most_recent(query, count) do
-    # TODO: Conversation messages would need to touch
-    # the conversation for this to work. What to do?
+    # TODO: ConversationMessages touch conversations on create
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
   end
 end
