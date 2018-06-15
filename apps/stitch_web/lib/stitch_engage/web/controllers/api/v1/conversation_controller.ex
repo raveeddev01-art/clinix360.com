@@ -11,23 +11,20 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
-  def index(conn, %{"inbox_id" => inbox_id}) do
-    # TODO: can take message params
-    # TODO: can take message maxId and limit
-    # TODO:
-
+  def index(conn, params = %{"inbox_id" => inbox_id}) do
     user = conn.assigns.current_user
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, inbox_id)},
-         {:authorization?, true} <- {:authorization?, InboxAuthorization.can_view?(inbox, user)} do
-      conversations = ConversationQueries.for_inbox_view(inbox.id)
+         {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, user)} do
+      conversations =
+        ConversationQueries.for_index(inbox.id, params["updated_before"], params["open"])
 
       render(conn, "index.json", conversations: conversations)
     else
       {:inbox, _} ->
         {:error, :not_found}
 
-      {:authorized?, false} ->
+      {:authorized?, _} ->
         {:error, :not_authorized, "You cannot view these conversations."}
     end
   end
