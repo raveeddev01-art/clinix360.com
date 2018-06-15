@@ -6,7 +6,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     Engage.Inbox,
     Engage.InboxAuthorization,
     Engage.Conversation,
-    Engage.ConversationQueries
+    Engage.ConversationQueries,
+    Engage.ConversationAuthorization
   }
 
   action_fallback(Stitch.Web.Api.FallbackController)
@@ -30,8 +31,15 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
   end
 
   def show(conn, %{"id" => id}) do
-    conversation = ConversationQueries.for_show(id)
-    render(conn, "show.json", conversation: conversation)
+    case ConversationQueries.for_show(id) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "Conversation not found"})
+
+      conversation ->
+        render(conn, "show.json", conversation: conversation)
+    end
   end
 
   def create(conn, params = %{"inbox_id" => inbox_id}) do
@@ -70,14 +78,17 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
   end
 
   defp change_open(conn, %{"id" => id}, open_value) do
+    user = conn.assigns.current_user
+
     with {:conversation, conversation} when not is_nil(conversation) <-
            {:conversation, Repo.get(Conversation, id)},
-         {:authorized?, true} <- {:authorized?, true},
+         {:authorized?, true} <-
+           {:authorized?, ConversationAuthorization.can_update?(conversation, user)},
          {:ok, updated_conversation} <- Conversation.update_open_value(conversation, open_value) do
       updated_conversation =
         Repo.preload(updated_conversation, [:conversation_messages, team_patients: :patient])
 
-      # TODO: BROADCAST HERE
+      # broadcast update here
       render(conn, "show.json", conversation: updated_conversation)
     else
       {:authorized?, false} ->

@@ -13,10 +13,6 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
   def show_default(conn, _params) do
     team = conn.assigns.team
 
-    # TODO: returns open count
-    # TODO: returns closed count
-    # TODO: returns N open messages
-
     case InboxQueries.default_for_team(team) do
       nil ->
         conn

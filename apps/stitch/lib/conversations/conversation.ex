@@ -35,6 +35,8 @@ defmodule Stitch.Engage.Conversation do
 
     field(:open, :boolean, default: true)
 
+    has_one(:latest_conversation_message, ConversationMessage)
+
     timestamps()
   end
 

@@ -13,7 +13,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
     Enum.map(conversation_messages, &conversation_message_json/1)
   end
 
-  defp conversation_message_json(conversation_message) do
+  def conversation_message_json(conversation_message) do
     %{
       id: conversation_message.id,
       text_content: conversation_message.text_content,
@@ -21,9 +21,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       type: conversation_message.type,
       fields: %{},
       provider_id: conversation_message.provider_id,
-      team_patient_id: conversation_message.team_patient_id,
+      patient_id: conversation_message.team_patient_id,
       provider: nil,
-      team_patient: nil,
+      patient: nil,
       inserted_at: conversation_message.inserted_at,
       updated_at: conversation_message.updated_at,
       edited: !!conversation_message.edited_at,

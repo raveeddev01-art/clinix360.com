@@ -19,8 +19,8 @@ defmodule Stitch.Engage.ConversationQueries do
     |> updated_before(updated_before)
     |> most_recent(Conversation.page_length())
     |> with_patients()
-    |> with_latest_messages(1)
     |> Repo.all()
+    |> with_latest_message_for_each()
   end
 
   def for_show(conversation_id) do
@@ -63,6 +63,11 @@ defmodule Stitch.Engage.ConversationQueries do
     query |> preload(team_patients: :patient)
   end
 
+  def with_latest_message_for_each(conversations) do
+    # TODO: actually get latest for each (in a performat way)
+    Enum.map(conversations, &Map.merge(&1, %{latest_conversation_message: nil}))
+  end
+
   def with_latest_messages(query, message_count) do
     latest_message_query =
       from(m in ConversationMessage, order_by: m.inserted_at, limit: ^message_count)
@@ -79,11 +84,13 @@ defmodule Stitch.Engage.ConversationQueries do
     Repo.one(from(c in query, select: count("*")))
   end
 
-  defp with_open_value(query, nil), do: query
+  defp with_open_value(query, open_val) when is_nil(open_val), do: query
 
   defp with_open_value(query, open_val) do
     query |> where(open: ^open_val)
   end
+
+  defp updated_before(query, updated_at_limit) when is_nil(updated_at_limit), do: query
 
   defp updated_before(query, updated_at_limit) do
     from(m in query, where: m.updated_at < ^updated_at_limit)
