@@ -45,11 +45,6 @@ defmodule Stitch.Engage.Conversation do
     struct
     |> cast(params, @castable_attributes)
     |> validate_required(@required_attributes)
-    |> unique_constraint(
-      :slug,
-      name: :conversations_inbox_id_slug_index,
-      message: "has already been taken"
-    )
   end
 
   def create_for_inbox(inbox_id, params \\ %{}) do

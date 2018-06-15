@@ -41,7 +41,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
          {:ok, %{conversation: conversation}} <-
            Conversation.begin_conversation_as_provider(user, params) do
       # TODO: BROADCAST HERE
-      render(conn, "show.json", conversations: conversation)
+      conversation = Repo.preload(conversation, [:conversation_messages, team_patients: :patient])
+      render(conn, "show.json", conversation: conversation)
     else
       {:inbox, _} ->
         {:error, :not_found}
