@@ -60,17 +60,42 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     end
   end
 
-  # def open(conn, params) do
-  #   change_open(conn, params, true)
-  # end
+  def open(conn, params) do
+    change_open(conn, params, true)
+  end
 
-  # def close(conn, params) do
-  #   change_open(conn, params, false)
-  # end
+  def close(conn, params) do
+    change_open(conn, params, false)
+  end
 
-  # defp change_open(conn, params = %{id: id}, open_value) do
-  #   merged_params = Map.merge(params, %{open: open_value})
-  #   # TODO: DO UPDATE
-  #   render(conn, "show.json", conversation: conversation)
-  # end
+  defp change_open(conn, %{"id" => id}, open_value) do
+    with {:conversation, conversation} when not is_nil(conversation) <-
+           {:conversation, Repo.get(Conversation, id)},
+         {:authorized?, true} <- {:authorized?, true},
+         {:ok, updated_conversation} <- Conversation.update_open_value(conversation, open_value) do
+      updated_conversation =
+        Repo.preload(updated_conversation, [:conversation_messages, team_patients: :patient])
+
+      # TODO: BROADCAST HERE
+      render(conn, "show.json", conversation: updated_conversation)
+    else
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot update this conversation."}
+
+      {:conversation, _} ->
+        {:error, :not_found}
+
+      {:error, :same_open_value} ->
+        open_text = if open_value, do: "open", else: "closed."
+        {:error, :unprocessable_entity, "Conersation already #{open_text}"}
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+
+      _error ->
+        {:error, :unprocessable_entity}
+    end
+  end
 end
