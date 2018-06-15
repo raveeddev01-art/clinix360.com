@@ -20,6 +20,7 @@ defmodule Stitch.Engage.Conversation do
 
   @castable_attributes [:slug, :open]
   @required_attributes [:slug]
+  @page_length 50
 
   schema "conversations" do
     belongs_to(:inbox, Inbox)
@@ -37,6 +38,8 @@ defmodule Stitch.Engage.Conversation do
 
     timestamps()
   end
+
+  def page_length, do: @page_length
 
   def changeset(%Conversation{} = struct, params) do
     struct

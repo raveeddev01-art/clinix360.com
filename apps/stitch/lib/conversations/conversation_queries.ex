@@ -20,6 +20,14 @@ defmodule Stitch.Engage.ConversationQueries do
     |> Repo.all()
   end
 
+  def for_show_view(conversation_id) do
+    Conversation
+    |> where(id: ^conversation_id)
+    |> with_patients()
+    |> with_latest_messages(Conversation.page_length())
+    |> Repo.one()
+  end
+
   @doc """
   Given an inbox or inbox_id and optional sub-query. Return a list of conversations for that inbox.
   """
