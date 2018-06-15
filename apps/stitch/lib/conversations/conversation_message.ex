@@ -38,11 +38,12 @@ defmodule Stitch.Engage.ConversationMessage do
     :link_previews_generated,
     :client_device_type,
     :client_os,
-    :client_name,
-    :highlighted_text_content
+    :client_name
   ]
 
   @required_attributes [:text_content]
+
+  @page_length 50
 
   schema "conversation_messages" do
     belongs_to(:conversation, Conversation)
@@ -70,6 +71,8 @@ defmodule Stitch.Engage.ConversationMessage do
 
     timestamps()
   end
+
+  def page_length, do: @page_length
 
   # TODO: Do not cast all attributes.
   # This is temporarily the case as we develop engage.

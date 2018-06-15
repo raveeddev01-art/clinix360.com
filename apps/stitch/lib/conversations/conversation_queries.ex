@@ -23,7 +23,7 @@ defmodule Stitch.Engage.ConversationQueries do
     |> Repo.all()
   end
 
-  def for_show_view(conversation_id) do
+  def for_show(conversation_id) do
     Conversation
     |> where(id: ^conversation_id)
     |> with_patients()
@@ -35,7 +35,7 @@ defmodule Stitch.Engage.ConversationQueries do
     inbox.id
     |> for_inbox()
     |> where(open: true)
-    |> most_recent(Conversation.page_length())
+    |> most_recent(ConversationMessage.page_length())
     |> with_patients()
     |> with_latest_messages(1)
     |> Repo.all()

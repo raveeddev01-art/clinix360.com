@@ -30,7 +30,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
   end
 
   def show(conn, %{"id" => id}) do
-    conversation = ConversationQueries.for_show_view(id)
+    conversation = ConversationQueries.for_show(id)
     render(conn, "show.json", conversation: conversation)
   end
 

@@ -20,7 +20,7 @@ defmodule Stitch.Engage.Conversation do
 
   @castable_attributes [:open]
   @required_attributes []
-  @page_length 50
+  @page_length 20
 
   schema "conversations" do
     belongs_to(:inbox, Inbox)
