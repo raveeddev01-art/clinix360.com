@@ -18,8 +18,8 @@ defmodule Stitch.Engage.Conversation do
 
   @type t :: %__MODULE__{}
 
-  @castable_attributes [:slug, :open]
-  @required_attributes [:slug]
+  @castable_attributes [:open]
+  @required_attributes []
   @page_length 50
 
   schema "conversations" do
@@ -33,7 +33,6 @@ defmodule Stitch.Engage.Conversation do
 
     has_many(:conversation_messages, ConversationMessage, on_delete: :delete_all)
 
-    field(:slug, :string)
     field(:open, :boolean, default: true)
 
     timestamps()

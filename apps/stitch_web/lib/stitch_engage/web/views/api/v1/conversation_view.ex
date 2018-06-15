@@ -26,7 +26,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
 
     %{
       id: conversation.id,
-      slug: conversation.slug,
       open: conversation.open,
       patient: patient_json,
       latest_messages: latest_messages_json
