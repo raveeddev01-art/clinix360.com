@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 class Room extends Component {
   render() {
-    const { unread, active, name } = this.props;
+    const { unread, active, name, closed } = this.props;
 
     const roomClass = classNames("item", {
       unread: unread === true,
@@ -21,7 +21,14 @@ class Room extends Component {
         <div className="item__content">
           <div className="heading">
             <div className="user">{name}</div>
-            <div className="date">9:45 AM</div>
+
+            {closed ? (
+              <div className="closed">
+                <i className="fa fa-check" /> Closed
+              </div>
+            ) : (
+              <div className="date">9:45 AM</div>
+            )}
           </div>
 
           <div className="message">
@@ -37,12 +44,14 @@ class Room extends Component {
 Room.defaultProps = {
   active: false,
   unread: false,
+  closed: false,
   name: "John Doe"
 };
 
 Room.propTypes = {
   active: PropTypes.bool,
   unread: PropTypes.bool,
+  closed: PropTypes.bool,
   name: PropTypes.string
 };
 

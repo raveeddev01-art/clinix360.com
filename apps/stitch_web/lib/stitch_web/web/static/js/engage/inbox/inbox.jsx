@@ -9,6 +9,12 @@ import Modal from "react-bootstrap/lib/Modal";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
+import Tab from "react-bootstrap/lib/Tab";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
+import Nav from "react-bootstrap/lib/Nav";
+import NavItem from "react-bootstrap/lib/NavItem";
+
 import Scrollbar from "common/components/scrollbar";
 
 import Room from "./room";
@@ -18,11 +24,6 @@ import AddPatientModal from "./modals/add_patient_modal";
 @inject("inboxStore")
 @observer
 class InboxMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { roomName: "" };
-  }
-
   onComposeClick = () => {
     this.showComposeModal();
   };
@@ -51,7 +52,6 @@ class InboxMenu extends Component {
     if (this.currentModal === "compose") {
       return (
         <ComposeModal
-          roomName={this.state.roomName}
           showAddPatientModal={this.showAddPatientModal}
           closeModal={this.closeModal}
         />
@@ -94,48 +94,62 @@ class InboxMenu extends Component {
         </div>
 
         <div className="flex-content">
-          <div className="status-filter">
-            <a href="#" className="active">
-              Open (9)
-            </a>
-            <a href="#">Closed (1029)</a>
-          </div>
+          <Tab.Container id="conversations-tabs" defaultActiveKey="first">
+            <div>
+              <Nav justified className="status-filter">
+                <NavItem eventKey="first">Open (16)</NavItem>
+                <NavItem eventKey="second">Closed (5)</NavItem>
+              </Nav>
 
-          <Scrollbar
-            className="scrollbar"
-            viewRef={ref => {
-              this.scrollbar = ref;
-            }}
-          >
-            <div className="menu-nav m-b-20">
-              <Room name="Marty McFly" />
-              <Room unread name="Andrew Brynum" />
-              <Room active name="Beatrice Betty" />
-              <Room unread name="Charlie Chaplin" />
-              <Room name="John Smith" />
-              <Room name="Deidre Smith" />
-              <Room unread name="Charlie Som" />
-              <Room />
+              <Tab.Content animation={false}>
+                <Tab.Pane eventKey="first">
+                  <Scrollbar
+                    className="scrollbar"
+                    viewRef={ref => {
+                      this.scrollbar = ref;
+                    }}
+                  >
+                    <div className="menu-nav m-b-20">
+                      <Room name="Marty McFly" />
+                      <Room unread name="Andrew Brynum" />
+                      <Room active name="Beatrice Betty" />
+                      <Room unread name="Charlie Chaplin" />
+                      <Room name="John Smith" />
+                      <Room name="Deidre Smith" />
+                      <Room unread name="Charlie Som" />
+                      <Room />
 
-              <Room name="Marty McFly" />
-              <Room unread name="Andrew Brynum" />
-              <Room name="Beatrice Betty" />
-              <Room unread name="Charlie Chaplin" />
-              <Room name="John Smith" />
-              <Room name="Deidre Smith" />
-              <Room unread name="Charlie Som" />
-              <Room />
+                      <Room name="Marty McFly" />
+                      <Room unread name="Andrew Brynum" />
+                      <Room name="Beatrice Betty" />
+                      <Room unread name="Charlie Chaplin" />
+                      <Room name="John Smith" />
+                      <Room name="Deidre Smith" />
+                      <Room unread name="Charlie Som" />
+                      <Room />
+                    </div>
+                  </Scrollbar>
+                </Tab.Pane>
 
-              <Room name="Marty McFly" />
-              <Room unread name="Andrew Brynum" />
-              <Room name="Beatrice Betty" />
-              <Room unread name="Charlie Chaplin" />
-              <Room name="John Smith" />
-              <Room name="Deidre Smith" />
-              <Room unread name="Charlie Som" />
-              <Room />
+                <Tab.Pane eventKey="second">
+                  <Scrollbar
+                    className="scrollbar"
+                    viewRef={ref => {
+                      this.scrollbar = ref;
+                    }}
+                  >
+                    <div className="menu-nav m-b-20">
+                      <Room name="Marty McFly" closed />
+                      <Room name="Charlie Chaplin" closed />
+                      <Room name="John Smith" closed />
+                      <Room name="Deidre Smith" closed />
+                      <Room name="Charlie Som" closed />
+                    </div>
+                  </Scrollbar>
+                </Tab.Pane>
+              </Tab.Content>
             </div>
-          </Scrollbar>
+          </Tab.Container>
         </div>
 
         {this.isShowing && this.renderModal()}
