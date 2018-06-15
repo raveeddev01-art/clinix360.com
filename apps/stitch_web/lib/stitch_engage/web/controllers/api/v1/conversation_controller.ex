@@ -28,11 +28,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     end
   end
 
-  # def show(conn, params = %{id: id}) do
-  #   team = conn.assigns.team
-  #   # TODO: FIND CONVERSATION
-  #   render(conn, "show.json", conversation: conversation)
-  # end
+  def show(conn, %{"id" => id}) do
+    conversation = ConversationQueries.for_show_view(id)
+    render(conn, "show.json", conversation: conversation)
+  end
 
   # def create(conn, params = %{id: id}) do
   #   team = conn.assigns.team
