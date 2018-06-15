@@ -17,22 +17,18 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
 
   defp conversation_json(conversation) do
     patient_json =
-      case(conversation.team_patients) do
-        [team_patient | _] ->
-          TeamPatientView.team_patient_json(team_patient)
+      conversation.team_patients
+      |> List.first()
+      |> TeamPatientView.team_patient_json()
 
-        [] ->
-          nil
-      end
-
-    latest_messages_json =
+    conversation_messages_json =
       ConversationMessageView.conversation_messages_json(conversation.conversation_messages)
 
     %{
       id: conversation.id,
       open: conversation.open,
       patient: patient_json,
-      latest_messages: latest_messages_json,
+      conversation_messages: conversation_messages_json,
       inserted_at: conversation.inserted_at,
       updated_at: conversation.updated_at
     }
