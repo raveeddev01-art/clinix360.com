@@ -52,9 +52,35 @@ defmodule Stitch.Engage.Conversation do
     )
   end
 
-  def create_for_inbox(inbox_id, params) do
-    %Conversation{inbox_id: inbox_id}
+  def create_for_inbox(inbox_id, params \\ %{}) do
+    {id, _} = Integer.parse(inbox_id)
+
+    %Conversation{inbox_id: id}
     |> changeset(params)
     |> Repo.insert()
+  end
+
+  def begin_conversation_as_provider(
+        sender,
+        params = %{
+          "inbox_id" => inbox_id,
+          "patient_id" => patient_id
+        }
+      ) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:conversation, fn _ ->
+      create_for_inbox(inbox_id, params)
+    end)
+    |> Ecto.Multi.run(:conversation_patient, fn %{conversation: conversation} ->
+      ConversationPatient.create_for_conversation_and_patient(conversation.id, patient_id)
+    end)
+    |> Ecto.Multi.run(:conversation_providers, fn %{conversation: conversation} ->
+      # TODO: create a record for everybody else? - or just for somebody in the convo?
+      ConversationProvider.create_for_conversation_and_provider(conversation.id, sender.id)
+    end)
+    |> Ecto.Multi.run(:conversation_message, fn %{conversation: conversation} ->
+      ConversationMessage.create_for_provider(conversation.id, sender.id, params)
+    end)
+    |> Repo.transaction()
   end
 end
