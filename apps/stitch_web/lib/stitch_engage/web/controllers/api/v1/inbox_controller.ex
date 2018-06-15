@@ -26,9 +26,7 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
         {:error, :not_authorized, "You cannot view this inbox."}
 
       {:inbox, _} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{message: "Inbox not found"})
+        {:error, :not_found, "Inbox not found"}
     end
   end
 
@@ -41,21 +39,17 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, id)},
          {:authorized?, true} <- {:authorized?, InboxAuthorization.can_update?(inbox, user)},
          {:ok, updated_inbox} <- Inbox.update(inbox, params) do
-      # Todo: broadcast inbox name change
+      # TODO: broadcast inbox name change
       render(conn, "show.json", inbox: updated_inbox)
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot update this inbox."}
 
       {:inbox, _} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{message: "Inbox not found"})
+        {:error, :not_found, "Inbox not found"}
 
       {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: changeset_errors_to_string(changeset)})
+        {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
   end
 end
