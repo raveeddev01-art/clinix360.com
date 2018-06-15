@@ -48,6 +48,7 @@
     "react-scroll": "^1.5.4",
     "react-select": "1.1.0",
     "react-stripe-elements": "^1.2.0",
+    "react-table": "^6.8.6",
     "react-textarea-autosize": "^5.1.0",
     "react-toastr": "2.9.5",
     "react-visibility-sensor": "^3.10.1",

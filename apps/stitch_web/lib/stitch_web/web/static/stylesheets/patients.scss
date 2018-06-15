@@ -22,7 +22,7 @@ $patients-header-height: 60px;
       width: 100%;
       flex: 0 0 $patients-header-height;
       border-bottom: 1px solid #ccc;
-      background-color: $almost-white;
+      background: #fff;
 
       padding: 15px;
 
@@ -70,7 +70,7 @@ $patients-header-height: 60px;
 
     &-list-wrapper {
       flex: 1 1 auto;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
 
     &-list {
@@ -153,5 +153,98 @@ $patients-header-height: 60px;
       align-items: center;
       width: 100%;
     }
+  }
+}
+
+.ReactTable .rt-thead .rt-th {
+  color: $brand-primary;
+  font-weight: 700;
+  padding: 15px;
+}
+
+.ReactTable .rt-thead .rt-th.-sort-desc,
+.ReactTable .rt-thead .rt-td.-sort-desc {
+  box-shadow: inset 0 -3px 0 0 $brand-primary;
+}
+
+.ReactTable .rt-thead .rt-th.-sort-asc,
+.ReactTable .rt-thead .rt-td.-sort-asc {
+  box-shadow: inset 0 3px 0 0 $brand-primary;
+}
+
+.ReactTable .rt-th,
+.ReactTable .rt-td {
+  font-size: 16px;
+  padding: 13px 25px;
+  outline: none;
+}
+
+.ReactTable .rt-thead.-header {
+  border-top: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
+  box-shadow: none;
+}
+
+.ReactTable .rt-thead .rt-th {
+  background: #f5f5f5;
+  border-color: #e1e1e1;
+  box-shadow: none;
+}
+
+.ReactTable .rt-tbody .rt-tr-group,
+.ReactTable .rt-tbody .rt-td {
+  border-color: #e1e1e1;
+}
+
+.ReactTable .rt-tr {
+  align-items: center;
+}
+
+.ReactTable .rt-tbody .rt-td:last-child {
+  text-align: center;
+  padding: 0 25px;
+
+  .btn {
+    font-size: 16px;
+    color: $brand-primary;
+    background: #fff;
+    border-color: $brand-primary;
+    padding: 2px 15px;
+
+    &:hover {
+      color: #fff;
+      background: $brand-primary;
+    }
+  }
+}
+
+.ReactTable .-pagination {
+  box-shadow: none;
+  border-top: 0;
+}
+
+.ReactTable {
+  border: 0;
+
+  .user-cell {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    img {
+      height: 24px;
+      margin-right: 6px;
+    }
+
+    .name {
+      flex: 1;
+    }
+  }
+
+  code {
+    background: #e6ebf0;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 0;
   }
 }

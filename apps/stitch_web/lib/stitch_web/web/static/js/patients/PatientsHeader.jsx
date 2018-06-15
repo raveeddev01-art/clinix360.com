@@ -53,24 +53,36 @@ class PatientsHeader extends Component {
   }
 
   render() {
+    const { patientsStore } = this.props;
+
     return (
       <div className="patients-header">
         <div className="patients-header-count">
-          <h4>{this.props.patientsStore.totalVisiblePatients} Patients</h4>
+          <h4>All Patients</h4>
         </div>
-        <div className="patients-header-pager">
+        {/* <div className="patients-header-pager">
           {this.renderPagerButtons()}
           {this.renderPagerText()}
-        </div>
+        </div> */}
+
         <div className="patients-header-center" />
-        <div className="patients-header-search">
+
+        {/* <div className="patients-header-search">
           <input
             type="text"
             className="form-control input-sm"
             placeholder="Filter patients"
             onChange={this.onFilterChange}
           />
-        </div>
+        </div> */}
+
+        <a
+          role="button"
+          className="btn btn-primary"
+          onClick={patientsStore.openModal}
+        >
+          <i className="fa fa-plus" /> Add Patient
+        </a>
       </div>
     );
   }
