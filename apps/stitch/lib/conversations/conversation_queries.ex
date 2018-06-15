@@ -31,7 +31,6 @@ defmodule Stitch.Engage.ConversationQueries do
   @doc """
   Given an inbox or inbox_id and optional sub-query. Return a list of conversations for that inbox.
   """
-  @spec for_inbox(Ecto.Query.t(), number | binary | Inbox.t()) :: list()
   def for_inbox(query \\ Conversation, inbox_id)
 
   def for_inbox(query, %Inbox{} = inbox) do
@@ -51,5 +50,39 @@ defmodule Stitch.Engage.ConversationQueries do
       from(m in ConversationMessage, order_by: m.inserted_at, limit: ^message_count)
 
     from(convo in query, preload: [conversation_messages: ^latest_message_query])
+  end
+
+  def latest_open_for_inbox(inbox) do
+    # TODO: extract this a bit better
+    inbox.id
+    |> for_inbox()
+    |> where(open: true)
+    |> most_recent(Conversation.page_length())
+    |> with_patients()
+    |> with_latest_messages(1)
+    |> Repo.all()
+  end
+
+  def open_count_for_inbox(inbox) do
+    count_by_open_val(inbox, true)
+  end
+
+  def closed_count_for_inbox(inbox) do
+    count_by_open_val(inbox, false)
+  end
+
+  defp count_by_open_val(inbox, open_val) do
+    query =
+      inbox.id
+      |> for_inbox()
+      |> where(open: ^open_val)
+
+    Repo.one(from(c in query, select: count("*")))
+  end
+
+  defp most_recent(query, count) do
+    # TODO: Conversation messages would need to touch
+    # the conversation for this to work. What to do?
+    from(m in query, order_by: [desc: m.updated_at], limit: ^count)
   end
 end

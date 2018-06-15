@@ -6,7 +6,7 @@ defmodule Stitch.Engage.Inbox do
   use Ecto.Schema
   import Ecto.Changeset
   alias Stitch.{Repo, Team}
-  alias Stitch.Engage.{Inbox, InboxProvider}
+  alias Stitch.Engage.{Inbox, InboxProvider, Conversation}
 
   @type t :: %__MODULE__{}
 
@@ -18,8 +18,15 @@ defmodule Stitch.Engage.Inbox do
     has_many(:inbox_providers, InboxProvider)
     has_many(:providers, through: [:inbox_providers, :provider])
 
+    has_many(:conversations, Conversation)
+
     field(:name, :string)
     field(:is_default, :boolean, default: false)
+
+    # Virtual attributes
+    has_many(:open_conversations, Conversation)
+    field(:open_conversations_count, :integer, virtual: true)
+    field(:closed_conversations_count, :integer, virtual: true)
 
     timestamps()
   end
