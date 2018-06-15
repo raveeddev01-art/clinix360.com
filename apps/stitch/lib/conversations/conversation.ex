@@ -23,18 +23,14 @@ defmodule Stitch.Engage.Conversation do
   @page_length 20
 
   schema "conversations" do
-    belongs_to(:inbox, Inbox)
-
-    has_many(:conversation_providers, ConversationProvider, on_delete: :delete_all)
-    has_many(:providers, through: [:conversation_providers, :provider])
-
-    has_many(:conversation_patients, ConversationPatient, on_delete: :delete_all)
-    has_many(:team_patients, through: [:conversation_patients, :team_patient])
-
-    has_many(:conversation_messages, ConversationMessage, on_delete: :delete_all)
-
     field(:open, :boolean, default: true)
 
+    belongs_to(:inbox, Inbox)
+    has_many(:conversation_messages, ConversationMessage, on_delete: :delete_all)
+    has_many(:conversation_providers, ConversationProvider, on_delete: :delete_all)
+    has_many(:conversation_patients, ConversationPatient, on_delete: :delete_all)
+    has_many(:providers, through: [:conversation_providers, :provider])
+    has_many(:team_patients, through: [:conversation_patients, :team_patient])
     has_one(:latest_conversation_message, ConversationMessage)
 
     timestamps()
@@ -48,14 +44,23 @@ defmodule Stitch.Engage.Conversation do
     |> validate_required(@required_attributes)
   end
 
+  @doc """
+  Helper to create a conversation for an inbox
+  """
+  @spec create_for_inbox(integer | binary, map) :: {:ok, t()} | {:error, Changeset.t()}
   def create_for_inbox(inbox_id, params \\ %{}) do
-    {id, _} = Integer.parse(inbox_id)
+    {inbox_id, _} = Integer.parse(inbox_id)
 
-    %Conversation{inbox_id: id}
+    %Conversation{inbox_id: inbox_id}
     |> changeset(params)
     |> Repo.insert()
   end
 
+  @doc """
+  Creates a conversation to a patient as a provider. Used when a provider
+  sends the first message in a new conversation.
+  """
+  @spec begin_conversation_as_provider(User.t(), map) :: {:ok, map} | {:error, map}
   def begin_conversation_as_provider(
         sender,
         params = %{
@@ -72,7 +77,7 @@ defmodule Stitch.Engage.Conversation do
     end)
     |> Ecto.Multi.run(:conversation_providers, fn _ ->
       # ConversationProvider's will track assignment and eventually access to
-      # conversations. For now, all providers will habe access and assignments
+      # conversations. For now, all providers will have access and assignments
       # do not exist, so this is a noop
       {:ok, []}
     end)
@@ -82,6 +87,11 @@ defmodule Stitch.Engage.Conversation do
     |> Repo.transaction()
   end
 
+  @doc """
+  Updates the open/closed value.
+  """
+  @spec update_open_value(t(), boolean) ::
+          {:ok, map} | {:error, Changeset.t()} | {:error, :same_open_value}
   def update_open_value(%Conversation{open: open_value}, open_value) do
     {:error, :same_open_value}
   end

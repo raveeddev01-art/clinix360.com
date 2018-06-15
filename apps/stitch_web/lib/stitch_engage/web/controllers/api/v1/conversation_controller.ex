@@ -34,7 +34,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     user = conn.assigns.current_user
 
     with {:conversation, conversation} when not is_nil(conversation) <-
-           ConversationQueries.for_show(id),
+           {:conversation, ConversationQueries.for_show(id)},
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
       render(conn, "show.json", conversation: conversation)

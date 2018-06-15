@@ -30,11 +30,11 @@ defmodule Stitch.Engage.InboxQueries do
   Loads values/relaitonships needed to render main inbox page and merges into struct.
   """
   @spec with_show_values(Inbox.t()) :: Inbox.t()
-  def with_show_values(%Inbox{} = inbox) do
+  def with_show_values(%Inbox{id: inbox_id} = inbox) do
     additional_attributes = %{
-      open_conversations: ConversationQueries.latest_open_for_inbox(inbox),
-      open_conversations_count: ConversationQueries.open_count_for_inbox(inbox),
-      closed_conversations_count: ConversationQueries.closed_count_for_inbox(inbox)
+      open_conversations: ConversationQueries.latest_open_for_inbox(inbox_id),
+      open_conversations_count: ConversationQueries.open_count_for_inbox(inbox_id),
+      closed_conversations_count: ConversationQueries.closed_count_for_inbox(inbox_id)
     }
 
     Map.merge(inbox, additional_attributes)
