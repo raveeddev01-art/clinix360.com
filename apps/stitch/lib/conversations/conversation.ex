@@ -70,9 +70,11 @@ defmodule Stitch.Engage.Conversation do
     |> Ecto.Multi.run(:conversation_patient, fn %{conversation: conversation} ->
       ConversationPatient.create_for_conversation_and_patient(conversation.id, patient_id)
     end)
-    |> Ecto.Multi.run(:conversation_providers, fn %{conversation: conversation} ->
-      # TODO: create a record for everybody else? - or just for somebody in the convo?
-      ConversationProvider.create_for_conversation_and_provider(conversation.id, sender.id)
+    |> Ecto.Multi.run(:conversation_providers, fn _ ->
+      # ConversationProvider's will track assignment and eventually access to
+      # conversations. For now, all providers will habe access and assignments
+      # do not exist, so this is a noop
+      {:ok, []}
     end)
     |> Ecto.Multi.run(:conversation_message, fn %{conversation: conversation} ->
       ConversationMessage.create_for_provider(conversation.id, sender.id, params)
