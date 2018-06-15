@@ -3,6 +3,7 @@ defmodule Stitch.Files.Upload do
     Accounts.User,
     Files.Upload,
     Files.GroupUpload,
+    Files.Thumb,
     Rand,
     Repo,
     Team,
@@ -17,6 +18,8 @@ defmodule Stitch.Files.Upload do
   schema "uploads" do
     belongs_to(:user, User)
     belongs_to(:team, Team)
+    has_many(:group_uploads, GroupUpload)
+    has_many(:groups, through: [:group_uploads, :groups])
     field(:filename, :string)
     field(:url, :string)
     field(:mimetype, :string, default: "application/octet-stream")
@@ -25,24 +28,26 @@ defmodule Stitch.Files.Upload do
     field(:preview_height, :integer)
     field(:preview_width, :integer)
     field(:preview_url, :string)
-    field(:shared_in, {:array, :integer}, virtual: true)
+    field(:shared_in, {:array, :integer}, virtual: true, default: [])
 
     timestamps()
   end
 
+  @attributes [
+    :filename,
+    :url,
+    :mimetype,
+    :filetype,
+    :size_in_bytes,
+    :preview_height,
+    :preview_width,
+    :preview_url
+  ]
+
   @spec new(Upload.t(), map) :: Ecto.Changeset.t()
   def new(%Upload{} = struct, attrs) do
     struct
-    |> cast(attrs, [
-      :filename,
-      :url,
-      :mimetype,
-      :filetype,
-      :size_in_bytes,
-      :preview_height,
-      :preview_width,
-      :preview_url
-    ])
+    |> cast(attrs, @attributes)
     |> validate_required([:url])
     |> put_default_name()
     |> put_filetype()
@@ -57,19 +62,21 @@ defmodule Stitch.Files.Upload do
 
   @spec share_with_group(Upload.t(), Group.t()) ::
           {:ok, GroupUpload.t()} | {:error, Ecto.Changeset.t()}
-  def share_with_group(%Upload{} = file, %Group{} = group) do
-    GroupUpload.create(group, file)
+  def share_with_group(%Upload{} = upload, %Group{} = group) do
+    GroupUpload.create(group, upload)
   end
 
   @spec unshare_from_group(Upload.t(), Group.t()) :: {:ok, GroupUpload.t()} | :error
-  def unshare_from_group(%Upload{} = file, %Group{} = group) do
-    GroupUpload.delete(group, file)
+  def unshare_from_group(%Upload{} = upload, %Group{} = group) do
+    GroupUpload.delete(group, upload)
   end
 
-  def create_and_share_with_group(%Group{} = group, %User{} = user, attrs) do
-    with {:ok, file} <- create(user, attrs),
-         {:ok, group_file} <- share_with_group(file, group) do
-      {:ok, file, group_file}
+  def create_and_share_with_group(%Group{} = group, %User{} = user, attrs, opts \\ []) do
+    with {:ok, preview} <- create_preview(attrs, opts),
+         attrs = Map.merge(attrs, preview),
+         {:ok, upload} <- create(user, attrs),
+         {:ok, group_file} <- share_with_group(upload, group) do
+      {:ok, upload, group_file}
     else
       error -> {:error, error}
     end
@@ -112,18 +119,45 @@ defmodule Stitch.Files.Upload do
 
   def put_filetype(changeset), do: changeset
 
+  def create_preview(_attrs, with_preview: false), do: {:ok, %{}}
+
+  def create_preview(fields, _opts) do
+    case Thumb.create(fields) do
+      {:ok, preview_metadata} ->
+        {:ok, preview_metadata}
+
+      {:error, "Unsupported type"} ->
+        {:ok, %{}}
+
+      {:error, error} ->
+        {:ok, error}
+    end
+  end
+
   @spec encode_url_id(Upload.t()) :: String.t()
-  def encode_url_id(%Upload{} = file) do
-    "f" <> Base.encode32("#{file.id}", case: :lower, padding: false)
+  def encode_url_id(%Upload{} = upload) do
+    "f" <> Base.encode32("#{upload.id}", case: :lower, padding: false)
   end
 
   @spec decode_url_id(String.t()) :: {:ok, integer} | :error
-  def decode_url_id("f" <> file_id) do
-    with {:ok, string_id} <- Base.decode32("#{file_id}", case: :lower, padding: false),
+  def decode_url_id("f" <> upload_id) do
+    with {:ok, string_id} <- Base.decode32("#{upload_id}", case: :lower, padding: false),
          {int_id, _} <- Integer.parse(string_id) do
       {:ok, int_id}
     else
       _ -> :error
     end
+  end
+
+  @spec has_preview?(Upload.t()) :: boolean
+  def has_preview?(%Upload{} = upload) do
+    !!(upload.preview_height && upload.preview_width && upload.preview_url)
+  end
+
+  @spec fields(Upload.t()) :: map
+  def fields(%Upload{} = upload) do
+    upload
+    |> Map.take(@attributes)
+    |> Map.new(fn {k, v} -> {"#{k}", v} end)
   end
 end

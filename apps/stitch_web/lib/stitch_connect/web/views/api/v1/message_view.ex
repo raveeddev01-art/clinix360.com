@@ -58,7 +58,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       deleted: message.deleted,
       text_content: message.text_content,
       fields: render_fields(message, authenticated_url, files_url),
-      type: message.type,
+      type: type(message.type),
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,
       starred: Map.get(message, :starred, false),
@@ -76,6 +76,9 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       highlighted_text_content: message.highlighted_text_content
     }
   end
+
+  def type("file_share"), do: "upload"
+  def type(type), do: type
 
   def user_info(nil), do: nil
 
@@ -107,17 +110,18 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     |> put_download_link(false, message.id, files_endpoint)
   end
 
-  def render_fields(%Message{type: "file_share", upload: upload} = message, true, files_endpoint) do
-    encoded_file_id = Upload.encode_url_id(upload)
-    url = files_file_url(files_endpoint, :download, encoded_file_id, upload.filename)
+  def render_fields(%Message{type: "file_share"} = message, true, files_endpoint) do
+    encoded_file_id = Upload.encode_url_id(%Upload{id: message.file_id})
+    filename = Map.get(message.fields, "filename", fn -> Stitch.Rand.token(8) end)
+    url = files_file_url(files_endpoint, :download, encoded_file_id, filename)
     preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
 
-    %{
-      "filename" => upload.filename,
+    message.fields
+    |> Map.merge(%{
       "url" => url,
       "api_url" => api_v1_message_path(@endpoint, :download, message.id),
-      "preview_url" => files_file_url(files_endpoint, :download_preview, preview_url)
-    }
+      "preview_url" => preview_url
+    })
   end
 
   def render_fields(%Message{fields: fields}, _authenticated_urls, _files_endpoint), do: fields

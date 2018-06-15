@@ -7,7 +7,7 @@ defmodule Stitch.Web.Api.V1.FileView do
 
   def render("show.json", %{file: file}), do: file(file)
 
-  defp file(file) do
+  def file(file) do
     %{
       id: file.id,
       filename: file.filename,

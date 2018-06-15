@@ -151,4 +151,17 @@ defmodule Stitch.GroupUser do
   def get(group_id, user_id) do
     Repo.get_by(GroupUser, group_id: group_id, user_id: user_id)
   end
+
+  @spec is_member_in_groups([pos_integer], pos_integer) :: boolean
+  def is_member_in_groups(group_ids, user_id) do
+    result =
+      GroupUser
+      |> where([gu], gu.group_id in ^group_ids)
+      |> where(user_id: ^user_id)
+      |> select([gu], true)
+      |> limit(1)
+      |> Repo.one()
+
+    !!result
+  end
 end
