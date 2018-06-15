@@ -77,4 +77,14 @@ defmodule Stitch.Engage.Conversation do
     end)
     |> Repo.transaction()
   end
+
+  def update_open_value(%Conversation{open: open_value}, open_value) do
+    {:error, :same_open_value}
+  end
+
+  def update_open_value(%Conversation{} = conversation, open_value) do
+    conversation
+    |> changeset(%{open: open_value})
+    |> Repo.update()
+  end
 end

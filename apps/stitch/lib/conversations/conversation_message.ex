@@ -68,9 +68,6 @@ defmodule Stitch.Engage.ConversationMessage do
     # TODO: Add link preview logic
     # embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
-    # virtual attrs:
-    field(:highlighted_text_content, :string, virtual: true)
-
     timestamps()
   end
 

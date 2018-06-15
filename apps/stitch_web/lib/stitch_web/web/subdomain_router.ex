@@ -118,7 +118,7 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   # ====
-  # NOTE: Stitch-Connect route up here to pattern match first
+  # NOTE: Some StitchConnect routes up here to pattern match first
   # ====
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_locked_api)
@@ -410,13 +410,12 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/inboxes/:inbox_id/conversations", ConversationController, :index)
     post("/inboxes/:inbox_id/conversations", ConversationController, :create)
     get("/conversations/:id", ConversationController, :show)
+    put("/conversations/:id/open", ConversationController, :open)
+    put("/conversations/:id/close", ConversationController, :close)
 
     # Expected Engage routes:
 
     # get("/inboxes", InboxController, :index)
-    # put("/conversations/:id", ConversationController, :update)
-    # put("/conversations/:id/open", ConversationController, :open)
-    # put("/conversations/:id/close", ConversationController, :close)
     # post("/conversations/:id/mark_as_read", ConversationController, :mark_as_read)
     # post("/conversations/:id/mark_as_unread", ConversationController, :mark_as_unread)
 
