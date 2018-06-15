@@ -10,35 +10,47 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
+  @doc """
+  Returns the default inbox for a team and associated data necessary
+  to render the main Engage page (conversations & latest message for each)
+  """
   def show_default(conn, _params) do
+    user = conn.assigns.current_user
     team = conn.assigns.team
 
-    case InboxQueries.default_for_team(team) do
-      nil ->
+    with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, InboxQueries.default_for_team(team)},
+         {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, user)} do
+      render(conn, "show.json", inbox: InboxQueries.with_show_values(inbox))
+    else
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot view this inbox."}
+
+      {:inbox, _} ->
         conn
         |> put_status(:not_found)
         |> json(%{message: "Inbox not found"})
-
-      inbox ->
-        inbox = InboxQueries.with_show_values(inbox)
-        render(conn, "show.json", inbox: inbox)
     end
   end
 
+  @doc """
+  Updates an inbox.
+  """
   def update(conn, params = %{"id" => id}) do
     user = conn.assigns.current_user
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, id)},
          {:authorized?, true} <- {:authorized?, InboxAuthorization.can_update?(inbox, user)},
          {:ok, updated_inbox} <- Inbox.update(inbox, params) do
-      # broadcast inbox name update here
+      # Todo: broadcast inbox name change
       render(conn, "show.json", inbox: updated_inbox)
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot update this inbox."}
 
       {:inbox, _} ->
-        {:error, :not_found}
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "Inbox not found"})
 
       {:error, changeset} ->
         conn

@@ -23,8 +23,9 @@ defmodule Stitch.Engage.Inbox do
     field(:name, :string)
     field(:is_default, :boolean, default: false)
 
-    # Virtual attributes
+    # manually loaded subset of conversations relationship
     has_many(:open_conversations, Conversation)
+    # virtual attributes
     field(:open_conversations_count, :integer, virtual: true)
     field(:closed_conversations_count, :integer, virtual: true)
 
