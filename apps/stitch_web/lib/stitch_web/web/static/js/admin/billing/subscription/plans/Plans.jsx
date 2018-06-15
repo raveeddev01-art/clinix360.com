@@ -9,7 +9,8 @@ const Plans = ({
   tiers,
   onSelectFrequency,
   onSelectTier,
-  onCheckoutPlan
+  onCheckoutPlan,
+  onChangePlan
 }) => {
   return (
     <div className="plans">
@@ -33,6 +34,14 @@ const Plans = ({
       <div className="clearfix">
         <button
           type="button"
+          className="btn btn-fancy btn-flat pull-right"
+          onClick={() => onChangePlan(false)}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
           className="btn btn-fancy btn-primary pull-right"
           disabled={!plan.tier}
           onClick={onCheckoutPlan}
@@ -49,7 +58,8 @@ Plans.propTypes = {
   tiers: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSelectFrequency: PropTypes.func.isRequired,
   onSelectTier: PropTypes.func.isRequired,
-  onCheckoutPlan: PropTypes.func.isRequired
+  onCheckoutPlan: PropTypes.func.isRequired,
+  onChangePlan: PropTypes.func.isRequired
 };
 
 export default Plans;

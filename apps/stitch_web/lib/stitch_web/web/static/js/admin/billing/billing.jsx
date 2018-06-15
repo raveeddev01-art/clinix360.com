@@ -38,16 +38,14 @@ class TeamBilling extends Component {
             <Tab eventKey={1} title="Subscription">
               <Subscription />
             </Tab>
-            <Tab eventKey={2} title="Payment Methods">
-              <PaymentMethods />
+            <Tab eventKey={2} title="History">
+              <History />
             </Tab>
-            {invoices.length > 0 && (
-              <Tab eventKey={3} title="History">
-                <History />
-              </Tab>
-            )}
-            <Tab eventKey={4} title="Contact">
+            {/* <Tab eventKey={3} title="Contact">
               <Contact />
+            </Tab> */}
+            <Tab eventKey={4} title="Payment Methods">
+              <PaymentMethods />
             </Tab>
           </Tabs>
         </Panel.Body>
