@@ -408,6 +408,7 @@ defmodule Stitch.Web.SubdomainRouter do
     put("/inboxes/:id", InboxController, :update)
 
     get("/inboxes/:inbox_id/conversations", ConversationController, :index)
+    post("/inboxes/:inbox_id/conversations", ConversationController, :create)
     get("/conversations/:id", ConversationController, :show)
 
     # Expected Engage routes:
