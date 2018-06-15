@@ -12,6 +12,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
   action_fallback(Stitch.Web.Api.FallbackController)
 
   def index(conn, %{"inbox_id" => inbox_id}) do
+    # TODO: can take message params
+    # TODO: can take message maxId and limit
+    # TODO:
+
     user = conn.assigns.current_user
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, inbox_id)},
