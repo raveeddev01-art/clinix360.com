@@ -16,7 +16,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
         {:error, :not_authorized, "Email or password is incorrect."}
 
       %User{disabled: true} ->
-        {:error, :not_authorized, "This account is disabled - contact your team admin."}
+        {:error, :not_authorized, "This account is disabled - contact your carespace admin."}
 
       user ->
         path = get_session(conn, :redirect_url) || "/apps"

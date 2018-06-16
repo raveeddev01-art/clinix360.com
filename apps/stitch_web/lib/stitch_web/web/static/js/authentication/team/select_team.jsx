@@ -47,17 +47,17 @@ export default class SelectTeam extends Component {
 
     return (
       <AuthenticationPage
-        title="Your Teams"
+        title="Your Carespaces"
         headerCTA="no-cta"
-        description="You are a member of of these Stitch teams:"
+        description="You are a member of of these Stitch carespaces:"
       >
         <div className="select-team-list m-b-40">
           {this.state.teams.map(this.renderTeamLink)}
         </div>
         <HelpBlock className="onboarding-hint m-b-20">
-          If you are looking for a different team, you can{" "}
+          If you are looking for a different carespace, you can{" "}
           <a href="/find-your-team">try a different email address</a> or request
-          an invitation from your Team Administrator.
+          an invitation from your Carespace Administrator.
         </HelpBlock>
       </AuthenticationPage>
     );
