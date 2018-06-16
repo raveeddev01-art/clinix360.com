@@ -6,7 +6,7 @@ defmodule Stitch.Web.AuthenticationController do
 
   # If you change a title, sync it with frontend (website_router)
   @login_title "Sign In | Stitch"
-  @login_description "Sign in to your Stitch team by entering your team’s Stitch URL. Don't know your team URL? Enter your email address and we’ll send you a list of your teams."
+  @login_description "Sign in to your Stitch team by entering your carespace’s Stitch URL. Don't know your carespace URL? Enter your email address and we’ll send you a list of your carespaces."
 
   @signup_title "Create a Team | Stitch"
   @signup_description "Create your Stitch team for free. Get started with our apps for internal team messaging, patient communication and task management."
@@ -79,7 +79,10 @@ defmodule Stitch.Web.AuthenticationController do
 
           true ->
             conn
-            |> put_flash(:invalid_login, "This account is disabled - contact your team admin.")
+            |> put_flash(
+              :invalid_login,
+              "This account is disabled - contact your carespace admin."
+            )
             |> redirect(to: "/login")
         end
     end
