@@ -43,7 +43,7 @@ defmodule Stitch.Web.Api.V1.FallbackController do
 
   def call(conn, {:error, :subscription_expired}) do
     message =
-      "Your subscription has expired. Notify your team administrator to renew your subscription."
+      "Your subscription has expired. Notify your carespace administrator to renew your subscription."
 
     conn
     |> put_status(:forbidden)

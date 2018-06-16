@@ -25,7 +25,7 @@ class InvalidInvite extends Component {
           <span>
             It seems like the invitation you are trying to accept is invalid,
             because you joined the team already or your invitation has been
-            revoked. Try contacting your team administrator for more
+            revoked. Try contacting your carespace administrator for more
             information.
           </span>
         }

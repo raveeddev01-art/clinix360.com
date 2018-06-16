@@ -48,8 +48,8 @@ export default class TeamPicker extends Component {
   get errorText() {
     return (
       <span>
-        We don't have that team URL in our system. If you'd like, we can help
-        you <Link to="/find-your-team">find your team</Link>.
+        We don't have that carespace URL in our system. If you'd like, we can
+        help you <Link to="/find-your-team">find your carespace</Link>.
       </span>
     );
   }
