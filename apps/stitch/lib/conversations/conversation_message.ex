@@ -98,4 +98,11 @@ defmodule Stitch.Engage.ConversationMessage do
     |> changeset(params)
     |> Repo.insert()
   end
+
+  # TODO: use on new messages (that don't create a conversation)
+  # def touch_conversation(cs = {:ok, %{conversation_id: conversation_id}}) do
+  #   Conversation.touch(conversation_id)
+  # end
+
+  # def touch_conversation(cs), do: cs
 end
