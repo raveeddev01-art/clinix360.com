@@ -94,7 +94,7 @@ defmodule Stitch.Engage.ConversationQueries do
     latest_message_query =
       from(
         m in ConversationMessage,
-        where: m.id == ^id,
+        where: m.conversation_id == ^id,
         order_by: m.inserted_at,
         limit: ^message_count
       )
