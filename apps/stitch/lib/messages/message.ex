@@ -8,7 +8,7 @@ defmodule Stitch.Message do
 
   import Appsignal.Instrumentation.Helpers, only: [instrument: 3]
 
-  @valid_types ["chat", "system", "upload"]
+  @valid_types ["chat", "system", "upload", "file_share"]
 
   schema "messages" do
     belongs_to(:user, Stitch.Accounts.User)
@@ -32,6 +32,7 @@ defmodule Stitch.Message do
     field(:client_name, :string, default: "unknown")
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
+    belongs_to(:upload, Stitch.Files.Upload)
     embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
     timestamps()
@@ -118,21 +119,8 @@ defmodule Stitch.Message do
       :client_name
     ])
     |> validate_required([:fields, :type])
-    |> validate_inclusion(:type, ["upload"])
-    |> add_preview()
+    |> validate_inclusion(:type, ["file_share", "upload"])
   end
-
-  def add_preview(%{valid?: true, changes: %{fields: fields}} = changeset) do
-    case Stitch.UploadPreview.create_preview(fields) do
-      {:ok, preview_metadata} ->
-        put_change(changeset, :fields, Map.merge(fields, preview_metadata))
-
-      {:error, _error} ->
-        changeset
-    end
-  end
-
-  def add_preview(changeset), do: changeset
 
   def system_changeset(%Message{} = struct, params \\ %{}) do
     struct
@@ -186,6 +174,8 @@ defmodule Stitch.Message do
     attrs =
       Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
 
+    {message_struct, attrs} = create_file_if_upload(message_struct, group, user, attrs)
+
     result =
       Multi.new()
       |> Multi.insert(:message, message_changeset(message_struct, attrs))
@@ -222,9 +212,36 @@ defmodule Stitch.Message do
     create(group_id, user, Map.put(attrs, "type", "chat"), presence_user_ids)
   end
 
-  def create(_group_id, _user, _attrs, _active_user_ids) do
+  def create(group_id, user, attrs, active_user_ids) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, :message, changeset, nil}
+  end
+
+  def create_file_if_upload(
+        message,
+        group,
+        user,
+        %{"type" => "upload", "fields" => fields} = attrs
+      ) do
+    case Stitch.Files.Upload.create_and_share_with_group(group, user, fields) do
+      {:ok, upload, _} ->
+        message = %{message | upload_id: upload.id}
+
+        attrs =
+          Map.merge(attrs, %{
+            "fields" => Stitch.Files.Upload.fields(upload),
+            "type" => "file_share"
+          })
+
+        {message, attrs}
+
+      _ ->
+        {message, attrs}
+    end
+  end
+
+  def create_file_if_upload(message, _group, _user, fields) do
+    {message, fields}
   end
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do
@@ -232,6 +249,10 @@ defmodule Stitch.Message do
   end
 
   def message_changeset(message, %{"type" => "upload"} = attrs) do
+    message |> upload_changeset(attrs)
+  end
+
+  def message_changeset(message, %{"type" => "file_share"} = attrs) do
     message |> upload_changeset(attrs)
   end
 
