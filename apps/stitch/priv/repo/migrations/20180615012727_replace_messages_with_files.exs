@@ -32,8 +32,8 @@ defmodule Stitch.Repo.Migrations.ReplaceMessagesWithFiles do
           with {:user, %User{} = user} <- {:user, UserQueries.get_by_id(message.user_id)},
                {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(message.group_id)},
                # Avoid re-generating previews
-               {:file, {:ok, file, group_file}} <-
-                 {:file,
+               {:upload, {:ok, upload, group_file}} <-
+                 {:upload,
                   Upload.create_and_share_with_group(
                     group,
                     user,
