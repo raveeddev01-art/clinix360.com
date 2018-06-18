@@ -70,7 +70,7 @@ class DotOptions extends React.Component {
           <MenuItem
             target="_blank"
             rel="noopener noreferrer"
-            href="https://intercom.help/teamstitch"
+            href="https://help.teamstitch.com"
           >
             <i className="fa fa-question-circle m-r-5" /> Help Center
           </MenuItem>

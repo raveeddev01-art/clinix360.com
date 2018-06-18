@@ -49,7 +49,7 @@ export default class Pilot extends Component {
                     exports, and BAAs to SLAs, we cover large enterprises at
                     every turn. Find out more{" "}
                     <a
-                      href="https://intercom.help/teamstitch/manage/security/hipaa-compliance"
+                      href="https://help.teamstitch.com/manage/security/hipaa-compliance"
                       target="_blank"
                       rel="noopener noreferrer"
                     >

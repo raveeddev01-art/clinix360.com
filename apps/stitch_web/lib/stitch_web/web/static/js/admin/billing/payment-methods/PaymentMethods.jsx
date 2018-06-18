@@ -40,7 +40,7 @@ class PaymentMethods extends Component {
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href="https://intercom.help/teamstitch/team-administration/subscribing-and-billing"
+              href="https://help.teamstitch.com/team-administration/subscribing-and-billing"
             >
               here
             </a>

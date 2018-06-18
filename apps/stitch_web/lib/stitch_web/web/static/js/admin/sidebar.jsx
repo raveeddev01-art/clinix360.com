@@ -59,12 +59,19 @@ class Sidebar extends Component {
               <span>Members</span>
             </Link>
           </ListGroupItem>
-          <ListGroupItem active={this._isSelected("/admin/billing")}>
-            <Link to="/admin/billing">
+          {window.electronApp ? (
+            <ListGroupItem href="/admin/billing" target="_blank">
               <i className="fa fa-credit-card" />
-              <span>Billing</span>
-            </Link>
-          </ListGroupItem>
+              Billing <i className="fa fa-external-link sm" />
+            </ListGroupItem>
+          ) : (
+            <ListGroupItem active={this._isSelected("/admin/billing")}>
+              <Link to="/admin/billing">
+                <i className="fa fa-credit-card" />
+                <span>Billing</span>
+              </Link>
+            </ListGroupItem>
+          )}
         </ListGroup>
       </div>
     );
@@ -156,7 +163,7 @@ class Sidebar extends Component {
               {isMemberOrAdmin() && this._nonGuestOptions()}
 
               <ListGroupItem>
-                <Link to="https://intercom.help/teamstitch" target="_blank">
+                <Link to="https://help.teamstitch.com" target="_blank">
                   <i className="fa fa-question-circle" />Help{" "}
                   <i className="fa fa-external-link sm" />
                 </Link>

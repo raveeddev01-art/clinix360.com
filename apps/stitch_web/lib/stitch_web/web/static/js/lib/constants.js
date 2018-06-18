@@ -51,8 +51,8 @@ export const PRODUCTS = {
         { name: "HIPAA Compliance" },
         { name: "Public & Private Rooms" },
         { name: "Group & Direct Messaging" },
-        { name: "1K Message Access" },
-        { name: "1GB File Storage" },
+        { name: "1K Message Search Access" },
+        { name: "1GB Team File Storage" },
         { name: "Mac & Windows Apps" },
         { name: "iOS & Android Apps" }
       ]

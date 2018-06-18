@@ -151,7 +151,7 @@ export default class Connect extends Component {
                     who of your team’s Stitch usage.
                   </p>
 
-                  <a href="https://intercom.help/teamstitch/team-administration/usage-analytics">
+                  <a href="https://help.teamstitch.com/team-administration/usage-analytics">
                     Learn more about Analytics
                   </a>
                 </div>
@@ -167,7 +167,7 @@ export default class Connect extends Component {
                     interval, password requirements and user invite ability.
                   </p>
 
-                  <a href="https://intercom.help/teamstitch/security-and-compliance">
+                  <a href="https://help.teamstitch.com/security-and-compliance">
                     Learn more about Security
                   </a>
                 </div>
@@ -183,7 +183,7 @@ export default class Connect extends Component {
                     notification settings for each chat room. Never miss a beat.
                   </p>
 
-                  <a href="https://intercom.help/teamstitch/stitch-connect/receiving-notifications/about-notifications">
+                  <a href="https://help.teamstitch.com/stitch-connect/receiving-notifications/about-notifications">
                     Learn more about Notifications
                   </a>
                 </div>
@@ -199,7 +199,7 @@ export default class Connect extends Component {
                     easy-to-access read receipts for every message.
                   </p>
 
-                  <a href="https://intercom.help/teamstitch/stitch-connect/sending-messages/message-info">
+                  <a href="https://help.teamstitch.com/stitch-connect/sending-messages/message-info">
                     Learn more about Read Receipts
                   </a>
                 </div>
@@ -215,7 +215,7 @@ export default class Connect extends Component {
                     logs and create data exports with the click of a button.
                   </p>
 
-                  <a href="https://intercom.help/teamstitch/team-administration">
+                  <a href="https://help.teamstitch.com/team-administration">
                     Learn more about Administration
                   </a>
                 </div>
@@ -231,7 +231,7 @@ export default class Connect extends Component {
                     integration. Use our configurations right out of the box.
                   </p>
 
-                  <a href="https://intercom.help/teamstitch/integrations/integrations">
+                  <a href="https://help.teamstitch.com/integrations/integrations">
                     Learn more about Integrations
                   </a>
                 </div>

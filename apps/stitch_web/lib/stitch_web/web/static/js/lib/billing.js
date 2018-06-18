@@ -31,11 +31,11 @@ const PLANS = {
         beta: false
       },
       {
-        content: "1K Message Access",
+        content: "1K Message Search Access",
         beta: false
       },
       {
-        content: "1GB File Storage",
+        content: "1GB Team File Storage",
         beta: false
       },
       {
