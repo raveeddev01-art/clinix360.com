@@ -107,7 +107,7 @@ defmodule Stitch.Files.Upload do
         put_change(changeset, :filetype, type)
 
       [_type, "jpg"] ->
-        put_change(changeset, :filetype, "jped")
+        put_change(changeset, :filetype, "jpeg")
 
       [_type, subtype] ->
         put_change(changeset, :filetype, subtype)

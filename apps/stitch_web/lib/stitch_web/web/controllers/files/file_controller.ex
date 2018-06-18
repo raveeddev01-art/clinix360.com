@@ -55,6 +55,8 @@ defmodule Stitch.Web.Files.FileController do
     end
   end
 
+  @spec authenticated(Conn.t(), Upload.t() | Message.t()) ::
+          {:authenticated, boolean} | {:authenticated, boolean, Upload.t() | Message.t()}
   def authenticated(conn, %Upload{} = file) do
     with {:user_token, user_token} when is_binary(user_token) <-
            {:user_token, get_user_token_from_team(conn, file.team_id)},
@@ -68,7 +70,7 @@ defmodule Stitch.Web.Files.FileController do
     end
   end
 
-  def authenticated(conn, upload) do
+  def authenticated(conn, %Message{} = upload) do
     with {:user_token, user_token} when is_binary(user_token) <-
            {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
          {:team_user, current_user = %User{}} <-

@@ -13,19 +13,19 @@ defmodule Stitch.Files.FileQueries do
     group_ids = GroupUser.group_ids(user.id)
 
     Upload
-    |> join(:inner, [f], fg in GroupUpload, f.id == fg.upload_id)
-    |> where([f, fg], fg.group_id in ^group_ids)
-    |> group_by([f, fg], f.id)
-    |> order_by([f, fg], desc: f.inserted_at)
+    |> join(:inner, [f], gu in GroupUpload, f.id == gu.upload_id)
+    |> where([f, gu], gu.group_id in ^group_ids)
+    |> group_by([f, gu], f.id)
+    |> order_by([f, gu], desc: f.inserted_at)
     |> filter_by_filetype(options)
     |> filter_by_creator_id(options)
-    |> select([f, fg], %Upload{
+    |> select([f, gu], %Upload{
       id: f.id,
       filename: f.filename,
       mimetype: f.mimetype,
       filetype: f.filetype,
       size_in_bytes: f.size_in_bytes,
-      shared_in: fragment("array_agg(?)", fg.group_id),
+      shared_in: fragment("array_agg(?)", gu.group_id),
       user_id: f.user_id,
       updated_at: f.updated_at,
       inserted_at: f.inserted_at
