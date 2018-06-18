@@ -1,13 +1,13 @@
 <html>
 
   <head>
-    <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:300,400,700,900'" />
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
     <style>
       body {
         font-size: 16px;
         font-weight: 300;
         font-stretch: 100%;
-        font-family: 'Lato', sans-serif;
+        font-family: 'Source Sans Pro', sans-serif;
       }
 
       a {
@@ -30,8 +30,10 @@
         border-bottom: solid 2px #DDDDDD;
       }
 
-      .header h2 {
+      .header img {
         margin-bottom: 15px;
+        margin-top: 25px;
+        width: 140px;
       }
 
       .container {
@@ -83,7 +85,7 @@
   <body>
     <div class="wrapper">
       <div class="header">
-        <h2>Stitch</h2>
+        <img src="https://teamstitch.com/images/stitch-brand.svg" />
       </div>
       <div class="container">
         <b><%= @today %></b>
@@ -129,7 +131,7 @@
         <hr/>
         <p>
           Stitch Technologies, Inc.
-          <br/> 188 King St. PH9, San Francisco, CA 94107
+          <br/> 156 2nd St., San Francisco CA 91405
         </p>
       </div>
     </div>

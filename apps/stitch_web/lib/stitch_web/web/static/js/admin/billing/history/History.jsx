@@ -11,6 +11,14 @@ class History extends React.Component {
   render() {
     const { billingStore: { invoices } } = this.props;
 
+    if (!invoices.length) {
+      return (
+        <div className="history-tab">
+          <h4>You have no billing history.</h4>
+        </div>
+      );
+    }
+
     return (
       <div className="history-tab">
         <Table>
@@ -34,13 +42,14 @@ class History extends React.Component {
                 </td>
                 <td className="text-center">
                   <a
-                    target="_blank"
+                    target="download_pdf"
                     rel="noopener noreferrer"
                     href={invoice.statement_pdf_url}
                     className="btn btn-default btn-sm btn-pdf"
                   >
                     PDF
                   </a>
+                  <iframe name="download_pdf" className="hidden"></iframe>
                 </td>
               </tr>
             ))}
