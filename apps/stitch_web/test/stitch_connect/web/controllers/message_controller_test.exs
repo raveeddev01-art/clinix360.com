@@ -55,7 +55,8 @@ defmodule StitchConnect.Web.MessageControllerTest do
           fields: %{
             filename: "foobar.pdf",
             mimetype: "pdf",
-            size_in_bytes: 123_948
+            size_in_bytes: 123_948,
+            url: "url"
           }
         }
       }

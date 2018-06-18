@@ -3,10 +3,18 @@ defmodule Stitch.Message do
   import Ecto.Changeset
   import Ecto.Query
   alias Ecto.Multi
-  alias Stitch.{Repo, Message, Group, GroupUser, GroupQueries, Accounts.User, Audit}
-  alias Stitch.Analytics.Message, as: MessageAnalytics
 
-  import Appsignal.Instrumentation.Helpers, only: [instrument: 3]
+  alias Stitch.{
+    Accounts.User,
+    Audit,
+    Group,
+    GroupUser,
+    GroupQueries,
+    Message,
+    Message.Mention,
+    Message.MessageCreation,
+    Repo
+  }
 
   @valid_types ["chat", "system", "upload", "file_share"]
 
@@ -129,119 +137,23 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["system"])
   end
 
-  def create(group_id, user, attrs, presence_user_ids \\ %{active: [], online: []})
-
-  def create(group_id, user, %{"type" => type} = attrs, presence_user_ids)
-      when type in ["chat", "upload"] do
+  def create(group_id, user, attrs, presence_user_ids \\ %{active: [], online: []}) do
     group = GroupQueries.get_by_id(group_id)
-    users = Repo.preload(group, :users).users
-
-    mentioned_user_ids =
-      Message.Mention.get_mentioned_user_ids(
-        users,
-        user,
-        attrs["text_content"],
-        presence_user_ids.online,
-        group
-      )
-
-    notify_user_ids =
-      instrument("get_notify_user_ids", "Message creation", fn ->
-        Message.Notification.notify_user_ids(
-          group,
-          user,
-          mentioned_user_ids,
-          presence_user_ids.active
-        )
-      end)
-
-    {read_status, recipients} =
-      instrument("get_recipients", "Message creation", fn ->
-        users
-        |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
-          acc_map =
-            if recipient.id == user.id or recipient.disabled or recipient.is_bot,
-              do: acc_map,
-              else: Map.put(acc_map, to_string(recipient.id), nil)
-
-          acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
-          {acc_map, acc_list}
-        end)
-      end)
-
-    message_struct = %Message{group_id: group_id, user_id: user.id}
-
-    attrs =
-      Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
-
-    {message_struct, attrs} = create_file_if_upload(message_struct, group, user, attrs)
-
-    result =
-      Multi.new()
-      |> Multi.insert(:message, message_changeset(message_struct, attrs))
-      |> Multi.update_all(
-        :mention_users,
-        mention_users(group, mentioned_user_ids, recipients),
-        []
-      )
-      |> Multi.update_all(
-        :increment_unread_counter,
-        increment_unread_counter(group.id, recipients),
-        []
-      )
-      |> mark_as_read_on_creation(group.id, user.id)
-      |> Repo.transaction()
-
-    case result do
-      {:ok, %{message: message} = result_map} ->
-        MessageAnalytics.track_message_sent(message, user, group)
-
-        Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
-          notify_user_ids.mobile_active,
-          message.id
-        )
-
-        {:ok, Map.put(result_map, :notify_user_ids, notify_user_ids)}
-
-      error ->
-        error
-    end
+    attrs = Map.put_new(attrs, "type", "chat")
+    MessageCreation.create(group, user, attrs, presence_user_ids)
   end
 
-  def create(group_id, user, %{"text_content" => _} = attrs, presence_user_ids) do
-    create(group_id, user, Map.put(attrs, "type", "chat"), presence_user_ids)
-  end
+  def get_read_status(users, author) do
+    users
+    |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
+      acc_map =
+        if recipient.id == author.id or recipient.disabled or recipient.is_bot,
+          do: acc_map,
+          else: Map.put(acc_map, to_string(recipient.id), nil)
 
-  def create(group_id, user, attrs, active_user_ids) do
-    changeset = %Message{} |> change() |> add_error(:type, "is not supported")
-    {:error, :message, changeset, nil}
-  end
-
-  def create_file_if_upload(
-        message,
-        group,
-        user,
-        %{"type" => "upload", "fields" => fields} = attrs
-      ) do
-    case Stitch.Files.Upload.create_and_share_with_group(group, user, fields) do
-      {:ok, upload, _} ->
-        message = %{message | upload_id: upload.id}
-
-        attrs =
-          Map.merge(attrs, %{
-            "fields" => Stitch.Files.Upload.fields(upload),
-            "type" => "file_share"
-          })
-
-        {message, attrs}
-
-      _ ->
-        {message, attrs}
-    end
-  end
-
-  def create_file_if_upload(message, _group, _user, fields) do
-    {message, fields}
+      acc_list = if recipient.id == author.id, do: acc_list, else: [recipient.id | acc_list]
+      {acc_map, acc_list}
+    end)
   end
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do
@@ -258,11 +170,11 @@ defmodule Stitch.Message do
 
   def update(message, attributes) do
     group = GroupQueries.get_by_id(message.group_id)
+    group = Repo.preload(group, :users)
     author = Repo.preload(message, :user).user
-    users = Repo.preload(group, :users).users
+    text_content = attributes["text_content"] || ""
 
-    mentioned_user_ids =
-      Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"], [], group)
+    mentioned_user_ids = Mention.get_mentioned_user_ids(author, text_content, [], group)
 
     message
     |> user_edit_changeset(%{
