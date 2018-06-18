@@ -42,7 +42,7 @@ defmodule Stitch.Repo.Migrations.ReplaceMessagesWithFiles do
                   )} do
             result =
               message
-              |> Ecto.Changeset.change(type: "file_share", file_id: file.id)
+              |> Ecto.Changeset.change(type: "file_share", upload_id: upload.id)
               |> Repo.update()
 
             case result do
