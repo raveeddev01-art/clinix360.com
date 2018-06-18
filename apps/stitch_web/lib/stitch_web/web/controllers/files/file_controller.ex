@@ -198,7 +198,7 @@ defmodule Stitch.Web.Files.FileController do
 
   defp file_preview_url(upload, encoded_file_id) do
     struct_url = @endpoint.files_struct_url()
-    Routes.files_file_url(struct_url, :download_preview, encoded_file_id, upload.filename)
+    Routes.files_file_url(struct_url, :download_preview, encoded_file_id)
   end
 
   #
