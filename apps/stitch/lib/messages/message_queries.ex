@@ -287,7 +287,7 @@ defmodule Stitch.MessageQueries do
         on: gu.group_id == g.id and gu.user_id == ^user_id,
         left_join: u in assoc(m, :user),
         left_join: pb in assoc(m, :pinned_by),
-        where: m.type == "upload",
+        where: m.type == "upload" or m.type == "file_share",
         where: g.public or not is_nil(gu.id),
         where: g.team_id == ^team_id,
         where: m.group_id == ^group_id,
