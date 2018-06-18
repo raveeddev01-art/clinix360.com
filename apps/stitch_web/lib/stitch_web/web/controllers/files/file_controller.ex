@@ -110,18 +110,18 @@ defmodule Stitch.Web.Files.FileController do
   def put_mimetype(conn, _upload), do: conn
 
   @spec stream_full_file(Conn.t(), Upload.t()) :: Conn.t()
-  def stream_preview(conn, %Upload{} = file) do
-    stream_file(conn, file)
+  def stream_preview(conn, %Upload{} = upload) do
+    stream_file(conn, upload, upload.preview_url)
   end
 
   @spec stream_full_file(Conn.t(), Upload.t()) :: Conn.t()
-  def stream_full_file(conn, %Upload{} = file) do
-    stream_file(conn, file)
+  def stream_full_file(conn, %Upload{} = upload) do
+    stream_file(conn, upload, upload.url)
   end
 
-  @spec stream_file(Conn.t(), Upload.t()) :: Conn.t()
-  def stream_file(conn, %Upload{} = file) do
-    filename = Path.basename(file.url)
+  @spec stream_file(Conn.t(), Upload.t(), String.t()) :: Conn.t()
+  def stream_file(conn, %Upload{} = file, url) do
+    filename = Path.basename(url)
 
     case put_cache_header(conn, file) do
       {:stale, conn} ->
