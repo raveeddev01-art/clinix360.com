@@ -13,7 +13,7 @@ defmodule Stitch.Repo.Migrations.ReplaceMessagesWithFiles do
   require Logger
 
   alias Stitch.{
-    Files.File,
+    Files.Upload,
     Repo,
     Group,
     Message,
@@ -28,27 +28,40 @@ defmodule Stitch.Repo.Migrations.ReplaceMessagesWithFiles do
       |> where(type: ^"upload")
       |> Repo.stream()
       |> Stream.each(fn message ->
-        with {:user, %User{} = user} <- {:user, UserQueries.get_by_id(message.user_id)},
-             {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(message.group_id)},
-             # Avoid re-generating previews
-             {:file, {:ok, file, group_file}} <-
-               {:file,
-                File.create_and_share_with_group(group, user, message.fields, with_preview: false)} do
-          result =
-            message
-            |> Ecto.Changeset.change(type: "file_share", file_id: file.id)
-            |> Repo.update()
-
-          case result do
-            {:ok, message} ->
+        try do
+          with {:user, %User{} = user} <- {:user, UserQueries.get_by_id(message.user_id)},
+               {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(message.group_id)},
+               # Avoid re-generating previews
+               {:file, {:ok, file, group_file}} <-
+                 {:file,
+                  Upload.create_and_share_with_group(
+                    group,
+                    user,
+                    message.fields,
+                    with_preview: false
+                  )} do
+            result =
               message
+              |> Ecto.Changeset.change(type: "file_share", file_id: file.id)
+              |> Repo.update()
 
-            {:error, error} ->
-              Logger.error("Error updating the message: #{inspect(error)}")
+            case result do
+              {:ok, message} ->
+                message
+
+              {:error, error} ->
+                Logger.error("Error updating the message (#{message.id}): #{inspect(error)}")
+            end
+          else
+            error ->
+              Logger.error(
+                "Error creating and sharing the file (#{message.id}): #{inspect(error)}"
+              )
           end
-        else
+        rescue
           error ->
-            Logger.error("Error creating and sharing the file: #{inspect(error)}")
+            Logger.error("Error creating and sharing the file (#{message.id}): #{inspect(error)}")
+            :error
         end
       end)
       |> Stream.run()
