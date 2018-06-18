@@ -5,5 +5,9 @@ defmodule Stitch.Message.Upload do
     S3.presign(url)
   end
 
+  def presign(%Message{type: "file_share", fields: %{"url" => url}}) do
+    S3.presign(url)
+  end
+
   def presign(_message), do: :error
 end
