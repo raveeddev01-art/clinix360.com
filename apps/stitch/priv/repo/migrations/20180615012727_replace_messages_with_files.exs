@@ -69,5 +69,8 @@ defmodule Stitch.Repo.Migrations.ReplaceMessagesWithFiles do
   end
 
   def down do
+    Message
+    |> where(type: ^"file_share")
+    |> Repo.update_all(set: [type: "upload"])
   end
 end

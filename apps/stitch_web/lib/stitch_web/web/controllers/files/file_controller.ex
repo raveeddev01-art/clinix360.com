@@ -1,5 +1,6 @@
 defmodule Stitch.Web.Files.FileController do
   use Stitch.Web, :controller
+  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   alias Stitch.{
     MessageQueries,
@@ -12,6 +13,8 @@ defmodule Stitch.Web.Files.FileController do
     Files.FileAuthorization
   }
 
+  @endpoint Stitch.Web.Endpoint
+
   def download(conn, %{"file_id" => "f" <> _ = encoded_file_id}) do
     with {:file_id, {:ok, file_id}} <- {:file_id, Upload.decode_url_id(encoded_file_id)},
          {:file, %Upload{} = file} <-
@@ -21,19 +24,20 @@ defmodule Stitch.Web.Files.FileController do
     else
       {:authenticated, false, upload} ->
         conn
-        |> put_session(:redirect_url, conn.request_path)
+        |> put_session(:redirect_url, file_url(upload, encoded_file_id))
         |> redirect(external: login_url(upload))
         |> halt
 
       _ ->
         conn
-        |> put_session(:redirect_url, conn.request_path)
         |> redirect(external: login_url())
         |> halt
     end
   end
 
   def download_preview(conn, %{"file_id" => "f" <> _ = encoded_file_id}) do
+    redirect_url = Path.join([conn.host, conn.request_path])
+
     with {:file_id, {:ok, file_id}} <- {:file_id, Upload.decode_url_id(encoded_file_id)},
          {:file, %Upload{} = file} <-
            {:file, FileQueries.get_by_id(file_id, preload_assoc: true)},
@@ -43,13 +47,13 @@ defmodule Stitch.Web.Files.FileController do
     else
       {:authenticated, false, upload} ->
         conn
-        |> put_session(:redirect_url, conn.request_path)
+        |> put_session(:redirect_url, file_preview_url(upload, encoded_file_id))
         |> redirect(external: login_url(upload))
         |> halt
 
       _ ->
         conn
-        |> put_session(:redirect_url, conn.request_path)
+        |> put_session(:redirect_url, redirect_url)
         |> redirect(external: login_url())
         |> halt
     end
@@ -168,23 +172,33 @@ defmodule Stitch.Web.Files.FileController do
   # Redirect to the team login page. The team is inferred from the message.
   defp login_url(%Upload{team_id: team_id}) do
     team = Stitch.TeamQueries.get_by_id(team_id)
-    struct_url = Stitch.Web.Endpoint.struct_url()
+    struct_url = @endpoint.struct_url()
     struct_url = %{struct_url | host: "#{team.slug}.#{struct_url.host}"}
-    Stitch.Web.SubdomainRouter.Helpers.authentication_url(struct_url, :login)
+    Routes.authentication_url(struct_url, :login)
   end
 
   defp login_url(%Message{group: %{team_id: team_id}}) do
     team = Stitch.TeamQueries.get_by_id(team_id)
-    struct_url = Stitch.Web.Endpoint.struct_url()
+    struct_url = @endpoint.struct_url()
     struct_url = %{struct_url | host: "#{team.slug}.#{struct_url.host}"}
-    Stitch.Web.SubdomainRouter.Helpers.authentication_url(struct_url, :login)
+    Routes.authentication_url(struct_url, :login)
   end
 
   defp login_url(_upload), do: login_url()
 
   defp login_url() do
-    struct_url = Stitch.Web.Endpoint.struct_url()
+    struct_url = @endpoint.struct_url()
     Stitch.Web.Router.Helpers.authentication_url(struct_url, :index)
+  end
+
+  defp file_url(upload, encoded_file_id) do
+    struct_url = @endpoint.files_struct_url()
+    Routes.files_file_url(struct_url, :download, encoded_file_id, upload.filename)
+  end
+
+  defp file_preview_url(upload, encoded_file_id) do
+    struct_url = @endpoint.files_struct_url()
+    Routes.files_file_url(struct_url, :download_preview, encoded_file_id, upload.filename)
   end
 
   #
