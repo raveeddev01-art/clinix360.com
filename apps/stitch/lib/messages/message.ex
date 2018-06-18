@@ -224,11 +224,14 @@ defmodule Stitch.Message do
         %{"type" => "upload", "fields" => fields} = attrs
       ) do
     case Stitch.Files.Upload.create_and_share_with_group(group, user, fields) do
-      {:ok, file, _} ->
-        message = %{message | file_id: file.id}
+      {:ok, upload, _} ->
+        message = %{message | upload_id: upload.id}
 
         attrs =
-          Map.merge(attrs, %{"fields" => Stitch.Files.Upload.fields(file), "type" => "file_share"})
+          Map.merge(attrs, %{
+            "fields" => Stitch.Files.Upload.fields(upload),
+            "type" => "file_share"
+          })
 
         {message, attrs}
 

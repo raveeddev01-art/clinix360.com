@@ -111,7 +111,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   end
 
   def render_fields(%Message{type: "file_share"} = message, true, files_endpoint) do
-    encoded_file_id = Upload.encode_url_id(%Upload{id: message.file_id})
+    encoded_file_id = Upload.encode_url_id(%Upload{id: message.upload_id})
     filename = Map.get(message.fields, "filename", fn -> Stitch.Rand.token(8) end)
     url = files_file_url(files_endpoint, :download, encoded_file_id, filename)
     preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
