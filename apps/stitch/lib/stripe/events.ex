@@ -45,9 +45,8 @@ defmodule Stitch.Stripe.Events do
 
   # Subscription deleted either by customer's choosing or due to failed payments
   def handle_event(%{type: "customer.subscription.deleted", data: %{object: object}}) do
+    subscription_id = object.id
     customer_id = object.customer
-    line = object.items.data |> List.last()
-    subscription_id = line.subscription || line.id
 
     sub_params = %{
       renews: false,

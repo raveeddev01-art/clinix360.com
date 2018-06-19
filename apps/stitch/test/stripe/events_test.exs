@@ -17,22 +17,24 @@ defmodule Stitch.Stripe.EventsTest do
     event = %{
       type: "invoice.payment_succeeded",
       data: %{
-        "object" => %{
-          "total" => 1200,
-          "id" => "inv_afadsfaerasfasef",
-          "customer" => subscription.customer_id,
-          "lines" => %{
-            "data" => [
+        object: %{
+          total: 1200,
+          charge: nil,
+          id: "inv_afadsfaerasfasef",
+          customer: subscription.customer_id,
+          lines: %{
+            data: [
               %{
-                "id" => subscription.subscription_id,
-                "period" => %{
-                  "start" => DateTime.to_unix(expected_datetime),
-                  "end" => DateTime.to_unix(expected_datetime)
+                id: "si_0000000000000",
+                period: %{
+                  start: DateTime.to_unix(expected_datetime),
+                  end: DateTime.to_unix(expected_datetime)
                 },
-                "plan" => %{
-                  "id" => "standard_yearly"
+                plan: %{
+                  id: "standard_yearly"
                 },
-                "quantity" => 6
+                quantity: 6,
+                subscription: subscription.subscription_id
               }
             ]
           }
@@ -55,16 +57,17 @@ defmodule Stitch.Stripe.EventsTest do
       event = %{
         type: "invoice.payment_failed",
         data: %{
-          "object" => %{
-            "customer" => subscription.customer_id,
-            "lines" => %{
-              "data" => [
+          object: %{
+            customer: subscription.customer_id,
+            lines: %{
+              data: [
                 %{
-                  "id" => subscription.subscription_id
+                  id: "si_00000000000",
+                  subscription: subscription.subscription_id
                 }
               ]
             },
-            "next_payment_attempt" => ""
+            next_payment_attempt: ""
           }
         }
       }
@@ -78,7 +81,7 @@ defmodule Stitch.Stripe.EventsTest do
         |> DateTime.to_unix()
         |> Kernel.+(7 * 24 * 60 * 60)
 
-      event = put_in(event, [:data, "object", "next_payment_attempt"], future_time)
+      event = put_in(event, [:data, :object, :next_payment_attempt], future_time)
       assert :ok == Events.handle_event(event)
     end
 
@@ -87,7 +90,7 @@ defmodule Stitch.Stripe.EventsTest do
         DateTime.utc_now()
         |> DateTime.to_unix()
 
-      event = put_in(event, [:data, "object", "next_payment_attempt"], future_time)
+      event = put_in(event, [:data, :object, :next_payment_attempt], future_time)
       refute :ok == Events.handle_event(event)
     end
   end
@@ -98,9 +101,9 @@ defmodule Stitch.Stripe.EventsTest do
     event = %{
       type: "customer.subscription.deleted",
       data: %{
-        "object" => %{
-          "id" => subscription.subscription_id,
-          "customer" => subscription.customer_id
+        object: %{
+          id: subscription.subscription_id,
+          customer: subscription.customer_id
         }
       }
     }
