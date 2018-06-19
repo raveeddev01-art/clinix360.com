@@ -152,17 +152,21 @@ defmodule Stitch.Message do
     MessageCreation.create(group, user, attrs, presence_user_ids)
   end
 
+  @spec get_read_status([User.t()], User.t()) :: {map, [User.t()]}
   def get_read_status(users, author) do
-    users
-    |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
-      acc_map =
-        if recipient.id == author.id or recipient.disabled or recipient.is_bot,
-          do: acc_map,
-          else: Map.put(acc_map, to_string(recipient.id), nil)
+    {read_status, recipients} =
+      users
+      |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
+        acc_map =
+          if recipient.id == author.id or recipient.disabled or recipient.is_bot,
+            do: acc_map,
+            else: Map.put(acc_map, to_string(recipient.id), nil)
 
-      acc_list = if recipient.id == author.id, do: acc_list, else: [recipient.id | acc_list]
-      {acc_map, acc_list}
-    end)
+        acc_list = if recipient.id == author.id, do: acc_list, else: [recipient.id | acc_list]
+        {acc_map, acc_list}
+      end)
+
+    {read_status, recipients}
   end
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do
