@@ -1,34 +1,35 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import classNames from "classnames";
+import moment from "moment";
 
 class Room extends Component {
   render() {
-    const { unread, active, name, closed } = this.props;
+    const { conversation } = this.props;
 
-    const roomClass = classNames("item", {
-      unread: unread === true,
-      active: active === true
-    });
+    const { patient } = conversation;
 
     return (
-      <Link to="/engage" className={roomClass}>
+      <Link to="/engage" className="item">
         <div className="item__icon">
           <i className="fa fa-circle" />
         </div>
 
         <div className="item__content">
           <div className="heading">
-            <div className="user">{name}</div>
+            <div className="user">{patient.full_name}</div>
 
-            {closed ? (
-              <div className="closed">
-                <i className="fa fa-check" /> Closed
-              </div>
-            ) : (
-              <div className="date">9:45 AM</div>
-            )}
+            <div className="date">
+              {moment
+                .utc(conversation.updated_at)
+                .local()
+                .calendar(null, {
+                  sameDay: "H:mm A",
+                  lastDay: "[Yesterday]",
+                  lastWeek: "M/D/YY",
+                  sameElse: "M/D/YY"
+                })}
+            </div>
           </div>
 
           <div className="message">
@@ -42,17 +43,11 @@ class Room extends Component {
 }
 
 Room.defaultProps = {
-  active: false,
-  unread: false,
-  closed: false,
-  name: "John Doe"
+  conversation: PropTypes.object.isRequired
 };
 
 Room.propTypes = {
-  active: PropTypes.bool,
-  unread: PropTypes.bool,
-  closed: PropTypes.bool,
-  name: PropTypes.string
+  conversation: PropTypes.object
 };
 
 export default Room;

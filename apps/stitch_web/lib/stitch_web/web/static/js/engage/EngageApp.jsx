@@ -6,8 +6,8 @@ import { Helmet } from "react-helmet";
 import { Switcher, AppAlert } from "common/components";
 import EmptySidebar from "../common/components/sidebar/empty-sidebar";
 import Sidebar from "./sidebar/sidebar";
-import InboxMenu from "./inbox/inbox";
 
+import Engage from "./Engage";
 import EngagePreview from "./EngagePreview";
 
 @inject("titleStore", "teamStore")
@@ -23,9 +23,9 @@ class EngageApp extends Component {
     const { engageEnabled } = this.props.teamStore;
 
     return (
-      <div id="app" className="preview-app">
+      <div id="app">
         <AppAlert />
-        <div className="engage-wrapper appContainer">
+        <div className="appContainer">
           <Helmet>
             <title>{titleStore.title}</title>
           </Helmet>
@@ -33,14 +33,15 @@ class EngageApp extends Component {
 
           {engageEnabled ? <Sidebar /> : <EmptySidebar />}
 
-          {engageEnabled && <InboxMenu />}
+          <Switch>
+            {engageEnabled ? (
+              <Route path={`/engage/:id`} component={Engage} />
+            ) : (
+              <Route path={`/engage`} component={EngagePreview} />
+            )}
 
-          <div className="engage-content">
-            <Switch>
-              <Route path="/engage" component={EngagePreview} />
-              <Redirect to="/" />
-            </Switch>
-          </div>
+            <Redirect from="*" to={`/engage/1`} />
+          </Switch>
         </div>
       </div>
     );

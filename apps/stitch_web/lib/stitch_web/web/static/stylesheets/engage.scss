@@ -242,5 +242,32 @@ $inbox-menu-width: 410px;
         }
       }
     }
+
+    .empty-inbox {
+      text-align: center;
+      padding: 60px 15px;
+
+      i.fa {
+        color: #999;
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      h3 {
+        font-weight: 700;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.engage-wrapper {
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+
+  #main {
+    flex: 1;
   }
 }

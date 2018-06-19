@@ -91,7 +91,7 @@ class LockableApp extends Component {
       return (
         <Switch>
           <Route path="/admin" component={AdminApp} />
-          <Route exact path="/engage" component={EngageApp} />
+          <Route path="/engage" component={EngageApp} />
           <Route exact path="/manage" component={ManageApp} />
           {engageEnabled && (
             <Route exact path="/patients" component={PatientsRepoApp} />

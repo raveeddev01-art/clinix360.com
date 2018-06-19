@@ -11,7 +11,9 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Modal from "react-bootstrap/lib/Modal";
 
-@inject("groupsStore")
+import Patients from "./patients/patients";
+
+@inject("inboxStore")
 @observer
 class ComposeModal extends Component {
   constructor(props) {
@@ -19,25 +21,46 @@ class ComposeModal extends Component {
 
     this.state = {
       error: "",
-      patient: "",
+      patient: {},
       message: ""
     };
   }
 
   componentWillMount() {
     this.setState({
+      patient: {},
       error: null
     });
   }
+
+  updatePatient = value => {
+    this.setState({ patient: value });
+  };
 
   updateValue = field => evt => {
     this.setState({ [field]: evt.target.value });
   };
 
-  createRoom = () => {
-    const { closeModal } = this.props;
+  createConversation = () => {
+    const { inboxStore, closeModal } = this.props;
 
-    console.log(this.state.patient + "\n" + this.state.message);
+    inboxStore
+      .createConversation({
+        patient_id: 1,
+        text_content: this.state.message
+      })
+      .then(() => {
+        this.setState({
+          error: null
+        });
+        closeModal();
+      })
+      .catch(response => {
+        this.setState({
+          error: "This conversation already exists."
+        });
+      });
+
     closeModal();
   };
 
@@ -69,7 +92,11 @@ class ComposeModal extends Component {
         <Button bsSize="large" onClick={closeModal}>
           Cancel
         </Button>
-        <Button bsSize="large" bsStyle="primary" onClick={this.createRoom}>
+        <Button
+          bsSize="large"
+          bsStyle="primary"
+          onClick={this.createConversation}
+        >
           Send
         </Button>
       </Modal.Footer>
@@ -92,13 +119,7 @@ class ComposeModal extends Component {
             </Col>
 
             <Col sm={9}>
-              <FormControl
-                name="patient"
-                type="text"
-                placeholder="Enter name, email or MRN"
-                value={patient}
-                onChange={this.updateValue("patient")}
-              />
+              <Patients onChange={this.updatePatient} value={patient} />
             </Col>
           </FormGroup>
 

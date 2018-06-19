@@ -24,6 +24,11 @@ import AddPatientModal from "./modals/add_patient_modal";
 @inject("inboxStore")
 @observer
 class InboxMenu extends Component {
+  constructor(props) {
+    super(props);
+    this.props.inboxStore.loadConversations(this.props.match.params.id);
+  }
+
   onComposeClick = () => {
     this.showComposeModal();
   };
@@ -75,6 +80,8 @@ class InboxMenu extends Component {
   };
 
   render() {
+    const { inboxStore } = this.props;
+
     return (
       <div className="inbox-menu">
         <div className="flex-header">
@@ -97,11 +104,15 @@ class InboxMenu extends Component {
           <Tab.Container id="conversations-tabs" defaultActiveKey="first">
             <div>
               <Nav justified className="status-filter">
-                <NavItem eventKey="first">Open (16)</NavItem>
-                <NavItem eventKey="second">Closed (5)</NavItem>
+                <NavItem eventKey="first">
+                  Open ({inboxStore.defaultInbox.open_conversations_count})
+                </NavItem>
+                <NavItem eventKey="second">
+                  Closed ({inboxStore.defaultInbox.closed_conversations_count})
+                </NavItem>
               </Nav>
 
-              <Tab.Content animation={false}>
+              <Tab.Content animation={false} unmountOnExit>
                 <Tab.Pane eventKey="first">
                   <Scrollbar
                     className="scrollbar"
@@ -109,25 +120,24 @@ class InboxMenu extends Component {
                       this.scrollbar = ref;
                     }}
                   >
-                    <div className="menu-nav m-b-20">
-                      <Room name="Marty McFly" />
-                      <Room unread name="Andrew Brynum" />
-                      <Room active name="Beatrice Betty" />
-                      <Room unread name="Charlie Chaplin" />
-                      <Room name="John Smith" />
-                      <Room name="Deidre Smith" />
-                      <Room unread name="Charlie Som" />
-                      <Room />
-
-                      <Room name="Marty McFly" />
-                      <Room unread name="Andrew Brynum" />
-                      <Room name="Beatrice Betty" />
-                      <Room unread name="Charlie Chaplin" />
-                      <Room name="John Smith" />
-                      <Room name="Deidre Smith" />
-                      <Room unread name="Charlie Som" />
-                      <Room />
-                    </div>
+                    {inboxStore.conversations.length > 0 ? (
+                      <div className="menu-nav m-b-20">
+                        {inboxStore.openedConversations.map(
+                          (conversation, index) => (
+                            <Room
+                              key={`conversation_${index}`}
+                              name="Marty McFly"
+                              conversation={conversation}
+                            />
+                          )
+                        )}
+                      </div>
+                    ) : (
+                      <div className="empty-inbox">
+                        <i className="fa fa-comments-o" />
+                        <h3>No open conversations yet</h3>
+                      </div>
+                    )}
                   </Scrollbar>
                 </Tab.Pane>
 
@@ -138,13 +148,22 @@ class InboxMenu extends Component {
                       this.scrollbar = ref;
                     }}
                   >
-                    <div className="menu-nav m-b-20">
-                      <Room name="Marty McFly" closed />
-                      <Room name="Charlie Chaplin" closed />
-                      <Room name="John Smith" closed />
-                      <Room name="Deidre Smith" closed />
-                      <Room name="Charlie Som" closed />
-                    </div>
+                    {inboxStore.closedConversations.length > 0 ? (
+                      <div className="menu-nav m-b-20">
+                        {inboxStore.conversations.map((conversation, index) => (
+                          <Room
+                            key={`conversation_${index}`}
+                            name="Marty McFly"
+                            conversation={conversation}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="empty-inbox">
+                        <i className="fa fa-comments-o" />
+                        <h3>No closed conversations yet</h3>
+                      </div>
+                    )}
                   </Scrollbar>
                 </Tab.Pane>
               </Tab.Content>

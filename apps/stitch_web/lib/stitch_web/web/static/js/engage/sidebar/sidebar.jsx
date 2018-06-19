@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { NavLink, withRouter } from "react-router-dom";
+import { withRouter, NavLink } from "react-router-dom";
 
 import Scrollbar from "common/components/scrollbar";
 
-@inject("teamStore", "userStore")
+@inject("teamStore", "userStore", "inboxStore")
 @observer
 class Sidebar extends Component {
+  componentWillMount() {
+    const { inboxStore } = this.props;
+    inboxStore.loadInboxes();
+  }
+
   render() {
-    const { teamStore, userStore } = this.props;
+    const { userStore, inboxStore } = this.props;
 
     return (
       <div id="sidemenu">
@@ -38,20 +43,21 @@ class Sidebar extends Component {
                   </div>
 
                   <NavLink
-                    to="/engage"
+                    to={`/engage/1`}
                     className="item"
                     activeClassName="active"
                   >
                     <div className="item-icon">
                       <i className="fa fa-inbox" />
                     </div>
-                    <div className="item-text">{teamStore.name}</div>
-                    <div className="item-badge text-center">9+</div>
+                    <div className="item-text">
+                      {inboxStore.defaultInbox.name}
+                    </div>
                   </NavLink>
 
-                  <a role="button" className="invite-link">
+                  {/* <a role="button" className="invite-link">
                     Add Inbox
-                  </a>
+                  </a> */}
                 </div>
               </div>
             </Scrollbar>
