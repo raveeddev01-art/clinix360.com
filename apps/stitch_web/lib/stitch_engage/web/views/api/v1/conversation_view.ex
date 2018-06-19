@@ -1,5 +1,6 @@
 defmodule StitchEngage.Web.Api.V1.ConversationView do
   use Stitch.Web, :view
+  alias Stitch.Repo
   alias Stitch.Web.Api.V1.TeamPatientView
   alias StitchEngage.Web.Api.V1.ConversationMessageView
 
@@ -30,7 +31,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
     }
   end
 
-  defp conversation_json_with_latest(conversation) do
+  def conversation_json_with_latest(conversation) do
     conversation
     |> conversation_json()
     |> with_latest_message(conversation.latest_conversation_message)

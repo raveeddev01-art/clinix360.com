@@ -9,6 +9,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.ConversationAuthorization
   }
 
+  alias StitchEngage.Web.ConversationChannel
+
   action_fallback(Stitch.Web.Api.FallbackController)
 
   def index(conn, params = %{"conversation_id" => conversation_id}) do
@@ -54,7 +56,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
              message_params_with_client
            ) do
       # TODO: get notify_user_ids in the create
-      notify_user_ids = []
+      notify_user_ids = %{}
       conversation_message = %{conversation_message | provider: user}
       conversation_message_events(conversation_message, conversation, notify_user_ids)
 
@@ -76,17 +78,25 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  def conversation_message_events(_conversation_message, _conversation, _notify_user_ids) do
-    # TODO: All of these events can handle conversation equivalents
-
+  def conversation_message_events(conversation_message, conversation, _notify_user_ids) do
     # Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
-    # Stitch.Task.start(fn ->
-    #   MessageLinkPreviewGenerator.queue(message)
-    #   GroupChannel.broadcast_message_created(message)
-    #   EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-    #   PushNotifications.notify_users(group, message, notify_user_ids.mobile)
-    #   PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-    #   Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-    # end)
+
+    # Get the updated_at time before spawning the task
+    now = DateTime.utc_now() |> DateTime.to_naive()
+
+    Stitch.Task.start(fn ->
+      Conversation.touch_and_broadcast_update(
+        conversation,
+        conversation_message,
+        now
+      )
+
+      ConversationChannel.broadcast_message_created(conversation_message)
+      # TODO: get equivalents of each of these working
+      #   MessageLinkPreviewGenerator.queue(message)
+      #   PushNotifications.notify_users(group, message, notify_user_ids.mobile)
+      #   PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+      #   Stitch.EmailNotification.create(message.id, notify_user_ids.email)
+    end)
   end
 end

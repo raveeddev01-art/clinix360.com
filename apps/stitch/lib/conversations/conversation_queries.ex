@@ -139,7 +139,6 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   defp most_recent(query, count) do
-    # TODO: ConversationMessages touch conversations on create
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
   end
 
