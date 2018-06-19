@@ -7,13 +7,13 @@ defmodule Stitch.Stripe.Events do
   alias Stitch.Web.Api.V1.Billing.HistoryView
 
   # Successful payment
-  def handle_event(%{type: "invoice.payment_succeeded"} = event) do
-    [subscription] = get_in(event, [:data, "object", "lines", "data"])
-    customer_id = get_in(event, [:data, "object", "customer"])
-    subscription_id = subscription["id"]
+  def handle_event(%{type: "invoice.payment_succeeded", data: %{object: object}}) do
+    customer_id = object.customer
+    line = object.lines.data |> List.last()
+    subscription_id = line.subscription || line.id
 
     sub_params = %{
-      valid_until: DateTime.from_unix!(subscription["period"]["end"])
+      valid_until: DateTime.from_unix!(line.period.end)
     }
 
     with {:ok, subscription} <-
@@ -21,17 +21,17 @@ defmodule Stitch.Stripe.Events do
          team = TeamQueries.get_by_id(subscription.team_id),
          owner = TeamQueries.get_team_owner(team) do
       Notifications.send_successful_payment(owner, team)
-      record_payment_history(team, event)
+      record_payment_history(team, object)
       :ok
     end
   end
 
   # Failed payment
-  def handle_event(%{type: "invoice.payment_failed"} = event) do
-    [subscription] = get_in(event, [:data, "object", "lines", "data"])
-    customer_id = get_in(event, [:data, "object", "customer"])
-    subscription_id = subscription["id"]
-    next_payment_date = get_in(event, [:data, "object", "next_payment_attempt"])
+  def handle_event(%{type: "invoice.payment_failed", data: %{object: object}}) do
+    customer_id = object.customer
+    line = object.lines.data |> List.last()
+    subscription_id = line.subscription || line.id
+    next_payment_date = object.next_payment_attempt
 
     with {:ok, days_until_retry} <- days_until_retry(next_payment_date),
          subscription <- Billing.get_subscription(customer_id, subscription_id) do
@@ -44,14 +44,16 @@ defmodule Stitch.Stripe.Events do
   end
 
   # Subscription deleted either by customer's choosing or due to failed payments
-  def handle_event(%{type: "customer.subscription.deleted"} = event) do
-    customer_id = get_in(event, [:data, "object", "customer"])
-    subscription_id = get_in(event, [:data, "object", "id"])
+  def handle_event(%{type: "customer.subscription.deleted", data: %{object: object}}) do
+    customer_id = object.customer
+    line = object.items.data |> List.last()
+    subscription_id = line.subscription || line.id
 
     sub_params = %{
       renews: false,
       subscription_id: nil,
       subscription_line_item_id: nil,
+      valid_until: DateTime.utc_now(),
       estimated_invoice_amount: 0
     }
 
@@ -74,31 +76,34 @@ defmodule Stitch.Stripe.Events do
     end
   end
 
-  def record_payment_history(team, event) do
-    [subscription] = get_in(event, [:data, "object", "lines", "data"])
-    charge_id = get_in(event, [:data, "object", "charge"])
-    invoice_id = get_in(event, [:data, "object", "id"])
-    amount = get_in(event, [:data, "object", "total"])
-    period = subscription["period"]
-    plan = subscription["plan"]
+  def record_payment_history(team, object) do
+    line = object.lines.data |> List.last()
+
+    plan = line.plan
+    period = line.period
+    quantity = line.quantity
+
+    amount = object.total
+    invoice_id = object.id
+    charge_id = object.charge
 
     card =
-      case Stitch.Stripe.Client.get_transaction(charge_id) do
+      case charge_id && Stitch.Stripe.Client.get_transaction(charge_id) do
         {:ok, transaction} -> transaction.source
-        _ -> %{"id" => nil, "brand" => nil, "last4" => nil}
+        _ -> %{id: nil, brand: nil, last4: nil}
       end
 
     params = %{
-      plan: plan["id"],
+      plan: plan.id,
       team_id: team.id,
-      card_id: card["id"],
+      card_id: card.id,
       invoice_id: invoice_id,
       amount: amount / 100,
-      card_brand: card["brand"],
-      card_last4: card["last4"],
-      quantity: subscription["quantity"],
-      period_end: DateTime.from_unix!(period["end"]),
-      period_start: DateTime.from_unix!(period["start"])
+      card_brand: card.brand,
+      card_last4: card.last4,
+      quantity: quantity,
+      period_end: DateTime.from_unix!(period.end),
+      period_start: DateTime.from_unix!(period.start)
     }
 
     statement_pdf_url = generate_statement_pdf(team, params)
@@ -122,7 +127,7 @@ defmodule Stitch.Stripe.Events do
       quantity: history.quantity,
       subscription: subscription,
       card_brand: history.card_brand,
-      card_last4: history.card_last4,
+      card_last4: history.card_last4 || " - ",
       today: Timex.format!(history.period_start, "{Mfull} {D}, {YYYY}")
     ]
 

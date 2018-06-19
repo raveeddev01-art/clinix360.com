@@ -120,7 +120,7 @@ defmodule Stitch.Billing do
   @spec modify_subscription(Subscription.t(), map) ::
           {:ok, Subscription.t()} | {:error, Ecto.Changeset.t() | :card_required}
 
-  def modify_subscription(%Subscription{tier: "FREE"} = subscription, params) do
+  def modify_subscription(%Subscription{subscription_id: nil} = subscription, params) do
     do_modify_subscription(subscription, params, &create_subscription/2)
   end
 
