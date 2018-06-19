@@ -87,7 +87,21 @@ defmodule Stitch.Engage.ConversationQueries do
     # TODO: actually get latest for each (in a performat way)
     # This will likelu change significantly, and potentiall be
     # executed before the Repo.all()
-    Enum.map(conversations, &Map.merge(&1, %{latest_conversation_message: nil}))
+    Enum.map(conversations, &inefficiently_get_and_merge_latest_message/1)
+  end
+
+  defp inefficiently_get_and_merge_latest_message(conversation) do
+    # TODO: this is an awful N+1.
+    # I am merging this to unblock the frontend for now.
+    # DO NOT ship without this figured out.
+    latest_message =
+      ConversationMessage
+      |> where(conversation_id: ^conversation.id)
+      |> order_by(desc: :inserted_at)
+      |> limit(1)
+      |> Repo.one()
+
+    Map.merge(conversation, %{latest_conversation_message: latest_message})
   end
 
   defp with_latest_messages(%Conversation{id: id} = conversation, message_count) do
