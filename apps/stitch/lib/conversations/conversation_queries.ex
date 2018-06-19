@@ -75,6 +75,19 @@ defmodule Stitch.Engage.ConversationQueries do
     end
   end
 
+  @doc """
+  Given a conversation id and (potentially nil) updated_before,
+  return list of conversation messages (limited to page_length)
+  """
+  @spec messages_for_conversation(integer | binary, binary | nil) :: list()
+  def messages_for_conversation(conversation_id, updated_before) do
+    ConversationMessage
+    |> where(conversation_id: ^conversation_id)
+    |> updated_before(updated_before)
+    |> most_recent(ConversationMessage.page_length())
+    |> Repo.all()
+  end
+
   # ===========
   #   PRIVATE
   # ===========
@@ -136,7 +149,7 @@ defmodule Stitch.Engage.ConversationQueries do
     query |> where(open: ^open_val)
   end
 
-  defp updated_before(query, updated_at_limit) when is_nil(updated_at_limit), do: query
+  defp updated_before(query, nil), do: query
 
   defp updated_before(query, updated_at_limit) do
     from(m in query, where: m.updated_at < ^updated_at_limit)
