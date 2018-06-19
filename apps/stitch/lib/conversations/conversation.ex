@@ -46,8 +46,6 @@ defmodule Stitch.Engage.Conversation do
   end
 
   @doc """
-<<<<<<< HEAD
-=======
   Update updated_at to current time.
   Not using a changeset (GET and SET calls) so we can keep it quick.
   """
@@ -60,7 +58,6 @@ defmodule Stitch.Engage.Conversation do
   end
 
   @doc """
->>>>>>> develop
   Helper to create a conversation for an inbox
   """
   @spec create_for_inbox(integer | binary, map) :: {:ok, t()} | {:error, Changeset.t()}
