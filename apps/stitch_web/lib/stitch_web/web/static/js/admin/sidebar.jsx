@@ -163,7 +163,7 @@ class Sidebar extends Component {
               {isMemberOrAdmin() && this._nonGuestOptions()}
 
               <ListGroupItem>
-                <Link to="https://intercom.help/teamstitch" target="_blank">
+                <Link to="https://help.teamstitch.com" target="_blank">
                   <i className="fa fa-question-circle" />Help{" "}
                   <i className="fa fa-external-link sm" />
                 </Link>

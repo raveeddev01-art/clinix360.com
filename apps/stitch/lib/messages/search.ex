@@ -70,6 +70,8 @@ defmodule Stitch.Messages.Search do
     end)
   end
 
+  def highlight_stop_words(nil, _terms, _non_stop_words_regex), do: ""
+
   def highlight_stop_words(highlighted_text_content, terms, non_stop_words_regex) do
     non_stop_words =
       Regex.scan(non_stop_words_regex, highlighted_text_content)

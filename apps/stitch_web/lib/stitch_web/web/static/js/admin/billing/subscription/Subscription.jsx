@@ -42,8 +42,8 @@ class Subscription extends Component {
     this.setState({ plan: { ...plan, tier } });
   };
 
-  onChangePlan = () => {
-    this.setState({ changePlan: true });
+  onChangePlan = (value) => {
+    this.setState({ changePlan: value });
   };
 
   onCheckoutPlan = () => {
@@ -170,11 +170,6 @@ class Subscription extends Component {
       }
     } = this.props;
 
-    if (!estimatedInvoiceAmount || !validUntil) {
-      // needed for linting
-      return <span />;
-    }
-
     const invoiceAmount = (estimatedInvoiceAmount / 100).toFixed(2);
     return (
       <span>
@@ -216,7 +211,7 @@ class Subscription extends Component {
           <button
             type="button"
             className="btn btn-fancy btn-primary pull-right"
-            onClick={this.onChangePlan}
+            onClick={() => this.onChangePlan(true)}
           >
             Change Plan
           </button>
@@ -237,6 +232,7 @@ class Subscription extends Component {
         onSelectFrequency={this.onSelectFrequency}
         onSelectTier={this.onSelectTier}
         onCheckoutPlan={this.onCheckoutPlan}
+        onChangePlan={this.onChangePlan}
       />
     );
   }
@@ -277,7 +273,6 @@ class Subscription extends Component {
 
     return this.props.billingStore.dataLoaded ? (
       <div className="subscription-tab">
-        {this.renderHeader()}
         {checkout ? this.renderCheckout() : this.renderSubscription()}
         {loading && <Loading />}
       </div>

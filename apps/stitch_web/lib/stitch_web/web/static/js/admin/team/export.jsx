@@ -72,7 +72,7 @@ export default class TeamExport extends Component {
           Message history will be provided in JSON format. See our support
           article{" "}
           <a
-            href="https://intercom.help/teamstitch"
+            href="https://help.teamstitch.com"
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -235,7 +235,8 @@ defmodule Stitch.Import.Slack.MessageImport do
                 fields: fields
               }
               |> Repo.insert()
-              |> add_preview()
+
+            # |> add_preview()
 
             error ->
               Logger.error("[#{__MODULE__}] Error importing file #{inspect(error)}")
@@ -251,12 +252,13 @@ defmodule Stitch.Import.Slack.MessageImport do
     end
   end
 
-  def add_preview({:ok, message}) do
-    message
-    |> Stitch.UploadPreview.add_preview()
-  end
+  # TODO: temporarily disabled
+  # def add_preview({:ok, message}) do
+  #   message
+  #   |> Stitch.UploadPreview.add_preview()
+  # end
 
-  def add_preview(result), do: result
+  # def add_preview(result), do: result
 
   @doc """
   Extract filename and extension,

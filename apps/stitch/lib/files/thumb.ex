@@ -1,34 +1,13 @@
-defmodule Stitch.UploadPreview do
+defmodule Stitch.Files.Thumb do
   alias Stitch.{Repo, Message, AWS.S3}
   import Mogrify
 
   @settings Application.get_env(:stitch, :user_upload_settings)
 
-  @spec add_preview(Message.t()) :: {:ok, Message.t()} | {:error, Message.t()}
-  def add_preview(
-        %Message{type: "upload", fields: %{"url" => url, "mimetype" => "image/" <> _image}} =
-          upload
-      )
-      when not is_nil(url) do
-    case create_preview(upload.fields) do
-      {:ok, preview} ->
-        fields = Map.merge(upload.fields, preview)
+  @spec create(map) :: {:ok, map} | {:error, term}
+  def create(%{"mimetype" => "image/tiff"}), do: {:error, "Unsupported type"}
 
-        upload
-        |> Message.upload_changeset(%{fields: fields})
-        |> Repo.update()
-
-      {:error, _error} ->
-        {:error, upload}
-    end
-  end
-
-  def add_preview(_upload), do: {:error, "Unsupported type"}
-
-  @spec create_preview(map) :: {:ok, map} | {:error, term}
-  def create_preview(%{"mimetype" => "image/tiff"}), do: {:error, "Unsupported type"}
-
-  def create_preview(%{"url" => url, "mimetype" => "image/" <> _image}) do
+  def create(%{"url" => url, "mimetype" => "image/" <> _image}) do
     with {:ok, filename} <- get_filename(url),
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(filename, dest),
@@ -51,7 +30,7 @@ defmodule Stitch.UploadPreview do
     end
   end
 
-  def create_preview(_fields) do
+  def create(_fields) do
     {:error, "Unsupported type"}
   end
 
