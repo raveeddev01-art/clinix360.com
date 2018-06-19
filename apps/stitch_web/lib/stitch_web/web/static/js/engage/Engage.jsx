@@ -5,16 +5,16 @@ import { withRouter } from "react-router";
 
 import InboxMenu from "./inbox/inbox";
 
-@inject("inboxStore")
+@inject("teamStore")
 @observer
 class Engage extends Component {
   render() {
-    const { inboxStore } = this.props;
+    const { teamStore } = this.props;
 
     return (
       <div className="engage-wrapper">
         <Helmet>
-          <title>{`${inboxStore.defaultInbox.name} | Stitch Connect`}</title>
+          <title>{`${teamStore.name} | Stitch Engage`}</title>
         </Helmet>
 
         <InboxMenu />

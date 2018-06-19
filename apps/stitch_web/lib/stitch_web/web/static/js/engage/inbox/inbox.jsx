@@ -17,7 +17,7 @@ import NavItem from "react-bootstrap/lib/NavItem";
 
 import Scrollbar from "common/components/scrollbar";
 
-import Room from "./room";
+import Conversation from "./conversation";
 import ComposeModal from "./modals/compose_modal";
 import AddPatientModal from "./modals/add_patient_modal";
 
@@ -124,9 +124,8 @@ class InboxMenu extends Component {
                       <div className="menu-nav m-b-20">
                         {inboxStore.openedConversations.map(
                           (conversation, index) => (
-                            <Room
+                            <Conversation
                               key={`conversation_${index}`}
-                              name="Marty McFly"
                               conversation={conversation}
                             />
                           )
@@ -151,9 +150,8 @@ class InboxMenu extends Component {
                     {inboxStore.closedConversations.length > 0 ? (
                       <div className="menu-nav m-b-20">
                         {inboxStore.conversations.map((conversation, index) => (
-                          <Room
+                          <Conversation
                             key={`conversation_${index}`}
-                            name="Marty McFly"
                             conversation={conversation}
                           />
                         ))}

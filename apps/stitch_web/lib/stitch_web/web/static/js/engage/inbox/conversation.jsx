@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
-class Room extends Component {
+class Conversation extends Component {
   render() {
     const { conversation } = this.props;
 
@@ -24,7 +24,7 @@ class Room extends Component {
                 .utc(conversation.updated_at)
                 .local()
                 .calendar(null, {
-                  sameDay: "H:mm A",
+                  sameDay: "h:mm A",
                   lastDay: "[Yesterday]",
                   lastWeek: "M/D/YY",
                   sameElse: "M/D/YY"
@@ -33,8 +33,7 @@ class Room extends Component {
           </div>
 
           <div className="message">
-            I have a question about my recent medication. I’m not sure how about
-            what dosage I should be taking. Can you
+            {/* {conversation.latest_conversation_message.text_content} */}
           </div>
         </div>
       </Link>
@@ -42,12 +41,12 @@ class Room extends Component {
   }
 }
 
-Room.defaultProps = {
+Conversation.defaultProps = {
   conversation: PropTypes.object.isRequired
 };
 
-Room.propTypes = {
+Conversation.propTypes = {
   conversation: PropTypes.object
 };
 
-export default Room;
+export default Conversation;
