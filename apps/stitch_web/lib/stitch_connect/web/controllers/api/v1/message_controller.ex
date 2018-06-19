@@ -112,7 +112,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
          presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id),
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(group.id, current_user, message_params_with_client, presence_user_ids) do
+           Message.create(group, current_user, message_params_with_client, presence_user_ids) do
       message = %{message | user: current_user}
       message_events(message, group, notify_user_ids)
 

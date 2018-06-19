@@ -137,7 +137,16 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["system"])
   end
 
-  def create(group_id, user, attrs, presence_user_ids \\ %{active: [], online: []}) do
+  @spec create(Group.t() | pos_integer, User.t(), map, map | nil) ::
+          {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
+  def create(group, user, attrs, presence_user_ids \\ %{active: [], online: []})
+
+  def create(%Group{} = group, user, attrs, presence_user_ids) do
+    attrs = Map.put_new(attrs, "type", "chat")
+    MessageCreation.create(group, user, attrs, presence_user_ids)
+  end
+
+  def create(group_id, user, attrs, presence_user_ids) do
     group = GroupQueries.get_by_id(group_id)
     attrs = Map.put_new(attrs, "type", "chat")
     MessageCreation.create(group, user, attrs, presence_user_ids)

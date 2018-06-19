@@ -454,7 +454,7 @@ defmodule StitchConnect.Web.GroupChannel do
     if GroupAuthorization.can_message?(group, user.id) do
       presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id)
 
-      case Message.create(group.id, user, attrs, presence_user_ids) do
+      case Message.create(group, user, attrs, presence_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
