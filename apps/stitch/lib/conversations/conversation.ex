@@ -5,6 +5,7 @@ defmodule Stitch.Engage.Conversation do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Stitch.Repo
 
@@ -45,6 +46,21 @@ defmodule Stitch.Engage.Conversation do
   end
 
   @doc """
+<<<<<<< HEAD
+=======
+  Update updated_at to current time.
+  Not using a changeset (GET and SET calls) so we can keep it quick.
+  """
+  def touch(id) do
+    now = DateTime.utc_now() |> DateTime.to_naive()
+
+    Conversation
+    |> where(id: ^id)
+    |> Repo.update_all(set: [updated_at: now])
+  end
+
+  @doc """
+>>>>>>> develop
   Helper to create a conversation for an inbox
   """
   @spec create_for_inbox(integer | binary, map) :: {:ok, t()} | {:error, Changeset.t()}

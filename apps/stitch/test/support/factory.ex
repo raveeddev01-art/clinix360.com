@@ -77,6 +77,25 @@ defmodule Stitch.Factory do
     }
   end
 
+  def upload_factory do
+    %Stitch.Files.Upload{
+      user: build(:user),
+      team: build(:team),
+      filename: "file.pdf",
+      url: "url",
+      mimetype: "application/pdf",
+      filetype: "pdf",
+      size_in_bytes: 42
+    }
+  end
+
+  def group_upload_factory do
+    %Stitch.Files.GroupUpload{
+      group: build(:group),
+      upload: build(:upload)
+    }
+  end
+
   def export_factory do
     %Stitch.Exports.Export{
       team: build(:team)

@@ -52,6 +52,17 @@ defmodule Stitch.Web.Api.V1.TeamController do
     |> json(%{available: Team.Onboarding.slug_exists?(url)})
   end
 
+  def name_from_slug(conn, %{"slug" => slug}) do
+    case TeamQueries.get_by_slug(slug) do
+      nil ->
+        {:error, :not_found}
+
+      team ->
+        conn
+        |> json(%{name: team.name})
+    end
+  end
+
   def update(conn, %{"id" => _, "name" => name}) do
     case Team.Admin.update_name(conn.private[:team_id], name) do
       {:error, _} ->

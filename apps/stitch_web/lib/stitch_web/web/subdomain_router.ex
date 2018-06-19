@@ -75,8 +75,8 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/", Stitch.Web.Files, as: :files, host: "files." do
     pipe_through([:files])
 
-    get("/file/:upload_id/:filename", FileController, :download)
-    get("/preview/:upload_id", FileController, :download_preview)
+    get("/file/:file_id/:filename", FileController, :download)
+    get("/preview/:file_id", FileController, :download_preview)
   end
 
   # ================
@@ -147,6 +147,8 @@ defmodule Stitch.Web.SubdomainRouter do
     delete("/users/:id/delete_profile_image", UserController, :delete_profile_image)
     post("/users/search", UserController, :search)
     post("/users/access", UserController, :access)
+
+    get("/files", FileController, :index)
 
     get("/patients", TeamPatientController, :index)
     get("/patients/:id", TeamPatientController, :show)
