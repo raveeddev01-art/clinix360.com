@@ -38,11 +38,12 @@ defmodule Stitch.Engage.ConversationMessage do
     :link_previews_generated,
     :client_device_type,
     :client_os,
-    :client_name,
-    :highlighted_text_content
+    :client_name
   ]
 
   @required_attributes [:text_content]
+
+  @page_length 50
 
   schema "conversation_messages" do
     belongs_to(:conversation, Conversation)
@@ -68,11 +69,10 @@ defmodule Stitch.Engage.ConversationMessage do
     # TODO: Add link preview logic
     # embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
-    # virtual attrs:
-    field(:highlighted_text_content, :string, virtual: true)
-
     timestamps()
   end
+
+  def page_length, do: @page_length
 
   # TODO: Do not cast all attributes.
   # This is temporarily the case as we develop engage.
@@ -98,4 +98,11 @@ defmodule Stitch.Engage.ConversationMessage do
     |> changeset(params)
     |> Repo.insert()
   end
+
+  # TODO: use on new messages (that don't create a conversation)
+  # def touch_conversation(cs = {:ok, %{conversation_id: conversation_id}}) do
+  #   Conversation.touch(conversation_id)
+  # end
+
+  # def touch_conversation(cs), do: cs
 end
