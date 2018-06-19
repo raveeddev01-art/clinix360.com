@@ -27,6 +27,14 @@ defmodule Stitch.Engage.ConversationAuthorization do
     full_member_of_conversations_team?(conversation, current_user)
   end
 
+  @doc """
+  Given a conversation and user. Check if user can create a message.
+  """
+  @spec can_message?(Conversation.t(), User.t()) :: boolean
+  def can_message?(conversation, current_user) do
+    full_member_of_conversations_team?(conversation, current_user)
+  end
+
   # ===========
   #   PRIVATE
   # ===========

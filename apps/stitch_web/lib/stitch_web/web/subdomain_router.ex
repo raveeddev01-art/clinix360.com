@@ -417,14 +417,15 @@ defmodule Stitch.Web.SubdomainRouter do
     put("/conversations/:id/open", ConversationController, :open)
     put("/conversations/:id/close", ConversationController, :close)
 
+    get("/conversations/:conversation_id/messages", ConversationMessageController, :index)
+    post("/conversations/:conversation_id/messages", ConversationMessageController, :create)
+
     # Expected Engage routes:
 
     # get("/inboxes", InboxController, :index)
     # post("/conversations/:id/mark_as_read", ConversationController, :mark_as_read)
     # post("/conversations/:id/mark_as_unread", ConversationController, :mark_as_unread)
 
-    # get("/conversations/:conversation_id/messages", ConversationMessageController, :index)
-    # post("/conversations/:conversation_id/messages", ConversationMessageController, :create)
     # put("/conversation_messages/:id", ConversationMessageController, :update)
     # get("/conversation_messages/:id", ConversationMessageController, :show)
     # delete("/conversation_messages/:id", ConversationMessageController, :delete)
