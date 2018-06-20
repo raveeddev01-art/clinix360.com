@@ -5,7 +5,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
   alias Stitch.Accounts.{Email, User, PasswordResetToken}
   alias Stitch.Web.Api.V1.UserView
   alias Stitch.Web.Api.V1.AuthenticationView
-  alias StitchConnect.Web.{EventsChannel}
+  alias Stitch.Web.EventsChannel
   action_fallback(Stitch.Web.Api.FallbackController)
 
   def submit_login(conn, %{"email" => email, "password" => password}) do

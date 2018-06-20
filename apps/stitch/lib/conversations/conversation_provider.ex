@@ -44,9 +44,18 @@ defmodule Stitch.Engage.ConversationProvider do
     )
   end
 
-  def create_for_conversation_and_provider(conversation_id, provider_id, params \\ %{}) do
-    %ConversationProvider{conversation_id: conversation_id, provider_id: provider_id}
-    |> changeset(params)
-    |> Repo.insert()
+  @doc """
+  Finds or creates ConversationProvider for user & conversation.
+  """
+  def insert_or_update(%Conversation{} = conversation, %User{} = user) do
+    case Repo.get_by(ConversationProvider, conversation_id: conversation.id, provider_id: user.id) do
+      nil ->
+        %ConversationProvider{conversation_id: conversation.id, provider_id: user.id}
+        |> changeset(%{})
+        |> Repo.insert()
+
+      conversation_provider ->
+        {:ok, conversation_provider}
+    end
   end
 end

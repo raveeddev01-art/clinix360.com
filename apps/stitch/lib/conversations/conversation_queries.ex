@@ -9,15 +9,19 @@ defmodule Stitch.Engage.ConversationQueries do
     Repo,
     Message.Reaction,
     Engage.Conversation,
-    Engage.ConversationMessage
+    Engage.ConversationMessage,
+    Engage.ConversationProvider
   }
 
   @doc """
-  Given an index and (potentially nil) updated_before and is_open values
+  Given a user, index and (potentially nil) updated_before and is_open values
   Load the list of conversations for the index and any necessary relationships
   """
-  @spec for_index(integer, binary | nil, boolean | nil) :: list(Conversation.t())
-  def for_index(inbox_id, updated_before, is_open) do
+  @spec for_index(User.t(), integer, map) :: list(Conversation.t())
+  def for_index(user, inbox_id, params = %{}) do
+    is_open = Map.get(params, "open", nil)
+    updated_before = Map.get(params, "updated_before", nil)
+
     Conversation
     |> where(inbox_id: ^inbox_id)
     |> with_open_value(is_open)
@@ -26,14 +30,15 @@ defmodule Stitch.Engage.ConversationQueries do
     |> with_patients()
     |> Repo.all()
     |> with_latest_message_for_each()
+    |> with_unread_for_each(user)
   end
 
   @doc """
-  Given an inbox id, load a page of open conversations, most_recent message
+  Given a user, inbox id, load a page of open conversations, most_recent message
   for each of the conversations and patients in each conversation
   """
-  @spec latest_open_for_inbox(integer | binary) :: list(Conversation.t())
-  def latest_open_for_inbox(inbox_id) do
+  @spec latest_open_for_inbox(User.t(), integer | binary) :: list(Conversation.t())
+  def latest_open_for_inbox(user, inbox_id) do
     Conversation
     |> where(inbox_id: ^inbox_id)
     |> where(open: true)
@@ -41,6 +46,7 @@ defmodule Stitch.Engage.ConversationQueries do
     |> with_patients()
     |> Repo.all()
     |> with_latest_message_for_each()
+    |> with_unread_for_each(user)
   end
 
   @doc """
@@ -60,10 +66,10 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   @doc """
-  Given a conversation id, load the conversation and any necessary relationships
+  Given a conversation id and user, load the conversation and any necessary relationships
   """
-  @spec for_show(integer | binary) :: Conversation.t() | nil
-  def for_show(conversation_id) do
+  @spec for_show(integer | binary, User.t()) :: Conversation.t() | nil
+  def for_show(conversation_id, user) do
     conversation =
       Conversation
       |> where(id: ^conversation_id)
@@ -71,8 +77,13 @@ defmodule Stitch.Engage.ConversationQueries do
       |> Repo.one()
 
     case conversation do
-      nil -> nil
-      conversation -> with_latest_messages(conversation, ConversationMessage.page_length())
+      nil ->
+        nil
+
+      conversation ->
+        conversation
+        |> with_unread(user)
+        |> with_latest_messages(ConversationMessage.page_length())
     end
   end
 
@@ -102,8 +113,59 @@ defmodule Stitch.Engage.ConversationQueries do
   #   PRIVATE
   # ===========
 
+  def with_unread(conversation, user) do
+    is_unread =
+      case provider_for_conversation_and_user(conversation.id, user.id) do
+        nil -> is_unread_without_join_record(conversation, user)
+        conversation_provider -> is_unread_with_join_record(conversation_provider)
+      end
+
+    Map.put_new(conversation, :is_unread, is_unread)
+  end
+
+  defp with_unread_for_each(conversations, user) do
+    # Iterates over conversations and assigns is_unread
+    # based on conversation_provider (if exists) and/or user
+    # inserted_at value
+    conversation_ids = Enum.map(conversations, & &1.id)
+    cps = providers_for_conversations_and_user(conversation_ids, user.id)
+    cps_by_conversation_id = Enum.group_by(cps, & &1.conversation_id)
+
+    Enum.map(conversations, fn conversation ->
+      is_unread =
+        case cps_by_conversation_id[conversation.id] do
+          nil -> is_unread_without_join_record(conversation, user)
+          [conversation_provider] -> is_unread_with_join_record(conversation_provider)
+        end
+
+      Map.put_new(conversation, :is_unread, is_unread)
+    end)
+  end
+
+  defp is_unread_with_join_record(conversation_user) do
+    conversation_user.unread_messages_count > 0
+  end
+
+  defp is_unread_without_join_record(conversation, user) do
+    conversation.updated_at > user.inserted_at
+  end
+
   defp with_patients(query) do
     query |> preload(:patients)
+  end
+
+  defp providers_for_conversations_and_user(conversation_ids, user_id) do
+    ConversationProvider
+    |> where([cp], cp.provider_id == ^user_id)
+    |> where([cp], cp.conversation_id in ^conversation_ids)
+    |> Repo.all()
+  end
+
+  defp provider_for_conversation_and_user(conversation_id, user_id) do
+    ConversationProvider
+    |> where([cp], cp.provider_id == ^user_id)
+    |> where([cp], cp.conversation_id == ^conversation_id)
+    |> Repo.one()
   end
 
   defp with_latest_message_for_each(conversations) do
@@ -163,7 +225,7 @@ defmodule Stitch.Engage.ConversationQueries do
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
   end
 
-  defp with_open_value(query, open_val) when is_nil(open_val), do: query
+  defp with_open_value(query, nil), do: query
 
   defp with_open_value(query, open_val) do
     query |> where(open: ^open_val)

@@ -100,6 +100,15 @@ defmodule Stitch.Factory do
     }
   end
 
+  def conversation_provider_factory do
+    %Stitch.Engage.ConversationProvider{
+      provider: build(:user),
+      conversation: build(:conversation),
+      last_read_at: NaiveDateTime.utc_now(),
+      unread_messages_count: 0
+    }
+  end
+
   def upload_factory do
     %Stitch.Files.Upload{
       user: build(:user),

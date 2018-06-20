@@ -14,14 +14,14 @@ defmodule Stitch.Engage.ConversationMessage do
   alias Ecto.Multi
 
   alias Stitch.{
-    Repo,
-    # ReadStatus,
-    Patient,
     Accounts.User,
-    Files.Upload,
+    Audit,
     Engage.Conversation,
     Engage.ConversationMessage,
-    Audit
+    Files.Upload,
+    Patient,
+    ReadStatus,
+    Repo
   }
 
   alias Stitch.Message.LinkPreview
@@ -38,9 +38,8 @@ defmodule Stitch.Engage.ConversationMessage do
     :type,
     :fields,
     :request_id,
-    # commenting out as this column is changing
-    # in another PS and unused for now
-    # :read_status,
+    :provider_read_status,
+    :patient_read_status,
     :has_links,
     :link_previews_generated,
     :client_device_type,
@@ -68,9 +67,8 @@ defmodule Stitch.Engage.ConversationMessage do
     field(:deleted, :boolean, default: false)
     field(:type, :string, default: "chat")
     field(:fields, :map, default: %{})
-    # commenting out as this column is changing
-    # in another PS and unused for now
-    # field(:read_status, :map, default: %{})
+    field(:provider_read_status, :map, default: %{})
+    field(:patient_read_status, :map, default: %{})
     field(:has_links, :boolean, default: false)
     field(:link_previews_generated, :boolean, default: false)
     field(:client_device_type, :string, default: "unknown")
@@ -113,18 +111,6 @@ defmodule Stitch.Engage.ConversationMessage do
     |> validate_required(@required_attributes)
   end
 
-  def create_for_patient(conversation_id, patient_id, params) do
-    %ConversationMessage{conversation_id: conversation_id, patient_id: patient_id}
-    |> changeset(params)
-    |> Repo.insert()
-  end
-
-  def create_for_provider(conversation_id, provider_id, params) do
-    %ConversationMessage{conversation_id: conversation_id, provider_id: provider_id}
-    |> changeset(params)
-    |> Repo.insert()
-  end
-
   def update(conversation_message, attributes) do
     conversation_message
     |> edit_changeset(%{text_content: attributes["text_content"]})
@@ -137,12 +123,11 @@ defmodule Stitch.Engage.ConversationMessage do
 
   def delete(conversation_message, user) do
     Multi.new()
-    # # TODO: uncomment when read status changes are merged
-    # |> Multi.update_all(
-    #   :decrement_unread_counter,
-    #   # ReadStatus.decrement_unread_counter(conversation_message),
-    #   []
-    # )
+    |> Multi.update_all(
+      :decrement_unread_counter,
+      ReadStatus.decrement_unread_counter(conversation_message),
+      []
+    )
     |> Multi.delete(:conversation_message, conversation_message)
     |> Repo.transaction()
     |> Audit.ConversationMessage.track_delete(user)

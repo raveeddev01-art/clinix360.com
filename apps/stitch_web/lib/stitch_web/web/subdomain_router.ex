@@ -440,14 +440,20 @@ defmodule Stitch.Web.SubdomainRouter do
       :toggle_reaction
     )
 
-    # Expected Engage routes:
+    post(
+      "/conversations/:conversation_id/mark_as_read",
+      ConversationMessageController,
+      :mark_as_read
+    )
 
-    # get("/inboxes", InboxController, :index)
-    # post("/conversations/:id/mark_as_read", ConversationController, :mark_as_read)
-    # post("/conversations/:id/mark_as_unread", ConversationController, :mark_as_unread)
+    post(
+      "/conversations/:conversation_id/mark_as_unread",
+      ConversationMessageController,
+      :mark_as_unread
+    )
 
+    # Expected future Engage routes:
     # get("/conversation_messages/:id/download", ConversationMessageController, :download)
-    # get("/conversations/:conversation_id/feed_recent", ConversationMessageController, :feed_recent)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
     # post("/conversation_messages/search", ConversationMessageController, :search)
   end

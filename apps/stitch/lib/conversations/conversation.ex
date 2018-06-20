@@ -13,7 +13,8 @@ defmodule Stitch.Engage.Conversation do
     Conversation,
     ConversationProvider,
     ConversationPatient,
-    ConversationMessage
+    ConversationMessage,
+    ConversationMessage.ConversationMessageCreation
   }
 
   alias StitchEngage.Web.InboxChannel
@@ -94,14 +95,11 @@ defmodule Stitch.Engage.Conversation do
     |> Ecto.Multi.run(:conversation_patient, fn %{conversation: conversation} ->
       ConversationPatient.create_for_conversation_and_patient(conversation.id, patient_id)
     end)
-    |> Ecto.Multi.run(:conversation_providers, fn _ ->
-      # ConversationProvider's will track assignment and eventually access to
-      # conversations. For now, all providers will have access and assignments
-      # do not exist, so this is a noop
-      {:ok, []}
-    end)
     |> Ecto.Multi.run(:conversation_message, fn %{conversation: conversation} ->
-      ConversationMessage.create_for_provider(conversation.id, sender.id, params)
+      {:ok, %{conversation_message: conversation_message}} =
+        ConversationMessageCreation.create(conversation, sender, params)
+
+      {:ok, conversation_message}
     end)
     |> Repo.transaction()
   end

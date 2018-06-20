@@ -75,14 +75,14 @@ defmodule StitchEngage.Web.ConversationChannel do
     })
   end
 
-  # def broadcast_read_status(conversation, conversation_messages) do
-  #   read_status_json =
-  #     Enum.reduce(conversation_messages, %{}, &Map.put(&2, &1.id, &1.read_status))
+  def broadcast_read_status(conversation, conversation_messages) do
+    read_status_json =
+      Enum.reduce(conversation_messages, %{}, &Map.put(&2, &1.id, &1.provider_read_status))
 
-  #   @endpoint.broadcast("conversations:#{conversation.id}", "read_status_update", %{
-  #     conversation_messages: read_status_json
-  #   })
-  # end
+    @endpoint.broadcast("conversations:#{conversation.id}", "read_status_update", %{
+      conversation_messages: read_status_json
+    })
+  end
 
   def broadcast_msg_link_previews_generated(conversation = %Conversation{}, conversation_message) do
     conversation_message_json =
@@ -111,8 +111,6 @@ defmodule StitchEngage.Web.ConversationChannel do
   end
 
   def broadcast_reactions_updated(conversation, conversation_message) do
-    conversation = Repo.get(Conversation, conversation_message.conversation_id)
-
     [conversation_message] =
       Reaction.apply_reactions([conversation_message], :conversation_message)
 

@@ -21,10 +21,12 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
 
     %{
       id: conversation.id,
+      inbox_id: conversation.inbox_id,
       open: conversation.open,
       patient: patient_json,
       inserted_at: conversation.inserted_at,
-      updated_at: conversation.updated_at
+      updated_at: conversation.updated_at,
+      is_unread: Map.get(conversation, :is_unread)
     }
   end
 

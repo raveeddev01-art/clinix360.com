@@ -18,6 +18,18 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
     conversation_message_json(conversation_message, %{load_reactions: true})
   end
 
+  def render("mark_as_read.json", %{
+        conversation_messages_json: conversation_messages_json,
+        conversation_user: conversation_user
+      }) do
+    %{
+      conversation_messages: conversation_messages_json,
+      conversation_id: conversation_user.conversation_id,
+      last_read_at: conversation_user.last_read_at,
+      unread_messages_count: conversation_user.unread_messages_count
+    }
+  end
+
   def conversation_messages_json(conversation_messages) do
     Enum.map(conversation_messages, &conversation_message_json/1)
   end
@@ -45,14 +57,13 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       updated_at: conversation_message.updated_at,
       edited: !!conversation_message.edited_at,
       edited_at: conversation_message.edited_at,
-      # commenting out as this column is changing
-      # in another PS and unused for now
-      # read_status: conversation_message.read_status,
       reactions_web: conversation_message.provider_reactions,
       patient_reactions_web: conversation_message.patient_reactions,
       link_previews: conversation_message.link_previews,
       request_id: conversation_message.request_id,
-      upload_id: conversation_message.upload_id
+      upload_id: conversation_message.upload_id,
+      patient_read_status: conversation_message.patient_read_status,
+      provider_read_status: conversation_message.provider_read_status
     }
   end
 

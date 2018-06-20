@@ -3,7 +3,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   alias Stitch.LinkPreviewGenerator
 
   alias StitchConnect.Web.{
-    EventsChannel,
     GroupChannel,
     PushNotifications,
     UserStatusService,
@@ -19,7 +18,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     MessageAction,
     MessageQueries,
     Message.Upload,
-    ReadStatus
+    ReadStatus,
+    Web.EventsChannel
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
