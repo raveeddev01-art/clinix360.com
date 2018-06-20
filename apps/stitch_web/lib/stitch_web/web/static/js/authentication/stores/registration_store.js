@@ -90,6 +90,7 @@ class RegistrationStore {
       .then(() => {
         this.saving = false;
         if (window.electronApp) {
+          window.dispatchEvent(new CustomEvent("logged-in"));
           window.location.href = `${applicationScheme}${this
             .teamurl}.${applicationHost}`;
         } else {
