@@ -3,7 +3,18 @@ defmodule Stitch.Group do
   import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.{User, Role}
-  alias Stitch.{Repo, Group, GroupUser, GroupQueries, Message, UserQueries, Audit}
+
+  alias Stitch.{
+    Repo,
+    Group,
+    GroupUser,
+    GroupQueries,
+    Message,
+    UserQueries,
+    Audit,
+    ReadStatus
+  }
+
   alias Stitch.Analytics.Group, as: GroupAnalytics
 
   @type t :: %__MODULE__{}
@@ -406,7 +417,7 @@ defmodule Stitch.Group do
 
     case Repo.update_all(query, [], returning: true) do
       {1, [group_user]} ->
-        Message.mark_as_read(user_id, group_id)
+        ReadStatus.mark_as_read(:message, user_id, group_id)
         {:ok, Repo.preload(group_user, :group)}
 
       _ ->
