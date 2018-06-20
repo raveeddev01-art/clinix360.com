@@ -3,6 +3,7 @@ defmodule Stitch.Files.FileQueries do
 
   alias Stitch.{
     Repo,
+    Group,
     GroupUser,
     Files.Upload,
     Files.GroupUpload
@@ -68,5 +69,18 @@ defmodule Stitch.Files.FileQueries do
 
   def get_by_id(upload_id, _opts) do
     Repo.get(Upload, upload_id)
+  end
+
+  @spec shared?(Upload.t(), Group.t()) :: boolean
+  def shared?(%Upload{} = upload, %Group{} = group) do
+    result =
+      GroupUpload
+      |> where(group_id: ^group.id)
+      |> where(upload_id: ^upload.id)
+      |> select([g], true)
+      |> limit(1)
+      |> Repo.one()
+
+    !!result
   end
 end

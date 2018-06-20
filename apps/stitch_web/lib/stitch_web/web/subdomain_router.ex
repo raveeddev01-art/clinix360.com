@@ -149,6 +149,8 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/users/access", UserController, :access)
 
     get("/files", FileController, :index)
+    get("/files/:id", FileController, :show)
+    post("/files/:id/unshare", FileController, :unshare)
 
     get("/patients", TeamPatientController, :index)
     get("/patients/:id", TeamPatientController, :show)

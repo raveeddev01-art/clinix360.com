@@ -1,6 +1,13 @@
 defmodule Stitch.Web.Api.V1.FileController do
   use Stitch.Web, :controller
-  alias Stitch.{Repo, Group, MessageQueries, AWS.S3}
+
+  alias Stitch.{
+    Files.FileQueries,
+    Files.Upload,
+    Files.FileAuthorization,
+    Group,
+    GroupQueries
+  }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
@@ -8,8 +15,39 @@ defmodule Stitch.Web.Api.V1.FileController do
 
   def index(conn, _params) do
     current_user = conn.assigns.current_user
-    files = Stitch.Files.FileQueries.for_user(current_user, conn.assigns.query_options)
+    files = FileQueries.for_user(current_user, conn.assigns.query_options)
     render(conn, "index.json", files: files)
+  end
+
+  def show(conn, %{"id" => upload_id}) do
+    conn
+  end
+
+  def unshare(conn, %{"group_id" => group_id, "id" => upload_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
+         {:unshared, {:ok, _}} <- {:unshared, Upload.unshare_from_group(upload, group)} do
+      conn
+      |> json(%{status: "ok"})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:group, _} ->
+        {:error, :not_found}
+
+      {:authorized, false} ->
+        {:error, :not_authorized}
+
+      {:unshared, {:error, "not found"}} ->
+        {:error, :unprocessable_entity, "The file is not shared"}
+
+      {:unshared, _} ->
+        {:error, :unprocessable_entity, "Error unsharing the file"}
+    end
   end
 
   def parse_query_params(conn, _opts) do

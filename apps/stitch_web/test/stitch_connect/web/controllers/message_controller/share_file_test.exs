@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.MessageController.ShareFileTest do
     group = insert(:group, team: team)
     insert(:group_user, group: group, user: user)
     upload = insert(:upload, team: team, user: user)
-    another_upload = insert(:upload, team: team)
+    private_upload = insert(:upload, team: team, public: false)
 
     conn =
       conn
@@ -16,10 +16,12 @@ defmodule StitchConnect.Web.MessageController.ShareFileTest do
       |> with_user_session(user)
       |> with_api_user(user)
 
-    {:ok, conn: conn, group: group, upload: upload, another_upload: another_upload}
+    {:ok, conn: conn, group: group, upload: upload, private_upload: private_upload}
   end
 
   test "shares the file with the group", %{conn: conn, group: group, upload: upload} do
+    insert(:group_upload, upload: upload, group: group)
+
     conn
     |> post(api_v1_message_path(conn, :create, group), %{
       message: %{type: "file_share", upload_id: upload.id}
@@ -30,12 +32,12 @@ defmodule StitchConnect.Web.MessageController.ShareFileTest do
   test "can't share a file they don't have access to", %{
     conn: conn,
     group: group,
-    another_upload: another_upload
+    private_upload: private_upload
   } do
     response =
       conn
       |> post(api_v1_message_path(conn, :create, group), %{
-        message: %{type: "file_share", upload_id: another_upload.id}
+        message: %{type: "file_share", upload_id: private_upload.id}
       })
       |> json_response(422)
 

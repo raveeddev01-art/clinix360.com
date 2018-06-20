@@ -30,11 +30,11 @@ defmodule Stitch.Files.FileAuthorizationTest do
       assert FileAuthorization.can_view?(upload, user) == true
     end
 
-    test "return false if the user is not a member of any group where the file is shared" do
+    test "return false if the file is private and the user is not a member of any group where the file is shared" do
       team = insert(:team)
       user = insert(:user, team: team)
       group = insert(:group, team: team)
-      upload = insert(:upload, team: team)
+      upload = insert(:upload, team: team, public: false)
       insert(:group_upload, upload: upload, group: group)
 
       upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
