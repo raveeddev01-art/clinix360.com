@@ -6,15 +6,19 @@ defmodule Stitch.MessageCreationTest do
 
   describe "&Message.create/3" do
     test "creates message with given group, user, and content", %{group: group, user: user} do
-      assert {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
+      assert {:ok, %{message: message}} =
+               Message.create(group, user, %{"text_content" => "Hello, World!"})
+
       assert message.text_content == "Hello, World!"
     end
 
     test "checks for links", %{group: group, user: user} do
-      {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "lorem"})
+      {:ok, %{message: message}} = Message.create(group, user, %{"text_content" => "lorem"})
       refute message.has_links
 
-      {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "http://foo.bar"})
+      {:ok, %{message: message}} =
+        Message.create(group, user, %{"text_content" => "http://foo.bar"})
+
       assert message.has_links
     end
 
@@ -24,7 +28,7 @@ defmodule Stitch.MessageCreationTest do
       joe = insert(:user, team: team)
       {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
       Stitch.Group.hide(group.id, bob)
-      {:ok, _} = Message.create(group.id, joe, %{"text_content" => "test"})
+      {:ok, _} = Message.create(group, joe, %{"text_content" => "test"})
       assert Repo.get_by(Stitch.GroupUser, user_id: bob.id, group_id: group.id).is_hidden == false
     end
   end
