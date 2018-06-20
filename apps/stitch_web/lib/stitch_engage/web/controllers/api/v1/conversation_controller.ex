@@ -10,6 +10,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     Engage.ConversationAuthorization
   }
 
+  alias StitchEngage.Web.InboxChannel
+
   action_fallback(Stitch.Web.Api.FallbackController)
 
   def index(conn, params = %{"inbox_id" => inbox_id}) do
@@ -52,11 +54,17 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, inbox_id)},
          {:authorization?, true} <- {:authorization?, InboxAuthorization.can_view?(inbox, user)},
-         {:ok, %{conversation: conversation}} <-
+         {:ok, %{conversation: conversation, conversation_message: conversation_message}} <-
            Conversation.begin_conversation_as_provider(user, params) do
-      # TODO: broadcast conversation creation
       conversation = Repo.preload(conversation, [:conversation_messages, team_patients: :patient])
-      render(conn, "show.json", conversation: conversation)
+
+      conversation_with_latest_message = %{
+        conversation
+        | latest_conversation_message: conversation_message
+      }
+
+      InboxChannel.broadcast_conversation_creation(conversation_with_latest_message)
+      render(conn, "show.json", conversation: conversation_with_latest_message)
     else
       {:inbox, _} ->
         {:error, :not_found}
@@ -91,7 +99,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       updated_conversation =
         Repo.preload(updated_conversation, [:conversation_messages, team_patients: :patient])
 
-      # TODO: broadcast conversation update
+      InboxChannel.broadcast_conversation_update(conversation)
       render(conn, "show.json", conversation: updated_conversation)
     else
       {:conversation, _} ->
