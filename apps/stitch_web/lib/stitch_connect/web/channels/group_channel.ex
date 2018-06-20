@@ -14,7 +14,8 @@ defmodule StitchConnect.Web.GroupChannel do
     GroupAuthorization,
     Message,
     MessageAuthorization,
-    MessageQueries
+    MessageQueries,
+    ReadStatus
   }
 
   @endpoint Stitch.Web.Endpoint
@@ -198,7 +199,7 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Repo.get!(Message, message_id)
     ActivityTracker.async_update_activity(user)
 
-    Message.mark_as_unread(user.id, group.id, message)
+    ReadStatus.mark_as_unread(:message, user.id, group.id, message)
     |> mark_as_unread_response(user, socket)
   end
 
@@ -207,7 +208,7 @@ defmodule StitchConnect.Web.GroupChannel do
     %{group: group, current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
 
-    Message.mark_as_read(user.id, group.id)
+    ReadStatus.mark_as_read(:message, user.id, group.id)
     |> mark_as_read_response(user, socket)
   end
 

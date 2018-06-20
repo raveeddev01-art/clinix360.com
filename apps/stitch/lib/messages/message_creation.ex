@@ -13,6 +13,7 @@ defmodule Stitch.Message.MessageCreation do
     Message.Mention,
     Message.Notification,
     Mobile.NotificationQueue,
+    ReadStatus,
     Repo
   }
 
@@ -72,7 +73,7 @@ defmodule Stitch.Message.MessageCreation do
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)
 
-    {read_status, recipients} = Message.get_read_status(users, user)
+    {read_status, recipients} = ReadStatus.get_read_status(:message, users, user)
 
     attrs =
       attrs
@@ -82,13 +83,14 @@ defmodule Stitch.Message.MessageCreation do
       })
 
     mention_users = Message.mention_users(group, mentioned_user_ids, recipients)
-    increment_unread_counter = Message.increment_unread_counter(group.id, recipients)
+
+    increment_unread_counter = ReadStatus.increment_unread_counter(:message, group.id, recipients)
 
     Multi.new()
     |> Multi.insert(:message, Message.message_changeset(message, attrs))
     |> Multi.update_all(:mention_users, mention_users, [])
     |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
-    |> Message.mark_as_read_on_creation(group.id, user.id)
+    |> ReadStatus.mark_as_read_on_creation(group.id, user.id, :message)
     |> Repo.transaction()
     |> post_creation(notify_user_ids)
   end

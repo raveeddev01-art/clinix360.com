@@ -18,7 +18,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     MessageAuthorization,
     MessageAction,
     MessageQueries,
-    Message.Upload
+    Message.Upload,
+    ReadStatus
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -148,7 +149,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     current_user = conn.assigns.current_user
 
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:ok, response} <- Message.mark_as_read(current_user.id, group.id) do
+         {:ok, response} <- ReadStatus.mark_as_read(:message, current_user.id, group.id) do
       %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}} = response
       messages_json = MessageView.render("index.json", %{messages: messages})
 
@@ -179,7 +180,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:message, %Message{} = message} <-
            {:message, MessageQueries.get_by_id(message_id, false)},
-         {:ok, response} <- Message.mark_as_unread(current_user.id, group.id, message) do
+         {:ok, response} <-
+           ReadStatus.mark_as_unread(:message, current_user.id, group.id, message) do
       %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}} =
         response
 
