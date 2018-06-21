@@ -35,12 +35,12 @@ class EngageApp extends Component {
 
           <Switch>
             {engageEnabled ? (
-              <Route path={`/engage/:id`} component={Engage} />
+              <Route path={`/conversations/:id`} component={Engage} />
             ) : (
               <Route path={`/engage`} component={EngagePreview} />
             )}
 
-            <Redirect from="*" to={`/engage/1`} />
+            {/* <Redirect from="*" to={`/conversations/1`} /> */}
           </Switch>
         </div>
       </div>

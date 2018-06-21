@@ -10,8 +10,6 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Tab from "react-bootstrap/lib/Tab";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
 
@@ -24,11 +22,6 @@ import AddPatientModal from "./modals/add_patient_modal";
 @inject("inboxStore")
 @observer
 class InboxMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.props.inboxStore.loadConversations(this.props.match.params.id);
-  }
-
   onComposeClick = () => {
     this.showComposeModal();
   };
@@ -105,10 +98,10 @@ class InboxMenu extends Component {
             <div>
               <Nav justified className="status-filter">
                 <NavItem eventKey="first">
-                  Open ({inboxStore.defaultInbox.open_conversations_count})
+                  Open ({inboxStore.currentInbox.open_conversations_count})
                 </NavItem>
                 <NavItem eventKey="second">
-                  Closed ({inboxStore.defaultInbox.closed_conversations_count})
+                  Closed ({inboxStore.closedConversationsCount})
                 </NavItem>
               </Nav>
 
@@ -120,23 +113,23 @@ class InboxMenu extends Component {
                       this.scrollbar = ref;
                     }}
                   >
-                    {inboxStore.conversations.length > 0 ? (
-                      <div className="menu-nav m-b-20">
-                        {inboxStore.openedConversations.map(
+                    <div className="menu-nav m-b-20">
+                      {inboxStore.conversations.length > 0 ? (
+                        inboxStore.openedConversations.map(
                           (conversation, index) => (
                             <Conversation
                               key={`conversation_${index}`}
                               conversation={conversation}
                             />
                           )
-                        )}
-                      </div>
-                    ) : (
-                      <div className="empty-inbox">
-                        <i className="fa fa-comments-o" />
-                        <h3>No open conversations yet</h3>
-                      </div>
-                    )}
+                        )
+                      ) : (
+                        <div className="empty-inbox">
+                          <i className="fa fa-comments-o" />
+                          <h3>No open conversations yet</h3>
+                        </div>
+                      )}
+                    </div>
                   </Scrollbar>
                 </Tab.Pane>
 
@@ -149,12 +142,14 @@ class InboxMenu extends Component {
                   >
                     {inboxStore.closedConversations.length > 0 ? (
                       <div className="menu-nav m-b-20">
-                        {inboxStore.conversations.map((conversation, index) => (
-                          <Conversation
-                            key={`conversation_${index}`}
-                            conversation={conversation}
-                          />
-                        ))}
+                        {inboxStore.closedConversations.map(
+                          (conversation, index) => (
+                            <Conversation
+                              key={`conversation_${index}`}
+                              conversation={conversation}
+                            />
+                          )
+                        )}
                       </div>
                     ) : (
                       <div className="empty-inbox">

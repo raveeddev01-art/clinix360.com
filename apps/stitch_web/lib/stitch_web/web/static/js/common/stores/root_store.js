@@ -72,6 +72,7 @@ class RootStore {
   }
 
   onStoreInit() {
+    this.inboxStore.loadEngage();
     this.sidemenuStore.loadApp();
     this.notificationStore.loadPreferences();
     this.newsStore.loadNewsStories();

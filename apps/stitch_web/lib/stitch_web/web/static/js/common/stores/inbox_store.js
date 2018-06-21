@@ -7,17 +7,30 @@
 import { observable, computed, action } from "mobx";
 
 class InboxStore {
-  @observable defaultInbox = {};
   @observable conversations = [];
+  @observable currentInbox = {};
+  @observable currentConversation = {};
   @observable currentModal = null;
+  @observable messagesLoaded = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
   // //////// //
+  // GETTERS  //
+  // //////// //
+
+  get closedConversationsCount() {
+    return this.currentInbox.closed_conversations_count;
+  }
+
+  // //////// //
   // COMPUTED //
   // //////// //
+
+  getConversationById = id =>
+    this.conversations.find(conversation => conversation.id === id);
 
   @computed
   get openedConversations() {
@@ -57,11 +70,31 @@ class InboxStore {
     this.currentModal = null;
   };
 
+  @action
+  closeConversation = id => {
+    return put(`/api/v1/conversations/${id}/close`);
+  };
+
+  @action
+  loadEngage = async () => {
+    try {
+      await this.loadInbox();
+      await this.loadConversations(this.currentInbox.id);
+    } catch (e) {
+      // TODO if error occurs here, redirect to error page
+      console.error(e); // eslint-disable-line
+    }
+
+    // Hide the HTML loading elements.
+    $(".html-loading-element").remove();
+  };
+
+  // --------------------
   // Loading only default inbox for now
   @action
-  loadInboxes = () => {
+  loadInbox = () => {
     return get("/api/v1/inboxes/default").then(response => {
-      this.defaultInbox = response.data;
+      this.currentInbox = response.data;
     });
   };
 
@@ -69,6 +102,22 @@ class InboxStore {
   loadConversations = id => {
     return get(`/api/v1/inboxes/${id}/conversations`).then(response => {
       this.conversations = response.data;
+    });
+  };
+
+  // --------------------
+  // Called from the conversations panel component
+  @action
+  openConversation = id => {
+    this.messagesLoaded = false;
+    this.loadConversation(id);
+  };
+
+  @action
+  loadConversation = id => {
+    return get(`/api/v1/conversations/${id}`).then(response => {
+      this.currentConversation = response.data;
+      this.messagesLoaded = true;
     });
   };
 

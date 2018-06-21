@@ -7,11 +7,6 @@ import Scrollbar from "common/components/scrollbar";
 @inject("teamStore", "userStore", "inboxStore")
 @observer
 class Sidebar extends Component {
-  componentWillMount() {
-    const { inboxStore } = this.props;
-    inboxStore.loadInboxes();
-  }
-
   render() {
     const { userStore, inboxStore } = this.props;
 
@@ -43,15 +38,15 @@ class Sidebar extends Component {
                   </div>
 
                   <NavLink
-                    to={`/engage/1`}
-                    className="item"
-                    activeClassName="active"
+                    to={`/conversations/1`}
+                    className="item active"
+                    // activeClassName="active"
                   >
                     <div className="item-icon">
                       <i className="fa fa-inbox" />
                     </div>
                     <div className="item-text">
-                      {inboxStore.defaultInbox.name}
+                      {inboxStore.currentInbox.name}
                     </div>
                   </NavLink>
 
