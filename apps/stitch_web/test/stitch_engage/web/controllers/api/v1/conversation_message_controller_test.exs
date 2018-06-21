@@ -386,4 +386,26 @@ defmodule Stitch.Web.Api.V1.ConversationMessageControllerTest do
       assert json_response(conn, 403)
     end
   end
+
+  describe "PUT /api/v1/conversation_messages/:id/toggle_reaction" do
+    setup %{conn: conn} do
+      SetupHelper.setup(conn)
+    end
+
+    test "deletes a conversation message properly", setup_params do
+      conn =
+        setup_params.conn
+        |> with_api_user(setup_params.author)
+        |> put(
+          Routes.api_v1_conversation_message_path(
+            setup_params.conn,
+            :toggle_reaction,
+            setup_params.conversation_message.id
+          ),
+          %{emoji_name: "clown_face"}
+        )
+
+      assert conn.status == 200
+    end
+  end
 end

@@ -1,5 +1,9 @@
 defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
-  alias Stitch.{Accounts.User, TeamPatient}
+  alias Stitch.{
+    Accounts.User,
+    TeamPatient,
+    Message.Reaction
+  }
 
   use Stitch.Web, :view
 
@@ -8,11 +12,18 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
   end
 
   def render("show.json", %{conversation_message: conversation_message}) do
-    conversation_message_json(conversation_message)
+    conversation_message_json(conversation_message, %{load_reactions: true})
   end
 
   def conversation_messages_json(conversation_messages) do
     Enum.map(conversation_messages, &conversation_message_json/1)
+  end
+
+  def conversation_message_json(conversation_message, %{load_reactions: true}) do
+    [conversation_message] =
+      Reaction.apply_reactions([conversation_message], :conversation_message)
+
+    conversation_message_json(conversation_message)
   end
 
   def conversation_message_json(conversation_message) do
@@ -33,7 +44,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       # commenting out as this column is changing
       # in another PS and unused for now
       # read_status: conversation_message.read_status,
-      reactions_web: %{},
+      reactions_web: conversation_message.provider_reactions,
+      patient_reactions_web: conversation_message.patient_reactions,
       link_previews: conversation_message.link_previews,
       request_id: conversation_message.request_id
     }
