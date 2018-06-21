@@ -57,7 +57,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
              user.id,
              message_params_with_client
            ) do
-      # TODO: get notify_user_ids in the create
       # Notifications: get notify_user_ids in the create and pass them into events
       notify_user_ids = %{}
       conversation_message = %{conversation_message | provider: user}
