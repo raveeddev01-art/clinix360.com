@@ -418,6 +418,12 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/conversations/:conversation_id/messages", ConversationMessageController, :index)
     post("/conversations/:conversation_id/messages", ConversationMessageController, :create)
 
+    put(
+      "/conversation_messages/:id/delete_link_preview",
+      ConversationMessageController,
+      :delete_message_link_preview
+    )
+
     # Expected Engage routes:
 
     # get("/inboxes", InboxController, :index)
@@ -432,12 +438,6 @@ defmodule Stitch.Web.SubdomainRouter do
     # get("/conversations/:conversation_id/feed_recent", ConversationMessageController, :feed_recent)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
     # post("/conversation_messages/search", ConversationMessageController, :search)
-
-    # put(
-    #   "/conversation_messages/:id/delete_link_preview",
-    #   ConversationMessageController,
-    #   :delete_message_link_preview
-    # )
 
     # put(
     #   "/conversation_messages/:id/toggle_reaction",

@@ -83,27 +83,31 @@ defmodule StitchEngage.Web.ConversationChannel do
   #   })
   # end
 
-  # def broadcast_msg_link_previews_generated(conversation, conversation_message) do
-  #   conversation_message_json =
-  #     ConversationMessageView.render("show.json", %{conversation_message: conversation_message})
+  def broadcast_msg_link_previews_generated(conversation = %Conversation{}, conversation_message) do
+    conversation_message_json =
+      ConversationMessageView.render("show.json", %{conversation_message: conversation_message})
 
-  #   @endpoint.broadcast(
-  #     "conversations:#{conversation.id}",
-  #     "conversation_message_link_previews_generated",
-  #     conversation_message_json
-  #   )
-  # end
+    @endpoint.broadcast(
+      "conversations:#{conversation.id}",
+      "conversation_message_link_previews_generated",
+      conversation_message_json
+    )
+  end
 
-  # def broadcast_msg_link_preview_deleted(conversation, conversation_message_id, link) do
-  #   @endpoint.broadcast(
-  #     "conversations:#{conversation.id}",
-  #     "conversation_message_link_preview_deleted",
-  #     %{
-  #       conversation_message_id: conversation_message_id,
-  #       link: link
-  #     }
-  #   )
-  # end
+  def broadcast_msg_link_preview_deleted(
+        conversation = %Conversation{},
+        conversation_message_id,
+        link
+      ) do
+    @endpoint.broadcast(
+      "conversations:#{conversation.id}",
+      "conversation_message_link_preview_deleted",
+      %{
+        conversation_message_id: conversation_message_id,
+        link: link
+      }
+    )
+  end
 
   # def broadcast_reactions_updated(conversation, conversation_message) do
   #   # TODO: Get apply_reactions working with either type of message
