@@ -99,9 +99,12 @@ class Sidemenu extends Component {
         <LinkContainer to="/admin/members">
           <MenuItem eventKey="7">Members</MenuItem>
         </LinkContainer>
-        <LinkContainer to="/admin/billing">
-          <MenuItem eventKey="8">Billing</MenuItem>
-        </LinkContainer>
+        {window.electronApp &&
+          window.electronEnv === "store" && (
+            <LinkContainer to="/admin/billing">
+              <MenuItem eventKey="8">Billing</MenuItem>
+            </LinkContainer>
+          )}
       </div>
     );
   }
