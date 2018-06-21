@@ -28,12 +28,14 @@ defmodule Stitch.Engage.ConversationMessageAuthorization do
     true
   end
 
+  def can_edit?(_, _), do: false
+
   # ===========
   #   PRIVATE
   # ===========
 
   defp admin_on_team?(conversation, user) do
     %{inbox: %{team_id: team_id}} = Repo.preload(conversation, :inbox)
-    TeamAuthorization.is_admin?(team_id, user.id)
+    TeamAuthorization.is_admin?(user, team_id)
   end
 end
