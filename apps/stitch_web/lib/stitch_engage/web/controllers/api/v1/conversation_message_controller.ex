@@ -95,10 +95,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  def update(conn, %{"id" => id, "conversation_message" => message_params}) do
+  def update(conn, %{"id" => id, "message" => message_params}) do
     user = conn.assigns.current_user
 
-    with {:conversation_message, conversation_message} <-
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
            {:conversation_message, Repo.get(ConversationMessage, id)},
          {:authorized?, true} <-
            {:authorized?, ConversationMessageAuthorization.can_edit?(conversation_message, user)},
@@ -129,7 +129,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   def delete(conn, params = %{"id" => id}) do
     user = conn.assigns.current_user
 
-    with {:conversation_message, conversation_message} <-
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
            {:conversation_message, Repo.get(ConversationMessage, id)},
          {:conversation, %Conversation{} = conversation} <-
            {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
