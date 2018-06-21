@@ -6,7 +6,8 @@ defmodule Stitch.Web.Api.V1.FileController do
     Files.Upload,
     Files.FileAuthorization,
     Group,
-    GroupQueries
+    GroupQueries,
+    Web.UrlService
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -19,8 +20,27 @@ defmodule Stitch.Web.Api.V1.FileController do
     render(conn, "index.json", files: files)
   end
 
-  def show(conn, %{"id" => upload_id}) do
-    conn
+  def show(conn, %{"id" => "f" <> _ = encoded_file_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:upload_id, {:ok, upload_id}} <- {:upload_id, Upload.decode_url_id(encoded_file_id)},
+         {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:authorized, true, _} <-
+           {:authorized, FileAuthorization.can_view?(upload, current_user), upload} do
+      render(conn, "show.json", %{file: upload})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:authorized, false, upload} ->
+        conn
+        |> put_session(:redirect_url, UrlService.file_show_url(upload))
+        |> redirect(external: UrlService.team_login_url(upload))
+        |> halt
+
+      _ ->
+        {:error, :not_found}
+    end
   end
 
   def unshare(conn, %{"group_id" => group_id, "id" => upload_id}) do
