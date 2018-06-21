@@ -12,7 +12,8 @@ defmodule Stitch.Engage.ConversationAuthorizationTest do
     end
 
     test "returns true if user is on team", %{
-      conversation: conversation
+      conversation: conversation,
+      team: team
     } do
       team_member = insert(:user, team: team)
       assert ConversationAuthorization.can_view?(conversation, team_member)
