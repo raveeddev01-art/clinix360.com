@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use Stitch.Web, :controller
-  alias StitchConnect.MessageLinkPreviewGenerator
+  alias Stitch.LinkPreviewGenerator
 
   alias StitchConnect.Web.{
     EventsChannel,
@@ -136,7 +136,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
 
     Stitch.Task.start(fn ->
-      MessageLinkPreviewGenerator.queue(message)
+      LinkPreviewGenerator.queue(message)
       GroupChannel.broadcast_message_created(message)
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
@@ -230,7 +230,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.update(message, message_params) do
           {:ok, message} ->
-            MessageLinkPreviewGenerator.queue(message)
+            LinkPreviewGenerator.queue(message)
             message = MessageQueries.load_info(message)
             GroupChannel.broadcast_message_edited(message)
             render(conn, "show.json", message: message, user_id: user.id)

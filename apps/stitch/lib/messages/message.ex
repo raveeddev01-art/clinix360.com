@@ -7,22 +7,24 @@ defmodule Stitch.Message do
   alias Stitch.{
     Accounts.User,
     Audit,
+    Files.Upload,
     Group,
-    GroupUser,
     GroupQueries,
+    GroupUser,
     Message,
+    Message.LinkPreview,
     Message.Mention,
     Message.MessageCreation,
-    Repo,
-    ReadStatus
+    ReadStatus,
+    Repo
   }
 
   @valid_types ["chat", "system", "upload", "file_share"]
 
   schema "messages" do
-    belongs_to(:user, Stitch.Accounts.User)
-    belongs_to(:group, Stitch.Group)
-    belongs_to(:pinned_by, Stitch.Accounts.User, foreign_key: :pinned_by_id)
+    belongs_to(:user, User)
+    belongs_to(:group, Group)
+    belongs_to(:pinned_by, User, foreign_key: :pinned_by_id)
     field(:request_id, :string)
     field(:deleted, :boolean, default: false)
     field(:edited_at, :utc_datetime)
@@ -41,8 +43,8 @@ defmodule Stitch.Message do
     field(:client_name, :string, default: "unknown")
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
-    belongs_to(:upload, Stitch.Files.Upload)
-    embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
+    belongs_to(:upload, Upload)
+    embeds_many(:link_previews, LinkPreview, on_replace: :delete)
 
     timestamps()
   end
@@ -78,7 +80,7 @@ defmodule Stitch.Message do
     struct
     |> cast(params, [:text_content, :mentioned_user_ids])
     |> validate_required([:text_content])
-    |> check_for_links
+    |> LinkPreview.check_for_links()
     |> put_change(:edited_at, DateTime.utc_now())
   end
 
@@ -97,22 +99,8 @@ defmodule Stitch.Message do
     ])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
-    |> check_for_links
+    |> LinkPreview.check_for_links()
   end
-
-  defp check_for_links(
-         %Ecto.Changeset{valid?: true, changes: %{text_content: text_content}} = changeset
-       ) do
-    has_links =
-      text_content
-      |> Message.LinkPreview.get_links()
-      |> Enum.empty?()
-      |> Kernel.not()
-
-    put_change(changeset, :has_links, has_links)
-  end
-
-  defp check_for_links(changeset), do: changeset
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct

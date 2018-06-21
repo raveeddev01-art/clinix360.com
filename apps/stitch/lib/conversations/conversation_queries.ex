@@ -88,6 +88,14 @@ defmodule Stitch.Engage.ConversationQueries do
     |> Repo.all()
   end
 
+  @doc """
+  Given a conversation message - preload data needed for show view & force reload.
+  """
+  @spec load_message_info(ConversationMessage.t()) :: ConversationMessage.t()
+  def load_message_info(conversation_message) do
+    Repo.preload(conversation_message, [:provider, team_patient: :patient], force: true)
+  end
+
   # ===========
   #   PRIVATE
   # ===========

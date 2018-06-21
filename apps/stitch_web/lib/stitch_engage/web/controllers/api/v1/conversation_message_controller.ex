@@ -6,9 +6,12 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.Conversation,
     Engage.ConversationQueries,
     Engage.ConversationMessage,
-    Engage.ConversationAuthorization
+    Engage.ConversationAuthorization,
+    Engage.ConversationMessageAuthorization
   }
 
+  alias Stitch.Message.LinkPreview
+  alias Stitch.LinkPreviewGenerator
   alias StitchEngage.Web.ConversationChannel
 
   action_fallback(Stitch.Web.Api.FallbackController)
@@ -78,7 +81,40 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  def conversation_message_events(conversation_message, conversation, _notify_user_ids) do
+  def delete_message_link_preview(
+        conn,
+        %{"id" => conversation_message_id, "link" => link} = _params
+      ) do
+    current_user = conn.assigns.current_user
+
+    with {:conversation_message, %ConversationMessage{} = conversation_message} <-
+           {:conversation_message, Repo.get(ConversationMessage, conversation_message_id)},
+         {:conversation, conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?,
+            ConversationMessageAuthorization.can_delete?(
+              conversation_message,
+              conversation,
+              current_user
+            )} do
+      conversation_message = LinkPreview.delete!(conversation_message, link)
+
+      ConversationChannel.broadcast_msg_link_preview_deleted(
+        conversation,
+        conversation_message.id,
+        link
+      )
+
+      json(conn, %{status: "ok"})
+    else
+      {:conversation_message, _} -> {:error, :not_found}
+      {:conversation, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized, "You cannot edit this message."}
+    end
+  end
+
+  defp conversation_message_events(conversation_message, conversation, _notify_user_ids) do
     # Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
 
     # Get the updated_at time before spawning the task
@@ -92,8 +128,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       )
 
       ConversationChannel.broadcast_message_created(conversation_message)
+      LinkPreviewGenerator.queue(conversation_message)
+
       # TODO: get equivalents of each of these working
-      #   MessageLinkPreviewGenerator.queue(message)
       #   PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       #   PushNotifications.push_badge_update(message, notify_user_ids.mobile)
       #   Stitch.EmailNotification.create(message.id, notify_user_ids.email)

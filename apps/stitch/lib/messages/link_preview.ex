@@ -6,7 +6,8 @@ defmodule Stitch.Message.LinkPreview do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Stitch.{Message, Repo}
+  import Ecto.Query
+  alias Stitch.{Message, Repo, Engage.ConversationMessage}
 
   @primary_key false
   embedded_schema do
@@ -25,6 +26,117 @@ defmodule Stitch.Message.LinkPreview do
     |> resolve_relative_favicon_url
     |> resolve_relative_image_url
   end
+
+  @doc """
+  Used by Message and ConversationMessage changset code to set has_links
+  to true or false depending on text_content value.
+  """
+  @spec check_for_links(Ecto.Changeset.t()) :: Ecto.Changeset.t()
+  def check_for_links(
+        %Ecto.Changeset{valid?: true, changes: %{text_content: text_content}} = changeset
+      ) do
+    has_links =
+      text_content
+      |> get_links()
+      |> Enum.empty?()
+      |> Kernel.not()
+
+    put_change(changeset, :has_links, has_links)
+  end
+
+  def check_for_links(changeset), do: changeset
+
+  @doc """
+  Returns a list of all Message and ConversationMessage where
+  has_links is true but no link_previews exist yet.
+  """
+  @spec all_messages_with_ungenerated_link_previews() :: list()
+  def all_messages_with_ungenerated_link_previews do
+    messages_with_ungenerated_link_previews() ++
+      conversation_messages_with_ungenerated_link_previews()
+  end
+
+  def get_links(nil), do: []
+
+  def get_links(text) when is_binary(text) do
+    ~r(https?://[^\s]+)
+    |> Regex.scan(text)
+    |> List.flatten()
+  end
+
+  @spec generate_link_previews(Message.t() | ConversationMessage.t()) ::
+          Message.t() | ConversationMessage.t() | no_return
+  def generate_link_previews(%{text_content: text_content} = message) do
+    links = get_links(text_content)
+
+    link_preview_params =
+      if length(links) > 5 do
+        []
+      else
+        links
+        |> Enum.map(fn link ->
+          generate_link_preview_param(link)
+        end)
+        |> Enum.reject(&is_nil/1)
+      end
+
+    changeset =
+      link_changeset(message, %{
+        link_previews_generated: true,
+        link_previews: link_preview_params
+      })
+
+    Stitch.Repo.update!(changeset)
+  end
+
+  @spec delete!(Message.t() | ConversationMessage.t(), binary) ::
+          Message.t() | ConversationMessage.t() | no_return
+  def delete!(%{} = message, link) do
+    link_previews =
+      Enum.reject(message.link_previews, fn link_preview ->
+        link_preview.link == link
+      end)
+
+    message
+    |> Ecto.Changeset.change(link_previews: link_previews)
+    |> Repo.update!()
+  end
+
+  # Information Parsing
+
+  def site_name(html) do
+    og_metadata(html, "site_name")
+  end
+
+  def title(html) do
+    og_metadata(html, "title") ||
+      case html |> Floki.find("head > title") |> Floki.text() do
+        title when is_binary(title) and byte_size(title) > 0 ->
+          title
+
+        _ ->
+          nil
+      end
+  end
+
+  def description(html) do
+    og_metadata(html, "description") ||
+      html |> Floki.attribute("meta[name='description']", "content") |> List.first()
+  end
+
+  def favicon_url(html) do
+    html
+    |> Floki.attribute("head link[rel~='icon']", "href")
+    |> List.first()
+  end
+
+  def image_url(html) do
+    og_metadata(html, "image") || og_metadata(html, "image:url") || favicon_url(html)
+  end
+
+  # ===========
+  #   PRIVATE
+  # ===========
 
   defp resolve_relative_favicon_url(
          %Ecto.Changeset{
@@ -54,45 +166,19 @@ defmodule Stitch.Message.LinkPreview do
 
   defp resolve_relative_image_url(changeset), do: changeset
 
-  def messages_with_ungenerated_link_previews do
-    import Ecto.Query, only: [where: 3]
+  defp messages_with_ungenerated_link_previews do
+    with_ungenerated_previews(Message)
+  end
 
-    Message
+  defp conversation_messages_with_ungenerated_link_previews do
+    with_ungenerated_previews(ConversationMessage)
+  end
+
+  defp with_ungenerated_previews(query) do
+    query
     |> where([m], m.has_links == true)
     |> where([m], m.link_previews_generated == false)
     |> Repo.all()
-  end
-
-  def get_links(nil), do: []
-
-  def get_links(text) when is_binary(text) do
-    ~r(https?://[^\s]+)
-    |> Regex.scan(text)
-    |> List.flatten()
-  end
-
-  @spec generate_link_previews(Message.t()) :: Message.t() | no_return
-  def generate_link_previews(%Message{text_content: text_content} = message) do
-    links = get_links(text_content)
-
-    link_preview_params =
-      if length(links) > 5 do
-        []
-      else
-        links
-        |> Enum.map(fn link ->
-          generate_link_preview_param(link)
-        end)
-        |> Enum.reject(&is_nil/1)
-      end
-
-    changeset =
-      message_changeset(message, %{
-        link_previews_generated: true,
-        link_previews: link_preview_params
-      })
-
-    Stitch.Repo.update!(changeset)
   end
 
   defp generate_link_preview_param(link) do
@@ -129,57 +215,16 @@ defmodule Stitch.Message.LinkPreview do
     end
   end
 
-  defp message_changeset(%Message{} = message, params) do
+  defp link_changeset(message, params) do
     message
     |> cast(params, [:link_previews_generated])
     |> cast_embed(:link_previews)
     |> validate_required([:link_previews_generated, :link_previews])
   end
 
-  def site_name(html) do
-    og_metadata(html, "site_name")
-  end
-
-  def title(html) do
-    og_metadata(html, "title") ||
-      case html |> Floki.find("head > title") |> Floki.text() do
-        title when is_binary(title) and byte_size(title) > 0 ->
-          title
-
-        _ ->
-          nil
-      end
-  end
-
-  def description(html) do
-    og_metadata(html, "description") ||
-      html |> Floki.attribute("meta[name='description']", "content") |> List.first()
-  end
-
-  def favicon_url(html) do
-    html
-    |> Floki.attribute("head link[rel~='icon']", "href")
-    |> List.first()
-  end
-
-  def image_url(html) do
-    og_metadata(html, "image") || og_metadata(html, "image:url") || favicon_url(html)
-  end
-
   defp og_metadata(html, property) do
     html
     |> Floki.attribute("meta[property='og:#{property}']", "content")
     |> List.first()
-  end
-
-  def delete!(%Message{} = message, link) do
-    link_previews =
-      Enum.reject(message.link_previews, fn link_preview ->
-        link_preview.link == link
-      end)
-
-    message
-    |> Ecto.Changeset.change(link_previews: link_previews)
-    |> Repo.update!()
   end
 end
