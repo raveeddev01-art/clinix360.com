@@ -15,11 +15,7 @@ defmodule Stitch.Repo.Scripts.AssigPublicStatusToUpload do
     Files.Upload,
     Files.FileQueries,
     Repo,
-    Group,
-    Message,
-    GroupQueries,
-    UserQueries,
-    Accounts.User
+    Group
   }
 
   def run do
