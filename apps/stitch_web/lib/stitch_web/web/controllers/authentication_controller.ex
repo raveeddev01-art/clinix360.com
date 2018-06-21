@@ -90,6 +90,7 @@ defmodule Stitch.Web.AuthenticationController do
 
     conn
     |> delete_team_session(conn.assigns.team.id)
+    |> delete_session(:redirect_url)
     |> broadcast_logout(session_id)
     |> redirect(to: "/logged-out")
   end
@@ -103,6 +104,7 @@ defmodule Stitch.Web.AuthenticationController do
 
     conn
     |> delete_team_session(conn.assigns.team.id)
+    |> delete_session(:redirect_url)
     |> render("logged_out.html", logged_out_params: logged_out_params)
   end
 

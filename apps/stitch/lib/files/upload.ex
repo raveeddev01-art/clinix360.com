@@ -28,6 +28,7 @@ defmodule Stitch.Files.Upload do
     field(:preview_height, :integer)
     field(:preview_width, :integer)
     field(:preview_url, :string)
+    field(:public, :boolean, default: true)
     field(:shared_in, {:array, :integer}, virtual: true, default: [])
 
     timestamps()
@@ -36,6 +37,7 @@ defmodule Stitch.Files.Upload do
   @attributes [
     :filename,
     :url,
+    :public,
     :mimetype,
     :filetype,
     :size_in_bytes,
@@ -62,6 +64,14 @@ defmodule Stitch.Files.Upload do
 
   @spec share_with_group(Upload.t(), Group.t()) ::
           {:ok, GroupUpload.t()} | {:error, Ecto.Changeset.t()}
+  def share_with_group(%Upload{} = upload, %Group{public: true} = group) do
+    with {:ok, upload} <- make_public(upload) do
+      GroupUpload.create(group, upload)
+    else
+      error -> error
+    end
+  end
+
   def share_with_group(%Upload{} = upload, %Group{} = group) do
     GroupUpload.create(group, upload)
   end
@@ -73,13 +83,23 @@ defmodule Stitch.Files.Upload do
 
   def create_and_share_with_group(%Group{} = group, %User{} = user, attrs, opts \\ []) do
     with {:ok, preview} <- create_preview(attrs, opts),
-         attrs = Map.merge(attrs, preview),
+         attrs =
+           attrs
+           |> Map.merge(preview)
+           |> Map.put("public", group.public),
          {:ok, upload} <- create(user, attrs),
          {:ok, group_file} <- share_with_group(upload, group) do
       {:ok, upload, group_file}
     else
       error -> {:error, error}
     end
+  end
+
+  @spec make_public(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
+  def make_public(%Upload{} = upload) do
+    upload
+    |> change(public: true)
+    |> Repo.update()
   end
 
   defp put_default_name(%Ecto.Changeset{changes: %{filename: filename}} = changeset)

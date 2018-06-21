@@ -1,19 +1,15 @@
 defmodule Stitch.Web.Files.FileController do
   use Stitch.Web, :controller
-  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   alias Stitch.{
-    MessageQueries,
-    GroupAuthorization,
     Message,
     Accounts.User,
     UserQueries,
     Files.Upload,
     Files.FileQueries,
-    Files.FileAuthorization
+    Files.FileAuthorization,
+    Web.UrlService
   }
-
-  @endpoint Stitch.Web.Endpoint
 
   def download(conn, %{"file_id" => "f" <> _ = encoded_file_id}) do
     with {:file_id, {:ok, file_id}} <- {:file_id, Upload.decode_url_id(encoded_file_id)},
@@ -24,13 +20,13 @@ defmodule Stitch.Web.Files.FileController do
     else
       {:authenticated, false, upload} ->
         conn
-        |> put_session(:redirect_url, file_url(upload, encoded_file_id))
-        |> redirect(external: login_url(upload))
+        |> put_session(:redirect_url, UrlService.file_download_url(upload))
+        |> redirect(external: UrlService.team_login_url(upload))
         |> halt
 
       _ ->
         conn
-        |> redirect(external: login_url())
+        |> redirect(external: UrlService.login_url())
         |> halt
     end
   end
@@ -47,40 +43,27 @@ defmodule Stitch.Web.Files.FileController do
     else
       {:authenticated, false, upload} ->
         conn
-        |> put_session(:redirect_url, file_preview_url(upload, encoded_file_id))
-        |> redirect(external: login_url(upload))
+        |> put_session(:redirect_url, UrlService.file_download_url(upload))
+        |> redirect(external: UrlService.team_login_url(upload))
         |> halt
 
       _ ->
         conn
         |> put_session(:redirect_url, redirect_url)
-        |> redirect(external: login_url())
+        |> redirect(external: UrlService.login_url())
         |> halt
     end
   end
 
-  @spec authenticated(Conn.t(), Upload.t() | Message.t()) ::
+  @spec authenticated(Conn.t(), Upload.t()) ::
           {:authenticated, boolean} | {:authenticated, boolean, Upload.t() | Message.t()}
-  def authenticated(conn, %Upload{} = file) do
+  def authenticated(conn, %Upload{} = upload) do
     with {:user_token, user_token} when is_binary(user_token) <-
-           {:user_token, get_user_token_from_team(conn, file.team_id)},
+           {:user_token, get_user_token_from_team(conn, upload.team_id)},
          {:team_user, current_user = %User{}} <-
-           {:team_user, UserQueries.team_member_by_token(file.team_id, user_token)},
+           {:team_user, UserQueries.team_member_by_token(upload.team_id, user_token)},
          {:authenticated, true} <-
-           {:authenticated, FileAuthorization.can_view?(file, current_user)} do
-      {:authenticated, true}
-    else
-      _ -> {:authenticated, false, file}
-    end
-  end
-
-  def authenticated(conn, %Message{} = upload) do
-    with {:user_token, user_token} when is_binary(user_token) <-
-           {:user_token, get_user_token_from_team(conn, upload.group.team_id)},
-         {:team_user, current_user = %User{}} <-
-           {:team_user, UserQueries.team_member_by_token(upload.group.team_id, user_token)},
-         {:authenticated, true} <-
-           {:authenticated, GroupAuthorization.can_view?(upload.group, current_user)} do
+           {:authenticated, FileAuthorization.can_view?(upload, current_user)} do
       {:authenticated, true}
     else
       _ -> {:authenticated, false, upload}
@@ -120,10 +103,10 @@ defmodule Stitch.Web.Files.FileController do
   end
 
   @spec stream_file(Conn.t(), Upload.t(), String.t()) :: Conn.t()
-  def stream_file(conn, %Upload{} = file, url) do
+  def stream_file(conn, upload, url) do
     filename = Path.basename(url)
 
-    case put_cache_header(conn, file) do
+    case put_cache_header(conn, filename, upload) do
       {:stale, conn} ->
         conn
         |> send_chunked(200)
@@ -158,117 +141,6 @@ defmodule Stitch.Web.Files.FileController do
     |> PhoenixETag.schema_last_modified()
     |> NaiveDateTime.to_erl()
     |> :phoenix_etag_date.rfc1123()
-  end
-
-  defp valid_upload?(%{"url" => url}) when is_binary(url), do: true
-  defp valid_upload?(_upload), do: false
-
-  defp valid_upload_with_preview?(%{"url" => url, "preview_url" => preview_url})
-       when is_binary(url) and is_binary(preview_url),
-       do: true
-
-  defp valid_upload_with_preview?(_upload), do: false
-
-  # Redirect to the team login page. The team is inferred from the message.
-  defp login_url(%Upload{team_id: team_id}) do
-    team = Stitch.TeamQueries.get_by_id(team_id)
-    struct_url = @endpoint.struct_url()
-    struct_url = %{struct_url | host: "#{team.slug}.#{struct_url.host}"}
-    Routes.authentication_url(struct_url, :login)
-  end
-
-  defp login_url(%Message{group: %{team_id: team_id}}) do
-    team = Stitch.TeamQueries.get_by_id(team_id)
-    struct_url = @endpoint.struct_url()
-    struct_url = %{struct_url | host: "#{team.slug}.#{struct_url.host}"}
-    Routes.authentication_url(struct_url, :login)
-  end
-
-  defp login_url(_upload), do: login_url()
-
-  defp login_url() do
-    struct_url = @endpoint.struct_url()
-    Stitch.Web.Router.Helpers.authentication_url(struct_url, :index)
-  end
-
-  defp file_url(upload, encoded_file_id) do
-    struct_url = @endpoint.files_struct_url()
-    Routes.files_file_url(struct_url, :download, encoded_file_id, upload.filename)
-  end
-
-  defp file_preview_url(upload, encoded_file_id) do
-    struct_url = @endpoint.files_struct_url()
-    Routes.files_file_url(struct_url, :download_preview, encoded_file_id)
-  end
-
-  #
-  # Temporary actions to support the old format in case the migration takes too long.
-  # Will be removed in the next release.
-  #
-  def download(conn, %{"file_id" => upload_id}) do
-    with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
-         {:valid?, true} <- {:valid?, valid_upload?(upload.fields)},
-         {:authenticated, true} <- authenticated(conn, upload) do
-      %{fields: %{"url" => url}} = upload
-      stream_file(conn, url, upload)
-    else
-      {:authenticated, false, upload} ->
-        conn
-        |> put_session(:redirect_url, conn.request_path)
-        |> redirect(external: login_url(upload))
-        |> halt
-
-      _ ->
-        conn
-        |> put_session(:redirect_url, conn.request_path)
-        |> redirect(external: login_url())
-        |> halt
-    end
-  end
-
-  def download_preview(conn, %{"file_id" => upload_id}) do
-    with {:upload, upload = %Message{}} <- {:upload, MessageQueries.get_by_id(upload_id)},
-         {:valid?, true} <- {:valid?, valid_upload_with_preview?(upload.fields)},
-         {:authenticated, true} <- authenticated(conn, upload) do
-      %{fields: %{"preview_url" => url}} = upload
-      stream_file(conn, url, upload)
-    else
-      {:authenticated, false, upload} ->
-        conn
-        |> put_session(:redirect_url, conn.request_path)
-        |> redirect(external: login_url(upload))
-        |> halt
-
-      _ ->
-        conn
-        |> put_session(:redirect_url, conn.request_path)
-        |> redirect(external: login_url())
-        |> halt
-    end
-  end
-
-  def stream_file(conn, url, upload) do
-    filename = Path.basename(url)
-
-    case put_cache_header(conn, filename, upload) do
-      {:stale, conn} ->
-        conn
-        |> send_chunked(200)
-        |> Stitch.AWS.S3.stream(filename, fn conn, bytes ->
-          case chunk(conn, bytes) do
-            {:ok, conn} ->
-              {:cont, conn}
-
-            {:error, :closed} ->
-              {:halt, conn}
-          end
-        end)
-
-      {:fresh, conn} ->
-        conn
-        |> send_resp(304, "")
-        |> halt
-    end
   end
 
   def put_cache_header(conn, filename, upload) do

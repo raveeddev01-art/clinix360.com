@@ -45,7 +45,7 @@ defmodule Stitch.Message.MessageCreation do
       do_create(message, attrs, presence)
     else
       _ ->
-        changeset = %Message{} |> change() |> add_error(:upload_id, "Not found")
+        changeset = %Message{} |> change() |> add_error(:upload_id, "not found")
         {:error, :message, changeset, nil}
     end
   end
