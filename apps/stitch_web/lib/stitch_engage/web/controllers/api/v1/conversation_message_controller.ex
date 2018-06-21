@@ -81,6 +81,21 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
+  def show(conn, %{"id" => id}) do
+    with {:conversation_message, conversation_message} <-
+           {:conversation_message, Repo.get(ConversationMessage, id)},
+         {:authorized?, true} <- {:authorized?, true} do
+      message_with_assocs = ConversationQueries.load_message_info(conversation_message)
+      render(conn, "show.json", conversation_message: message_with_assocs)
+    else
+      {:conversation_message, _} ->
+        {:error, :not_found, "The message you are looking for does not exist."}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot view this message."}
+    end
+  end
+
   def delete_message_link_preview(
         conn,
         %{"id" => conversation_message_id, "link" => link} = _params
