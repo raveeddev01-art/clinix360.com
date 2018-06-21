@@ -82,7 +82,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   end
 
   def show(conn, %{"id" => id}) do
-    with {:conversation_message, conversation_message} <-
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
            {:conversation_message, Repo.get(ConversationMessage, id)},
          {:authorized?, true} <- {:authorized?, true} do
       message_with_assocs = ConversationQueries.load_message_info(conversation_message)
