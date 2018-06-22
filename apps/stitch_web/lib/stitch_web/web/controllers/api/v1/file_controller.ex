@@ -70,6 +70,48 @@ defmodule Stitch.Web.Api.V1.FileController do
     end
   end
 
+  def create_public_link(conn, %{"id" => upload_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:authorized, true} <-
+           {:authorized, FileAuthorization.is_creator?(upload, current_user)},
+         {:public_link, {:ok, upload}} <- {:public_link, Upload.create_public_link(upload)} do
+      conn
+      |> json(%{public_link: upload.public_link})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:authorized, false} ->
+        {:error, :not_authorized}
+
+      {:public_link, :error} ->
+        {:error, :unprocessable_entity, "Public link already exists"}
+    end
+  end
+
+  def revoke_public_link(conn, %{"id" => upload_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:authorized, true} <-
+           {:authorized, FileAuthorization.is_creator?(upload, current_user)},
+         {:public_link, {:ok, upload}} <- {:public_link, Upload.revoke_public_link(upload)} do
+      conn
+      |> json(%{status: "ok"})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:authorized, false} ->
+        {:error, :not_authorized}
+
+      {:public_link, :error} ->
+        {:error, :unprocessable_entity, "Error revoking public link"}
+    end
+  end
+
   def parse_query_params(conn, _opts) do
     types = %{
       creator_id: :integer,

@@ -12,6 +12,7 @@ defmodule Stitch.Web.Api.V1.FileView do
       id: file.id,
       filename: file.filename,
       public: file.public,
+      public_link: file.public_link,
       shared_in: file.shared_in,
       user_id: file.user_id,
       inserted_at: file.inserted_at,
