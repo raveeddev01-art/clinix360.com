@@ -84,13 +84,20 @@ class TopNav extends Component {
             !isDefault &&
             !isLastMember && <NavItemLeave />}
           {fullMember && !isDefault && !isNotDM && <NavItemHide />}
-          {adminOrCreator &&
+          {fullMember &&
+            adminOrCreator &&
             isNotDM &&
             !isDefault &&
             !isLastMember && <NavItemRemoveMembers />}
-          {adminOrCreator && isNotDM && <NavItemRename />}
-          {adminOrCreator && isNotDM && !isDefault && <NavItemConvert />}
-          {adminOrCreator && isNotDM && !isDefault && <NavItemRemoveRoom />}
+          {fullMember && adminOrCreator && isNotDM && <NavItemRename />}
+          {fullMember &&
+            adminOrCreator &&
+            isNotDM &&
+            !isDefault && <NavItemConvert />}
+          {fullMember &&
+            adminOrCreator &&
+            isNotDM &&
+            !isDefault && <NavItemRemoveRoom />}
         </div>
       );
     }
