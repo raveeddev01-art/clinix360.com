@@ -184,8 +184,8 @@ defmodule Stitch.Files.Upload do
   end
 
   @spec has_public_link?(Upload.t()) :: boolean
-  def has_public_link?(%Upload{} = uplaod) do
-    !!uplaod.public_link
+  def has_public_link?(%Upload{} = upload) do
+    !!upload.public_link
   end
 
   @spec create_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
