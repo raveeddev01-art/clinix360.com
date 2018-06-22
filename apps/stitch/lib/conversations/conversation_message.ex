@@ -11,12 +11,16 @@ defmodule Stitch.Engage.ConversationMessage do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Ecto.Multi
+
   alias Stitch.{
     Repo,
+    ReadStatus,
     TeamPatient,
     Accounts.User,
     Engage.Conversation,
-    Engage.ConversationMessage
+    Engage.ConversationMessage,
+    Audit
   }
 
   alias Stitch.Message.LinkPreview
@@ -94,6 +98,14 @@ defmodule Stitch.Engage.ConversationMessage do
     |> LinkPreview.check_for_links()
   end
 
+  def edit_changeset(%ConversationMessage{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:text_content])
+    |> validate_required(@required_attributes)
+    |> LinkPreview.check_for_links()
+    |> put_change(:edited_at, DateTime.utc_now())
+  end
+
   def create_for_patient(conversation_id, team_patient_id, params) do
     %ConversationMessage{conversation_id: conversation_id, team_patient_id: team_patient_id}
     |> changeset(params)
@@ -104,5 +116,28 @@ defmodule Stitch.Engage.ConversationMessage do
     %ConversationMessage{conversation_id: conversation_id, provider_id: provider_id}
     |> changeset(params)
     |> Repo.insert()
+  end
+
+  def update(conversation_message, attributes) do
+    conversation_message
+    |> edit_changeset(%{text_content: attributes["text_content"]})
+    |> Repo.update()
+    |> Audit.ConversationMessage.track_update(
+      conversation_message.provider_id,
+      conversation_message
+    )
+  end
+
+  def delete(conversation_message, user) do
+    Multi.new()
+    # # TODO: uncomment when read status changes are merged
+    # |> Multi.update_all(
+    #   :decrement_unread_counter,
+    #   # ReadStatus.decrement_unread_counter(conversation_message),
+    #   []
+    # )
+    |> Multi.delete(:conversation_message, conversation_message)
+    |> Repo.transaction()
+    |> Audit.ConversationMessage.track_delete(user)
   end
 end

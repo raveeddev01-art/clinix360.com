@@ -53,26 +53,26 @@ defmodule StitchEngage.Web.ConversationChannel do
     )
   end
 
-  # def broadcast_message_edited(conversation_message) do
-  #   conversation = Repo.get(Conversation, conversation_message.conversation_id)
+  def broadcast_message_edited(conversation_message) do
+    conversation = Repo.get(Conversation, conversation_message.conversation_id)
 
-  #   conversation_message_json =
-  #     ConversationMessageView.render("show.json", %{conversation_message: conversation_message})
+    conversation_message_json =
+      ConversationMessageView.render("show.json", %{conversation_message: conversation_message})
 
-  #   @endpoint.broadcast(
-  #     "conversations:#{conversation.id}",
-  #     "edit_msg",
-  #     conversation_message_json
-  #   )
-  # end
+    @endpoint.broadcast(
+      "conversations:#{conversation.id}",
+      "edited_conversation_message",
+      conversation_message_json
+    )
+  end
 
-  # def broadcast_message_deleted(%{conversation_id: conversation_id, id: id}) do
-  #   conversation = Repo.get(Conversation, conversation_id)
+  def broadcast_message_deleted(%{conversation_id: conversation_id, id: id}) do
+    conversation = Repo.get(Conversation, conversation_id)
 
-  #   @endpoint.broadcast("conversations:#{conversation.id}", "delete_conversation_message", %{
-  #     id: id
-  #   })
-  # end
+    @endpoint.broadcast("conversations:#{conversation.id}", "deleted_conversation_message", %{
+      id: id
+    })
+  end
 
   # def broadcast_read_status(conversation, conversation_messages) do
   #   read_status_json =

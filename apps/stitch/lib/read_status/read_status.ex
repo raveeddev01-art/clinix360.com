@@ -13,7 +13,8 @@ defmodule Stitch.ReadStatus do
     Accounts.User,
     GroupUser,
     GroupQueries,
-    Message
+    Message,
+    Engage.ConversationMessage
   }
 
   alias Ecto.Multi
@@ -110,7 +111,7 @@ defmodule Stitch.ReadStatus do
     |> update([gu], inc: [unread_messages_count: ^1], set: [is_hidden: ^false])
   end
 
-  @spec decrement_unread_counter(Message.t()) :: Ecto.Query.t()
+  @spec decrement_unread_counter(Message.t() | ConversationMessage.t()) :: Ecto.Query.t()
   def decrement_unread_counter(%Message{} = message) do
     GroupUser
     |> where([gu], gu.group_id == ^message.group_id)
