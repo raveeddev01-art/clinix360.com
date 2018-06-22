@@ -88,6 +88,14 @@ defmodule Stitch.Engage.ConversationQueries do
     |> Repo.all()
   end
 
+  @doc """
+  Given a conversation message - preload data needed for show view & force reload.
+  """
+  @spec load_message_info(ConversationMessage.t()) :: ConversationMessage.t()
+  def load_message_info(conversation_message) do
+    Repo.preload(conversation_message, [:provider, team_patient: :patient], force: true)
+  end
+
   # ===========
   #   PRIVATE
   # ===========
@@ -139,7 +147,6 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   defp most_recent(query, count) do
-    # TODO: ConversationMessages touch conversations on create
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
   end
 

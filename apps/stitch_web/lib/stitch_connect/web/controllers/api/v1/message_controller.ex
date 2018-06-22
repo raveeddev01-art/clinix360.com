@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use Stitch.Web, :controller
-  alias StitchConnect.MessageLinkPreviewGenerator
+  alias Stitch.LinkPreviewGenerator
 
   alias StitchConnect.Web.{
     EventsChannel,
@@ -18,7 +18,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     MessageAuthorization,
     MessageAction,
     MessageQueries,
-    Message.Upload
+    Message.Upload,
+    ReadStatus
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -112,7 +113,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
          presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id),
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(group.id, current_user, message_params_with_client, presence_user_ids) do
+           Message.create(group, current_user, message_params_with_client, presence_user_ids) do
       message = %{message | user: current_user}
       message_events(message, group, notify_user_ids)
 
@@ -135,7 +136,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
 
     Stitch.Task.start(fn ->
-      MessageLinkPreviewGenerator.queue(message)
+      LinkPreviewGenerator.queue(message)
       GroupChannel.broadcast_message_created(message)
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
@@ -148,7 +149,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     current_user = conn.assigns.current_user
 
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:ok, response} <- Message.mark_as_read(current_user.id, group.id) do
+         {:ok, response} <- ReadStatus.mark_as_read(:message, current_user.id, group.id) do
       %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}} = response
       messages_json = MessageView.render("index.json", %{messages: messages})
 
@@ -179,7 +180,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:message, %Message{} = message} <-
            {:message, MessageQueries.get_by_id(message_id, false)},
-         {:ok, response} <- Message.mark_as_unread(current_user.id, group.id, message) do
+         {:ok, response} <-
+           ReadStatus.mark_as_unread(:message, current_user.id, group.id, message) do
       %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}} =
         response
 
@@ -228,7 +230,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.update(message, message_params) do
           {:ok, message} ->
-            MessageLinkPreviewGenerator.queue(message)
+            LinkPreviewGenerator.queue(message)
             message = MessageQueries.load_info(message)
             GroupChannel.broadcast_message_edited(message)
             render(conn, "show.json", message: message, user_id: user.id)

@@ -186,8 +186,8 @@ class CreditCardForm extends Component {
           <CardNumberElement
             {...createOptions(fontSize)}
             onChange={this.onCardNumberChange}
-            elementRef={ref => {
-              this.cardNumberElement = ref;
+            onReady={element => {
+              this.cardNumberElement = element;
             }}
           />
         </label>
@@ -199,8 +199,8 @@ class CreditCardForm extends Component {
               <CardExpiryElement
                 {...createOptions(fontSize)}
                 onChange={this.onCardExpiryChange}
-                elementRef={ref => {
-                  this.cardExpiryElement = ref;
+                onReady={element => {
+                  this.cardExpiryElement = element;
                 }}
               />
             </label>
@@ -211,8 +211,8 @@ class CreditCardForm extends Component {
               <CardCVCElement
                 {...createOptions(fontSize)}
                 onChange={this.onCardCVCChange}
-                elementRef={ref => {
-                  this.cardCVCElement = ref;
+                onReady={element => {
+                  this.cardCVCElement = element;
                 }}
               />
             </label>
@@ -223,8 +223,8 @@ class CreditCardForm extends Component {
               <PostalCodeElement
                 {...createOptions(fontSize)}
                 onChange={this.onPostalCodeChange}
-                elementRef={ref => {
-                  this.postalCodeElement = ref;
+                onReady={element => {
+                  this.postalCodeElement = element;
                 }}
               />
             </label>

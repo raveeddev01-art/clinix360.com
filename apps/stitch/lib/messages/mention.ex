@@ -3,10 +3,10 @@ defmodule Stitch.Message.Mention do
   Takes a list of users and a mesage and returns which out of those users should be notified
   by this message.
   """
-  def get_mentioned_user_ids(_users, _author, nil, _online_user_ids, _group), do: []
+  def get_mentioned_user_ids(_author, nil, _online_user_ids, _group), do: []
 
-  def get_mentioned_user_ids(users, author, message, online_user_ids, group) do
-    mention_user_keywords = user_mention_keywords(users, author, online_user_ids, group)
+  def get_mentioned_user_ids(author, message, online_user_ids, group) do
+    mention_user_keywords = user_mention_keywords(group.users, author, online_user_ids, group)
     message_mentions(message, mention_user_keywords)
   end
 

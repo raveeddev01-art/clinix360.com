@@ -11,13 +11,19 @@ defmodule Stitch.Engage.ConversationMessage do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Ecto.Multi
+
   alias Stitch.{
     Repo,
+    ReadStatus,
     TeamPatient,
     Accounts.User,
     Engage.Conversation,
-    Engage.ConversationMessage
+    Engage.ConversationMessage,
+    Audit
   }
+
+  alias Stitch.Message.LinkPreview
 
   @type t :: %__MODULE__{}
 
@@ -33,7 +39,9 @@ defmodule Stitch.Engage.ConversationMessage do
     :type,
     :fields,
     :request_id,
-    :read_status,
+    # commenting out as this column is changing
+    # in another PS and unused for now
+    # :read_status,
     :has_links,
     :link_previews_generated,
     :client_device_type,
@@ -60,14 +68,16 @@ defmodule Stitch.Engage.ConversationMessage do
     field(:deleted, :boolean, default: false)
     field(:type, :string, default: "chat")
     field(:fields, :map, default: %{})
-    field(:read_status, :map, default: %{})
+    # commenting out as this column is changing
+    # in another PS and unused for now
+    # field(:read_status, :map, default: %{})
     field(:has_links, :boolean, default: false)
     field(:link_previews_generated, :boolean, default: false)
     field(:client_device_type, :string, default: "unknown")
     field(:client_os, :string, default: "unknown")
     field(:client_name, :string, default: "unknown")
     # TODO: Add link preview logic
-    # embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
+    embeds_many(:link_previews, LinkPreview, on_replace: :delete)
 
     timestamps()
   end
@@ -85,6 +95,15 @@ defmodule Stitch.Engage.ConversationMessage do
       name: :conversations_inbox_id_slug_index,
       message: "has already been taken"
     )
+    |> LinkPreview.check_for_links()
+  end
+
+  def edit_changeset(%ConversationMessage{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:text_content])
+    |> validate_required(@required_attributes)
+    |> LinkPreview.check_for_links()
+    |> put_change(:edited_at, DateTime.utc_now())
   end
 
   def create_for_patient(conversation_id, team_patient_id, params) do
@@ -99,10 +118,26 @@ defmodule Stitch.Engage.ConversationMessage do
     |> Repo.insert()
   end
 
-  # TODO: use on new messages (that don't create a conversation)
-  # def touch_conversation(cs = {:ok, %{conversation_id: conversation_id}}) do
-  #   Conversation.touch(conversation_id)
-  # end
+  def update(conversation_message, attributes) do
+    conversation_message
+    |> edit_changeset(%{text_content: attributes["text_content"]})
+    |> Repo.update()
+    |> Audit.ConversationMessage.track_update(
+      conversation_message.provider_id,
+      conversation_message
+    )
+  end
 
-  # def touch_conversation(cs), do: cs
+  def delete(conversation_message, user) do
+    Multi.new()
+    # # TODO: uncomment when read status changes are merged
+    # |> Multi.update_all(
+    #   :decrement_unread_counter,
+    #   # ReadStatus.decrement_unread_counter(conversation_message),
+    #   []
+    # )
+    |> Multi.delete(:conversation_message, conversation_message)
+    |> Repo.transaction()
+    |> Audit.ConversationMessage.track_delete(user)
+  end
 end

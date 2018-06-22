@@ -77,6 +77,29 @@ defmodule Stitch.Factory do
     }
   end
 
+  def inbox_factory do
+    %Stitch.Engage.Inbox{
+      team: build(:team),
+      name: "General",
+      is_default: true
+    }
+  end
+
+  def conversation_factory do
+    %Stitch.Engage.Conversation{
+      inbox: build(:inbox),
+      open: true
+    }
+  end
+
+  def conversation_message_factory do
+    %Stitch.Engage.ConversationMessage{
+      provider: build(:user),
+      conversation: build(:conversation),
+      text_content: Faker.Lorem.sentence()
+    }
+  end
+
   def upload_factory do
     %Stitch.Files.Upload{
       user: build(:user),

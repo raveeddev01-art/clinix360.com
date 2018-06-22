@@ -30,9 +30,11 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       updated_at: conversation_message.updated_at,
       edited: !!conversation_message.edited_at,
       edited_at: conversation_message.edited_at,
-      read_status: conversation_message.read_status,
+      # commenting out as this column is changing
+      # in another PS and unused for now
+      # read_status: conversation_message.read_status,
       reactions_web: %{},
-      link_previews: [],
+      link_previews: conversation_message.link_previews,
       request_id: conversation_message.request_id
     }
   end
@@ -44,7 +46,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
 
   def sender_info(nil), do: nil
 
-  def sender_info(%{user: user}) do
-    %{id: user.id, first_name: user.first_name, last_name: user.last_name}
+  def sender_info(%{id: id, first_name: first_name, last_name: last_name}) do
+    %{id: id, first_name: first_name, last_name: last_name}
   end
 end

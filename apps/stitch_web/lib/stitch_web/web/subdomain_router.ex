@@ -149,6 +149,8 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/users/access", UserController, :access)
 
     get("/files", FileController, :index)
+    get("/files/:id", FileController, :show)
+    post("/files/:id/unshare", FileController, :unshare)
 
     get("/patients", TeamPatientController, :index)
     get("/patients/:id", TeamPatientController, :show)
@@ -420,26 +422,26 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/conversations/:conversation_id/messages", ConversationMessageController, :index)
     post("/conversations/:conversation_id/messages", ConversationMessageController, :create)
 
+    get("/conversation_messages/:id", ConversationMessageController, :show)
+    put("/conversation_messages/:id", ConversationMessageController, :update)
+    delete("/conversation_messages/:id", ConversationMessageController, :delete)
+
+    put(
+      "/conversation_messages/:id/delete_link_preview",
+      ConversationMessageController,
+      :delete_message_link_preview
+    )
+
     # Expected Engage routes:
 
     # get("/inboxes", InboxController, :index)
     # post("/conversations/:id/mark_as_read", ConversationController, :mark_as_read)
     # post("/conversations/:id/mark_as_unread", ConversationController, :mark_as_unread)
 
-    # put("/conversation_messages/:id", ConversationMessageController, :update)
-    # get("/conversation_messages/:id", ConversationMessageController, :show)
-    # delete("/conversation_messages/:id", ConversationMessageController, :delete)
-
     # get("/conversation_messages/:id/download", ConversationMessageController, :download)
     # get("/conversations/:conversation_id/feed_recent", ConversationMessageController, :feed_recent)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
     # post("/conversation_messages/search", ConversationMessageController, :search)
-
-    # put(
-    #   "/conversation_messages/:id/delete_link_preview",
-    #   ConversationMessageController,
-    #   :delete_message_link_preview
-    # )
 
     # put(
     #   "/conversation_messages/:id/toggle_reaction",

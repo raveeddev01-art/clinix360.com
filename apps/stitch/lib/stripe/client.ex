@@ -15,13 +15,14 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def create_customer(team_id, team_name) do
-    customer_opts = [
-      metadata: [
+    customer_opts = %{
+      metadata: %{
         team_id: team_id,
         team_name: team_name
-      ]
-    ]
-    {:ok, %{id: customer_id}} = Stripe.Customers.create(customer_opts)
+      }
+    }
+
+    {:ok, %{id: customer_id}} = Stripe.Customer.create(customer_opts)
     customer_id
   end
 
@@ -36,7 +37,7 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def delete_customer(customer_id) do
-    case Stripe.Customers.delete(customer_id) do
+    case Stripe.Customer.delete(customer_id) do
       {:ok, _} -> true
       _ -> false
     end
@@ -53,13 +54,20 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def add_card(customer_id, source_token) do
-    case Stripe.Cards.create(:customer, customer_id, source: source_token) do
+    case Stripe.Card.create(%{customer: customer_id, source: source_token}) do
       {:ok, card} -> {:ok, transform_card(card)}
       _ -> :error
     end
   end
 
-  defp transform_card(%{id: card_id, brand: brand, last4: last_four, exp_month: exp_month, exp_year: exp_year, name: cardholder_name}) do
+  defp transform_card(%{
+         id: card_id,
+         brand: brand,
+         last4: last_four,
+         exp_month: exp_month,
+         exp_year: exp_year,
+         name: cardholder_name
+       }) do
     %{
       card_id: card_id,
       brand: brand,
@@ -84,7 +92,7 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def remove_card(customer_id, card_id) do
-    case Stripe.Cards.delete(:customer, customer_id, card_id) do
+    case Stripe.Card.delete(card_id, %{customer: customer_id}) do
       {:ok, %{deleted: true}} -> true
       _ -> false
     end
@@ -101,7 +109,7 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def set_as_default_card(customer_id, card_id) do
-    case Stripe.Customers.update(customer_id, default_source: card_id) do
+    case Stripe.Customer.update(customer_id, %{default_source: card_id}) do
       {:ok, _} -> true
       _ -> false
     end
@@ -125,17 +133,25 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def create_subscription(customer_id, plan_id, user_count, opts \\ []) do
-    default_opts = [plan: plan_id, quantity: user_count]
+    default_opts = %{
+      plan: plan_id,
+      quantity: user_count,
+      customer: customer_id
+    }
+
     subscription_opts =
       case opts[:trial_end_date] do
         %DateTime{} = date ->
           unix_timestamp = DateTime.to_unix(date)
-          Keyword.put(default_opts, :trial_end, unix_timestamp)
-        _ -> default_opts
+          Map.put(default_opts, :trial_end, unix_timestamp)
+
+        _ ->
+          default_opts
       end
 
-    with {:ok, sub} <- Stripe.Subscriptions.create(customer_id, subscription_opts),
-         {:ok, upcoming_invoice} <- Stripe.Invoices.upcoming(customer_id, [subscription: sub.id]) do
+    with {:ok, sub} <- Stripe.Subscription.create(subscription_opts),
+         {:ok, upcoming_invoice} <-
+           Stripe.Invoice.upcoming(%{customer: customer_id, subscription: sub.id}) do
       {:ok, transform_subscription(sub, upcoming_invoice)}
     else
       _ -> :error
@@ -143,16 +159,19 @@ defmodule Stitch.Stripe.Client do
   end
 
   defp transform_subscription(subscription) do
-    %{items: %{"data" => [%{"id" => subscription_line_item_id}]}} = subscription
+    %{items: %{data: [%{id: subscription_line_item_id}]}} = subscription
+
     %{
       subscription_id: subscription.id,
       subscription_line_item_id: subscription_line_item_id,
       estimated_invoice_amount: nil,
       status: subscription.status,
-      valid_until: subscription.current_period_end && DateTime.from_unix!(subscription.current_period_end),
+      valid_until:
+        subscription.current_period_end && DateTime.from_unix!(subscription.current_period_end),
       renews: !subscription.cancel_at_period_end
     }
   end
+
   defp transform_subscription(subscription, upcoming_invoice) do
     subscription
     |> transform_subscription()
@@ -177,17 +196,21 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def update_subscription_plan(customer_id, subscription_id, plan_id, opts \\ []) do
-    default_opts = [plan: plan_id]
+    default_opts = %{plan: plan_id}
+
     subscription_opts =
       case opts[:trial_end_date] do
         %DateTime{} = date ->
           unix_timestamp = DateTime.to_unix(date)
-          Keyword.put(default_opts, :trial_end, unix_timestamp)
-        _ -> default_opts
+          Map.put(default_opts, :trial_end, unix_timestamp)
+
+        _ ->
+          default_opts
       end
 
-    with {:ok, sub} <- Stripe.Subscriptions.change(customer_id, subscription_id, subscription_opts),
-         {:ok, upcoming_invoice} <- Stripe.Invoices.upcoming(customer_id, [subscription: sub.id]) do
+    with {:ok, sub} <- Stripe.Subscription.update(subscription_id, subscription_opts),
+         {:ok, upcoming_invoice} <-
+           Stripe.Invoice.upcoming(%{customer: customer_id, subscription: sub.id}) do
       {:ok, transform_subscription(sub, upcoming_invoice)}
     else
       _ -> :error
@@ -207,8 +230,13 @@ defmodule Stitch.Stripe.Client do
 
   """
   @impl Stitch.Stripe
-  def update_subscription_quantity(customer_id, subscription_id, subscription_line_item_id, user_count) do
-    request_opts = [
+  def update_subscription_quantity(
+        customer_id,
+        subscription_id,
+        subscription_line_item_id,
+        user_count
+      ) do
+    request_opts = %{
       prorate: true,
       items: [
         "0": [
@@ -216,10 +244,11 @@ defmodule Stitch.Stripe.Client do
           quantity: user_count
         ]
       ]
-    ]
+    }
 
-    with {:ok, sub} <- Stripe.Subscriptions.change(customer_id, subscription_id, request_opts),
-         {:ok, upcoming_invoice} <- Stripe.Invoices.upcoming(customer_id, [subscription: sub.id]) do
+    with {:ok, sub} <- Stripe.Subscription.update(subscription_id, request_opts),
+         {:ok, upcoming_invoice} <-
+           Stripe.Invoice.upcoming(%{customer: customer_id, subscription: sub.id}) do
       {:ok, transform_subscription(sub, upcoming_invoice)}
     else
       _ -> :error
@@ -236,8 +265,8 @@ defmodule Stitch.Stripe.Client do
 
   """
   @impl Stitch.Stripe
-  def cancel_subscription(customer_id, subscription_id) do
-    case Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true) do
+  def cancel_subscription(_customer_id, subscription_id) do
+    case Stripe.Subscription.delete(subscription_id, %{at_period_end: true}) do
       {:ok, sub} -> {:ok, transform_subscription(sub)}
       _ -> :error
     end
@@ -254,8 +283,8 @@ defmodule Stitch.Stripe.Client do
 
   """
   @impl Stitch.Stripe
-  def renew_subscription(customer_id, subscription_id) do
-    case Stripe.Subscriptions.change(customer_id, subscription_id, [], Stripe.config_or_env_key()) do
+  def renew_subscription(_customer_id, subscription_id) do
+    case Stripe.Subscription.update(subscription_id, %{cancel_at_period_end: false}) do
       {:ok, sub} -> {:ok, transform_subscription(sub)}
       _ -> :error
     end
@@ -272,14 +301,14 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def get_event(event_id) do
-    case Stripe.Events.get(event_id) do
+    case Stripe.Event.retrieve(event_id) do
       {:ok, event} -> {:ok, event}
       _ -> :error
     end
   end
 
   def get_transaction(txn_id) do
-    case Stripe.Charges.get(txn_id) do
+    case Stripe.Charge.retrieve(txn_id) do
       {:ok, txn} -> {:ok, txn}
       _ -> :error
     end

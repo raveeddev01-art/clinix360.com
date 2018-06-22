@@ -73,7 +73,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       mentioned_user_ids: message.mentioned_user_ids,
       link_previews: message.link_previews,
       request_id: message.request_id,
-      highlighted_text_content: message.highlighted_text_content
+      highlighted_text_content: message.highlighted_text_content,
+      upload_id: message.upload_id
     }
   end
 

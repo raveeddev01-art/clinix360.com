@@ -5,7 +5,6 @@ defmodule Stitch.Engage.Conversation do
 
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
 
   alias Stitch.Repo
 
@@ -16,6 +15,8 @@ defmodule Stitch.Engage.Conversation do
     ConversationPatient,
     ConversationMessage
   }
+
+  alias StitchEngage.Web.InboxChannel
 
   @type t :: %__MODULE__{}
 
@@ -45,16 +46,21 @@ defmodule Stitch.Engage.Conversation do
     |> validate_required(@required_attributes)
   end
 
+  def touch_changeset(%Conversation{} = struct, time) do
+    struct
+    |> cast(%{updated_at: time}, [:updated_at])
+    |> validate_required(@required_attributes)
+  end
+
   @doc """
   Update updated_at to current time.
   Not using a changeset (GET and SET calls) so we can keep it quick.
   """
-  def touch(id) do
-    now = DateTime.utc_now() |> DateTime.to_naive()
-
+  def touch(id, time) do
     Conversation
-    |> where(id: ^id)
-    |> Repo.update_all(set: [updated_at: now])
+    |> Repo.get(id)
+    |> touch_changeset(time)
+    |> Repo.update()
   end
 
   @doc """
@@ -113,5 +119,28 @@ defmodule Stitch.Engage.Conversation do
     conversation
     |> changeset(%{open: open_value})
     |> Repo.update()
+  end
+
+  @doc """
+  When a conversation message is made. Update the updated_at (for sorting purposes)
+  and broadcast a change with the latest message (for rendering the latest message)
+  """
+  def touch_and_broadcast_update(
+        conversation,
+        latest_conversation_message,
+        time
+      ) do
+    case touch(conversation.id, time) do
+      {:ok, touched_conversation} ->
+        conversation_with_preloads =
+          touched_conversation
+          |> Repo.preload(:team_patients)
+          |> Map.put(:latest_conversation_message, latest_conversation_message)
+
+        InboxChannel.broadcast_conversation_update(conversation_with_preloads)
+
+      other ->
+        other
+    end
   end
 end

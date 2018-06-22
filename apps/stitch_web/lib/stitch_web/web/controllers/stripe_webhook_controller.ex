@@ -3,7 +3,7 @@ defmodule Stitch.Web.StripeWebhookController do
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
 
-  def event(conn, %{"id" => event_id, "event" => _}) do
+  def event(conn, %{"id" => event_id}) do
     with {:ok, event} <- @stripe_client.get_event(event_id) do
       Stitch.Stripe.Events.handle_event(event)
       json(conn, %{})

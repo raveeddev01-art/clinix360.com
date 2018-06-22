@@ -35,7 +35,7 @@ defmodule Stitch.Files.GroupUpload do
     |> Repo.insert()
   end
 
-  @spec delete(Group.t(), Upload.t()) :: {:ok, GroupUpload.t()} | :error
+  @spec delete(Group.t(), Upload.t()) :: {:ok, GroupUpload.t()} | {:error, binary}
   def delete(%Group{} = group, %Upload{} = upload) do
     result =
       GroupUpload
@@ -44,8 +44,14 @@ defmodule Stitch.Files.GroupUpload do
       |> Repo.delete_all(returning: true)
 
     case result do
-      {1, [group_upload]} -> {:ok, group_upload}
-      _ -> :error
+      {1, [group_upload]} ->
+        {:ok, group_upload}
+
+      {0, _} ->
+        {:error, "not found"}
+
+      error ->
+        {:error, inspect(error)}
     end
   end
 end
