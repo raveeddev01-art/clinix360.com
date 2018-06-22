@@ -148,8 +148,15 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/users/search", UserController, :search)
     post("/users/access", UserController, :access)
 
+    scope "/files/:upload_id" do
+      resources("/comments", FileCommentController, only: [:create])
+    end
+
+    resources("/file_comments", FileCommentController, only: [:update, :delete])
+
     get("/files", FileController, :index)
     get("/files/:id", FileController, :show)
+
     post("/files/:id/unshare", FileController, :unshare)
     post("/files/:id/create_public_link", FileController, :create_public_link)
     post("/files/:id/revoke_public_link", FileController, :revoke_public_link)

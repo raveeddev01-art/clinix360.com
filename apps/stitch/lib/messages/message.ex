@@ -19,7 +19,7 @@ defmodule Stitch.Message do
     Repo
   }
 
-  @valid_types ["chat", "system", "upload", "file_share"]
+  @valid_types ["chat", "system", "upload", "file_share", "file_comment"]
 
   schema "messages" do
     belongs_to(:user, User)
