@@ -4,6 +4,7 @@ import BillingStore from "./billing_store";
 import ChannelStore from "./channel_store";
 import ExportStore from "./export_store";
 import FilesStore from "./files_store";
+import TeamFilesStore from "./team_files_store";
 import GlobalStarredMessageStore from "./global_starred_message_store";
 import GlobalFilesStore from "./global_files_store";
 import GroupStore from "./group_store";
@@ -47,6 +48,7 @@ class RootStore {
     this.filesStore = new FilesStore(this);
     this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
     this.globalFilesStore = new GlobalFilesStore(this);
+    this.teamFilesStore = new TeamFilesStore(this);
     this.groupStore = new GroupStore(this);
     this.groupsStore = new GroupsStore(this);
     this.invitationStore = new InvitationStore(this);

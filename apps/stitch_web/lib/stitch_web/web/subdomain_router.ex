@@ -302,6 +302,8 @@ defmodule Stitch.Web.SubdomainRouter do
     
     get("/manage", ManageController, :index)
     get("/patients", PageController, :index)
+
+    get("/files", PageController, :index)
   end
 
   # =========================

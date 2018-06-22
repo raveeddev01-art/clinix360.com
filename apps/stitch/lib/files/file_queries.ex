@@ -6,12 +6,15 @@ defmodule Stitch.Files.FileQueries do
     Group,
     GroupUser,
     Files.Upload,
-    Files.GroupUpload
+    Files.GroupUpload,
+    Paginator
   }
 
   @spec for_user(User.t(), map | nil) :: [Upload.t()]
   def for_user(user, options \\ %{}) do
     group_ids = GroupUser.group_ids(user.id)
+    limit = options["limit"] || 30
+    offset = options["skip"] || 0
 
     Upload
     |> join(:inner, [f], gu in GroupUpload, f.id == gu.upload_id)
@@ -20,6 +23,7 @@ defmodule Stitch.Files.FileQueries do
     |> order_by([f, gu], desc: f.inserted_at)
     |> filter_by_filetype(options)
     |> filter_by_creator_id(options)
+    |> filter_by_filename(options)
     |> select([f, gu], %Upload{
       id: f.id,
       filename: f.filename,
@@ -29,9 +33,14 @@ defmodule Stitch.Files.FileQueries do
       shared_in: fragment("array_agg(?)", gu.group_id),
       user_id: f.user_id,
       updated_at: f.updated_at,
-      inserted_at: f.inserted_at
+      inserted_at: f.inserted_at,
+      preview_url: f.preview_url,
+      preview_height: f.preview_height,
+      preview_width: f.preview_width
     })
-    |> Repo.all()
+    |> Paginator.new(limit: limit, skip: offset)
+
+    # |> Repo.all()
   end
 
   def filter_by_filetype(query, %{filetype: filetype}) do
@@ -47,6 +56,13 @@ defmodule Stitch.Files.FileQueries do
   end
 
   def filter_by_creator_id(query, _opts), do: query
+
+  def filter_by_filename(query, %{filename: filename}) do
+    query
+    |> where([f, fg], ilike(f.filename, ^"%#{filename}%"))
+  end
+
+  def filter_by_filename(query, _opts), do: query
 
   @spec get_by_id(pos_integer, list) :: Upload.t() | nil
   def get_by_id(upload_id, opts \\ [])

@@ -115,7 +115,9 @@ defmodule Stitch.Web.Api.V1.FileController do
   def parse_query_params(conn, _opts) do
     types = %{
       creator_id: :integer,
-      filetype: :string
+      filetype: :string,
+      limit: :integer,
+      skip: :integer
     }
 
     changeset = Ecto.Changeset.cast({%{}, types}, conn.params, Map.keys(types))

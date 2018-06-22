@@ -1,8 +1,15 @@
 defmodule Stitch.Web.Api.V1.FileView do
   use Stitch.Web, :view
 
-  def render("index.json", %{files: files}) do
-    Enum.map(files, &file/1)
+  alias Stitch.{
+    Paginator
+  }
+
+  def render("index.json", %{files: %Paginator{data: data, meta: meta}}) do
+    %{
+      data: Enum.map(data, &file/1),
+      meta: meta
+    }
   end
 
   def render("show.json", %{file: file}), do: file(file)
@@ -18,7 +25,15 @@ defmodule Stitch.Web.Api.V1.FileView do
       inserted_at: file.inserted_at,
       updated_at: file.updated_at,
       mimetype: file.mimetype,
-      filetype: file.filetype
+      filetype: file.filetype,
+      preview_url: preview_url(file),
+      preview_height: file.preview_height,
+      preview_width: file.preview_width
     }
+  end
+
+  def preview_url(file) do
+    Stitch.Web.UrlService.file_preview_url(file)
+    # preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
   end
 end

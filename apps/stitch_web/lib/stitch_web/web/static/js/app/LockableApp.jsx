@@ -4,6 +4,7 @@ import { Switch, withRouter, Route } from "react-router-dom";
 
 import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
+import FilesApp from "../files/FilesApp";
 import EngageApp from "../engage/EngageApp";
 import ManageApp from "../manage/ManageApp";
 import PatientsRepoApp from "../patients/PatientsRepoApp";
@@ -92,6 +93,7 @@ class LockableApp extends Component {
         <Switch>
           <Route path="/admin" component={AdminApp} />
           <Route path="/engage" component={EngageApp} />
+          <Route path="/files" component={FilesApp} />
           <Route exact path="/manage" component={ManageApp} />
           {engageEnabled && (
             <Route exact path="/patients" component={PatientsRepoApp} />
