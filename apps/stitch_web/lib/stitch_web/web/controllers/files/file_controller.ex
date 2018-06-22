@@ -11,11 +11,11 @@ defmodule Stitch.Web.Files.FileController do
     Web.UrlService
   }
 
-  def download(conn, %{"file_id" => "f" <> _ = encoded_file_id}) do
+  def download(conn, %{"file_id" => "f" <> _ = encoded_file_id} = params) do
     with {:file_id, {:ok, file_id}} <- {:file_id, Upload.decode_url_id(encoded_file_id)},
          {:file, %Upload{} = file} <-
            {:file, FileQueries.get_by_id(file_id, preload_assoc: true)},
-         {:authenticated, true} <- authenticated(conn, file) do
+         {:authenticated, true} <- authenticated(conn, file, params) do
       stream_full_file(conn, file)
     else
       {:authenticated, false, upload} ->
@@ -31,14 +31,14 @@ defmodule Stitch.Web.Files.FileController do
     end
   end
 
-  def download_preview(conn, %{"file_id" => "f" <> _ = encoded_file_id}) do
+  def download_preview(conn, %{"file_id" => "f" <> _ = encoded_file_id} = params) do
     redirect_url = Path.join([conn.host, conn.request_path])
 
     with {:file_id, {:ok, file_id}} <- {:file_id, Upload.decode_url_id(encoded_file_id)},
          {:file, %Upload{} = file} <-
            {:file, FileQueries.get_by_id(file_id, preload_assoc: true)},
          {:has_preview?, true} <- {:has_preview?, Upload.has_preview?(file)},
-         {:authenticated, true} <- authenticated(conn, file) do
+         {:authenticated, true} <- authenticated(conn, file, params) do
       stream_preview(conn, file)
     else
       {:authenticated, false, upload} ->
@@ -55,9 +55,13 @@ defmodule Stitch.Web.Files.FileController do
     end
   end
 
-  @spec authenticated(Conn.t(), Upload.t()) ::
+  @spec authenticated(Conn.t(), Upload.t(), map) ::
           {:authenticated, boolean} | {:authenticated, boolean, Upload.t() | Message.t()}
-  def authenticated(conn, %Upload{} = upload) do
+
+  def authenticated(_conn, %Upload{public_link: token}, %{"public_token" => token}),
+    do: {:authenticated, true}
+
+  def authenticated(conn, %Upload{} = upload, _params) do
     with {:user_token, user_token} when is_binary(user_token) <-
            {:user_token, get_user_token_from_team(conn, upload.team_id)},
          {:team_user, current_user = %User{}} <-

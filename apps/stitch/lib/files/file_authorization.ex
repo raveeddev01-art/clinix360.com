@@ -15,4 +15,9 @@ defmodule Stitch.Files.FileAuthorization do
   end
 
   def can_view?(_group, _user), do: false
+
+  @spec is_creator?(Upload.t(), User.t()) :: boolean
+  def is_creator?(%Upload{team_id: team_id, public: true}, %User{team_id: team_id}), do: true
+
+  def is_creator?(_upload, _user), do: false
 end

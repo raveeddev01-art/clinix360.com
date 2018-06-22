@@ -11,6 +11,7 @@ defmodule Stitch.Files.Upload do
   }
 
   use Ecto.Schema
+  import Ecto.Query
   import Ecto.Changeset
 
   @type t :: %__MODULE__{}
@@ -29,6 +30,7 @@ defmodule Stitch.Files.Upload do
     field(:preview_width, :integer)
     field(:preview_url, :string)
     field(:public, :boolean, default: true)
+    field(:public_link, :string)
     field(:shared_in, {:array, :integer}, virtual: true, default: [])
 
     timestamps()
@@ -179,5 +181,24 @@ defmodule Stitch.Files.Upload do
     upload
     |> Map.take(@attributes)
     |> Map.new(fn {k, v} -> {"#{k}", v} end)
+  end
+
+  @spec has_public_link?(Upload.t()) :: boolean
+  def has_public_link?(%Upload{} = uplaod) do
+    !!uplaod.public_link
+  end
+
+  @spec create_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
+  def create_public_link(%Upload{} = upload) do
+    upload
+    |> change(public_link: Rand.token(32))
+    |> Repo.update()
+  end
+
+  @spec revoke_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
+  def revoke_public_link(%Upload{} = upload) do
+    upload
+    |> change(public_link: nil)
+    |> Repo.update()
   end
 end
