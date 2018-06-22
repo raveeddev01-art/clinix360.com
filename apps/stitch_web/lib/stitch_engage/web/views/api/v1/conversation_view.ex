@@ -1,6 +1,5 @@
 defmodule StitchEngage.Web.Api.V1.ConversationView do
   use Stitch.Web, :view
-  alias Stitch.Repo
   alias Stitch.Web.Api.V1.TeamPatientView
   alias StitchEngage.Web.Api.V1.ConversationMessageView
 
@@ -53,7 +52,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
   end
 
   defp with_latest_message(json_map, latest_message) do
-    latest_message_json = ConversationMessageView.conversation_message_json(latest_message)
+    latest_message_json =
+      ConversationMessageView.conversation_message_json(latest_message, %{load_reactions: true})
+
     Map.merge(json_map, %{latest_conversation_message: latest_message_json})
   end
 end

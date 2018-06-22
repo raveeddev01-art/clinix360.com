@@ -8,7 +8,8 @@ defmodule StitchEngage.Web.ConversationChannel do
   alias Stitch.{
     Repo,
     Engage.Conversation,
-    Engage.ConversationAuthorization
+    Engage.ConversationAuthorization,
+    Message.Reaction
   }
 
   alias StitchEngage.Web.Api.V1.ConversationMessageView
@@ -109,15 +110,16 @@ defmodule StitchEngage.Web.ConversationChannel do
     )
   end
 
-  # def broadcast_reactions_updated(conversation, conversation_message) do
-  #   # TODO: Get apply_reactions working with either type of message
+  def broadcast_reactions_updated(conversation, conversation_message) do
+    conversation = Repo.get(Conversation, conversation_message.conversation_id)
 
-  #   # conversation_message = Repo.get(Conversation, conversation_message.id)
-  #   # [conversation_message] = Message.Reaction.apply_reactions([conversation_message])
+    [conversation_message] =
+      Reaction.apply_reactions([conversation_message], :conversation_message)
 
-  #   @endpoint.broadcast("conversations:#{conversation.id}", "reactions_updated", %{
-  #     message_id: conversation_message.id,
-  #     reactions_web: conversation_message.reactions
-  #   })
-  # end
+    @endpoint.broadcast("conversations:#{conversation.id}", "reactions_updated", %{
+      conversation_message_id: conversation_message.id,
+      reactions_web: conversation_message.provider_reactions,
+      patient_reactions_web: conversation_message.patient_reactions
+    })
+  end
 end

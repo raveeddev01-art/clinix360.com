@@ -102,7 +102,7 @@ defmodule Stitch.MessageQueries do
 
     messages = Repo.all(query)
     messages = MessageAction.apply_user_message_actions(user, messages)
-    Message.Reaction.apply_reactions(messages)
+    Message.Reaction.apply_reactions(messages, :message)
   end
 
   @doc """
@@ -148,7 +148,7 @@ defmodule Stitch.MessageQueries do
 
     messages = Repo.all(query)
     messages = MessageAction.apply_user_message_actions(user, messages)
-    Message.Reaction.apply_reactions(messages)
+    Message.Reaction.apply_reactions(messages, :message)
   end
 
   def group_recent_messages(group_id, user, opts \\ []) do
@@ -191,7 +191,7 @@ defmodule Stitch.MessageQueries do
 
     messages = query |> Repo.all()
     messages = MessageAction.apply_user_message_actions(user, messages)
-    Message.Reaction.apply_reactions(messages)
+    Message.Reaction.apply_reactions(messages, :message)
   end
 
   def user_starred_messages(user_id, opts \\ []) do
