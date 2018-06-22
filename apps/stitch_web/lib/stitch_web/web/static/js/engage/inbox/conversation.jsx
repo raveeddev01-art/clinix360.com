@@ -4,6 +4,7 @@ import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import cx from "classnames";
 
 @inject("inboxStore")
 @observer
@@ -15,11 +16,14 @@ class Conversation extends Component {
 
   render() {
     const { conversation } = this.props;
-
     const { patient } = conversation;
 
+    const linkClass = cx("item", {
+      active: parseInt(this.props.match.params.id, 10) === conversation.id
+    });
+
     return (
-      <Link to={`/conversations/${conversation.id}`} className="item">
+      <Link to={`/conversations/${conversation.id}`} className={linkClass}>
         <div className="item__icon">
           <i className="fa fa-circle" />
         </div>

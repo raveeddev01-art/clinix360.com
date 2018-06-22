@@ -26,10 +26,14 @@ class UserProfileMenu extends Component {
   };
 
   render() {
-    const { user, className, children } = this.props;
+    const { user, className, children, disabledMenu } = this.props;
 
     return (
-      <SmartDropdown id="user-profile-menu" className="user-profile-menu">
+      <SmartDropdown
+        id="user-profile-menu"
+        className="user-profile-menu"
+        disabled={disabledMenu}
+      >
         <Dropdown.Toggle className={className} useAnchor noCaret>
           {children}
         </Dropdown.Toggle>
@@ -62,11 +66,13 @@ class UserProfileMenu extends Component {
 UserProfileMenu.propTypes = {
   user: PropTypes.any.isRequired,
   className: PropTypes.string,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  disabledMenu: PropTypes.bool
 };
 
 UserProfileMenu.defaultProps = {
-  className: ""
+  className: "",
+  disabledMenu: false
 };
 
 export default UserProfileMenu;
