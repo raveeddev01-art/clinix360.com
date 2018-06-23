@@ -3,7 +3,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
   alias Stitch.{
     Repo,
+    LinkPreviewGenerator,
     Message.Reaction,
+    Message.LinkPreview,
     Engage.Conversation,
     Engage.ConversationQueries,
     Engage.ConversationMessage,
@@ -11,8 +13,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.ConversationMessageAuthorization
   }
 
-  alias Stitch.Message.LinkPreview
-  alias Stitch.LinkPreviewGenerator
   alias StitchEngage.Web.ConversationChannel
 
   action_fallback(Stitch.Web.Api.FallbackController)
@@ -135,7 +135,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  def delete(conn, params = %{"id" => id}) do
+  def delete(conn, %{"id" => id}) do
     user = conn.assigns.current_user
 
     with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
@@ -228,7 +228,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   end
 
   defp conversation_message_events(conversation_message, conversation, _notify_user_ids) do
-    # Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
+    # Notifications: Call to the NotificationLogger here
+    # (see message view for similar code)
 
     # Get the updated_at time before spawning the task
     now = DateTime.utc_now() |> DateTime.to_naive()
@@ -243,10 +244,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       ConversationChannel.broadcast_message_created(conversation_message)
       LinkPreviewGenerator.queue(conversation_message)
 
-      # TODO: get equivalents of each of these working
-      #   PushNotifications.notify_users(group, message, notify_user_ids.mobile)
-      #   PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-      #   Stitch.EmailNotification.create(message.id, notify_user_ids.email)
+      # Notifications: dispatch notifications, badge updates, and emails here
+      # (see message view for similar code)
     end)
   end
 end

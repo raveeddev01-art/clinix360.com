@@ -123,7 +123,15 @@ defmodule Stitch.Engage.ConversationQueries do
       |> order_by(desc: :inserted_at)
       |> limit(1)
       |> Repo.one()
-      |> (&Reaction.apply_reactions([&1], :conversation_message)).()
+
+    latest_message =
+      case latest_message do
+        nil ->
+          nil
+
+        latest_message ->
+          Reaction.apply_reactions([latest_message], :conversation_message) |> List.first()
+      end
 
     Map.merge(conversation, %{latest_conversation_message: latest_message})
   end
