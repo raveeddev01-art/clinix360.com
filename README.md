@@ -34,14 +34,10 @@ Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 127.0.0.1 localhost.app YOURTEAMSUBDOMAIN.localhost.app
 ```
 
-Import the following two certificates to your browsers (Chrome, FireFox) and mark these as trusted to avoid SSL Exception in browser.
+Import the `apps/stitch_web/priv/keys/ca.crt` certificate to your browsers (Chrome, FireFox) and mark as trusted to avoid SSL Exception in browser.
 
-- `apps/stitch_web/priv/keys/ca.crt`
-- `apps/stitch_web/priv/keys/localhost.crt`
-
-For Chrome: Top right menu icon -> Settings -> Advanced -> Manage Certificates -> Import and then mark as trust always.
-
-For Firefox: Top right menu icon -> Preferences -> Privacy & Security -> View Certificates -> Authorities -> Import.
+- For Chrome: Top right menu icon -> Settings -> Advanced -> Manage Certificates -> Import and then mark as trust always.
+- For Firefox: Top right menu icon -> Preferences -> Privacy & Security -> View Certificates -> Authorities -> Import.
 
 You should be working from the `develop` branch:
 
