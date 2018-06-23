@@ -40,7 +40,7 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
          {:authorized?, true} <- {:authorized?, InboxAuthorization.can_update?(inbox, user)},
          {:ok, updated_inbox} <- Inbox.update(inbox, params) do
       # TODO: broadcast inbox name change
-      render(conn, "show.json", inbox: updated_inbox)
+      render(conn, "show.json", inbox: InboxQueries.with_show_values(updated_inbox))
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot update this inbox."}

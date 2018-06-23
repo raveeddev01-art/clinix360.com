@@ -122,6 +122,36 @@ defmodule Stitch.Web.Api.V1.ConversationMessageControllerTest do
       assert response["text_content"] == "Hello."
     end
 
+    test "creates a file share conversation message properly", setup_params do
+      valid_attrs = %{
+        message: %{
+          text_content: "Check out this file.",
+          type: "upload",
+          fields: %{
+            filename: "config.json",
+            mimetype: "application/json",
+            size_in_bytes: 1523,
+            url: "https://s3.amazonaws.com/stitch-content/foo-bar-baz.json"
+          }
+        }
+      }
+
+      conn =
+        setup_params.conn
+        |> with_api_user(setup_params.author)
+        |> post(
+          Routes.api_v1_conversation_message_path(
+            setup_params.conn,
+            :create,
+            setup_params.conversation.id
+          ),
+          valid_attrs
+        )
+
+      assert response = json_response(conn, 201)
+      assert response["text_content"] == "Check out this file."
+    end
+
     test "errors properly if not found", setup_params do
       valid_attrs = %{
         message: %{
