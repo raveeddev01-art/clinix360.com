@@ -41,6 +41,7 @@ function CloseIcon(props) {
         trigger="focus"
         placement="bottom"
         overlay={CloseOptions(props)}
+        onClick={(e) => e.target.focus()}
       >
         <button>&#x2715;</button>
       </OverlayTrigger>
