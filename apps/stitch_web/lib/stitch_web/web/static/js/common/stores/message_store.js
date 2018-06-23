@@ -670,7 +670,7 @@ class MessageStore {
   @action
   loadPastMessages = (stayScroll = true) => {
     return new Promise((resolve, reject) => {
-      if (this.loadedAll || !this.messages.length || !this.loadedInitial) {
+      if (this.loadedAll || !this.messages.length || !this.loadedInitial || this.isLoadingPast) {
         resolve();
         return;
       }
