@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Panel from "react-bootstrap/lib/Panel";
 import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
-import { Grid, Row, Col, FormGroup, ControlLabel } from "react-bootstrap";
+import { Grid, Row, Col, FormGroup, ControlLabel, DropdownButton, MenuItem, } from "react-bootstrap";
 import { Typeahead } from 'react-bootstrap-typeahead'; // ES2015
 // import SearchInputDropdownMention from "./search-input-dropdown-mention";
 // import { inject, observer } from "mobx-react";
@@ -10,8 +10,11 @@ import { inject, observer } from "mobx-react";
 import moment from "moment";
 import { stringify } from "qs";
 
+import FiletypeSelector from "./FiletypeSelector";
+
 import RootStore from "../common/stores/root_store";
 import TeamFilesStore from "../common/stores/team_files_store";
+import UserSelector from "./UserSelector";
 
 const UserInfo = ({ usersMap, file }) => {
   const user = usersMap[file.user_id];
@@ -28,12 +31,12 @@ const UserInfo = ({ usersMap, file }) => {
 
 const FileThumb = ({ file }) => {
   const style = {
-    "position": "absolute",
-    "top": "10px",
-    "left": "9px",
+    position: "absolute",
+    top: "10px",
+    left: "9px",
     marginTop: " - 1px",
     fontSize: "24px",
-    "display": "flex",
+    display: "flex",
     backgroundImage: `url("${file.preview_url}")`,
     width: "50px",
     height: "50px",
@@ -56,25 +59,36 @@ const FileThumb = ({ file }) => {
 @inject("teamFilesStore", "usersStore")
 @observer
 class FileList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      myFilesOnly: 1
+    };
+  }
+
   componentWillMount() {
     this.props.teamFilesStore.search();
   }
 
-  applyFilter(selected) {
-    console.log('filter ', selected);
+  applySearchFilter(options = {}) {
+    console.log('apply search filter', options)
+    this.props.teamFilesStore.search(options);
+  }
 
-    if (selected.length == 0) {
-      console.log('no fitler');
-      return this.props.teamFilesStore.search({
-        creator_id: null
-      });
-    } else {
-      console.log('single fitler');
-      const [user] = selected;
-      return this.props.teamFilesStore.search({
-        creator_id: user.id
-      });
-    }
+  applyFiletypeFilter(filetypeId) {
+    this.props.teamFilesStore.filterByFiletype(filetypeId)
+  }
+
+  applyUserFilter(userId) {
+    this.props.teamFilesStore.search({ creator_id: userId })
+  }
+
+  myFilesOnly(bool) {
+    this.state.myFilesOnly = bool;
+  }
+
+  handleSelect(eventKey) {
+    this.setState({ myFilesOnly: eventKey });
   }
 
   render() {
@@ -88,9 +102,9 @@ class FileList extends Component {
         </Panel.Heading>
 
         <Panel.Body>
-          <Nav bsStyle="pills" activeKey={1} >
-            <NavItem eventKey={1} href="/home">All Files</NavItem>
-            <NavItem eventKey={2} title="Item">My Files</NavItem>
+          <Nav bsStyle="pills" activeKey={this.state.myFilesOnly} onSelect={e => this.handleSelect(e)} >
+            <NavItem eventKey={1}>All Files</NavItem>
+            <NavItem eventKey={2}>My Files</NavItem>
           </Nav>
         </Panel.Body>
         <Panel.Body>
@@ -115,49 +129,26 @@ class FileList extends Component {
               <Col xs={6} md={4}>
                 <FormGroup controlId="formBasicText">
                   <ControlLabel>Uploaded by</ControlLabel>
-                  <Typeahead
-                    labelKey="full_name"
-                    multiple={false}
-                    options={users}
-                    onChange={selected => {
-                      console.log([selected, "changed"])
-                      this.applyFilter(selected);
+                  <UserSelector users={users} onSelect={userId => this.applyUserFilter(userId)} />
+                </FormGroup>
+                <FormGroup controlId="formBasicText">
+                  <ControlLabel>File type</ControlLabel>
+                  <br />
+                  <FiletypeSelector
+                    onSelect={filetypeId => {
+                      console.log('selected: ', filetypeId);
+                      this.applyFiletypeFilter(filetypeId)
                     }}
-                    renderMenuItemChildren={(user) => (
-                      <div className=".user-list-item" key={user.id}>
-                        <div className="item-text" style={{ flexGrow: 1, display: "flex" }}>
-                          <div className="avatar">
-                            <img className="img-circle" src={user.avatar_thumb} style={{ width: "20px", height: "20px" }} />
-                          </div>
-                          <span className="username">{user.full_name}</span>
-                          <span className="text-muted">{user.username}</span>
-                        </div>
-                      </div>
-                    )}
-                    placeholder="Search by name" />
-                </FormGroup>
-                <FormGroup controlId="formBasicText">
-                  <ControlLabel>File name</ControlLabel>
-                  <Typeahead
-                    labelKey="full_name"
-                    multiple={false}
-                    options={users}
-                    placeholder="File type" />
-                </FormGroup>
-                <FormGroup controlId="formBasicText">
-                  <ControlLabel>File name</ControlLabel>
-                  <Typeahead
-                    labelKey="full_name"
-                    multiple={false}
-                    options={users}
-                    placeholder="Search by name" />
+                    filetypes={this.props.teamFilesStore.filetypes}
+                    currentType={this.props.teamFilesStore.params.filetype} />
                 </FormGroup>
               </Col>
+              <code>
+                {this.props.teamFilesStore.meta}
+              </code>
+
             </Row>
           </Grid>
-          <code>
-            {this.props.teamFilesStore.meta}
-          </code>
         </Panel.Body>
       </Panel >
     );

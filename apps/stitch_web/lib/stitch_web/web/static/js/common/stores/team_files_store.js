@@ -4,21 +4,27 @@ import _ from "lodash";
 
 class TeamFilesStore {
   @observable files = [];
-  // @observable loading = false;
-  // @observable hasMore = true;
-  // limit = 100;
-  // limit = 3;
   @observable params = {};
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    window.globalstore = this;
     this.params = {
       skip: 0,
       limit: 3,
       creator_id: undefined,
-      filetype: undefined,
+      filetype: "all",
       meta: {}
     };
+    this.filetypes = [
+      { name: "All Files Types", value: "all" },
+      { name: "Images", value: "images" },
+      { name: "PDFs", value: "pdf" },
+      { name: "Videos", value: "videos" },
+      { name: "Audio", value: "audio" },
+      { name: "Text", value: "text" },
+      { name: "Archive", value: "archive" },
+    ]
   }
 
   serialize(params) {
@@ -33,9 +39,17 @@ class TeamFilesStore {
   }
 
   @action
+  filterByFiletype(filetypeId) {
+    const filetype = this.filetypes[filetypeId];
+    this.search({ filetype: filetype.value });
+  }
+
+  @action
   search(options = {}) {
+    console.log('updading params: ', JSON.stringify(options));
     _.merge(this.params, options);
-    let params = this.serialize(this.params)
+    console.log('new params: ', this.params);
+    let params = this.serialize(this.params);
     this.loading = true;
 
     get(`/api/v1/files?${params}`).then(response => {

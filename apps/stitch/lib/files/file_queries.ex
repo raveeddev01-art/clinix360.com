@@ -7,6 +7,7 @@ defmodule Stitch.Files.FileQueries do
     GroupUser,
     Files.Upload,
     Files.GroupUpload,
+    Files.FileTypes,
     Paginator
   }
 
@@ -43,10 +44,28 @@ defmodule Stitch.Files.FileQueries do
     # |> Repo.all()
   end
 
-  def filter_by_filetype(query, %{filetype: filetype}) do
-    query
-    |> where([f, fg], f.filetype == ^filetype)
-  end
+  def filter_by_filetype(query, %{filetype: "all"}), do: query
+
+  def filter_by_filetype(query, %{filetype: "images"}),
+    do: where(query, [f, fg], f.filetype in ^FileTypes.images())
+
+  def filter_by_filetype(query, %{filetype: "pdfs"}),
+    do: where(query, [f, fg], f.filetype == ^"pdf")
+
+  def filter_by_filetype(query, %{filetype: "videos"}),
+    do: where(query, [f, fg], f.filetype in ^FileTypes.videos())
+
+  def filter_by_filetype(query, %{filetype: "audio"}),
+    do: where(query, [f, fg], f.filetype in ^FileTypes.audio())
+
+  def filter_by_filetype(query, %{filetype: "archive"}),
+    do: where(query, [f, fg], f.filetype in ^FileTypes.archive())
+
+  def filter_by_filetype(query, %{filetype: "text"}),
+    do: where(query, [f, fg], f.filetype in ^FileTypes.text())
+
+  def filter_by_filetype(query, %{filetype: filetype}),
+    do: where(query, [f, fg], f.filetype == ^filetype)
 
   def filter_by_filetype(query, _opts), do: query
 
