@@ -23,7 +23,7 @@ class EngagePreview extends Component {
 
   render() {
     return (
-      <div>
+      <div className="engage-content">
         <ModulePreview
           tagLine={this.renderTagline()}
           moduleDescription={this.renderDescription()}

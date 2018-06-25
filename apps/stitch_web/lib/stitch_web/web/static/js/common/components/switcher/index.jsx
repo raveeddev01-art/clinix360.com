@@ -16,6 +16,8 @@ class Switcher extends Component {
       active = "home";
     } else if (path.startsWith("/conversations")) {
       active = "engage";
+    } else if (path === "/engage") {
+      active = "engage";
     } else if (path === "/manage") {
       active = "manage";
     } else if (path === "/patients") {
@@ -104,7 +106,7 @@ class Switcher extends Component {
           </NavLink>
 
           <NavLink
-            to="/conversations/1"
+            to="/engage"
             isActive={() => active === "engage"}
             className="switcher__link"
           >
