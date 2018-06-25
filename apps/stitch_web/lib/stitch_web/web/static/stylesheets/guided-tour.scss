@@ -35,6 +35,14 @@
     width: 190px;
     border-radius: 5px;
     font-family: inherit;
+
+    button {
+      background: none;
+    }
+
+    button:active {
+      box-shadow: none;
+    }
   }
 
   &__footer {
