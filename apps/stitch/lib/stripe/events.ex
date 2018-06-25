@@ -117,6 +117,8 @@ defmodule Stitch.Stripe.Events do
       history.plan
       |> String.split("_")
       |> List.first()
+      |> String.split("-")
+      |> List.first()
       |> String.upcase()
       |> Plan.display_name()
 

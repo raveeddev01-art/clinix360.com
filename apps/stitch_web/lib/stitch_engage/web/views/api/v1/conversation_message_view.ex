@@ -5,7 +5,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
     Message.Reaction
   }
 
+  alias Stitch.Web.Api.V1.MessagesHelper
   use Stitch.Web, :view
+
+  @endpoint Stitch.Web.Endpoint
 
   def render("index.json", %{conversation_messages: conversation_messages}) do
     conversation_messages_json(conversation_messages)
@@ -35,8 +38,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       conversation_id: conversation_message.conversation_id,
       deleted: conversation_message.deleted,
       text_content: conversation_message.text_content,
-      fields: %{},
-      type: conversation_message.type,
+      fields:
+        MessagesHelper.render_fields(conversation_message, false, @endpoint.files_struct_url()),
+      type: type(conversation_message.type),
       inserted_at: conversation_message.inserted_at,
       updated_at: conversation_message.updated_at,
       edited: !!conversation_message.edited_at,
@@ -47,7 +51,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       reactions_web: conversation_message.provider_reactions,
       patient_reactions_web: conversation_message.patient_reactions,
       link_previews: conversation_message.link_previews,
-      request_id: conversation_message.request_id
+      request_id: conversation_message.request_id,
+      upload_id: conversation_message.upload_id
     }
   end
 
@@ -61,4 +66,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
   def sender_info(%{id: id, first_name: first_name, last_name: last_name}) do
     %{id: id, first_name: first_name, last_name: last_name}
   end
+
+  def type("file_share"), do: "upload"
+  def type(type), do: type
 end

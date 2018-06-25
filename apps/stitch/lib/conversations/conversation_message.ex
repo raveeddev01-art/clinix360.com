@@ -60,6 +60,7 @@ defmodule Stitch.Engage.ConversationMessage do
     # https://hexdocs.pm/ecto/Ecto.Schema.html#belongs_to/3-polymorphic-associations
     belongs_to(:team_patient, TeamPatient)
     belongs_to(:provider, User)
+    belongs_to(:upload, Upload)
 
     field(:text_content, :string)
 
@@ -76,7 +77,6 @@ defmodule Stitch.Engage.ConversationMessage do
     field(:client_device_type, :string, default: "unknown")
     field(:client_os, :string, default: "unknown")
     field(:client_name, :string, default: "unknown")
-    # TODO: Add link preview logic
     embeds_many(:link_previews, LinkPreview, on_replace: :delete)
 
     timestamps()
@@ -86,7 +86,29 @@ defmodule Stitch.Engage.ConversationMessage do
 
   # TODO: Do not cast all attributes.
   # This is temporarily the case as we develop engage.
+
+  def changeset(%ConversationMessage{type: type} = struct, params)
+      when type == "file_share" or type == "upload" do
+    struct
+    |> base_changeset(params)
+    |> validate_required([:fields, :type])
+    |> validate_inclusion(:type, ["file_share"])
+  end
+
   def changeset(%ConversationMessage{} = struct, params) do
+    struct
+    |> base_changeset(params)
+    |> LinkPreview.check_for_links()
+  end
+
+  def edit_changeset(%ConversationMessage{} = struct, params \\ %{}) do
+    struct
+    |> base_changeset(params)
+    |> LinkPreview.check_for_links()
+    |> put_change(:edited_at, DateTime.utc_now())
+  end
+
+  defp base_changeset(%ConversationMessage{} = struct, params) do
     struct
     |> cast(params, @all_attributes)
     |> validate_required(@required_attributes)
@@ -95,15 +117,6 @@ defmodule Stitch.Engage.ConversationMessage do
       name: :conversations_inbox_id_slug_index,
       message: "has already been taken"
     )
-    |> LinkPreview.check_for_links()
-  end
-
-  def edit_changeset(%ConversationMessage{} = struct, params \\ %{}) do
-    struct
-    |> cast(params, [:text_content])
-    |> validate_required(@required_attributes)
-    |> LinkPreview.check_for_links()
-    |> put_change(:edited_at, DateTime.utc_now())
   end
 
   def create_for_patient(conversation_id, team_patient_id, params) do
