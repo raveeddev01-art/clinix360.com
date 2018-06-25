@@ -106,7 +106,7 @@ class Switcher extends Component {
           </NavLink>
 
           <NavLink
-            to="/engage"
+            to={engageEnabled ? "/conversations" : "/engage"}
             isActive={() => active === "engage"}
             className="switcher__link"
           >
