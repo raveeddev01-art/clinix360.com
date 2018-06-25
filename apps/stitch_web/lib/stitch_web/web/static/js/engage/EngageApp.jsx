@@ -10,12 +10,13 @@ import Sidebar from "./sidebar/sidebar";
 import Engage from "./Engage";
 import EngagePreview from "./EngagePreview";
 
-@inject("titleStore", "teamStore")
+@inject("titleStore", "teamStore", "inboxStore")
 @observer
 class EngageApp extends Component {
   componentWillMount() {
-    const { titleStore } = this.props;
+    const { titleStore, inboxStore } = this.props;
     titleStore.setPageName("Engage");
+    inboxStore.loadEngage();
   }
 
   render() {

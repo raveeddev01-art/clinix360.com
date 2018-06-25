@@ -401,3 +401,127 @@ $dark-border-color: #ccc;
     }
   }
 }
+
+.loading {
+  &__topbar {
+    .title,
+    .item {
+      height: 22px;
+      width: 200px;
+      background: linear-gradient(270deg, #f5f5f5, #dadada);
+      background-size: 600% 600%;
+      border-radius: 4px;
+
+      -webkit-animation: AnimationName 2s linear infinite;
+      -moz-animation: AnimationName 2s linear infinite;
+      animation: AnimationName 2s linear infinite;
+    }
+
+    .title-holder {
+      flex: 1;
+    }
+
+    .header-nav {
+      display: flex;
+
+      .item {
+        flex: 1;
+        width: 22px;
+        border-radius: 50%;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  &__messages-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+
+    .message {
+      flex: none !important;
+      display: flex;
+      margin-bottom: 10px;
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(270deg, #f5f5f5, #dadada);
+        background-size: 600% 600%;
+        margin-right: 6px;
+
+        -webkit-animation: AnimationName 2s linear infinite;
+        -moz-animation: AnimationName 2s linear infinite;
+        animation: AnimationName 2s linear infinite;
+      }
+
+      .content {
+        flex: 1;
+
+        .line {
+          height: 16px;
+          width: 360px;
+          background: linear-gradient(270deg, #f5f5f5, #dadada);
+          background-size: 600% 600%;
+          border-radius: 4px;
+          margin-bottom: 8px;
+
+          -webkit-animation: AnimationName 2s linear infinite;
+          -moz-animation: AnimationName 2s linear infinite;
+          animation: AnimationName 2s linear infinite;
+
+          &:nth-child(odd) {
+            width: 200px;
+          }
+
+          &:first-of-type {
+            width: 100px;
+          }
+        }
+      }
+    }
+
+    .input {
+      height: 40px;
+      border: 2px solid $border-color-secondary;
+      border-radius: 4px;
+    }
+  }
+
+  @-webkit-keyframes AnimationName {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  @-moz-keyframes AnimationName {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  @keyframes AnimationName {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}

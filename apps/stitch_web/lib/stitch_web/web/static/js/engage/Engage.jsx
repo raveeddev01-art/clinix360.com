@@ -5,6 +5,7 @@ import { withRouter } from "react-router";
 
 import InboxMenu from "./inbox/inbox";
 import ConversationPanel from "./conversation/conversation_panel";
+import LoadingPanel from "./LoadingPanel";
 
 @inject("teamStore", "inboxStore")
 @observer
@@ -40,7 +41,7 @@ class Engage extends Component {
             {inboxStore.messagesLoaded ? (
               <ConversationPanel />
             ) : (
-              <h2>NOOOOOOOOOT LOADED YET</h2>
+              <LoadingPanel />
             )}
           </div>
         </div>
