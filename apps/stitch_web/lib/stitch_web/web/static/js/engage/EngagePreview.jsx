@@ -23,12 +23,14 @@ class EngagePreview extends Component {
 
   render() {
     return (
-      <ModulePreview
-        tagLine={this.renderTagline()}
-        moduleDescription={this.renderDescription()}
-        requestUrl="https://teamstitch.typeform.com/to/Ncn8x8"
-        iconClass="fa fa-bullhorn"
-      />
+      <div>
+        <ModulePreview
+          tagLine={this.renderTagline()}
+          moduleDescription={this.renderDescription()}
+          requestUrl="https://teamstitch.typeform.com/to/Ncn8x8"
+          iconClass="fa fa-bullhorn"
+        />
+      </div>
     );
   }
 }

@@ -4,36 +4,45 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
 import { Switcher, AppAlert } from "common/components";
-import Sidebar from "../common/components/sidebar/empty-sidebar";
+import EmptySidebar from "../common/components/sidebar/empty-sidebar";
+import Sidebar from "./sidebar/sidebar";
 
+import Engage from "./Engage";
 import EngagePreview from "./EngagePreview";
 
-@inject("titleStore")
+@inject("titleStore", "teamStore", "inboxStore")
 @observer
 class EngageApp extends Component {
   componentWillMount() {
-    const { titleStore } = this.props;
+    const { titleStore, inboxStore } = this.props;
     titleStore.setPageName("Engage");
+    inboxStore.loadEngage();
   }
 
   render() {
     const { titleStore } = this.props;
+    const { engageEnabled } = this.props.teamStore;
 
     return (
-      <div id="app" className="preview-app">
+      <div id="app">
         <AppAlert />
-        <div className="engage-wrapper appContainer">
+        <div className="appContainer">
           <Helmet>
             <title>{titleStore.title}</title>
           </Helmet>
           <Switcher />
-          <Sidebar />
-          <div className="engage-content">
-            <Switch>
-              <Route path="/engage" component={EngagePreview} />
-              <Redirect to="/" />
-            </Switch>
-          </div>
+
+          {engageEnabled ? <Sidebar /> : <EmptySidebar />}
+
+          <Switch>
+            {engageEnabled ? (
+              <Route path={`/conversations/:id`} component={Engage} />
+            ) : (
+              <Route path={`/engage`} component={EngagePreview} />
+            )}
+
+            {/* <Redirect from="*" to={`/conversations/1`} /> */}
+          </Switch>
         </div>
       </div>
     );

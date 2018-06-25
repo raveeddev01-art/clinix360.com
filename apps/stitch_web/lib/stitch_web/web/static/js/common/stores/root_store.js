@@ -27,6 +27,7 @@ import AccessLogsStore from "./access_logs_store";
 import IntegrationStore from "./integration_store";
 import NewsStore from "./news_store";
 import PatientsStore from "./patients_store";
+import InboxStore from "./inbox_store";
 
 class RootStore {
   constructor(props) {
@@ -67,6 +68,7 @@ class RootStore {
     this.integrationStore = new IntegrationStore(this);
     this.newsStore = new NewsStore(this);
     this.patientsStore = new PatientsStore(this);
+    this.inboxStore = new InboxStore(this);
   }
 
   onStoreInit() {

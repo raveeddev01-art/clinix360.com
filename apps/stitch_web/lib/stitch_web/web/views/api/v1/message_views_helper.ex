@@ -9,6 +9,7 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   @endpoint Stitch.Web.Endpoint
 
+  # use Stitch.Web, :view
   import Stitch.Web.SubdomainRouter.Helpers
 
   def render_fields(%{fields: nil}, _authenticated_urls, _files_endpoint), do: nil
