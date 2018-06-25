@@ -2,8 +2,8 @@ defmodule StitchConnect.Web.GroupChannel do
   use Stitch.Web, :channel
   import Ecto.Query
   alias Stitch.Accounts.{User, ActivityTracker}
+  alias Stitch.LinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
-  alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
 
   alias Stitch.{
@@ -14,7 +14,8 @@ defmodule StitchConnect.Web.GroupChannel do
     GroupAuthorization,
     Message,
     MessageAuthorization,
-    MessageQueries
+    MessageQueries,
+    ReadStatus
   }
 
   @endpoint Stitch.Web.Endpoint
@@ -198,7 +199,7 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Repo.get!(Message, message_id)
     ActivityTracker.async_update_activity(user)
 
-    Message.mark_as_unread(user.id, group.id, message)
+    ReadStatus.mark_as_unread(:message, user.id, group.id, message)
     |> mark_as_unread_response(user, socket)
   end
 
@@ -207,7 +208,7 @@ defmodule StitchConnect.Web.GroupChannel do
     %{group: group, current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
 
-    Message.mark_as_read(user.id, group.id)
+    ReadStatus.mark_as_read(:message, user.id, group.id)
     |> mark_as_read_response(user, socket)
   end
 
@@ -221,7 +222,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
     case message && Message.update(message, params) do
       {:ok, message} ->
-        MessageLinkPreviewGenerator.queue(message)
+        LinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
         broadcast_message_edited(message)
         json = MessageView.render("show.json", %{message: message})
@@ -320,7 +321,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
-    [message] = Message.Reaction.apply_reactions([message])
+    [message] = Message.Reaction.apply_reactions([message], :message)
 
     endpoint_broadcast(group, "reactions_updated", %{
       message_id: message.id,
@@ -454,9 +455,9 @@ defmodule StitchConnect.Web.GroupChannel do
     if GroupAuthorization.can_message?(group, user.id) do
       presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id)
 
-      case Message.create(group.id, user, attrs, presence_user_ids) do
+      case Message.create(group, user, attrs, presence_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
-          MessageLinkPreviewGenerator.queue(message)
+          LinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
           Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
 

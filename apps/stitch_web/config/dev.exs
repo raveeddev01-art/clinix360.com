@@ -12,7 +12,7 @@ config :stitch_web, Stitch.Web.Endpoint,
     port: 4443,
     otp_app: :stitch_web,
     keyfile: "priv/keys/localhost.key",
-    certfile: "priv/keys/localhost.cert"
+    certfile: "priv/keys/localhost.crt"
   ],
   debug_errors: true,
   code_reloader: true,

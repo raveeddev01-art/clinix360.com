@@ -15,4 +15,6 @@ defmodule Stitch.Billing.Plan do
   def display_name("FREE"), do: "Free"
   def display_name("STANDARD"), do: "Standard"
   def display_name("PREMIUM"), do: "Premium"
+  def display_name(any) when is_binary(any), do: String.capitalize(any)
+  def display_name(any), do: any
 end

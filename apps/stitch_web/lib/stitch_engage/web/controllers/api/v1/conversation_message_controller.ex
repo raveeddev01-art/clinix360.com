@@ -3,11 +3,17 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
   alias Stitch.{
     Repo,
+    LinkPreviewGenerator,
+    Message.Reaction,
+    Message.LinkPreview,
     Engage.Conversation,
     Engage.ConversationQueries,
     Engage.ConversationMessage,
-    Engage.ConversationAuthorization
+    Engage.ConversationAuthorization,
+    Engage.ConversationMessageAuthorization
   }
+
+  alias StitchEngage.Web.ConversationChannel
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
@@ -43,9 +49,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_message?(conversation, user)},
 
-         #  TODO: pass this into the message creation
-         #        and return notify_user_ids
-         #  presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id),
+         # Notifications: pass into the message creation & return notify_user_ids
+         # presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id)
 
          {:ok, conversation_message} <-
            ConversationMessage.create_for_provider(
@@ -53,8 +58,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
              user.id,
              message_params_with_client
            ) do
-      # TODO: get notify_user_ids in the create
-      notify_user_ids = []
+      # Notifications: get notify_user_ids in the create and pass them into events
+      notify_user_ids = %{}
       conversation_message = %{conversation_message | provider: user}
       conversation_message_events(conversation_message, conversation, notify_user_ids)
 
@@ -76,17 +81,171 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  def conversation_message_events(_conversation_message, _conversation, _notify_user_ids) do
-    # TODO: All of these events can handle conversation equivalents
+  def show(conn, %{"id" => id}) do
+    user = conn.assigns.current_user
 
-    # Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
-    # Stitch.Task.start(fn ->
-    #   MessageLinkPreviewGenerator.queue(message)
-    #   GroupChannel.broadcast_message_created(message)
-    #   EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-    #   PushNotifications.notify_users(group, message, notify_user_ids.mobile)
-    #   PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-    #   Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-    # end)
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
+           {:conversation_message, Repo.get(ConversationMessage, id)},
+         {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
+      message_with_assocs = ConversationQueries.load_message_info(conversation_message)
+      render(conn, "show.json", conversation_message: message_with_assocs)
+    else
+      {:conversation_message, _} ->
+        {:error, :not_found, "The message you are looking for does not exist."}
+
+      {:conversation, _} ->
+        {:error, :not_found}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot view this message."}
+    end
+  end
+
+  def update(conn, %{"id" => id, "message" => message_params}) do
+    user = conn.assigns.current_user
+
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
+           {:conversation_message, Repo.get(ConversationMessage, id)},
+         {:authorized?, true} <-
+           {:authorized?, ConversationMessageAuthorization.can_edit?(conversation_message, user)},
+         {:ok, updated_conversation_message} <-
+           ConversationMessage.update(conversation_message, message_params) do
+      updated_message_with_assocs =
+        ConversationQueries.load_message_info(updated_conversation_message)
+
+      ConversationChannel.broadcast_message_edited(updated_message_with_assocs)
+      LinkPreviewGenerator.queue(updated_message_with_assocs)
+
+      render(conn, "show.json", conversation_message: updated_message_with_assocs)
+    else
+      {:conversation_message, _} ->
+        {:error, :not_found, "The message you are looking for does not exist."}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot edit this message."}
+
+      {:error, changeset} ->
+        {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
+
+      _error ->
+        {:error, :unprocessable_entity, "There was a problem editing this message."}
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    user = conn.assigns.current_user
+
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
+           {:conversation_message, Repo.get(ConversationMessage, id)},
+         {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?,
+            ConversationMessageAuthorization.can_delete?(conversation_message, conversation, user)},
+         {:ok, _conversation_message} <- ConversationMessage.delete(conversation_message, user) do
+      # Notifications: Change Badge Count Here
+
+      ConversationChannel.broadcast_message_deleted(%{
+        conversation_id: conversation.id,
+        id: id
+      })
+
+      send_resp(conn, :no_content, "")
+    else
+      {:conversation, _} ->
+        {:error, :not_found}
+
+      {:conversation_message, _} ->
+        {:error, :not_found}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot delete this message."}
+
+      _error ->
+        {:error, :unprocessable_entity, "There was a problem deleting this message."}
+    end
+  end
+
+  def toggle_reaction(conn, %{"id" => id, "emoji_name" => emoji_name}) do
+    user = conn.assigns.current_user
+
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
+           {:conversation_message, Repo.get(ConversationMessage, id)},
+         {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
+      {:ok, _reaction} = Reaction.toggle_reaction(conversation_message, user, emoji_name)
+      ConversationChannel.broadcast_reactions_updated(conversation, conversation_message)
+
+      json(conn, %{status: "ok"})
+    else
+      {:conversation_message, _} ->
+        {:error, :not_found, "The message you are looking for does not exist."}
+
+      {:conversation, _} ->
+        {:error, :not_found}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot react to this message."}
+    end
+  end
+
+  def delete_message_link_preview(
+        conn,
+        %{"id" => conversation_message_id, "link" => link} = _params
+      ) do
+    current_user = conn.assigns.current_user
+
+    with {:conversation_message, %ConversationMessage{} = conversation_message} <-
+           {:conversation_message, Repo.get(ConversationMessage, conversation_message_id)},
+         {:conversation, conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?,
+            ConversationMessageAuthorization.can_delete?(
+              conversation_message,
+              conversation,
+              current_user
+            )} do
+      conversation_message = LinkPreview.delete!(conversation_message, link)
+
+      ConversationChannel.broadcast_msg_link_preview_deleted(
+        conversation,
+        conversation_message.id,
+        link
+      )
+
+      json(conn, %{status: "ok"})
+    else
+      {:conversation_message, _} -> {:error, :not_found}
+      {:conversation, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized, "You cannot edit this message."}
+    end
+  end
+
+  defp conversation_message_events(conversation_message, conversation, _notify_user_ids) do
+    # Notifications: Call to the NotificationLogger here
+    # (see message view for similar code)
+
+    # Get the updated_at time before spawning the task
+    now = DateTime.utc_now() |> DateTime.to_naive()
+
+    Stitch.Task.start(fn ->
+      Conversation.touch_and_broadcast_update(
+        conversation,
+        conversation_message,
+        now
+      )
+
+      ConversationChannel.broadcast_message_created(conversation_message)
+      LinkPreviewGenerator.queue(conversation_message)
+
+      # Notifications: dispatch notifications, badge updates, and emails here
+      # (see message view for similar code)
+    end)
   end
 end

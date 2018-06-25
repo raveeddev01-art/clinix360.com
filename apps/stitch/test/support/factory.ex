@@ -77,6 +77,29 @@ defmodule Stitch.Factory do
     }
   end
 
+  def inbox_factory do
+    %Stitch.Engage.Inbox{
+      team: build(:team),
+      name: "General",
+      is_default: true
+    }
+  end
+
+  def conversation_factory do
+    %Stitch.Engage.Conversation{
+      inbox: build(:inbox),
+      open: true
+    }
+  end
+
+  def conversation_message_factory do
+    %Stitch.Engage.ConversationMessage{
+      provider: build(:user),
+      conversation: build(:conversation),
+      text_content: Faker.Lorem.sentence()
+    }
+  end
+
   def upload_factory do
     %Stitch.Files.Upload{
       user: build(:user),
@@ -204,6 +227,22 @@ defmodule Stitch.Factory do
       team: build(:team),
       patient: build(:patient),
       mrn: Stitch.Rand.token(32)
+    }
+  end
+
+  def message_reaction_factory do
+    %Stitch.Message.Reaction{
+      emoji_name: "neutral_face",
+      message: build(:message),
+      user: build(:user)
+    }
+  end
+
+  def conversation_message_reaction_factory do
+    %Stitch.Message.Reaction{
+      emoji_name: "sunglasses",
+      conversation_message: build(:conversation_message),
+      user: build(:user)
     }
   end
 end

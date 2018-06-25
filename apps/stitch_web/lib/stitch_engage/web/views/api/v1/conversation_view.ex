@@ -30,7 +30,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
     }
   end
 
-  defp conversation_json_with_latest(conversation) do
+  def conversation_json_with_latest(conversation) do
     conversation
     |> conversation_json()
     |> with_latest_message(conversation.latest_conversation_message)
@@ -52,7 +52,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
   end
 
   defp with_latest_message(json_map, latest_message) do
-    latest_message_json = ConversationMessageView.conversation_message_json(latest_message)
+    latest_message_json =
+      ConversationMessageView.conversation_message_json(latest_message, %{load_reactions: true})
+
     Map.merge(json_map, %{latest_conversation_message: latest_message_json})
   end
 end

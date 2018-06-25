@@ -2,6 +2,7 @@ defmodule Stitch.Web.Api.FallbackController do
   @moduledoc """
   Controller fallback for handling common domain errors.
   """
+  require Logger
   use Phoenix.Controller
   alias Stitch.Web.{ErrorView, ControllerHelpers}
 
@@ -68,5 +69,14 @@ defmodule Stitch.Web.Api.FallbackController do
     conn
     |> put_status(:forbidden)
     |> render(ErrorView, :"403", message: message)
+  end
+
+  # Should stay at last for handle all
+  def call(conn, any) do
+    Logger.error("#{inspect(any)}")
+
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{error: "Something went wrong!"})
   end
 end

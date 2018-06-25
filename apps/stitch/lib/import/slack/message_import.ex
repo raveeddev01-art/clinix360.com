@@ -76,11 +76,10 @@ defmodule Stitch.Import.Slack.MessageImport do
       else
         mentioned_user_id =
           Stitch.Message.Mention.get_mentioned_user_ids(
-            Repo.preload(group, :users).users,
             creator,
             text_content,
             [],
-            group
+            Repo.preload(group, :users)
           )
 
         %Message{

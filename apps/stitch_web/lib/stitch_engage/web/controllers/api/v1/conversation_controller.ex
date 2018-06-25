@@ -3,12 +3,15 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
   alias Stitch.{
     Repo,
+    Message.Reaction,
     Engage.Inbox,
     Engage.InboxAuthorization,
     Engage.Conversation,
     Engage.ConversationQueries,
     Engage.ConversationAuthorization
   }
+
+  alias StitchEngage.Web.InboxChannel
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
@@ -52,10 +55,13 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, inbox_id)},
          {:authorization?, true} <- {:authorization?, InboxAuthorization.can_view?(inbox, user)},
-         {:ok, %{conversation: conversation}} <-
+         {:ok, %{conversation: conversation, conversation_message: conversation_message}} <-
            Conversation.begin_conversation_as_provider(user, params) do
-      # TODO: broadcast conversation creation
-      conversation = Repo.preload(conversation, [:conversation_messages, team_patients: :patient])
+      conversation = Repo.preload(conversation, team_patients: :patient)
+
+      conversation = conversation_with_show_data(conversation, [conversation_message])
+
+      InboxChannel.broadcast_conversation_creation(conversation)
       render(conn, "show.json", conversation: conversation)
     else
       {:inbox, _} ->
@@ -88,10 +94,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_update?(conversation, user)},
          {:ok, updated_conversation} <- Conversation.update_open_value(conversation, open_value) do
-      updated_conversation =
-        Repo.preload(updated_conversation, [:conversation_messages, team_patients: :patient])
+      updated_conversation = conversation_with_show_data(updated_conversation)
 
-      # TODO: broadcast conversation update
+      InboxChannel.broadcast_conversation_update(updated_conversation)
       render(conn, "show.json", conversation: updated_conversation)
     else
       {:conversation, _} ->
@@ -110,5 +115,24 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       _error ->
         {:error, :unprocessable_entity}
     end
+  end
+
+  defp conversation_with_show_data(conversation, given_conversation_messages \\ nil) do
+    conversation = Repo.preload(conversation, [:conversation_messages, team_patients: :patient])
+
+    conversation_messages =
+      Reaction.apply_reactions(
+        given_conversation_messages || conversation.conversation_messages,
+        :conversation_message
+      )
+
+    latest_message = Enum.max_by(conversation_messages, fn cm -> cm.inserted_at end)
+    latest_message = ConversationQueries.load_message_info(latest_message)
+
+    %{
+      conversation
+      | latest_conversation_message: latest_message,
+        conversation_messages: conversation_messages
+    }
   end
 end

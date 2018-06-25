@@ -12,11 +12,15 @@ class MessageHeader extends Component {
   };
 
   render() {
-    const { timestamp, user, children } = this.props;
+    const { timestamp, user, children, disabledMenu } = this.props;
 
     return (
       <div className="message-header">
-        <UserProfileMenu user={user} className="name">
+        <UserProfileMenu
+          user={user}
+          className="name"
+          disabledMenu={disabledMenu}
+        >
           {user && this._renderName(user)}
         </UserProfileMenu>
         <TimestampTooltip timestamp={timestamp} className="time" />
@@ -32,11 +36,13 @@ MessageHeader.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
-  ])
+  ]),
+  disabledMenu: PropTypes.bool
 };
 
 MessageHeader.defaultProps = {
-  children: null
+  children: null,
+  disabledMenu: false
 };
 
 export default MessageHeader;

@@ -24,6 +24,9 @@ defmodule Stitch.TeamAuthorization do
 
   def can_send_invites?(_, _), do: false
 
+  def is_admin?(%User{team_id: team_id, roles: ["admin"]}, team_id) when is_integer(team_id),
+    do: true
+
   def is_admin?(%User{team_id: team_id, roles: ["admin"]}, %Team{id: team_id}), do: true
   def is_admin?(_user, _team), do: false
 end

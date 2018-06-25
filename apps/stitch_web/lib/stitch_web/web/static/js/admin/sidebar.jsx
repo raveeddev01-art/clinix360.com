@@ -59,19 +59,14 @@ class Sidebar extends Component {
               <span>Members</span>
             </Link>
           </ListGroupItem>
-          {window.electronApp ? (
-            <ListGroupItem href="/admin/billing" target="_blank">
-              <i className="fa fa-credit-card" />
-              Billing <i className="fa fa-external-link sm" />
-            </ListGroupItem>
-          ) : (
-            <ListGroupItem active={this._isSelected("/admin/billing")}>
-              <Link to="/admin/billing">
-                <i className="fa fa-credit-card" />
-                <span>Billing</span>
-              </Link>
-            </ListGroupItem>
-          )}
+          {(!window.electronApp || window.electronEnv !== "store") && (
+              <ListGroupItem active={this._isSelected("/admin/billing")}>
+                <Link to="/admin/billing">
+                  <i className="fa fa-credit-card" />
+                  <span>Billing</span>
+                </Link>
+              </ListGroupItem>
+            )}
         </ListGroup>
       </div>
     );

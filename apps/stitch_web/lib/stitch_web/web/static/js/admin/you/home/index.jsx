@@ -56,13 +56,15 @@ export default class YouHome extends Component {
           openButtonText="Open"
           link="/admin/members"
         />
-        <HomeItem
-          icon="fa-credit-card"
-          title="Billing"
-          description="Subscribe to Stitch plans across different products, edit your team payment details, and access invoice history."
-          openButtonText="Open"
-          link="/admin/billing"
-        />
+        {(!window.electronApp || window.electronEnv !== "store") && (
+            <HomeItem
+              icon="fa-credit-card"
+              title="Billing"
+              description="Subscribe to Stitch plans across different products, edit your team payment details, and access invoice history."
+              openButtonText="Open"
+              link="/admin/billing"
+            />
+          )}
       </div>
     );
   }

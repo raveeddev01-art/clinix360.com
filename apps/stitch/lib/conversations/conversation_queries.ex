@@ -7,6 +7,7 @@ defmodule Stitch.Engage.ConversationQueries do
 
   alias Stitch.{
     Repo,
+    Message.Reaction,
     Engage.Conversation,
     Engage.ConversationMessage
   }
@@ -86,6 +87,15 @@ defmodule Stitch.Engage.ConversationQueries do
     |> updated_before(updated_before)
     |> most_recent(ConversationMessage.page_length())
     |> Repo.all()
+    |> Reaction.apply_reactions(:conversation_message)
+  end
+
+  @doc """
+  Given a conversation message - preload data needed for show view & force reload.
+  """
+  @spec load_message_info(ConversationMessage.t()) :: ConversationMessage.t()
+  def load_message_info(conversation_message) do
+    Repo.preload(conversation_message, [:provider, team_patient: :patient], force: true)
   end
 
   # ===========
@@ -114,19 +124,30 @@ defmodule Stitch.Engage.ConversationQueries do
       |> limit(1)
       |> Repo.one()
 
+    latest_message =
+      case latest_message do
+        nil ->
+          nil
+
+        latest_message ->
+          Reaction.apply_reactions([latest_message], :conversation_message) |> List.first()
+      end
+
     Map.merge(conversation, %{latest_conversation_message: latest_message})
   end
 
   defp with_latest_messages(%Conversation{id: id} = conversation, message_count) do
-    latest_message_query =
+    latest_conversation_messages =
       from(
         m in ConversationMessage,
         where: m.conversation_id == ^id,
         order_by: m.inserted_at,
         limit: ^message_count
       )
+      |> Repo.all()
+      |> Reaction.apply_reactions(:conversation_message)
 
-    Map.merge(conversation, %{conversation_messages: Repo.all(latest_message_query)})
+    Map.merge(conversation, %{conversation_messages: latest_conversation_messages})
   end
 
   defp count_by_open_val(inbox_id, open_val) do
@@ -139,7 +160,6 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   defp most_recent(query, count) do
-    # TODO: ConversationMessages touch conversations on create
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
   end
 

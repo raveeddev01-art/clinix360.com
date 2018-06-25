@@ -35,6 +35,7 @@ $sidebar_width: 220px;
   flex-direction: column;
   flex-basis: $sidebar_width;
   max-width: $sidebar_width;
+  flex-shrink: 0;
 }
 
 #main {
