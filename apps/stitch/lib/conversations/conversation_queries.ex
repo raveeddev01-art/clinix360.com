@@ -7,6 +7,7 @@ defmodule Stitch.Engage.ConversationQueries do
 
   alias Stitch.{
     Repo,
+    Message.Reaction,
     Engage.Conversation,
     Engage.ConversationMessage
   }
@@ -86,6 +87,7 @@ defmodule Stitch.Engage.ConversationQueries do
     |> updated_before(updated_before)
     |> most_recent(ConversationMessage.page_length())
     |> Repo.all()
+    |> Reaction.apply_reactions(:conversation_message)
   end
 
   @doc """
@@ -121,20 +123,23 @@ defmodule Stitch.Engage.ConversationQueries do
       |> order_by(desc: :inserted_at)
       |> limit(1)
       |> Repo.one()
+      |> (&Reaction.apply_reactions([&1], :conversation_message)).()
 
     Map.merge(conversation, %{latest_conversation_message: latest_message})
   end
 
   defp with_latest_messages(%Conversation{id: id} = conversation, message_count) do
-    latest_message_query =
+    latest_conversation_messages =
       from(
         m in ConversationMessage,
         where: m.conversation_id == ^id,
         order_by: m.inserted_at,
         limit: ^message_count
       )
+      |> Repo.all()
+      |> Reaction.apply_reactions(:conversation_message)
 
-    Map.merge(conversation, %{conversation_messages: Repo.all(latest_message_query)})
+    Map.merge(conversation, %{conversation_messages: latest_conversation_messages})
   end
 
   defp count_by_open_val(inbox_id, open_val) do

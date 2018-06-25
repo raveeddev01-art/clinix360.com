@@ -321,7 +321,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
-    [message] = Message.Reaction.apply_reactions([message])
+    [message] = Message.Reaction.apply_reactions([message], :message)
 
     endpoint_broadcast(group, "reactions_updated", %{
       message_id: message.id,

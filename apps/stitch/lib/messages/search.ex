@@ -52,7 +52,7 @@ defmodule Stitch.Messages.Search do
 
     user
     |> MessageAction.apply_user_message_actions(messages)
-    |> Message.Reaction.apply_reactions()
+    |> Message.Reaction.apply_reactions(:message)
     |> apply_higlight_for_stop_words(params[:exact_search_terms])
   end
 

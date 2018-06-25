@@ -3,6 +3,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
   alias Stitch.{
     Repo,
+    Message.Reaction,
     Engage.Conversation,
     Engage.ConversationQueries,
     Engage.ConversationMessage,
@@ -81,14 +82,22 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   end
 
   def show(conn, %{"id" => id}) do
+    user = conn.assigns.current_user
+
     with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
            {:conversation_message, Repo.get(ConversationMessage, id)},
-         {:authorized?, true} <- {:authorized?, true} do
+         {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
       message_with_assocs = ConversationQueries.load_message_info(conversation_message)
       render(conn, "show.json", conversation_message: message_with_assocs)
     else
       {:conversation_message, _} ->
         {:error, :not_found, "The message you are looking for does not exist."}
+
+      {:conversation, _} ->
+        {:error, :not_found}
 
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot view this message."}
@@ -157,6 +166,31 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
       _error ->
         {:error, :unprocessable_entity, "There was a problem deleting this message."}
+    end
+  end
+
+  def toggle_reaction(conn, %{"id" => id, "emoji_name" => emoji_name}) do
+    user = conn.assigns.current_user
+
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
+           {:conversation_message, Repo.get(ConversationMessage, id)},
+         {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
+      {:ok, _reaction} = Reaction.toggle_reaction(conversation_message, user, emoji_name)
+      ConversationChannel.broadcast_reactions_updated(conversation, conversation_message)
+
+      json(conn, %{status: "ok"})
+    else
+      {:conversation_message, _} ->
+        {:error, :not_found, "The message you are looking for does not exist."}
+
+      {:conversation, _} ->
+        {:error, :not_found}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You cannot react to this message."}
     end
   end
 

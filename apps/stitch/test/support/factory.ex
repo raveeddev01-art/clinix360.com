@@ -229,4 +229,20 @@ defmodule Stitch.Factory do
       mrn: Stitch.Rand.token(32)
     }
   end
+
+  def message_reaction_factory do
+    %Stitch.Message.Reaction{
+      emoji_name: "neutral_face",
+      message: build(:message),
+      user: build(:user)
+    }
+  end
+
+  def conversation_message_reaction_factory do
+    %Stitch.Message.Reaction{
+      emoji_name: "sunglasses",
+      conversation_message: build(:conversation_message),
+      user: build(:user)
+    }
+  end
 end

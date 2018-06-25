@@ -151,6 +151,8 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/files", FileController, :index)
     get("/files/:id", FileController, :show)
     post("/files/:id/unshare", FileController, :unshare)
+    post("/files/:id/create_public_link", FileController, :create_public_link)
+    post("/files/:id/revoke_public_link", FileController, :revoke_public_link)
 
     get("/patients", TeamPatientController, :index)
     get("/patients/:id", TeamPatientController, :show)
@@ -432,6 +434,12 @@ defmodule Stitch.Web.SubdomainRouter do
       :delete_message_link_preview
     )
 
+    put(
+      "/conversation_messages/:id/toggle_reaction",
+      ConversationMessageController,
+      :toggle_reaction
+    )
+
     # Expected Engage routes:
 
     # get("/inboxes", InboxController, :index)
@@ -442,11 +450,5 @@ defmodule Stitch.Web.SubdomainRouter do
     # get("/conversations/:conversation_id/feed_recent", ConversationMessageController, :feed_recent)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
     # post("/conversation_messages/search", ConversationMessageController, :search)
-
-    # put(
-    #   "/conversation_messages/:id/toggle_reaction",
-    #   ConversationMessageController,
-    #   :toggle_reaction
-    # )
   end
 end
