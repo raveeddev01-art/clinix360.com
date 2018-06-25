@@ -1,7 +1,6 @@
 defmodule Stitch.Web.Api.V1.MessagesHelper do
   @moduledoc """
-  Used by ConservationMessageView and MessageView for rendering
-  fields
+  Used by ConservationMessageView and MessageView for rendering fields attr.
   """
   alias Stitch.{
     AWS.S3,

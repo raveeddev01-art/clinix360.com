@@ -15,9 +15,10 @@ defmodule Stitch.Engage.ConversationMessage do
 
   alias Stitch.{
     Repo,
-    ReadStatus,
+    # ReadStatus,
     TeamPatient,
     Accounts.User,
+    Files.Upload,
     Engage.Conversation,
     Engage.ConversationMessage,
     Audit
