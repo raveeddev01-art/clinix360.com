@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import noop from "lodash/noop";
 
 import { Avatar } from "common/components";
 
@@ -61,8 +60,8 @@ PatientOption.propTypes = {
 PatientOption.defaultProps = {
   className: "",
   isFocused: false,
-  onFocus: noop,
-  onSelect: noop
+  onFocus: () => {},
+  onSelect: () => {}
 };
 
 export default PatientOption;

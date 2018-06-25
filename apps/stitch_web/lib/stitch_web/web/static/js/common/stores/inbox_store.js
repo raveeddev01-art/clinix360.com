@@ -17,20 +17,20 @@ class InboxStore {
     this.rootStore = rootStore;
   }
 
-  // //////// //
-  // GETTERS  //
-  // //////// //
+  // ===========
+  //   GETTERS
+  // ===========
 
   get closedConversationsCount() {
     return this.currentInbox.closed_conversations_count;
   }
 
-  // //////// //
-  // COMPUTED //
-  // //////// //
-
   getConversationById = id =>
     this.conversations.find(conversation => conversation.id === id);
+
+  // ===========
+  //   COMPUTED
+  // ===========
 
   @computed
   get openedConversations() {
@@ -56,9 +56,9 @@ class InboxStore {
       });
   }
 
-  // //////////
-  // METHODS //
-  // /////// //
+  // ===========
+  //   ACTIONS
+  // ===========
 
   @action
   setModal = modalName => {
@@ -89,7 +89,6 @@ class InboxStore {
     $(".html-loading-element").remove();
   };
 
-  // --------------------
   // Loading only default inbox for now
   @action
   loadInbox = () => {
@@ -105,7 +104,6 @@ class InboxStore {
     });
   };
 
-  // --------------------
   // Called from the conversations panel component
   @action
   openConversation = id => {
