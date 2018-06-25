@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
+import cx from "classnames";
 
 import { Switcher, AppAlert } from "common/components";
 import EmptySidebar from "../common/components/sidebar/empty-sidebar";
@@ -14,9 +15,12 @@ import EngagePreview from "./EngagePreview";
 @observer
 class EngageApp extends Component {
   componentWillMount() {
-    const { titleStore, inboxStore } = this.props;
+    const { titleStore, inboxStore, teamStore } = this.props;
     titleStore.setPageName("Engage");
-    inboxStore.loadEngage();
+
+    if (teamStore.engageEnabled) {
+      inboxStore.loadEngage();
+    }
   }
 
   render() {
@@ -26,7 +30,11 @@ class EngageApp extends Component {
     return (
       <div id="app">
         <AppAlert />
-        <div className="appContainer">
+        <div
+          className={cx("appContainer", {
+            "engage-wrapper": !engageEnabled
+          })}
+        >
           <Helmet>
             <title>{titleStore.title}</title>
           </Helmet>
@@ -35,13 +43,14 @@ class EngageApp extends Component {
           {engageEnabled ? <Sidebar /> : <EmptySidebar />}
 
           <Switch>
-            {engageEnabled ? (
-              <Route path={`/conversations/:id`} component={Engage} />
-            ) : (
-              <Route path={`/engage`} component={EngagePreview} />
-            )}
+            <Route path="/engage" component={EngagePreview} />
+            <Route path="/conversations/:id" component={Engage} />
 
-            {/* <Redirect from="*" to={`/conversations/1`} /> */}
+            {engageEnabled ? (
+              <Redirect from="*" to="/conversations/1" />
+            ) : (
+              <Redirect from="*" to="/engage" />
+            )}
           </Switch>
         </div>
       </div>

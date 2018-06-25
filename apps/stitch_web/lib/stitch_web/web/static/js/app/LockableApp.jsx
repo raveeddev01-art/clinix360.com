@@ -91,10 +91,13 @@ class LockableApp extends Component {
       return (
         <Switch>
           <Route path="/admin" component={AdminApp} />
-          <Route path="/conversations" component={EngageApp} />
+          <Route path="/engage" component={EngageApp} />
           <Route exact path="/manage" component={ManageApp} />
           {engageEnabled && (
-            <Route exact path="/patients" component={PatientsRepoApp} />
+            <div>
+              <Route path="/conversations" component={EngageApp} />
+              <Route exact path="/patients" component={PatientsRepoApp} />
+            </div>
           )}
           <Route path="/" component={ChatApp} />
         </Switch>
