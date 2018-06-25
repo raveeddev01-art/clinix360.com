@@ -70,11 +70,6 @@ class FileList extends Component {
     this.props.teamFilesStore.search();
   }
 
-  applySearchFilter(options = {}) {
-    console.log('apply search filter', options)
-    this.props.teamFilesStore.search(options);
-  }
-
   applyFiletypeFilter(filetypeId) {
     this.props.teamFilesStore.filterByFiletype(filetypeId)
   }
@@ -89,6 +84,7 @@ class FileList extends Component {
 
   handleSelect(eventKey) {
     this.setState({ myFilesOnly: eventKey });
+    this.props.teamFilesStore.search({ creator_id: currentUser.id })
   }
 
   render() {
@@ -129,16 +125,14 @@ class FileList extends Component {
               <Col xs={6} md={4}>
                 <FormGroup controlId="formBasicText">
                   <ControlLabel>Uploaded by</ControlLabel>
-                  <UserSelector users={users} onSelect={userId => this.applyUserFilter(userId)} />
+                  <UserSelector users={users} onSelect={userId => this.applyUserFilter(userId)}
+                    myFilesOnly={this.state.myFilesOnly == 2} />
                 </FormGroup>
                 <FormGroup controlId="formBasicText">
                   <ControlLabel>File type</ControlLabel>
                   <br />
                   <FiletypeSelector
-                    onSelect={filetypeId => {
-                      console.log('selected: ', filetypeId);
-                      this.applyFiletypeFilter(filetypeId)
-                    }}
+                    onSelect={filetypeId => this.applyFiletypeFilter(filetypeId)}
                     filetypes={this.props.teamFilesStore.filetypes}
                     currentType={this.props.teamFilesStore.params.filetype} />
                 </FormGroup>

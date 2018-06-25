@@ -4,8 +4,9 @@ import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
 import { Grid, Row, Col, FormGroup, ControlLabel, DropdownButton, MenuItem, } from "react-bootstrap";
 
-const getTitle = (filetypes, currentType) =>
-  _.find(filetypes, ({ value }) => value == currentType).name
+const getTitle = (filetypes, currentType) => {
+  return _.find(filetypes, ({ value }) => value == currentType).name
+}
 
 const FiletypeSelector = ({ filetypes, currentType, onSelect }) =>
   <DropdownButton

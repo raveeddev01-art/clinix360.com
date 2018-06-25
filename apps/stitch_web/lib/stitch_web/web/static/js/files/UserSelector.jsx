@@ -3,12 +3,25 @@ import Panel from "react-bootstrap/lib/Panel";
 import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
 import { Grid, Row, Col, FormGroup, ControlLabel, DropdownButton, MenuItem, } from "react-bootstrap";
+import _ from 'lodash';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-const UserSelector = ({ users, onSelect }) =>
+const defaultSelected = (users, myFilesOnly) => {
+  if (myFilesOnly) {
+    const currentUserId = currentUser.id;
+    const user = _.find(users, user => user.id == currentUserId);
+    return [user];
+  } else {
+    return undefined;
+  }
+}
+
+const UserSelector = ({ users, onSelect, myFilesOnly }) =>
   <Typeahead
     labelKey="full_name"
     multiple={false}
+    disabled={!!myFilesOnly}
+    selected={defaultSelected(users, myFilesOnly)}
     options={users}
     onChange={selected => {
       if (selected.length == 0) {
