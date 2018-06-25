@@ -17,6 +17,12 @@ class InboxStore {
     this.rootStore = rootStore;
   }
 
+  sortByUpdated(conversation1, conversation2) {
+    if (conversation1.updated_at < conversation2.updated_at) return 1;
+    if (conversation1.updated_at > conversation2.updated_at) return -1;
+    return 0;
+  }
+
   // ===========
   //   GETTERS
   // ===========
@@ -36,24 +42,14 @@ class InboxStore {
   get openedConversations() {
     return this.conversations
       .filter(conversations => conversations.open)
-      .sort((conversation1, conversation2) => {
-        // Sort conversations by latest updated
-        if (conversation1.updated_at < conversation2.updated_at) return 1;
-        if (conversation1.updated_at > conversation2.updated_at) return -1;
-        return 0;
-      });
+      .sort(this.sortByUpdated);
   }
 
   @computed
   get closedConversations() {
     return this.conversations
       .filter(conversations => !conversations.open)
-      .sort((conversation1, conversation2) => {
-        // Sort conversations by latest updated
-        if (conversation1.updated_at < conversation2.updated_at) return 1;
-        if (conversation1.updated_at > conversation2.updated_at) return -1;
-        return 0;
-      });
+      .sort(this.sortByUpdated);
   }
 
   // ===========
