@@ -42,7 +42,7 @@ class TeamStore {
   @action
   deleteTeam = () => {
     return remove(`/api/v1/teams/${this.id}`).then(() => {
-      notify.show("Your team has been deleted");
+      notify.show("Your carespace has been deleted");
       window.location.href = `https://${applicationHost}`;
     });
   };
