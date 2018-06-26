@@ -38,6 +38,22 @@ class TeamFilesStore {
     return stringify(this.params.meta);
   }
 
+  // Viewing files 1,201 to 1,250 of 2,000
+  @computed
+  get pages() {
+    // {"meta":{"skip":0,"limit":3,"count":167}
+
+    let meta = this.params.meta;
+    let totalPages = Math.ceil(meta.count / meta.limit);
+    let currentPage = Math.ceil(meta.skip / meta.limit);
+    return { totalPages, currentPage };
+  }
+
+  @action
+  goToPage(page) {
+    this.search({ skip: page * this.params.limit });
+  }
+
   @action
   filterByFiletype(filetypeId) {
     const filetype = this.filetypes[filetypeId];

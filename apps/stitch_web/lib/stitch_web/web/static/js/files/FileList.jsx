@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import Panel from "react-bootstrap/lib/Panel";
 import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
-import { Grid, Row, Col, FormGroup, ControlLabel, DropdownButton, MenuItem, } from "react-bootstrap";
+import { Grid, Row, Col, FormGroup, ControlLabel, Pagination, DropdownButton, MenuItem, } from "react-bootstrap";
 import { Typeahead } from 'react-bootstrap-typeahead'; // ES2015
 // import SearchInputDropdownMention from "./search-input-dropdown-mention";
 // import { inject, observer } from "mobx-react";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
+import _ from "lodash";
 import { stringify } from "qs";
 
 import FiletypeSelector from "./FiletypeSelector";
@@ -87,9 +88,15 @@ class FileList extends Component {
     this.props.teamFilesStore.search({ creator_id: currentUser.id })
   }
 
+  goToPage(page) {
+    this.props.teamFilesStore.goToPage(page)
+  }
+
   render() {
     const usersMap = this.props.usersStore.usersById;
     const users = this.props.usersStore.users.toJS();
+    const pages = this.props.teamFilesStore.pages;
+    console.log(pages);
 
     return (
       <Panel className="home-panel">
@@ -121,6 +128,12 @@ class FileList extends Component {
                     </div>
                   )}
                 </div>
+                <Pagination bsSize="large">
+                  {_.times(pages.totalPages, i =>
+                    <Pagination.Item
+                      onClick={e => this.goToPage(i)} key={i} active={i == pages.currentPage}>{i + 1}</Pagination.Item>
+                  )}
+                </Pagination>
               </Col>
               <Col xs={6} md={4}>
                 <FormGroup controlId="formBasicText">

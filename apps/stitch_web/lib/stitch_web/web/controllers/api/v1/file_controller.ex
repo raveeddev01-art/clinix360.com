@@ -120,6 +120,8 @@ defmodule Stitch.Web.Api.V1.FileController do
       skip: :integer
     }
 
+    IO.inspect(conn.params)
+
     changeset = Ecto.Changeset.cast({%{}, types}, conn.params, Map.keys(types))
     assign(conn, :query_options, changeset.changes)
   end

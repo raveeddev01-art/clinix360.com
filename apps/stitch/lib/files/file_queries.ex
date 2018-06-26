@@ -13,9 +13,11 @@ defmodule Stitch.Files.FileQueries do
 
   @spec for_user(User.t(), map | nil) :: [Upload.t()]
   def for_user(user, options \\ %{}) do
+    IO.inspect(options)
+
     group_ids = GroupUser.group_ids(user.id)
-    limit = options["limit"] || 30
-    offset = options["skip"] || 0
+    limit = options[:limit] || 30
+    offset = options[:skip] || 0
 
     Upload
     |> join(:inner, [f], gu in GroupUpload, f.id == gu.upload_id)
