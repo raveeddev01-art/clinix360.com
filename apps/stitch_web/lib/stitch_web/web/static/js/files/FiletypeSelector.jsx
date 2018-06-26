@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import Panel from "react-bootstrap/lib/Panel";
-import Nav from "react-bootstrap/lib/Nav";
-import NavItem from "react-bootstrap/lib/NavItem";
-import { Grid, Row, Col, FormGroup, ControlLabel, DropdownButton, MenuItem, } from "react-bootstrap";
+import { DropdownButton, MenuItem, } from "react-bootstrap";
 
 const getTitle = (filetypes, currentType) => {
   return _.find(filetypes, ({ value }) => value == currentType).name

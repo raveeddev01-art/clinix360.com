@@ -1,10 +1,6 @@
 import React, { Component } from "react";
-import Panel from "react-bootstrap/lib/Panel";
-import Nav from "react-bootstrap/lib/Nav";
-import NavItem from "react-bootstrap/lib/NavItem";
-import { Grid, Row, Col, FormGroup, ControlLabel, DropdownButton, MenuItem, } from "react-bootstrap";
-import _ from 'lodash';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import _ from 'lodash';
 
 const defaultSelected = (users, myFilesOnly) => {
   if (myFilesOnly) {

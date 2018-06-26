@@ -2,12 +2,9 @@ import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
-
 import { Switcher, AppAlert } from "common/components";
-import Sidebar from "../common/components/sidebar/empty-sidebar";
 
-import FileList from "./FileList";
-
+import FileList from "./FilesPage";
 
 @inject("titleStore", "teamFilesStore")
 @observer
@@ -15,14 +12,10 @@ class FilesApp extends Component {
   componentWillMount() {
     const { titleStore } = this.props;
     titleStore.setPageName("Files");
-
-    console.log(this.props.teamFilesStore)
   }
 
   render() {
     const { titleStore } = this.props;
-
-    console.log("Files app")
 
     return (
       <div id="app" className="app">
