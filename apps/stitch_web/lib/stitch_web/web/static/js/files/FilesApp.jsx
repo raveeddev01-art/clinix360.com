@@ -4,7 +4,8 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 import { Switcher, AppAlert } from "common/components";
 
-import FileList from "./FilesPage";
+import FilePage from "./FilePage";
+import FilesPage from "./FilesPage";
 
 @inject("titleStore", "teamFilesStore")
 @observer
@@ -29,7 +30,8 @@ class FilesApp extends Component {
 
             <div className="admin-content-wrapper">
               <Switch>
-                <Route path="/files" component={FileList} />
+                <Route path="/files/f:id" component={FilePage} />
+                <Route path="/files" component={FilesPage} />
                 <Redirect to="/" />
               </Switch>
             </div>

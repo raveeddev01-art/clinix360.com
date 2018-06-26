@@ -26,6 +26,7 @@ defmodule Stitch.Web.Api.V1.FileView do
       updated_at: file.updated_at,
       mimetype: file.mimetype,
       filetype: file.filetype,
+      size_in_bytes: file.size_in_bytes,
       preview_url: preview_url(file),
       preview_height: file.preview_height,
       preview_width: file.preview_width

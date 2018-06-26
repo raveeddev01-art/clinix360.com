@@ -27,6 +27,7 @@
     "password-validator": "^4.0.0",
     "phoenix": "file:../../deps/phoenix",
     "pluralize": "^7.0.0",
+    "pretty-bytes": "^5.1.0",
     "prop-types": "^15.6.0",
     "provinces": "^1.11.0",
     "qs": "^6.5.1",
