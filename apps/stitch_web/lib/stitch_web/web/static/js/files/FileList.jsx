@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Pagination } from "react-bootstrap";
+import { Link } from 'react-router-dom'
 import moment from "moment";
 import _ from "lodash";
 
@@ -51,7 +52,7 @@ const FileList = ({ files, usersMap, pages, goToPage }) =>
         </div>
         <FileThumb file={file} />
         <div style={{ marginLeft: "70px", flex: 1 }}>
-          <h4>{file.filename}</h4>
+          <Link to={`/files/${file.encoded_id}`}><h4>{file.filename}</h4></Link>
           <UserInfo usersMap={usersMap} file={file} /><br />
           <span>{file.public ? "Public file" : "Private file"}</span>
         </div>

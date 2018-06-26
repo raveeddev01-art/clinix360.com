@@ -2,7 +2,9 @@ defmodule Stitch.Web.Api.V1.FileView do
   use Stitch.Web, :view
 
   alias Stitch.{
-    Paginator
+    Paginator,
+    Web.UrlService,
+    Files.Upload
   }
 
   def render("index.json", %{files: %Paginator{data: data, meta: meta}}) do
@@ -29,12 +31,14 @@ defmodule Stitch.Web.Api.V1.FileView do
       size_in_bytes: file.size_in_bytes,
       preview_url: preview_url(file),
       preview_height: file.preview_height,
-      preview_width: file.preview_width
+      preview_width: file.preview_width,
+      encoded_id: Upload.encode_url_id(file),
+      url: UrlService.file_download_url(file)
     }
   end
 
   def preview_url(file) do
-    Stitch.Web.UrlService.file_preview_url(file)
+    UrlService.file_preview_url(file)
     # preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
   end
 end
