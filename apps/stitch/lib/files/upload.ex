@@ -30,7 +30,7 @@ defmodule Stitch.Files.Upload do
     field(:preview_width, :integer)
     field(:preview_url, :string)
     field(:public, :boolean, default: true)
-    field(:public_link, :string)
+    field(:public_token, :string)
     field(:shared_in, {:array, :integer}, virtual: true, default: [])
 
     timestamps()
@@ -183,22 +183,22 @@ defmodule Stitch.Files.Upload do
     |> Map.new(fn {k, v} -> {"#{k}", v} end)
   end
 
-  @spec has_public_link?(Upload.t()) :: boolean
-  def has_public_link?(%Upload{} = upload) do
-    !!upload.public_link
+  @spec has_public_token?(Upload.t()) :: boolean
+  def has_public_token?(%Upload{} = upload) do
+    !!upload.public_token
   end
 
   @spec create_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
   def create_public_link(%Upload{} = upload) do
     upload
-    |> change(public_link: Rand.token(32))
+    |> change(public_token: Rand.token(32))
     |> Repo.update()
   end
 
   @spec revoke_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
   def revoke_public_link(%Upload{} = upload) do
     upload
-    |> change(public_link: nil)
+    |> change(public_token: nil)
     |> Repo.update()
   end
 end

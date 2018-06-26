@@ -58,7 +58,7 @@ defmodule Stitch.Web.Files.FileController do
   @spec authenticated(Conn.t(), Upload.t(), map) ::
           {:authenticated, boolean} | {:authenticated, boolean, Upload.t() | Message.t()}
 
-  def authenticated(_conn, %Upload{public_link: token}, %{"public_token" => token}),
+  def authenticated(_conn, %Upload{public_token: token}, %{"public_token" => token}),
     do: {:authenticated, true}
 
   def authenticated(conn, %Upload{} = upload, _params) do

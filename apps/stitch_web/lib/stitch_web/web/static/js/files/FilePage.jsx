@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Panel from "react-bootstrap/lib/Panel";
+import { DropdownButton, MenuItem, Button, Grid, Row, Col } from "react-bootstrap";
 import { inject, observer } from "mobx-react";
 import prettyBytes from "pretty-bytes";
 import moment from "moment";
@@ -43,8 +44,9 @@ const FileThumb = ({ file }) => {
   //     <i style={style} data-original="" className="" ></i>
   //   )
   // }
+
   return (
-    <FileAttachment {...file} />
+    <FileAttachment api_url={file.url} {...file} />
   )
 }
 
@@ -74,6 +76,23 @@ class FilePage extends Component {
     }
   }
 
+  createPublicLink() {
+    this.props.teamFileStore.createPublicLink()
+  }
+
+  renderPublicLink() {
+    const file = this.props.teamFileStore.file;
+    const url = `${file.url}?public_token=${file.public_token}`;
+    return (
+      <div className="well">
+        Public Link: <a href={url}>{url}</a>
+        <Button bsStyle="danger" onClick={_ => this.props.teamFileStore.revokePublicLink()}>
+          Revoke
+        </Button>
+      </div>
+    )
+  }
+
   render() {
     const file = this.props.teamFileStore.file;
     const user = this.props.usersStore.usersById[file.user_id];
@@ -88,7 +107,27 @@ class FilePage extends Component {
           <div>
             {file && file.id && <FileInfo file={file} />}
           </div>
-          {file && file.id && <FileThumb file={file} />}
+
+          {!!file.public_token && this.renderPublicLink()}
+          <Grid>
+            <Row>
+              <Col xs={12} md={8} className="center-block">
+                {file && file.id && <FileThumb file={file} />}
+              </Col>
+              <Col xs={6} md={4}>
+                <DropdownButton pull="right" bsStyle={"default"} title={"Actions"} id="file-action-dropdwon" onSelect={e => null}>
+                  <MenuItem eventKey="1">Download</MenuItem>
+                  <MenuItem divider />
+                  <MenuItem eventKey="2" onClick={e => this.createPublicLink()}>Create External Link</MenuItem>
+                  <MenuItem divider />
+                  <MenuItem eventKey="3">Delete</MenuItem>
+                </DropdownButton>
+
+              </Col>
+            </Row>
+          </Grid>
+
+
         </Panel.Body>
       </Panel >
     );
