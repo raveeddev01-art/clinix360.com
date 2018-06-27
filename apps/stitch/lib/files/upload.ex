@@ -203,4 +203,10 @@ defmodule Stitch.Files.Upload do
     |> change(public_token: nil)
     |> Repo.update()
   end
+
+  @spec delete(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
+  def delete(%Upload{} = upload) do
+    upload
+    |> Repo.delete()
+  end
 end

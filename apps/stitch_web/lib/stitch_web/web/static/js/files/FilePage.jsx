@@ -96,8 +96,20 @@ class FilePage extends Component {
     )
   }
 
+  deleteFile() {
+    this.props.teamFileStore.deleteFile(f => {
+      this.props.history.push('/files');
+    });
+  }
+
   handleChange(e) {
     this.setState({ commentText: e.target.value });
+  }
+
+  addComment() {
+    this.props.teamFileStore.addComment(this.state.commentText, e => {
+      this.setState({ commentText: "" })
+    })
   }
 
   rednerCommentInput(user) {
@@ -113,42 +125,10 @@ class FilePage extends Component {
             value={this.state.commentText}
             onChange={e => this.handleChange(e)} />
         </FormGroup>
-        <Button bsStyle="success" onClick={_ => this.props.teamFileStore.addComment(this.state.commentText)}>
+        <Button bsStyle="success" onClick={_ => this.addComment()}>
           {"Add Comment"}
         </Button>
       </Col>
-    )
-  }
-
-  renderComments() {
-  }
-
-  renderComment(comment) {
-    const user = this.props.usersStore.usersById[comment.user_id]
-    return (
-      <div key={comment.id} className="well">
-        <div style={{ textAlign: "right" }}>
-          <DropdownButton pullRight
-            bsStyle={"default"}
-            title={"Actions"}
-            id={`comment-action-dropdwon-${comment.id}`}
-            onSelect={e => null}>
-            <MenuItem eventKey="1">Edit</MenuItem>
-            <MenuItem eventKey="2">Delete</MenuItem>
-          </DropdownButton>
-        </div>
-        <Media>
-          <Media.Left>
-            <img className="img-circle" src={user.avatar_thumb} style={{ width: "30px", height: "30px" }} />
-          </Media.Left>
-          <Media.Body>
-            <Media.Heading>{user.full_name}</Media.Heading>
-            <p>
-              {comment.text_content}
-            </p>
-          </Media.Body>
-        </Media>
-      </div>
     )
   }
 
@@ -178,8 +158,9 @@ class FilePage extends Component {
                   <MenuItem eventKey="1">Download</MenuItem>
                   <MenuItem divider />
                   <MenuItem eventKey="2" onClick={e => this.createPublicLink()}>Create External Link</MenuItem>
-                  <MenuItem divider />
-                  <MenuItem eventKey="3">Delete</MenuItem>
+                  {currentUser.id == file.user_id &&
+                    <MenuItem eventKey="3" onClick={e => this.deleteFile()}>Delete</MenuItem>
+                  }
                 </DropdownButton>
               </Col>
             </Row>

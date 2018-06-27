@@ -109,6 +109,26 @@ defmodule Stitch.Web.Api.V1.FileController do
     end
   end
 
+  def delete(conn, %{"id" => upload_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:authorized, true} <-
+           {:authorized, FileAuthorization.is_creator?(upload, current_user)},
+         {:deleted, {:ok, upload}} <- {:deleted, Upload.delete(upload)} do
+      render(conn, "show.json", %{file: upload})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:authorized, false} ->
+        {:error, :not_authorized}
+
+      {:delete, :error} ->
+        {:error, :unprocessable_entity, "Error deleting the file"}
+    end
+  end
+
   def parse_query_params(conn, _opts) do
     types = %{
       creator_id: :integer,
