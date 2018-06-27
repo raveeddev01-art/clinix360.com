@@ -13,7 +13,7 @@ defmodule Stitch.Web.Api.V1.SessionLockController do
     team = conn.assigns.team
 
     if pin == user.pin ||
-         Stitch.User.Authentication.validate_email_and_password(user.email, pin, team) do
+         Stitch.User.Authentication.validate_user_email_and_password(user.email, pin, team) do
       ActivityTracker.async_update_activity(user)
 
       conn
