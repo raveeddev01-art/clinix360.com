@@ -130,7 +130,7 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
   end
 end
 
-defmodule Stitch.Web.Api.V1.ConversationControllerTest do
+defmodule Stitch.Web.Api.V1.ConversationReadStatusTest do
   use Stitch.Web.ConnCase, async: true
   alias Stitch.Web.Api.V1.ConversationReadStatusTest.Helper
 

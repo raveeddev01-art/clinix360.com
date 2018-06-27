@@ -14,7 +14,9 @@ defmodule Stitch.Invitation do
     Invitation,
     Team,
     TeamAuthorization,
-    TimedMessage
+    TimedMessage,
+    Patient,
+    TeamPatient
   }
 
   alias Stitch.Analytics.Invitation, as: InvitationAnalytics
@@ -22,6 +24,7 @@ defmodule Stitch.Invitation do
   @guest_roles Stitch.Accounts.Role.guests()
 
   schema "invitations" do
+    belongs_to(:patient, Patient)
     belongs_to(:user, User)
     belongs_to(:team, Team)
     field(:invite_token, :string)
@@ -30,12 +33,12 @@ defmodule Stitch.Invitation do
     timestamps()
   end
 
-  def changeset(struct, params) do
+  def changeset(struct, params, belongs_to_foreign_key \\ :user_id) do
     invite_token = Stitch.Rand.token(32)
 
     struct
-    |> cast(params, [:user_id, :team_id])
-    |> validate_required([:user_id, :team_id])
+    |> cast(params, [belongs_to_foreign_key, :team_id])
+    |> validate_required([belongs_to_foreign_key, :team_id])
     |> put_change(:invite_token, invite_token)
   end
 
@@ -193,6 +196,62 @@ defmodule Stitch.Invitation do
     end
   end
 
+  def invite_patient_if_necessary(inviter_id, patient_id) do
+    inviter =
+      User
+      |> where(id: ^inviter_id)
+      |> preload(:team)
+      |> Repo.one()
+
+    patient =
+      Patient
+      |> where(id: ^patient_id)
+      |> preload([:invitation])
+      |> Repo.one()
+
+    # If no invitation, send invite
+    # If onboarded, do nothing
+    # If invited and not onboarded, send reminder
+    if TeamAuthorization.can_send_patient_invites?(inviter, inviter.team) do
+      if patient.invitation do
+        send_invite_reminder_if_needed(patient, patient.invitation)
+        {:ok, patient.invitation}
+      else
+        case Patient.prep_for_invitation(patient, %{}) do
+          {:ok, patient} -> create_and_send_patient_invitation(patient, inviter.team)
+          error -> error
+        end
+      end
+    else
+      {:ok, nil}
+    end
+  end
+
+  defp send_invite_reminder_if_needed(%Patient{onboarded: true}, _), do: :ok
+
+  defp send_invite_reminder_if_needed(patient, invitation) do
+    Invitation.PatientEmail.send_reminder(patient, invitation)
+  end
+
+  defp create_and_send_patient_invitation(patient, team) do
+    invitation_changeset =
+      Invitation.changeset(
+        %Invitation{},
+        %{patient_id: patient.id, team_id: team.id},
+        :patient_id
+      )
+
+    {:ok, invitation} = Repo.insert(invitation_changeset)
+
+    # TODO: Add the tracking and kick of any necessary times events
+    # InvitationAnalytics.track_new_patient_invitation(patient, user, team)
+    # TimedMessage.Event.new_patient_invitation(invitation)
+
+    Invitation.PatientEmail.send_invitation(patient, invitation)
+
+    {:ok, invitation}
+  end
+
   @doc """
   Returns a Stitch.Invitation struct given a valid invite_token
   parameter.
@@ -202,7 +261,7 @@ defmodule Stitch.Invitation do
       from(
         i in Invitation,
         where: i.invite_token == ^invite_token,
-        preload: [:user]
+        preload: [:user, :patient]
       )
 
     case Repo.one(query) do
@@ -347,5 +406,15 @@ defmodule Stitch.Invitation do
       {:error, _, error, _} ->
         {:error, error}
     end
+  end
+
+  def accept_and_complete_patient_onboarding(invite_token, params) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:invite, fn _ -> Invitation.get_by_invite_token(invite_token) end)
+    |> Ecto.Multi.run(:accept, fn %{invite: invite} -> Stitch.Invitation.accept(invite) end)
+    |> Ecto.Multi.run(:patient, fn %{invite: invite} ->
+      Stitch.Accounts.update_and_complete_patient_onboarding(invite.patient_id, params)
+    end)
+    |> Repo.transaction()
   end
 end
