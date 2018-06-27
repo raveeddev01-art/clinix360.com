@@ -303,6 +303,8 @@ defmodule Stitch.Web.SubdomainRouter do
       resources("/history", HistoryController, only: [:index])
       resources("/cards", CardController, only: [:index, :create, :update, :delete])
     end
+
+    post("/call/decline/:hash", CallController, :decline)
   end
 
   # Routes which needs admin role
@@ -402,6 +404,10 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/admin/integrations/:slug/edit", PageController, :index)
 
     get("/direct/:username", PageController, :user)
+
+    get("/call/:hash", CallController, :in_call)
+    get("/call/init/:group_id", CallController, :calling)
+
     get("/apps", AuthenticationController, :apps)
     get("/logout", AuthenticationController, :logout)
 

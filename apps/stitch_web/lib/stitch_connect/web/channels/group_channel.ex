@@ -348,6 +348,12 @@ defmodule StitchConnect.Web.GroupChannel do
     endpoint_broadcast(group, "edit_msg", message_json)
   end
 
+  def broadcast_message_updated(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.render("show.json", %{message: message})
+    endpoint_broadcast(group, "update_msg", message_json)
+  end
+
   def broadcast_message_deleted(message) do
     group = Repo.get(Group, message.group_id)
     endpoint_broadcast(group, "delete_msg", %{id: message.id})

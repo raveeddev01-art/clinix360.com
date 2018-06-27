@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import partRenderers from "./part-renderers";
 
-@inject("messageStore")
 class SystemMessage extends Component {
   render() {
     const { message } = this.props;

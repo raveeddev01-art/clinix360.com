@@ -92,6 +92,9 @@ export SENTRY_PUBLIC_DSN=
 
 export REDIS_URL= # optional
 export ELASTICSEARCH_URL= # optional
+
+export TOKBOX_API_KEY=
+export TOKBOX_SECRET=
 ```
 
 Source the file to add these environment variables to your current shell

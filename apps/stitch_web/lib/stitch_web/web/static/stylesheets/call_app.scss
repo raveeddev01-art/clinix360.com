@@ -1,0 +1,795 @@
+@import "~animate.css/animate";
+
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
+
+@import "vendor/bootstrap";
+@import "vendor/toastr";
+
+@import "base";
+@import "mixins";
+
+@import "browser-notification";
+@import "animations";
+
+/* Customization of Call window style only */
+.ots-main {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  display: block;
+  background-color: black;
+  font-family: "Source Sans Pro", sans-serif;
+
+  .timer {
+    color: white;
+    text-align: center;
+    display: inline-block;
+    position: absolute;
+    z-index: 100;
+    width: 100%;
+    top: 5px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .OT_publisher .OT_bar,
+  .OT_subscriber .OT_bar {
+    background: none;
+  }
+
+  .ots-control-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    z-index: 10;
+
+    &.hidden {
+      display: none;
+    }
+
+    .ots-video-control {
+      width: 50px;
+      height: 50px;
+      margin: 20px 10px !important;
+      border: 2px solid white;
+      border-radius: 50%;
+      background-position: center;
+      background-color: #036;
+      background-color: lightgrey;
+      background-repeat: no-repeat;
+      cursor: pointer;
+      display: inline-block;
+
+      &.audio {
+        background-image: url(https://assets.tokbox.com/solutions/images/icon-mic.png);
+
+        &:hover,
+        &.muted,
+        &.disabled {
+          background-image: url(https://assets.tokbox.com/solutions/images/icon-muted-mic.png);
+        }
+      }
+
+      &.video {
+        background-image: url(https://assets.tokbox.com/solutions/images/icon-video.png);
+
+        &:hover,
+        &.muted,
+        &.disabled {
+          background-image: url(https://assets.tokbox.com/solutions/images/icon-no-video.png);
+        }
+      }
+
+      &.end-call {
+        background-image: url(https://assets.tokbox.com/solutions/images/icon-hang-up.png);
+        background-color: red;
+      }
+
+      &.archiving {
+        margin-left: 10px;
+        background-image: url("https://assets.tokbox.com/solutions/images/icon-not-recording.png");
+
+        &.active,
+        &:hover {
+          background-image: url("https://assets.tokbox.com/solutions/images/icon-recording.png");
+        }
+      }
+
+      &.share-screen {
+        margin-left: 10px;
+        background-image: url("https://assets.tokbox.com/solutions/images/icon-screen-share.png");
+
+        &.disabled,
+        &:hover {
+          background-image: url("https://assets.tokbox.com/solutions/images/icon-screen-share.png");
+        }
+
+        &.active {
+          background-color: red;
+          background-image: url("https://assets.tokbox.com/solutions/images/icon-screen-share.png");
+        }
+      }
+
+      &.microphone {
+        background-image: url("https://assets.tokbox.com/solutions/images/icon-mic.png");
+
+        &.disabled,
+        &:hover {
+          background-image: url("https://assets.tokbox.com/solutions/images/icon-muted-mic.png");
+        }
+      }
+    }
+  }
+
+  .ots-video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .group-waiting-text {
+      width: 100%;
+      text-align: center;
+
+      .p1 {
+        color: #fff;
+        display: block;
+        font-size: 28px;
+      }
+
+      .p2 {
+        color: #ccc;
+        display: block;
+        font-size: 24px;
+        margin-top: 8px;
+      }
+    }
+
+    .dm-waiting-text {
+      text-align: center;
+
+      .avatar img {
+        width: 150px;
+      }
+
+      .p2 {
+        display: block;
+        font-size: 18px;
+        color: #ddd;
+        margin-top: 15px;
+      }
+    }
+
+    .video-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+
+      .OT_subscriber .OT_video-poster {
+        background-size: cover !important;
+        border-radius: 100% !important;
+        width: 150px !important;
+        height: 150px !important;
+        left: calc(50% - 75px) !important;
+        top: calc(50% - 75px) !important;
+      }
+
+      &.hidden {
+        display: none;
+      }
+
+      &.small {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        width: 160px;
+        height: 96px;
+        border: 1px solid #fcba00;
+        z-index: 2;
+
+        .OT_subscriber .OT_video-poster {
+          background-size: contain !important;
+          border-radius: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          left: 0 !important;
+          top: 0 !important;
+        }
+      }
+
+      &.active-gt2 {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        height: 100%;
+        width: 100%;
+
+        &.hidden {
+          display: none;
+        }
+
+        .OT_subscriber {
+          margin: 0;
+          padding: 0;
+          display: inline-block;
+          font-size: 0;
+          flex-basis: 50%;
+          box-sizing: border-box;
+          width: auto !important;
+          height: auto !important;
+        }
+
+        &.active-odd .OT_subscriber:first-child {
+          flex-basis: 100%;
+        }
+      }
+    }
+  }
+
+  .ots-hidden {
+    display: none !important;
+  }
+
+  .ots-app-container {
+    width: 90vw;
+    height: 90vh;
+    min-width: 720px;
+    min-height: calc(720px / (1024 / 760));
+    margin: 35px auto;
+    padding: 15px;
+    box-sizing: border-box;
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+  }
+
+  /* Aspect Ratio for Screen Sharing */
+
+  .ots-aspect-ratio {
+    height: 54vw;
+    min-width: 600px;
+    min-height: 360px;
+    padding: 0;
+  }
+
+  .ots-aspect-ratio > .video-container {
+    position: absolute;
+  }
+
+  /* Screensharing styles */
+
+  .ots-ss-modal {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(rgb(0, 0, 0), 0.1);
+    z-index: 1000;
+  }
+
+  .ots-ss-modal .ots-modal-body {
+    position: relative;
+    width: 456px;
+    height: 286px;
+    margin: 100px auto 0;
+    padding: 62px 70px;
+    background: #ffffff;
+    border: 1px solid #c7c7c7;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0px 2px 6px 0px rgba(rgb(0, 0, 0), 0.35);
+    -moz-box-shadow: 0px 2px 6px 0px rgba(rgb(0, 0, 0), 0.35);
+    box-shadow: 0px 2px 6px 0px rgba(rgb(0, 0, 0), 0.35);
+    color: #282828;
+  }
+
+  .ots-ss-modal .ots-modal-body .ots-modal-title span {
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: bold;
+  }
+
+  .ots-ss-modal .ots-modal-body .ots-modal-title.with-icon {
+    position: relative;
+    padding-left: 70px;
+  }
+
+  .ots-ss-modal .ots-modal-body .ots-modal-title.with-icon i {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 60px;
+    height: 41px;
+    margin-top: -23px;
+    max-width: 60px;
+    max-height: 42px;
+  }
+
+  .ots-ss-modal .ots-modal-body p {
+    font-size: 14px;
+    margin: 20px 0;
+  }
+
+  .ots-ss-modal .ots-modal-body .ots-btn-install {
+    display: block;
+    width: 316px;
+    height: 44px;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 44px;
+    color: #fff;
+    font-size: 14px;
+    background: #259de8;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    text-decoration: none;
+  }
+
+  .ots-ss-modal .ots-modal-body .ots-cancel-btn-install {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 25px;
+    height: 25px;
+    background-image: url("https://assets.tokbox.com/solutions/images/icon-close.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: transparent;
+  }
+
+  @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+    only screen and (min--moz-device-pixel-ratio: 1.5),
+    only screen and (min-device-pixel-ratio: 1.5) {
+    .ots-ss-modal .ots-modal-body .ots-cancel-btn-install {
+      background-image: url("https://assets.tokbox.com/solutions/images/icon-close@2x.png");
+      background-size: 25px 25px;
+    }
+  }
+
+  .ots-icon-share-large {
+    background-image: url("https://assets.tokbox.com/solutions/images/icon-screenshare-large.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+
+  @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+    only screen and (min--moz-device-pixel-ratio: 1.5),
+    only screen and (min-device-pixel-ratio: 1.5) {
+    .ots-icon-share-large {
+      background-image: url("https://assets.tokbox.com/solutions/images/icon-screenshare-large@2x.png");
+      background-size: 60px 41px;
+    }
+  }
+
+  /*Annotation Styles*/
+
+  .ots-annotation-toolbar-container {
+    position: fixed;
+    top: 125px;
+    right: 0;
+    width: 60px;
+    z-index: 1000;
+    background-color: #666666;
+  }
+
+  .ots-annotation-toolbar-container .OT_panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ots-annotation-toolbar-container .OT_panel.colors-hover:before {
+    content: "";
+    position: absolute;
+    top: 60px;
+    height: 60px;
+    width: 60px;
+    background-color: #323232;
+    z-index: -1;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn {
+    height: 60px;
+    width: 60px;
+    background-position: center center;
+    background-repeat: no-repeat !important;
+    background-color: #666666;
+    cursor: pointer;
+    border: none;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn:hover,
+  .ots-annotation-toolbar-container .annotation-btn.selected {
+    background-color: #323232;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.pen {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-pencil.png);
+    background-size: 27px 30px;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.colors {
+    width: 23px;
+    height: 24px;
+    border: 3px solid white;
+    margin: 18px 18.5px;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.line {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-line.png);
+    background-size: 26px 31px;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.line-width {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-line_width.png);
+    background-size: 26px 31px;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.shapes {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-shapes.png);
+    background-size: 26px 31px;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.text {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-text.png);
+    background-size: 21px 25px;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.capture {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-camera.png);
+    background-size: 34px 31px;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.clear {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-trash.png);
+    background-size: 30px 30px;
+  }
+
+  .ots-annotation-toolbar-container .annotation-btn.undo {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-undo.png);
+    background-size: 34px 31px;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel,
+  .ots-annotation-toolbar-container .color-picker {
+    position: absolute;
+    right: 65px;
+    width: 40px;
+    background-color: #333333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: opacity 0.5s ease-out;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.pen {
+    top: 0px;
+    /*transition: visibility 0s linear 0.5s;*/
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.pen .line-width-option {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.pen:after {
+    position: absolute;
+    top: 15px;
+    right: -15px;
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid #333333;
+  }
+
+  .ots-annotation-toolbar-container .color-picker {
+    top: 0;
+  }
+
+  .ots-annotation-toolbar-container .color-picker:after {
+    position: absolute;
+    top: 75px;
+    right: -15px;
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid #333333;
+  }
+
+  .ots-annotation-toolbar-container .color-picker .color-choice {
+    width: 20px;
+    height: 20px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 100%;
+  }
+
+  .ots-annotation-toolbar-container .color-picker .color-choice.active {
+    border: 2px solid white;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.shapes {
+    display: flex;
+    flex-direction: column;
+    top: 75px;
+    min-height: 159.89px;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.shapes:after {
+    position: absolute;
+    top: 62.5px;
+    right: -15px;
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid #333333;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.shapes input {
+    width: 22px;
+    height: 22px;
+    margin: 9px;
+    border: none;
+    background-color: #333333;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+
+  .ots-annotation-toolbar-container
+    .OT_subpanel.shapes
+    .annotation-btn.rectangle {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-rectangle.png);
+    background-size: 18px 18px;
+  }
+
+  .ots-annotation-toolbar-container
+    .OT_subpanel.shapes
+    .annotation-btn.rectangle-fill {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-rectangle-fill.png);
+    background-size: 18px 18px;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.shapes .annotation-btn.oval {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-oval.png);
+    background-size: 20px 20px;
+  }
+
+  .ots-annotation-toolbar-container
+    .OT_subpanel.shapes
+    .annotation-btn.oval-fill {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-oval-fill.png);
+    background-size: 20px 20px;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.shapes .annotation-btn.star {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-star.png);
+    background-size: 22px 22px;
+  }
+
+  .ots-annotation-toolbar-container .OT_subpanel.shapes .annotation-btn.arrow {
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-arrow.png);
+    background-size: 6.5px 23.5px;
+  }
+
+  .ots-annotation-prompt {
+    background-color: rgba(rgb(1, 1, 1), 0.5);
+    width: 200px;
+    border-radius: 5px;
+  }
+
+  .ots-annotation-prompt span {
+    display: block;
+    float: left;
+    width: 100px;
+    height: 40px;
+    font-size: 12px;
+    padding: 10px;
+    color: white;
+    line-height: 20px;
+    padding-right: 0px;
+  }
+
+  .ots-annotation-prompt .dismiss-btn {
+    display: block;
+    width: 40px;
+    height: 36px;
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-trash.png);
+    float: left;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 65%;
+    cursor: pointer;
+  }
+
+  .ots-annotation-prompt .confirm-btn {
+    display: block;
+    width: 40px;
+    height: 36px;
+    background-image: url(https://assets.tokbox.com/solutions/images/annotation-confirm.png);
+    float: right;
+    margin-right: 10px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 70%;
+    cursor: pointer;
+  }
+
+  /* Archiving */
+
+  .ots-archiving-modal {
+    position: fixed;
+    /* Stay in place */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(rgb(0, 0, 0), 0.4);
+    /* Black w/ opacity */
+    z-index: 1051;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .ots-archiving-modal * {
+    box-sizing: border-box;
+  }
+
+  .ots-archiving-modal .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border-top: 2px solid #33abf5;
+    width: 710px;
+    height: 265px;
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ots-archiving-modal .modal-content > div {
+    display: flex;
+    flex-direction: column;
+    height: 33.33%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ots-archiving-modal .modal-header h2 {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 200;
+    font-size: 20px;
+  }
+
+  .ots-archiving-modal .modal-header h2::before {
+    content: "";
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    left: -15px;
+    bottom: -15px;
+    background-image: url(http://assets.tokbox.com/solutions/images/icon-download.png);
+    background-size: contain;
+    background-position: 2px -5px;
+    background-repeat: no-repeat;
+  }
+
+  @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+    only screen and (min--moz-device-pixel-ratio: 1.5),
+    only screen and (min-device-pixel-ratio: 1.5) {
+    .ots-archiving-modal .modal-header::before {
+      background-image: url("https://assets.tokbox.com/solutions/images/icon-download@2x.png");
+    }
+  }
+
+  .ots-archiving-modal .close-button {
+    position: absolute;
+    background-image: url("https://assets.tokbox.com/solutions/images/icon-close-thin.png");
+    background-size: contain;
+    height: 20px;
+    width: 20px;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+  }
+
+  .ots-archiving-modal .close:hover,
+  .ots-archiving-modal .close:focus {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .ots-archiving-modal .modal-info {
+    background-color: #fafbfc;
+    border: 1px solid #e8e8e8;
+    padding: 20px;
+    font-size: 16px;
+  }
+
+  .ots-archiving-modal .modal-info > div {
+    margin: 5px auto;
+    font-family: Muli;
+  }
+
+  .ots-archiving-modal .modal-info .message {
+    font-size: 13px;
+    font-weight: 100;
+    line-height: 18px;
+    width: 80%;
+  }
+
+  .ots-archiving-modal .modal-info .archive-id {
+    width: 70%;
+    font-weight: 200;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ots-archiving-modal .modal-info .archive-details {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    width: auto;
+  }
+
+  .ots-archiving-modal .modal-button-container {
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ots-archiving-modal .btn {
+    display: inline-block;
+    font-family: helvetica, arial, sans-serif;
+    width: 145px;
+    height: 35px;
+    line-height: 35px;
+    color: white;
+    text-decoration: none;
+    border: 1px solid rgba(rgb(68, 68, 68), 1);
+    font-size: 14px;
+    font-weight: 100;
+    cursor: pointer;
+  }
+
+  .ots-archiving-modal .btn.download,
+  .ots-archiving-modal .btn.ok {
+    background-color: #4a90e2;
+  }
+}

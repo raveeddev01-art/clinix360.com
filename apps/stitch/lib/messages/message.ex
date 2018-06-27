@@ -17,10 +17,11 @@ defmodule Stitch.Message do
     Message.Mention,
     Message.MessageCreation,
     ReadStatus,
-    Repo
+    Repo,
+    Call
   }
 
-  @valid_types ["chat", "system", "upload", "file_share", "file_comment"]
+  @valid_types ["chat", "call", "system", "upload", "file_share", "file_comment"]
 
   schema "messages" do
     belongs_to(:user, User)
@@ -47,6 +48,7 @@ defmodule Stitch.Message do
     # Remove on the next release
     field(:requires_fallback_comment, :boolean, default: true)
 
+    belongs_to(:call, Call)
     belongs_to(:upload, Upload)
     belongs_to(:upload_comment, UploadComment)
     embeds_many(:link_previews, LinkPreview, on_replace: :delete)
@@ -142,6 +144,13 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["system"])
   end
 
+  def call_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:fields, :type, :text_content])
+    |> validate_required([:fields, :type])
+    |> validate_inclusion(:type, ["call"])
+  end
+
   @spec create(Group.t() | pos_integer, User.t(), map, map | nil) ::
           {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
   def create(group, user, attrs, presence_user_ids \\ %{active: [], online: []})
@@ -159,6 +168,10 @@ defmodule Stitch.Message do
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do
     message |> chat_changeset(attrs)
+  end
+
+  def message_changeset(message, %{"type" => "call"} = attrs) do
+    message |> call_changeset(attrs)
   end
 
   def message_changeset(message, %{"type" => "upload"} = attrs) do

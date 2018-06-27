@@ -1,0 +1,112 @@
+.call-message {
+  max-width: 500px;
+
+  &__title {
+    color: #707070;
+    margin-bottom: 5px;
+  }
+
+  &__card {
+    display: flex;
+    padding: 12px;
+    flex-direction: row;
+    border: solid 1px;
+    border-radius: 5px;
+    border-color: #a7a7a7;
+
+    &.active {
+      border-color: #036;
+    }
+
+    &-icon {
+      color: #707070;
+      line-height: 38px;
+      font-size: 24px;
+      border: solid 2px;
+      border-radius: 100%;
+      padding: 0px 10px;
+      height: 42px;
+      width: 42px;
+      margin: 3px;
+    }
+
+    &-icon.active {
+      color: #036;
+      border-color: #036;
+    }
+
+    &-body {
+      margin-left: 10px;
+    }
+
+    &-status {
+      font-weight: 600;
+
+      a {
+        color: #036;
+      }
+    }
+
+    &-details {
+      color: #707070;
+    }
+
+    .avatar {
+      display: inline-block;
+      margin-right: 5px;
+
+      img {
+        width: 22px;
+        margin-bottom: 5px;
+      }
+    }
+  }
+}
+
+.call-modal {
+  .modal-dialog {
+    width: 300px !important;
+  }
+
+  .modal-body {
+    text-align: center;
+
+    .avatar {
+      img {
+        width: 75%;
+      }
+    }
+
+    .caller-name {
+      display: block;
+      margin-top: 20px;
+      font-size: 24px;
+    }
+
+    .call-type {
+      display: block;
+      margin-top: 5px;
+      font-size: 18px;
+    }
+  }
+
+  .modal-footer {
+    text-align: center;
+
+    button {
+      border-radius: 50%;
+      min-height: 56px;
+      min-width: 56px !important;
+      font-size: 24px;
+      padding: 0 !important;
+    }
+
+    button:nth-child(1) {
+      margin-right: 26px;
+    }
+
+    button:nth-child(2) {
+      margin-left: 26px;
+    }
+  }
+}

@@ -1,7 +1,12 @@
 defmodule StitchConnect.Web.WebhookController do
   use Stitch.Web, :controller
-  alias Stitch.Drchrono
-  alias Stitch.{Integration, IntegrationQueries}
+
+  alias Stitch.{
+    Tokbox,
+    Drchrono,
+    Integration,
+    IntegrationQueries
+  }
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
@@ -19,5 +24,11 @@ defmodule StitchConnect.Web.WebhookController do
       _ ->
         json(conn, %{secret_token: "stitch"})
     end
+  end
+
+  def tokbox(conn, params) do
+    Tokbox.Events.handle_event(params)
+
+    json(conn, %{status: "ok"})
   end
 end
