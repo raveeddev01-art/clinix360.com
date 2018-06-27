@@ -32,10 +32,18 @@ class TeamFileStore {
   }
 
   @action
-  deleteFile(fn) {
-    remove(`/api/v1/files/${this.file.id}`).then(response => {
-      fn(response);
+  updateComment(commentId, commentText) {
+    const body = { file_comment: { text_content: commentText } };
+    return put(`/api/v1/file_comments/${commentId}`, { body }).then(response => {
+      this.file.comments = this.file.comments.map(comment =>
+        comment.id == commentId ? response.data : comment
+      );
     });
+  }
+
+  @action
+  deleteFile() {
+    return remove(`/api/v1/files/${this.file.id}`);
   }
 
   @action
@@ -44,20 +52,19 @@ class TeamFileStore {
   }
 
   @action
-  addComment(text, fn) {
+  addComment(text) {
     let body = { file_comment: { text_content: text } };
-    post(`/api/v1/files/${this.file.id}/comments`, { body }).then(response => {
+    return post(`/api/v1/files/${this.file.id}/comments`, { body }).then(response => {
       this.file.comments = this.file.comments.concat([response.data]);
-      fn(this.file)
-    })
+      return this.file;
+    });
   }
 
   @action
-  load(encodedFileId, fn) {
-    get(`/api/v1/files/${encodedFileId}`).then(response => {
+  load(encodedFileId) {
+    return get(`/api/v1/files/${encodedFileId}`).then(response =>
       this.file = response.data
-      fn(this.file)
-    });
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Panel from "react-bootstrap/lib/Panel";
-import { Media, DropdownButton, MenuItem, Button, Grid, Row, Col, FormControl, FormGroup, ControlLabel } from "react-bootstrap";
+import { Media, DropdownButton, MenuItem, Button, Grid, Row, Col, FormControl, FormGroup } from "react-bootstrap";
 import { inject, observer } from "mobx-react";
 import prettyBytes from "pretty-bytes";
 import moment from "moment";
@@ -24,32 +24,8 @@ const FileHeading = ({ user, file }) => {
   return <div></div>
 }
 
-const FileThumb = ({ file }) => {
-  // window.f = file
-  // console.log('file: ', file)
-  // // console.log(file.toJS())
-  // const style = {
-  //   marginTop: " - 1px",
-  //   fontSize: "24px",
-  //   backgroundImage: `url("${file.preview_url}")`,
-  //   width: "50px",
-  //   height: "50px",
-  //   backgroundColor: "#f3f3f3",
-  //   backgroundSize: "cover",
-  //   backgroundPosition: "center",
-  //   backgroundRepeat: "no-repeat",
-  //   borderRadius: "4px",
-  // }
-  // if (!!file.preview_url) {
-  //   return (
-  //     <i style={style} data-original="" className="" ></i>
-  //   )
-  // }
-
-  return (
-    <FileAttachment api_url={file.url} {...file} />
-  )
-}
+const FileThumb = ({ file }) =>
+  <FileAttachment api_url={file.url} {...file} />
 
 const FileInfo = ({ file }) => {
   let prettySize = prettyBytes(file.size_in_bytes);
@@ -73,9 +49,9 @@ class FilePage extends Component {
   componentWillMount() {
     if (this.props.match.params.id) {
       const encodedFileId = "f" + this.props.match.params.id;
-      this.props.teamFileStore.load(encodedFileId, (file) => {
-        this.props.titleStore.setPageName(file.filename);
-      });
+      this.props.teamFileStore.load(encodedFileId).then(file =>
+        this.props.titleStore.setPageName(file.filename)
+      );
     }
   }
 
@@ -101,9 +77,8 @@ class FilePage extends Component {
   }
 
   deleteFile() {
-    this.props.teamFileStore.deleteFile(f => {
-      this.props.history.push('/files');
-    });
+    this.props.teamFileStore.deleteFile()
+      .then(f => this.props.history.push('/files'));
   }
 
   handleChange(e) {
@@ -111,9 +86,8 @@ class FilePage extends Component {
   }
 
   addComment() {
-    this.props.teamFileStore.addComment(this.state.commentText, e => {
-      this.setState({ commentText: "" })
-    })
+    this.props.teamFileStore.addComment(this.state.commentText)
+      .then(e => this.setState({ commentText: "" }))
   }
 
   rednerCommentInput(user) {
