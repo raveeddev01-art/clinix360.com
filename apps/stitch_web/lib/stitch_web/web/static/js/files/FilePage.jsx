@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import Panel from "react-bootstrap/lib/Panel";
-import { DropdownButton, MenuItem, Button, Grid, Row, Col } from "react-bootstrap";
+import { Media, DropdownButton, MenuItem, Button, Grid, Row, Col, FormControl, FormGroup, ControlLabel } from "react-bootstrap";
 import { inject, observer } from "mobx-react";
 import prettyBytes from "pretty-bytes";
 import moment from "moment";
 
 import FileAttachment from "../common/components/messages/message-content/file-attachment/index";
+import FileComment from "./FileComment";
 
 const FileHeading = ({ user, file }) => {
   if (user) {
@@ -64,7 +65,9 @@ class FilePage extends Component {
   constructor(props) {
     super(props);
     window.FilePage = this;
-    this.state = {};
+    this.state = {
+      commentText: ""
+    };
   }
 
   componentWillMount() {
@@ -93,6 +96,62 @@ class FilePage extends Component {
     )
   }
 
+  handleChange(e) {
+    this.setState({ commentText: e.target.value });
+  }
+
+  rednerCommentInput(user) {
+    return (
+      <Col md={6}>
+        <div className="avatar">
+          <img className="img-circle" src={user.avatar_thumb} style={{ width: "20px", height: "20px" }} />
+        </div>
+        <FormGroup controlId="file-comment">
+          <FormControl
+            componentClass="textarea"
+            placeholder="textarea"
+            value={this.state.commentText}
+            onChange={e => this.handleChange(e)} />
+        </FormGroup>
+        <Button bsStyle="success" onClick={_ => this.props.teamFileStore.addComment(this.state.commentText)}>
+          {"Add Comment"}
+        </Button>
+      </Col>
+    )
+  }
+
+  renderComments() {
+  }
+
+  renderComment(comment) {
+    const user = this.props.usersStore.usersById[comment.user_id]
+    return (
+      <div key={comment.id} className="well">
+        <div style={{ textAlign: "right" }}>
+          <DropdownButton pullRight
+            bsStyle={"default"}
+            title={"Actions"}
+            id={`comment-action-dropdwon-${comment.id}`}
+            onSelect={e => null}>
+            <MenuItem eventKey="1">Edit</MenuItem>
+            <MenuItem eventKey="2">Delete</MenuItem>
+          </DropdownButton>
+        </div>
+        <Media>
+          <Media.Left>
+            <img className="img-circle" src={user.avatar_thumb} style={{ width: "30px", height: "30px" }} />
+          </Media.Left>
+          <Media.Body>
+            <Media.Heading>{user.full_name}</Media.Heading>
+            <p>
+              {comment.text_content}
+            </p>
+          </Media.Body>
+        </Media>
+      </div>
+    )
+  }
+
   render() {
     const file = this.props.teamFileStore.file;
     const user = this.props.usersStore.usersById[file.user_id];
@@ -111,7 +170,7 @@ class FilePage extends Component {
           {!!file.public_token && this.renderPublicLink()}
           <Grid>
             <Row>
-              <Col xs={12} md={8} className="center-block">
+              <Col xs={12} md={8}>
                 {file && file.id && <FileThumb file={file} />}
               </Col>
               <Col xs={6} md={4}>
@@ -122,11 +181,15 @@ class FilePage extends Component {
                   <MenuItem divider />
                   <MenuItem eventKey="3">Delete</MenuItem>
                 </DropdownButton>
-
               </Col>
             </Row>
+            <Row>
+              {file && file.comments && file.comments.map(comment =>
+                <FileComment comment={comment} key={comment.id} />
+              )}
+              {user && this.rednerCommentInput(user)}
+            </Row>
           </Grid>
-
 
         </Panel.Body>
       </Panel >

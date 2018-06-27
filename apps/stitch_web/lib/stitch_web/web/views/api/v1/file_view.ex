@@ -2,9 +2,10 @@ defmodule Stitch.Web.Api.V1.FileView do
   use Stitch.Web, :view
 
   alias Stitch.{
+    Files.Upload,
     Paginator,
-    Web.UrlService,
-    Files.Upload
+    Web.Api.V1.FileCommentView,
+    Web.UrlService
   }
 
   def render("index.json", %{files: %Paginator{data: data, meta: meta}}) do
@@ -12,6 +13,12 @@ defmodule Stitch.Web.Api.V1.FileView do
       data: Enum.map(data, &file/1),
       meta: meta
     }
+  end
+
+  def render("show_with_comments.json", %{file: file}) do
+    json = file(file)
+    comments = FileCommentView.render("index.json", %{file_comments: file.upload_comments})
+    Map.put(json, :comments, comments)
   end
 
   def render("show.json", %{file: file}), do: file(file)

@@ -2,6 +2,7 @@ defmodule Stitch.Files.Upload do
   alias Stitch.{
     Accounts.User,
     Files.Upload,
+    Files.UploadComment,
     Files.GroupUpload,
     Files.Thumb,
     Rand,
@@ -20,6 +21,7 @@ defmodule Stitch.Files.Upload do
     belongs_to(:user, User)
     belongs_to(:team, Team)
     has_many(:group_uploads, GroupUpload)
+    has_many(:upload_comments, UploadComment)
     has_many(:groups, through: [:group_uploads, :groups])
     field(:filename, :string)
     field(:url, :string)

@@ -58,7 +58,8 @@ class ChannelStore {
       groupsStore,
       notificationStore,
       presenceStore,
-      invitationStore
+      invitationStore,
+      teamFileStore,
     } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
@@ -76,6 +77,9 @@ class ChannelStore {
     this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
     this.eventChannel.on("members_updated", groupsStore.onMembersUpdated);
     this.eventChannel.on("group_favorite", groupsStore.onFavoriteChanged);
+    this.eventChannel.on("upload_comment_added", (upload) => {
+      teamFileStore.onFileUpdate(upload);
+    })
     this.eventChannel.on(
       "notification_preference_update",
       notificationStore.onPreferencesLoaded

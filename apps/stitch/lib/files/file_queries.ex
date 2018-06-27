@@ -86,6 +86,13 @@ defmodule Stitch.Files.FileQueries do
   @spec get_by_id(pos_integer, list) :: Upload.t() | nil
   def get_by_id(upload_id, opts \\ [])
 
+  def get_by_id(upload_id, preload_comments: true) do
+    Upload
+    |> where([f], f.id == ^upload_id)
+    |> preload([:upload_comments])
+    |> Repo.one()
+  end
+
   def get_by_id(upload_id, preload_assoc: true) do
     result =
       Upload

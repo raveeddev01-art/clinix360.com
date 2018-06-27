@@ -11,7 +11,7 @@ class TeamFilesStore {
     window.globalstore = this;
     this.params = {
       skip: 0,
-      limit: 3,
+      limit: 5,
       creator_id: undefined,
       filetype: "all",
       meta: {}

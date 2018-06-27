@@ -24,10 +24,11 @@ defmodule Stitch.Web.Api.V1.FileController do
     current_user = conn.assigns.current_user
 
     with {:upload_id, {:ok, upload_id}} <- {:upload_id, Upload.decode_url_id(encoded_file_id)},
-         {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:upload, %Upload{} = upload} <-
+           {:upload, FileQueries.get_by_id(upload_id, preload_comments: true)},
          {:authorized, true, _} <-
            {:authorized, FileAuthorization.can_view?(upload, current_user), upload} do
-      render(conn, "show.json", %{file: upload})
+      render(conn, "show_with_comments.json", %{file: upload})
     else
       {:upload, _} ->
         {:error, :not_found}
