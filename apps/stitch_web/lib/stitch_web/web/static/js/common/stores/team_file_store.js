@@ -12,14 +12,14 @@ class TeamFileStore {
   @action
   createPublicLink() {
     post(`/api/v1/files/${this.file.id}/create_public_link`).then(response => {
-      this.file = response.data
+      this.file = { ...this.file, ...response.data }
     })
   }
 
   @action
   revokePublicLink() {
     post(`/api/v1/files/${this.file.id}/revoke_public_link`).then(response => {
-      this.file = response.data
+      this.file = { ...this.file, ...response.data }
     })
   }
 

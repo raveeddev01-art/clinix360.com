@@ -83,13 +83,17 @@ class FilePage extends Component {
     this.props.teamFileStore.createPublicLink()
   }
 
+  revokePublicLink() {
+    this.props.teamFileStore.revokePublicLink()
+  }
+
   renderPublicLink() {
     const file = this.props.teamFileStore.file;
     const url = `${file.url}?public_token=${file.public_token}`;
     return (
       <div className="well">
         Public Link: <a href={url}>{url}</a>
-        <Button bsStyle="danger" onClick={_ => this.props.teamFileStore.revokePublicLink()}>
+        <Button bsStyle="danger" onClick={_ => this.revokePublicLink()}>
           Revoke
         </Button>
       </div>
@@ -132,6 +136,11 @@ class FilePage extends Component {
     )
   }
 
+  downloadFile() {
+    const w = window.open(this.props.teamFileStore.file.url, '_blank');
+    w.focus();
+  }
+
   render() {
     const file = this.props.teamFileStore.file;
     const user = this.props.usersStore.usersById[file.user_id];
@@ -155,9 +164,11 @@ class FilePage extends Component {
               </Col>
               <Col xs={6} md={4}>
                 <DropdownButton pull="right" bsStyle={"default"} title={"Actions"} id="file-action-dropdwon" onSelect={e => null}>
-                  <MenuItem eventKey="1">Download</MenuItem>
+                  <MenuItem eventKey="1" onClick={e => this.downloadFile()}>Download</MenuItem>
                   <MenuItem divider />
-                  <MenuItem eventKey="2" onClick={e => this.createPublicLink()}>Create External Link</MenuItem>
+                  {file && file.public_token
+                    ? <MenuItem eventKey="2" onClick={e => this.revokePublicLink()}>Remove External Link</MenuItem>
+                    : <MenuItem eventKey="2" onClick={e => this.createPublicLink()}>Create External Link</MenuItem>}
                   {currentUser.id == file.user_id &&
                     <MenuItem eventKey="3" onClick={e => this.deleteFile()}>Delete</MenuItem>
                   }
