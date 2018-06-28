@@ -81,19 +81,33 @@ class ImageFileAttachment extends Component {
                     href={url}
                     onClick={this.onFileDownload}
                   >
+                    {`${this.props.comment_count} Comments`}
+                  </Button>
+                </OverlayTrigger>
+
+                <OverlayTrigger
+                  placement="top"
+                  delayShow={150}
+                  overlay={<Tooltip id="download-file">Download</Tooltip>}
+                >
+                  <Button
+                    target="_blank"
+                    href={url}
+                    onClick={this.onFileDownload}
+                  >
                     <i className="fa fa-download" />
                   </Button>
                 </OverlayTrigger>
               </div>
             </div>
           ) : (
-            <img
-              src={previewUrl || url}
-              className="img-responsive"
-              alt={filename}
-              onClick={this.onToggleModal}
-            />
-          )}
+              <img
+                src={previewUrl || url}
+                className="img-responsive"
+                alt={filename}
+                onClick={this.onToggleModal}
+              />
+            )}
         </div>
 
         <Modal

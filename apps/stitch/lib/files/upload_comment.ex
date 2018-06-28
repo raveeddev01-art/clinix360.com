@@ -40,11 +40,12 @@ defmodule Stitch.Files.UploadComment do
   @spec create(Upload.t(), User.t(), map) ::
           {:ok, UploadComment.t()} | {:error, Ecto.Changeset.t()}
   def create(%Upload{} = upload, %User{} = user, attrs) do
-    attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)}) |> IO.inspect()
+    attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
 
     %UploadComment{user_id: user.id, upload_id: upload.id}
     |> new(attrs)
     |> Repo.insert()
+    |> increment_comment_counter()
   end
 
   @spec update(UploadComment.t(), String.t()) ::
@@ -59,8 +60,23 @@ defmodule Stitch.Files.UploadComment do
   def delete(%UploadComment{} = upload_comment) do
     upload_comment
     |> Repo.delete()
+    |> decrement_comment_counter()
   end
 
   @spec get(pos_integer) :: UploadComment.t() | nil
   def get(id), do: Repo.get(UploadComment, id)
+
+  defp increment_comment_counter({:ok, upload_comment} = result) do
+    Upload.increment_comment_counter(upload_comment.upload_id)
+    result
+  end
+
+  defp increment_comment_counter(result), do: result
+
+  defp decrement_comment_counter({:ok, upload_comment} = result) do
+    Upload.decrement_comment_counter(upload_comment.upload_id)
+    result
+  end
+
+  defp decrement_comment_counter(result), do: result
 end

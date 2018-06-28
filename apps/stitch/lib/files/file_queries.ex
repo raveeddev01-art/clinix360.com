@@ -37,7 +37,8 @@ defmodule Stitch.Files.FileQueries do
       inserted_at: f.inserted_at,
       preview_url: f.preview_url,
       preview_height: f.preview_height,
-      preview_width: f.preview_width
+      preview_width: f.preview_width,
+      comment_count: f.comment_count
     })
     |> Paginator.new(limit: limit, skip: offset)
 

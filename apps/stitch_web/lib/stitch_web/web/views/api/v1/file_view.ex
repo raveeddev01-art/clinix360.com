@@ -40,7 +40,8 @@ defmodule Stitch.Web.Api.V1.FileView do
       preview_height: file.preview_height,
       preview_width: file.preview_width,
       encoded_id: Upload.encode_url_id(file),
-      url: UrlService.file_download_url(file)
+      url: UrlService.file_download_url(file),
+      comment_count: file.comment_count
     }
   end
 

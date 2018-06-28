@@ -254,4 +254,11 @@ defmodule Stitch.Message do
   def leave_message_changeset(%Group{} = group, user_id) do
     leave_message_changeset(group, Repo.get(User, user_id))
   end
+
+  @spec update_shared_uploads(Upload.t()) :: {integer(), nil | list}
+  def update_shared_uploads(%Upload{} = upload) do
+    Message
+    |> where(upload_id: ^upload.id)
+    |> Repo.update_all(set: [fields: Upload.fields(upload)])
+  end
 end

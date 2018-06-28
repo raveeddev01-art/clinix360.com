@@ -5,6 +5,7 @@ defmodule Stitch.Files.Upload do
     Files.UploadComment,
     Files.GroupUpload,
     Files.Thumb,
+    Message,
     Rand,
     Repo,
     Team,
@@ -34,6 +35,7 @@ defmodule Stitch.Files.Upload do
     field(:public, :boolean, default: true)
     field(:public_token, :string)
     field(:shared_in, {:array, :integer}, virtual: true, default: [])
+    field(:comment_count, :integer)
 
     timestamps()
   end
@@ -181,7 +183,7 @@ defmodule Stitch.Files.Upload do
   @spec fields(Upload.t()) :: map
   def fields(%Upload{} = upload) do
     upload
-    |> Map.take(@attributes)
+    |> Map.take(@attributes ++ [:comment_count])
     |> Map.new(fn {k, v} -> {"#{k}", v} end)
   end
 
@@ -208,5 +210,34 @@ defmodule Stitch.Files.Upload do
   def delete(%Upload{} = upload) do
     upload
     |> Repo.delete()
+  end
+
+  @spec increment_comment_counter(pos_integer) :: {integer(), nil | list}
+  def increment_comment_counter(upload_id) do
+    changeset = where(Upload, id: ^upload_id)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update_all(:upload, changeset, [inc: [comment_count: 1]], returning: true)
+    |> Ecto.Multi.run(:messages, fn
+      %{upload: {1, [upload]}} ->
+        Message.update_shared_uploads(upload)
+        {:ok, nil}
+
+      %{upload: _} ->
+        nil
+        {:error, nil}
+    end)
+    |> Repo.transaction()
+  end
+
+  @spec decrement_comment_counter(pos_integer) :: {integer(), nil | list}
+  def decrement_comment_counter(upload_id) do
+    Upload
+    |> where(id: ^upload_id)
+    |> Repo.update_all(inc: [comment_count: -1])
+
+    Message
+    |> where(upload_id: ^upload_id)
+    |> Repo.update_all(inc: [comment_count: 1])
   end
 end

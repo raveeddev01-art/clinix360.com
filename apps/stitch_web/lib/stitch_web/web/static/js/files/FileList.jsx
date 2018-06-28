@@ -54,7 +54,10 @@ const FileList = ({ files, usersMap, pages, goToPage }) =>
         <div style={{ marginLeft: "70px", flex: 1 }}>
           <Link to={`/files/${file.encoded_id}`}><h4>{file.filename}</h4></Link>
           <UserInfo usersMap={usersMap} file={file} /><br />
-          <span>{file.public ? "Public file" : "Private file"}</span>
+          <span>
+            {file.comment_count > 0 ? `${file.comment_count} comments` : ""}
+            {file.public ? "Public file" : "Private file"}
+          </span>
         </div>
       </div>
     )}
