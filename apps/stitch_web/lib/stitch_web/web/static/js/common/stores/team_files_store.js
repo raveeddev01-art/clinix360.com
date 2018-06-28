@@ -11,7 +11,7 @@ class TeamFilesStore {
     window.globalstore = this;
     this.params = {
       skip: 0,
-      limit: 5,
+      limit: 50,
       creator_id: undefined,
       filetype: "all",
       meta: {}
@@ -29,7 +29,6 @@ class TeamFilesStore {
 
   serialize(params) {
     const filtered = _.pickBy(params, (value, key) => value != undefined);
-    // console.log('filtered: ', filtered)
     return stringify(filtered)
   }
 
@@ -39,10 +38,8 @@ class TeamFilesStore {
     return { from: skip + 1, to: skip + limit, count }
   }
 
-  // Viewing files 1,201 to 1,250 of 2,000
   @computed
   get pages() {
-    // {"meta":{"skip":0,"limit":3,"count":167}
     let meta = this.params.meta;
     let totalPages = Math.ceil(meta.count / meta.limit);
     let currentPage = Math.ceil(meta.skip / meta.limit);
@@ -62,16 +59,8 @@ class TeamFilesStore {
 
   @action
   search(options = {}) {
-    // console.log('updading params: ', JSON.stringify(options));
     _.merge(this.params, options);
 
-    if (this.params.skip > this.params.count) {
-      // console.log("overflow")
-      let totalPages = Math.ceil(this.params.skip / this.params.count);
-      this.param.skip = totalPages * this.params.limit;
-    }
-
-    // console.log('new params: ', this.params);
     let params = this.serialize(this.params);
     this.loading = true;
 
@@ -79,7 +68,6 @@ class TeamFilesStore {
       this.loading = false;
       const { data, meta } = response.data;
       this.files = data;
-      // console.log
       this.params.meta = meta
     });
   }
