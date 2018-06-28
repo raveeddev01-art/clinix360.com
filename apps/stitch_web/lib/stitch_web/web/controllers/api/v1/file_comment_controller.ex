@@ -1,6 +1,13 @@
 defmodule Stitch.Web.Api.V1.FileCommentController do
   use Stitch.Web, :controller
 
+  alias StitchConnect.Web.{
+    EventsChannel,
+    PushNotifications,
+    UserStatusService,
+    MessageEventsService
+  }
+
   alias Stitch.{
     Files.FileQueries,
     Files.Upload,
@@ -18,14 +25,18 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
         "upload_id" => upload_id
       }) do
     current_user = conn.assigns.current_user
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
+    attrs = %{"text_content" => text_content}
 
-    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+    with {:upload, %Upload{} = upload} <-
+           {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
-         {:upload_comment, {:ok, upload_comment}} <-
-           {:upload_comment,
-            UploadComment.create(upload, current_user, %{
-              "text_content" => text_content
-            })} do
+         {:upload_comment, {:ok, upload_comment, groups}} <-
+           {:upload_comment, UploadComment.create(upload, current_user, attrs, presence)} do
+      Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
+        MessageEventsService.message_events(result.message, group, result.notify_user_ids)
+      end)
+
       conn
       |> put_status(:created)
       |> render("show.json", file_comment: upload_comment)

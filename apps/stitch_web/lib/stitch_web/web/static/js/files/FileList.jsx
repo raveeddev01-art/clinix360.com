@@ -35,7 +35,7 @@ const UserInfo = ({ usersMap, file }) => {
   const user = usersMap[file.user_id];
 
   // Jun 1st at 8:32 PM
-  const datetime = moment(file.inserted);
+  const datetime = moment(file.inserted_at);
   const formattedDatetime = `${datetime.format("MMM Do")} at ${datetime.format("h:mm a")}`
   return (
     <span>
@@ -55,7 +55,7 @@ const FileList = ({ files, usersMap, pages, goToPage }) =>
           <Link to={`/files/${file.encoded_id}`}><h4>{file.filename}</h4></Link>
           <UserInfo usersMap={usersMap} file={file} /><br />
           <span>
-            {file.comment_count > 0 ? `${file.comment_count} comments` : ""}
+            {file.comment_count > 0 ? `${file.comment_count} comments. ` : ""}
             {file.public ? "Public file" : "Private file"}
           </span>
         </div>

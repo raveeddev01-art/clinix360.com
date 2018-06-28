@@ -49,6 +49,18 @@ defmodule Stitch.Message do
     timestamps()
   end
 
+  @upload_castable_attributes [
+    :fields,
+    :type,
+    :request_id,
+    :text_content,
+    :mentioned_user_ids,
+    :read_status,
+    :client_device_type,
+    :client_os,
+    :client_name
+  ]
+
   def changeset(%Message{} = struct, params) do
     struct
     |> cast(params, [
@@ -104,19 +116,16 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [
-      :fields,
-      :type,
-      :request_id,
-      :text_content,
-      :mentioned_user_ids,
-      :read_status,
-      :client_device_type,
-      :client_os,
-      :client_name
-    ])
+    |> cast(params, @upload_castable_attributes)
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["file_share", "upload"])
+  end
+
+  def file_comment_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, @upload_castable_attributes)
+    |> validate_required([:fields, :type, :text_content])
+    |> validate_inclusion(:type, ["file_comment"])
   end
 
   def system_changeset(%Message{} = struct, params \\ %{}) do
@@ -151,6 +160,10 @@ defmodule Stitch.Message do
 
   def message_changeset(message, %{"type" => "file_share"} = attrs) do
     message |> upload_changeset(attrs)
+  end
+
+  def message_changeset(message, %{"type" => "file_comment"} = attrs) do
+    message |> file_comment_changeset(attrs)
   end
 
   def update(message, attributes) do

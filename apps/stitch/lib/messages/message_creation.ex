@@ -50,6 +50,20 @@ defmodule Stitch.Message.MessageCreation do
     end
   end
 
+  def create(group, user, %{"type" => "file_comment", "upload_id" => upload_id} = attrs, presence) do
+    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
+      # Upload.share_with_group(upload, group)
+      message = %Message{group: group, user: user, upload: upload}
+      attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
+      do_create(message, attrs, presence)
+    else
+      _ ->
+        changeset = %Message{} |> change() |> add_error(:upload_id, "not found")
+        {:error, :message, changeset, nil}
+    end
+  end
+
   def create(group, user, %{"text_content" => _} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{group: group, user: user}

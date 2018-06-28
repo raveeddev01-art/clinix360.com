@@ -7,7 +7,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     GroupChannel,
     PushNotifications,
     UserStatusService,
-    Api.V1.MessageView
+    Api.V1.MessageView,
+    MessageEventsService
   }
 
   alias Stitch.{
@@ -115,7 +116,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(group, current_user, message_params_with_client, presence_user_ids) do
       message = %{message | user: current_user}
-      message_events(message, group, notify_user_ids)
+      MessageEventsService.message_events(message, group, notify_user_ids)
 
       conn
       |> put_status(:created)
@@ -130,19 +131,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       {:error, :message, changeset, _changeset_so_far} ->
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
-  end
-
-  defp message_events(message, group, notify_user_ids) do
-    Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
-
-    Stitch.Task.start(fn ->
-      LinkPreviewGenerator.queue(message)
-      GroupChannel.broadcast_message_created(message)
-      EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-      PushNotifications.notify_users(group, message, notify_user_ids.mobile)
-      PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-      Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-    end)
   end
 
   def mark_as_read(conn, %{"group_id" => group_id}) do

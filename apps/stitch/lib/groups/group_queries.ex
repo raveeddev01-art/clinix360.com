@@ -243,4 +243,12 @@ defmodule Stitch.GroupQueries do
 
     Repo.all(query)
   end
+
+  @spec select_non_dm_groups([pos_integer]) :: [Group.t()]
+  def select_non_dm_groups(group_ids) do
+    Group
+    |> where([g], g.id in ^group_ids)
+    |> where([g], g.name not in ^@dm_groups)
+    |> Repo.all()
+  end
 end

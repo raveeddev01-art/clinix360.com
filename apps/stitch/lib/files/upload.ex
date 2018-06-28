@@ -214,30 +214,27 @@ defmodule Stitch.Files.Upload do
 
   @spec increment_comment_counter(pos_integer) :: {integer(), nil | list}
   def increment_comment_counter(upload_id) do
+    update_comment_counter(upload_id, 1)
+  end
+
+  @spec decrement_comment_counter(pos_integer) :: {integer(), nil | list}
+  def decrement_comment_counter(upload_id) do
+    update_comment_counter(upload_id, -1)
+  end
+
+  def update_comment_counter(upload_id, by) do
     changeset = where(Upload, id: ^upload_id)
 
     Ecto.Multi.new()
-    |> Ecto.Multi.update_all(:upload, changeset, [inc: [comment_count: 1]], returning: true)
+    |> Ecto.Multi.update_all(:upload, changeset, [inc: [comment_count: by]], returning: true)
     |> Ecto.Multi.run(:messages, fn
       %{upload: {1, [upload]}} ->
         Message.update_shared_uploads(upload)
         {:ok, nil}
 
       %{upload: _} ->
-        nil
         {:error, nil}
     end)
     |> Repo.transaction()
-  end
-
-  @spec decrement_comment_counter(pos_integer) :: {integer(), nil | list}
-  def decrement_comment_counter(upload_id) do
-    Upload
-    |> where(id: ^upload_id)
-    |> Repo.update_all(inc: [comment_count: -1])
-
-    Message
-    |> where(upload_id: ^upload_id)
-    |> Repo.update_all(inc: [comment_count: 1])
   end
 end
