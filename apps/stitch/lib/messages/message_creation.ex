@@ -50,11 +50,10 @@ defmodule Stitch.Message.MessageCreation do
     end
   end
 
-  def create(group, user, %{"type" => "file_comment", "upload_id" => upload_id} = attrs, presence) do
-    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
-         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
+  def create(group, user, %{"type" => "file_comment"} = attrs, presence, upload, upload_comment) do
+    with {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
       # Upload.share_with_group(upload, group)
-      message = %Message{group: group, user: user, upload: upload}
+      message = %Message{group: group, user: user, upload: upload, upload_comment: upload_comment}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
       do_create(message, attrs, presence)
     else

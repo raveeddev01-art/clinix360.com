@@ -8,6 +8,7 @@ defmodule Stitch.Message do
     Accounts.User,
     Audit,
     Files.Upload,
+    Files.UploadComment,
     Group,
     GroupQueries,
     GroupUser,
@@ -44,6 +45,7 @@ defmodule Stitch.Message do
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
     belongs_to(:upload, Upload)
+    belongs_to(:upload_comment, UploadComment)
     embeds_many(:link_previews, LinkPreview, on_replace: :delete)
 
     timestamps()
@@ -273,5 +275,17 @@ defmodule Stitch.Message do
     Message
     |> where(upload_id: ^upload.id)
     |> Repo.update_all(set: [fields: Upload.fields(upload)])
+  end
+
+  def update_file_comments(upload_comment) do
+    Message
+    |> where([m], m.upload_comment_id == ^upload_comment.id)
+    |> Repo.update_all([set: [text_content: upload_comment.text_content]], returning: true)
+  end
+
+  def file_comment_ids(upload_comment) do
+    Message
+    |> where([m], m.upload_comment_id == ^upload_comment.id)
+    |> Repo.all()
   end
 end

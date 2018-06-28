@@ -524,4 +524,13 @@ defmodule Stitch.MessageQueries do
   end
 
   defp yesterday, do: Date.add(Date.utc_today(), -1)
+
+  @spec file_comment_ids(pos_integer) :: [pos_integer]
+  def file_comment_ids(upload_id) do
+    Message
+    |> where([m], m.upload_id == ^upload_id)
+    |> where([m], m.type == ^"file_share")
+    |> select([m], m.id)
+    |> Repo.all()
+  end
 end

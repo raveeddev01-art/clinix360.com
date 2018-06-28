@@ -116,7 +116,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(group, current_user, message_params_with_client, presence_user_ids) do
       message = %{message | user: current_user}
-      MessageEventsService.message_events(message, group, notify_user_ids)
+      MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
       conn
       |> put_status(:created)
@@ -218,9 +218,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.update(message, message_params) do
           {:ok, message} ->
-            LinkPreviewGenerator.queue(message)
             message = MessageQueries.load_info(message)
-            GroupChannel.broadcast_message_edited(message)
+            MessageEventsService.message_edit_events(message)
             render(conn, "show.json", message: message, user_id: user.id)
 
           {:error, :message, changeset, _changeset_so_far} ->
@@ -245,9 +244,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.delete(message, user) do
           {:ok, _message} ->
-            GroupChannel.broadcast_message_deleted(message)
-            EventsChannel.broadcast_group_msg_deleted(message.group, message)
-            PushNotifications.push_badge_update(message)
+            MessageEventsService.message_delete_events(message)
             send_resp(conn, :no_content, "")
 
           {:error, _failed_operation, _failed_value, _changeset} ->

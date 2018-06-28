@@ -1,11 +1,13 @@
 defmodule Stitch.Files.UploadComment do
   alias Stitch.{
     Accounts.User,
+    Audit,
     Files.Upload,
     Files.GroupUpload,
     Files.Thumb,
     Files.UploadComment,
     GroupQueries,
+    Message,
     Message.MessageCreation,
     Rand,
     Repo,
@@ -44,7 +46,6 @@ defmodule Stitch.Files.UploadComment do
   def create(%Upload{} = upload, %User{} = user, attrs, presence) do
     attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
 
-    # TODO: presence
     %UploadComment{user_id: user.id, upload_id: upload.id}
     |> new(attrs)
     |> Repo.insert()
@@ -52,22 +53,26 @@ defmodule Stitch.Files.UploadComment do
     |> insert_file_comment_messages(upload, user, presence)
   end
 
-  @spec update(UploadComment.t(), String.t()) ::
+  @spec update(UploadComment.t(), String.t(), User.t()) ::
           {:ok, UploadComment.t()} | {:error, Ecto.Changeset.t()}
-  def update(%UploadComment{} = upload_comment, text_content) do
-    # TODO: update file comments
+  def update(%UploadComment{} = upload_comment, text_content, author) do
     upload_comment
     |> change(text_content: text_content)
     |> Repo.update()
+    |> update_file_comment_message()
+    |> Audit.UploadComment.track_update(author, upload_comment)
   end
 
-  @spec delete(UploadComment.t()) :: {:ok, UploadComment.t()} | {:error, Ecto.Changeset.t()}
-  def delete(%UploadComment{} = upload_comment) do
-    # TODO: delete file comments
+  @spec delete(UploadComment.t(), User.t()) ::
+          {:ok, UploadComment.t()} | {:error, Ecto.Changeset.t()}
+  def delete(%UploadComment{} = upload_comment, author) do
+    message_file_comment_ids = Message.file_comment_ids(upload_comment)
 
     upload_comment
     |> Repo.delete()
+    |> Audit.UploadComment.track_delete(author)
     |> decrement_comment_counter()
+    |> delete_file_comment_messages(message_file_comment_ids)
   end
 
   @spec get(pos_integer) :: UploadComment.t() | nil
@@ -78,7 +83,7 @@ defmodule Stitch.Files.UploadComment do
     result
   end
 
-  defp increment_comment_counter(result, _presence), do: result
+  defp increment_comment_counter(result), do: result
 
   defp decrement_comment_counter({:ok, upload_comment} = result) do
     Upload.decrement_comment_counter(upload_comment.upload_id)
@@ -87,7 +92,7 @@ defmodule Stitch.Files.UploadComment do
 
   defp decrement_comment_counter(result), do: result
 
-  defp insert_file_comment_messages({:ok, upload_comment} = result, upload, user, presence) do
+  defp insert_file_comment_messages({:ok, upload_comment}, upload, user, presence) do
     groups = GroupQueries.select_non_dm_groups(upload.shared_in)
 
     result =
@@ -98,7 +103,8 @@ defmodule Stitch.Files.UploadComment do
           "text_content" => upload_comment.text_content
         }
 
-        result = MessageCreation.create(group, user, attrs, presence) |> IO.inspect()
+        result = MessageCreation.create(group, user, attrs, presence, upload, upload_comment)
+
         %{group: group, result: result}
       end)
 
@@ -106,4 +112,17 @@ defmodule Stitch.Files.UploadComment do
   end
 
   defp insert_file_comment_messages(result, _upload, _user, _presence), do: result
+
+  def update_file_comment_message({:ok, upload_comment}) do
+    {_, updated_messages} = Message.update_file_comments(upload_comment)
+    {:ok, upload_comment, updated_messages}
+  end
+
+  def update_file_comment_message(result), do: result
+
+  def delete_file_comment_messages({:ok, upload_comment}, message_file_comment_ids) do
+    {:ok, upload_comment, message_file_comment_ids}
+  end
+
+  def delete_file_comment_messages(result), do: result
 end

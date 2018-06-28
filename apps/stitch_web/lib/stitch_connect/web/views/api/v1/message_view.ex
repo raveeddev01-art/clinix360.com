@@ -72,6 +72,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   end
 
   def type("file_share"), do: "upload"
+  def type("file_comment"), do: "chat"
   def type(type), do: type
 
   def user_info(nil), do: nil

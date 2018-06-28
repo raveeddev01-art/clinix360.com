@@ -34,7 +34,11 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
          {:upload_comment, {:ok, upload_comment, groups}} <-
            {:upload_comment, UploadComment.create(upload, current_user, attrs, presence)} do
       Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
-        MessageEventsService.message_events(result.message, group, result.notify_user_ids)
+        MessageEventsService.message_creation_events(
+          result.message,
+          group,
+          result.notify_user_ids
+        )
       end)
 
       conn
@@ -62,8 +66,12 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
            {:upload_comment, UploadComment.get(upload_comment_id)},
          {:authorized, true} <-
            {:authorized, FileAuthorization.is_comment_creator?(upload_comment, current_user)},
-         {:updated_comment, {:ok, upload_comment}} <-
-           {:updated_comment, UploadComment.update(upload_comment, text_content)} do
+         {:updated_comment, {:ok, upload_comment, messages}} <-
+           {:updated_comment, UploadComment.update(upload_comment, text_content, current_user)} do
+      Enum.each(messages, fn message ->
+        MessageEventsService.message_edit_events(message)
+      end)
+
       conn
       |> render("show.json", file_comment: upload_comment)
     else
@@ -85,8 +93,12 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
            {:upload_comment, UploadComment.get(upload_comment_id)},
          {:authorized, true} <-
            {:authorized, FileAuthorization.is_comment_creator?(upload_comment, current_user)},
-         {:deleted_comment, {:ok, upload_comment}} <-
-           {:deleted_comment, UploadComment.delete(upload_comment)} do
+         {:deleted_comment, {:ok, upload_comment, messages}} <-
+           {:deleted_comment, UploadComment.delete(upload_comment, current_user)} do
+      Enum.each(messages, fn message ->
+        MessageEventsService.message_delete_events(message)
+      end)
+
       conn
       |> render("show.json", file_comment: upload_comment)
     else

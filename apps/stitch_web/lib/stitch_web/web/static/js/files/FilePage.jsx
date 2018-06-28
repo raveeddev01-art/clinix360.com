@@ -90,7 +90,7 @@ class FilePage extends Component {
       .then(e => this.setState({ commentText: "" }))
   }
 
-  rednerCommentInput(user) {
+  renderCommentInput(user) {
     return (
       <Col md={6}>
         <div className="avatar">
@@ -153,7 +153,7 @@ class FilePage extends Component {
               {file && file.comments && file.comments.map(comment =>
                 <FileComment comment={comment} key={comment.id} />
               )}
-              {user && this.rednerCommentInput(user)}
+              {currentUser && this.renderCommentInput(currentUser)}
             </Row>
           </Grid>
 
