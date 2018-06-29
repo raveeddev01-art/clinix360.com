@@ -41,10 +41,16 @@ class AddPatientModal extends Component {
   addPatient = () => {
     const { closeModal } = this.props;
 
-    console.log(
-      this.state.firstName + "\n" + this.state.lastName + "\n" + this.state.mrn
-    );
     closeModal();
+  };
+
+  generateMrnId = () => {
+    const id = Math.random()
+      .toString(36)
+      .substr(2, 8)
+      .toUpperCase();
+
+    this.setState({ mrn: id });
   };
 
   renderModalHeader() {
@@ -75,11 +81,11 @@ class AddPatientModal extends Component {
     );
   }
 
-  renderComposeModal() {
+  renderAddPatientModal() {
     const { firstName, lastName, mrn } = this.state;
 
     return (
-      <Modal.Body>
+      <Modal.Body className="add-patient-modal">
         <Form horizontal>
           {!!this.state.error && (
             <Alert bsStyle="danger">{this.state.error}</Alert>
@@ -127,12 +133,13 @@ class AddPatientModal extends Component {
                 <FormControl
                   name="mrn"
                   type="text"
-                  placeholder="e.g. 1234567890"
+                  placeholder="e.g. 12345678"
                   value={mrn}
                   onChange={this.updateValue("mrn")}
+                  maxLength="8"
                 />
                 <InputGroup.Button>
-                  <Button>Auto Generate</Button>
+                  <Button onClick={this.generateMrnId}>Auto Generate</Button>
                 </InputGroup.Button>
               </InputGroup>
 
@@ -150,7 +157,7 @@ class AddPatientModal extends Component {
     return (
       <div>
         {this.renderModalHeader()}
-        {this.renderComposeModal()}
+        {this.renderAddPatientModal()}
         {this.renderModalFooter()}
       </div>
     );

@@ -484,3 +484,32 @@ $dark-border-color: #ccc;
     }
   }
 }
+
+.add-patient-modal {
+  .form-group {
+    margin-bottom: 25px;
+
+    .form-control {
+      font-size: 18px;
+    }
+
+    .btn:active {
+      top: 0;
+    }
+
+    .btn:focus {
+      background: $body-bg;
+      border-color: $border-color;
+      box-shadow: none;
+    }
+
+    .btn:hover {
+      background: #e6e6e6;
+      border-color: #adadad;
+    }
+  }
+
+  .help-block {
+    color: #babbbf;
+  }
+}
