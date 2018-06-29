@@ -56,12 +56,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
          {:authorization?, true} <- {:authorization?, InboxAuthorization.can_view?(inbox, user)},
          {:ok, %{conversation: conversation, conversation_message: conversation_message}} <-
            Conversation.begin_conversation_as_provider(user, params) do
-<<<<<<< HEAD
       conversation = Repo.preload(conversation, :patients)
       conversation = conversation_with_show_data(conversation, [conversation_message])
-=======
-      conversation = conversation_with_show_data(conversation, user, [conversation_message])
->>>>>>> Add read status logic to conversation_messages
 
       InboxChannel.broadcast_conversation_creation(conversation)
       render(conn, "show.json", conversation: conversation)
