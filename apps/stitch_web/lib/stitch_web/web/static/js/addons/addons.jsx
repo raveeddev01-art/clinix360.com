@@ -5,6 +5,7 @@ import cx from "classnames";
 import Info from "./components/info/info";
 import Directory from "./components/directory/directory";
 import MessageSearch from "./components/message-search/message-search";
+import FileDetails from "./components/file-details/FileDetails";
 import GlobalStarredMessages from "./components/global-starred-messages/global-starred-messages";
 
 import PeopleDetail from "./components/people-detail/people-detail";
@@ -75,6 +76,8 @@ class Addons extends Component {
             )}
             {addonStore.addonPanelType === "files" && <Files />}
             {addonStore.addonPanelType === "Updates" && <Updates />}
+            {addonStore.addonPanelType === "File Details" &&
+              <FileDetails fileId={addonStore.addonPanelData} />}
           </div>
 
           <div className={rightPanelClass}>

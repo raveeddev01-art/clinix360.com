@@ -9,7 +9,7 @@ import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
-@inject("usersStore", "messageStore")
+@inject("usersStore", "messageStore", "addonStore")
 @observer
 class MessageContent extends Component {
   onToggle = emoji => {
@@ -71,6 +71,13 @@ class MessageContent extends Component {
     return null;
   };
 
+  onCommentsClick(e) {
+    console.log('on comments click');
+    console.log(this.props.message)
+    this.props.addonStore.setAddonPanel("File Details", this.props.message.upload_id);
+    this.props.addonStore.toggleAddons(true);
+  }
+
   render() {
     const { inSearch, message } = this.props;
     const userId = message.user.id;
@@ -89,13 +96,13 @@ class MessageContent extends Component {
         properties={{ target: "_blank", className: "message-link" }}
         className="message-body-wrapper"
       >
-        {message.type === "upload" && <FileAttachment {...message.fields} />}
+        {message.type === "upload" && <FileAttachment {...message.fields} onCommentsClick={() => this.onCommentsClick()} />}
         <div className="message-body">
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{messageContentComponents}</div>
           ) : (
-            messageContentComponents
-          )}
+              messageContentComponents
+            )}
 
           {user && user.is_bot ? this._renderIntegrationLink() : null}
           {this.renderLinkPreviews()}

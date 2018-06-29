@@ -74,13 +74,9 @@ class ImageFileAttachment extends Component {
                 <OverlayTrigger
                   placement="top"
                   delayShow={150}
-                  overlay={<Tooltip id="download-file">Download</Tooltip>}
+                  overlay={<Tooltip id="file-comments">File comments</Tooltip>}
                 >
-                  <Button
-                    target="_blank"
-                    href={url}
-                    onClick={this.onFileDownload}
-                  >
+                  <Button href={url} onClick={this.props.onCommentsClick}>
                     {`${this.props.comment_count} Comments`}
                   </Button>
                 </OverlayTrigger>

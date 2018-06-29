@@ -87,11 +87,8 @@ defmodule Stitch.Files.FileQueries do
   @spec get_by_id(pos_integer, list) :: Upload.t() | nil
   def get_by_id(upload_id, opts \\ [])
 
-  def get_by_id(upload_id, preload_comments: true) do
-    Upload
-    |> where([f], f.id == ^upload_id)
-    |> preload([:upload_comments])
-    |> Repo.one()
+  def get_by_id(upload_id, []) do
+    Repo.get(Upload, upload_id)
   end
 
   def get_by_id(upload_id, preload_assoc: true) do
@@ -99,6 +96,7 @@ defmodule Stitch.Files.FileQueries do
       Upload
       |> where([f], f.id == ^upload_id)
       |> preload([:group_uploads])
+      |> preload([:upload_comments])
       |> Repo.one()
 
     case result do
@@ -108,9 +106,5 @@ defmodule Stitch.Files.FileQueries do
       _ ->
         nil
     end
-  end
-
-  def get_by_id(upload_id, _opts) do
-    Repo.get(Upload, upload_id)
   end
 end

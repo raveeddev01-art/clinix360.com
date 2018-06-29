@@ -50,6 +50,16 @@ class DefaultFileAttachment extends Component {
             <OverlayTrigger
               placement="top"
               delayShow={150}
+              overlay={<Tooltip id="file-comments">File comments</Tooltip>}
+            >
+              <Button href={url} onClick={this.props.onCommentsClick}>
+                {`${this.props.comment_count} Comments`}
+              </Button>
+            </OverlayTrigger>
+
+            <OverlayTrigger
+              placement="top"
+              delayShow={150}
               overlay={<Tooltip id="download-file">Download</Tooltip>}
             >
               <Button target="_blank" href={url} onClick={this.onFileDownload}>

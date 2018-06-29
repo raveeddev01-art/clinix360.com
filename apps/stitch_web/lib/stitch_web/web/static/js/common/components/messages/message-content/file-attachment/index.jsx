@@ -10,13 +10,21 @@ const FileAttachmentRenderer = {
 };
 
 class FileAttachment extends Component {
+  onCommentsClick = e => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (this.props.onCommentsClick) {
+      this.props.onCommentsClick()
+    }
+  }
+
   render() {
     const { mimetype } = this.props;
     const filetype = getFileType(mimetype);
     const Renderer =
       FileAttachmentRenderer[filetype.title] || FileAttachmentRenderer.File;
 
-    return <Renderer {...this.props} />;
+    return <Renderer {...this.props} onCommentsClick={e => this.onCommentsClick(e)} />;
   }
 }
 
