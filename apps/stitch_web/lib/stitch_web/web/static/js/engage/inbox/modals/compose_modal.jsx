@@ -33,12 +33,12 @@ class ComposeModal extends Component {
     });
   }
 
-  updatePatient = value => {
+  handlePatientChange = value => {
     this.setState({ patient: value });
   };
 
-  updateValue = field => evt => {
-    this.setState({ [field]: evt.target.value });
+  handleChange = evt => {
+    this.setState({ message: evt.target.value });
   };
 
   createConversation = () => {
@@ -96,6 +96,7 @@ class ComposeModal extends Component {
           bsSize="large"
           bsStyle="primary"
           onClick={this.createConversation}
+          disabled={!this.state.patient || !this.state.message}
         >
           Send
         </Button>
@@ -119,7 +120,12 @@ class ComposeModal extends Component {
             </Col>
 
             <Col sm={9}>
-              <Patients onChange={this.updatePatient} value={patient} />
+              <Patients
+                name="patient"
+                onChange={this.handlePatientChange}
+                value={patient}
+                showAddPatientModal={this.props.showAddPatientModal}
+              />
             </Col>
           </FormGroup>
 
@@ -135,7 +141,7 @@ class ComposeModal extends Component {
                 rows="7"
                 componentClass="textarea"
                 value={message}
-                onChange={this.updateValue("message")}
+                onChange={this.handleChange}
               />
             </Col>
           </FormGroup>

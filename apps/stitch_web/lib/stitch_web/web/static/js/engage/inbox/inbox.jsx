@@ -98,10 +98,20 @@ class InboxMenu extends Component {
             <div>
               <Nav justified className="status-filter">
                 <NavItem eventKey="first">
-                  Open ({inboxStore.currentInbox.open_conversations_count})
+                  Open{" "}
+                  {inboxStore.currentInbox.open_conversations_count > 0 && (
+                    <span>
+                      ({inboxStore.currentInbox.open_conversations_count})
+                    </span>
+                  )}
                 </NavItem>
                 <NavItem eventKey="second">
-                  Closed ({inboxStore.closedConversationsCount})
+                  Closed{" "}
+                  {inboxStore.currentInbox.closed_conversations_count > 0 && (
+                    <span>
+                      ({inboxStore.currentInbox.closed_conversations_count})
+                    </span>
+                  )}
                 </NavItem>
               </Nav>
 
@@ -114,7 +124,7 @@ class InboxMenu extends Component {
                     }}
                   >
                     <div className="menu-nav m-b-20">
-                      {inboxStore.conversations.length > 0 ? (
+                      {inboxStore.currentInbox.open_conversations_count > 0 ? (
                         inboxStore.openedConversations.map(
                           (conversation, index) => (
                             <Conversation
@@ -125,8 +135,7 @@ class InboxMenu extends Component {
                         )
                       ) : (
                         <div className="empty-inbox">
-                          <i className="fa fa-comments-o" />
-                          <h3>No open conversations yet</h3>
+                          <h3>No Open Conversations</h3>
                         </div>
                       )}
                     </div>
@@ -140,7 +149,7 @@ class InboxMenu extends Component {
                       this.scrollbar = ref;
                     }}
                   >
-                    {inboxStore.closedConversations.length > 0 ? (
+                    {inboxStore.currentInbox.closed_conversations_count > 0 ? (
                       <div className="menu-nav m-b-20">
                         {inboxStore.closedConversations.map(
                           (conversation, index) => (
@@ -153,8 +162,7 @@ class InboxMenu extends Component {
                       </div>
                     ) : (
                       <div className="empty-inbox">
-                        <i className="fa fa-comments-o" />
-                        <h3>No closed conversations yet</h3>
+                        <h3>No Closed Conversations</h3>
                       </div>
                     )}
                   </Scrollbar>
