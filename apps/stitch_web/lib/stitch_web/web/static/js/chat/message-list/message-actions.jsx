@@ -13,7 +13,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactionPicker } from "common/components";
 import { isAdmin } from "../../lib/utils";
 
-@inject("messageStore")
+@inject("messageStore", "teamFileStore")
 class MessageActions extends PureComponent {
   constructor(props) {
     super(props);
@@ -94,6 +94,11 @@ class MessageActions extends PureComponent {
     this.setState({ isEmojiPickerOpen: true });
   };
 
+  shareFile = () => {
+    const message = this.props.message
+    this.props.teamFileStore.openShareModal(message.upload_id)
+  }
+
   markAsUnread = () => {
     const { message, messageStore } = this.props;
 
@@ -157,6 +162,18 @@ class MessageActions extends PureComponent {
           </Button>
         </OverlayTrigger>
 
+        {(message.type == "upload") &&
+          <OverlayTrigger
+            placement="top"
+            delayShow={150}
+            overlay={<Tooltip id="message-react">Share file</Tooltip>}
+          >
+            <Button onClick={e => this.shareFile()}>
+              <i className="fa fa-smile-o" />
+            </Button>
+          </OverlayTrigger>
+        }
+
         <OverlayTrigger
           placement="top"
           delayShow={150}
@@ -201,12 +218,12 @@ class MessageActions extends PureComponent {
             onToggle={this.onToggleContextualMenu}
           >
             {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
-                <MenuItem onClick={this.markAsUnread}>
-                  <span>
-                    <i className="fa fa-circle" />&nbsp;Mark as unread
+              <MenuItem onClick={this.markAsUnread}>
+                <span>
+                  <i className="fa fa-circle" />&nbsp;Mark as unread
                   </span>
-                </MenuItem>
-              )}
+              </MenuItem>
+            )}
 
             <CopyToClipboard text={message.text_content} onCopy={this.copy}>
               <MenuItem>
@@ -227,12 +244,12 @@ class MessageActions extends PureComponent {
             )}
 
             {(mine || isAdmin()) && (
-                <MenuItem onClick={this.delete}>
-                  <span>
-                    <i className="fa fa-trash" />&nbsp;Delete message
+              <MenuItem onClick={this.delete}>
+                <span>
+                  <i className="fa fa-trash" />&nbsp;Delete message
                   </span>
-                </MenuItem>
-              )}
+              </MenuItem>
+            )}
           </DropdownButton>
         </OverlayTrigger>
       </ButtonGroup>,

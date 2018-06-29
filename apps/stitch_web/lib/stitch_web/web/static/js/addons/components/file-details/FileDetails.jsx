@@ -54,9 +54,6 @@ class FileDetails extends Component {
 
   render() {
     const file = this.props.teamFileStore.file;
-    if (file.id) {
-      debugger
-    }
 
     return (
       <div className="search-results-addon">

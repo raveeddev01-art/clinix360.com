@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Panel from "react-bootstrap/lib/Panel";
-import { Media, DropdownButton, MenuItem, Button, Grid, Row, Col, FormControl, FormGroup } from "react-bootstrap";
+import { DropdownButton, MenuItem, Button, Grid, Row, Col } from "react-bootstrap";
 import { inject, observer } from "mobx-react";
 import prettyBytes from "pretty-bytes";
 import moment from "moment";
@@ -26,7 +26,6 @@ const FileInfo = ({ file }) => {
 class FilePage extends Component {
   constructor(props) {
     super(props);
-    window.FilePage = this;
     this.state = {
       commentText: ""
     };

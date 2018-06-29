@@ -4,9 +4,11 @@ import _ from "lodash";
 
 class TeamFileStore {
   @observable file = {};
+  @observable fileShareModalId = undefined;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.fileShareModalId = undefined;
   }
 
   @action
@@ -65,6 +67,13 @@ class TeamFileStore {
     return get(`/api/v1/files/${encodedFileId}`).then(response =>
       this.file = response.data
     );
+  }
+
+  openShareModal(fileId) {
+    get(`/api/v1/files/${fileId}`).then(response => {
+      this.file = response.data;
+      this.fileShareModalId = fileId;
+    })
   }
 }
 

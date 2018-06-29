@@ -8,7 +8,6 @@ class TeamFilesStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-    window.globalstore = this;
     this.params = {
       skip: 0,
       limit: 50,
