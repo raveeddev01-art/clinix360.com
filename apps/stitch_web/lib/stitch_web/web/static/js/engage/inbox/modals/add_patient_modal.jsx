@@ -74,7 +74,14 @@ class AddPatientModal extends Component {
         <Button bsSize="large" onClick={closeModal}>
           Cancel
         </Button>
-        <Button bsSize="large" bsStyle="primary" onClick={this.addPatient}>
+        <Button
+          bsSize="large"
+          bsStyle="primary"
+          onClick={this.addPatient}
+          disabled={
+            !this.state.firstName || !this.state.lastName || !this.state.mrn
+          }
+        >
           Add
         </Button>
       </Modal.Footer>
