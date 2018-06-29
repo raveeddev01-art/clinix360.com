@@ -63,7 +63,7 @@ config :exq,
   queues: [{"timed_messages", 10}],
   poll_timeout: 50,
   scheduler_poll_timeout: 200,
-  max_retries: 5
+  max_retries: 3
 
 config :exq_ui,
   web_port: 4040,

@@ -38,7 +38,7 @@ defmodule Stitch.Web.Application do
     opts = [
       strategy: :one_for_one,
       name: StitchConnect.Supervisor,
-      max_restarts: 1_000,
+      max_restarts: 10,
       max_seconds: 1
     ]
 
