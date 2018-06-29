@@ -14,7 +14,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-@inject("inboxStore")
+@inject("inboxStore", "patientsStore")
 @observer
 class AddPatientModal extends Component {
   constructor(props) {
@@ -24,6 +24,7 @@ class AddPatientModal extends Component {
       error: "",
       firstName: "",
       lastName: "",
+      email: "",
       mrn: ""
     };
   }
@@ -38,12 +39,6 @@ class AddPatientModal extends Component {
     this.setState({ [field]: evt.target.value });
   };
 
-  addPatient = () => {
-    const { closeModal } = this.props;
-
-    closeModal();
-  };
-
   generateMrnId = () => {
     const id = Math.random()
       .toString(36)
@@ -51,6 +46,31 @@ class AddPatientModal extends Component {
       .toUpperCase();
 
     this.setState({ mrn: id });
+  };
+
+  addPatient = () => {
+    const { patientsStore, closeModal } = this.props;
+
+    patientsStore
+      .createPatient({
+        first_name: this.state.firstName,
+        last_name: this.state.lastName,
+        email: this.state.email,
+        mrn: this.state.mrn
+      })
+      .then(() => {
+        this.setState({
+          error: null
+        });
+        closeModal();
+      })
+      .catch(response => {
+        this.setState({
+          error: response.data.message
+        });
+      });
+
+    closeModal();
   };
 
   renderModalHeader() {
@@ -89,7 +109,7 @@ class AddPatientModal extends Component {
   }
 
   renderAddPatientModal() {
-    const { firstName, lastName, mrn } = this.state;
+    const { firstName, lastName, email, mrn } = this.state;
 
     return (
       <Modal.Body className="add-patient-modal">
@@ -126,6 +146,22 @@ class AddPatientModal extends Component {
                 placeholder="Last Name"
                 value={lastName}
                 onChange={this.updateValue("lastName")}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup bsSize="large">
+            <Col componentClass={ControlLabel} sm={3}>
+              Email
+            </Col>
+
+            <Col sm={9}>
+              <FormControl
+                name="email"
+                type="email"
+                placeholder="Email address"
+                value={email}
+                onChange={this.updateValue("email")}
               />
             </Col>
           </FormGroup>

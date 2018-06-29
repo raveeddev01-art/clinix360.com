@@ -57,7 +57,7 @@ class ComposeModal extends Component {
       })
       .catch(response => {
         this.setState({
-          error: "This conversation already exists."
+          error: response.data.message
         });
       });
 
