@@ -218,14 +218,8 @@ defmodule Stitch.Factory do
       first_name: "Gilbert",
       last_name: "Motier",
       email: sequence(:email, &"email-#{&1}@example.com"),
-      onboarded: true
-    }
-  end
-
-  def team_patient_factory do
-    %Stitch.TeamPatient{
+      onboarded: true,
       team: build(:team),
-      patient: build(:patient),
       mrn: Stitch.Rand.token(32)
     }
   end
@@ -243,6 +237,13 @@ defmodule Stitch.Factory do
       emoji_name: "sunglasses",
       conversation_message: build(:conversation_message),
       user: build(:user)
+    }
+  end
+
+  def conversation_patient_factory do
+    %Stitch.Engage.ConversationPatient{
+      patient: build(:patient),
+      conversation: build(:conversation)
     }
   end
 end

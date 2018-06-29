@@ -5,7 +5,7 @@ defmodule Stitch.Web.TeamChannel do
   alias Stitch.Web.Api.V1.UserView
   alias Stitch.Web.Presence
   alias StitchConnect.Web.Api.V1.GroupView
-  alias Stitch.Web.Api.V1.TeamPatientView
+  alias Stitch.Web.Api.V1.PatientView
   alias Stitch.Accounts.ActivityTracker
   alias StitchConnect.Web.PushNotifications
 
@@ -252,24 +252,22 @@ defmodule Stitch.Web.TeamChannel do
   #   PATIENT
   # ===========
 
-  def broadcast_team_patient_added(
+  def broadcast_patient_added(
         team_id,
-        %Stitch.TeamPatient{} = team_patient,
         %Stitch.Patient{} = patient
       )
       when is_number(team_id) do
-    team_patient_json = TeamPatientView.team_patient_json(team_patient, patient)
-    @endpoint.broadcast("team:lobby:#{team_id}", "patient_added", team_patient_json)
+    patient_json = PatientView.patient_json(patient)
+    @endpoint.broadcast("team:lobby:#{team_id}", "patient_added", patient_json)
   end
 
-  def broadcast_team_patient_updated(
+  def broadcast_patient_updated(
         team_id,
-        %Stitch.TeamPatient{} = team_patient,
         %Stitch.Patient{} = patient
       )
       when is_number(team_id) do
-    team_patient_json = TeamPatientView.team_patient_json(team_patient, patient)
-    @endpoint.broadcast("team:lobby:#{team_id}", "patient_updated", team_patient_json)
+    patient_json = PatientView.patient_json(patient)
+    @endpoint.broadcast("team:lobby:#{team_id}", "patient_updated", patient_json)
   end
 
   # ========

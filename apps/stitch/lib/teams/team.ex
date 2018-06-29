@@ -33,8 +33,7 @@ defmodule Stitch.Team do
     has_many(:exports, Stitch.Exports.Export, on_delete: :delete_all)
 
     # Patients
-    has_many(:team_patients, Stitch.TeamPatient, on_delete: :delete_all)
-    has_many(:patients, through: [:team_patients, :patient])
+    has_many(:patients, Stitch.Patient)
 
     # Engage
     has_many(:inboxes, Stitch.Engage.Inbox, on_delete: :delete_all)

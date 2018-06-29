@@ -16,7 +16,7 @@ defmodule Stitch.Engage.ConversationMessage do
   alias Stitch.{
     Repo,
     # ReadStatus,
-    TeamPatient,
+    Patient,
     Accounts.User,
     Files.Upload,
     Engage.Conversation,
@@ -32,8 +32,6 @@ defmodule Stitch.Engage.ConversationMessage do
   # TODO: remove once dev is done
   @all_attributes [
     :conversation_id,
-    :team_patient_id,
-    :provider_id,
     :deleted,
     :edited_at,
     :text_content,
@@ -59,7 +57,7 @@ defmodule Stitch.Engage.ConversationMessage do
     # In lieu of polymorphism, each row has either a patient_id or a provider_id.
     # See link for polymorphic options in phoenix (this is option 1)
     # https://hexdocs.pm/ecto/Ecto.Schema.html#belongs_to/3-polymorphic-associations
-    belongs_to(:team_patient, TeamPatient)
+    belongs_to(:patient, Patient)
     belongs_to(:provider, User)
     belongs_to(:upload, Upload)
 
@@ -113,15 +111,10 @@ defmodule Stitch.Engage.ConversationMessage do
     struct
     |> cast(params, @all_attributes)
     |> validate_required(@required_attributes)
-    |> unique_constraint(
-      :slug,
-      name: :conversations_inbox_id_slug_index,
-      message: "has already been taken"
-    )
   end
 
-  def create_for_patient(conversation_id, team_patient_id, params) do
-    %ConversationMessage{conversation_id: conversation_id, team_patient_id: team_patient_id}
+  def create_for_patient(conversation_id, patient_id, params) do
+    %ConversationMessage{conversation_id: conversation_id, patient_id: patient_id}
     |> changeset(params)
     |> Repo.insert()
   end

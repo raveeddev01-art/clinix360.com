@@ -154,12 +154,12 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/files/:id/create_public_link", FileController, :create_public_link)
     post("/files/:id/revoke_public_link", FileController, :revoke_public_link)
 
-    get("/patients", TeamPatientController, :index)
-    get("/patients/:id", TeamPatientController, :show)
-    post("/patients", TeamPatientController, :create)
-    put("/patients/:id", TeamPatientController, :update)
-    put("/patients/:id/activate", TeamPatientController, :activate)
-    put("/patients/:id/deactivate", TeamPatientController, :deactivate)
+    get("/patients", PatientController, :index)
+    get("/patients/:id", PatientController, :show)
+    post("/patients", PatientController, :create)
+    put("/patients/:id", PatientController, :update)
+    put("/patients/:id/activate", PatientController, :activate)
+    put("/patients/:id/deactivate", PatientController, :deactivate)
   end
 
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
@@ -292,7 +292,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/engage", EngageController, :index)
     get("/conversations/:id", EngageController, :index)
-    
+
     get("/manage", ManageController, :index)
     get("/patients", PageController, :index)
   end

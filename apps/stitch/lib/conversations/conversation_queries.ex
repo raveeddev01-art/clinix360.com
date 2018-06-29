@@ -95,7 +95,7 @@ defmodule Stitch.Engage.ConversationQueries do
   """
   @spec load_message_info(ConversationMessage.t()) :: ConversationMessage.t()
   def load_message_info(conversation_message) do
-    Repo.preload(conversation_message, [:provider, team_patient: :patient], force: true)
+    Repo.preload(conversation_message, [:provider, :patient], force: true)
   end
 
   # ===========
@@ -103,7 +103,7 @@ defmodule Stitch.Engage.ConversationQueries do
   # ===========
 
   defp with_patients(query) do
-    query |> preload(team_patients: :patient)
+    query |> preload(:patients)
   end
 
   defp with_latest_message_for_each(conversations) do

@@ -1,7 +1,7 @@
 defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
   alias Stitch.{
     Accounts.User,
-    TeamPatient,
+    Patient,
     Message.Reaction
   }
 
@@ -33,8 +33,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
     %{
       id: conversation_message.id,
       provider_id: conversation_message.provider_id,
-      patient_id: conversation_message.team_patient_id,
-      user: sender_info(conversation_message.provider, conversation_message.team_patient),
+      patient_id: conversation_message.patient_id,
+      user: sender_info(conversation_message.provider, conversation_message.patient),
       conversation_id: conversation_message.conversation_id,
       deleted: conversation_message.deleted,
       text_content: conversation_message.text_content,
@@ -58,7 +58,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
 
   def sender_info(nil, nil), do: sender_info(nil)
   def sender_info(provider = %User{}, nil), do: sender_info(provider)
-  def sender_info(nil, patient = %TeamPatient{}), do: sender_info(patient)
+  def sender_info(nil, patient = %Patient{}), do: sender_info(patient)
   def sender_info(_, _), do: sender_info(nil)
 
   def sender_info(nil), do: nil

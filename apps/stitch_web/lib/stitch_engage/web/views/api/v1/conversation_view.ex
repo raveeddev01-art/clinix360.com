@@ -1,6 +1,6 @@
 defmodule StitchEngage.Web.Api.V1.ConversationView do
   use Stitch.Web, :view
-  alias Stitch.Web.Api.V1.TeamPatientView
+  alias Stitch.Web.Api.V1.PatientView
   alias StitchEngage.Web.Api.V1.ConversationMessageView
 
   def render("index.json", %{conversations: conversations}) do
@@ -16,10 +16,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
   end
 
   defp conversation_json(conversation) do
-    patient_json =
-      conversation.team_patients
-      |> List.first()
-      |> TeamPatientView.team_patient_json()
+    patient = conversation.patients |> List.first()
+    patient_json = PatientView.patient_json(patient)
 
     %{
       id: conversation.id,

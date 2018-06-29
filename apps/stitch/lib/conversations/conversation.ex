@@ -32,7 +32,7 @@ defmodule Stitch.Engage.Conversation do
     has_many(:conversation_providers, ConversationProvider, on_delete: :delete_all)
     has_many(:conversation_patients, ConversationPatient, on_delete: :delete_all)
     has_many(:providers, through: [:conversation_providers, :provider])
-    has_many(:team_patients, through: [:conversation_patients, :team_patient])
+    has_many(:patients, through: [:conversation_patients, :patient])
     has_one(:latest_conversation_message, ConversationMessage)
 
     timestamps()
@@ -134,7 +134,7 @@ defmodule Stitch.Engage.Conversation do
       {:ok, touched_conversation} ->
         conversation_with_preloads =
           touched_conversation
-          |> Repo.preload(:team_patients)
+          |> Repo.preload(:patients)
           |> Map.put(:latest_conversation_message, latest_conversation_message)
 
         InboxChannel.broadcast_conversation_update(conversation_with_preloads)
