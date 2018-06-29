@@ -155,6 +155,7 @@ defmodule Stitch.Web.SubdomainRouter do
     resources("/file_comments", FileCommentController, only: [:update, :delete])
     resources("/files", FileController, only: [:index, :show, :delete])
 
+    post("/files/:id/share", FileController, :share)
     post("/files/:id/unshare", FileController, :unshare)
     post("/files/:id/create_public_link", FileController, :create_public_link)
     post("/files/:id/revoke_public_link", FileController, :revoke_public_link)

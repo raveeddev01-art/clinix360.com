@@ -77,7 +77,7 @@ class ImageFileAttachment extends Component {
                   overlay={<Tooltip id="file-comments">File comments</Tooltip>}
                 >
                   <Button href={url} onClick={this.props.onCommentsClick}>
-                    {`${this.props.comment_count} Comments`}
+                    {`${this.props.comment_count || 0} Comments`}
                   </Button>
                 </OverlayTrigger>
 

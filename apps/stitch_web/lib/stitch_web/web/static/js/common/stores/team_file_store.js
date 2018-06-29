@@ -69,6 +69,12 @@ class TeamFileStore {
     );
   }
 
+  @action
+  share(groupId) {
+    const body = { group_id: groupId };
+    return post(`/api/v1/files/${this.file.id}/share`, { body });
+  }
+
   openShareModal(fileId) {
     get(`/api/v1/files/${fileId}`).then(response => {
       this.file = response.data;

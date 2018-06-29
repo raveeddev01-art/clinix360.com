@@ -2,17 +2,40 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Modal from "react-bootstrap/lib/Modal";
+import { FormGroup, FormControl, Button, Col } from "react-bootstrap";
+import history from "lib/history";
+
 import _ from "lodash";
 import FileCommentInput from "../../files/FileCommentInput";
+import CommentingIn from "../../files/CommentingIn";
 
 
 @inject("teamFileStore", "groupsStore", "presenceStore")
 @observer
 class FileShareModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      commentText: "",
+      selectedGroup: undefined
+    }
+  }
 
   closeModal = () => {
     this.props.teamFileStore.fileShareModalId = null;
   };
+
+  share = () => {
+    const groupId = this.state.selectedGroup.id;
+    this.props.teamFileStore.share(groupId).then(file => {
+      this.closeModal()
+      history.push(`/rooms/${this.state.selectedGroup.slug}`)
+    })
+  }
+
+  onGroupSelect = (group) => {
+    this.setState({ selectedGroup: group });
+  }
 
   renderModalHeader() {
     return (
@@ -57,8 +80,7 @@ class FileShareModal extends Component {
   }
 
   renderSharedInSelector() {
-    const groups = this.props.groupsStore.groups;
-    const onSelect = () => null
+    const groups = this.props.groupsStore.groups
 
     return (
       <Typeahead
@@ -67,9 +89,9 @@ class FileShareModal extends Component {
         options={groups}
         onChange={selected => {
           if (selected.length == 0) {
-            onSelect(null);
+            return null;
           } else {
-            onSelect(selected[0].id);
+            this.onGroupSelect(selected[0]);
           }
         }}
         renderMenuItemChildren={(group) => (
@@ -83,6 +105,34 @@ class FileShareModal extends Component {
     )
   }
 
+  handleChange(e) {
+    this.setState({ commentText: e.target.value });
+  }
+
+  renderCommentInput() {
+    return (
+      <Col md={6}>
+        <FormGroup>
+          <FormControl
+            componentClass="textarea"
+            placeholder="textarea"
+            value={this.state.commentText}
+            onChange={e => this.handleChange(e)} />
+        </FormGroup>
+
+        <CommentingIn file={this.props.teamFileStore.file} />
+
+        <Button bsStyle="default" onClick={_ => this.closeModal()}>
+          Cancel
+        </Button>
+
+        <Button bsStyle="success" onClick={_ => this.share()}>
+          Share
+        </Button>
+      </Col>
+    )
+  }
+
   renderModalBody() {
     return (
       <Modal.Body>
@@ -90,7 +140,7 @@ class FileShareModal extends Component {
           {"Share file in"}
           {this.renderSharedInSelector()}
           {"Add comment (optional)"}
-          <FileCommentInput file={this.props.teamFileStore.file} />
+          {this.renderCommentInput()}
         </div>
       </Modal.Body>
     );
