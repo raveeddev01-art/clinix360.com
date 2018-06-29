@@ -111,6 +111,18 @@ defmodule Stitch.Engage.ConversationMessage do
     |> validate_required(@required_attributes)
   end
 
+  def create_for_patient(conversation_id, patient_id, params) do
+    %ConversationMessage{conversation_id: conversation_id, patient_id: patient_id}
+    |> changeset(params)
+    |> Repo.insert()
+  end
+
+  def create_for_provider(conversation_id, provider_id, params) do
+    %ConversationMessage{conversation_id: conversation_id, provider_id: provider_id}
+    |> changeset(params)
+    |> Repo.insert()
+  end
+
   def update(conversation_message, attributes) do
     conversation_message
     |> edit_changeset(%{text_content: attributes["text_content"]})
