@@ -100,9 +100,9 @@ export const PRODUCTS = {
       features: [
         { name: "Full HIPAA Compliance" },
         { name: "Patient Messaging" },
-        { name: "Custom Inboxes" },
+        { name: "Assignments" },
         { name: "Search & File Uploads" },
-        { name: "Custom URL" },
+        { name: "Dedicated URL" },
         { name: "Mac & Windows Apps" },
         { name: "iOS & Android Apps" }
       ]
@@ -118,7 +118,7 @@ export const PRODUCTS = {
         { name: "Advanced Security Controls" },
         { name: "Family Access" },
         { name: "Internal Notes" },
-        { name: "Patient Education Content" },
+        { name: "Custom Inboxes" },
         { name: "Custom Forms" },
         { name: "Priority Support" }
       ]
@@ -132,10 +132,10 @@ export const PRODUCTS = {
       features: [
         { name: "All features from Standard" },
         { name: "Voice & Video Calls" },
-        { name: "Payments Portals" },
+        { name: "API Access" },
         { name: "Custom Integrations" },
-        { name: "Patient Scheduling" },
-        { name: "Live Website Chat" },
+        { name: "White Labeling" },
+        { name: "Custom URL" },
         { name: "Dedicated Support" }
       ]
     }

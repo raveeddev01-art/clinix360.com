@@ -13,6 +13,8 @@ import CreateTeam from "../components/create-team";
 import Feature from "../components/feature";
 import Footer from "../components/footer";
 
+const typeformLink = "https://teamstitch.typeform.com/to/Yt22AI";
+
 export default class Manage extends Component {
   constructor(props) {
     super(props);
@@ -55,7 +57,7 @@ export default class Manage extends Component {
                   goes from start to done.
                 </h3>
 
-                <CreateTeam />
+                <CreateTeam typeformLink={typeformLink} />
               </div>
 
               <div className="flex-item">
@@ -203,7 +205,7 @@ export default class Manage extends Component {
           <div className={setupClass}>
             <div className="setup-line" />
             <div className="container">
-              <h2>Simple setup in under 5 minutes</h2>
+              <h2>Simple setup on any device</h2>
 
               <div className="steps">
                 <Panel className="step-1">
@@ -253,11 +255,8 @@ export default class Manage extends Component {
               </div>
 
               <div className="text-center">
-                <Button
-                  bsStyle="primary"
-                  href="https://teamstitch.com/signup/email"
-                >
-                  Get Started
+                <Button bsStyle="primary" href={typeformLink}>
+                  Request Access
                 </Button>
               </div>
             </div>
