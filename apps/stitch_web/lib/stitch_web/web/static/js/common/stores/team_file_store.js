@@ -98,6 +98,13 @@ class TeamFileStore {
       this.file = file;
     }
   };
+
+  @action
+  onFileCommentEdited = file => {
+    if (file.id === this.file.id) {
+      this.file = file;
+    }
+  };
 }
 
 export default TeamFileStore;

@@ -53,7 +53,6 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
 
   def file_comment_creation_events(groups, upload) do
     upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
-
     GroupChannel.broadcast_file_comment_added(upload)
 
     Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
@@ -77,9 +76,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
            {:authorized, FileAuthorization.is_comment_creator?(upload_comment, current_user)},
          {:updated_comment, {:ok, upload_comment, messages}} <-
            {:updated_comment, UploadComment.update(upload_comment, text_content, current_user)} do
-      Enum.each(messages, fn message ->
-        MessageEventsService.message_edit_events(message)
-      end)
+      file_comment_edit_events(messages, upload_comment.upload_id)
 
       conn
       |> render("show.json", file_comment: upload_comment)
@@ -93,6 +90,15 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
       {:updated_comment, {:error, changeset}} ->
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
+  end
+
+  def file_comment_edit_events(messages, upload_id) do
+    upload = FileQueries.get_by_id(upload_id, preload_assoc: true)
+    GroupChannel.broadcast_file_comment_edited(upload)
+
+    Enum.each(messages, fn message ->
+      MessageEventsService.message_edit_events(message)
+    end)
   end
 
   def delete(conn, %{"id" => upload_comment_id}) do

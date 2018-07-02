@@ -1320,6 +1320,17 @@ class MessageStore {
       this.updateMessageData(file.id, { fields: payload });
     });
   };
+
+  @action
+  onFileCommentEdited = payload => {
+    const files = this.messages.filter(
+      message => message.upload_id === payload.id && message.type === "upload"
+    );
+
+    files.forEach(file => {
+      this.updateMessageData(file.id, { fields: payload });
+    });
+  };
 }
 
 export default MessageStore;

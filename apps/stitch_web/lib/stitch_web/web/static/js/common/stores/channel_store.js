@@ -139,6 +139,10 @@ class ChannelStore {
     this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
     this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
     this.groupChannel.on("is_typing", groupStore.onStartedTyping);
+    this.groupChannel.on(
+      "file_comment_edited",
+      teamFileStore.onFileCommentEdited
+    );
     this.groupChannel.on("file_comment_added", messageStore.onFileCommentAdded);
     this.groupChannel.on(
       "file_comment_added",
