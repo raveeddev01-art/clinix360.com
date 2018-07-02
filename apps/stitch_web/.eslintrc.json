@@ -73,6 +73,7 @@
           "sidemenuStore",
           "socketStore",
           "teamStore",
+          "teamFileStore",
           "titleStore",
           "uploadStore",
           "userStore",
