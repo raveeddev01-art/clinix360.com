@@ -147,7 +147,7 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   defp is_unread_without_join_record(conversation, user) do
-    conversation.updated_at > user.inserted_at
+    Timex.before?(user.inserted_at, conversation.updated_at)
   end
 
   defp with_patients(query) do

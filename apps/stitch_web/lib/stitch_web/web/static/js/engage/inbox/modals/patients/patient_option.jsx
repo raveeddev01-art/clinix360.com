@@ -39,11 +39,11 @@ class PatientOption extends Component {
         onMouseDown={this.handleMouseDown}
         onMouseEnter={this.handleMouseEnter}
         onMouseMove={this.handleMouseMove}
-        title={option.username}
+        title={option.full_name}
       >
         <Avatar user={option} />
-        <span>{`${option.first_name} ${option.last_name}`}</span>
-        <small>{option.username}</small>
+        <span>{option.full_name}</span>
+        <small>{option.mrn}</small>
       </div>
     );
   }

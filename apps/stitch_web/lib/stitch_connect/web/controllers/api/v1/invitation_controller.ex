@@ -1,8 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use Stitch.Web, :controller
+
   alias Stitch.{Invitation, FeatureGateway, TeamAuthorization}
-  alias Stitch.Web.TeamChannel
-  alias Stitch.Web.EventsChannel
+  alias Stitch.Web.{TeamChannel, EventsChannel}
   alias StitchConnect.Web.GroupChannel
 
   plug(:fetch_session when action in [:accept])
@@ -250,5 +250,31 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
       message:
         "Some parameter missing out of token, first_name, last_name, username, password, pin."
     })
+  end
+
+  def patient_accept(conn, %{"token" => invite_token} = params) do
+    case Invitation.accept_and_complete_patient_onboarding(invite_token, params) do
+      {:ok, %{patient: patient}} ->
+        TeamChannel.broadcast_patient_updated(patient.team_id, patient)
+
+        conn
+        |> login_patient(patient)
+        |> json(%{id: patient.id, email: patient.email, onboarded: patient.onboarded})
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+
+      {:error, message} when is_binary(message) ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
+
+      {:error, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Could not finish onboarding patient."})
+    end
   end
 end
