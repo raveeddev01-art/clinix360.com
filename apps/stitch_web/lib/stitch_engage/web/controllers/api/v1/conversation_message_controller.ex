@@ -9,11 +9,18 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.Conversation,
     Engage.ConversationQueries,
     Engage.ConversationMessage,
+    Engage.ConversationMessage.ConversationMessageCreation,
     Engage.ConversationAuthorization,
-    Engage.ConversationMessageAuthorization
+    Engage.ConversationMessageAuthorization,
+    ReadStatus
   }
 
-  alias StitchEngage.Web.ConversationChannel
+  alias Stitch.Web.EventsChannel
+
+  alias StitchEngage.Web.{
+    ConversationChannel,
+    Api.V1.ConversationMessageView
+  }
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
@@ -52,10 +59,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
          # Notifications: pass into the message creation & return notify_user_ids
          # presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id)
 
-         {:ok, conversation_message} <-
-           ConversationMessage.create_for_provider(
-             conversation.id,
-             user.id,
+         {:ok, %{conversation_message: conversation_message}} <-
+           ConversationMessageCreation.create(
+             conversation,
+             user,
              message_params_with_client
            ) do
       # Notifications: get notify_user_ids in the create and pass them into events
@@ -227,9 +234,119 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
+  def mark_as_read(conn, %{"conversation_id" => conversation_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_id)},
+         {:ok, response} <-
+           ReadStatus.mark_as_read(:conversation_message, conversation, current_user) do
+      %{
+        mark_conversation_messages_as_read: {_, conversation_messages},
+        mark_conversation_as_read: {1, [conversation_user]}
+      } = response
+
+      conversation_messages =
+        Reaction.apply_reactions(conversation_messages, :conversation_message) || []
+
+      conversation_messages_json =
+        ConversationMessageView.render("index.json", %{
+          conversation_messages: conversation_messages
+        })
+
+      mark_as_read_json =
+        ConversationMessageView.render("mark_as_read.json", %{
+          conversation_messages_json: conversation_messages_json,
+          conversation_user: conversation_user
+        })
+
+      mark_as_read_events(
+        conversation,
+        current_user,
+        conversation_messages_json,
+        mark_as_read_json
+      )
+
+      json(conn, mark_as_read_json)
+    else
+      _ -> {:error, :not_found}
+    end
+  end
+
+  def mark_as_unread(conn, %{
+        "conversation_id" => conversation_id,
+        "conversation_message_id" => conversation_message_id
+      }) do
+    current_user = conn.assigns.current_user
+
+    with {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_id)},
+         {:conversation_message, %ConversationMessage{} = conversation_message} <-
+           {:conversation_message, Repo.get(ConversationMessage, conversation_message_id)},
+         {:ok, response} <-
+           ReadStatus.mark_as_unread(
+             :conversation_message,
+             current_user,
+             conversation,
+             conversation_message
+           ) do
+      %{
+        mark_messages_as_unread: {_, conversation_messages},
+        mark_conversation_as_unread: {1, [conversation_user]}
+      } = response
+
+      conversation_messages =
+        Reaction.apply_reactions(conversation_messages, :conversation_message)
+
+      conversation_messages_json =
+        ConversationMessageView.render("index.json", %{
+          conversation_messages: conversation_messages
+        })
+
+      mark_as_read_json =
+        ConversationMessageView.render("mark_as_read.json", %{
+          conversation_messages_json: conversation_messages_json,
+          conversation_user: conversation_user
+        })
+
+      mark_as_unread_events(
+        conversation,
+        current_user,
+        conversation_messages_json,
+        mark_as_read_json
+      )
+
+      json(conn, mark_as_read_json)
+    else
+      _ ->
+        {:error, :not_found}
+    end
+  end
+
+  # ===========
+  #   PRIVATE
+  # ===========
+
+  defp mark_as_read_events(conversation, user, conversation_messages_json, mark_as_read_json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_conversation_marked_as_read(user, mark_as_read_json)
+      ConversationChannel.broadcast_read_status(conversation, conversation_messages_json)
+
+      # Notifications: update user badges on mobile
+    end)
+  end
+
+  defp mark_as_unread_events(conversation, user, conversation_messages_json, mark_as_read_json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_conversation_marked_as_unread(user, mark_as_read_json)
+      ConversationChannel.broadcast_read_status(conversation, conversation_messages_json)
+
+      # Notifications: update user badges on mobile
+    end)
+  end
+
   defp conversation_message_events(conversation_message, conversation, _notify_user_ids) do
-    # Notifications: Call to the NotificationLogger here
-    # (see message view for similar code)
+    # Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
 
     # Get the updated_at time before spawning the task
     now = DateTime.utc_now() |> DateTime.to_naive()

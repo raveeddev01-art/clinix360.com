@@ -7,7 +7,8 @@ defmodule Stitch.Patient.ChangesetsTest do
       valid_params = %{
         first_name: "Nicolas",
         last_name: "Oudinot",
-        email: "nico@teamstitch.com"
+        email: "nico@teamstitch.com",
+        mrn: "23u0249801"
       }
 
       {:ok, valid_params: valid_params}
@@ -47,6 +48,11 @@ defmodule Stitch.Patient.ChangesetsTest do
       with_ws_email = Map.put(valid_params, :profile_image_url, "some-url.com")
       cs = Patient.changeset(%Patient{}, with_ws_email)
       assert cs.changes.profile_image_url == "some-url.com"
+    end
+
+    test "invalid without mrn", %{valid_params: valid_params} do
+      without_mrn = Map.delete(valid_params, :mrn)
+      refute Patient.changeset(%Patient{}, without_mrn).valid?
     end
   end
 end

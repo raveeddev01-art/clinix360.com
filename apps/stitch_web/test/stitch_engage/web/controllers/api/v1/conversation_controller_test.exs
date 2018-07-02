@@ -5,8 +5,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
   def setup(conn) do
     team = insert(:team)
     user = insert(:user, team: team)
-    patient = insert(:patient)
-    team_patient = insert(:team_patient, patient: patient, team: team)
+    patient = insert(:patient, team: team)
     user_on_other_team = insert(:user, team: insert(:team))
 
     two_days_ago = Timex.shift(NaiveDateTime.utc_now(), days: -2)
@@ -23,6 +22,11 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
     insert(:conversation_message, conversation: conversation_c, provider: user)
     insert(:conversation_message, conversation: closed_conversation, provider: user)
 
+    insert(:conversation_patient, conversation: conversation, patient: patient)
+    insert(:conversation_patient, conversation: conversation_b, patient: patient)
+    insert(:conversation_patient, conversation: conversation_c, patient: patient)
+    insert(:conversation_patient, conversation: closed_conversation, patient: patient)
+
     conn = with_team_subdomain(conn, team)
 
     {:ok,
@@ -35,7 +39,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
      inbox: inbox,
      user: user,
      user_on_other_team: user_on_other_team,
-     team_patient: team_patient}
+     patient: patient}
   end
 
   def call_index(setup_params, params \\ %{}) do
@@ -190,7 +194,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
     test "creates a conversation properly", setup_params do
       post_params = %{
         text_content: "This is some text",
-        patient_id: setup_params.team_patient.id
+        patient_id: setup_params.patient.id
       }
 
       conn = Helper.call_post(setup_params, post_params, %{})
@@ -201,7 +205,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
     test "errors if not authorized", setup_params do
       post_params = %{
         text_content: "This is some text",
-        patient_id: setup_params.team_patient.id
+        patient_id: setup_params.patient.id
       }
 
       conn = Helper.call_post(setup_params, post_params, %{user: setup_params.user_on_other_team})

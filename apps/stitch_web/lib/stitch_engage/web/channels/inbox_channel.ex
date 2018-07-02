@@ -46,18 +46,17 @@ defmodule StitchEngage.Web.InboxChannel do
   def broadcast_conversation_creation(conversation) do
     conversation_json = ConversationView.conversation_json_with_latest(conversation)
 
-    @endpoint.broadcast("engage:#{conversation.inbox_id}", "conversation_created", %{
+    @endpoint.broadcast("inbox:#{conversation.inbox_id}", "conversation_created", %{
       conversation: conversation_json
     })
   end
 
   def broadcast_conversation_update(conversation) do
     # For opening and closing conversations
-    # Also for latest_message updates (and reordering based
-    # on latest message times)
+    # Also for latest_message updates (and reordering based on latest message times)
     conversation_json = ConversationView.conversation_json_with_latest(conversation)
 
-    @endpoint.broadcast("engage:#{conversation.inbox_id}", "conversation_created", %{
+    @endpoint.broadcast("inbox:#{conversation.inbox_id}", "conversation_created", %{
       conversation: conversation_json
     })
   end

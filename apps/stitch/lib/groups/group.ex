@@ -9,7 +9,6 @@ defmodule Stitch.Group do
     Group,
     GroupUser,
     GroupQueries,
-    Message,
     UserQueries,
     Audit,
     ReadStatus

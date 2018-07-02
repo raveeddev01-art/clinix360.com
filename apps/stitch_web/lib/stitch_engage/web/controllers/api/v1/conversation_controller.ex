@@ -20,8 +20,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, inbox_id)},
          {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, user)} do
-      conversations =
-        ConversationQueries.for_index(inbox.id, params["updated_before"], params["open"])
+      conversations = ConversationQueries.for_index(user, inbox.id, params)
 
       render(conn, "index.json", conversations: conversations)
     else
@@ -37,7 +36,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     user = conn.assigns.current_user
 
     with {:conversation, conversation} when not is_nil(conversation) <-
-           {:conversation, ConversationQueries.for_show(id)},
+           {:conversation, ConversationQueries.for_show(id, user)},
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
       render(conn, "show.json", conversation: conversation)
@@ -57,8 +56,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
          {:authorization?, true} <- {:authorization?, InboxAuthorization.can_view?(inbox, user)},
          {:ok, %{conversation: conversation, conversation_message: conversation_message}} <-
            Conversation.begin_conversation_as_provider(user, params) do
-      conversation = Repo.preload(conversation, team_patients: :patient)
-
+      conversation = Repo.preload(conversation, :patients)
       conversation = conversation_with_show_data(conversation, [conversation_message])
 
       InboxChannel.broadcast_conversation_creation(conversation)
@@ -94,7 +92,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_update?(conversation, user)},
          {:ok, updated_conversation} <- Conversation.update_open_value(conversation, open_value) do
-      updated_conversation = conversation_with_show_data(updated_conversation)
+      updated_conversation = conversation_with_show_data(updated_conversation, user)
 
       InboxChannel.broadcast_conversation_update(updated_conversation)
       render(conn, "show.json", conversation: updated_conversation)
@@ -117,8 +115,11 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     end
   end
 
-  defp conversation_with_show_data(conversation, given_conversation_messages \\ nil) do
-    conversation = Repo.preload(conversation, [:conversation_messages, team_patients: :patient])
+  defp conversation_with_show_data(conversation, user, given_conversation_messages \\ nil) do
+    conversation =
+      conversation
+      |> Repo.preload([:conversation_messages, :patients])
+      |> ConversationQueries.with_unread(user)
 
     conversation_messages =
       Reaction.apply_reactions(

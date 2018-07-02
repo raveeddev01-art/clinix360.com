@@ -1,7 +1,7 @@
 defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
   alias Stitch.{
     Accounts.User,
-    TeamPatient,
+    Patient,
     Message.Reaction
   }
 
@@ -16,6 +16,18 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
 
   def render("show.json", %{conversation_message: conversation_message}) do
     conversation_message_json(conversation_message, %{load_reactions: true})
+  end
+
+  def render("mark_as_read.json", %{
+        conversation_messages_json: conversation_messages_json,
+        conversation_user: conversation_user
+      }) do
+    %{
+      conversation_messages: conversation_messages_json,
+      conversation_id: conversation_user.conversation_id,
+      last_read_at: conversation_user.last_read_at,
+      unread_messages_count: conversation_user.unread_messages_count
+    }
   end
 
   def conversation_messages_json(conversation_messages) do
@@ -33,8 +45,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
     %{
       id: conversation_message.id,
       provider_id: conversation_message.provider_id,
-      patient_id: conversation_message.team_patient_id,
-      user: sender_info(conversation_message.provider, conversation_message.team_patient),
+      patient_id: conversation_message.patient_id,
+      user: sender_info(conversation_message.provider, conversation_message.patient),
       conversation_id: conversation_message.conversation_id,
       deleted: conversation_message.deleted,
       text_content: conversation_message.text_content,
@@ -45,20 +57,19 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       updated_at: conversation_message.updated_at,
       edited: !!conversation_message.edited_at,
       edited_at: conversation_message.edited_at,
-      # commenting out as this column is changing
-      # in another PS and unused for now
-      # read_status: conversation_message.read_status,
       reactions_web: conversation_message.provider_reactions,
       patient_reactions_web: conversation_message.patient_reactions,
       link_previews: conversation_message.link_previews,
       request_id: conversation_message.request_id,
-      upload_id: conversation_message.upload_id
+      upload_id: conversation_message.upload_id,
+      patient_read_status: conversation_message.patient_read_status,
+      provider_read_status: conversation_message.provider_read_status
     }
   end
 
   def sender_info(nil, nil), do: sender_info(nil)
   def sender_info(provider = %User{}, nil), do: sender_info(provider)
-  def sender_info(nil, patient = %TeamPatient{}), do: sender_info(patient)
+  def sender_info(nil, patient = %Patient{}), do: sender_info(patient)
   def sender_info(_, _), do: sender_info(nil)
 
   def sender_info(nil), do: nil
