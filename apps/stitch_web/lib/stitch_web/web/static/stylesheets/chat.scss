@@ -1223,7 +1223,7 @@
 
 .attachment-block {
   margin: 5px 0;
-  width: 430px;
+  max-width: 430px;
   padding: 15px;
   border: 1px solid #e2e2e2;
   border-radius: 4px;
@@ -1269,6 +1269,10 @@
     );
     padding: 15px;
     opacity: 0;
+
+    .btn + .btn {
+      margin-left: 5px;
+    }
   }
 
   &:hover {
@@ -1306,6 +1310,10 @@
 
       .btn {
         border: 0;
+      }
+
+      .btn + .btn {
+        margin-left: 5px;
       }
     }
 

@@ -139,6 +139,15 @@
       opacity: 1;
     }
   }
+
+  .attachment-block {
+    .attachment-title {
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 }
 
 .people-list-item {

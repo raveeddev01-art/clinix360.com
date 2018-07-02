@@ -25,7 +25,14 @@ class DefaultFileAttachment extends Component {
   };
 
   render() {
-    const { filename, mimetype, size_in_bytes: size, url } = this.props;
+    const {
+      filename,
+      mimetype,
+      size_in_bytes: size,
+      url,
+      comment_count: commentCount,
+      onCommentsClick
+    } = this.props;
     const filetype = getFileType(mimetype);
 
     return (
@@ -52,8 +59,12 @@ class DefaultFileAttachment extends Component {
               delayShow={150}
               overlay={<Tooltip id="file-comments">File comments</Tooltip>}
             >
-              <Button href={url} onClick={this.props.onCommentsClick}>
-                {`${this.props.comment_count} Comments`}
+              <Button href={url} onClick={onCommentsClick}>
+                {commentCount
+                  ? commentCount > 1
+                    ? `${commentCount} comments`
+                    : `${commentCount} comment`
+                  : `Add Comment`}
               </Button>
             </OverlayTrigger>
 
@@ -78,7 +89,14 @@ DefaultFileAttachment.propTypes = {
   mimetype: PropTypes.string.isRequired,
   size_in_bytes: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired,
-  api_url: PropTypes.string.isRequired
+  api_url: PropTypes.string.isRequired,
+  comment_count: PropTypes.number,
+  onCommentsClick: PropTypes.func
+};
+
+DefaultFileAttachment.defaultProps = {
+  comment_count: 0,
+  onCommentsClick: () => undefined
 };
 
 export default DefaultFileAttachment;

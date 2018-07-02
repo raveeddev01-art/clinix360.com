@@ -16,6 +16,15 @@ class MessageContent extends Component {
     this.props.messageStore.toggleReaction(this.props.message.id, emoji);
   };
 
+  onCommentsClick = () => {
+    const { addonStore, message } = this.props;
+
+    addonStore.setAddonPanel("files");
+    addonStore.toggleAddons(true);
+    addonStore.toggleAddonDetail(true);
+    addonStore.setAddonDetailPanel("File Details", message.upload_id);
+  };
+
   renderLinkPreviews() {
     const {
       message: { link_previews: linkPreviews, id, user_id: userId }
@@ -56,7 +65,7 @@ class MessageContent extends Component {
     );
   }
 
-  _renderIntegrationLink = () => {
+  renderIntegrationLink = () => {
     const message = this.props.message;
     if (message.fields && message.fields.integration) {
       const i = message.fields.integration;
@@ -70,13 +79,6 @@ class MessageContent extends Component {
 
     return null;
   };
-
-  onCommentsClick(e) {
-    console.log('on comments click');
-    console.log(this.props.message)
-    this.props.addonStore.setAddonPanel("File Details", this.props.message.upload_id);
-    this.props.addonStore.toggleAddons(true);
-  }
 
   render() {
     const { inSearch, message } = this.props;
@@ -96,15 +98,20 @@ class MessageContent extends Component {
         properties={{ target: "_blank", className: "message-link" }}
         className="message-body-wrapper"
       >
-        {message.type === "upload" && <FileAttachment {...message.fields} onCommentsClick={() => this.onCommentsClick()} />}
+        {message.type === "upload" && (
+          <FileAttachment
+            {...message.fields}
+            onCommentsClick={this.onCommentsClick}
+          />
+        )}
         <div className="message-body">
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{messageContentComponents}</div>
           ) : (
-              messageContentComponents
-            )}
+            messageContentComponents
+          )}
 
-          {user && user.is_bot ? this._renderIntegrationLink() : null}
+          {user && user.is_bot ? this.renderIntegrationLink() : null}
           {this.renderLinkPreviews()}
           {this.renderEdited()}
           <Reactions

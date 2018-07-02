@@ -29,6 +29,8 @@ class ImageFileAttachment extends Component {
     const {
       filename,
       url,
+      comment_count: commentCount,
+      onCommentsClick,
       preview_height: height,
       preview_width: width,
       preview_url: previewUrl
@@ -76,8 +78,12 @@ class ImageFileAttachment extends Component {
                   delayShow={150}
                   overlay={<Tooltip id="file-comments">File comments</Tooltip>}
                 >
-                  <Button href={url} onClick={this.props.onCommentsClick}>
-                    {`${this.props.comment_count || 0} Comments`}
+                  <Button href={url} onClick={onCommentsClick}>
+                    {commentCount
+                      ? commentCount > 1
+                        ? `${commentCount} comments`
+                        : `${commentCount} comment`
+                      : `Add Comment`}
                   </Button>
                 </OverlayTrigger>
 
@@ -97,13 +103,13 @@ class ImageFileAttachment extends Component {
               </div>
             </div>
           ) : (
-              <img
-                src={previewUrl || url}
-                className="img-responsive"
-                alt={filename}
-                onClick={this.onToggleModal}
-              />
-            )}
+            <img
+              src={previewUrl || url}
+              className="img-responsive"
+              alt={filename}
+              onClick={this.onToggleModal}
+            />
+          )}
         </div>
 
         <Modal
@@ -130,7 +136,9 @@ ImageFileAttachment.propTypes = {
   preview_url: PropTypes.string,
   filename: PropTypes.string,
   url: PropTypes.string.isRequired,
-  api_url: PropTypes.string
+  api_url: PropTypes.string,
+  comment_count: PropTypes.number,
+  onCommentsClick: PropTypes.func
 };
 
 ImageFileAttachment.defaultProps = {
@@ -138,7 +146,9 @@ ImageFileAttachment.defaultProps = {
   preview_width: 0,
   preview_url: "",
   filename: "",
-  api_url: ""
+  api_url: "",
+  comment_count: 0,
+  onCommentsClick: () => undefined
 };
 
 export default ImageFileAttachment;
