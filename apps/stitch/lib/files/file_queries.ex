@@ -6,6 +6,7 @@ defmodule Stitch.Files.FileQueries do
     Group,
     GroupUser,
     Files.Upload,
+    Files.UploadComment,
     Files.GroupUpload,
     Files.FileTypes,
     Paginator
@@ -92,11 +93,15 @@ defmodule Stitch.Files.FileQueries do
   end
 
   def get_by_id(upload_id, preload_assoc: true) do
+    upload_comments_query =
+      UploadComment
+      |> order_by([uc], uc.inserted_at)
+
     result =
       Upload
-      |> where([f], f.id == ^upload_id)
+      |> where([u], u.id == ^upload_id)
       |> preload([:group_uploads])
-      |> preload([:upload_comments])
+      |> preload(upload_comments: ^upload_comments_query)
       |> Repo.one()
 
     case result do

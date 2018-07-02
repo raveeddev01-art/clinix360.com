@@ -3,6 +3,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
 
   alias StitchConnect.Web.{
     EventsChannel,
+    GroupChannel,
     PushNotifications,
     UserStatusService,
     MessageEventsService
@@ -33,13 +34,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
          {:upload_comment, {:ok, upload_comment, groups}} <-
            {:upload_comment, UploadComment.create(upload, current_user, attrs, presence)} do
-      Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
-        MessageEventsService.message_creation_events(
-          result.message,
-          group,
-          result.notify_user_ids
-        )
-      end)
+      file_comment_creation_events(groups, upload)
 
       conn
       |> put_status(:created)
@@ -54,6 +49,20 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
       {:upload_comment, {:error, changeset}} ->
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
+  end
+
+  def file_comment_creation_events(groups, upload) do
+    upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
+
+    GroupChannel.broadcast_file_comment_added(upload)
+
+    Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
+      MessageEventsService.message_creation_events(
+        result.message,
+        group,
+        result.notify_user_ids
+      )
+    end)
   end
 
   def update(conn, %{

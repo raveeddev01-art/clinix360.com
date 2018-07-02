@@ -670,7 +670,12 @@ class MessageStore {
   @action
   loadPastMessages = (stayScroll = true) => {
     return new Promise((resolve, reject) => {
-      if (this.loadedAll || !this.messages.length || !this.loadedInitial || this.isLoadingPast) {
+      if (
+        this.loadedAll ||
+        !this.messages.length ||
+        !this.loadedInitial ||
+        this.isLoadingPast
+      ) {
         resolve();
         return;
       }
@@ -1302,6 +1307,17 @@ class MessageStore {
           payload.messages[message_id]
         );
       }
+    });
+  };
+
+  @action
+  onFileCommentAdded = payload => {
+    const files = this.messages.filter(
+      message => message.upload_id === payload.id && message.type === "upload"
+    );
+
+    files.forEach(file => {
+      this.updateMessageData(file.id, { fields: payload });
     });
   };
 }

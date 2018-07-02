@@ -18,7 +18,7 @@ class FileCommentInput extends Component {
   addComment() {
     this.props.teamFileStore
       .addComment(this.state.commentText)
-      .then(e => this.setState({ commentText: "" }));
+      .then(() => this.setState({ commentText: "" }));
   }
 
   handleChange(e) {

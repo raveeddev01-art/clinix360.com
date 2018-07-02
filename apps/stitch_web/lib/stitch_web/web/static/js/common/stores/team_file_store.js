@@ -58,12 +58,7 @@ class TeamFileStore {
   @action
   addComment(text) {
     const body = { file_comment: { text_content: text } };
-    return post(`/api/v1/files/${this.file.id}/comments`, {
-      body
-    }).then(response => {
-      this.file.comments = this.file.comments.concat([response.data]);
-      return this.file;
-    });
+    return post(`/api/v1/files/${this.file.id}/comments`, { body });
   }
 
   @action
@@ -89,12 +84,20 @@ class TeamFileStore {
     });
   }
 
+  @action
   openShareModal(fileId) {
     get(`/api/v1/files/${fileId}`).then(response => {
       this.file = response.data;
       this.fileShareModalId = fileId;
     });
   }
+
+  @action
+  onFileCommentAdded = file => {
+    if (file.id === this.file.id) {
+      this.file = file;
+    }
+  };
 }
 
 export default TeamFileStore;
