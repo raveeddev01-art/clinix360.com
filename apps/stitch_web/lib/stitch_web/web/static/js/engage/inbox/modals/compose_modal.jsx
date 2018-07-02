@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
+
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
+import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import Form from "react-bootstrap/lib/Form";
@@ -33,12 +35,12 @@ class ComposeModal extends Component {
     });
   }
 
-  updatePatient = value => {
+  handlePatientChange = value => {
     this.setState({ patient: value });
   };
 
-  updateValue = field => evt => {
-    this.setState({ [field]: evt.target.value });
+  handleChange = evt => {
+    this.setState({ message: evt.target.value });
   };
 
   createConversation = () => {
@@ -57,7 +59,7 @@ class ComposeModal extends Component {
       })
       .catch(response => {
         this.setState({
-          error: "This conversation already exists."
+          error: response.data.message
         });
       });
 
@@ -89,16 +91,27 @@ class ComposeModal extends Component {
 
     return (
       <Modal.Footer>
-        <Button bsSize="large" onClick={closeModal}>
-          Cancel
-        </Button>
-        <Button
-          bsSize="large"
-          bsStyle="primary"
-          onClick={this.createConversation}
-        >
-          Send
-        </Button>
+        <Row>
+          <Col sm={9} smOffset={3}>
+            <Button bsSize="large" className="attachment-btn">
+              <i className="fa fa-paperclip" />
+            </Button>
+
+            <div className="pull-right">
+              <Button bsSize="large" onClick={closeModal}>
+                Cancel
+              </Button>
+              <Button
+                bsSize="large"
+                bsStyle="primary"
+                onClick={this.createConversation}
+                disabled={!this.state.patient || !this.state.message}
+              >
+                Send
+              </Button>
+            </div>
+          </Col>
+        </Row>
       </Modal.Footer>
     );
   }
@@ -119,7 +132,12 @@ class ComposeModal extends Component {
             </Col>
 
             <Col sm={9}>
-              <Patients onChange={this.updatePatient} value={patient} />
+              <Patients
+                name="patient"
+                onChange={this.handlePatientChange}
+                value={patient}
+                showAddPatientModal={this.props.showAddPatientModal}
+              />
             </Col>
           </FormGroup>
 
@@ -135,7 +153,7 @@ class ComposeModal extends Component {
                 rows="7"
                 componentClass="textarea"
                 value={message}
-                onChange={this.updateValue("message")}
+                onChange={this.handleChange}
               />
             </Col>
           </FormGroup>
