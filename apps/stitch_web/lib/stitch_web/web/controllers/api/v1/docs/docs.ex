@@ -1,0 +1,381 @@
+defmodule Stitch.Web.Api.V1.Docs.CommonParams do
+  alias PhoenixSwagger.Path.PathObject
+  import PhoenixSwagger.Path
+
+  def auth(path = %PathObject{}) do
+    parameters path do
+      authenticationToken(
+        :query,
+        :string,
+        "user identification token",
+        required: true,
+        example: "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M"
+      )
+    end
+  end
+end
+
+defmodule Stitch.Web.Api.V1.Docs do
+  use PhoenixSwagger
+
+  # =====================
+  #   DEFINE THE MODELS
+  # =====================
+
+  def setup do
+    quote do
+      def swagger_definitions do
+        %{
+          Inbox:
+            swagger_schema do
+              title("Inbox")
+
+              description("A collection of conversations in Engage.")
+
+              properties do
+                id(:integer, "Unique identifier", required: true)
+                name(:string, "Inbox name", required: true)
+                is_default(:boolean, "Whether the inbox is the team's default", required: true)
+                open_conversations(Schema.ref(:ConversationMessages))
+
+                open_conversations_count(
+                  :integer,
+                  "Count of the conversations that are currently open",
+                  required: true
+                )
+
+                open_conversations_count(
+                  :integer,
+                  "Count of the conversations that are currently closed",
+                  required: true
+                )
+              end
+            end,
+          Conversation:
+            swagger_schema do
+              title("Conversation")
+
+              description(
+                "A conversation in Engage. Belongs to an inbox and contains conversation_messages."
+              )
+
+              properties do
+                id(:integer, "Unique identifier", required: true)
+                inbox_id(:integer, "Inbox foreign key", required: true)
+
+                open(
+                  :boolean,
+                  "If the conversation is open or closed",
+                  example: true
+                )
+
+                inserted_at(
+                  :string,
+                  "Time inserted into db",
+                  example: "2018-07-03T15:58:42.059546"
+                )
+
+                updated_at(
+                  :string,
+                  "Last time updated in db",
+                  example: "2018-07-04T15:58:42.059546"
+                )
+
+                is_unread(
+                  :boolean,
+                  "Whether current user has read the most recent message.",
+                  example: false
+                )
+
+                latest_conversation_message(Schema.ref(:ConversationMessage))
+                patient(Schema.ref(:Patient))
+              end
+            end,
+          Conversations:
+            swagger_schema do
+              title("Conversations")
+              description("A collection of Conversations")
+              type(:array)
+              items(Schema.ref(:Conversation))
+            end,
+          ConversationMessage:
+            swagger_schema do
+              title("ConversationMessage")
+
+              description(
+                "The chat message in an engage conversation. Sent be either a patient or a provider."
+              )
+
+              properties do
+                id(:integer, "Unique identifier", required: true)
+
+                # RELATIONS
+                conversation_id(
+                  :integer,
+                  "Foreign key for conversation",
+                  required: true
+                )
+
+                provider_id(
+                  :integer,
+                  "Foreign key for provider, if sent by provider"
+                )
+
+                patient_id(
+                  :integer,
+                  "Foreign key for patient, if sent by patient"
+                )
+
+                upload_id(
+                  :integer,
+                  "Foreign key for file upload, if upload type"
+                )
+
+                user(
+                  :object,
+                  "Object with sender info (either provider or patient)"
+                )
+
+                # MESSAGE CONTENT
+
+                text_content(
+                  :string,
+                  "The content of the message",
+                  required: true,
+                  example:
+                    "Hi Mark, any chance we can start a video call to check your rash's reaction the medication?"
+                )
+
+                fields(
+                  :object,
+                  "Fields for additional information depending on message type. For instance, file uploads contain upload url in fields.",
+                  example: %{
+                    "url" => "/messages/1859/download",
+                    "size_in_bytes" => 257_519,
+                    "public" => true,
+                    "preview_width" => 333,
+                    "preview_url" =>
+                      "https://s3.amazonaws.com/stitch-content/371320-e2c4da36-b8c2-f551-698c-fab94c914770.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIY4NBXIRIQI34S4Q%2F20180703%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20180703T174449Z&X-Amz-Expires=60000&X-Amz-SignedHeaders=host&X-Amz-Signature=0f11f61dc572183190b8726a4ea7d51c0f11836dc7ed2f177ca8a4968a05bb79",
+                    "preview_height" => 720,
+                    "mimetype" => "image/png",
+                    "filetype" => "png",
+                    "filename" => "PNG image.png",
+                    "api_url" => "/api/v1/messages/1859/download"
+                  }
+                )
+
+                # ATTRIBUTES
+
+                deleted(
+                  :boolean,
+                  "Whether the conversation message has been deleted.",
+                  required: true,
+                  example: false
+                )
+
+                type(
+                  :string,
+                  "The type of the message. (chat, file_share, system)",
+                  required: true,
+                  example: "chat"
+                )
+
+                edited(
+                  :boolean,
+                  "Whether the message has been edited",
+                  example: false
+                )
+
+                provider_reactions_web(
+                  :object,
+                  "Reactions to a message from providers, keyed by provider id. (patient reactions are in patient_reactions_web)"
+                )
+
+                patient_reactions_web(
+                  :object,
+                  "Reactions to a message from patients, keyed by patient id. (provider reactions are in provider_reactions_web)"
+                )
+
+                link_previews(
+                  :array,
+                  "List of link preview urls",
+                  example: [
+                    %{
+                      link: "https://en.wikipedia.org/wiki/Argentina",
+                      title: "Wikipedia - Argentina"
+                    }
+                  ]
+                )
+
+                request_id(
+                  :string,
+                  "Identifier for the http request that created the message",
+                  required: true,
+                  example: "Skj0blreQ"
+                )
+
+                patient_read_status(
+                  :object,
+                  "Read status for patients. Read timestamps keyed by patient id",
+                  example: %{
+                    342 => "2018-06-20T22:51:19.883710",
+                    225 => nil
+                  }
+                )
+
+                provider_read_status(
+                  :object,
+                  "Read status for providers. Read timestamps keyed by provider id",
+                  example: %{
+                    109 => "2018-06-20T22:51:19.883710",
+                    222 => nil
+                  }
+                )
+
+                # TIMESTAMPS
+
+                edited_at(
+                  :string,
+                  "Time that the message was last edited",
+                  example: "2018-07-03T15:58:42.059546"
+                )
+
+                inserted_at(
+                  :string,
+                  "Time inserted into db",
+                  example: "2018-07-03T15:58:42.059546"
+                )
+
+                updated_at(
+                  :string,
+                  "Last time updated in db",
+                  example: "2018-07-03T15:58:42.059546"
+                )
+              end
+            end,
+          ConversationMessages:
+            swagger_schema do
+              title("ConversationMessages")
+              description("A collection of ConversationMessages")
+              type(:array)
+              items(Schema.ref(:ConversationMessage))
+            end,
+          Patient:
+            swagger_schema do
+              title("Patient")
+              description("A patient user.")
+
+              properties do
+                id(:integer)
+                avatar_thumb(:string)
+                avatar(:string)
+                disabled(:boolean)
+                email(:string)
+                first_name(:string)
+                full_name(:string)
+                inserted_at(:string)
+                last_name(:string)
+                mrn(:string)
+                onboarded(:booelan)
+                phone(:string)
+              end
+            end
+        }
+      end
+    end
+  end
+
+  # =================
+  #   INBOX ACTIONS
+  # =================
+
+  def inbox do
+    quote do
+      swagger_path :default do
+        get("/api/v1/inboxes/default")
+        produces("application/json")
+
+        description("Return the default inbox for a team.")
+
+        Stitch.Web.Api.V1.Docs.CommonParams.auth()
+
+        response(200, "OK", Schema.ref(:Inbox))
+      end
+    end
+  end
+
+  # ================================
+  #   CONVERSATION MESSAGE ACTIONS
+  # ================================
+
+  def conversation_message do
+    quote do
+      swagger_path :index do
+        get("/api/v1/conversations/{conversation_id}/messages")
+        produces("application/json")
+
+        description(
+          "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
+        )
+
+        Stitch.Web.Api.V1.Docs.CommonParams.auth()
+
+        parameters do
+          conversation_id(:path, :integer, "Conversation ID", required: true, example: 3)
+
+          updated_before(
+            :query,
+            :string,
+            "Later bound for updated_at time for messages.",
+            example: 3
+          )
+        end
+
+        response(200, "OK", Schema.ref(:ConversationMessages))
+      end
+    end
+  end
+
+  # ========================
+  #   CONVERSATION ACTIONS
+  # ========================
+
+  def conversation do
+    quote do
+      swagger_path :index do
+        get("/api/v1/inboxes/{inbox_id}/conversations")
+        produces("application/json")
+
+        description(
+          "Lists 20 most recently updated conversations for an inbox. Pass in updated_before to move backward in time."
+        )
+
+        Stitch.Web.Api.V1.Docs.CommonParams.auth()
+
+        parameters do
+          inbox_id(:path, :integer, "Inbox ID", required: true, example: 3)
+
+          updated_before(
+            :query,
+            :string,
+            "Later bound for updated_at time for conversations.",
+            example: 3
+          )
+
+          open(
+            :query,
+            :boolean,
+            "Pass boolean to get only open or closed conversations.",
+            example: false
+          )
+        end
+
+        response(200, "OK", Schema.ref(:Conversations))
+      end
+    end
+  end
+
+  defmacro __using__(which) when is_atom(which) do
+    apply(__MODULE__, which, [])
+  end
+end

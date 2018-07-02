@@ -27,7 +27,7 @@ defmodule Stitch.Web.Api.V1.InboxControllerTest do
       conn =
         setup_params.conn
         |> with_api_user(setup_params.admin_user)
-        |> get(Routes.api_v1_inbox_path(setup_params.conn, :show_default))
+        |> get(Routes.api_v1_inbox_path(setup_params.conn, :default))
 
       assert response = json_response(conn, 200)
       assert response["name"] == "team default"
@@ -37,7 +37,7 @@ defmodule Stitch.Web.Api.V1.InboxControllerTest do
       conn =
         setup_params.conn
         |> with_api_user(setup_params.guest_user)
-        |> get(Routes.api_v1_inbox_path(setup_params.conn, :show_default))
+        |> get(Routes.api_v1_inbox_path(setup_params.conn, :default))
 
       assert conn.status == 403
     end
