@@ -91,19 +91,21 @@ class AddPatientModal extends Component {
 
     return (
       <Modal.Footer>
-        <Button bsSize="large" onClick={closeModal}>
-          Cancel
-        </Button>
-        <Button
-          bsSize="large"
-          bsStyle="primary"
-          onClick={this.addPatient}
-          disabled={
-            !this.state.firstName || !this.state.lastName || !this.state.mrn
-          }
-        >
-          Add
-        </Button>
+        <div className="pull-right">
+          <Button bsSize="large" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button
+            bsSize="large"
+            bsStyle="primary"
+            onClick={this.addPatient}
+            disabled={
+              !this.state.firstName || !this.state.lastName || !this.state.mrn
+            }
+          >
+            Add
+          </Button>
+        </div>
       </Modal.Footer>
     );
   }
