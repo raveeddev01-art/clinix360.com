@@ -69,6 +69,13 @@ class AddonStore {
       this.detailPanelType = panelType;
       this.detailPanelData = panelData;
     }
+
+    switch (panelType) {
+      case "File Details":
+        this.rootStore.teamFileStore.load(panelData);
+        break;
+      default:
+    }
   }
 }
 
