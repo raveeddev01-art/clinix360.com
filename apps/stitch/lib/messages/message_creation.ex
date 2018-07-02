@@ -6,9 +6,8 @@ defmodule Stitch.Message.MessageCreation do
   alias Stitch.{
     Accounts.User,
     Files.Upload,
-    Files.FileQueries,
+    Files.UploadComment,
     Files.FileAuthorization,
-    Group,
     Message,
     Message.Mention,
     Message.Notification,
@@ -19,10 +18,25 @@ defmodule Stitch.Message.MessageCreation do
 
   alias Stitch.Analytics.Message, as: MessageAnalytics
 
+  @spec create(Group.t(), User.t(), map, map, Upload.t(), UploadComment.t()) ::
+          {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
+
   @spec create(Group.t(), User.t(), map, map | nil) ::
           {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
 
   def create(group, user, attrs, presence \\ %{})
+
+  def create(group, user, %{"type" => "file_comment"} = attrs, presence, upload, upload_comment) do
+    with {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
+      message = %Message{group: group, user: user, upload: upload, upload_comment: upload_comment}
+      attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
+      do_create(message, attrs, presence)
+    else
+      _ ->
+        changeset = %Message{} |> change() |> add_error(:upload_id, "not found")
+        {:error, :message, changeset, nil}
+    end
+  end
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
@@ -32,33 +46,6 @@ defmodule Stitch.Message.MessageCreation do
     else
       _ ->
         changeset = %Message{} |> change() |> add_error(:upload_id, "Error creating file")
-        {:error, :message, changeset, nil}
-    end
-  end
-
-  def create(group, user, %{"type" => "file_share", "upload_id" => upload_id} = attrs, presence) do
-    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
-         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
-      Upload.share_with_group(upload, group)
-      message = %Message{group: group, user: user, upload: upload}
-      attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
-      do_create(message, attrs, presence)
-    else
-      _ ->
-        changeset = %Message{} |> change() |> add_error(:upload_id, "not found")
-        {:error, :message, changeset, nil}
-    end
-  end
-
-  def create(group, user, %{"type" => "file_comment"} = attrs, presence, upload, upload_comment) do
-    with {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
-      # Upload.share_with_group(upload, group)
-      message = %Message{group: group, user: user, upload: upload, upload_comment: upload_comment}
-      attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
-      do_create(message, attrs, presence)
-    else
-      _ ->
-        changeset = %Message{} |> change() |> add_error(:upload_id, "not found")
         {:error, :message, changeset, nil}
     end
   end

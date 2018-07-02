@@ -2,9 +2,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
   use Stitch.Web, :controller
 
   alias StitchConnect.Web.{
-    EventsChannel,
     GroupChannel,
-    PushNotifications,
     UserStatusService,
     MessageEventsService
   }
@@ -13,10 +11,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
     Files.FileQueries,
     Files.Upload,
     Files.FileAuthorization,
-    Files.UploadComment,
-    Group,
-    GroupQueries,
-    Web.UrlService
+    Files.UploadComment
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
