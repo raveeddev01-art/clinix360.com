@@ -1,4 +1,4 @@
-defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
+defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
   use Stitch.Web.ConnCase, async: true
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
@@ -132,7 +132,7 @@ end
 
 defmodule Stitch.Web.Api.V1.ConversationControllerTest do
   use Stitch.Web.ConnCase, async: true
-  alias Stitch.Web.Api.V1.ConversationControllerTest.Helper
+  alias Stitch.Web.Api.V1.ConversationReadStatusTest.Helper
 
   describe "GET /api/v1/conversations/:conversation_id" do
     setup %{conn: conn} do

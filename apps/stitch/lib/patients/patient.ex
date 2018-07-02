@@ -52,7 +52,6 @@ defmodule Stitch.Patient do
     |> Stitch.Validators.valid_email_changeset(attrs)
     |> Stitch.Accounts.ProfileImage.default_profile_image_changeset(attrs)
     |> update_change(:email, &String.trim/1)
-    |> unique_constraint(:email)
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
     |> unique_constraint(:mrn, name: :patients_mrn_team_id_index)
