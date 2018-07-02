@@ -14,31 +14,33 @@ class TeamFileStore {
   @action
   createPublicLink() {
     post(`/api/v1/files/${this.file.id}/create_public_link`).then(response => {
-      this.file = { ...this.file, ...response.data }
-    })
+      this.file = { ...this.file, ...response.data };
+    });
   }
 
   @action
   revokePublicLink() {
     post(`/api/v1/files/${this.file.id}/revoke_public_link`).then(response => {
-      this.file = { ...this.file, ...response.data }
-    })
+      this.file = { ...this.file, ...response.data };
+    });
   }
 
   @action
   deleteComment(commentId) {
     remove(`/api/v1/file_comments/${commentId}`).then(response => {
-      let comments = _.filter(this.file.comments, c => c.id != commentId);
+      const comments = _.filter(this.file.comments, c => c.id !== commentId);
       this.file.comments = comments;
-    })
+    });
   }
 
   @action
   updateComment(commentId, commentText) {
     const body = { file_comment: { text_content: commentText } };
-    return put(`/api/v1/file_comments/${commentId}`, { body }).then(response => {
-      this.file.comments = this.file.comments.map(comment =>
-        comment.id == commentId ? response.data : comment
+    return put(`/api/v1/file_comments/${commentId}`, {
+      body
+    }).then(response => {
+      this.file.comments = this.file.comments.map(
+        comment => (comment.id === commentId ? response.data : comment)
       );
     });
   }
@@ -55,8 +57,10 @@ class TeamFileStore {
 
   @action
   addComment(text) {
-    let body = { file_comment: { text_content: text } };
-    return post(`/api/v1/files/${this.file.id}/comments`, { body }).then(response => {
+    const body = { file_comment: { text_content: text } };
+    return post(`/api/v1/files/${this.file.id}/comments`, {
+      body
+    }).then(response => {
       this.file.comments = this.file.comments.concat([response.data]);
       return this.file;
     });
@@ -64,9 +68,9 @@ class TeamFileStore {
 
   @action
   load(encodedFileId) {
-    return get(`/api/v1/files/${encodedFileId}`).then(response =>
-      this.file = response.data
-    );
+    return get(`/api/v1/files/${encodedFileId}`).then(response => {
+      this.file = response.data;
+    });
   }
 
   @action
@@ -75,11 +79,21 @@ class TeamFileStore {
     return post(`/api/v1/files/${this.file.id}/share`, { body });
   }
 
+  @action
+  unshare(groupId) {
+    const body = { group_id: groupId };
+    return post(`/api/v1/files/${this.file.id}/unshare`, {
+      body
+    }).then(response => {
+      this.file = response.data;
+    });
+  }
+
   openShareModal(fileId) {
     get(`/api/v1/files/${fileId}`).then(response => {
       this.file = response.data;
       this.fileShareModalId = fileId;
-    })
+    });
   }
 }
 

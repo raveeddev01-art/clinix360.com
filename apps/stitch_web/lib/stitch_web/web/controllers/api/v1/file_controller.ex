@@ -149,8 +149,8 @@ defmodule Stitch.Web.Api.V1.FileController do
          {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
          {:unshared, {:ok, _}} <- {:unshared, Upload.unshare_from_group(upload, group)} do
-      conn
-      |> json(%{status: "ok"})
+      upload = FileQueries.get_by_id(upload_id, preload_assoc: true)
+      render(conn, "show_with_comments.json", %{file: upload})
     else
       {:upload, _} ->
         {:error, :not_found}

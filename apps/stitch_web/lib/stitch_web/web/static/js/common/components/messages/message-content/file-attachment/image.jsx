@@ -103,13 +103,13 @@ class ImageFileAttachment extends Component {
               </div>
             </div>
           ) : (
-            <img
-              src={previewUrl || url}
-              className="img-responsive"
-              alt={filename}
-              onClick={this.onToggleModal}
-            />
-          )}
+              <img
+                src={previewUrl || url}
+                className="img-responsive"
+                alt={filename}
+                onClick={this.onToggleModal}
+              />
+            )}
         </div>
 
         <Modal
