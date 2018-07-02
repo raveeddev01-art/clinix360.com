@@ -513,3 +513,12 @@ $dark-border-color: #ccc;
     color: #babbbf;
   }
 }
+
+.inbox-modal .modal-dialog .modal-content .modal-footer {
+  text-align: left;
+
+  .attachment-btn {
+    min-width: auto;
+    padding: 8px 16px;
+  }
+}

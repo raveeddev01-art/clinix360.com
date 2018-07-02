@@ -179,7 +179,7 @@ class AddPatientModal extends Component {
                   placeholder="e.g. 12345678"
                   value={mrn}
                   onChange={this.updateValue("mrn")}
-                  maxLength="8"
+                  maxLength="25"
                 />
                 <InputGroup.Button>
                   <Button onClick={this.generateMrnId}>Auto Generate</Button>

@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
+
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
+import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import Form from "react-bootstrap/lib/Form";
@@ -89,17 +91,27 @@ class ComposeModal extends Component {
 
     return (
       <Modal.Footer>
-        <Button bsSize="large" onClick={closeModal}>
-          Cancel
-        </Button>
-        <Button
-          bsSize="large"
-          bsStyle="primary"
-          onClick={this.createConversation}
-          disabled={!this.state.patient || !this.state.message}
-        >
-          Send
-        </Button>
+        <Row>
+          <Col sm={9} smOffset={3}>
+            <Button bsSize="large" className="attachment-btn">
+              <i className="fa fa-paperclip" />
+            </Button>
+
+            <div className="pull-right">
+              <Button bsSize="large" onClick={closeModal}>
+                Cancel
+              </Button>
+              <Button
+                bsSize="large"
+                bsStyle="primary"
+                onClick={this.createConversation}
+                disabled={!this.state.patient || !this.state.message}
+              >
+                Send
+              </Button>
+            </div>
+          </Col>
+        </Row>
       </Modal.Footer>
     );
   }
