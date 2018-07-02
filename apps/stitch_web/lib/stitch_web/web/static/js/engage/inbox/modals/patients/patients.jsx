@@ -22,15 +22,11 @@ class Patients extends Component {
   getOptions = () => {
     const { patientsStore } = this.props;
 
-    return patientsStore.patients
-      .sort((patient1, patient2) => {
-        if (patient1.full_name > patient2.full_name) return 1;
-        if (patient1.full_name > patient2.full_name) return -1;
-        return 0;
-      })
-      .map(patient => ({
-        ...patient
-      }));
+    return patientsStore.patients.sort((patient1, patient2) => {
+      if (patient1.full_name > patient2.full_name) return 1;
+      if (patient1.full_name > patient2.full_name) return -1;
+      return 0;
+    });
   };
 
   render() {
