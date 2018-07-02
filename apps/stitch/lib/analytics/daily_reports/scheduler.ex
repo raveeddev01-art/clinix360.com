@@ -18,11 +18,15 @@ defmodule Stitch.Analytics.DailyReports.Scheduler do
 
   def start_link do
     case GenServer.start_link(__MODULE__, nil, name: @name) do
-      {:ok, pid} -> {:ok, pid}
+      {:ok, pid} ->
+        {:ok, pid}
+
       {:error, {:already_started, pid}} ->
         Process.link(pid)
         {:ok, pid}
-      :ignore -> :ignore
+
+      :ignore ->
+        :ignore
     end
   end
 
@@ -39,7 +43,8 @@ defmodule Stitch.Analytics.DailyReports.Scheduler do
 
   def handle_info(:create, state) do
     today = Date.utc_today()
-    if state != today do
+
+    if state != today && is_midnight_pt() do
       DailyReports.create()
       schedule_next()
       {:noreply, today}
@@ -50,10 +55,16 @@ defmodule Stitch.Analytics.DailyReports.Scheduler do
   end
 
   defp schedule_next do
-    Process.send_after(self(), :create, 300_000) # In 5 minutes
+    # In 5 minutes
+    Process.send_after(self(), :create, 300_000)
   end
 
   defp enabled? do
     Application.get_env(:stitch, __MODULE__)[:enabled]
+  end
+
+  defp is_midnight_pt() do
+    {_date, {utc_hour, _min, _sec}} = :calendar.universal_time()
+    utc_hour == 7
   end
 end
