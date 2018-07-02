@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
   alias Stitch.Accounts.User
   alias Stitch.GroupUser
   alias Stitch.Message.Notification
-  alias StitchConnect.Web.EventsChannel
+  alias Stitch.Web.EventsChannel
 
   def show_global(conn, _params) do
     render(

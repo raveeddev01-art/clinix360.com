@@ -10,6 +10,7 @@ erl_crash.dump
 
 # Ignore environment variables.
 .env
+.envrc
 
 # Ignored compiled assets from stitch-connect app.
 /apps/stitch_web/priv/static/

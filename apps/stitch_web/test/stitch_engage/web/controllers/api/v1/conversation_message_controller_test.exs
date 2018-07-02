@@ -9,6 +9,8 @@ defmodule Stitch.Web.Api.V1.ConversationMessageControllerTest.SetupHelper do
     user_on_other_team = insert(:user, team: other_team)
     inbox = insert(:inbox, team: team)
     conversation = insert(:conversation, inbox: inbox)
+    patient = insert(:patient, team: team)
+    insert(:conversation_patient, patient: patient, conversation: conversation)
 
     conversation_message =
       insert(:conversation_message, conversation: conversation, provider: author)

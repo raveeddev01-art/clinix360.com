@@ -34,9 +34,9 @@ defmodule Stitch.Analytics.DailyReports do
     Analytics.DailyReports.Supervisor
     |> Task.Supervisor.async_stream_nolink(
       resources_to_struct(resources),
-      &(create(&1)),
+      &create(&1),
       timeout: :timer.minutes(3),
-      max_concurrency: 8
+      max_concurrency: 2
     )
     |> Enum.to_list()
   end
@@ -68,7 +68,7 @@ defmodule Stitch.Analytics.DailyReports do
   end
 
   defp resource_to_struct(resource) do
-    if (resource[:is_user]) do
+    if resource[:is_user] do
       struct(User, resource)
     else
       struct(Team, resource)
@@ -83,12 +83,14 @@ defmodule Stitch.Analytics.DailyReports do
   ignored.
 
   """
-  @spec create(User.t | Team.t) :: {:ok, Event.t} | {:error, Ecto.Changeset.t | atom}
+  @spec create(User.t() | Team.t()) :: {:ok, Event.t()} | {:error, Ecto.Changeset.t() | atom}
   def create(%User{onboarded: false}), do: {:error, :user_not_onboarded}
+
   def create(%User{id: user_id} = user) do
     traits = daily_report(user)
     Analytics.identify(user_id, traits)
   end
+
   def create(%Team{id: team_id} = team) do
     if owner = TeamQueries.get_team_owner(team) do
       traits = daily_report(team)
@@ -100,12 +102,11 @@ defmodule Stitch.Analytics.DailyReports do
 
   defp daily_report(target) do
     %{
-      "messages_sent_last_day"         => MessageQueries.count(target, %{time_period: :last_day}),
-      "messages_sent_last_7_days"      => MessageQueries.count(target, %{time_period: :last_7_days}),
-      "messages_sent_last_30_days"     => MessageQueries.count(target, %{time_period: :last_30_days}),
-      "messages_sent_all_time"         => MessageQueries.count(target, %{time_period: :all_time}),
+      "messages_sent_last_day" => MessageQueries.count(target, %{time_period: :last_day}),
+      "messages_sent_last_7_days" => MessageQueries.count(target, %{time_period: :last_7_days}),
+      "messages_sent_last_30_days" => MessageQueries.count(target, %{time_period: :last_30_days}),
+      "messages_sent_all_time" => MessageQueries.count(target, %{time_period: :all_time}),
       "messages_sent_last_occurred_at" => MessageQueries.last_occurred_at(target)
     }
   end
 end
-

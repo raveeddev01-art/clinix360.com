@@ -20,7 +20,7 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, InboxQueries.default_for_team(team)},
          {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, user)} do
-      render(conn, "show.json", inbox: InboxQueries.with_show_values(inbox))
+      render(conn, "show.json", inbox: InboxQueries.with_show_values(inbox, user))
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot view this inbox."}
@@ -40,7 +40,7 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
          {:authorized?, true} <- {:authorized?, InboxAuthorization.can_update?(inbox, user)},
          {:ok, updated_inbox} <- Inbox.update(inbox, params) do
       # TODO: broadcast inbox name change
-      render(conn, "show.json", inbox: InboxQueries.with_show_values(updated_inbox))
+      render(conn, "show.json", inbox: InboxQueries.with_show_values(updated_inbox, user))
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot update this inbox."}

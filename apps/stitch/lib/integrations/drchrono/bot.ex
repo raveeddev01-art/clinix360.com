@@ -2,7 +2,12 @@ defmodule Stitch.Drchrono.Bot do
   import Ecto.Query
   alias Stitch.{Accounts.User, Message}
   alias Stitch.Repo
-  alias Stitch.Web.TeamChannel
+
+  alias Stitch.Web.{
+    EventsChannel,
+    TeamChannel
+  }
+
   alias StitchConnect.Web.UserStatusService
   require Logger
 
@@ -81,7 +86,7 @@ defmodule Stitch.Drchrono.Bot do
     case Message.create(group, bot_user, message_params, presence_user_ids) do
       {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
         message = Stitch.Repo.preload(message, :user)
-        StitchConnect.Web.EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
+        EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
         StitchConnect.Web.GroupChannel.broadcast_message_created(message)
 
       {:error, _} ->

@@ -160,12 +160,12 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/files/:id/create_public_link", FileController, :create_public_link)
     post("/files/:id/revoke_public_link", FileController, :revoke_public_link)
 
-    get("/patients", TeamPatientController, :index)
-    get("/patients/:id", TeamPatientController, :show)
-    post("/patients", TeamPatientController, :create)
-    put("/patients/:id", TeamPatientController, :update)
-    put("/patients/:id/activate", TeamPatientController, :activate)
-    put("/patients/:id/deactivate", TeamPatientController, :deactivate)
+    get("/patients", PatientController, :index)
+    get("/patients/:id", PatientController, :show)
+    post("/patients", PatientController, :create)
+    put("/patients/:id", PatientController, :update)
+    put("/patients/:id/activate", PatientController, :activate)
+    put("/patients/:id/deactivate", PatientController, :deactivate)
   end
 
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
@@ -449,14 +449,20 @@ defmodule Stitch.Web.SubdomainRouter do
       :toggle_reaction
     )
 
-    # Expected Engage routes:
+    post(
+      "/conversations/:conversation_id/mark_as_read",
+      ConversationMessageController,
+      :mark_as_read
+    )
 
-    # get("/inboxes", InboxController, :index)
-    # post("/conversations/:id/mark_as_read", ConversationController, :mark_as_read)
-    # post("/conversations/:id/mark_as_unread", ConversationController, :mark_as_unread)
+    post(
+      "/conversations/:conversation_id/mark_as_unread",
+      ConversationMessageController,
+      :mark_as_unread
+    )
 
+    # Expected future Engage routes:
     # get("/conversation_messages/:id/download", ConversationMessageController, :download)
-    # get("/conversations/:conversation_id/feed_recent", ConversationMessageController, :feed_recent)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
     # post("/conversation_messages/search", ConversationMessageController, :search)
   end

@@ -1,4 +1,9 @@
-defmodule StitchConnect.Web.EventsChannel do
+defmodule Stitch.Web.EventsChannel do
+  @moduledoc """
+  Events channel is used for user-specific broadcasts across
+  multiple apps (Connect, Engage, Patient, Admin, Force Reload)
+  """
+
   use Stitch.Web, :channel
   import Ecto.Query
   alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User, Team}
@@ -173,6 +178,14 @@ defmodule StitchConnect.Web.EventsChannel do
 
   def broadcast_marked_as_unread(user, json_response) do
     @endpoint.broadcast("events:#{user.id}", "marked_as_unread", json_response)
+  end
+
+  def broadcast_conversation_marked_as_read(user, json_response) do
+    @endpoint.broadcast("events:#{user.id}", "conversation_marked_as_read", json_response)
+  end
+
+  def broadcast_conversation_marked_as_unread(user, json_response) do
+    @endpoint.broadcast("events:#{user.id}", "conversation_marked_as_unread", json_response)
   end
 
   def broadcast_members_update(group, recipient_ids, member_ids) do
