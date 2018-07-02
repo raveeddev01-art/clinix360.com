@@ -9,34 +9,44 @@ import FileHeading from "../../../files/FileHeading";
 @inject("teamFileStore", "usersStore", "groupsStore")
 @observer
 class FileDetails extends Component {
-  componentWillMount() {
-    this.props.teamFileStore.load(this.props.fileId)
-  }
-
   sharedInInfo(groups) {
-    if (groups.length == 0) { return <span></span> }
+    if (!groups.length) {
+      return <span />;
+    }
+
     return (
       <span>
         Shared in
-        {groups.map(group =>
+        {groups.map(group => (
           <span>
-            <a href={`/rooms/${group.slug}`}>{group.public ? "#" : "(Private) "}{group.slug}</a> <a href={""}>(Unshare)</a>
+            <a href={`/rooms/${group.slug}`}>
+              {group.public ? "#" : "(Private) "}
+              {group.slug}
+            </a>{" "}
+            <a href={""}>(Unshare)</a>
           </span>
-        )}
+        ))}
       </span>
-    )
+    );
   }
 
   renderPublicLink(file) {
     const url = `${file.url}?public_token=${file.public_token}`;
-    return <a href={url} target="_blank">Open public link</a>;
+    return (
+      <a href={url} target="_blank">
+        Open public link
+      </a>
+    );
   }
 
   renderFile(file) {
     const fileCreator = this.props.usersStore.usersById[file.user_id];
-    const groups = this.props.groupsStore.groups.filter(group =>
-      group.type != "dm" && group.type != "multi_dm" && file.shared_in.includes(group.id)
-    )
+    const groups = this.props.groupsStore.groups.filter(
+      group =>
+        group.type != "dm" &&
+        group.type != "multi_dm" &&
+        file.shared_in.includes(group.id)
+    );
 
     return (
       <div>
@@ -44,12 +54,12 @@ class FileDetails extends Component {
         {this.sharedInInfo(groups)}
         {this.renderPublicLink(file)}
         <FileAttachment api_url={file.url} {...file} />
-        {file.comments.map(comment =>
+        {file.comments.map(comment => (
           <FileComment comment={comment} key={comment.id} />
-        )}
+        ))}
         <FileCommentInput file={file} />
       </div>
-    )
+    );
   }
 
   render() {
@@ -59,8 +69,7 @@ class FileDetails extends Component {
       <div className="search-results-addon">
         {file.id && this.renderFile(file)}
 
-        <div className="footer">
-        </div>
+        <div className="footer" />
       </div>
     );
   }

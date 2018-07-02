@@ -76,11 +76,12 @@ class Addons extends Component {
             )}
             {addonStore.addonPanelType === "files" && <Files />}
             {addonStore.addonPanelType === "Updates" && <Updates />}
-            {addonStore.addonPanelType === "File Details" &&
-              <FileDetails fileId={addonStore.addonPanelData} />}
           </div>
 
           <div className={rightPanelClass}>
+            {addonStore.detailPanelType === "File Details" && (
+              <FileDetails fileId={addonStore.detailPanelData} />
+            )}
             {addonStore.detailPanelType === "people" && (
               <PeopleDetail user={addonStore.detailPanelData} />
             )}
