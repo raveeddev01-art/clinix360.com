@@ -5,8 +5,9 @@ defmodule StitchConnect.Web.GroupChannel do
   alias Stitch.LinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
   alias Stitch.Web.Api.V1.FileView
-
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
+  alias StitchConnect.MessageLinkPreviewGenerator
+  alias Stitch.Web.EventsChannel
 
   alias Stitch.{
     Repo,

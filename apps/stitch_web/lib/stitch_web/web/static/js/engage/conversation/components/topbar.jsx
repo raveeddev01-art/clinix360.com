@@ -7,6 +7,11 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 @inject("inboxStore")
 @observer
 class Topbar extends Component {
+  onCloseConversation = () => {
+    const { inboxStore } = this.props;
+    inboxStore.closeConversation(inboxStore.currentConversation.id);
+  };
+
   render() {
     const { inboxStore } = this.props;
 
@@ -15,7 +20,7 @@ class Topbar extends Component {
         <h4>{inboxStore.currentConversation.patient.full_name}</h4>
 
         <div className="header-nav">
-          <a role="button" onClick={this.onRoomInfoClick}>
+          <a role="button" onClick={this.onCloseConversation}>
             <OverlayTrigger
               placement="bottom"
               overlay={<Tooltip id="tooltip-info">Close Conversation</Tooltip>}

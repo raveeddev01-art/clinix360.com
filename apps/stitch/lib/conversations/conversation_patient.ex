@@ -11,7 +11,7 @@ defmodule Stitch.Engage.ConversationPatient do
 
   alias Stitch.{
     Repo,
-    TeamPatient,
+    Patient,
     Engage.Conversation,
     Engage.ConversationPatient
   }
@@ -23,7 +23,7 @@ defmodule Stitch.Engage.ConversationPatient do
 
   schema "conversation_patients" do
     belongs_to(:conversation, Conversation)
-    belongs_to(:team_patient, TeamPatient)
+    belongs_to(:patient, Patient)
 
     field(:last_read_at, :naive_datetime)
     field(:unread_messages_count, :integer, default: 0)
@@ -36,14 +36,14 @@ defmodule Stitch.Engage.ConversationPatient do
     |> cast(params, @castable_attributes)
     |> validate_required(@required_attributes)
     |> unique_constraint(
-      :team_patient_id,
-      name: :conversation_patients_conversation_id_team_patient_id_index,
+      :patient_id,
+      name: :conversation_patients_conversation_id_patient_id_index,
       message: "patient is already part of this conversation"
     )
   end
 
-  def create_for_conversation_and_patient(conversation_id, team_patient_id, params \\ %{}) do
-    %ConversationPatient{conversation_id: conversation_id, team_patient_id: team_patient_id}
+  def create_for_conversation_and_patient(conversation_id, patient_id, params \\ %{}) do
+    %ConversationPatient{conversation_id: conversation_id, patient_id: patient_id}
     |> changeset(params)
     |> Repo.insert()
   end

@@ -2,7 +2,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   use Stitch.Web, :controller
 
   alias StitchConnect.Web.{
-    EventsChannel,
     GroupChannel,
     PushNotifications,
     UserStatusService,
@@ -19,7 +18,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     MessageAction,
     MessageQueries,
     Message.Upload,
-    ReadStatus
+    ReadStatus,
+    Web.EventsChannel
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)

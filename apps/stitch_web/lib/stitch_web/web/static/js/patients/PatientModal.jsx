@@ -14,7 +14,7 @@ import Row from "react-bootstrap/lib/Row";
 import { AvatarUploader, LoadingIcon } from "common/components";
 
 const patientStatusText = patient => {
-  if (!patient.active) {
+  if (patient.disabled) {
     return "deactivated";
   }
 
