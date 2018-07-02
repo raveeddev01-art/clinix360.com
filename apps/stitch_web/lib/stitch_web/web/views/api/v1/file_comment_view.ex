@@ -12,7 +12,8 @@ defmodule Stitch.Web.Api.V1.FileCommentView do
       id: file_comment.id,
       text_content: file_comment.text_content,
       fields: file_comment.fields,
-      user_id: file_comment.user_id
+      user_id: file_comment.user_id,
+      inserted_at: file_comment.inserted_at
     }
   end
 end

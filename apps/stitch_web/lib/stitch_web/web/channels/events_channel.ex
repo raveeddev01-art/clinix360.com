@@ -6,7 +6,7 @@ defmodule Stitch.Web.EventsChannel do
 
   use Stitch.Web, :channel
   import Ecto.Query
-  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User, Team}
+  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView, NotificationPreferenceView}
 
   @endpoint Stitch.Web.Endpoint
@@ -235,9 +235,5 @@ defmodule Stitch.Web.EventsChannel do
         user_id: user_id
       })
     end)
-  end
-
-  def broadcast_added_comment(%Team{} = team) do
-    # Broadcast to all users that have access to the file
   end
 end

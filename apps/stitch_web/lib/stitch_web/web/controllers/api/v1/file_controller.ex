@@ -5,6 +5,7 @@ defmodule Stitch.Web.Api.V1.FileController do
     Files.FileQueries,
     Files.Upload,
     Files.FileAuthorization,
+    Files.UploadComment,
     Group,
     GroupAuthorization,
     GroupQueries,
@@ -73,10 +74,10 @@ defmodule Stitch.Web.Api.V1.FileController do
          {:authorized, true} <- {:authorized, GroupAuthorization.can_view?(group, current_user)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
          {:shared, {_, _}} <- {:shared, Upload.share_with_group(upload, group)},
-         upload <- %{upload | shared_in: Enum.uniq([group.id, upload.shared_in])},
+         upload <- %{upload | shared_in: Enum.uniq([group.id | upload.shared_in])},
          {:joined, _} <- {:joined, ensure_joined(group, current_user)},
          {:message, _} <- {:message, create_message(group, current_user, upload)},
-         {:comment, result} <- {:comment, create_optional_comment(conn, attrs, upload, group)} do
+         {:comment, _} <- {:comment, create_optional_comment(conn, attrs, upload, group)} do
       conn
       |> json(%{status: "ok"})
     else
@@ -92,7 +93,7 @@ defmodule Stitch.Web.Api.V1.FileController do
       {:shared, {:error, "not found"}} ->
         {:error, :unprocessable_entity, "The file is not shared"}
 
-      {:shared, e} ->
+      _ ->
         {:error, :unprocessable_entity, "Error sharing the file"}
     end
   end
@@ -121,12 +122,12 @@ defmodule Stitch.Web.Api.V1.FileController do
     end
   end
 
-  def create_optional_comment(conn, %{"text_content" => text_content}, upload, group) do
+  def create_optional_comment(conn, %{"text_content" => text_content}, upload, _group) do
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     attrs = %{"text_content" => text_content}
 
-    with {:comment, {:ok, comment, groups}} <-
+    with {:comment, {:ok, _comment, groups}} <-
            {:comment, UploadComment.create(upload, current_user, attrs, presence)} do
       Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
         MessageEventsService.message_creation_events(

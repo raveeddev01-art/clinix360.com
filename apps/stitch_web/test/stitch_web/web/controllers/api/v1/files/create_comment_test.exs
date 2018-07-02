@@ -2,11 +2,6 @@ defmodule Stitch.Web.FileController.CreateCommentTest do
   use Stitch.Web.ConnCase, async: true
   import Stitch.Web.SubdomainRouter.Helpers
 
-  alias Stitch.{
-    Files.Upload,
-    Files.FileQueries
-  }
-
   setup %{conn: conn} do
     team = insert(:team)
     user = insert(:user, team: team)

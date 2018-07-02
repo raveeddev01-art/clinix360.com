@@ -3,20 +3,14 @@ defmodule Stitch.Files.UploadComment do
     Accounts.User,
     Audit,
     Files.Upload,
-    Files.GroupUpload,
-    Files.Thumb,
     Files.UploadComment,
     GroupQueries,
     Message,
     Message.MessageCreation,
-    Rand,
-    Repo,
-    Team,
-    Group
+    Repo
   }
 
   use Ecto.Schema
-  import Ecto.Query
   import Ecto.Changeset
 
   @type t :: %__MODULE__{}

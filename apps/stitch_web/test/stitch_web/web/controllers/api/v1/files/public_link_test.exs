@@ -3,7 +3,6 @@ defmodule Stitch.Web.FileController.PublicLinkTest do
   import Stitch.Web.SubdomainRouter.Helpers
 
   alias Stitch.{
-    Files.Upload,
     Files.FileQueries
   }
 
@@ -23,24 +22,24 @@ defmodule Stitch.Web.FileController.PublicLinkTest do
     {:ok, conn: conn, group: group, upload: upload}
   end
 
-  test "creates public link", %{conn: conn, group: group, upload: upload} do
+  test "creates public token", %{conn: conn, upload: upload} do
     response =
       conn
       |> post(api_v1_file_path(conn, :create_public_link, upload))
       |> json_response(200)
 
     upload = FileQueries.get_by_id(upload.id)
-    assert response["public_link"] == upload.public_link
+    assert response["public_token"] == upload.public_token
   end
 
-  test "removes public link", %{conn: conn, group: group, upload: upload} do
+  test "removes public token", %{conn: conn, upload: upload} do
     response =
       conn
       |> post(api_v1_file_path(conn, :revoke_public_link, upload))
       |> json_response(200)
 
-    assert response["status"] == "ok"
+    assert response["id"] == upload.id
     upload = FileQueries.get_by_id(upload.id)
-    assert upload.public_link == nil
+    assert upload.public_token == nil
   end
 end

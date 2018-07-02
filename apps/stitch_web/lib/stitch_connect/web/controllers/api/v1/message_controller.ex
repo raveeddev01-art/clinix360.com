@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use Stitch.Web, :controller
-  alias Stitch.LinkPreviewGenerator
 
   alias StitchConnect.Web.{
     GroupChannel,

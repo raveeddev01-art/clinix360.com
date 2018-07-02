@@ -4,8 +4,9 @@ defmodule StitchConnect.Web.GroupChannel do
   alias Stitch.Accounts.{User, ActivityTracker}
   alias Stitch.LinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
+  alias Stitch.Web.Api.V1.FileView
+  alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias StitchConnect.MessageLinkPreviewGenerator
-  alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
 
   alias Stitch.{
@@ -413,6 +414,22 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_is_typing(group, user) do
     endpoint_broadcast(group, "is_typing", %{user_id: user.id})
+  end
+
+  def broadcast_file_comment_added(upload) do
+    file_json = FileView.render("show_with_comments.json", %{file: upload})
+
+    Enum.each(upload.shared_in, fn group_id ->
+      @endpoint.broadcast("groups:id:#{group_id}", "file_comment_added", file_json)
+    end)
+  end
+
+  def broadcast_file_comment_edited(upload) do
+    file_json = FileView.render("show_with_comments.json", %{file: upload})
+
+    Enum.each(upload.shared_in, fn group_id ->
+      @endpoint.broadcast("groups:id:#{group_id}", "file_comment_edited", file_json)
+    end)
   end
 
   defp endpoint_broadcast(group, event, payload) do
