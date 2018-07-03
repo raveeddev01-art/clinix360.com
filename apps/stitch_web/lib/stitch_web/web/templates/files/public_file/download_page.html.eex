@@ -1,6 +1,6 @@
 <%= if assigns[:app_params] do %>
   <div class="main">
-    <a class="download" href="<%= @app_params.file.url %>">
+    <a class="download" href="<%= @app_params.url %>">
       <div class="download-icon">
         <i class="<%= @app_params.icon %> icon-main"></i>
         <i class="fa fa-arrow-circle-down icon-down"></i>
