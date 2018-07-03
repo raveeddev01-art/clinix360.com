@@ -127,6 +127,7 @@
       &--add {
         display: flex;
         justify-content: space-between;
+        align-items: center;
       }
     }
   }
@@ -153,6 +154,8 @@
   }
 
   &__groups {
+    text-align: left;
+
     a {
       margin-left: 5px;
 
