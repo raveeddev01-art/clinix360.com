@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Button from "react-bootstrap/lib/Button";
+import AttachmentActions from "./components/attachment-actions";
 import getFileType from "../file-types";
 
 @inject("desktopStore")
@@ -31,13 +29,14 @@ class DefaultFileAttachment extends Component {
       size_in_bytes: size,
       url,
       comment_count: commentCount,
-      onCommentsClick
+      onCommentsClick,
+      useActions
     } = this.props;
     const filetype = getFileType(mimetype);
 
     return (
       <div>
-        <span className="text-muted">uploaded this file: </span>
+        {useActions && <span className="text-muted">uploaded this file: </span>}
         <div className="attachment-block">
           <div className="attachment-icon">
             <i className={filetype.icon} />
@@ -53,31 +52,13 @@ class DefaultFileAttachment extends Component {
             </div>
           </div>
 
-          <div className="attachment-actions">
-            <OverlayTrigger
-              placement="top"
-              delayShow={150}
-              overlay={<Tooltip id="file-comments">File comments</Tooltip>}
-            >
-              <Button href={url} onClick={onCommentsClick}>
-                {commentCount
-                  ? commentCount > 1
-                    ? `${commentCount} comments`
-                    : `${commentCount} comment`
-                  : `Add Comment`}
-              </Button>
-            </OverlayTrigger>
-
-            <OverlayTrigger
-              placement="top"
-              delayShow={150}
-              overlay={<Tooltip id="download-file">Download</Tooltip>}
-            >
-              <Button target="_blank" href={url} onClick={this.onFileDownload}>
-                <i className="fa fa-download" />
-              </Button>
-            </OverlayTrigger>
-          </div>
+          {useActions && (
+            <AttachmentActions
+              url={url}
+              commentCount={commentCount}
+              onCommentsClick={onCommentsClick}
+            />
+          )}
         </div>
       </div>
     );
@@ -91,10 +72,12 @@ DefaultFileAttachment.propTypes = {
   url: PropTypes.string.isRequired,
   api_url: PropTypes.string.isRequired,
   comment_count: PropTypes.number,
-  onCommentsClick: PropTypes.func
+  onCommentsClick: PropTypes.func,
+  useActions: PropTypes.bool
 };
 
 DefaultFileAttachment.defaultProps = {
+  useActions: true,
   comment_count: 0,
   onCommentsClick: () => undefined
 };

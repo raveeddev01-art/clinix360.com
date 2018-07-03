@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Button from "react-bootstrap/lib/Button";
 import Modal from "react-bootstrap/lib/Modal";
+import AttachmentActions from "./components/attachment-actions";
 
 @inject("desktopStore")
 class ImageFileAttachment extends Component {
@@ -31,6 +29,7 @@ class ImageFileAttachment extends Component {
       url,
       comment_count: commentCount,
       onCommentsClick,
+      useActions,
       preview_height: height,
       preview_width: width,
       preview_url: previewUrl
@@ -57,14 +56,15 @@ class ImageFileAttachment extends Component {
 
     return (
       <div className="attachment-image-block">
-        {filename && (
-          <div className="attachment-title">
-            <span>uploaded this image: </span>
-            <a target="_blank" href={url} onClick={this.onFileDownload}>
-              <strong>{filename}</strong>
-            </a>
-          </div>
-        )}
+        {filename &&
+          useActions && (
+            <div className="attachment-title">
+              <span>uploaded this image: </span>
+              <a target="_blank" href={url} onClick={this.onFileDownload}>
+                <strong>{filename}</strong>
+              </a>
+            </div>
+          )}
         <div className="attachment-image-holder" style={holderStyle}>
           {placeholderStyle ? (
             <div
@@ -72,44 +72,22 @@ class ImageFileAttachment extends Component {
               style={placeholderStyle}
               onClick={this.onToggleModal}
             >
-              <div className="attachment-actions">
-                <OverlayTrigger
-                  placement="top"
-                  delayShow={150}
-                  overlay={<Tooltip id="file-comments">File comments</Tooltip>}
-                >
-                  <Button href={url} onClick={onCommentsClick}>
-                    {commentCount
-                      ? commentCount > 1
-                        ? `${commentCount} comments`
-                        : `${commentCount} comment`
-                      : `Add Comment`}
-                  </Button>
-                </OverlayTrigger>
-
-                <OverlayTrigger
-                  placement="top"
-                  delayShow={150}
-                  overlay={<Tooltip id="download-file">Download</Tooltip>}
-                >
-                  <Button
-                    target="_blank"
-                    href={url}
-                    onClick={this.onFileDownload}
-                  >
-                    <i className="fa fa-download" />
-                  </Button>
-                </OverlayTrigger>
-              </div>
+              {useActions && (
+                <AttachmentActions
+                  url={url}
+                  commentCount={commentCount}
+                  onCommentsClick={onCommentsClick}
+                />
+              )}
             </div>
           ) : (
-              <img
-                src={previewUrl || url}
-                className="img-responsive"
-                alt={filename}
-                onClick={this.onToggleModal}
-              />
-            )}
+            <img
+              src={previewUrl || url}
+              className="img-responsive"
+              alt={filename}
+              onClick={this.onToggleModal}
+            />
+          )}
         </div>
 
         <Modal
@@ -138,10 +116,12 @@ ImageFileAttachment.propTypes = {
   url: PropTypes.string.isRequired,
   api_url: PropTypes.string,
   comment_count: PropTypes.number,
-  onCommentsClick: PropTypes.func
+  onCommentsClick: PropTypes.func,
+  useActions: PropTypes.bool
 };
 
 ImageFileAttachment.defaultProps = {
+  useActions: true,
   preview_height: 0,
   preview_width: 0,
   preview_url: "",
