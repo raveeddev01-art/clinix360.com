@@ -74,6 +74,7 @@
           "socketStore",
           "teamStore",
           "teamFileStore",
+          "teamFilesStore",
           "titleStore",
           "uploadStore",
           "userStore",
