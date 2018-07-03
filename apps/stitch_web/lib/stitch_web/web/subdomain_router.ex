@@ -303,38 +303,38 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/", PageController, :index)
 
     # TODO: a wild card route can make all /admin routes to one line
-    get("/admin/team", AdminController, :index)
-    get("/admin/team/settings", AdminController, :index)
-    get("/admin/team/security", AdminController, :index)
-    get("/admin/you/home", AdminController, :index)
-    get("/admin/you/profile", AdminController, :index)
-    get("/admin/you/account", AdminController, :index)
-    get("/admin/you/notifications", AdminController, :index)
-    get("/admin/members", AdminController, :index)
-    get("/admin/billing", AdminController, :index)
-    get("/admin/analytics", AdminController, :index)
+    get("/admin/team", PageController, :index)
+    get("/admin/team/settings", PageController, :index)
+    get("/admin/team/security", PageController, :index)
+    get("/admin/you/home", PageController, :index)
+    get("/admin/you/profile", PageController, :index)
+    get("/admin/you/account", PageController, :index)
+    get("/admin/you/notifications", PageController, :index)
+    get("/admin/members", PageController, :index)
+    get("/admin/billing", PageController, :index)
+    get("/admin/analytics", PageController, :index)
 
-    get("/admin/integrations", AdminController, :index, as: :admin_integrations)
-    get("/admin/integrations/:integration/new", AdminController, :index)
+    get("/admin/integrations", PageController, :index, as: :admin_integrations)
+    get("/admin/integrations/:integration/new", PageController, :index)
 
     get(
       "/admin/integrations/drchrono/:integration_config_id/edit",
-      AdminController,
+      PageController,
       :index,
       as: :admin_integration_edit
     )
 
-    get("/admin/integrations/:slug", AdminController, :index)
-    get("/admin/integrations/:slug/edit", AdminController, :index)
+    get("/admin/integrations/:slug", PageController, :index)
+    get("/admin/integrations/:slug/edit", PageController, :index)
 
-    get("/direct/:username", UserController, :index)
+    get("/direct/:username", PageController, :user)
     get("/apps", AuthenticationController, :apps)
     get("/logout", AuthenticationController, :logout)
 
-    get("/engage", EngageController, :index)
-    get("/conversations/:id", EngageController, :index)
+    get("/engage", PageController, :index)
+    get("/conversations/:id", PageController, :index)
 
-    get("/manage", ManageController, :index)
+    get("/manage", PageController, :index)
     get("/patients", PageController, :index)
   end
 
