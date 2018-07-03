@@ -17,8 +17,9 @@
     <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token %>">
 
     <title><%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %></title>
-
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script>
       (function(){
@@ -31,6 +32,126 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-sham.js"></script>
     <![endif]-->
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-width: 100%;
+        height: 100%;
+        min-height: 100%;
+        font-family: "Source Sans Pro";
+        font-size: 16px;
+        color: #333;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      a {
+        text-decoration: none;
+        color: #036;
+      }
+
+      a:hover, a:active, a:visited {
+        color: #036;
+      }
+
+      .content {
+        width: 100%;
+        min-width: 100%;
+        height: 100%;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f1f1f1;
+      }
+
+      .download {
+        display: flex;
+        border-radius: 5px;
+        max-width: 600px;
+        min-width: 400px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+      }
+
+      .download-text {
+        background: #fff;
+        font-size: 14px;
+        color: #999;
+        margin-left: -28px;
+        max-height: 0;
+        overflow-y: hidden;
+        display: inline-block;
+        /* transition: all .3s cubic-bezier(0, 1, 0.5, 1); */
+      }
+
+      .download-icon {
+        position: relative;
+        font-size: 32px;
+        margin-right: 20px;
+      }
+
+      .fa.icon-down {
+        font-size: 14px;
+        position: absolute;
+        right: -5px;
+        bottom: 0;
+        background: #fff;
+        border-radius: 100%;
+        max-height: 0;
+        overflow-y: hidden;
+        /* transition: all .3s cubic-bezier(0, 1, 0.5, 1); */
+      }
+
+      .download:hover .fa.icon-down {
+        max-height: 14px;
+      }
+
+      .download:hover .download-text {
+        max-height: 15px;
+      }
+
+      .footer {
+        border-top: 1px solid #ebebeb;
+        background-color: #fff;
+        height: 50px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .filename {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .filesize, .filetype {
+        font-size: 14px;
+        color: #999;
+        text-transform: uppercase;
+      }
+
+      .footer-right {
+        display: flex;
+      }
+
+      .logo {
+        margin-left: 10px;
+        height: 20px;
+      }
+    </style>
   </head>
 
   <body>
@@ -39,8 +160,9 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MMLMP6C"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-
-    <%= render @view_module, @view_template, assigns %>
+    <div class="content">
+      <%= render @view_module, @view_template, assigns %>
+    </div>
 
     <%= render "_sentry.html", conn: @conn %>
     <script src="<%= static_path(@conn, "/js/landing_app.js") %>"></script>
