@@ -1,5 +1,5 @@
 defmodule Stitch.FeatureGateway.Engage do
-  alias Stitch.Repo
+  # alias Stitch.Repo
   alias Stitch.Team
 
   @doc """
@@ -7,7 +7,7 @@ defmodule Stitch.FeatureGateway.Engage do
   their current subscription tier.
   """
   @spec add_team_features(list(binary), Team.t()) :: list(binary)
-  def add_team_features(features, team) do
+  def add_team_features(features, _team) do
     # team = Repo.preload(team, :subscription)
 
     features

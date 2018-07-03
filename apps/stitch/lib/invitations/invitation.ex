@@ -15,8 +15,7 @@ defmodule Stitch.Invitation do
     Team,
     TeamAuthorization,
     TimedMessage,
-    Patient,
-    TeamPatient
+    Patient
   }
 
   alias Stitch.Analytics.Invitation, as: InvitationAnalytics
