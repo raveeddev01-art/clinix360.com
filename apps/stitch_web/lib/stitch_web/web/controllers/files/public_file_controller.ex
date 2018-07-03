@@ -4,7 +4,8 @@ defmodule Stitch.Web.Files.PublicFileController do
   alias Stitch.{
     Files.Upload,
     Files.FileQueries,
-    Web.UrlService
+    Web.UrlService,
+    Web.Files.PublicFileView
   }
 
   plug(:fetch_flash)
@@ -19,7 +20,12 @@ defmodule Stitch.Web.Files.PublicFileController do
            {:file, FileQueries.get_by_id(file_id, preload_assoc: true)},
          {:authenticated, true} <- {:authenticated, url_public_token == file_public_token} do
       url = UrlService.file_download_url(file, %{public_token: file_public_token})
-      app_params = %{url: url, file: file}
+
+      app_params = %{
+        url: url,
+        file: file,
+        icon: PublicFileView.get_filetype_icon(file)
+      }
 
       conn
       |> put_layout("public_download_layout.html")
