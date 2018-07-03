@@ -41,9 +41,16 @@ defmodule Stitch.Web.Api.V1.FileView do
       preview_width: file.preview_width,
       encoded_id: Upload.encode_url_id(file),
       url: UrlService.file_download_url(file),
+      public_url: public_url(file),
       comment_count: file.comment_count
     }
   end
+
+  def public_url(%Upload{public_token: token} = file) when not is_nil(token) do
+    UrlService.public_download_page(file, token)
+  end
+
+  def public_url(_upload), do: nil
 
   def preview_url(file) do
     UrlService.file_preview_url(file)

@@ -69,7 +69,7 @@ class FileDetailPage extends Component {
   }
 
   renderPublicLink(file) {
-    const url = `${file.url}?public_token=${file.public_token}`;
+    const url = file.public_url;
 
     return (
       <div className="well file-detail__public">

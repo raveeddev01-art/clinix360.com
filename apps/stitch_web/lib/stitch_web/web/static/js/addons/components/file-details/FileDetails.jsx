@@ -36,11 +36,12 @@ class FileDetails extends Component {
   }
 
   renderPublicLink(file) {
-    if (!file.public_token) {
+    if (!file.public_url) {
       return null;
     }
 
-    const url = `${file.url}?public_token=${file.public_token}`;
+    const url = file.public_url;
+
     return (
       <a href={url} target="_blank">
         Open public link
