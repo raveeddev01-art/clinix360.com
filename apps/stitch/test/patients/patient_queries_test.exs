@@ -6,15 +6,15 @@ defmodule Stitch.PatientQueriesTest do
     test "returns patients for a team" do
       team = insert(:team)
       patient = insert(:patient, %{team: team})
-      [query_res_patient] = Stitch.PatientQueries.patients_for_team_id(team.id)
+      [query_res_patient] = PatientQueries.patients_for_team_id(team.id)
 
       assert query_res_patient.id == patient.id
     end
 
     test "does not return patients for other teams" do
       team = insert(:team)
-      patient = insert(:patient, %{team: insert(:team)})
-      query_res = Stitch.PatientQueries.patients_for_team_id(team.id)
+      _patient = insert(:patient, %{team: insert(:team)})
+      query_res = PatientQueries.patients_for_team_id(team.id)
 
       assert query_res == []
     end

@@ -68,7 +68,7 @@ defmodule Stitch.TimedMessageHelperTest do
       team = insert(:team)
       user = insert(:user, team: team)
       user2 = insert(:user, team: team)
-      invite = insert(:invitation, user: user2, team: team)
+      _invite = insert(:invitation, user: user2, team: team)
       user_with_invitations = Repo.preload(user, team: :invitations)
 
       assert Helper.has_not_invited_users(%{"user" => user_with_invitations}) === :not_sendable

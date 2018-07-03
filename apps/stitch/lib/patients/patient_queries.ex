@@ -7,8 +7,7 @@ defmodule Stitch.PatientQueries do
 
   alias Stitch.{
     Repo,
-    Patient,
-    Invitation
+    Patient
   }
 
   @doc """

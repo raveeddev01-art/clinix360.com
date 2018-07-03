@@ -4,7 +4,6 @@ defmodule StitchConnect.Web.GroupChannel do
   alias Stitch.Accounts.{User, ActivityTracker}
   alias Stitch.LinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
-  alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
 
