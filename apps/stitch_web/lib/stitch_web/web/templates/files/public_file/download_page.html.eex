@@ -1,6 +1,8 @@
 <%= if assigns[:app_params] do %>
-  <div data-component="PublicDownload" data-react-props='<%= raw @app_params %>'></div>
-<% else %>
-  <div data-component="PublicDownload"></div>
+  <div>
+    <div>icon</div>
+    <div><%= @app_params.file.filename %></div>
+    <div><%= @app_params.file.size_in_bytes %></div>
+    <div><%= @app_params.file.filetype %></div>
+  </div>
 <% end %>
-

@@ -19,8 +19,12 @@ defmodule Stitch.Web.Files.PublicFileController do
            {:file, FileQueries.get_by_id(file_id, preload_assoc: true)},
          {:authenticated, true} <- {:authenticated, url_public_token == file_public_token} do
       url = UrlService.file_download_url(file, %{public_token: file_public_token})
-      app_params = Poison.encode!(%{url: url})
-      render(conn, "download_page.html", app_params: app_params)
+      app_params = %{url: url, file: file}
+
+      conn
+      |> put_layout("public_download_layout.html")
+      |> assign(:title, file.filename)
+      |> render("download_page.html", app_params: app_params)
     else
       _ ->
         conn
