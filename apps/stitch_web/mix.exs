@@ -49,7 +49,7 @@ defmodule Stitch.Web.Mixfile do
       {:guardian, "~> 0.14"},
       {:poison, "~> 3.1"},
       {:corsica, "~> 1.0"},
-      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.3"},
       {:quantum, ">= 2.2.7"},
       {:sweet_xml, "~> 0.6.5"},
