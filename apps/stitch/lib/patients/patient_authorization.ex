@@ -1,6 +1,6 @@
 defmodule Stitch.PatientAuthorization do
   @moduledoc """
-  Authorization module for patient and team_patient related logic.
+  Authorization module for patient related logic.
   """
 
   alias Stitch.{TeamAuthorization, Accounts.User}
@@ -14,12 +14,12 @@ defmodule Stitch.PatientAuthorization do
   end
 
   @doc """
-  Given a team_patient_id and user. Check if user can update the team patient.
+  Given a patient_id and user. Check if user can update the patient.
   """
   @spec can_update_as_provider?(number, User.t()) :: boolean
-  def can_update_as_provider?(team_patient_id, current_user) do
-    team_patient = Stitch.PatientQueries.get_team_patient(team_patient_id)
-    team_patient && is_full_team_member?(team_patient.team_id, current_user)
+  def can_update_as_provider?(patient_id, current_user) do
+    patient = Stitch.PatientQueries.get_patient(patient_id)
+    patient && is_full_team_member?(patient.team_id, current_user)
   end
 
   defp is_full_team_member?(team_id, user) do

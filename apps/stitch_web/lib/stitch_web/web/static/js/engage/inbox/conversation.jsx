@@ -43,6 +43,10 @@ class Conversation extends Component {
                   sameElse: "M/D/YY"
                 })}
             </div>
+
+            <div className="closed" onClick={this.onCloseConversation}>
+              <i className="fa fa-check" /> Close
+            </div>
           </div>
 
           <div className="message">
@@ -50,8 +54,6 @@ class Conversation extends Component {
               ? conversation.latest_conversation_message.text_content
               : conversation.conversation_messages[0].text_content}
           </div>
-
-          <span onClick={this.onCloseConversation}>Close</span>
         </div>
       </Link>
     );

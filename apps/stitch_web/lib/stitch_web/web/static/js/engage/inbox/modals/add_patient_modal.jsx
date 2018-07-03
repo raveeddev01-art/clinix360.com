@@ -14,7 +14,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-@inject("inboxStore")
+@inject("inboxStore", "patientsStore")
 @observer
 class AddPatientModal extends Component {
   constructor(props) {
@@ -24,6 +24,7 @@ class AddPatientModal extends Component {
       error: "",
       firstName: "",
       lastName: "",
+      email: "",
       mrn: ""
     };
   }
@@ -38,12 +39,37 @@ class AddPatientModal extends Component {
     this.setState({ [field]: evt.target.value });
   };
 
-  addPatient = () => {
-    const { closeModal } = this.props;
+  generateMrnId = () => {
+    const id = Math.random()
+      .toString(36)
+      .substr(2, 8)
+      .toUpperCase();
 
-    console.log(
-      this.state.firstName + "\n" + this.state.lastName + "\n" + this.state.mrn
-    );
+    this.setState({ mrn: id });
+  };
+
+  addPatient = () => {
+    const { patientsStore, closeModal } = this.props;
+
+    patientsStore
+      .createPatient({
+        first_name: this.state.firstName,
+        last_name: this.state.lastName,
+        email: this.state.email,
+        mrn: this.state.mrn
+      })
+      .then(() => {
+        this.setState({
+          error: null
+        });
+        closeModal();
+      })
+      .catch(response => {
+        this.setState({
+          error: response.data.message
+        });
+      });
+
     closeModal();
   };
 
@@ -65,21 +91,30 @@ class AddPatientModal extends Component {
 
     return (
       <Modal.Footer>
-        <Button bsSize="large" onClick={closeModal}>
-          Cancel
-        </Button>
-        <Button bsSize="large" bsStyle="primary" onClick={this.addPatient}>
-          Add
-        </Button>
+        <div className="pull-right">
+          <Button bsSize="large" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button
+            bsSize="large"
+            bsStyle="primary"
+            onClick={this.addPatient}
+            disabled={
+              !this.state.firstName || !this.state.lastName || !this.state.mrn
+            }
+          >
+            Add
+          </Button>
+        </div>
       </Modal.Footer>
     );
   }
 
-  renderComposeModal() {
-    const { firstName, lastName, mrn } = this.state;
+  renderAddPatientModal() {
+    const { firstName, lastName, email, mrn } = this.state;
 
     return (
-      <Modal.Body>
+      <Modal.Body className="add-patient-modal">
         <Form horizontal>
           {!!this.state.error && (
             <Alert bsStyle="danger">{this.state.error}</Alert>
@@ -119,6 +154,22 @@ class AddPatientModal extends Component {
 
           <FormGroup bsSize="large">
             <Col componentClass={ControlLabel} sm={3}>
+              Email
+            </Col>
+
+            <Col sm={9}>
+              <FormControl
+                name="email"
+                type="email"
+                placeholder="Email address"
+                value={email}
+                onChange={this.updateValue("email")}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup bsSize="large">
+            <Col componentClass={ControlLabel} sm={3}>
               MRN
             </Col>
 
@@ -127,12 +178,13 @@ class AddPatientModal extends Component {
                 <FormControl
                   name="mrn"
                   type="text"
-                  placeholder="e.g. 1234567890"
+                  placeholder="e.g. 12345678"
                   value={mrn}
                   onChange={this.updateValue("mrn")}
+                  maxLength="25"
                 />
                 <InputGroup.Button>
-                  <Button>Auto Generate</Button>
+                  <Button onClick={this.generateMrnId}>Auto Generate</Button>
                 </InputGroup.Button>
               </InputGroup>
 
@@ -150,7 +202,7 @@ class AddPatientModal extends Component {
     return (
       <div>
         {this.renderModalHeader()}
-        {this.renderComposeModal()}
+        {this.renderAddPatientModal()}
         {this.renderModalFooter()}
       </div>
     );

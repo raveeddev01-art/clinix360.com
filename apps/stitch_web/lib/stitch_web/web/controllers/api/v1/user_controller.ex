@@ -3,7 +3,8 @@ defmodule Stitch.Web.Api.V1.UserController do
   alias Stitch.Accounts.{Admin, User, Role}
   alias Stitch.Web.TeamChannel
   alias Stitch.Web.Endpoint
-  alias StitchConnect.Web.{EventsChannel, GroupChannel}
+  alias Stitch.Web.EventsChannel
+  alias StitchConnect.Web.GroupChannel
   alias Stitch.Analytics.User, as: UserAnalytics
 
   alias Stitch.{

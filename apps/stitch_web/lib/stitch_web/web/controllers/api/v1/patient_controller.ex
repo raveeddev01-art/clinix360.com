@@ -1,27 +1,32 @@
-defmodule Stitch.Web.Api.V1.TeamPatientController do
+defmodule Stitch.Web.Api.V1.PatientController do
   use Stitch.Web, :controller
 
   # We should add analytics before activating
   # alias Stitch.Analytics.Patient, as: PatientAnalytics
 
-  alias Stitch.{Repo, TeamPatient, PatientAuthorization, PatientQueries, Web.TeamChannel}
+  alias Stitch.{
+    PatientAuthorization,
+    PatientQueries,
+    Patient,
+    Web.TeamChannel
+  }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
   def index(conn, _params) do
-    team_patients = PatientQueries.team_patients_for_team_id(conn.private[:team_id])
-    render(conn, "index.json", team_patients: team_patients)
+    patients = PatientQueries.patients_for_team_id(conn.private[:team_id])
+    render(conn, "index.json", patients: patients)
   end
 
   def show(conn, %{"id" => id}) do
-    case PatientQueries.get_team_patient(id) do
+    case PatientQueries.get_patient(id) do
       nil ->
         conn
         |> put_status(:not_found)
         |> json(%{message: "Patient not found"})
 
-      team_patient ->
-        render(conn, "show.json", team_patient: team_patient)
+      patient ->
+        render(conn, "show.json", patient: patient)
     end
   end
 
@@ -31,10 +36,10 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
 
     with {:authorized?, true} <-
            {:authorized?, PatientAuthorization.can_create_as_provider?(team.id, current_user)},
-         {:ok, %{team_patient: team_patient, patient: patient}} <-
-           TeamPatient.create_as_provider(team, params) do
-      TeamChannel.broadcast_team_patient_added(conn.assigns.team.id, team_patient, patient)
-      render(conn, "show.json", team_patient: team_patient, patient: patient)
+         {:ok, patient} <- Patient.create_as_provider(team.id, params) do
+      TeamChannel.broadcast_patient_added(conn.assigns.team.id, patient)
+
+      render(conn, "show.json", patient: patient)
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot create a patient on this team."}
@@ -51,17 +56,14 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
 
     with {:authorized?, true} <-
            {:authorized?, PatientAuthorization.can_update_as_provider?(id, current_user)},
-         {:ok, team_patient} when not is_nil(team_patient) <-
-           {:ok, PatientQueries.get_team_patient(id)},
-         {:ok, %{team_patient: updated_team_patient, patient: patient}} <-
-           TeamPatient.update_as_provider(team_patient, params) do
-      TeamChannel.broadcast_team_patient_updated(
+         {:ok, patient} when not is_nil(patient) <- {:ok, PatientQueries.get_patient(id)},
+         {:ok, updated_patient} <- Patient.update_as_provider(patient, params) do
+      TeamChannel.broadcast_patient_updated(
         conn.assigns.team.id,
-        updated_team_patient,
-        patient
+        updated_patient
       )
 
-      render(conn, "show.json", team_patient: updated_team_patient, patient: patient)
+      render(conn, "show.json", patient: patient)
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot update this patient."}
@@ -73,7 +75,7 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
     end
   end
 
-  def activate(conn, params = %{"id" => id}) do
+  def activate(conn, params) do
     change_active_value(conn, params, true)
   end
 
@@ -81,24 +83,19 @@ defmodule Stitch.Web.Api.V1.TeamPatientController do
     change_active_value(conn, params, false)
   end
 
-  defp change_active_value(conn, params = %{"id" => id}, active_status) do
+  defp change_active_value(conn, %{"id" => id}, active_status) do
     current_user = conn.assigns.current_user
 
     with {:authorized?, true} <-
            {:authorized?, PatientAuthorization.can_update_as_provider?(id, current_user)},
-         {:ok, team_patient} when not is_nil(team_patient) <-
-           {:ok, PatientQueries.get_team_patient(id)},
-         {:ok, team_patient} <-
-           TeamPatient.change_active_status_as_provider(team_patient, active_status) do
-      team_patient = Repo.preload(team_patient, :patient)
-
-      TeamChannel.broadcast_team_patient_updated(
+         {:ok, patient} when not is_nil(patient) <- {:ok, PatientQueries.get_patient(id)},
+         {:ok, patient} <- Patient.change_disabled_status_as_provider(patient, active_status) do
+      TeamChannel.broadcast_patient_updated(
         conn.assigns.team.id,
-        team_patient,
-        team_patient.patient
+        patient
       )
 
-      render(conn, "show.json", team_patient: team_patient)
+      render(conn, "show.json", patient: patient)
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot update this patient."}
