@@ -118,13 +118,13 @@ defmodule Stitch.TimedMessage.Helper do
 
   @spec is_active_user(map) :: sendable_res
   def is_active_user(%{"user" => user}) do
-    sendable = user && user.onboarded && !user.disabled
+    sendable = user.onboarded && !user.disabled
     if sendable, do: :ok, else: :not_sendable
   end
 
   @spec has_team(map) :: sendable_res
   def has_team(%{"user" => user}) do
-    sendable = user && user.team
+    sendable = user.team
     if sendable, do: :ok, else: :not_sendable
   end
 
