@@ -16,7 +16,7 @@ class FileDetails extends Component {
 
   renderSharedInInfo(groups) {
     if (!groups.length) {
-      return <span />;
+      return null;
     }
 
     return (
@@ -36,6 +36,10 @@ class FileDetails extends Component {
   }
 
   renderPublicLink(file) {
+    if (!file.public_token) {
+      return null;
+    }
+
     const url = `${file.url}?public_token=${file.public_token}`;
     return (
       <a href={url} target="_blank">
