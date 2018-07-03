@@ -6,7 +6,6 @@ defmodule Stitch.Web.SubdomainRouter do
   # =============
 
   pipeline :browser do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -15,7 +14,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :browser_authenticate do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -26,24 +24,20 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :admin do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(Stitch.Web.Plug.StaffAuthenticate)
     plug(:put_layout, {Stitch.Web.Admin.AppView, "layout.html"})
   end
 
   pipeline :api_auth do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
   end
 
   pipeline :api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
   end
 
   pipeline :authenticated_api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
@@ -52,7 +46,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :authenticated_locked_api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
@@ -60,7 +53,6 @@ defmodule Stitch.Web.SubdomainRouter do
 
   pipeline :team_admin_api do
     plug(:accepts, ["json"])
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
     plug(Stitch.Web.Plug.TeamAdminOnly)
@@ -68,7 +60,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :files do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:fetch_session)
   end
 
