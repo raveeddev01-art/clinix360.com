@@ -1,0 +1,171 @@
+.file-thumb {
+  width: 50px;
+  height: 50px;
+  background-color: #f3f3f3;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 4px;
+}
+
+// file item in the list
+.file-item {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+
+  &__link {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+
+    .time {
+      margin-left: 5px;
+    }
+  }
+}
+
+// file heading with user avatar and file name
+.file-heading {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+
+  .avatar {
+    img {
+      width: 40px;
+    }
+  }
+
+  &__content {
+    margin-left: 10px;
+
+    &-user {
+    }
+
+    &-file {
+      font-weight: 700;
+    }
+  }
+}
+
+// file detail
+.file-detail {
+  &.well {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  &__heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  &__public {
+    justify-content: space-between;
+
+    &-title {
+      width: 80px;
+    }
+
+    &-link {
+      margin-right: 10px;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+// file comment item
+.file-comment-list {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+}
+
+.file-comment {
+  display: flex;
+
+  &:hover {
+    .file-comment__action {
+      opacity: 1;
+    }
+  }
+
+  .avatar {
+    img {
+      width: 40px;
+    }
+
+    margin-right: 10px;
+  }
+
+  &__edit {
+    flex: 1;
+
+    &-buttons {
+      text-align: right;
+      margin-top: 10px;
+
+      .btn + .btn {
+        margin-left: 10px;
+      }
+
+      &--add {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  &__action {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    font-size: 14px !important;
+    color: #707070 !important;
+    margin: 0 0 0 3px !important;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+
+    &-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: #707070;
+      font-size: 12px;
+    }
+  }
+
+  &__groups {
+    a {
+      margin-left: 5px;
+
+      &:last-of-type {
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+// addon
+.file-details-addon {
+  padding: 10px 15px;
+  min-height: 100%;
+  background-color: #fff;
+}
