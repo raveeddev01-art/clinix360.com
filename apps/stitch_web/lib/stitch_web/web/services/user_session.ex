@@ -3,7 +3,6 @@ defmodule Stitch.Web.UserSession do
 
   alias Stitch.{
     Accounts.User,
-    Patient,
     Web.UserSession
   }
 
@@ -12,9 +11,9 @@ defmodule Stitch.Web.UserSession do
           locked: boolean
         }
 
-  @spec new(User.t() | Patient.t()) :: UserSession.t()
-  def new(user_or_patient) do
-    %UserSession{token: user_or_patient.token}
+  @spec new(User.t()) :: UserSession.t()
+  def new(%User{} = user) do
+    %UserSession{token: user.token}
   end
 
   @spec lock(UserSession.t()) :: UserSession.t()
@@ -27,8 +26,8 @@ defmodule Stitch.Web.UserSession do
     %{user_session | locked: false}
   end
 
-  @spec update_token(UserSession.t(), User.t() | Patient.t()) :: UserSession.t()
-  def update_token(%UserSession{} = user_session, user_or_patient) do
-    %{user_session | token: user_or_patient.token}
+  @spec update_token(UserSession.t(), User.t()) :: UserSession.t()
+  def update_token(%UserSession{} = user_session, %User{} = user) do
+    %{user_session | token: user.token}
   end
 end

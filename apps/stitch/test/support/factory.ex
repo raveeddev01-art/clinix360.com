@@ -60,14 +60,6 @@ defmodule Stitch.Factory do
     }
   end
 
-  def patient_invitation_factory do
-    %Stitch.Invitation{
-      invite_token: "abc",
-      accepted: false,
-      patient: build(:patient)
-    }
-  end
-
   def integration_factory do
     %Stitch.Integration{
       team: build(:team),

@@ -2,7 +2,7 @@ defmodule Stitch.TimedMessage.Worker do
   @moduledoc """
   Handles job execution for timed messages.
   """
-  use Bamboo.Phoenix, view: Stitch.EmailView
+  use Bamboo.Phoenix, view: StitchConnect.EmailView
   import Bamboo.Email
   alias Stitch.TimedMessage.Helper
 
@@ -24,7 +24,7 @@ defmodule Stitch.TimedMessage.Worker do
       |> to([System.get_env("MAILGUN_EMAIL_OVERRIDE") || data["user"].email])
       |> set_subject(rules, data)
       |> assign_vars(rules, data)
-      |> put_html_layout({Stitch.EmailView, "layout/email.html"})
+      |> put_html_layout({StitchConnect.EmailView, "layout/email.html"})
       |> render("email/#{type}.html")
       |> Stitch.NewMailer.deliver_later()
     end

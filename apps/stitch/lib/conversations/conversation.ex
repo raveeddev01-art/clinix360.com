@@ -6,10 +6,7 @@ defmodule Stitch.Engage.Conversation do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Stitch.{
-    Repo,
-    Invitation
-  }
+  alias Stitch.Repo
 
   alias Stitch.Engage.{
     Inbox,
@@ -88,7 +85,7 @@ defmodule Stitch.Engage.Conversation do
         sender,
         params = %{
           "inbox_id" => inbox_id,
-          "patient_id" => team_patient_id
+          "patient_id" => patient_id
         }
       ) do
     Ecto.Multi.new()
@@ -96,16 +93,13 @@ defmodule Stitch.Engage.Conversation do
       create_for_inbox(inbox_id, params)
     end)
     |> Ecto.Multi.run(:conversation_patient, fn %{conversation: conversation} ->
-      ConversationPatient.create_for_conversation_and_patient(conversation.id, team_patient_id)
+      ConversationPatient.create_for_conversation_and_patient(conversation.id, patient_id)
     end)
     |> Ecto.Multi.run(:conversation_message, fn %{conversation: conversation} ->
       {:ok, %{conversation_message: conversation_message}} =
         ConversationMessageCreation.create(conversation, sender, params)
 
       {:ok, conversation_message}
-    end)
-    |> Ecto.Multi.run(:patient_invitation, fn _multi_map ->
-      Invitation.invite_patient_if_necessary(sender.id, team_patient_id)
     end)
     |> Repo.transaction()
   end
@@ -147,6 +141,4 @@ defmodule Stitch.Engage.Conversation do
         other
     end
   end
-
-  def create_events(error), do: error
 end

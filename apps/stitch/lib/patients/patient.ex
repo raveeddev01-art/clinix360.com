@@ -5,13 +5,7 @@ defmodule Stitch.Patient do
 
   use Ecto.Schema
   import Ecto.Changeset
-
-  alias Stitch.{
-    Repo,
-    Patient,
-    Team,
-    User.Authentication
-  }
+  alias Stitch.{Repo, Patient, Team}
 
   @type t :: %__MODULE__{}
 
@@ -41,21 +35,12 @@ defmodule Stitch.Patient do
     field(:email, :string)
     field(:phone_number, :string)
     field(:mrn, :string)
-    field(:password_hash, :string)
 
     field(:disabled, :boolean, default: false)
     field(:onboarded, :boolean, default: false)
 
     field(:profile_image_url, :string)
     field(:profile_image_thumb_url, :string)
-
-    field(:token, :string)
-    has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
-    has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)
-    field(:confirmation_code, :string)
-    field(:email_confirmed, :boolean, default: false)
-
-    field(:password, :string, virtual: true)
 
     timestamps()
   end
@@ -75,14 +60,6 @@ defmodule Stitch.Patient do
 
   def disabled_changeset(%Patient{} = struct, disabled) do
     struct |> cast(%{disabled: disabled}, [:disabled])
-  end
-
-  def onboarding_complete_changeset(%Stitch.Patient{} = struct, attrs \\ %{}) do
-    struct
-    |> cast(attrs, [:first_name, :last_name, :password, :phone_number])
-    |> validate_required([:first_name, :last_name, :password])
-    |> put_change(:password_hash, Authentication.hash_password(attrs["password"]))
-    |> put_change(:onboarded, true)
   end
 
   @doc """
@@ -121,34 +98,12 @@ defmodule Stitch.Patient do
   end
 
   @doc """
-  Changes a patient to/from disabled.
+  Changes a patient to/drom disabled.
   """
   @spec change_disabled_status_as_provider(t(), boolean) :: {:ok, map} | {:error, map}
   def change_disabled_status_as_provider(patient, disabled_status) do
     patient
     |> disabled_changeset(disabled_status)
     |> Repo.update()
-  end
-
-  def prep_for_invitation(patient, params) do
-    patient |> invite_changeset(params) |> Repo.update()
-  end
-
-  @doc """
-  Applies the attributes: email, team_id to the Stitch.Accounts.User struct.
-  """
-  def invite_changeset(struct, params) do
-    digits = for _ <- 1..6, do: :rand.uniform(9)
-
-    confirmation_code =
-      digits
-      |> Enum.join()
-
-    token = Stitch.Rand.token(32)
-
-    struct
-    |> cast(params, [])
-    |> put_change(:confirmation_code, confirmation_code)
-    |> put_change(:token, token)
   end
 end

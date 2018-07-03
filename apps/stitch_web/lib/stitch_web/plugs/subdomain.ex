@@ -8,7 +8,12 @@ defmodule Stitch.Web.Plug.Subdomain do
 
   def call(conn, router) do
     case get_subdomain(conn.host) do
-      subdomain when subdomain in ["admin", "files"] ->
+      "admin" ->
+        conn
+        |> router.call(router.init({}))
+        |> halt
+
+      "files" ->
         conn
         |> router.call(router.init({}))
         |> halt

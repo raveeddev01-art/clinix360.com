@@ -17,7 +17,7 @@ defmodule Stitch.TimedMessage.Helper do
   """
   @type sendable_res :: :ok | :not_sendable
 
-  use Bamboo.Phoenix, view: Stitch.EmailView
+  use Bamboo.Phoenix, view: StitchConnect.EmailView
   alias Stitch.{Repo, Accounts.User, MessageQueries, Invitation}
 
   # ================

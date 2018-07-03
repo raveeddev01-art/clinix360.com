@@ -29,11 +29,4 @@ defmodule Stitch.TeamAuthorization do
 
   def is_admin?(%User{team_id: team_id, roles: ["admin"]}, %Team{id: team_id}), do: true
   def is_admin?(_user, _team), do: false
-
-  @spec can_send_patient_invites?(User.t(), Team.t()) :: boolean
-  def can_send_patient_invites?(%User{roles: roles}, team) do
-    engage_on = Stitch.FeatureGateway.enabled?(team, "engage")
-    non_guest = "admin" in roles || "member" in roles
-    engage_on && non_guest
-  end
 end

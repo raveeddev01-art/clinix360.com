@@ -1,5 +1,5 @@
 defmodule Stitch.Files.Thumb do
-  alias Stitch.{AWS.S3}
+  alias Stitch.{Repo, Message, AWS.S3}
   import Mogrify
 
   @settings Application.get_env(:stitch, :user_upload_settings)

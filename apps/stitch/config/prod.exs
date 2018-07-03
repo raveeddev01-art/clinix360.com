@@ -26,5 +26,3 @@ config :stitch,
 config :stitch, Stitch.Analytics.Sync.RecurringSync, enabled: true
 
 config :stitch, Stitch.Analytics.DailyReports.Scheduler, enabled: true
-
-config :pdf_generator, command_prefix: ["xvfb-run", "-a"]

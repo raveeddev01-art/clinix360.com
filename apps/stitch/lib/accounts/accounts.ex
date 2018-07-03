@@ -3,7 +3,7 @@ defmodule Stitch.Accounts do
   The Accounts context.
   """
 
-  alias Stitch.{Repo, Patient}
+  alias Stitch.Repo
   alias Stitch.Accounts.User
   alias Stitch.Analytics.Accounts, as: AccountsAnalytics
 
@@ -91,32 +91,6 @@ defmodule Stitch.Accounts do
               {:error, changeset}
           end
         end
-    end
-  end
-
-  @doc """
-    Given a patient ID and attributes, change patient to be onboarded
-    and update their attributes.
-
-    Called after a patient gets an invite email and signs up.
-  """
-  @spec update_and_complete_patient_onboarding(integer, map) ::
-          {:ok, Patient.t()} | {:error, binary}
-  def update_and_complete_patient_onboarding(patient_id, attrs) do
-    case Repo.get(Patient, patient_id) do
-      %Patient{} = patient ->
-        case patient.onboarded do
-          true ->
-            {:ok, patient}
-
-          _ ->
-            patient
-            |> Patient.onboarding_complete_changeset(attrs)
-            |> Repo.update()
-        end
-
-      _ ->
-        {:error, "Patient does not exist"}
     end
   end
 

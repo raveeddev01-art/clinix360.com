@@ -1,6 +1,7 @@
 defmodule Stitch.Web.Plug.StaffAuthenticate do
   use Stitch.Web, :plug
   alias Stitch.UserQueries
+  alias Stitch.Accounts.User
 
   def init(_), do: nil
 

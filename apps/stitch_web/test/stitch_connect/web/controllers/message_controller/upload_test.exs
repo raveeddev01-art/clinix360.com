@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.UploadTest do
   use Stitch.Web.ConnCase, async: true
+  import Phoenix.ChannelTest, except: [connect: 2]
   import Stitch.Web.SubdomainRouter.Helpers
 
   alias Stitch.{

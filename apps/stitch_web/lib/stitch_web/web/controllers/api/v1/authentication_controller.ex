@@ -11,7 +11,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
   def submit_login(conn, %{"email" => email, "password" => password}) do
     team = conn.assigns.team
 
-    case Authentication.validate_user_email_and_password(email, password, team) do
+    case Authentication.validate_email_and_password(email, password, team) do
       false ->
         {:error, :not_authorized, "Email or password is incorrect."}
 
