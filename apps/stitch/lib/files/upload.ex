@@ -194,8 +194,14 @@ defmodule Stitch.Files.Upload do
 
   @spec create_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
   def create_public_link(%Upload{} = upload) do
+    token =
+      10
+      |> :crypto.strong_rand_bytes()
+      |> Base.encode32(case: :lower)
+      |> binary_part(0, 10)
+
     upload
-    |> change(public_token: Rand.token(32))
+    |> change(public_token: token)
     |> Repo.update()
   end
 

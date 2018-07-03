@@ -1,0 +1,6 @@
+<%= if assigns[:app_params] do %>
+  <div data-component="PublicDownload" data-react-props='<%= raw @app_params %>'></div>
+<% else %>
+  <div data-component="PublicDownload"></div>
+<% end %>
+
