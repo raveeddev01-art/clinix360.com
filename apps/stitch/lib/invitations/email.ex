@@ -18,24 +18,21 @@ defmodule Stitch.Invitation.Email do
     |> subject("Join Your Team")
     |> put_param("global_merge_vars", [
       %{
-        name: "inviterName",
-        content: inviter_name
+        "name": "inviterName",
+        "content": inviter_name
       },
       %{
-        name: "inviterOrg",
-        content: invitation.team.name
+        "name": "inviterOrg",
+        "content": invitation.team.name
       },
       %{
-        name: "receiverEmail",
-        content: invitation.user.email
+        "name": "receiverEmail",
+        "content": invitation.user.email
       },
       %{
-        name: "joinTeamUrl",
-        content:
-          "https://#{invitation.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{
-            invitation.invite_token
-          }"
-      }
+        "name": "joinTeamUrl",
+        "content": "https://#{invitation.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{invitation.invite_token}"
+      },
     ])
   end
 end

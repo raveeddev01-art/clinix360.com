@@ -670,7 +670,7 @@ defmodule Stitch.MessageQueriesTest do
     test "is false if no messages sent" do
       team = insert(:team)
       user_1 = insert(:user, team: team)
-      _group_1 = insert(:group, team: team)
+      group_1 = insert(:group, team: team)
 
       refute Stitch.MessageQueries.has_sent_mobile_message(user_1.id)
     end

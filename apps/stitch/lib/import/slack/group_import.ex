@@ -1,6 +1,7 @@
 defmodule Stitch.Import.Slack.GroupImport do
   require Logger
-  alias Stitch.{Repo, Group}
+  import Ecto.Query
+  alias Stitch.{Repo, Group, Accounts.User}
 
   @doc """
   Expected input:

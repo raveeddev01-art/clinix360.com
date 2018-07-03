@@ -190,9 +190,10 @@ defmodule Stitch.Messages.SearchTest do
 
   describe "Stitch.Messages.Search.parameterize/1" do
     test "returns list of params to perform search" do
-      Search.parameterize(
-        "medication change* in:#emergency-room to:@bharat after:3/2/2018 before:3/10/2018"
-      )
+      params =
+        Search.parameterize(
+          "medication change* in:#emergency-room to:@bharat after:3/2/2018 before:3/10/2018"
+        )
     end
   end
 
