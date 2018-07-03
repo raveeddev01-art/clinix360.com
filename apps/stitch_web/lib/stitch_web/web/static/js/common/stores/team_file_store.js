@@ -1,4 +1,5 @@
 import { observable, action } from "mobx";
+import uniqBy from "lodash/uniqBy";
 
 class TeamFileStore {
   @observable file = {};
@@ -59,7 +60,7 @@ class TeamFileStore {
     return post(`/api/v1/files/${this.file.id}/comments`, {
       body
     }).then(response => {
-      this.file.comments = [...this.file.comments, response.data];
+      this.file.comments = uniqBy([...this.file.comments, response.data], "id");
     });
   }
 
