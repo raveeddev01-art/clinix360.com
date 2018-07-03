@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Typeahead } from "react-bootstrap-typeahead";
 import Modal from "react-bootstrap/lib/Modal";
-import { FormGroup, FormControl, Button, Col } from "react-bootstrap";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import FormControl from "react-bootstrap/lib/FormControl";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import Button from "react-bootstrap/lib/Button";
 import history from "lib/history";
-
-import _ from "lodash";
-import FileCommentInput from "admin/files/components/FileCommentInput";
-import FileCommentGroup from "admin/files/components/FileCommentGroup";
+import { Groups } from "common/components";
 
 @inject("teamFileStore", "groupsStore", "presenceStore")
 @observer
@@ -16,153 +15,79 @@ class FileShareModal extends Component {
     super(props);
     this.state = {
       commentText: "",
-      selectedGroup: undefined
+      groupId: undefined
     };
   }
+
+  onChangeGroup = groupId => this.setState({ groupId });
+
+  onChangeComment = e => this.setState({ commentText: e.target.value });
 
   closeModal = () => {
     this.props.teamFileStore.fileShareModalId = null;
   };
 
   share = () => {
-    const groupId = this.state.selectedGroup.id;
-    this.props.teamFileStore.share(groupId).then(file => {
+    const { teamFileStore, groupsStore } = this.props;
+    const { groupId, commentText } = this.state;
+
+    teamFileStore.share(groupId, commentText).then(() => {
       this.closeModal();
-      history.push(`/rooms/${this.state.selectedGroup.slug}`);
+      const group = groupsStore.getGroupById(groupId);
+
+      if (group) {
+        history.push(`/rooms/${group.slug}`);
+      }
     });
   };
 
-  onGroupSelect = group => {
-    this.setState({ selectedGroup: group });
-  };
-
-  renderModalHeader() {
-    return (
-      <Modal.Header>
-        <Modal.Title>Share File</Modal.Title>
-        <a role="link" onClick={this.closeModal}>
-          <i className="fa fa-close" />
-        </a>
-      </Modal.Header>
-    );
-  }
-
-  // TODO: consider extracting this on groups load and making available by default
-  userIdFromDM(group) {
-    const userIds = group.slug.split(":")[1].split(".");
-    const [id] = _.without(userIds, `${currentUser.id}`);
-    return id;
-  }
-
-  renderGroupItem(group) {
-    const online = isOnline =>
-      isOnline ? (
-        <i className="fa fa-circle" />
-      ) : (
-        <i className="fa fa-circle-o" />
-      );
-
-    if (group.type == "dm") {
-      return (
-        <span className="username">
-          {online(this.props.presenceStore.isOnline(this.userIdFromDM(group)))}
-          {group.name}
-        </span>
-      );
-    }
-
-    if (group.type == "multi_dm") {
-      return <span className="username">{group.name}</span>;
-    }
-
-    if (group.public == false) {
-      return <span className="username">(private) {group.name}</span>;
-    }
-
-    return <span className="username"># {group.name}</span>;
-  }
-
-  renderSharedInSelector() {
-    const groups = this.props.groupsStore.groups;
-
-    return (
-      <Typeahead
-        labelKey="name"
-        multiple={false}
-        options={groups}
-        onChange={selected => {
-          if (selected.length == 0) {
-            return null;
-          } else {
-            this.onGroupSelect(selected[0]);
-          }
-        }}
-        renderMenuItemChildren={group => (
-          <div className=".user-list-item" key={group.id}>
-            <div className="item-text" style={{ flexGrow: 1, display: "flex" }}>
-              {this.renderGroupItem(group)}
-            </div>
-          </div>
-        )}
-        placeholder="Search rooms and people"
-      />
-    );
-  }
-
-  handleChange(e) {
-    this.setState({ commentText: e.target.value });
-  }
-
-  renderCommentInput() {
-    return (
-      <Col md={6}>
-        <FormGroup>
-          <FormControl
-            componentClass="textarea"
-            placeholder="textarea"
-            value={this.state.commentText}
-            onChange={e => this.handleChange(e)}
-          />
-        </FormGroup>
-
-        <FileCommentGroup file={this.props.teamFileStore.file} />
-
-        <Button bsStyle="default" onClick={_ => this.closeModal()}>
-          Cancel
-        </Button>
-
-        <Button bsStyle="success" onClick={_ => this.share()}>
-          Share
-        </Button>
-      </Col>
-    );
-  }
-
-  renderModalBody() {
-    return (
-      <Modal.Body>
-        <div>
-          {"Share file in"}
-          {this.renderSharedInSelector()}
-          {"Add comment (optional)"}
-          {this.renderCommentInput()}
-        </div>
-      </Modal.Body>
-    );
-  }
-
   render() {
-    const show = !!this.props.teamFileStore.fileShareModalId;
-    if (!show) {
-      return null;
-    }
+    const { teamFileStore } = this.props;
+    const show = !!teamFileStore.fileShareModalId;
+    const { groupId, commentText } = this.state;
 
     return (
-      <Modal className="message-info-modal" show onHide={this.closeModal}>
-        {this.renderModalHeader()}
-        {this.renderModalBody()}
+      <Modal className="file-share-modal" show={show} onHide={this.closeModal}>
+        <Modal.Header>
+          <Modal.Title>Share File</Modal.Title>
+          <a role="link" onClick={this.closeModal}>
+            <i className="fa fa-close" />
+          </a>
+        </Modal.Header>
+        <Modal.Body>
+          <FormGroup>
+            <ControlLabel>Room or People to share file</ControlLabel>
+            <Groups
+              value={groupId}
+              multi={false}
+              onChange={this.onChangeGroup}
+            />
+          </FormGroup>
+
+          <div className="file-comment">
+            <FormGroup className="file-comment__edit">
+              <ControlLabel>Add Comment (optional)</ControlLabel>
+              <FormControl
+                componentClass="textarea"
+                placeholder="Comment goes here..."
+                value={commentText}
+                onChange={this.onChangeComment}
+              />
+              <div className="file-comment__edit-buttons">
+                <Button bsStyle="default" onClick={this.closeModal}>
+                  Cancel
+                </Button>
+
+                <Button bsStyle="primary" onClick={this.share}>
+                  Share
+                </Button>
+              </div>
+            </FormGroup>
+          </div>
+        </Modal.Body>
       </Modal>
     );
   }
 }
+
 export default FileShareModal;
