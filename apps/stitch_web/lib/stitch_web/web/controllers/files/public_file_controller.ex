@@ -20,7 +20,11 @@ defmodule Stitch.Web.Files.PublicFileController do
          {:authenticated, true} <- {:authenticated, url_public_token == file_public_token} do
       url = UrlService.file_download_url(file, %{public_token: file_public_token})
       app_params = %{url: url, file: file}
-      render(conn, "download_page.html", app_params: app_params)
+
+      conn
+      |> put_layout("public_download_layout.html")
+      |> assign(:title, file.filename)
+      |> render("download_page.html", app_params: app_params)
     else
       _ ->
         conn
