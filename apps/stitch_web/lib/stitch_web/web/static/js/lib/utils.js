@@ -15,6 +15,10 @@ export function isMemberOrAdmin() {
   );
 }
 
+export function isAdminOrOwner(userId) {
+  return isAdmin() && userId === currentUser.id;
+}
+
 export function extractEmails(text) {
   return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
 }
