@@ -1,8 +1,11 @@
 defmodule StitchConnect.Web.MessageEventsService do
   alias StitchConnect.Web.{
-    EventsChannel,
     GroupChannel,
     PushNotifications
+  }
+
+  alias Stitch.Web.{
+    EventsChannel
   }
 
   alias Stitch.{
