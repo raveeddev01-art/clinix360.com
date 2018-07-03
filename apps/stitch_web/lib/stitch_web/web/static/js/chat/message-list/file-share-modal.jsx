@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { Typeahead } from "react-bootstrap-typeahead";
 import Modal from "react-bootstrap/lib/Modal";
 import { FormGroup, FormControl, Button, Col } from "react-bootstrap";
 import history from "lib/history";
 
 import _ from "lodash";
-import FileCommentInput from "../../files/FileCommentInput";
-import CommentingIn from "../../files/CommentingIn";
-
+import FileCommentInput from "admin/files/components/FileCommentInput";
+import FileCommentGroup from "admin/files/components/FileCommentGroup";
 
 @inject("teamFileStore", "groupsStore", "presenceStore")
 @observer
@@ -18,7 +17,7 @@ class FileShareModal extends Component {
     this.state = {
       commentText: "",
       selectedGroup: undefined
-    }
+    };
   }
 
   closeModal = () => {
@@ -28,14 +27,14 @@ class FileShareModal extends Component {
   share = () => {
     const groupId = this.state.selectedGroup.id;
     this.props.teamFileStore.share(groupId).then(file => {
-      this.closeModal()
-      history.push(`/rooms/${this.state.selectedGroup.slug}`)
-    })
-  }
+      this.closeModal();
+      history.push(`/rooms/${this.state.selectedGroup.slug}`);
+    });
+  };
 
-  onGroupSelect = (group) => {
+  onGroupSelect = group => {
     this.setState({ selectedGroup: group });
-  }
+  };
 
   renderModalHeader() {
     return (
@@ -56,8 +55,12 @@ class FileShareModal extends Component {
   }
 
   renderGroupItem(group) {
-    const online = (isOnline) =>
-      isOnline ? <i className="fa fa-circle" /> : <i className="fa fa-circle-o" />
+    const online = isOnline =>
+      isOnline ? (
+        <i className="fa fa-circle" />
+      ) : (
+        <i className="fa fa-circle-o" />
+      );
 
     if (group.type == "dm") {
       return (
@@ -65,22 +68,22 @@ class FileShareModal extends Component {
           {online(this.props.presenceStore.isOnline(this.userIdFromDM(group)))}
           {group.name}
         </span>
-      )
+      );
     }
 
     if (group.type == "multi_dm") {
-      return <span className="username">{group.name}</span>
+      return <span className="username">{group.name}</span>;
     }
 
     if (group.public == false) {
-      return <span className="username">(private) {group.name}</span>
+      return <span className="username">(private) {group.name}</span>;
     }
 
-    return <span className="username"># {group.name}</span>
+    return <span className="username"># {group.name}</span>;
   }
 
   renderSharedInSelector() {
-    const groups = this.props.groupsStore.groups
+    const groups = this.props.groupsStore.groups;
 
     return (
       <Typeahead
@@ -94,15 +97,16 @@ class FileShareModal extends Component {
             this.onGroupSelect(selected[0]);
           }
         }}
-        renderMenuItemChildren={(group) => (
+        renderMenuItemChildren={group => (
           <div className=".user-list-item" key={group.id}>
             <div className="item-text" style={{ flexGrow: 1, display: "flex" }}>
               {this.renderGroupItem(group)}
             </div>
           </div>
         )}
-        placeholder="Search rooms and people" />
-    )
+        placeholder="Search rooms and people"
+      />
+    );
   }
 
   handleChange(e) {
@@ -117,10 +121,11 @@ class FileShareModal extends Component {
             componentClass="textarea"
             placeholder="textarea"
             value={this.state.commentText}
-            onChange={e => this.handleChange(e)} />
+            onChange={e => this.handleChange(e)}
+          />
         </FormGroup>
 
-        <CommentingIn file={this.props.teamFileStore.file} />
+        <FileCommentGroup file={this.props.teamFileStore.file} />
 
         <Button bsStyle="default" onClick={_ => this.closeModal()}>
           Cancel
@@ -130,7 +135,7 @@ class FileShareModal extends Component {
           Share
         </Button>
       </Col>
-    )
+    );
   }
 
   renderModalBody() {
