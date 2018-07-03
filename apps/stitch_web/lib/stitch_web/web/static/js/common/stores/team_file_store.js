@@ -1,6 +1,4 @@
-import { observable, computed, action } from "mobx";
-import { stringify } from "qs";
-import _ from "lodash";
+import { observable, action } from "mobx";
 
 class TeamFileStore {
   @observable file = {};
@@ -12,29 +10,29 @@ class TeamFileStore {
   }
 
   @action
-  createPublicLink() {
+  createPublicLink = () => {
     post(`/api/v1/files/${this.file.id}/create_public_link`).then(response => {
       this.file = { ...this.file, ...response.data };
     });
-  }
+  };
 
   @action
-  revokePublicLink() {
+  revokePublicLink = () => {
     post(`/api/v1/files/${this.file.id}/revoke_public_link`).then(response => {
       this.file = { ...this.file, ...response.data };
     });
-  }
+  };
 
   @action
-  deleteComment(commentId) {
-    remove(`/api/v1/file_comments/${commentId}`).then(response => {
-      const comments = _.filter(this.file.comments, c => c.id !== commentId);
+  deleteComment = commentId => {
+    remove(`/api/v1/file_comments/${commentId}`).then(() => {
+      const comments = this.file.comments.filter(c => c.id !== commentId);
       this.file.comments = comments;
     });
-  }
+  };
 
   @action
-  updateComment(commentId, commentText) {
+  updateComment = (commentId, commentText) => {
     const body = { file_comment: { text_content: commentText } };
     return put(`/api/v1/file_comments/${commentId}`, {
       body
@@ -43,12 +41,12 @@ class TeamFileStore {
         comment => (comment.id === commentId ? response.data : comment)
       );
     });
-  }
+  };
 
   @action
-  deleteFile() {
+  deleteFile = () => {
     return remove(`/api/v1/files/${this.file.id}`);
-  }
+  };
 
   @action
   onFileUpdate(upload) {
@@ -58,39 +56,44 @@ class TeamFileStore {
   @action
   addComment(text) {
     const body = { file_comment: { text_content: text } };
-    return post(`/api/v1/files/${this.file.id}/comments`, { body });
+    return post(`/api/v1/files/${this.file.id}/comments`, {
+      body
+    }).then(response => {
+      this.file.comments = [...this.file.comments, response.data];
+    });
   }
 
   @action
   load(encodedFileId) {
     return get(`/api/v1/files/${encodedFileId}`).then(response => {
       this.file = response.data;
+      return this.file;
     });
   }
 
   @action
-  share(groupId) {
+  share = groupId => {
     const body = { group_id: groupId };
     return post(`/api/v1/files/${this.file.id}/share`, { body });
-  }
+  };
 
   @action
-  unshare(groupId) {
+  unshare = groupId => {
     const body = { group_id: groupId };
     return post(`/api/v1/files/${this.file.id}/unshare`, {
       body
     }).then(response => {
       this.file = response.data;
     });
-  }
+  };
 
   @action
-  openShareModal(fileId) {
+  openShareModal = fileId => {
     get(`/api/v1/files/${fileId}`).then(response => {
       this.file = response.data;
       this.fileShareModalId = fileId;
     });
-  }
+  };
 
   @action
   onFileCommentAdded = file => {
