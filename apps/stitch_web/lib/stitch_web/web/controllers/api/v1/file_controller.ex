@@ -13,7 +13,8 @@ defmodule Stitch.Web.Api.V1.FileController do
     MessageQueries,
     Web.FileService,
     Web.UrlService,
-    Web.MessageEventsService
+    Web.MessageEventsService,
+    StarrableItems.StarringService
   }
 
   alias StitchConnect.Web.{
@@ -192,6 +193,27 @@ defmodule Stitch.Web.Api.V1.FileController do
          {:authorized, true} <-
            {:authorized, FileAuthorization.is_creator?(upload, current_user)},
          {:deleted, {:ok, upload}} <- {:deleted, Upload.delete(upload)} do
+      render(conn, "show.json", %{file: upload})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:authorized, false} ->
+        {:error, :not_authorized}
+
+      {:delete, :error} ->
+        {:error, :unprocessable_entity, "Error deleting the file"}
+    end
+  end
+
+  def toggle_star(conn, %{"id" => upload_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
+         {:starred, {starred, _result}} <-
+           {:starred, StarringService.toggle_star(upload, current_user)} do
+      upload = Map.put(upload, :starred, starred)
       render(conn, "show.json", %{file: upload})
     else
       {:upload, _} ->
