@@ -237,7 +237,12 @@ defmodule Stitch.Factory do
       email: sequence(:email, &"email-#{&1}@example.com"),
       onboarded: true,
       team: build(:team),
-      mrn: Stitch.Rand.token(32)
+      mrn: Stitch.Rand.token(32),
+      token:
+        sequence(
+          :token,
+          &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string() |> String.pad_leading(5, "0")}-"
+        )
     }
   end
 

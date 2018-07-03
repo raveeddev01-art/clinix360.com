@@ -25,28 +25,75 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
-  def index(conn, params = %{"conversation_id" => conversation_id}) do
-    user = conn.assigns.current_user
+  # =========
+  #   INDEX
+  # =========
 
+  def index(conn, params) do
+    do_index(conn, params, conn.assigns.current_user)
+  end
+
+  def patient_index(conn, params) do
+    do_index(conn, params, conn.assigns.patient)
+  end
+
+  defp do_index(conn, params = %{"conversation_id" => id}, user_or_patient) do
     with {:conversation, conversation} when not is_nil(conversation) <-
-           {:conversation, Repo.get(Conversation, conversation_id)},
+           {:conversation, Repo.get(Conversation, id)},
          {:authorized?, true} <-
-           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
-      conversation_messages =
-        ConversationQueries.messages_for_conversation(
-          conversation.id,
-          params["updated_before"]
-        )
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
+      conversation_messages = load_messages(id, params["updated_before"])
 
       render(conn, "index.json", conversation_messages: conversation_messages)
     else
-      {:conversation, _} ->
-        {:error, :not_found, "Conversation not found"}
-
-      {:authorized?, _} ->
-        {:error, :unauthorized, "You cannot view this conversation."}
+      {:conversation, _} -> {:error, :not_found, "Conversation not found"}
+      {:authorized?, _} -> {:error, :not_authorized, "You cannot view this conversation."}
     end
   end
+
+  defp load_messages(id, updated_before) do
+    ConversationQueries.messages_for_conversation(
+      id,
+      updated_before
+    )
+  end
+
+  # ========
+  #   SHOW
+  # ========
+
+  def show(conn, params) do
+    do_show(conn, params, conn.assigns.current_user)
+  end
+
+  def patient_show(conn, params) do
+    do_show(conn, params, conn.assigns.patient)
+  end
+
+  def do_show(conn, %{"id" => id}, user_or_patient) do
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
+           {:conversation_message, Repo.get(ConversationMessage, id)},
+         {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
+      message_with_assocs = ConversationQueries.load_message_info(conversation_message)
+      render(conn, "show.json", conversation_message: message_with_assocs)
+    else
+      {:conversation_message, _} ->
+        {:error, :not_found, "The message you are looking for does not exist."}
+
+      {:conversation, _} ->
+        {:error, :not_found}
+
+      {:authorized?, _} ->
+        {:error, :not_authorized, "You cannot view this message."}
+    end
+  end
+
+  # ==========
+  #   CREATE
+  # ==========
 
   def create(conn, %{"conversation_id" => conversation_id, "message" => message_params}) do
     user = conn.assigns.current_user
@@ -86,29 +133,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
       _ ->
         {:error, :unprocessable_entity}
-    end
-  end
-
-  def show(conn, %{"id" => id}) do
-    user = conn.assigns.current_user
-
-    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
-           {:conversation_message, Repo.get(ConversationMessage, id)},
-         {:conversation, %Conversation{} = conversation} <-
-           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
-         {:authorized?, true} <-
-           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
-      message_with_assocs = ConversationQueries.load_message_info(conversation_message)
-      render(conn, "show.json", conversation_message: message_with_assocs)
-    else
-      {:conversation_message, _} ->
-        {:error, :not_found, "The message you are looking for does not exist."}
-
-      {:conversation, _} ->
-        {:error, :not_found}
-
-      {:authorized?, false} ->
-        {:error, :not_authorized, "You cannot view this message."}
     end
   end
 
