@@ -209,6 +209,16 @@
       margin-bottom: 50px;
     }
 
+    .typeform-btn {
+      text-transform: uppercase;
+      padding: 16px 30px;
+      margin: 25px 0 15px;
+
+      @media (max-width: $screen-sm) {
+        display: block;
+      }
+    }
+
     .play-video-link {
       display: inline-flex;
       align-items: center;

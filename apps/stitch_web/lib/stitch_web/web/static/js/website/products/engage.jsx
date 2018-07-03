@@ -14,6 +14,8 @@ import Feature from "../components/feature";
 import Footer from "../components/footer";
 import VideoModal from "../components/video-modal";
 
+const typeformLink = "https://teamstitch.typeform.com/to/Ncn8x8";
+
 export default class Engage extends Component {
   constructor(props) {
     super(props);
@@ -69,7 +71,7 @@ export default class Engage extends Component {
                   engage with patients on every level.
                 </h3>
 
-                <CreateTeam />
+                <CreateTeam typeformLink={typeformLink} />
               </div>
 
               <div className="flex-item">
@@ -161,11 +163,11 @@ export default class Engage extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-credit-card" /> Payments
+                    <i className="fa fa-users" /> Family Access
                   </h4>
                   <p className="m-b-15">
-                    Collect payments from your patients, hassle free. Create a
-                    charge using Stitch so patients can pay by card in-app.
+                    Keep family members in the loop. Working with children or
+                    elderly populations? Easily assign a contact point.
                   </p>
                 </div>
               </Col>
@@ -173,11 +175,11 @@ export default class Engage extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-calendar-check-o" /> Scheduling
+                    <i className="fa fa-tasks" /> Assignments
                   </h4>
                   <p className="m-b-15">
-                    Decrease administrative overhead and increase patient
-                    satisfaction by offering self-service appointment booking.
+                    Organize your team's workflow. Assign out patient
+                    conversations for rapid reply times and accountability.
                   </p>
                 </div>
               </Col>
@@ -185,11 +187,11 @@ export default class Engage extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-commenting" /> Live Chat
+                    <i className="fa fa-edit" /> Internal Notes
                   </h4>
                   <p className="m-b-15">
-                    Let visitors to your website instantly reach you. Answer
-                    questions and drive new appointments using live chat.
+                    Take notes on patient conversations, visible only to your
+                    team. Collaborate for faster and better responses.
                   </p>
                 </div>
               </Col>
@@ -218,7 +220,7 @@ export default class Engage extends Component {
           <div className={setupClass}>
             <div className="setup-line" />
             <div className="container">
-              <h2>Simple setup in under 5 minutes</h2>
+              <h2>Simple setup on any device</h2>
 
               <div className="steps">
                 <Panel className="step-1">
@@ -268,11 +270,8 @@ export default class Engage extends Component {
               </div>
 
               <div className="text-center">
-                <Button
-                  bsStyle="primary"
-                  href="https://teamstitch.com/signup/email"
-                >
-                  Get Started
+                <Button bsStyle="primary" href={typeformLink}>
+                  Request Access
                 </Button>
               </div>
             </div>

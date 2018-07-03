@@ -17,7 +17,7 @@ class PriceTier extends Component {
   renderButtonText = () => {
     const { product, tier } = this.props;
 
-    if (product !== "MANAGE") {
+    if (product === "CONNECT") {
       return tier === "FREE" ? "Get Started" : "Try Free";
     }
 

@@ -108,9 +108,9 @@ export default class Connect extends Component {
           image="/images/connect-feature-2.png"
         >
           Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
-          Word, Excel, PowerPoint, and more. You can preview them right in the
-          app, without the headache of downloading files to your device. Start
-          sharing patient charts, labs, images, intake forms and more.
+          Word, Excel, PowerPoint, and more. Make them instantly available to
+          your team members, and drop the headache of tedious email attachments.
+          Start sharing patient charts, labs, images, intake forms and more.
         </Feature>
 
         <Feature
@@ -179,7 +179,7 @@ export default class Connect extends Component {
                     <i className="fa fa-bell" /> Custom Alerts
                   </h4>
                   <p className="m-b-15">
-                    Use our group-level alert settings, to adjust custom
+                    Use our group-level alert settings to adjust custom
                     notification settings for each chat room. Never miss a beat.
                   </p>
 
@@ -228,7 +228,7 @@ export default class Connect extends Component {
                   </h4>
                   <p className="m-b-15">
                     Tie Stitch into your existing toolset with a seamless EHR
-                    integration. Use our configurations right out of the box.
+                    integration. Get alerts for key updates right in Stitch.
                   </p>
 
                   <a href="https://help.teamstitch.com/integrations/integrations">
