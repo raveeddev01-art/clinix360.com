@@ -12,7 +12,7 @@ defmodule Stitch.Web.Files.PublicFileController do
   plug(:protect_from_forgery)
   plug(:put_secure_browser_headers)
 
-  def public_download(conn, %{"file_id" => "f" <> _ = encoded_ids} = params) do
+  def public_download(conn, %{"file_id" => "f" <> _ = encoded_ids} = _params) do
     with [encoded_file_id, url_public_token] <- String.split(encoded_ids, "-"),
          {:file_id, {:ok, file_id}} <- {:file_id, Upload.decode_url_id(encoded_file_id)},
          {:file, %Upload{public_token: file_public_token} = file}
