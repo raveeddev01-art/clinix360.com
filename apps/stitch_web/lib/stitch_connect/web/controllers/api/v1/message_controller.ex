@@ -115,6 +115,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(group, current_user, message_params_with_client, presence_user_ids) do
       message = %{message | user: current_user}
+      create_optional_comment(conn, message_params, message, group)
+      message = MessageQueries.get_by_id(message.id)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
       conn
@@ -130,6 +132,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       {:error, :message, changeset, _changeset_so_far} ->
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
+  end
+
+  def create_optional_comment(conn, %{"text_content" => text_content} = attrs, message, group) do
+    Stitch.Web.Api.V1.FileController.create_optional_comment(conn, attrs, message.upload, group)
   end
 
   def mark_as_read(conn, %{"group_id" => group_id}) do

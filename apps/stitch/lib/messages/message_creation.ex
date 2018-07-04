@@ -42,7 +42,7 @@ defmodule Stitch.Message.MessageCreation do
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
       message = %Message{group: group, user: user, upload: upload}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
-      do_create(message, attrs, presence)
+      do_create(message, attrs, presence, upload)
     else
       _ ->
         changeset = %Message{} |> change() |> add_error(:upload_id, "Error creating file")
@@ -61,7 +61,7 @@ defmodule Stitch.Message.MessageCreation do
     {:error, :message, changeset, nil}
   end
 
-  def do_create(message, attrs, presence) do
+  def do_create(message, attrs, presence, upload \\ nil) do
     user = message.user
     group = Repo.preload(message.group, :users)
     users = group.users
