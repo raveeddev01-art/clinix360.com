@@ -69,7 +69,8 @@ defmodule Stitch.Web.Api.V1.FileController do
   def share(conn, %{"group_id" => group_id, "id" => upload_id} = attrs) do
     current_user = conn.assigns.current_user
 
-    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+    with {:upload, %Upload{} = upload} <-
+           {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized, true} <- {:authorized, GroupAuthorization.can_view?(group, current_user)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
@@ -78,8 +79,7 @@ defmodule Stitch.Web.Api.V1.FileController do
          {:joined, _} <- {:joined, ensure_joined(group, current_user)},
          {:message, _} <- {:message, create_message(group, current_user, upload)},
          {:comment, _} <- {:comment, create_optional_comment(conn, attrs, upload, group)} do
-      conn
-      |> json(%{status: "ok"})
+      render(conn, "show_with_comments.json", %{file: upload})
     else
       {:upload, _} ->
         {:error, :not_found}
