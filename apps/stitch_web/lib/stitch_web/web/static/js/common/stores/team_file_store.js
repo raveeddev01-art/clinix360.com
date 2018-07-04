@@ -75,7 +75,11 @@ class TeamFileStore {
   @action
   share = (groupId, textContent) => {
     const body = { group_id: groupId, text_content: textContent };
-    return post(`/api/v1/files/${this.file.id}/share`, { body });
+    return post(`/api/v1/files/${this.file.id}/share`, {
+      body
+    }).then(response => {
+      this.file = response.data;
+    });
   };
 
   @action

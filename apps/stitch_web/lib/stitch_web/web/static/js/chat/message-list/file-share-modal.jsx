@@ -5,7 +5,6 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import Button from "react-bootstrap/lib/Button";
-import history from "lib/history";
 import { Groups } from "common/components";
 
 @inject("teamFileStore", "groupsStore", "presenceStore")
@@ -36,7 +35,7 @@ class FileShareModal extends Component {
       const group = groupsStore.getGroupById(groupId);
 
       if (group) {
-        history.push(`/rooms/${group.slug}`);
+        groupsStore.openGroup(group.slug);
       }
     });
   };
@@ -56,7 +55,7 @@ class FileShareModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <FormGroup>
-            <ControlLabel>Room or People to share file</ControlLabel>
+            <ControlLabel>Room or People to Share File</ControlLabel>
             <Groups
               value={groupId}
               multi={false}
@@ -71,6 +70,7 @@ class FileShareModal extends Component {
                 componentClass="textarea"
                 placeholder="Comment goes here..."
                 value={commentText}
+                rows={4}
                 onChange={this.onChangeComment}
               />
               <div className="file-comment__edit-buttons">
