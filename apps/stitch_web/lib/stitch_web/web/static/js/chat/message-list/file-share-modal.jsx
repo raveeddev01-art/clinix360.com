@@ -23,6 +23,7 @@ class FileShareModal extends Component {
   onChangeComment = e => this.setState({ commentText: e.target.value });
 
   closeModal = () => {
+    this.setState({ commentText: "", groupId: undefined });
     this.props.teamFileStore.fileShareModalId = null;
   };
 
