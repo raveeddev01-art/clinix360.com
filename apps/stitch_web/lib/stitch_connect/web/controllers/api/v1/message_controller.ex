@@ -134,9 +134,16 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  def create_optional_comment(conn, %{"text_content" => text_content} = attrs, message, group) do
+  def create_optional_comment(
+        conn,
+        %{"text_content" => text_content} = attrs,
+        %Message{type: "file_share"} = message,
+        group
+      ) do
     Stitch.Web.Api.V1.FileController.create_optional_comment(conn, attrs, message.upload, group)
   end
+
+  def create_optional_comment(_conn, _attrs, _message, _group), do: nil
 
   def mark_as_read(conn, %{"group_id" => group_id}) do
     current_user = conn.assigns.current_user
