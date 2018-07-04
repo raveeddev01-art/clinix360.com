@@ -16,7 +16,7 @@ export function isMemberOrAdmin() {
 }
 
 export function isAdminOrOwner(userId) {
-  return isAdmin() && userId === currentUser.id;
+  return isAdmin() || userId === currentUser.id;
 }
 
 export function extractEmails(text) {

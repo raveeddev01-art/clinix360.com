@@ -43,7 +43,7 @@ class DefaultFileAttachment extends Component {
           </div>
           <div className="attachment-description">
             <div className="attachment-title">
-              <a target="_blank" href={url} onClick={this.onFileDownload}>
+              <a onClick={onCommentsClick}>
                 <strong>{filename}</strong>
               </a>
             </div>

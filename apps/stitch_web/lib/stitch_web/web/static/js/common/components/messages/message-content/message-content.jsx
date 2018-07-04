@@ -80,6 +80,18 @@ class MessageContent extends Component {
     return null;
   };
 
+  renderFileLink = () => {
+    const { message } = this.props;
+    return (
+      <div>
+        <span className="text-muted">commented on </span>
+        <a onClick={this.onCommentsClick}>
+          <strong>{message.fields && message.fields.filename}</strong>
+        </a>
+      </div>
+    );
+  };
+
   render() {
     const { inSearch, message } = this.props;
     const userId = message.user.id;
@@ -88,10 +100,19 @@ class MessageContent extends Component {
       ? message.highlighted_text_content || message.text_content
       : message.text_content;
 
-    const messageContentComponents = messageTextToComponents(
-      textContent || "",
-      { inSearch }
-    );
+    let messageContentComponents = messageTextToComponents(textContent || "", {
+      inSearch
+    });
+
+    if (
+      message.text_content &&
+      message.is_sequential &&
+      (message.type === "upload" || message.type === "file_comment")
+    ) {
+      messageContentComponents = (
+        <div className="attachment-comment">{messageContentComponents}</div>
+      );
+    }
 
     return (
       <div
@@ -105,11 +126,10 @@ class MessageContent extends Component {
           />
         )}
         <div className="message-body">
-          {message.type === "upload" && message.text_content ? (
-            <div className="attachment-comment">{messageContentComponents}</div>
-          ) : (
-            messageContentComponents
-          )}
+          {message.type === "file_comment" &&
+            !message.is_sequential &&
+            this.renderFileLink()}
+          {messageContentComponents}
 
           {user && user.is_bot ? this.renderIntegrationLink() : null}
           {this.renderLinkPreviews()}

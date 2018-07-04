@@ -60,7 +60,7 @@ class ImageFileAttachment extends Component {
           useActions && (
             <div className="attachment-title">
               <span>uploaded this image: </span>
-              <a target="_blank" href={url} onClick={this.onFileDownload}>
+              <a onClick={onCommentsClick}>
                 <strong>{filename}</strong>
               </a>
             </div>

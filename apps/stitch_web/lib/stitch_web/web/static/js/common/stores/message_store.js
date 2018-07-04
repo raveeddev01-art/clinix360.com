@@ -256,14 +256,19 @@ class MessageStore {
         return [
           firstMsg,
           ...messages.map(msg => {
+            if (msg.upload_id && msg.type === "chat") {
+              msg.type = "file_comment";
+            }
+
             if (
-              msg.user.id === sequentialStart.user.id &&
-              sequentialStart.type !== "system" &&
-              sequentialStart.type !== "upload" &&
-              moment(msg.inserted_at).diff(
-                moment(sequentialStart.inserted_at),
-                "seconds"
-              ) < SEQUENTIAL_SPLIT_SECONDS
+              sequentialStart.upload_id === msg.upload_id ||
+              (msg.user.id === sequentialStart.user.id &&
+                sequentialStart.type !== "system" &&
+                msg.type !== "upload" &&
+                moment(msg.inserted_at).diff(
+                  moment(sequentialStart.inserted_at),
+                  "seconds"
+                ) < SEQUENTIAL_SPLIT_SECONDS)
             ) {
               return { ...msg, is_sequential: true };
             }
