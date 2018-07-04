@@ -64,7 +64,7 @@ defmodule Stitch.Web.AuthenticationController do
   def submit_login(conn, %{"email" => email, "password" => password}) do
     team_slug = conn.private[:team_slug]
 
-    case Stitch.User.Authentication.validate_email_and_password(email, password, team_slug) do
+    case Stitch.User.Authentication.validate_user_email_and_password(email, password, team_slug) do
       false ->
         conn
         |> put_flash(:invalid_login, "Sorry, you entered an invalid email or password.")

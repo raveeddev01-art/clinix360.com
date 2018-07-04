@@ -71,8 +71,7 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
 
   test "marked_as_read event broadcasted from user events channel when mark_as_read triggered", %{
     user2: user2,
-    group: group,
-    messages: messages
+    group: group
   } do
     {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
     {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")

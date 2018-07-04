@@ -13,7 +13,6 @@ defmodule Stitch.Files.Upload do
   }
 
   use Ecto.Schema
-  import Ecto.Query
   import Ecto.Changeset
 
   @type t :: %__MODULE__{}

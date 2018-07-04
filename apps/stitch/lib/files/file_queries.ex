@@ -3,7 +3,6 @@ defmodule Stitch.Files.FileQueries do
 
   alias Stitch.{
     Repo,
-    Group,
     GroupUser,
     Files.Upload,
     Files.UploadComment,

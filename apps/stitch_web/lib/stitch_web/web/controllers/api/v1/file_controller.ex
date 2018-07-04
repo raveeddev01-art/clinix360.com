@@ -194,7 +194,7 @@ defmodule Stitch.Web.Api.V1.FileController do
 
     with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
-         {:public_link, {:ok, upload}} <- {:public_link, Upload.revoke_public_link(upload)} do
+         {:public_link, {:ok, _upload}} <- {:public_link, Upload.revoke_public_link(upload)} do
       render(conn, "show.json", %{file: upload})
     else
       {:upload, _} ->

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 
 import Button from "react-bootstrap/lib/Button";
@@ -50,33 +49,45 @@ class CreateTeam extends Component {
 
   render() {
     const { email } = this.state;
+    const { typeformLink } = this.props;
     const { mobile, os } = browserDetails;
-
-    // console.log(this.props.align) // "left" | "right"
 
     return (
       <div>
-        {!mobile && (
-          <Form inline className="create-team-form" onSubmit={this.onSubmit}>
-            <FormGroup>
-              {!appSettings.hasLogin && (
-                <FormControl
-                  required
-                  id="createTeam"
-                  placeholder="Email address"
-                  type="email"
-                  value={email}
-                  onChange={this.onChange}
-                />
-              )}
-              <Button type="submit" bsStyle="primary" className="btn-form">
-                Get Started
-              </Button>
-            </FormGroup>
-          </Form>
+        {!mobile &&
+          !typeformLink && (
+            <Form inline className="create-team-form" onSubmit={this.onSubmit}>
+              <FormGroup>
+                {!appSettings.hasLogin && (
+                  <FormControl
+                    required
+                    id="createTeam"
+                    placeholder="Email address"
+                    type="email"
+                    value={email}
+                    onChange={this.onChange}
+                  />
+                )}
+                <Button type="submit" bsStyle="primary" className="btn-form">
+                  Get Started
+                </Button>
+              </FormGroup>
+            </Form>
+          )}
+
+        {typeformLink && (
+          <a
+            href={typeformLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary typeform-btn"
+          >
+            Request Access
+          </a>
         )}
 
         {mobile &&
+          !typeformLink &&
           os === "iOS" && (
             <a
               href="http://stitch.app.link"
@@ -89,6 +100,7 @@ class CreateTeam extends Component {
           )}
 
         {mobile &&
+          !typeformLink &&
           os === "Android" && (
             <a
               href="http://stitch.app.link"
@@ -105,11 +117,11 @@ class CreateTeam extends Component {
 }
 
 CreateTeam.propTypes = {
-  align: PropTypes.string
+  typeformLink: PropTypes.string
 };
 
 CreateTeam.defaultProps = {
-  align: "right"
+  typeformLink: ""
 };
 
 export default CreateTeam;

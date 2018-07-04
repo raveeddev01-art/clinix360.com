@@ -72,12 +72,62 @@ defmodule Stitch.Web.SubdomainRouter do
     plug(:fetch_session)
   end
 
+  pipeline :patient_browser do
+    plug(Stitch.Web.Plug.PatientAuthenticate, [:browser])
+  end
+
+  pipeline :patient_api do
+    plug(Stitch.Web.Plug.PatientAuthenticate, [:api])
+  end
+
+  pipeline :patient_auth do
+    plug(Stitch.Web.Plug.PatientAuthenticate, [:auth])
+  end
+
+  # ================
+  #   FILES ROUTES
+  # ================
+
   scope "/", Stitch.Web.Files, as: :files, host: "files." do
     pipe_through([:files])
 
     get("/f/:file_id", PublicFileController, :public_download)
     get("/file/:file_id/:filename", FileController, :download)
     get("/preview/:file_id", FileController, :download_preview)
+  end
+
+  # ==================
+  #   PATIENT ROUTES
+  # ==================
+
+  scope "/api/v1/patient", StitchEngage.Web.Api.V1, as: :patient do
+    pipe_through([:api, :patient_api])
+
+    get("/", PatientController, :show)
+  end
+
+  scope "/patient", as: :patient do
+    pipe_through([:browser, :patient_auth])
+    get("/login", StitchEngage.Web.PatientAuthenticationController, :login)
+    post("/login", StitchEngage.Web.PatientAuthenticationController, :submit_login)
+
+    get("/logout", StitchEngage.Web.PatientAuthenticationController, :logout)
+
+    scope "/invitations" do
+      get("/error", StitchConnect.Web.InvitationController, :error)
+
+      scope "/accept" do
+        get("/:token", StitchConnect.Web.InvitationController, :patient_accept)
+        get("/:token/:step", StitchConnect.Web.InvitationController, :patient_accept)
+        post("/:token", StitchConnect.Web.InvitationController, :patient_onboard)
+      end
+    end
+  end
+
+  scope "/patient", StitchEngage.Web, as: :patient do
+    pipe_through([:browser, :patient_browser])
+
+    get("/", PatientController, :show)
   end
 
   # ================

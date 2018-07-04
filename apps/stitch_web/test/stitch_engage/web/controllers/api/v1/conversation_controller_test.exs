@@ -5,7 +5,8 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
   def setup(conn) do
     team = insert(:team)
     user = insert(:user, team: team)
-    patient = insert(:patient, team: team)
+    patient = insert(:patient, team: team, onboarded: true)
+    insert(:patient_invitation, patient: patient)
     user_on_other_team = insert(:user, team: insert(:team))
 
     two_days_ago = Timex.shift(NaiveDateTime.utc_now(), days: -2)
@@ -109,7 +110,6 @@ end
 
 defmodule Stitch.Web.Api.V1.ConversationControllerTest do
   use Stitch.Web.ConnCase, async: true
-  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.Web.Api.V1.ConversationControllerTest.Helper
 
   describe "GET /api/v1/inbox/:inbox_id/conversations" do
@@ -175,14 +175,14 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
 
     test "errors if not authorized", setup_params do
       conn = Helper.call_show(setup_params, %{user: setup_params.user_on_other_team})
-      assert response = json_response(conn, 403)
+      assert json_response(conn, 403)
     end
 
     test "errors if not found", setup_params do
       conn =
         Helper.call_show(setup_params, %{conversation_id: setup_params.conversation.id + 999})
 
-      assert response = json_response(conn, 404)
+      assert json_response(conn, 404)
     end
   end
 
@@ -209,7 +209,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
       }
 
       conn = Helper.call_post(setup_params, post_params, %{user: setup_params.user_on_other_team})
-      assert response = json_response(conn, 403)
+      assert json_response(conn, 403)
     end
   end
 
@@ -230,13 +230,13 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
           conversation_id: setup_params.open_conversation.id
         })
 
-      assert response = json_response(conn, 422)
+      assert json_response(conn, 422)
     end
 
     test "errors if not authorized", setup_params do
       conn = Helper.call_put_open(setup_params, %{}, %{user: setup_params.user_on_other_team})
 
-      assert response = json_response(conn, 403)
+      assert json_response(conn, 403)
     end
 
     test "errors if not found", setup_params do
@@ -245,7 +245,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
           conversation_id: setup_params.conversation.id + 1111
         })
 
-      assert response = json_response(conn, 404)
+      assert json_response(conn, 404)
     end
   end
 
@@ -266,12 +266,12 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
           conversation_id: setup_params.closed_conversation.id
         })
 
-      assert response = json_response(conn, 422)
+      assert json_response(conn, 422)
     end
 
     test "errors if not authorized", setup_params do
       conn = Helper.call_put_close(setup_params, %{}, %{user: setup_params.user_on_other_team})
-      assert response = json_response(conn, 403)
+      assert json_response(conn, 403)
     end
 
     test "errors if not found", setup_params do
@@ -280,7 +280,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
           conversation_id: setup_params.conversation.id + 1111
         })
 
-      assert response = json_response(conn, 404)
+      assert json_response(conn, 404)
     end
   end
 end
