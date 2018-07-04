@@ -54,6 +54,5 @@ defmodule Stitch.Web.Api.V1.FileView do
 
   def preview_url(file) do
     UrlService.file_preview_url(file)
-    # preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
   end
 end

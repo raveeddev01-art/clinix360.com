@@ -51,7 +51,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       deleted: message.deleted,
       text_content: message.text_content,
       fields: MessagesHelper.render_fields(message, authenticated_url, files_url),
-      type: type(message.type),
+      type: type(message.type, authenticated_url),
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,
       starred: Map.get(message, :starred, false),
@@ -71,9 +71,10 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     }
   end
 
-  def type("file_share"), do: "upload"
-  def type("file_comment"), do: "chat"
-  def type(type), do: type
+  def type("file_share", _), do: "upload"
+  def type("file_comment", false), do: "chat"
+  def type("file_comment", true), do: "file_comment"
+  def type(type, _), do: type
 
   def user_info(nil), do: nil
 
