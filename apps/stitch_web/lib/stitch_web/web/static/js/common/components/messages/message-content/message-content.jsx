@@ -106,8 +106,8 @@ class MessageContent extends Component {
 
     if (
       message.text_content &&
-      message.is_sequential &&
-      (message.type === "upload" || message.type === "file_comment")
+      (message.type === "upload" ||
+        (message.type === "file_comment" && message.is_sequential))
     ) {
       messageContentComponents = (
         <div className="attachment-comment">{messageContentComponents}</div>
