@@ -1,25 +1,27 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Select from "react-select";
 import MemberOption from "common/components/members/member_option";
 
-const UserSelector = ({ users, creatorId, onSelect }) => {
-  return (
-    <Select
-      id="file-user-select"
-      options={users}
-      placeholder="Select User"
-      simpleValue
-      searchable
-      clearable
-      valueKey="id"
-      labelKey="full_name"
-      optionComponent={MemberOption}
-      value={creatorId}
-      onChange={onSelect}
-    />
-  );
-};
+class UserSelector extends Component {
+  render() {
+    return (
+      <Select
+        id="file-user-select"
+        options={this.props.users}
+        placeholder="Select User"
+        simpleValue
+        searchable
+        clearable
+        valueKey="id"
+        labelKey="full_name"
+        optionComponent={MemberOption}
+        value={this.props.creatorId}
+        onChange={this.props.onSelect}
+      />
+    );
+  }
+}
 
 UserSelector.propTypes = {
   users: PropTypes.array.isRequired,

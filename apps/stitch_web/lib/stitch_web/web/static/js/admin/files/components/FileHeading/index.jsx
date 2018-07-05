@@ -1,9 +1,16 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Avatar } from "common/components";
 
-const FileHeading = ({ user, file }) => {
-  if (user) {
+class FileHeading extends Component {
+  render() {
+    const user = this.props.user;
+    const file = this.props.file;
+
+    if (!user) {
+      return null;
+    }
+
     return (
       <div className="file-heading">
         <Avatar user={user} />
@@ -14,9 +21,7 @@ const FileHeading = ({ user, file }) => {
       </div>
     );
   }
-
-  return null;
-};
+}
 
 FileHeading.propTypes = {
   user: PropTypes.object,
