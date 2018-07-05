@@ -13,6 +13,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     GroupAuthorization,
     GroupQueries,
     Group,
+    Files.Upload,
     Message,
     MessageAuthorization,
     MessageAction,
@@ -115,8 +116,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(group, current_user, message_params_with_client, presence) do
-      upload = %{message.upload | shared_in: [group.id]}
-      FileService.create_optional_comment(upload, current_user, presence, message_params)
+      message = %{message | user: current_user}
+      create_optional_upload_comment(message, group, current_user, presence, message_params)
       message = MessageQueries.get_by_id(message.id)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
@@ -134,6 +135,19 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
   end
+
+  def create_optional_upload_comment(
+        %Message{type: "file_share"} = message,
+        group,
+        current_user,
+        presence,
+        attrs
+      ) do
+    upload = %{message.upload | shared_in: [group.id]}
+    FileService.create_optional_comment(upload, current_user, presence, attrs)
+  end
+
+  def create_optional_upload_comment(_message, _group, _current_user, _presence, _attrs), do: nil
 
   def mark_as_read(conn, %{"group_id" => group_id}) do
     current_user = conn.assigns.current_user

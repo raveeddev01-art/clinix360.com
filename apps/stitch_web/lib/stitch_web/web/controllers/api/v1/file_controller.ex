@@ -5,7 +5,6 @@ defmodule Stitch.Web.Api.V1.FileController do
     Files.FileQueries,
     Files.Upload,
     Files.FileAuthorization,
-    Files.UploadComment,
     Group,
     GroupAuthorization,
     GroupQueries,

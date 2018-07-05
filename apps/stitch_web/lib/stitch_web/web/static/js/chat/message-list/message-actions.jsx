@@ -235,13 +235,14 @@ class MessageActions extends PureComponent {
 
             {mine && <MenuItem divider />}
 
-            {mine && (
-              <MenuItem onClick={this.edit}>
-                <span>
-                  <i className="fa fa-pencil" />&nbsp;Edit message
-                </span>
-              </MenuItem>
-            )}
+            {mine &&
+              message.type !== "file_comment" && (
+                <MenuItem onClick={this.edit}>
+                  <span>
+                    <i className="fa fa-pencil" />&nbsp;Edit message
+                  </span>
+                </MenuItem>
+              )}
 
             {(mine || isAdmin()) && (
                 <MenuItem onClick={this.delete}>
