@@ -133,7 +133,9 @@ export default class PricingDesktop extends Component {
               )}
 
               <div className="pricing-table__row header">
-                <div className="pricing-table__item">Task Management</div>
+                <div className="pricing-table__item">
+                  Task Management <Label>Coming Soon!</Label>
+                </div>
               </div>
 
               {PRICING_TABLE_MOBILE.STANDARD.TASK_MANAGEMENT.map(
