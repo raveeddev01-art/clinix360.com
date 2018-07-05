@@ -33,7 +33,7 @@ defmodule Stitch.Message.Reaction do
 
   @spec toggle_reaction(ConversationMessage.t() | Message.t(), User.t(), binary) ::
           {:ok, term} | {:error, term}
-  def toggle_reaction(cm = %ConversationMessage{}, user, emoji_name) do
+  def toggle_reaction(cm = %ConversationMessage{}, %User{} = user, emoji_name) do
     params = %{
       user_id: user.id,
       conversation_message_id: cm.id,
@@ -43,7 +43,17 @@ defmodule Stitch.Message.Reaction do
     toggle_by_params(params)
   end
 
-  def toggle_reaction(message = %Message{}, user, emoji_name) do
+  def toggle_reaction(cm = %ConversationMessage{}, %Patient{} = patient, emoji_name) do
+    params = %{
+      patient_id: patient.id,
+      conversation_message_id: cm.id,
+      emoji_name: emoji_name
+    }
+
+    toggle_by_params(params)
+  end
+
+  def toggle_reaction(message = %Message{}, %User{} = user, emoji_name) do
     params = %{
       user_id: user.id,
       message_id: message.id,

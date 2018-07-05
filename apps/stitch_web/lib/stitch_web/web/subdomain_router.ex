@@ -96,25 +96,31 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/", PatientController, :show)
 
     get("/inboxes/default", InboxController, :patient_default)
+
     get("/inboxes/:inbox_id/conversations", ConversationController, :patient_index)
+    post("/inboxes/:inbox_id/conversations", ConversationController, :patient_create)
     get("/conversations/:id", ConversationController, :patient_show)
+
     get("/conversations/:conversation_id/messages", ConversationMessageController, :patient_index)
     get("/conversation_messages/:id", ConversationMessageController, :patient_show)
 
-    # post("/inboxes/:inbox_id/conversations", ConversationController, :patient_create)
-    # post("/conversations/:conversation_id/messages", ConversationMessageController, :patient_create)
+    post(
+      "/conversations/:conversation_id/messages",
+      ConversationMessageController,
+      :patient_create
+    )
 
-    # put(
-    #   "/conversation_messages/:id/delete_link_preview",
-    #   ConversationMessageController,
-    #   :patient_delete_message_link_preview
-    # )
+    put(
+      "/conversation_messages/:id/toggle_reaction",
+      ConversationMessageController,
+      :patient_toggle_reaction
+    )
 
-    # put(
-    #   "/conversation_messages/:id/toggle_reaction",
-    #   ConversationMessageController,
-    #   :patient_toggle_reaction
-    # )
+    put(
+      "/conversation_messages/:id/delete_link_preview",
+      ConversationMessageController,
+      :patient_delete_message_link_preview
+    )
 
     # post(
     #   "/conversations/:conversation_id/mark_as_read",

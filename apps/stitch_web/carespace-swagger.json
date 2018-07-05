@@ -2,6 +2,51 @@
   "swagger": "2.0",
   "paths": {
     "/api/v1/patient/inboxes/{inbox_id}/conversations": {
+      "post": {
+        "tags": [
+          "Conversation"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/PatientConversation"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 1,
+            "type": "integer",
+            "required": true,
+            "name": "inbox_id",
+            "in": "path",
+            "description": "Inbox ID"
+          },
+          {
+            "x-example": "Hello doc? Can we talk?",
+            "type": "string",
+            "required": true,
+            "name": "text_content",
+            "in": "query",
+            "description": "Text Content"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationController.patient_create",
+        "description": "Creates a new conversation as a patient."
+      },
       "get": {
         "tags": [
           "Conversation"
@@ -79,6 +124,57 @@
       }
     },
     "/api/v1/patient/conversations/{conversation_id}/messages": {
+      "post": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ConversationMessage"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 209,
+            "type": "integer",
+            "required": true,
+            "name": "conversation_id",
+            "in": "path",
+            "description": "Conversation ID"
+          },
+          {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object"
+                }
+              }
+            },
+            "required": true,
+            "name": "message",
+            "in": "body",
+            "description": "Message to create. Must include 'text_content' attribute."
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_create",
+        "description": "Create a conversation message."
+      },
       "get": {
         "tags": [
           "ConversationMessage"
@@ -161,6 +257,94 @@
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationController.patient_show",
         "description": "Shows a patient conversation with latest messages."
+      }
+    },
+    "/api/v1/patient/conversation_messages/{id}/toggle_reaction": {
+      "put": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 209,
+            "type": "integer",
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "description": "Conversation Message ID"
+          },
+          {
+            "x-example": "neutral-face",
+            "type": "string",
+            "required": true,
+            "name": "emoji_name",
+            "in": "query",
+            "description": "Name of the emoji to toggle"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_toggle_reaction",
+        "description": "Toggle a reaction for a conversation message."
+      }
+    },
+    "/api/v1/patient/conversation_messages/{id}/delete_link_preview": {
+      "put": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 209,
+            "type": "integer",
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "description": "Conversation Message ID"
+          },
+          {
+            "x-example": "https://en.wikipedia.org/wiki/Argentina",
+            "type": "string",
+            "required": true,
+            "name": "link",
+            "in": "query",
+            "description": "Link to remove"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_delete_message_link_preview",
+        "description": "Deletes a link preview on a conversation message."
       }
     },
     "/api/v1/patient/conversation_messages/{conversation_message_id}": {
@@ -342,11 +526,6 @@
     "PatientInbox": {
       "type": "object",
       "title": "Inbox",
-      "required": [
-        "is_default",
-        "name",
-        "id"
-      ],
       "properties": {
         "name": {
           "type": "string",
@@ -376,8 +555,7 @@
       "type": "object",
       "title": "PatientConversation",
       "required": [
-        "inbox_id",
-        "id"
+        "inbox_id"
       ],
       "properties": {
         "updated_at": {
@@ -451,11 +629,7 @@
       "type": "object",
       "title": "Inbox",
       "required": [
-        "open_conversations_count",
-        "open_conversations_count",
-        "is_default",
-        "name",
-        "id"
+        "name"
       ],
       "properties": {
         "open_conversations_count": {
@@ -500,12 +674,8 @@
       "type": "object",
       "title": "ConversationMessage",
       "required": [
-        "request_id",
-        "type",
-        "deleted",
         "text_content",
-        "conversation_id",
-        "id"
+        "conversation_id"
       ],
       "properties": {
         "user": {
@@ -627,8 +797,7 @@
       "type": "object",
       "title": "Conversation",
       "required": [
-        "inbox_id",
-        "id"
+        "inbox_id"
       ],
       "properties": {
         "updated_at": {

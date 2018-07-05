@@ -33,9 +33,9 @@ defmodule Stitch.Web.Api.V1.Docs do
               description("A collection of conversations in Engage.")
 
               properties do
-                id(:integer, "Unique identifier", required: true)
-                name(:string, "Inbox name", required: true, example: "General")
-                is_default(:boolean, "Whether the inbox is the team's default", required: true)
+                id(:integer, "Unique identifier")
+                name(:string, "Inbox name", example: "General")
+                is_default(:boolean, "Whether the inbox is the team's default")
               end
             end,
           Inbox:
@@ -45,21 +45,19 @@ defmodule Stitch.Web.Api.V1.Docs do
               description("A collection of conversations in Engage.")
 
               properties do
-                id(:integer, "Unique identifier", required: true)
+                id(:integer, "Unique identifier")
                 name(:string, "Inbox name", required: true)
-                is_default(:boolean, "Whether the inbox is the team's default", required: true)
+                is_default(:boolean, "Whether the inbox is the team's default")
                 open_conversations(Schema.ref(:ConversationMessages))
 
                 open_conversations_count(
                   :integer,
-                  "Count of the conversations that are currently open",
-                  required: true
+                  "Count of the conversations that are currently open"
                 )
 
                 open_conversations_count(
                   :integer,
-                  "Count of the conversations that are currently closed",
-                  required: true
+                  "Count of the conversations that are currently closed"
                 )
               end
             end,
@@ -72,7 +70,7 @@ defmodule Stitch.Web.Api.V1.Docs do
               )
 
               properties do
-                id(:integer, "Unique identifier", required: true)
+                id(:integer, "Unique identifier")
                 inbox_id(:integer, "Inbox foreign key", required: true)
 
                 inserted_at(
@@ -106,7 +104,7 @@ defmodule Stitch.Web.Api.V1.Docs do
               )
 
               properties do
-                id(:integer, "Unique identifier", required: true)
+                id(:integer, "Unique identifier")
                 inbox_id(:integer, "Inbox foreign key", required: true)
 
                 open(
@@ -160,7 +158,7 @@ defmodule Stitch.Web.Api.V1.Docs do
               )
 
               properties do
-                id(:integer, "Unique identifier", required: true)
+                id(:integer, "Unique identifier")
 
                 # RELATIONS
                 conversation_id(
@@ -222,14 +220,12 @@ defmodule Stitch.Web.Api.V1.Docs do
                 deleted(
                   :boolean,
                   "Whether the conversation message has been deleted.",
-                  required: true,
                   example: false
                 )
 
                 type(
                   :string,
                   "The type of the message. (chat, file_share, system)",
-                  required: true,
                   example: "chat"
                 )
 
@@ -263,7 +259,6 @@ defmodule Stitch.Web.Api.V1.Docs do
                 request_id(
                   :string,
                   "Identifier for the http request that created the message",
-                  required: true,
                   example: "Skj0blreQ"
                 )
 

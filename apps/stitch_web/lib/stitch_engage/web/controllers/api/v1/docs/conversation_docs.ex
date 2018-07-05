@@ -71,6 +71,29 @@ defmodule Stitch.Web.Api.V1.ConversationDocs do
 
         response(200, "OK", Schema.ref(:PatientConversation))
       end
+
+      swagger_path :patient_create do
+        post("/api/v1/patient/inboxes/{inbox_id}/conversations")
+        produces("application/json")
+
+        description("Creates a new conversation as a patient.")
+
+        CommonParams.auth()
+
+        parameters do
+          inbox_id(:path, :integer, "Inbox ID", required: true, example: 1)
+
+          text_content(
+            :query,
+            :string,
+            "Text Content",
+            required: true,
+            example: "Hello doc? Can we talk?"
+          )
+        end
+
+        response(200, "OK", Schema.ref(:PatientConversation))
+      end
     end
   end
 end

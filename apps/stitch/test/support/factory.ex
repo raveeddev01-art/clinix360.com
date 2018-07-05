@@ -108,6 +108,14 @@ defmodule Stitch.Factory do
     }
   end
 
+  def patient_conversation_message_factory do
+    %Stitch.Engage.ConversationMessage{
+      patient: build(:patient),
+      conversation: build(:conversation),
+      text_content: Faker.Lorem.sentence()
+    }
+  end
+
   def conversation_provider_factory do
     %Stitch.Engage.ConversationProvider{
       provider: build(:user),
