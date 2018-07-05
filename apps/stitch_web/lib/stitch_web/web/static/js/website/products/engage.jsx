@@ -167,7 +167,7 @@ export default class Engage extends Component {
                   </h4>
                   <p className="m-b-15">
                     Keep family members in the loop. Working with children or
-                    elderly populations? Easily assign a contact point.
+                    elderly populations? Assign a contact point.
                   </p>
                 </div>
               </Col>
