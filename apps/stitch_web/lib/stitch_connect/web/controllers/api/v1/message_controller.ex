@@ -115,8 +115,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(group, current_user, message_params_with_client, presence) do
-      message = %{message | user: current_user}
-      FileService.create_optional_comment(message.upload, current_user, presence, message_params)
+      upload = %{message.upload | shared_in: [group.id]}
+      FileService.create_optional_comment(upload, current_user, presence, message_params)
       message = MessageQueries.get_by_id(message.id)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
