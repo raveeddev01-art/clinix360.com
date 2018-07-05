@@ -974,6 +974,114 @@
       }
     }
 
+    .pricing-section {
+      background: $medium-gray;
+      padding: 60px 0;
+      @media (min-width: $screen-sm) {
+        padding: 95px 0;
+      }
+
+      .panel-body {
+        padding: 0;
+      }
+
+      .pricing-table {
+        &__row {
+          display: flex;
+          flex-direction: row;
+          border-bottom: 1px solid #ebebeb;
+
+          &.header {
+            color: #323648;
+            font-weight: 700;
+            background: $body-bg;
+
+            .label-default {
+              color: $brand-primary;
+              background: #e6ebf0;
+              margin-left: 15px;
+              position: relative;
+              bottom: 1px;
+            }
+          }
+
+          &.tiers .pricing-table__item {
+            padding: 40px 30px;
+
+            &:first-of-type {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              @media (max-width: $screen-md) {
+                text-align: center;
+              }
+            }
+          }
+
+          &:last-of-type {
+            border-bottom: 0;
+          }
+        }
+
+        &__item {
+          flex: 1;
+          font-size: 18px;
+          text-align: center;
+          padding: 18px 30px;
+          border-right: 1px solid #ebebeb;
+
+          img {
+            width: 100px;
+          }
+
+          h4 {
+            font-size: 20px;
+            margin: 0;
+          }
+
+          h2 {
+            font-size: 80px;
+            line-height: 1;
+            margin: 0;
+
+            span {
+              font-size: 40%;
+              vertical-align: super;
+            }
+          }
+
+          p {
+            margin-bottom: 15px;
+
+            a {
+              color: #555459;
+              text-decoration: underline;
+            }
+          }
+
+          i.fa {
+            color: $brand-primary;
+            font-size: 20px;
+            position: relative;
+            top: 2px;
+          }
+
+          &:first-of-type {
+            text-align: left;
+          }
+
+          &:last-of-type {
+            border-right: 0;
+          }
+        }
+      }
+
+      .enterprise-text {
+        font-size: 18px;
+      }
+    }
+
     .product-section {
       padding-top: 71px;
 

@@ -22,7 +22,8 @@ import Hipaa from "./resources/hipaa";
 import Jobs from "./resources/jobs";
 import NotFound from "./resources/not-found";
 import Pilot from "./resources/pilot";
-import Pricing from "./resources/pricing";
+// import Pricing from "./resources/pricing";
+import Pricing from "./pricing/pricing";
 import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";
 import Industry from "./industries/industry";
@@ -47,11 +48,7 @@ class WebsiteRouter extends Component {
       <div className="website-wrapper">
         <ScrollToTop>
           <Switch>
-            <Route
-              exact
-              path="/"
-              component={Homepage}
-            />
+            <Route exact path="/" component={Homepage} />
             <Route exact path="/demo" component={withTitle(demoTitle, Demo)} />
             <Route
               exact
@@ -83,7 +80,8 @@ class WebsiteRouter extends Component {
             <Route
               exact
               path="/customers"
-              component={withTitle(customersTitle, Customers)} />
+              component={withTitle(customersTitle, Customers)}
+            />
             <Route exact path="/blog" component={Blog} />
             <Route
               exact
