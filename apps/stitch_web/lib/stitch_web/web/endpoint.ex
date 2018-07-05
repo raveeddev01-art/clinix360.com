@@ -10,6 +10,7 @@ defmodule Stitch.Web.Endpoint do
   # Overwrite the conn.remote_ip with values taken from
   # X-Forwarded-For used in Heroku and Aptible.
   plug(RemoteIp)
+  # plug(Stitch.Web.Plug.PlugAttack)
 
   # Serve at "/" the static files from "priv/static" directory.
   #

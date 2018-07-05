@@ -6,7 +6,6 @@ defmodule Stitch.Web.SubdomainRouter do
   # =============
 
   pipeline :browser do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -15,7 +14,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :browser_authenticate do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -26,24 +24,20 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :admin do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(Stitch.Web.Plug.StaffAuthenticate)
     plug(:put_layout, {Stitch.Web.Admin.AppView, "layout.html"})
   end
 
   pipeline :api_auth do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
   end
 
   pipeline :api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
   end
 
   pipeline :authenticated_api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
@@ -52,7 +46,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :authenticated_locked_api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
@@ -60,7 +53,6 @@ defmodule Stitch.Web.SubdomainRouter do
 
   pipeline :team_admin_api do
     plug(:accepts, ["json"])
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
     plug(Stitch.Web.Plug.TeamAdminOnly)
@@ -68,7 +60,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :files do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:fetch_session)
   end
 
@@ -312,38 +303,38 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/", PageController, :index)
 
     # TODO: a wild card route can make all /admin routes to one line
-    get("/admin/team", AdminController, :index)
-    get("/admin/team/settings", AdminController, :index)
-    get("/admin/team/security", AdminController, :index)
-    get("/admin/you/home", AdminController, :index)
-    get("/admin/you/profile", AdminController, :index)
-    get("/admin/you/account", AdminController, :index)
-    get("/admin/you/notifications", AdminController, :index)
-    get("/admin/members", AdminController, :index)
-    get("/admin/billing", AdminController, :index)
-    get("/admin/analytics", AdminController, :index)
+    get("/admin/team", PageController, :index)
+    get("/admin/team/settings", PageController, :index)
+    get("/admin/team/security", PageController, :index)
+    get("/admin/you/home", PageController, :index)
+    get("/admin/you/profile", PageController, :index)
+    get("/admin/you/account", PageController, :index)
+    get("/admin/you/notifications", PageController, :index)
+    get("/admin/members", PageController, :index)
+    get("/admin/billing", PageController, :index)
+    get("/admin/analytics", PageController, :index)
 
-    get("/admin/integrations", AdminController, :index, as: :admin_integrations)
-    get("/admin/integrations/:integration/new", AdminController, :index)
+    get("/admin/integrations", PageController, :index, as: :admin_integrations)
+    get("/admin/integrations/:integration/new", PageController, :index)
 
     get(
       "/admin/integrations/drchrono/:integration_config_id/edit",
-      AdminController,
+      PageController,
       :index,
       as: :admin_integration_edit
     )
 
-    get("/admin/integrations/:slug", AdminController, :index)
-    get("/admin/integrations/:slug/edit", AdminController, :index)
+    get("/admin/integrations/:slug", PageController, :index)
+    get("/admin/integrations/:slug/edit", PageController, :index)
 
-    get("/direct/:username", UserController, :index)
+    get("/direct/:username", PageController, :user)
     get("/apps", AuthenticationController, :apps)
     get("/logout", AuthenticationController, :logout)
 
-    get("/engage", EngageController, :index)
-    get("/conversations/:id", EngageController, :index)
+    get("/engage", PageController, :index)
+    get("/conversations/:id", PageController, :index)
 
-    get("/manage", ManageController, :index)
+    get("/manage", PageController, :index)
     get("/patients", PageController, :index)
   end
 
