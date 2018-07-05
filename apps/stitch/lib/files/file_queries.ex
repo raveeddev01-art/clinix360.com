@@ -41,8 +41,6 @@ defmodule Stitch.Files.FileQueries do
       comment_count: f.comment_count
     })
     |> Paginator.new(limit: limit, skip: offset)
-
-    # |> Repo.all()
   end
 
   def filter_by_filetype(query, %{filetype: "all"}), do: query

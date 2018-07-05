@@ -11,6 +11,8 @@ defmodule Stitch.Web.Api.V1.FileController do
     GroupQueries,
     Message,
     Message.MessageCreation,
+    MessageQueries,
+    Web.FileService,
     Web.UrlService,
     Web.MessageEventsService
   }
@@ -68,6 +70,7 @@ defmodule Stitch.Web.Api.V1.FileController do
 
   def share(conn, %{"group_id" => group_id, "id" => upload_id} = attrs) do
     current_user = conn.assigns.current_user
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
 
     with {:upload, %Upload{} = upload} <-
            {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
@@ -77,8 +80,13 @@ defmodule Stitch.Web.Api.V1.FileController do
          {:shared, {_, _}} <- {:shared, Upload.share_with_group(upload, group)},
          upload <- %{upload | shared_in: Enum.uniq([group.id | upload.shared_in])},
          {:joined, _} <- {:joined, ensure_joined(group, current_user)},
-         {:message, _} <- {:message, create_message(group, current_user, upload)},
-         {:comment, _} <- {:comment, create_optional_comment(conn, attrs, upload, group)} do
+         {:message, {:ok, %{message: message, notify_user_ids: notify_user_ids}}} <-
+           {:message, create_message(group, upload, current_user, presence)},
+         {:comment, _} <-
+           {:comment, FileService.create_optional_comment(upload, current_user, presence, attrs)} do
+      message = MessageQueries.get_by_id(message.id)
+      MessageEventsService.message_creation_events(message, group, notify_user_ids)
+
       render(conn, "show_with_comments.json", %{file: upload})
     else
       {:upload, _} ->
@@ -107,41 +115,11 @@ defmodule Stitch.Web.Api.V1.FileController do
     end
   end
 
-  def create_message(group, current_user, upload) do
-    presence = UserStatusService.presence_user_ids(current_user.team_id)
+  def create_message(group, upload, current_user, presence) do
     message = %Message{group: group, user: current_user, upload: upload}
     attrs = %{"type" => "file_share", "fields" => Upload.fields(upload)}
-
-    with {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           MessageCreation.do_create(message, attrs, presence) do
-      message = %{message | user: current_user}
-      MessageEventsService.message_creation_events(message, group, notify_user_ids)
-      :ok
-    else
-      _ -> :error
-    end
+    MessageCreation.do_create(message, attrs, presence)
   end
-
-  def create_optional_comment(conn, %{"text_content" => text_content}, upload, _group) do
-    current_user = conn.assigns.current_user
-    presence = UserStatusService.presence_user_ids(current_user.team_id)
-    attrs = %{"text_content" => text_content}
-
-    with {:comment, {:ok, _comment, groups}} <-
-           {:comment, UploadComment.create(upload, current_user, attrs, presence)} do
-      Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
-        MessageEventsService.message_creation_events(
-          result.message,
-          group,
-          result.notify_user_ids
-        )
-      end)
-    else
-      _ -> :error
-    end
-  end
-
-  def create_optional_comment(conn, _attrs, _upload, _group), do: conn
 
   def unshare(conn, %{"group_id" => group_id, "id" => upload_id}) do
     current_user = conn.assigns.current_user

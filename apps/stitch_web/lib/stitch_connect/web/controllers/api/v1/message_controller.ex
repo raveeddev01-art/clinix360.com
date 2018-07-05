@@ -19,7 +19,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     MessageQueries,
     Message.Upload,
     ReadStatus,
-    Web.EventsChannel
+    Web.EventsChannel,
+    Web.FileService
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -104,6 +105,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     current_user = conn.assigns.current_user
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
 
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
@@ -111,11 +113,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <-
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
-         presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id),
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(group, current_user, message_params_with_client, presence_user_ids) do
+           Message.create(group, current_user, message_params_with_client, presence) do
       message = %{message | user: current_user}
-      create_optional_comment(conn, message_params, message, group)
+      FileService.create_optional_comment(message.upload, current_user, presence, message_params)
       message = MessageQueries.get_by_id(message.id)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
@@ -133,17 +134,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
   end
-
-  def create_optional_comment(
-        conn,
-        %{"text_content" => text_content} = attrs,
-        %Message{type: "file_share"} = message,
-        group
-      ) do
-    Stitch.Web.Api.V1.FileController.create_optional_comment(conn, attrs, message.upload, group)
-  end
-
-  def create_optional_comment(_conn, _attrs, _message, _group), do: nil
 
   def mark_as_read(conn, %{"group_id" => group_id}) do
     current_user = conn.assigns.current_user
