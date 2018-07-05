@@ -1,6 +1,6 @@
 defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   use Stitch.Web, :controller
-  use Stitch.Web.Api.V1.Docs, :conversation_message
+  use Stitch.Web.Api.V1.ConversationMessageDocs
 
   alias Stitch.{
     Repo,

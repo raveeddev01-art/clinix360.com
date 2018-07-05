@@ -1,6 +1,6 @@
 defmodule StitchEngage.Web.Api.V1.InboxController do
   use Stitch.Web, :controller
-  use Stitch.Web.Api.V1.Docs, :inbox
+  use Stitch.Web.Api.V1.InboxDocs
 
   alias Stitch.{
     Repo,
