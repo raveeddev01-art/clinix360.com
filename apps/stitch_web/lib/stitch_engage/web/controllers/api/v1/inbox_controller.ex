@@ -1,5 +1,6 @@
 defmodule StitchEngage.Web.Api.V1.InboxController do
   use Stitch.Web, :controller
+  use Stitch.Web.Api.V1.Docs, :inbox
 
   alias Stitch.{
     Repo,
@@ -14,7 +15,7 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
   Returns the default inbox for a team and associated data necessary
   to render the main Engage page (conversations & latest message for each)
   """
-  def show_default(conn, _params) do
+  def default(conn, _params) do
     user = conn.assigns.current_user
     team = conn.assigns.team
 

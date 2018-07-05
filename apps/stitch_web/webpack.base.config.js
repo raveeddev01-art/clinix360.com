@@ -106,6 +106,10 @@ module.exports = [
         {
           from: "./lib/stitch_web/web/static/images",
           to: path.resolve(__dirname, "priv/static/images")
+        },
+        {
+          from: "./carespace-swagger.json",
+          to: path.resolve(__dirname, "priv/static")
         }
       ])
     ]
