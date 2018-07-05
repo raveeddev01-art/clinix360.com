@@ -453,7 +453,7 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/api/v1", StitchEngage.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_api)
 
-    get("/inboxes/default", InboxController, :show_default)
+    get("/inboxes/default", InboxController, :default)
     put("/inboxes/:id", InboxController, :update)
 
     get("/inboxes/:inbox_id/conversations", ConversationController, :index)
@@ -497,5 +497,23 @@ defmodule Stitch.Web.SubdomainRouter do
     # get("/conversation_messages/:id/download", ConversationMessageController, :download)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
     # post("/conversation_messages/search", ConversationMessageController, :search)
+  end
+
+  scope "/api/swagger" do
+    forward(
+      "/",
+      PhoenixSwagger.Plug.SwaggerUI,
+      otp_app: :stitch_web,
+      swagger_file: "carespace-swagger.json"
+    )
+  end
+
+  def swagger_info do
+    %{
+      info: %{
+        version: "1.0",
+        title: "Stitch"
+      }
+    }
   end
 end
