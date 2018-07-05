@@ -1,4 +1,4 @@
-// Desktop Pricing
+// Desktop Pricing !
 export const PRICING_TABLE = {
   PLATFORM: [
     {
