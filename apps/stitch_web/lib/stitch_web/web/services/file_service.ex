@@ -2,10 +2,12 @@ defmodule Stitch.Web.FileService do
   alias Stitch.{
     Accounts.User,
     Files.Upload,
-    Files.UploadComment
+    Files.UploadComment,
+    Files.FileQueries
   }
 
   alias StitchConnect.Web.{
+    GroupChannel,
     MessageEventsService
   }
 
@@ -26,6 +28,9 @@ defmodule Stitch.Web.FileService do
           result.notify_user_ids
         )
       end)
+
+      upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
+      GroupChannel.broadcast_file_comment_added(upload)
 
       {:ok, comment, groups}
     else
