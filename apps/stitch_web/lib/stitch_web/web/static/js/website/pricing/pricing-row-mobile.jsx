@@ -7,9 +7,11 @@ class PricingRowMobile extends Component {
 
     return (
       <div className="pricing-table__row">
-        <div className="pricing-table__item">{feature}</div>
-
         <div className="pricing-table__item">
+          <i className="fa fa-check-circle mobile-check" /> {feature}
+        </div>
+
+        <div className="pricing-table__item mobile-cell">
           <i className="fa fa-check-circle" />
         </div>
       </div>

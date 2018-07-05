@@ -15,7 +15,7 @@ import { PRICING_TABLE_MOBILE } from "../pricing_constants";
 export default class PricingDesktop extends Component {
   constructor(props) {
     super(props);
-    this.state = { monthlyPricing: true };
+    this.state = { monthlyPricing: false };
   }
 
   handleClick = () => {
@@ -100,9 +100,18 @@ export default class PricingDesktop extends Component {
                     </a>
                   </p>
 
-                  <Button bsStyle="primary" bsSize="lg" block>
-                    Try Free
+                  <Button
+                    bsStyle="primary"
+                    bsSize="lg"
+                    block
+                    className="m-b-30"
+                  >
+                    Buy Standard
                   </Button>
+
+                  <p className="m-b-0">
+                    Includes everything in <strong>Basic</strong> and:
+                  </p>
                 </div>
               </div>
 
@@ -182,9 +191,18 @@ export default class PricingDesktop extends Component {
                     </a>
                   </p>
 
-                  <Button bsStyle="primary" bsSize="lg" block>
+                  <Button
+                    bsStyle="primary"
+                    bsSize="lg"
+                    block
+                    className="m-b-30"
+                  >
                     Coming Soon
                   </Button>
+
+                  <p className="m-b-0">
+                    Includes everything in <strong>Standard</strong> and:
+                  </p>
                 </div>
               </div>
 
@@ -202,7 +220,9 @@ export default class PricingDesktop extends Component {
               )}
 
               <div className="pricing-table__row header">
-                <div className="pricing-table__item">Task Management</div>
+                <div className="pricing-table__item">
+                  Task Management <Label>Coming Soon!</Label>
+                </div>
               </div>
 
               {PRICING_TABLE_MOBILE.PREMIUM.TASK_MANAGEMENT.map(

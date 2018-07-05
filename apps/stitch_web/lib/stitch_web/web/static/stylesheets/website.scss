@@ -1051,7 +1051,7 @@
             }
           }
 
-          p {
+          p.text-muted {
             margin-bottom: 15px;
 
             a {
@@ -1065,6 +1065,14 @@
             font-size: 20px;
             position: relative;
             top: 2px;
+
+            &.mobile-check {
+              display: none;
+              @media (max-width: 450px) {
+                display: inline-block;
+                margin-right: 5px;
+              }
+            }
           }
 
           &:first-of-type {
@@ -1073,6 +1081,12 @@
 
           &:last-of-type {
             border-right: 0;
+          }
+
+          &.mobile-cell {
+            @media (max-width: 450px) {
+              display: none;
+            }
           }
         }
       }

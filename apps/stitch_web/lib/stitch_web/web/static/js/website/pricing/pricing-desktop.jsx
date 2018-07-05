@@ -11,7 +11,7 @@ import { PRICING_TABLE } from "../pricing_constants";
 export default class PricingDesktop extends Component {
   constructor(props) {
     super(props);
-    this.state = { monthlyPricing: true };
+    this.state = { monthlyPricing: false };
   }
 
   handleClick = () => {

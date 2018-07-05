@@ -257,7 +257,7 @@ export const PRICING_TABLE_MOBILE = {
     ],
     TEAM_MESSAGING: [
       { feature: "Public & Private Rooms" },
-      { feature: "Group & DIrect Messaging" },
+      { feature: "Group & Direct Messaging" },
       { feature: "1,000 Message Search Access" },
       { feature: "1GB Total File Storage" }
     ],

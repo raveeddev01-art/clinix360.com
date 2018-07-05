@@ -34,7 +34,7 @@ export default class Pricing extends Component {
             </div>
 
             <h4 className="text-center m-b-0 enterprise-text">
-              Need to deploy Manage across a large organization?{" "}
+              Need to deploy Stitch across a large organization?{" "}
               <a href="mailto:support@teamstitch.com">Contact us</a> for
               Enterprise pricing.
             </h4>
