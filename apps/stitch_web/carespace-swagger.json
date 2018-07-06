@@ -1,6 +1,207 @@
 {
   "swagger": "2.0",
   "paths": {
+    "/api/v1/patient/inboxes/{inbox_id}/conversations": {
+      "get": {
+        "tags": [
+          "Conversation"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/PatientConversations"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 3,
+            "type": "integer",
+            "required": true,
+            "name": "inbox_id",
+            "in": "path",
+            "description": "Inbox ID"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "updated_before",
+            "in": "query",
+            "description": "Later bound for updated_at time for conversations."
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationController.patient_index",
+        "description": "Lists 20 most recently updated conversations for a patient in an inbox. Pass in updated_before to move backward in time."
+      }
+    },
+    "/api/v1/patient/inboxes/default": {
+      "get": {
+        "tags": [
+          "Inbox"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/PatientInbox"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.InboxController.patient_default",
+        "description": "Return the default inbox for a team."
+      }
+    },
+    "/api/v1/patient/conversations/{conversation_id}/messages": {
+      "get": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ConversationMessages"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 3,
+            "type": "integer",
+            "required": true,
+            "name": "conversation_id",
+            "in": "path",
+            "description": "Conversation ID"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "updated_before",
+            "in": "query",
+            "description": "Later bound for updated_at time for messages."
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_index",
+        "description": "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
+      }
+    },
+    "/api/v1/patient/conversations/{conversation_id}": {
+      "get": {
+        "tags": [
+          "Conversation"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/PatientConversation"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 3,
+            "type": "integer",
+            "required": true,
+            "name": "conversation_id",
+            "in": "path",
+            "description": "Conversation ID"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationController.patient_show",
+        "description": "Shows a patient conversation with latest messages."
+      }
+    },
+    "/api/v1/patient/conversation_messages/{conversation_message_id}": {
+      "get": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ConversationMessage"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 209,
+            "type": "integer",
+            "required": true,
+            "name": "conversation_message_id",
+            "in": "path",
+            "description": "Conversation Message ID"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_show",
+        "description": "Show a conversation message for a patient."
+      }
+    },
     "/api/v1/inboxes/{inbox_id}/conversations": {
       "get": {
         "tags": [
@@ -25,7 +226,7 @@
             "required": true,
             "name": "authenticationToken",
             "in": "query",
-            "description": "user identification token"
+            "description": "token for user or patient auth"
           },
           {
             "x-example": 3,
@@ -36,7 +237,6 @@
             "description": "Inbox ID"
           },
           {
-            "x-example": 3,
             "type": "string",
             "required": false,
             "name": "updated_before",
@@ -80,7 +280,7 @@
             "required": true,
             "name": "authenticationToken",
             "in": "query",
-            "description": "user identification token"
+            "description": "token for user or patient auth"
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.InboxController.default",
@@ -111,7 +311,7 @@
             "required": true,
             "name": "authenticationToken",
             "in": "query",
-            "description": "user identification token"
+            "description": "token for user or patient auth"
           },
           {
             "x-example": 3,
@@ -122,7 +322,6 @@
             "description": "Conversation ID"
           },
           {
-            "x-example": 3,
             "type": "string",
             "required": false,
             "name": "updated_before",
@@ -140,6 +339,71 @@
     "title": "Stitch"
   },
   "definitions": {
+    "PatientInbox": {
+      "type": "object",
+      "title": "Inbox",
+      "required": [
+        "is_default",
+        "name",
+        "id"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "General",
+          "description": "Inbox name"
+        },
+        "is_default": {
+          "type": "boolean",
+          "description": "Whether the inbox is the team's default"
+        },
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier"
+        }
+      },
+      "description": "A collection of conversations in Engage."
+    },
+    "PatientConversations": {
+      "type": "array",
+      "title": "PatientConversations",
+      "items": {
+        "$ref": "#/definitions/PatientConversation"
+      },
+      "description": "A collection of Conversations for a patient"
+    },
+    "PatientConversation": {
+      "type": "object",
+      "title": "PatientConversation",
+      "required": [
+        "inbox_id",
+        "id"
+      ],
+      "properties": {
+        "updated_at": {
+          "type": "string",
+          "example": "2018-07-04T15:58:42.059546",
+          "description": "Last time updated in db"
+        },
+        "latest_conversation_message": {
+          "$ref": "#/definitions/ConversationMessage"
+        },
+        "inserted_at": {
+          "type": "string",
+          "example": "2018-07-03T15:58:42.059546",
+          "description": "Time inserted into db"
+        },
+        "inbox_id": {
+          "type": "integer",
+          "description": "Inbox foreign key"
+        },
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier"
+        }
+      },
+      "description": "A conversation in Engage seen as a patient. Belongs to an inbox and contains conversation_messages."
+    },
     "Patient": {
       "type": "object",
       "title": "Patient",

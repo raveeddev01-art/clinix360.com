@@ -90,10 +90,37 @@ defmodule Stitch.Web.SubdomainRouter do
   #   PATIENT ROUTES
   # ==================
 
-  scope "/api/v1/patient", StitchEngage.Web.Api.V1, as: :patient do
+  scope "/api/v1/patient", StitchEngage.Web.Api.V1, as: :api_v1 do
     pipe_through([:api, :patient_api])
 
     get("/", PatientController, :show)
+
+    get("/inboxes/default", InboxController, :patient_default)
+    get("/inboxes/:inbox_id/conversations", ConversationController, :patient_index)
+    get("/conversations/:id", ConversationController, :patient_show)
+    get("/conversations/:conversation_id/messages", ConversationMessageController, :patient_index)
+    get("/conversation_messages/:id", ConversationMessageController, :patient_show)
+
+    # post("/inboxes/:inbox_id/conversations", ConversationController, :patient_create)
+    # post("/conversations/:conversation_id/messages", ConversationMessageController, :patient_create)
+
+    # put(
+    #   "/conversation_messages/:id/delete_link_preview",
+    #   ConversationMessageController,
+    #   :patient_delete_message_link_preview
+    # )
+
+    # put(
+    #   "/conversation_messages/:id/toggle_reaction",
+    #   ConversationMessageController,
+    #   :patient_toggle_reaction
+    # )
+
+    # post(
+    #   "/conversations/:conversation_id/mark_as_read",
+    #   ConversationMessageController,
+    #   :patient_mark_as_read
+    # )
   end
 
   scope "/patient", as: :patient do

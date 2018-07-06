@@ -8,7 +8,8 @@ defmodule Stitch.Engage.InboxQueries do
   alias Stitch.{
     Repo,
     Team,
-    Account.User,
+    Patient,
+    Accounts.User,
     Engage.Inbox,
     Engage.ConversationQueries
   }
@@ -30,8 +31,8 @@ defmodule Stitch.Engage.InboxQueries do
   @doc """
   Loads values/relaitonships needed to render main inbox page and merges into struct.
   """
-  @spec with_show_values(Inbox.t(), User.t()) :: Inbox.t()
-  def with_show_values(%Inbox{id: inbox_id} = inbox, user) do
+  @spec with_show_values(Inbox.t(), User.t() | Patient.t()) :: Inbox.t()
+  def with_show_values(%Inbox{id: inbox_id} = inbox, %User{} = user) do
     additional_attributes = %{
       open_conversations: ConversationQueries.latest_open_for_inbox(user, inbox_id),
       open_conversations_count: ConversationQueries.open_count_for_inbox(inbox_id),
@@ -40,4 +41,6 @@ defmodule Stitch.Engage.InboxQueries do
 
     Map.merge(inbox, additional_attributes)
   end
+
+  def with_show_values(inbox, %Patient{}), do: inbox
 end

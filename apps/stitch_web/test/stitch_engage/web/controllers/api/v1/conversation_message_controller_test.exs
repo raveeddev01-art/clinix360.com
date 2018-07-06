@@ -3,6 +3,7 @@ defmodule Stitch.Web.Api.V1.ConversationMessageControllerTest.SetupHelper do
 
   def setup(conn) do
     team = insert(:team)
+    insert(:team_feature, name: "engage", team: team)
     other_team = insert(:team)
     author = insert(:user, team: team)
     non_author_on_team = insert(:user, team: team)
@@ -27,6 +28,7 @@ defmodule Stitch.Web.Api.V1.ConversationMessageControllerTest.SetupHelper do
      conversation: conversation,
      team: team,
      author: author,
+     patient: patient,
      user_on_other_team: user_on_other_team,
      non_author_on_team: non_author_on_team}
   end
@@ -88,6 +90,52 @@ defmodule Stitch.Web.Api.V1.ConversationMessageControllerTest do
           Routes.api_v1_conversation_message_path(
             setup_params.conn,
             :index,
+            setup_params.conversation.id
+          )
+        )
+
+      assert json_response(conn, 403)
+    end
+  end
+
+  describe "GET /api/v1/patient/conversations/:id/conversation_messages" do
+    setup %{conn: conn} do
+      SetupHelper.setup(conn)
+    end
+
+    test "lists messages with correct permissions", setup_params do
+      conn =
+        setup_params.conn
+        |> with_api_user(setup_params.patient)
+        |> get(
+          Routes.api_v1_conversation_message_path(
+            setup_params.conn,
+            :patient_index,
+            setup_params.conversation.id
+          )
+        )
+
+      assert response = json_response(conn, 200)
+      response_ids = response |> Enum.map(& &1["id"]) |> Enum.sort()
+
+      message_ids =
+        [setup_params.conversation_message, setup_params.conversation_message_2]
+        |> Enum.map(& &1.id)
+        |> Enum.sort()
+
+      assert response_ids == message_ids
+    end
+
+    test "errors properly if not in conversation", setup_params do
+      patient_in_team_but_not_convo = insert(:patient, team: setup_params.team)
+
+      conn =
+        setup_params.conn
+        |> with_api_user(patient_in_team_but_not_convo)
+        |> get(
+          Routes.api_v1_conversation_message_path(
+            setup_params.conn,
+            :patient_index,
             setup_params.conversation.id
           )
         )
@@ -265,6 +313,45 @@ defmodule Stitch.Web.Api.V1.ConversationMessageControllerTest do
           Routes.api_v1_conversation_message_path(
             setup_params.conn,
             :show,
+            setup_params.conversation_message.id
+          )
+        )
+
+      assert json_response(conn, 403)
+    end
+  end
+
+  describe "GET /api/v1/patient/conversation_messages/:id" do
+    setup %{conn: conn} do
+      SetupHelper.setup(conn)
+    end
+
+    test "shows a conversation message properly", setup_params do
+      conn =
+        setup_params.conn
+        |> with_api_user(setup_params.patient)
+        |> get(
+          Routes.api_v1_conversation_message_path(
+            setup_params.conn,
+            :patient_show,
+            setup_params.conversation_message.id
+          )
+        )
+
+      assert response = json_response(conn, 200)
+      assert response["text_content"] == setup_params.conversation_message.text_content
+    end
+
+    test "errors properly if not in conversation", setup_params do
+      patient_in_team_but_not_convo = insert(:patient, team: setup_params.team)
+
+      conn =
+        setup_params.conn
+        |> with_api_user(patient_in_team_but_not_convo)
+        |> get(
+          Routes.api_v1_conversation_message_path(
+            setup_params.conn,
+            :patient_show,
             setup_params.conversation_message.id
           )
         )

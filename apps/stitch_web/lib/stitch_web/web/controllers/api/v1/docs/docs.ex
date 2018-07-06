@@ -7,7 +7,7 @@ defmodule Stitch.Web.Api.V1.Docs.CommonParams do
       authenticationToken(
         :query,
         :string,
-        "user identification token",
+        "token for user or patient auth",
         required: true,
         example: "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M"
       )
@@ -26,6 +26,18 @@ defmodule Stitch.Web.Api.V1.Docs do
     quote do
       def swagger_definitions do
         %{
+          PatientInbox:
+            swagger_schema do
+              title("Inbox")
+
+              description("A collection of conversations in Engage.")
+
+              properties do
+                id(:integer, "Unique identifier", required: true)
+                name(:string, "Inbox name", required: true, example: "General")
+                is_default(:boolean, "Whether the inbox is the team's default", required: true)
+              end
+            end,
           Inbox:
             swagger_schema do
               title("Inbox")
@@ -49,6 +61,40 @@ defmodule Stitch.Web.Api.V1.Docs do
                   "Count of the conversations that are currently closed",
                   required: true
                 )
+              end
+            end,
+          PatientConversation:
+            swagger_schema do
+              title("PatientConversation")
+
+              description(
+                "A conversation in Engage seen as a patient. Belongs to an inbox and contains conversation_messages."
+              )
+
+              properties do
+                id(:integer, "Unique identifier", required: true)
+                inbox_id(:integer, "Inbox foreign key", required: true)
+
+                inserted_at(
+                  :string,
+                  "Time inserted into db",
+                  example: "2018-07-03T15:58:42.059546"
+                )
+
+                updated_at(
+                  :string,
+                  "Last time updated in db",
+                  example: "2018-07-04T15:58:42.059546"
+                )
+
+                # TODO: Implement read/unread for patients
+                # is_unread(
+                #   :boolean,
+                #   "Whether current user has read the most recent message.",
+                #   example: false
+                # )
+
+                latest_conversation_message(Schema.ref(:ConversationMessage))
               end
             end,
           Conversation:
@@ -90,6 +136,13 @@ defmodule Stitch.Web.Api.V1.Docs do
                 latest_conversation_message(Schema.ref(:ConversationMessage))
                 patient(Schema.ref(:Patient))
               end
+            end,
+          PatientConversations:
+            swagger_schema do
+              title("PatientConversations")
+              description("A collection of Conversations for a patient")
+              type(:array)
+              items(Schema.ref(:PatientConversation))
             end,
           Conversations:
             swagger_schema do
@@ -281,96 +334,6 @@ defmodule Stitch.Web.Api.V1.Docs do
               end
             end
         }
-      end
-    end
-  end
-
-  # =================
-  #   INBOX ACTIONS
-  # =================
-
-  def inbox do
-    quote do
-      swagger_path :default do
-        get("/api/v1/inboxes/default")
-        produces("application/json")
-
-        description("Return the default inbox for a team.")
-
-        Stitch.Web.Api.V1.Docs.CommonParams.auth()
-
-        response(200, "OK", Schema.ref(:Inbox))
-      end
-    end
-  end
-
-  # ================================
-  #   CONVERSATION MESSAGE ACTIONS
-  # ================================
-
-  def conversation_message do
-    quote do
-      swagger_path :index do
-        get("/api/v1/conversations/{conversation_id}/messages")
-        produces("application/json")
-
-        description(
-          "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
-        )
-
-        Stitch.Web.Api.V1.Docs.CommonParams.auth()
-
-        parameters do
-          conversation_id(:path, :integer, "Conversation ID", required: true, example: 3)
-
-          updated_before(
-            :query,
-            :string,
-            "Later bound for updated_at time for messages.",
-            example: 3
-          )
-        end
-
-        response(200, "OK", Schema.ref(:ConversationMessages))
-      end
-    end
-  end
-
-  # ========================
-  #   CONVERSATION ACTIONS
-  # ========================
-
-  def conversation do
-    quote do
-      swagger_path :index do
-        get("/api/v1/inboxes/{inbox_id}/conversations")
-        produces("application/json")
-
-        description(
-          "Lists 20 most recently updated conversations for an inbox. Pass in updated_before to move backward in time."
-        )
-
-        Stitch.Web.Api.V1.Docs.CommonParams.auth()
-
-        parameters do
-          inbox_id(:path, :integer, "Inbox ID", required: true, example: 3)
-
-          updated_before(
-            :query,
-            :string,
-            "Later bound for updated_at time for conversations.",
-            example: 3
-          )
-
-          open(
-            :query,
-            :boolean,
-            "Pass boolean to get only open or closed conversations.",
-            example: false
-          )
-        end
-
-        response(200, "OK", Schema.ref(:Conversations))
       end
     end
   end

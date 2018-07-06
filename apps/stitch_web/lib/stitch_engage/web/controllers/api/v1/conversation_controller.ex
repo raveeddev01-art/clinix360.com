@@ -1,6 +1,6 @@
 defmodule StitchEngage.Web.Api.V1.ConversationController do
   use Stitch.Web, :controller
-  use Stitch.Web.Api.V1.Docs, :conversation
+  use Stitch.Web.Api.V1.ConversationDocs
 
   alias Stitch.{
     Repo,
@@ -16,31 +16,49 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
-  def index(conn, params = %{"inbox_id" => inbox_id}) do
-    user = conn.assigns.current_user
+  # =========
+  #   INDEX
+  # =========
 
+  def index(conn, params) do
+    do_index(conn, params, conn.assigns.current_user, "index.json")
+  end
+
+  def patient_index(conn, params) do
+    do_index(conn, params, conn.assigns.patient, "patient_index.json")
+  end
+
+  defp do_index(conn, params = %{"inbox_id" => inbox_id}, user_or_patient, json_name) do
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, inbox_id)},
-         {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, user)} do
-      conversations = ConversationQueries.for_index(user, inbox.id, params)
-
-      render(conn, "index.json", conversations: conversations)
+         {:authorized?, true} <-
+           {:authorized?, InboxAuthorization.can_view?(inbox, user_or_patient)} do
+      conversations = ConversationQueries.for_index(user_or_patient, inbox.id, params)
+      render(conn, json_name, conversations: conversations)
     else
-      {:inbox, _} ->
-        {:error, :not_found, "Inbox not found"}
-
-      {:authorized?, _} ->
-        {:error, :unauthorized, "You cannot view conversations in this inbox."}
+      {:inbox, _} -> {:error, :not_found, "Inbox not found"}
+      {:authorized?, _} -> {:error, :unauthorized, "You cannot view conversations in this inbox."}
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    user = conn.assigns.current_user
+  # ========
+  #   SHOW
+  # ========
 
+  def show(conn, params) do
+    do_show(conn, params, conn.assigns.current_user, "show.json")
+  end
+
+  def patient_show(conn, params) do
+    do_show(conn, params, conn.assigns.patient, "patient_show.json")
+  end
+
+  defp do_show(conn, %{"id" => id}, user_or_patient, json_name) do
     with {:conversation, conversation} when not is_nil(conversation) <-
-           {:conversation, ConversationQueries.for_show(id, user)},
+           {:conversation, ConversationQueries.for_show(id, user_or_patient)},
          {:authorized?, true} <-
-           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
-      render(conn, "show.json", conversation: conversation)
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
+      conversation = conversation_with_show_data(conversation, user_or_patient)
+      render(conn, json_name, conversation: conversation)
     else
       {:conversation, _} ->
         {:error, :not_found, "Conversation not found"}
@@ -49,6 +67,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
         {:error, :unauthorized, "You cannot view this conversation."}
     end
   end
+
+  # ==========
+  #   CREATE
+  # ==========
 
   def create(conn, params = %{"inbox_id" => inbox_id}) do
     user = conn.assigns.current_user
@@ -76,6 +98,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
         {:error, :unprocessable_entity, "There was a problem creating this conversation."}
     end
   end
+
+  # ==============
+  #   OPEN/CLOSE
+  # ==============
 
   def open(conn, params) do
     change_open(conn, params, true)
@@ -116,11 +142,15 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     end
   end
 
-  defp conversation_with_show_data(conversation, user, given_conversation_messages \\ nil) do
+  defp conversation_with_show_data(
+         conversation,
+         user_or_patient,
+         given_conversation_messages \\ nil
+       ) do
     conversation =
       conversation
       |> Repo.preload([:conversation_messages, :patients])
-      |> ConversationQueries.with_unread(user)
+      |> ConversationQueries.with_unread(user_or_patient)
 
     conversation_messages =
       Reaction.apply_reactions(

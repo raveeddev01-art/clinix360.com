@@ -10,6 +10,8 @@ defmodule Stitch.Engage.InboxAuthorizationTest do
       {:ok, team: team, inbox: inbox}
     end
 
+    # USERS (PROVIDERS)
+
     test "returns true if user is team member", %{
       inbox: inbox,
       team: team
@@ -30,6 +32,21 @@ defmodule Stitch.Engage.InboxAuthorizationTest do
       other_team = insert(:team)
       other_team_admin = insert(:user, team: other_team, roles: ["admin"])
       refute InboxAuthorization.can_view?(inbox, other_team_admin)
+    end
+
+    # PATIENTS
+
+    test "returns true if patient is team member", %{
+      inbox: inbox,
+      team: team
+    } do
+      team_patient = insert(:patient, team: team)
+      assert InboxAuthorization.can_view?(inbox, team_patient)
+    end
+
+    test "returns false if patient is not team member", %{inbox: inbox} do
+      other_team_patient = insert(:patient, team: insert(:team))
+      refute InboxAuthorization.can_view?(inbox, other_team_patient)
     end
   end
 

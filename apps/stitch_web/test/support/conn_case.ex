@@ -98,8 +98,17 @@ defmodule Stitch.Web.ConnCase do
 
   When calling this function, any existing query params on the conn will be overwritten.
   """
-  @spec with_api_user(Plug.Conn.t(), Stitch.Accounts.User.t()) :: Plug.Conn.t()
+  @spec with_api_user(Plug.Conn.t(), Stitch.Accounts.User.t() | Stitch.Patient.t()) ::
+          Plug.Conn.t()
   def with_api_user(conn, %Stitch.Accounts.User{token: token}) do
+    add_token_to_conn(conn, token)
+  end
+
+  def with_api_user(conn, %Stitch.Patient{token: token}) do
+    add_token_to_conn(conn, token)
+  end
+
+  defp add_token_to_conn(conn, token) do
     %Plug.Conn{conn | query_params: %{"authenticationToken" => token}}
   end
 
