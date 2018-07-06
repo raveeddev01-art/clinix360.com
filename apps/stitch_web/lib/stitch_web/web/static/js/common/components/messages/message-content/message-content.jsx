@@ -122,6 +122,7 @@ class MessageContent extends Component {
         {message.type === "upload" && (
           <FileAttachment
             {...message.fields}
+            fileId={message.upload_id}
             onCommentsClick={this.onCommentsClick}
           />
         )}

@@ -67,7 +67,7 @@ class FileDetails extends Component {
         <FileHeading user={fileCreator} file={file} />
         {this.renderSharedInInfo(groups)}
         {this.renderPublicLink(file)}
-        <FileAttachment api_url={file.url} {...file} />
+        <FileAttachment api_url={file.url} fileId={file.id} {...file} />
         {file.comments.map(comment => (
           <FileComment comment={comment} key={comment.id} />
         ))}

@@ -128,7 +128,12 @@ class FileDetailPage extends Component {
         </div>
         {file.public_token && this.renderPublicLink(file)}
         <div className="file-detail__content">
-          <FileAttachment api_url={file.url} {...file} useActions={false} />
+          <FileAttachment
+            api_url={file.url}
+            fileId={file.id}
+            {...file}
+            useActions={false}
+          />
           <div className="file-comment-list">
             {file.comments &&
               file.comments.map(comment => (

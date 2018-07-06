@@ -61,6 +61,11 @@ class DotOptions extends React.Component {
               </span>
             )}
           </MenuItem>
+          {window.electronApp && (
+            <MenuItem onSelect={toggleAddonMenu("downloads")}>
+              <i className="fa fa-download m-r-5" /> Downloads
+            </MenuItem>
+          )}
           <MenuItem
             id="intercom-link"
             href="jig8cj9z@inbound.intercom-mail.com"

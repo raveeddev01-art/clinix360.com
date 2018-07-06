@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { inject } from "mobx-react";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Button from "react-bootstrap/lib/Button";
 
-@inject("desktopStore")
 class AttachmentActions extends Component {
   render() {
-    const { url, onCommentsClick, commentCount } = this.props;
+    const { url, onCommentsClick, commentCount, onFileDownload } = this.props;
 
     return (
       <div className="attachment-actions">
@@ -31,7 +29,7 @@ class AttachmentActions extends Component {
           delayShow={150}
           overlay={<Tooltip id="download-file">Download</Tooltip>}
         >
-          <Button target="_blank" href={url} onClick={this.onFileDownload}>
+          <Button target="_blank" href={url} onClick={onFileDownload}>
             <i className="fa fa-download" />
           </Button>
         </OverlayTrigger>
@@ -43,7 +41,8 @@ class AttachmentActions extends Component {
 AttachmentActions.propTypes = {
   url: PropTypes.string.isRequired,
   commentCount: PropTypes.number,
-  onCommentsClick: PropTypes.func
+  onCommentsClick: PropTypes.func,
+  onFileDownload: PropTypes.func.isRequired
 };
 
 AttachmentActions.defaultProps = {

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 import PropTypes from "prop-types";
-import getFileType from "../file-types";
+import getFileType from "lib/file-types";
 import DefaultFileAttachment from "./default";
 import ImageFileAttachment from "./image";
 
@@ -9,11 +10,40 @@ const FileAttachmentRenderer = {
   Image: ImageFileAttachment
 };
 
+@inject("desktopStore")
 class FileAttachment extends Component {
   onCommentsClick = e => {
     e.stopPropagation();
     e.preventDefault();
+    e.nativeEvent.stopImmediatePropagation();
     this.props.onCommentsClick();
+  };
+
+  onFileDownload = e => {
+    const {
+      desktopStore,
+      api_url,
+      preview_url,
+      filename,
+      mimetype,
+      filetype,
+      fileId
+    } = this.props;
+
+    if (desktopStore.isElectron) {
+      e.stopPropagation();
+      e.preventDefault();
+      e.nativeEvent.stopImmediatePropagation();
+
+      desktopStore.sendDownloadRequest({
+        id: fileId,
+        url: api_url,
+        filename,
+        mimetype,
+        filetype,
+        previewUrl: preview_url
+      });
+    }
   };
 
   render() {
@@ -25,19 +55,26 @@ class FileAttachment extends Component {
     return (
       <Renderer
         {...this.props}
-        onCommentsClick={e => this.onCommentsClick(e)}
+        onCommentsClick={this.onCommentsClick}
+        onFileDownload={this.onFileDownload}
       />
     );
   }
 }
 
 FileAttachment.propTypes = {
+  api_url: PropTypes.string.isRequired,
+  preview_url: PropTypes.string,
   mimetype: PropTypes.string.isRequired,
+  filename: PropTypes.string.isRequired,
+  filetype: PropTypes.string.isRequired,
+  fileId: PropTypes.number.isRequired,
   onCommentsClick: PropTypes.func.isRequired
 };
 
 FileAttachment.defaultProps = {
-  onCommentsClick: () => undefined
+  onCommentsClick: () => undefined,
+  preview_url: ""
 };
 
 export default FileAttachment;

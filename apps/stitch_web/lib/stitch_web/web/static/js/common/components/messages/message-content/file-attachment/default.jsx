@@ -1,16 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { inject } from "mobx-react";
+import getFileType from "lib/file-types";
 import AttachmentActions from "./components/attachment-actions";
-import getFileType from "../file-types";
 
-@inject("desktopStore")
 class DefaultFileAttachment extends Component {
-  onFileDownload = () => {
-    const { desktopStore, api_url, filename } = this.props;
-    desktopStore.sendDownloadRequest(api_url, filename);
-  };
-
   getFileSize = size => {
     if (size < 1024) {
       return `${size} bytes`;
@@ -30,6 +23,7 @@ class DefaultFileAttachment extends Component {
       url,
       comment_count: commentCount,
       onCommentsClick,
+      onFileDownload,
       useActions
     } = this.props;
     const filetype = getFileType(mimetype);
@@ -57,6 +51,7 @@ class DefaultFileAttachment extends Component {
               url={url}
               commentCount={commentCount}
               onCommentsClick={onCommentsClick}
+              onFileDownload={onFileDownload}
             />
           )}
         </div>
@@ -70,9 +65,9 @@ DefaultFileAttachment.propTypes = {
   mimetype: PropTypes.string.isRequired,
   size_in_bytes: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired,
-  api_url: PropTypes.string.isRequired,
   comment_count: PropTypes.number,
   onCommentsClick: PropTypes.func,
+  onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool
 };
 

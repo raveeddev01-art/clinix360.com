@@ -261,10 +261,12 @@ class MessageStore {
             }
 
             if (
-              sequentialStart.upload_id === msg.upload_id ||
+              (sequentialStart.upload_id === msg.upload_id &&
+                msg.type === "file_comment") ||
               (msg.user.id === sequentialStart.user.id &&
                 sequentialStart.type !== "system" &&
                 msg.type !== "upload" &&
+                msg.type !== "file_comment" &&
                 moment(msg.inserted_at).diff(
                   moment(sequentialStart.inserted_at),
                   "seconds"

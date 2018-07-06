@@ -22,7 +22,7 @@ class FileItem extends Component {
 
     return (
       <div className="file-item">
-        <FileThumb previewUrl={file.preview_url} />
+        <FileThumb mimetype={file.mimetype} previewUrl={file.preview_url} />
         <div className="file-item__content">
           <Link
             className="file-item__link"
