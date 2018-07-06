@@ -206,6 +206,7 @@ defmodule Stitch.Web.SubdomainRouter do
     resources("/file_comments", FileCommentController, only: [:update, :delete])
     resources("/files", FileController, only: [:index, :show, :delete])
 
+    post("/files/:id/toggle_star", FileController, :toggle_star)
     post("/files/:id/share", FileController, :share)
     post("/files/:id/unshare", FileController, :unshare)
     post("/files/:id/create_public_link", FileController, :create_public_link)
@@ -395,6 +396,7 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/messages/search", MessageController, :search)
 
     get("/starred_messages", StarredMessageController, :index)
+    get("/starred_items", StarredItemController, :index)
     get("/pinned_messages", PinnedMessageController, :index)
     get("/mentions", MentionController, :index)
 

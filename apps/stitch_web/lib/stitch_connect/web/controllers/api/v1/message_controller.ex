@@ -9,11 +9,16 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     MessageEventsService
   }
 
+  alias Stitch.Web.{
+    StarringEventsService
+  }
+
   alias Stitch.{
     GroupAuthorization,
     GroupQueries,
     Group,
     Files.Upload,
+    StarrableItems.StarringService,
     Message,
     MessageAuthorization,
     MessageAction,
@@ -283,14 +288,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
     case GroupAuthorization.can_view?(group, user) do
       true ->
-        case MessageAction.toggle_star(message, user) do
-          {:ok, result, _changeset} ->
+        case StarringService.toggle_star(message, user) do
+          {result, {:ok, changest}} ->
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
-            GroupChannel.broadcast_message_starred(message, user.id)
+            StarringEventsService.star_events(message, user, result)
             render(conn, "starred.json", message: message, user_id: user.id)
 
-          {:error, changeset} ->
+          {_result, {:error, changeset}} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})

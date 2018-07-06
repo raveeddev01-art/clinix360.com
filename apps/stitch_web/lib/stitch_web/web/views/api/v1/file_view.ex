@@ -42,7 +42,8 @@ defmodule Stitch.Web.Api.V1.FileView do
       encoded_id: Upload.encode_url_id(file),
       url: UrlService.file_download_url(file),
       public_url: public_url(file),
-      comment_count: file.comment_count
+      comment_count: file.comment_count,
+      starred: Map.get(file, :starred, false)
     }
   end
 

@@ -19,13 +19,14 @@ defmodule Stitch.Files.FileQueries do
 
     Upload
     |> join(:inner, [f], gu in GroupUpload, f.id == gu.upload_id)
+    |> join(:left, [f, gu], ma in Stitch.MessageAction, ma.upload_id == f.id)
     |> where([f, gu], gu.group_id in ^group_ids)
-    |> group_by([f, gu], f.id)
-    |> order_by([f, gu], desc: f.inserted_at)
+    |> group_by([f, gu, ma], [f.id, ma.id])
+    |> order_by([f, gu, ma], desc: f.inserted_at)
     |> filter_by_filetype(options)
     |> filter_by_creator_id(options)
     |> filter_by_filename(options)
-    |> select([f, gu], %Upload{
+    |> select([f, gu, ma], %Upload{
       id: f.id,
       filename: f.filename,
       mimetype: f.mimetype,
@@ -38,7 +39,8 @@ defmodule Stitch.Files.FileQueries do
       preview_url: f.preview_url,
       preview_height: f.preview_height,
       preview_width: f.preview_width,
-      comment_count: f.comment_count
+      comment_count: f.comment_count,
+      starred: not is_nil(ma.id)
     })
     |> Paginator.new(limit: limit, skip: offset)
   end

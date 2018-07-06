@@ -35,6 +35,7 @@ defmodule Stitch.Files.Upload do
     field(:public, :boolean, default: true)
     field(:public_token, :string)
     field(:shared_in, {:array, :integer}, virtual: true, default: [])
+    field(:starred, :boolean, virtual: true, default: false)
     field(:comment_count, :integer)
 
     timestamps()
