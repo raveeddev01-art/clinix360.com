@@ -173,19 +173,24 @@ export default class PricingDesktop extends Component {
               <div className="pricing-table__item" />
 
               <div className="pricing-table__item">
-                <Button bsStyle="primary" bsSize="lg" block>
+                <Button href="/getstarted" bsStyle="primary" bsSize="lg" block>
                   Try Free
                 </Button>
               </div>
 
               <div className="pricing-table__item">
-                <Button bsStyle="primary" bsSize="lg" block>
+                <Button href="/signin" bsStyle="primary" bsSize="lg" block>
                   Buy Standard
                 </Button>
               </div>
 
               <div className="pricing-table__item">
-                <Button bsStyle="primary" bsSize="lg" block>
+                <Button
+                  href="mailto:support@teamstitch.com?subject=Stitch Premium Access Request"
+                  bsStyle="primary"
+                  bsSize="lg"
+                  block
+                >
                   Coming Soon
                 </Button>
               </div>

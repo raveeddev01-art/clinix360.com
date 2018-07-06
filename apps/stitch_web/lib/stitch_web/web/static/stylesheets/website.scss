@@ -1003,6 +1003,12 @@
               position: relative;
               bottom: 1px;
             }
+
+            .pricing-table__item {
+              @media (max-width: 450px) {
+                border-right: 1px solid #ebebeb;
+              }
+            }
           }
 
           &.tiers .pricing-table__item {

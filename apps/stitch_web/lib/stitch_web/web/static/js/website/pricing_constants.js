@@ -190,6 +190,30 @@ export const PRICING_TABLE = {
       premium: true
     },
     {
+      feature: "User Access Logs",
+      basic: true,
+      standard: true,
+      premium: true
+    },
+    {
+      feature: "Member Management",
+      basic: true,
+      standard: true,
+      premium: true
+    },
+    {
+      feature: "Inactivity Lockout Timer",
+      basic: true,
+      standard: true,
+      premium: true
+    },
+    {
+      feature: "Data Import & Export",
+      basic: true,
+      standard: true,
+      premium: true
+    },
+    {
       feature: "Priority Email Support",
       basic: false,
       standard: true,
@@ -265,7 +289,8 @@ export const PRICING_TABLE_MOBILE = {
       { feature: "Usage Analytics" },
       { feature: "Member Management" },
       { feature: "Inactivity Lockout Timer" },
-      { feature: "Data Import & Export" }
+      { feature: "Data Import & Export" },
+      { feature: "User Access Logs" }
     ]
   },
   STANDARD: {

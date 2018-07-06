@@ -48,7 +48,12 @@ export default class PricingDesktop extends Component {
                     </a>
                   </p>
 
-                  <Button bsStyle="primary" bsSize="lg" block>
+                  <Button
+                    href="/getstarted"
+                    bsStyle="primary"
+                    bsSize="lg"
+                    block
+                  >
                     Try Free
                   </Button>
                 </div>
@@ -101,6 +106,7 @@ export default class PricingDesktop extends Component {
                   </p>
 
                   <Button
+                    href="/signin"
                     bsStyle="primary"
                     bsSize="lg"
                     block
@@ -192,6 +198,7 @@ export default class PricingDesktop extends Component {
                   </p>
 
                   <Button
+                    href="mailto:support@teamstitch.com?subject=Stitch Premium Access Request"
                     bsStyle="primary"
                     bsSize="lg"
                     block
