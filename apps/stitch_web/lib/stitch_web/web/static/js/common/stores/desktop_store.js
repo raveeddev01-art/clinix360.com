@@ -1,13 +1,6 @@
 import { observable, action } from "mobx";
 
 // @TODO move over badge related stuff over to this store
-// {
-//   id: 1,
-//   mimetype: "image/png",
-//   filename: "Siberian-Husky-water-walking-blue-900x506.jpg",
-//   savePath: "~/Desktop/Siberian-Husky-water-walking-blue-900x506.jpg",
-//   status: 'progress'
-// }
 /**
  * This store contains all communication with desktop app
  */
@@ -22,7 +15,7 @@ class DesktopStore {
     this.isElectron = window.electronApp;
     this.downloadManager = window.downloadManager;
 
-    if (this.isElectron) {
+    if (this.isElectron && this.downloadManager) {
       this.downloadManager.on("download-manager-main", payload => {
         this.handleDesktopEvents(payload.action, payload);
       });
@@ -114,6 +107,24 @@ class DesktopStore {
       return;
     }
 
+    // workaround to generate absolute link from relative link
+    const anchor = document.createElement("a");
+    anchor.href = file.url;
+    const requestUrl = `${anchor.href}?authenticationToken=${window.authenticationToken}`;
+
+    // fallback for legacy versions
+    if (!this.downloadManager) {
+      window.dispatchEvent(
+        new CustomEvent("download-file", {
+          detail: {
+            url: requestUrl,
+            filename: file.filename
+          }
+        })
+      );
+      return;
+    }
+
     this.activateDrawer();
 
     // if file is downloaded, move it to the top
@@ -123,11 +134,6 @@ class DesktopStore {
       this.highlightFile(removedFile);
       return;
     }
-
-    // workaround to generate absolute link from relative link
-    const anchor = document.createElement("a");
-    anchor.href = file.url;
-    const requestUrl = `${anchor.href}?authenticationToken=${window.authenticationToken}`;
 
     this.send("downloadFile", {
       ...file,
