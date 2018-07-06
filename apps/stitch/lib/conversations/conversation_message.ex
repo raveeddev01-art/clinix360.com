@@ -136,8 +136,13 @@ defmodule Stitch.Engage.ConversationMessage do
   def delete(conversation_message, user) do
     Multi.new()
     |> Multi.update_all(
-      :decrement_unread_counter,
-      ReadStatus.decrement_unread_counter(conversation_message),
+      :decrement_provider_unread_counters,
+      ReadStatus.decrement_unread_counter(conversation_message, :provider),
+      []
+    )
+    |> Multi.update_all(
+      :decrement_patient_unread_counters,
+      ReadStatus.decrement_unread_counter(conversation_message, :patient),
       []
     )
     |> Multi.delete(:conversation_message, conversation_message)
