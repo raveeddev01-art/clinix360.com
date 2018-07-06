@@ -1087,6 +1087,10 @@
 
           &:last-of-type {
             border-right: 0;
+            @media (min-width: 450px) and (max-width: 700px) {
+              flex: initial;
+              padding: 18px 50px;
+            }
           }
 
           &.mobile-cell {
@@ -1094,6 +1098,15 @@
               display: none;
             }
           }
+        }
+
+        .tiers .pricing-table__item {
+          flex: 1;
+        }
+
+        .header .pricing-table__item {
+          flex: 1;
+          padding: 18px 30px;
         }
       }
 
