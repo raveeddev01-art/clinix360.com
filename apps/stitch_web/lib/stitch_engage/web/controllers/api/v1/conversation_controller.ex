@@ -76,27 +76,46 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     user = conn.assigns.current_user
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, inbox_id)},
-         {:authorization?, true} <- {:authorization?, InboxAuthorization.can_view?(inbox, user)},
+         {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, user)},
          {:ok, %{conversation: conversation, conversation_message: conversation_message}} <-
            Conversation.begin_conversation_as_provider(user, params) do
-      conversation = Repo.preload(conversation, :patients)
       conversation = conversation_with_show_data(conversation, user, [conversation_message])
 
       InboxChannel.broadcast_conversation_creation(conversation)
       render(conn, "show.json", conversation: conversation)
     else
-      {:inbox, _} ->
-        {:error, :not_found}
-
-      {:authorized?, false} ->
-        {:error, :unauthorized, "You cannot create conversations in this inbox."}
-
-      {:error, _model_errored, changeset, _} ->
-        {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
-
-      _error ->
-        {:error, :unprocessable_entity, "There was a problem creating this conversation."}
+      any -> handle_create_with(any)
     end
+  end
+
+  def patient_create(conn, params = %{"inbox_id" => inbox_id}) do
+    patient = conn.assigns.patient
+
+    with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, Repo.get(Inbox, inbox_id)},
+         {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, patient)},
+         {:ok, %{conversation: conversation, conversation_message: conversation_message}} <-
+           Conversation.begin_conversation_as_patient(patient, params) do
+      conversation = conversation_with_show_data(conversation, patient, [conversation_message])
+
+      InboxChannel.broadcast_conversation_creation(conversation)
+      render(conn, "patient_show.json", conversation: conversation)
+    else
+      any -> handle_create_with(any)
+    end
+  end
+
+  defp handle_create_with({:inbox, _}), do: {:error, :not_found}
+
+  defp handle_create_with({:authorized?, _}) do
+    {:error, :unauthorized, "You cannot create conversations in this inbox."}
+  end
+
+  defp handle_create_with({:error, _model_errored, changeset, _}) do
+    {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
+  end
+
+  defp handle_create_with(_) do
+    {:error, :unprocessable_entity, "There was a problem creating this conversation."}
   end
 
   # ==============

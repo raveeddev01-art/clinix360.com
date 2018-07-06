@@ -9,10 +9,11 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
 
   alias Stitch.{
     Repo,
-    ReadStatus,
     Accounts.User,
     Engage.Conversation,
-    Engage.ConversationMessage
+    Engage.ConversationMessage,
+    Patient,
+    ReadStatus
   }
 
   @doc """
@@ -22,7 +23,7 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
   - makes message as read for sender
   - kicks off related tasks
   """
-  @spec create(Conversation.t(), User.t(), map) :: {:ok, map} | {:error, term}
+  @spec create(Conversation.t(), User.t() | Patient.t(), map) :: {:ok, map} | {:error, term}
   def create(%Conversation{} = conversation, %User{} = provider_sender, attrs) do
     conversation = Repo.preload(conversation, [:providers])
 
@@ -31,7 +32,7 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     {read_status_map, provider_recipient_ids} =
       ReadStatus.get_read_status(:conversation_message, providers, provider_sender)
 
-    attrs = Map.merge(attrs, %{"read_status" => read_status_map})
+    attrs = Map.merge(attrs, %{"provider_read_status" => read_status_map})
 
     struct = %ConversationMessage{
       conversation_id: conversation.id,
@@ -53,6 +54,19 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
       provider_sender,
       :conversation_message
     )
+    |> Repo.transaction()
+    |> post_creation()
+  end
+
+  def create(%Conversation{} = conversation, %Patient{} = patient_sender, attrs) do
+    struct = %ConversationMessage{
+      conversation_id: conversation.id,
+      patient_id: patient_sender.id
+    }
+
+    # TODO: Implement read/unread for patients
+    Multi.new()
+    |> Multi.insert(:conversation_message, ConversationMessage.changeset(struct, attrs))
     |> Repo.transaction()
     |> post_creation()
   end
