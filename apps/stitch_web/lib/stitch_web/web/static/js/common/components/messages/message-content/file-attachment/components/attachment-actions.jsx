@@ -6,21 +6,17 @@ import Button from "react-bootstrap/lib/Button";
 
 class AttachmentActions extends Component {
   render() {
-    const { url, onCommentsClick, commentCount, onFileDownload } = this.props;
+    const { url, onCommentsClick, onFileDownload } = this.props;
 
     return (
       <div className="attachment-actions">
         <OverlayTrigger
           placement="top"
           delayShow={150}
-          overlay={<Tooltip id="file-comments">File comments</Tooltip>}
+          overlay={<Tooltip id="file-comments">File Comments</Tooltip>}
         >
-          <Button href={url} onClick={onCommentsClick}>
-            {commentCount
-              ? commentCount > 1
-                ? `${commentCount} comments`
-                : `${commentCount} comment`
-              : `Add Comment`}
+          <Button onClick={onCommentsClick}>
+            <i className="fa fa-comments" />
           </Button>
         </OverlayTrigger>
 
@@ -40,13 +36,11 @@ class AttachmentActions extends Component {
 
 AttachmentActions.propTypes = {
   url: PropTypes.string.isRequired,
-  commentCount: PropTypes.number,
   onCommentsClick: PropTypes.func,
   onFileDownload: PropTypes.func.isRequired
 };
 
 AttachmentActions.defaultProps = {
-  commentCount: 0,
   onCommentsClick: () => undefined
 };
 

@@ -86,9 +86,9 @@ class FileComment extends Component {
     return (
       <FormGroup className="file-comment__edit">
         <FormControl
-          componentClass="textarea"
           placeholder="Comment goes here..."
-          rows={3}
+          bsSize="lg"
+          type="text"
           value={this.state.commentText}
           onChange={this.handleEditInputChange}
         />

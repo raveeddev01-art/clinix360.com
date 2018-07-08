@@ -68,10 +68,10 @@ class FileShareModal extends Component {
             <FormGroup className="file-comment__edit">
               <ControlLabel>Add Comment (optional)</ControlLabel>
               <FormControl
-                componentClass="textarea"
                 placeholder="Comment goes here..."
                 value={commentText}
-                rows={4}
+                type="text"
+                bsSize="lg"
                 onChange={this.onChangeComment}
               />
               <div className="file-comment__edit-buttons">

@@ -35,9 +35,9 @@ class FileCommentInput extends Component {
         <Avatar user={currentUser} />
         <FormGroup className="file-comment__edit">
           <FormControl
-            componentClass="textarea"
             placeholder="Comment goes here..."
-            rows={3}
+            bsSize="lg"
+            type="text"
             value={this.state.commentText}
             onChange={this.handleChange}
           />
