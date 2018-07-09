@@ -159,6 +159,9 @@
     .btn-form {
       text-transform: uppercase;
       padding: 16px 30px;
+      @media (min-width: $screen-md) {
+        max-width: 150px;
+      }
     }
   }
 
@@ -214,7 +217,7 @@
       padding: 16px 30px;
       margin: 25px 0 15px;
 
-      @media (max-width: $screen-sm) {
+      @media (max-width: $screen-md) {
         display: block;
       }
     }
