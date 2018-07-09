@@ -108,6 +108,14 @@ defmodule Stitch.Factory do
     }
   end
 
+  def patient_conversation_message_factory do
+    %Stitch.Engage.ConversationMessage{
+      patient: build(:patient),
+      conversation: build(:conversation),
+      text_content: Faker.Lorem.sentence()
+    }
+  end
+
   def conversation_provider_factory do
     %Stitch.Engage.ConversationProvider{
       provider: build(:user),
@@ -252,7 +260,12 @@ defmodule Stitch.Factory do
       email: sequence(:email, &"email-#{&1}@example.com"),
       onboarded: true,
       team: build(:team),
-      mrn: Stitch.Rand.token(32)
+      mrn: Stitch.Rand.token(32),
+      token:
+        sequence(
+          :token,
+          &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string() |> String.pad_leading(5, "0")}-"
+        )
     }
   end
 

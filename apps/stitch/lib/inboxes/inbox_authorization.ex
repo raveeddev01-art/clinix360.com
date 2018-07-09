@@ -3,16 +3,25 @@ defmodule Stitch.Engage.InboxAuthorization do
   Authorization module for inbox related logic.
   """
 
-  alias Stitch.{TeamAuthorization, Accounts.User}
+  alias Stitch.{
+    TeamAuthorization,
+    Accounts.User,
+    Patient
+  }
 
   @doc """
-  Given an inbox and user. Check if user can see an inbox.
+  Given an inbox and user or patient. Check if user or patient can see an inbox.
 
-  Currently, ensures user is on team and not guest.
+  If user, ensure on team and not guest.
+  If patient, ensure on team.
   """
-  @spec can_view?(Inbox.t(), User.t()) :: boolean
-  def can_view?(inbox, current_user) do
+  @spec can_view?(Inbox.t(), User.t() | Patient.t()) :: boolean
+  def can_view?(inbox, %User{} = current_user) do
     is_full_team_member?(inbox.team_id, current_user)
+  end
+
+  def can_view?(inbox, %Patient{} = patient) do
+    inbox.team_id == patient.team_id
   end
 
   @doc """

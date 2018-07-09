@@ -3,6 +3,10 @@ defmodule StitchEngage.Web.PatientController do
 
   def show(conn, _) do
     patient = conn.assigns.patient
-    json(conn, %{name: patient.first_name <> " " <> patient.last_name})
+
+    json(conn, %{
+      name: patient.first_name <> " " <> patient.last_name,
+      token: patient.token
+    })
   end
 end

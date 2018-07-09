@@ -1,5 +1,6 @@
 defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   use Stitch.Web, :controller
+  use Stitch.Web.Api.V1.ConversationMessageDocs
 
   alias Stitch.{
     Repo,
@@ -12,6 +13,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.ConversationMessage.ConversationMessageCreation,
     Engage.ConversationAuthorization,
     Engage.ConversationMessageAuthorization,
+    Patient,
+    Accounts.User,
     ReadStatus
   }
 
@@ -24,50 +27,117 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
-  def index(conn, params = %{"conversation_id" => conversation_id}) do
-    user = conn.assigns.current_user
+  # =========
+  #   INDEX
+  # =========
 
+  def index(conn, params) do
+    do_index(conn, params, conn.assigns.current_user)
+  end
+
+  def patient_index(conn, params) do
+    do_index(conn, params, conn.assigns.patient)
+  end
+
+  defp do_index(conn, params = %{"conversation_id" => id}, user_or_patient) do
     with {:conversation, conversation} when not is_nil(conversation) <-
-           {:conversation, Repo.get(Conversation, conversation_id)},
+           {:conversation, Repo.get(Conversation, id)},
          {:authorized?, true} <-
-           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
-      conversation_messages =
-        ConversationQueries.messages_for_conversation(
-          conversation.id,
-          params["updated_before"]
-        )
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
+      conversation_messages = load_messages(id, params["updated_before"])
 
       render(conn, "index.json", conversation_messages: conversation_messages)
     else
-      {:conversation, _} ->
-        {:error, :not_found, "Conversation not found"}
-
-      {:authorized?, _} ->
-        {:error, :unauthorized, "You cannot view this conversation."}
+      {:conversation, _} -> {:error, :not_found, "Conversation not found"}
+      {:authorized?, _} -> {:error, :not_authorized, "You cannot view this conversation."}
     end
   end
 
-  def create(conn, %{"conversation_id" => conversation_id, "message" => message_params}) do
-    user = conn.assigns.current_user
+  defp load_messages(id, updated_before) do
+    ConversationQueries.messages_for_conversation(
+      id,
+      updated_before
+    )
+  end
+
+  # ========
+  #   SHOW
+  # ========
+
+  def show(conn, params) do
+    do_show(conn, params, conn.assigns.current_user)
+  end
+
+  def patient_show(conn, params) do
+    do_show(conn, params, conn.assigns.patient)
+  end
+
+  def do_show(conn, %{"id" => id}, user_or_patient) do
+    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
+           {:conversation_message, Repo.get(ConversationMessage, id)},
+         {:conversation, %Conversation{} = conversation} <-
+           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
+         {:authorized?, true} <-
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
+      message_with_assocs = ConversationQueries.load_message_info(conversation_message)
+      render(conn, "show.json", conversation_message: message_with_assocs)
+    else
+      {:conversation_message, _} ->
+        {:error, :not_found, "The message you are looking for does not exist."}
+
+      {:conversation, _} ->
+        {:error, :not_found}
+
+      {:authorized?, _} ->
+        {:error, :not_authorized, "You cannot view this message."}
+    end
+  end
+
+  # ==========
+  #   CREATE
+  # ==========
+
+  def create(conn, params) do
+    do_create(conn, params, conn.assigns.current_user)
+  end
+
+  def patient_create(conn, params) do
+    do_create(conn, params, conn.assigns.patient)
+  end
+
+  defp do_create(
+         conn,
+         %{"conversation_id" => conversation_id, "message" => message_params},
+         user_or_patient
+       ) do
     message_params_with_client = Stitch.Message.Params.with_client_attrs(conn, message_params)
 
     with {:conversation, %Conversation{} = conversation} <-
            {:conversation, Repo.get(Conversation, conversation_id)},
          {:authorized?, true} <-
-           {:authorized?, ConversationAuthorization.can_message?(conversation, user)},
+           {:authorized?, ConversationAuthorization.can_message?(conversation, user_or_patient)},
 
          # Notifications: pass into the message creation & return notify_user_ids
-         # presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id)
+         # presence_user_ids = UserStatusService.presence_user_ids(user_or_patient.team_id)
 
          {:ok, %{conversation_message: conversation_message}} <-
            ConversationMessageCreation.create(
              conversation,
-             user,
+             user_or_patient,
              message_params_with_client
            ) do
       # Notifications: get notify_user_ids in the create and pass them into events
       notify_user_ids = %{}
-      conversation_message = %{conversation_message | provider: user}
+
+      conversation_message =
+        case user_or_patient do
+          %User{} ->
+            %{conversation_message | provider: user_or_patient}
+
+          %Patient{} ->
+            %{conversation_message | patient: user_or_patient}
+        end
+
       conversation_message_events(conversation_message, conversation, notify_user_ids)
 
       conn
@@ -88,28 +158,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    user = conn.assigns.current_user
-
-    with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
-           {:conversation_message, Repo.get(ConversationMessage, id)},
-         {:conversation, %Conversation{} = conversation} <-
-           {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
-         {:authorized?, true} <-
-           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
-      message_with_assocs = ConversationQueries.load_message_info(conversation_message)
-      render(conn, "show.json", conversation_message: message_with_assocs)
-    else
-      {:conversation_message, _} ->
-        {:error, :not_found, "The message you are looking for does not exist."}
-
-      {:conversation, _} ->
-        {:error, :not_found}
-
-      {:authorized?, false} ->
-        {:error, :not_authorized, "You cannot view this message."}
-    end
-  end
+  # ==========
+  #   UPDATE
+  # ==========
 
   def update(conn, %{"id" => id, "message" => message_params}) do
     user = conn.assigns.current_user
@@ -141,6 +192,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
         {:error, :unprocessable_entity, "There was a problem editing this message."}
     end
   end
+
+  # ==========
+  #   DELETE
+  # ==========
 
   def delete(conn, %{"id" => id}) do
     user = conn.assigns.current_user
@@ -176,16 +231,28 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  def toggle_reaction(conn, %{"id" => id, "emoji_name" => emoji_name}) do
-    user = conn.assigns.current_user
+  # =========
+  #   REACT
+  # =========
 
+  def patient_toggle_reaction(conn, params) do
+    do_toggle_reaction(conn, params, conn.assigns.patient)
+  end
+
+  def toggle_reaction(conn, params) do
+    do_toggle_reaction(conn, params, conn.assigns.current_user)
+  end
+
+  defp do_toggle_reaction(conn, %{"id" => id, "emoji_name" => emoji_name}, user_or_patient) do
     with {:conversation_message, conversation_message} when not is_nil(conversation_message) <-
            {:conversation_message, Repo.get(ConversationMessage, id)},
          {:conversation, %Conversation{} = conversation} <-
            {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
          {:authorized?, true} <-
-           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
-      {:ok, _reaction} = Reaction.toggle_reaction(conversation_message, user, emoji_name)
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
+      {:ok, _reaction} =
+        Reaction.toggle_reaction(conversation_message, user_or_patient, emoji_name)
+
       ConversationChannel.broadcast_reactions_updated(conversation, conversation_message)
 
       json(conn, %{status: "ok"})
@@ -201,11 +268,26 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
+  # =======================
+  #   DELETE LINK PREVIEW
+  # =======================
+
   def delete_message_link_preview(
         conn,
-        %{"id" => conversation_message_id, "link" => link} = _params
+        %{"id" => conversation_message_id, "link" => link} = params
       ) do
-    current_user = conn.assigns.current_user
+    do_delete_message_link_preview(conn, params, conn.assigns.current_user)
+  end
+
+  def patient_delete_message_link_preview(
+        conn,
+        %{"id" => conversation_message_id, "link" => link} = params
+      ) do
+    do_delete_message_link_preview(conn, params, conn.assigns.patient)
+  end
+
+  defp do_delete_message_link_preview(conn, params, user_or_patient) do
+    %{"id" => conversation_message_id, "link" => link} = params
 
     with {:conversation_message, %ConversationMessage{} = conversation_message} <-
            {:conversation_message, Repo.get(ConversationMessage, conversation_message_id)},
@@ -213,10 +295,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
            {:conversation, Repo.get(Conversation, conversation_message.conversation_id)},
          {:authorized?, true} <-
            {:authorized?,
-            ConversationMessageAuthorization.can_delete?(
+            ConversationMessageAuthorization.can_delete_link_preview?(
               conversation_message,
               conversation,
-              current_user
+              user_or_patient
             )} do
       conversation_message = LinkPreview.delete!(conversation_message, link)
 
@@ -233,6 +315,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       {:authorized?, false} -> {:error, :not_authorized, "You cannot edit this message."}
     end
   end
+
+  # ================
+  #   MARK AS READ
+  # ================
 
   def mark_as_read(conn, %{"conversation_id" => conversation_id}) do
     current_user = conn.assigns.current_user
@@ -272,6 +358,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       _ -> {:error, :not_found}
     end
   end
+
+  # ==================
+  #   MARK AS UNREAD
+  # ==================
 
   def mark_as_unread(conn, %{
         "conversation_id" => conversation_id,

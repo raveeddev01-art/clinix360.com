@@ -6,7 +6,6 @@ defmodule Stitch.Web.SubdomainRouter do
   # =============
 
   pipeline :browser do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -15,7 +14,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :browser_authenticate do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -26,24 +24,20 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :admin do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(Stitch.Web.Plug.StaffAuthenticate)
     plug(:put_layout, {Stitch.Web.Admin.AppView, "layout.html"})
   end
 
   pipeline :api_auth do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
   end
 
   pipeline :api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
   end
 
   pipeline :authenticated_api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
@@ -52,7 +46,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :authenticated_locked_api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
@@ -60,7 +53,6 @@ defmodule Stitch.Web.SubdomainRouter do
 
   pipeline :team_admin_api do
     plug(:accepts, ["json"])
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate)
     plug(Stitch.Web.Plug.TeamAdminOnly)
@@ -68,7 +60,6 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :files do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:fetch_session)
   end
 
@@ -100,10 +91,43 @@ defmodule Stitch.Web.SubdomainRouter do
   #   PATIENT ROUTES
   # ==================
 
-  scope "/api/v1/patient", StitchEngage.Web.Api.V1, as: :patient do
+  scope "/api/v1/patient", StitchEngage.Web.Api.V1, as: :api_v1 do
     pipe_through([:api, :patient_api])
 
     get("/", PatientController, :show)
+
+    get("/inboxes/default", InboxController, :patient_default)
+
+    get("/inboxes/:inbox_id/conversations", ConversationController, :patient_index)
+    post("/inboxes/:inbox_id/conversations", ConversationController, :patient_create)
+    get("/conversations/:id", ConversationController, :patient_show)
+
+    get("/conversations/:conversation_id/messages", ConversationMessageController, :patient_index)
+    get("/conversation_messages/:id", ConversationMessageController, :patient_show)
+
+    post(
+      "/conversations/:conversation_id/messages",
+      ConversationMessageController,
+      :patient_create
+    )
+
+    put(
+      "/conversation_messages/:id/toggle_reaction",
+      ConversationMessageController,
+      :patient_toggle_reaction
+    )
+
+    put(
+      "/conversation_messages/:id/delete_link_preview",
+      ConversationMessageController,
+      :patient_delete_message_link_preview
+    )
+
+    # post(
+    #   "/conversations/:conversation_id/mark_as_read",
+    #   ConversationMessageController,
+    #   :patient_mark_as_read
+    # )
   end
 
   scope "/patient", as: :patient do
@@ -320,38 +344,38 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/", PageController, :index)
 
     # TODO: a wild card route can make all /admin routes to one line
-    get("/admin/team", AdminController, :index)
-    get("/admin/team/settings", AdminController, :index)
-    get("/admin/team/security", AdminController, :index)
-    get("/admin/you/home", AdminController, :index)
-    get("/admin/you/profile", AdminController, :index)
-    get("/admin/you/account", AdminController, :index)
-    get("/admin/you/notifications", AdminController, :index)
-    get("/admin/members", AdminController, :index)
-    get("/admin/billing", AdminController, :index)
-    get("/admin/analytics", AdminController, :index)
+    get("/admin/team", PageController, :index)
+    get("/admin/team/settings", PageController, :index)
+    get("/admin/team/security", PageController, :index)
+    get("/admin/you/home", PageController, :index)
+    get("/admin/you/profile", PageController, :index)
+    get("/admin/you/account", PageController, :index)
+    get("/admin/you/notifications", PageController, :index)
+    get("/admin/members", PageController, :index)
+    get("/admin/billing", PageController, :index)
+    get("/admin/analytics", PageController, :index)
 
-    get("/admin/integrations", AdminController, :index, as: :admin_integrations)
-    get("/admin/integrations/:integration/new", AdminController, :index)
+    get("/admin/integrations", PageController, :index, as: :admin_integrations)
+    get("/admin/integrations/:integration/new", PageController, :index)
 
     get(
       "/admin/integrations/drchrono/:integration_config_id/edit",
-      AdminController,
+      PageController,
       :index,
       as: :admin_integration_edit
     )
 
-    get("/admin/integrations/:slug", AdminController, :index)
-    get("/admin/integrations/:slug/edit", AdminController, :index)
+    get("/admin/integrations/:slug", PageController, :index)
+    get("/admin/integrations/:slug/edit", PageController, :index)
 
-    get("/direct/:username", UserController, :index)
+    get("/direct/:username", PageController, :user)
     get("/apps", AuthenticationController, :apps)
     get("/logout", AuthenticationController, :logout)
 
-    get("/engage", EngageController, :index)
-    get("/conversations/:id", EngageController, :index)
+    get("/engage", PageController, :index)
+    get("/conversations/:id", PageController, :index)
 
-    get("/manage", ManageController, :index)
+    get("/manage", PageController, :index)
     get("/patients", PageController, :index)
 
     get("/admin/files", PageController, :index)
@@ -474,7 +498,7 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/api/v1", StitchEngage.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_api)
 
-    get("/inboxes/default", InboxController, :show_default)
+    get("/inboxes/default", InboxController, :default)
     put("/inboxes/:id", InboxController, :update)
 
     get("/inboxes/:inbox_id/conversations", ConversationController, :index)
@@ -518,5 +542,23 @@ defmodule Stitch.Web.SubdomainRouter do
     # get("/conversation_messages/:id/download", ConversationMessageController, :download)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
     # post("/conversation_messages/search", ConversationMessageController, :search)
+  end
+
+  scope "/api/swagger" do
+    forward(
+      "/",
+      PhoenixSwagger.Plug.SwaggerUI,
+      otp_app: :stitch_web,
+      swagger_file: "carespace-swagger.json"
+    )
+  end
+
+  def swagger_info do
+    %{
+      info: %{
+        version: "1.0",
+        title: "Stitch"
+      }
+    }
   end
 end

@@ -3,13 +3,16 @@ defmodule Stitch.Web.Api.V1.InboxControllerTest.SetupHelper do
 
   def setup(conn) do
     team = insert(:team)
+    insert(:team_feature, name: "engage", team: team)
+    patient = insert(:patient, team: team)
     admin_user = insert(:user, team: team, roles: ["admin"])
     guest_user = insert(:user, team: team, roles: ["single-room-guest"])
     inbox = insert(:inbox, team: team, name: "team default")
 
     conn = with_team_subdomain(conn, team)
 
-    {:ok, conn: conn, inbox: inbox, admin_user: admin_user, guest_user: guest_user}
+    {:ok,
+     conn: conn, inbox: inbox, admin_user: admin_user, guest_user: guest_user, patient: patient}
   end
 end
 
@@ -27,7 +30,7 @@ defmodule Stitch.Web.Api.V1.InboxControllerTest do
       conn =
         setup_params.conn
         |> with_api_user(setup_params.admin_user)
-        |> get(Routes.api_v1_inbox_path(setup_params.conn, :show_default))
+        |> get(Routes.api_v1_inbox_path(setup_params.conn, :default))
 
       assert response = json_response(conn, 200)
       assert response["name"] == "team default"
@@ -37,9 +40,25 @@ defmodule Stitch.Web.Api.V1.InboxControllerTest do
       conn =
         setup_params.conn
         |> with_api_user(setup_params.guest_user)
-        |> get(Routes.api_v1_inbox_path(setup_params.conn, :show_default))
+        |> get(Routes.api_v1_inbox_path(setup_params.conn, :default))
 
       assert conn.status == 403
+    end
+  end
+
+  describe "GET /api/v1/patient/inboxes/default" do
+    setup %{conn: conn} do
+      SetupHelper.setup(conn)
+    end
+
+    test "shows the default inbox", setup_params do
+      conn =
+        setup_params.conn
+        |> with_api_user(setup_params.patient)
+        |> get(Routes.api_v1_inbox_path(setup_params.conn, :patient_default))
+
+      assert response = json_response(conn, 200)
+      assert response["name"] == "team default"
     end
   end
 

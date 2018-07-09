@@ -22,6 +22,8 @@ defmodule Stitch.Web do
       import Plug.Conn
       import Stitch.Web.{Router.Helpers, ControllerHelpers, SessionService}
       import Stitch.Web.Gettext
+
+      use Stitch.Web.Api.V1.Docs, :setup
     end
   end
 

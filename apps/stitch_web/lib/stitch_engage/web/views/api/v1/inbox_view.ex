@@ -6,8 +6,16 @@ defmodule StitchEngage.Web.Api.V1.InboxView do
     Enum.map(inboxes, &inbox_json/1)
   end
 
+  def render("patient_index.json", %{inboxes: inboxes}) do
+    Enum.map(inboxes, &patient_inbox_json/1)
+  end
+
   def render("show.json", %{inbox: inbox}) do
     inbox_json(inbox)
+  end
+
+  def render("patient_show.json", %{inbox: inbox}) do
+    patient_inbox_json(inbox)
   end
 
   defp inbox_json(inbox) do
@@ -19,5 +27,9 @@ defmodule StitchEngage.Web.Api.V1.InboxView do
       open_conversations_count: inbox.open_conversations_count,
       closed_conversations_count: inbox.closed_conversations_count
     }
+  end
+
+  defp patient_inbox_json(inbox) do
+    %{id: inbox.id, name: inbox.name}
   end
 end
