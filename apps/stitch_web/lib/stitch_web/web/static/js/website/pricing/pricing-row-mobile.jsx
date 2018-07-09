@@ -19,12 +19,8 @@ class PricingRowMobile extends Component {
   }
 }
 
-PricingRowMobile.defaultProps = {
-  feature: ""
-};
-
 PricingRowMobile.propTypes = {
-  feature: PropTypes.string
+  feature: PropTypes.string.isRequired
 };
 
 export default PricingRowMobile;

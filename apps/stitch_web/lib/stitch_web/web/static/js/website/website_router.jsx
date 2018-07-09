@@ -22,7 +22,6 @@ import Hipaa from "./resources/hipaa";
 import Jobs from "./resources/jobs";
 import NotFound from "./resources/not-found";
 import Pilot from "./resources/pilot";
-// import Pricing from "./resources/pricing";
 import Pricing from "./pricing/pricing";
 import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";

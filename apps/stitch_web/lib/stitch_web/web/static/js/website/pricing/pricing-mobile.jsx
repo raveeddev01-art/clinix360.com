@@ -8,10 +8,6 @@ import PricingRowMobile from "./pricing-row-mobile";
 
 import { PRICING_TABLE_MOBILE } from "../pricing_constants";
 
-// Hide previous pricing components
-// import ProductCards from "../components/product-cards";
-// import PriceTier from "../components/price-tier";
-
 export default class PricingDesktop extends Component {
   constructor(props) {
     super(props);
@@ -38,7 +34,7 @@ export default class PricingDesktop extends Component {
 
                   <h2>
                     <span>$</span>
-                    {monthlyPricing ? 0 : 0}
+                    0
                   </h2>
 
                   <p className="text-muted">
