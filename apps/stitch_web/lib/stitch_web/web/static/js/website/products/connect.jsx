@@ -76,7 +76,7 @@ export default class Connect extends Component {
                   <span className="play-btn">
                     <i className="fa fa-play" />
                   </span>
-                  <span>See How It Works</span>
+                  <span>See how it works</span>
                 </a>
               </div>
 
