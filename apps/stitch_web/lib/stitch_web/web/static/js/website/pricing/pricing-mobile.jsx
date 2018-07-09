@@ -102,7 +102,7 @@ export default class PricingDesktop extends Component {
                   </p>
 
                   <Button
-                    href="/signin"
+                    href={appSettings.hasLogin ? "/signin" : "/getstarted"}
                     bsStyle="primary"
                     bsSize="lg"
                     block

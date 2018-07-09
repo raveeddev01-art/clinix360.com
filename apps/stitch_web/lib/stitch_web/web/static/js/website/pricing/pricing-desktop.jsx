@@ -71,7 +71,12 @@ export default class PricingDesktop extends Component {
                   </a>
                 </p>
 
-                <Button href="/signin" bsStyle="primary" bsSize="lg" block>
+                <Button
+                  href={appSettings.hasLogin ? "/signin" : "/getstarted"}
+                  bsStyle="primary"
+                  bsSize="lg"
+                  block
+                >
                   Buy Standard
                 </Button>
               </div>
@@ -184,7 +189,12 @@ export default class PricingDesktop extends Component {
               </div>
 
               <div className="pricing-table__item">
-                <Button href="/signin" bsStyle="primary" bsSize="lg" block>
+                <Button
+                  href={appSettings.hasLogin ? "/signin" : "/getstarted"}
+                  bsStyle="primary"
+                  bsSize="lg"
+                  block
+                >
                   Buy Standard
                 </Button>
               </div>
