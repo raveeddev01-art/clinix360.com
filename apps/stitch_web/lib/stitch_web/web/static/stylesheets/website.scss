@@ -1572,6 +1572,16 @@
           flex-direction: row;
         }
 
+        &.logged-in {
+          @media (max-width: 531px) {
+            align-items: end;
+          }
+
+          .flex-item {
+            padding: 0;
+          }
+        }
+
         @media (min-width: 531px) and (max-width: 768px) {
           .flex-item {
             max-width: 280px;
