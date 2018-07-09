@@ -1,6 +1,6 @@
 defmodule Stitch.Elasticsearch.SearchQuery do
   @moduledoc """
-  A module for composing ES search queries for both Engage and Connect message.
+  A module for composing ES search queries for both Engage and Connect message types.
 
   Exact search:
   > Search.mixed_exact_with_stemming ~s("ski")
@@ -23,7 +23,8 @@ defmodule Stitch.Elasticsearch.SearchQuery do
             order: nil,
             before: nil,
             after: nil,
-            current_user: nil
+            current_user: nil,
+            conversation_id: nil
 
   @type search_order :: nil | :recency | :relevance
 
@@ -33,7 +34,8 @@ defmodule Stitch.Elasticsearch.SearchQuery do
           order: search_order,
           before: DateTime.t() | nil,
           after: DateTime.t() | nil,
-          current_user: User.t() | nil
+          current_user: User.t() | nil,
+          conversation_id: pos_integer | nil
         }
 
   @type elasticsearch_query :: map
@@ -62,8 +64,27 @@ defmodule Stitch.Elasticsearch.SearchQuery do
     |> sort(search_query)
     |> before_filter(search_query)
     |> after_filter(search_query)
+    |> conversation_filter(search_query)
     |> highlighter()
   end
+
+  @spec before_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def conversation_filter(query, %SearchQuery{conversation_id: conversation_id})
+      when is_integer(conversation_id) do
+    subquery = %{
+      constant_score: %{
+        filter: %{
+          term: %{
+            conversation_id: conversation_id
+          }
+        }
+      }
+    }
+
+    add_must_field(query, subquery)
+  end
+
+  def conversation_filter(query, _search_query), do: query
 
   @spec before_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
   def before_filter(query, %SearchQuery{

@@ -29,6 +29,10 @@
 
         "inserted_at": {
           "type": "date"
+        },
+
+        "conversation_id": {
+          "type": "keyword"
         }
       }
     }

@@ -11,7 +11,8 @@ defimpl Elasticsearch.Document, for: Stitch.Engage.ConversationMessage do
       title: conversation_message.text_content |> String.slice(0..20),
       author: author(conversation_message),
       text_content: conversation_message.text_content,
-      inserted_at: inserted_at(conversation_message.inserted_at)
+      inserted_at: inserted_at(conversation_message.inserted_at),
+      conversation_id: conversation_message.conversation_id
     }
   end
 

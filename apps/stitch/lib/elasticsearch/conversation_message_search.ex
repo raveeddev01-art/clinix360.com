@@ -22,14 +22,14 @@ defmodule Stitch.Elasticsearch.ConversationMessageSearch do
         after: datetie,
         before: datetime,
         current_user: current_user,
-        author: author
+        author: author,
+        conversation_id: 1
     })
   """
   @spec search(map) :: elasticsearch_response
   def search(search_params) do
-    search_params = update_in(search_params, [:author], &author_id/1)
-
     search_params
+    |> update_in([:author], &author_id/1)
     |> SearchQuery.new()
     |> SearchQuery.compose()
     |> do_search()
