@@ -122,11 +122,11 @@ defmodule Stitch.Web.SubdomainRouter do
       :patient_delete_message_link_preview
     )
 
-    # post(
-    #   "/conversations/:conversation_id/mark_as_read",
-    #   ConversationMessageController,
-    #   :patient_mark_as_read
-    # )
+    post(
+      "/conversations/:conversation_id/mark_as_read",
+      ConversationMessageController,
+      :patient_mark_as_read
+    )
   end
 
   scope "/patient", as: :patient do

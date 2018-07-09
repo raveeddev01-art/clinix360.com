@@ -9,6 +9,7 @@ defmodule Stitch.Engage.ConversationQueries do
     Engage.Conversation,
     Engage.ConversationMessage,
     Engage.ConversationProvider,
+    Engage.ConversationPatient,
     Message.Reaction,
     Patient,
     Accounts.User,
@@ -48,9 +49,7 @@ defmodule Stitch.Engage.ConversationQueries do
     |> most_recent(Conversation.page_length())
     |> Repo.all()
     |> with_latest_message_for_each()
-
-    # TODO: Implement read/unread for patients
-    # |> with_unread_for_each(patient)
+    |> with_unread_for_each(patient)
   end
 
   @doc """
@@ -157,9 +156,14 @@ defmodule Stitch.Engage.ConversationQueries do
     Map.put_new(conversation, :is_unread, is_unread)
   end
 
-  # TODO: Implement read/unread for patients
-  def with_unread(conversation, %Patient{}) do
-    Map.put_new(conversation, :is_unread, false)
+  def with_unread(conversation, %Patient{} = patient) do
+    is_unread =
+      case conversation_patients_for_conversation_and_user(conversation.id, patient.id) do
+        nil -> is_unread_without_join_record(conversation, patient)
+        conversation_patient -> is_unread_with_join_record(conversation_patient)
+      end
+
+    Map.put_new(conversation, :is_unread, is_unread)
   end
 
   # ===========
@@ -174,29 +178,38 @@ defmodule Stitch.Engage.ConversationQueries do
     |> Repo.one()
   end
 
-  defp for_patient(query \\ Conversaiton, patient_id) do
+  defp for_patient(query, patient_id) do
     query
     |> join(:inner, [c], p in assoc(c, :patients))
     |> where([c, p], p.id == ^patient_id)
   end
 
   defp with_unread_for_each(conversations, %User{} = user) do
-    # Iterates over conversations and assigns is_unread
-    # based on conversation_provider (if exists) and/or user
-    # inserted_at value
+    # Iterates over conversations and assigns is_unread based on
+    # conversation_provider (if exists) and/or user inserted_at value
     conversation_ids = Enum.map(conversations, & &1.id)
-    cps = providers_for_conversations_and_user(conversation_ids, user.id)
-    cps_by_conversation_id = Enum.group_by(cps, & &1.conversation_id)
+    conversation_providers_by_conversation_id = get_conversation_joins(conversation_ids, user)
+    Enum.map(conversations, make_add_unread_fn(conversation_providers_by_conversation_id, user))
+  end
 
-    Enum.map(conversations, fn conversation ->
+  defp with_unread_for_each(conversations, %Patient{} = patient) do
+    # Iterates over conversations and assigns is_unread based on
+    # conversation_patient (if exists) and/or inserted_at value
+    conversation_ids = Enum.map(conversations, & &1.id)
+    conversation_patients_by_conversation_id = get_conversation_joins(conversation_ids, patient)
+    Enum.map(conversations, make_add_unread_fn(conversation_patients_by_conversation_id, patient))
+  end
+
+  defp make_add_unread_fn(conversation_join_records, user_or_patient) do
+    fn conversation ->
       is_unread =
-        case cps_by_conversation_id[conversation.id] do
-          nil -> is_unread_without_join_record(conversation, user)
-          [conversation_provider] -> is_unread_with_join_record(conversation_provider)
+        case Enum.find(conversation_join_records, &(&1.id == conversation.id)) do
+          nil -> is_unread_without_join_record(conversation, user_or_patient)
+          conversation_user -> is_unread_with_join_record(conversation_user)
         end
 
       Map.put_new(conversation, :is_unread, is_unread)
-    end)
+    end
   end
 
   defp is_unread_with_join_record(conversation_user) do
@@ -211,9 +224,16 @@ defmodule Stitch.Engage.ConversationQueries do
     query |> preload(:patients)
   end
 
-  defp providers_for_conversations_and_user(conversation_ids, user_id) do
+  defp get_conversation_joins(conversation_ids, %User{id: user_id}) do
     ConversationProvider
     |> where([cp], cp.provider_id == ^user_id)
+    |> where([cp], cp.conversation_id in ^conversation_ids)
+    |> Repo.all()
+  end
+
+  defp get_conversation_joins(conversation_ids, %Patient{id: patient_id}) do
+    ConversationPatient
+    |> where([cp], cp.patient_id == ^patient_id)
     |> where([cp], cp.conversation_id in ^conversation_ids)
     |> Repo.all()
   end
@@ -221,6 +241,13 @@ defmodule Stitch.Engage.ConversationQueries do
   defp provider_for_conversation_and_user(conversation_id, user_id) do
     ConversationProvider
     |> where([cp], cp.provider_id == ^user_id)
+    |> where([cp], cp.conversation_id == ^conversation_id)
+    |> Repo.one()
+  end
+
+  defp conversation_patients_for_conversation_and_user(conversation_id, patient_id) do
+    ConversationPatient
+    |> where([cp], cp.patient_id == ^patient_id)
     |> where([cp], cp.conversation_id == ^conversation_id)
     |> Repo.one()
   end

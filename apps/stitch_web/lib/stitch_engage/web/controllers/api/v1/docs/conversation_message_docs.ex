@@ -71,11 +71,62 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
         response(200, "OK", Schema.ref(:ConversationMessage))
       end
 
+      swagger_path :delete do
+        PhoenixSwagger.Path.delete("/api/v1/conversation_messages/{conversation__message_id}")
+
+        produces("application/json")
+        description("Deletes a conversation message as a provider.")
+        CommonParams.auth()
+
+        parameters do
+          conversation__message_id(
+            :path,
+            :integer,
+            "Conversation Message ID",
+            required: true,
+            example: 209
+          )
+        end
+
+        response(204, "OK")
+      end
+
+      swagger_path :create do
+        post("/api/v1/conversations/{conversation_id}/messages")
+        produces("application/json")
+
+        description("Create a conversation message as a provider.")
+        CommonParams.auth()
+
+        parameters do
+          conversation_id(
+            :path,
+            :integer,
+            "Conversation ID",
+            required: true,
+            example: 209
+          )
+
+          message(
+            :body,
+            swagger_schema do
+              properties do
+                message(:object)
+              end
+            end,
+            "Message to create. Must include 'text_content' attribute.",
+            required: true
+          )
+        end
+
+        response(200, "OK", Schema.ref(:ConversationMessage))
+      end
+
       swagger_path :patient_create do
         post("/api/v1/patient/conversations/{conversation_id}/messages")
         produces("application/json")
 
-        description("Create a conversation message.")
+        description("Create a conversation message as a patient.")
 
         CommonParams.auth()
 
@@ -155,6 +206,27 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
             "Link to remove",
             required: true,
             example: "https://en.wikipedia.org/wiki/Argentina"
+          )
+        end
+
+        response(200, "ok")
+      end
+
+      swagger_path :patient_mark_as_read do
+        post("/api/v1/patient/conversations/{conversation_id}/mark_as_read")
+        produces("application/json")
+
+        description("Marks a message as read as a patient.")
+
+        CommonParams.auth()
+
+        parameters do
+          conversation_id(
+            :path,
+            :integer,
+            "Conversation to mark as read",
+            required: true,
+            example: 100
           )
         end
 
