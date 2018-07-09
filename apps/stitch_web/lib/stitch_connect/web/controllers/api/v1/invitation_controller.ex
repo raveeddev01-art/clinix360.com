@@ -256,10 +256,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     case Invitation.accept_and_complete_patient_onboarding(invite_token, params) do
       {:ok, %{patient: patient}} ->
         TeamChannel.broadcast_patient_updated(patient.team_id, patient)
-
-        conn
-        |> login_patient(patient)
-        |> json(%{id: patient.id, email: patient.email, onboarded: patient.onboarded})
+        json(conn, %{id: patient.id, email: patient.email, onboarded: patient.onboarded})
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

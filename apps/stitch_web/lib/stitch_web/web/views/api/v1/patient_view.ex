@@ -9,6 +9,10 @@ defmodule Stitch.Web.Api.V1.PatientView do
     patient_json(patient)
   end
 
+  def render("login.json", %{patient: patient}) do
+    patient_json(patient)
+  end
+
   def patient_json(nil), do: nil
 
   def patient_json(patient) when not is_nil(patient) do
@@ -28,7 +32,8 @@ defmodule Stitch.Web.Api.V1.PatientView do
       last_name: patient.last_name,
       mrn: patient.mrn,
       onboarded: patient.onboarded,
-      phone: patient.phone_number
+      phone: patient.phone_number,
+      redirect_url: ""
     }
   end
 end
