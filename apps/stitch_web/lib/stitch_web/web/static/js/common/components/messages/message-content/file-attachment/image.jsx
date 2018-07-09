@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import cx from 'classnames';
 import Modal from "react-bootstrap/lib/Modal";
 import AttachmentActions from "./components/attachment-actions";
 
@@ -20,6 +20,7 @@ class ImageFileAttachment extends Component {
     const {
       filename,
       url,
+      size,
       comment_count: commentCount,
       onCommentsClick,
       onFileDownload,
@@ -48,8 +49,12 @@ class ImageFileAttachment extends Component {
       };
     }
 
+    const blockCN = cx('attachment-image-block', {
+      'attachment-image-block--sm': size === 'sm'
+    });
+
     return (
-      <div className="attachment-image-block">
+      <div className={blockCN}>
         {filename &&
           useActions && (
             <div className="attachment-title">
@@ -112,7 +117,8 @@ ImageFileAttachment.propTypes = {
   comment_count: PropTypes.number,
   onCommentsClick: PropTypes.func,
   onFileDownload: PropTypes.func.isRequired,
-  useActions: PropTypes.bool
+  useActions: PropTypes.bool,
+  size: PropTypes.string,
 };
 
 ImageFileAttachment.defaultProps = {
@@ -123,6 +129,7 @@ ImageFileAttachment.defaultProps = {
   filename: "",
   api_url: "",
   comment_count: 0,
+  size: 'md',
   onCommentsClick: () => undefined
 };
 

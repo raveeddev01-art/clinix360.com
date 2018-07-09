@@ -1295,6 +1295,16 @@
     color: #777;
   }
 
+  &.attachment-image-block--sm {
+    .attachment-image-holder{
+      max-width: 320px;
+
+      img {
+        max-height: 320px;
+      }
+    }
+  }
+
   .attachment-image-holder {
     max-width: 360px;
     display: inline-block;
