@@ -1,11 +1,20 @@
 import React, { Component } from "react";
+import cx from "classnames";
 
 import CreateTeam from "./create-team";
 
 export default class GetStartedCTA extends Component {
   render() {
+    const getStartedClass = cx("get-started", {
+      "logged-in": appSettings.hasLogin
+    });
+
+    const itemClass = cx({
+      "flex-item": !appSettings.hasLogin
+    });
+
     return (
-      <div className="get-started">
+      <div className={getStartedClass}>
         <div className="container">
           <div className="flex-box">
             <div className="flex-item">
@@ -13,7 +22,7 @@ export default class GetStartedCTA extends Component {
               <h4>Unlimited users, unlimited time.</h4>
             </div>
 
-            <div className="flex-item ">
+            <div className={itemClass}>
               <CreateTeam />
             </div>
           </div>
