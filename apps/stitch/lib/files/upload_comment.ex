@@ -44,7 +44,7 @@ defmodule Stitch.Files.UploadComment do
     |> new(attrs)
     |> Repo.insert()
     |> increment_comment_counter()
-    |> insert_file_comment_messages(upload, user, presence)
+    |> insert_file_comment_messages(upload, user, presence, attrs)
   end
 
   @spec update(UploadComment.t(), String.t(), User.t()) ::
@@ -86,15 +86,15 @@ defmodule Stitch.Files.UploadComment do
 
   defp decrement_comment_counter(result), do: result
 
-  defp insert_file_comment_messages({:ok, upload_comment}, upload, user, presence) do
-    groups = GroupQueries.select_non_dm_groups(upload.shared_in)
+  defp insert_file_comment_messages({:ok, upload_comment}, upload, user, presence, attrs) do
+    groups = GroupQueries.select_groups(upload.shared_in)
 
     result =
       Enum.map(groups, fn group ->
         attrs = %{
           "type" => "file_comment",
           "upload_id" => upload_comment.upload_id,
-          "text_content" => upload_comment.text_content
+          "text_content" => attrs["text_content"]
         }
 
         result = MessageCreation.create(group, user, attrs, presence, upload, upload_comment)
@@ -105,7 +105,7 @@ defmodule Stitch.Files.UploadComment do
     {:ok, upload_comment, result}
   end
 
-  defp insert_file_comment_messages(result, _upload, _user, _presence), do: result
+  defp insert_file_comment_messages(result, _upload, _user, _presence, _attrs), do: result
 
   def update_file_comment_message({:ok, upload_comment}) do
     {_, updated_messages} = Message.update_file_comments(upload_comment)

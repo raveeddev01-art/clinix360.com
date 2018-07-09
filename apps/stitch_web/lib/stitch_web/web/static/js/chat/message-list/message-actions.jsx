@@ -244,7 +244,8 @@ class MessageActions extends PureComponent {
                 </MenuItem>
               )}
 
-            {(mine || isAdmin()) && (
+            {(mine || isAdmin()) &&
+              message.type !== "file_comment" && (
                 <MenuItem onClick={this.delete}>
                   <span>
                     <i className="fa fa-trash" />&nbsp;Delete message

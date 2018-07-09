@@ -189,9 +189,11 @@ defmodule Stitch.Web.Api.V1.FileController do
   def delete(conn, %{"id" => upload_id}) do
     current_user = conn.assigns.current_user
 
-    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+    with {:upload, %Upload{} = upload} <-
+           {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true} <-
            {:authorized, FileAuthorization.is_creator?(upload, current_user)},
+         file_delete_events(upload),
          {:deleted, {:ok, upload}} <- {:deleted, Upload.delete(upload)} do
       render(conn, "show.json", %{file: upload})
     else
@@ -204,6 +206,14 @@ defmodule Stitch.Web.Api.V1.FileController do
       {:delete, :error} ->
         {:error, :unprocessable_entity, "Error deleting the file"}
     end
+  end
+
+  def file_delete_events(upload) do
+    file_share_and_comment_messages = MessageQueries.file_shares_and_comments(upload.id)
+
+    Enum.each(file_share_and_comment_messages, fn message ->
+      MessageEventsService.message_delete_events(message)
+    end)
   end
 
   def toggle_star(conn, %{"id" => upload_id}) do

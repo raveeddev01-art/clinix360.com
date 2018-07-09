@@ -55,7 +55,6 @@ defmodule Stitch.Message do
     :fields,
     :type,
     :request_id,
-    :text_content,
     :mentioned_user_ids,
     :read_status,
     :client_device_type,
@@ -125,7 +124,7 @@ defmodule Stitch.Message do
 
   def file_comment_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, @upload_castable_attributes)
+    |> cast(params, @upload_castable_attributes ++ [:text_content])
     |> validate_required([:fields, :type, :text_content])
     |> validate_inclusion(:type, ["file_comment"])
   end
