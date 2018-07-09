@@ -28,6 +28,8 @@ Install external dependencies
 
 - `redis` (`brew install redis`)
 
+- ElasticSearch (`brew install elasticsearch`)
+
 Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
 ```
@@ -83,6 +85,7 @@ export INTERCOM_APP_ID=
 export SENTRY_PUBLIC_DSN=
 
 export REDIS_URL= # optional
+export ELASTICSEARCH_URL= # optional
 ```
 
 Source the file to add these environment variables to your current shell

@@ -70,4 +70,6 @@ config :exq_ui,
   web_namespace: "jobs",
   server: true
 
+import_config "elasticsearch.exs"
+
 import_config "#{Mix.env()}.exs"
