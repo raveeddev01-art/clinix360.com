@@ -15,6 +15,7 @@ defmodule Stitch.Files.Upload do
   use Ecto.Schema
   import Ecto.Query
   import Ecto.Changeset
+  alias Ecto.Multi
 
   @type t :: %__MODULE__{}
 
@@ -186,6 +187,7 @@ defmodule Stitch.Files.Upload do
     upload
     |> Map.take(@attributes ++ [:comment_count, :public_token])
     |> Map.new(fn {k, v} -> {"#{k}", v} end)
+    |> Map.put(:encoded_id, encode_url_id(upload))
   end
 
   @spec has_public_token?(Upload.t()) :: boolean
@@ -201,16 +203,26 @@ defmodule Stitch.Files.Upload do
       |> Base.encode32(case: :lower)
       |> binary_part(0, 10)
 
-    upload
-    |> change(public_token: token)
-    |> Repo.update()
+    upload_changset = change(upload, public_token: token)
+
+    Multi.new()
+    |> Multi.update(:upload, upload_changset)
+    |> Multi.run(:update_shared_uploads, fn %{upload: upload} ->
+      {:ok, Message.update_shared_uploads(upload)}
+    end)
+    |> Repo.transaction()
   end
 
   @spec revoke_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
   def revoke_public_link(%Upload{} = upload) do
-    upload
-    |> change(public_token: nil)
-    |> Repo.update()
+    upload_changeset = change(upload, public_token: nil)
+
+    Multi.new()
+    |> Multi.update(:upload, upload_changeset)
+    |> Multi.run(:update_shared_uploads, fn %{upload: upload} ->
+      {:ok, Message.update_shared_uploads(upload)}
+    end)
+    |> Repo.transaction()
   end
 
   @spec delete(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
