@@ -251,6 +251,7 @@ defmodule Stitch.Web.Api.V1.FileController do
   def parse_query_params(conn, _opts) do
     types = %{
       creator_id: :integer,
+      group_id: :integer,
       filetype: :string,
       limit: :integer,
       skip: :integer

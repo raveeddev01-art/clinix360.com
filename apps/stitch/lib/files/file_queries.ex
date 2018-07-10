@@ -26,6 +26,7 @@ defmodule Stitch.Files.FileQueries do
     |> filter_by_filetype(options)
     |> filter_by_creator_id(options)
     |> filter_by_filename(options)
+    |> filter_by_group_id(options)
     |> select([f, gu, ma], %Upload{
       id: f.id,
       filename: f.filename,
@@ -83,6 +84,13 @@ defmodule Stitch.Files.FileQueries do
   end
 
   def filter_by_filename(query, _opts), do: query
+
+  def filter_by_group_id(query, %{group_id: group_id}) do
+    query
+    |> having([f, gu], fragment("array_agg(?) @> ?", gu.group_id, ^[group_id]))
+  end
+
+  def filter_by_group_id(query, _opts), do: query
 
   @spec get_by_id(pos_integer, list) :: Upload.t() | nil
   def get_by_id(upload_id, opts \\ [])
