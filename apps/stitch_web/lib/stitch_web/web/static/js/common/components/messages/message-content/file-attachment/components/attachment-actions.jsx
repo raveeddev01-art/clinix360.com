@@ -13,18 +13,18 @@ import { isAdminOrOwner } from "lib/utils";
 @observer
 class AttachmentActions extends Component {
   createPublicLink = () => {
-    const { teamFileStore } = this.props;
-    teamFileStore.createPublicLink();
+    const { teamFileStore, fileId } = this.props;
+    teamFileStore.createPublicLink(fileId);
   };
 
   revokePublicLink = () => {
-    const { teamFileStore } = this.props;
-    teamFileStore.revokePublicLink();
+    const { teamFileStore, fileId } = this.props;
+    teamFileStore.revokePublicLink(fileId);
   };
 
   delete = () => {
-    const { teamFileStore } = this.props;
-    teamFileStore.deleteFile();
+    const { teamFileStore, fileId } = this.props;
+    teamFileStore.deleteFile(fileId);
   };
 
   shareFile = () => {

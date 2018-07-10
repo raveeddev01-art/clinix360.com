@@ -1,6 +1,6 @@
 import { observable, action } from "mobx";
 import uniqBy from "lodash/uniqBy";
-import { confirmModal } from "common/modals";
+import { confirmModal, readonlyInputModal } from "common/modals";
 
 class TeamFileStore {
   @observable file = {};
@@ -12,17 +12,46 @@ class TeamFileStore {
   }
 
   @action
-  createPublicLink = () => {
-    post(`/api/v1/files/${this.file.id}/create_public_link`).then(response => {
+  createPublicLink = fileId => {
+    post(
+      `/api/v1/files/${fileId || this.file.id}/create_public_link`
+    ).then(response => {
       this.file = { ...this.file, ...response.data };
+
+      readonlyInputModal({
+        title: "Public Link to This File",
+        message: response.data.public_url,
+        okLabel: "Done",
+        cancelLabel: "Revoke"
+      }).catch(() => {
+        this.revokePublicLink(this.file.id, true);
+      });
     });
   };
 
   @action
-  revokePublicLink = () => {
-    post(`/api/v1/files/${this.file.id}/revoke_public_link`).then(response => {
-      this.file = { ...this.file, ...response.data };
-    });
+  revokePublicLink = (fileId, askConfirm = true) => {
+    let promise = Promise.resolve();
+    if (askConfirm) {
+      promise = confirmModal({
+        title: "Revoke Public File Link",
+        message:
+          "This will disable the Public Link for this file. This will cause any previously shared links to stop working.\n\nAre you sure you want to revoke this public link?",
+        okLabel: "Revoke It"
+      });
+    }
+
+    promise
+      .then(() => {
+        post(
+          `/api/v1/files/${fileId || this.file.id}/revoke_public_link`
+        ).then(response => {
+          this.file = { ...this.file, ...response.data };
+        });
+      })
+      .catch(() => {
+        // do nothing since it's just from confirm modal
+      });
   };
 
   @action
@@ -46,16 +75,19 @@ class TeamFileStore {
   };
 
   @action
-  deleteFile = () => {
+  deleteFile = fileId => {
     confirmModal({
       title: "Delete File",
       message:
         "Are you sure you want to delete this file? This cannot be undone.",
       okLabel: "Delete"
-    }).then(() => {
-      this.rootStore.addonStore.toggleAddons("files");
-      return remove(`/api/v1/files/${this.file.id}`);
-    });
+    })
+      .then(() => {
+        return remove(`/api/v1/files/${fileId || this.file.id}`);
+      })
+      .then(() => {
+        this.rootStore.addonStore.toggleAddons("files");
+      });
   };
 
   @action

@@ -43,7 +43,7 @@ class FileDetails extends Component {
           Open public link
         </a>
 
-        <a onClick={this.props.teamFileStore.revokePublicLink}>
+        <a onClick={() => this.props.teamFileStore.revokePublicLink()}>
           <i className="fa fa-times-circle" />
         </a>
       </small>
