@@ -132,7 +132,8 @@ defmodule Stitch.TimedMessage.Worker do
   end
 
   defp check_sendable(%{send_if: send_if}, data) do
-    send_if.(data)
+    # if the user has been deleted, don't do rest of check
+    data["user"] && send_if.(data)
   end
 
   defp check_sendable(_rules, _data), do: :ok
