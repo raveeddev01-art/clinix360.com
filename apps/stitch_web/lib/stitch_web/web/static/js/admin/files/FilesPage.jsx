@@ -45,7 +45,7 @@ class FilesPage extends Component {
             onSelect={this.onSelectTab}
           >
             <NavItem eventKey="all">All Files</NavItem>
-            <NavItem eventKey="mine">My Files</NavItem>
+            <NavItem eventKey="yours">Your Files</NavItem>
           </Nav>
           <div className="tab-content">
             <Row>

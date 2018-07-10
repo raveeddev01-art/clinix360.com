@@ -123,6 +123,7 @@ class MessageContent extends Component {
           <FileAttachment
             {...message.fields}
             message={message}
+            user_id={message.user_id}
             fileId={message.upload_id}
             onCommentsClick={this.onCommentsClick}
           />

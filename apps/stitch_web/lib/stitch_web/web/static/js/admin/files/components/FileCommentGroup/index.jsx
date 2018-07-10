@@ -6,8 +6,12 @@ import { Link } from "react-router-dom";
 @inject("groupsStore")
 @observer
 class FileCommentGroup extends Component {
+  onUnshareClick(group) {
+    this.props.teamFileStore.unshare(group.id);
+  }
+
   render() {
-    const file = this.props.file;
+    const { file, label, showClose } = this.props;
     const groups = this.props.groupsStore.groups.filter(
       group =>
         group.type !== "dm" &&
@@ -16,18 +20,23 @@ class FileCommentGroup extends Component {
     );
 
     if (groups.length === 0) {
-      return <span />;
+      return null;
     }
 
     return (
       <small className="file-comment__groups">
-        Commenting in
+        {label}
         {groups.map(group => (
-          <span key={group.id}>
+          <span key={group.id} className="file-comment__group-item">
             <Link to={`/rooms/${group.slug}`}>
               {group.public ? "#" : "(Private) "}
               {group.slug}
             </Link>
+            {showClose && (
+              <a onClick={() => this.onUnshareClick(group)}>
+                <i className="fa fa-minus-circle" />
+              </a>
+            )}
           </span>
         ))}
       </small>
@@ -36,7 +45,14 @@ class FileCommentGroup extends Component {
 }
 
 FileCommentGroup.propTypes = {
-  file: PropTypes.object.isRequired
+  file: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  showClose: PropTypes.bool.isRequired
+};
+
+FileCommentGroup.defaultProps = {
+  label: "Shared in",
+  showClose: true
 };
 
 export default FileCommentGroup;

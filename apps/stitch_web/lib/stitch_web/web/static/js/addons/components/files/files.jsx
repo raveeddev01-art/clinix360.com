@@ -7,13 +7,6 @@ import FileList from "admin/files/components/FileList";
 @inject("teamFilesStore", "addonStore")
 @observer
 class Files extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tab: "all"
-    };
-  }
-
   componentWillMount() {
     this.props.teamFilesStore.search();
   }
@@ -28,11 +21,8 @@ class Files extends Component {
   };
 
   onSelectTab = eventKey => {
-    const { teamFilesStore } = this.props;
-    this.setState({ tab: eventKey });
-    teamFilesStore.setUserFilter(
-      eventKey === "all" ? undefined : currentUser.id
-    );
+    const { addonStore } = this.props;
+    addonStore.setAddonPanelTab("files", eventKey);
   };
 
   render() {
@@ -40,11 +30,11 @@ class Files extends Component {
       <div className="files-addon">
         <Nav
           bsStyle="pills"
-          activeKey={this.state.tab}
+          activeKey={this.props.addonStore.addonPanelTab}
           onSelect={this.onSelectTab}
         >
           <NavItem eventKey="all">All Files</NavItem>
-          <NavItem eventKey="mine">My Files</NavItem>
+          <NavItem eventKey="yours">Your Files</NavItem>
         </Nav>
         <FileList onFileClick={this.onFileClick} />
       </div>

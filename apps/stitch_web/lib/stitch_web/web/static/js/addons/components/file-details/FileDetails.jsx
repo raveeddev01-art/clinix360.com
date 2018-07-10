@@ -1,41 +1,34 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Link } from "react-router-dom";
-
+import { Avatar } from "common/components";
 import FileAttachment from "common/components/messages/message-content/file-attachment";
+import AttachmentActions from "common/components/messages/message-content/file-attachment/components/attachment-actions";
 import FileComment from "admin/files/components/FileComment";
 import FileCommentInput from "admin/files/components/FileCommentInput";
-import FileHeading from "admin/files/components/FileHeading";
+import FileCommentGroup from "admin/files/components/FileCommentGroup";
 
-@inject("teamFileStore", "usersStore", "groupsStore")
+@inject("teamFileStore", "usersStore", "groupsStore", "desktopStore")
 @observer
 class FileDetails extends Component {
-  onUnshareClick(group) {
-    this.props.teamFileStore.unshare(group.id);
-  }
+  onFileDownload = e => {
+    const { file } = this.props.teamFileStore;
+    const { desktopStore } = this.props;
 
-  renderSharedInInfo(groups) {
-    if (!groups.length) {
-      return null;
+    if (desktopStore.isElectron) {
+      e.stopPropagation();
+      e.preventDefault();
+      e.nativeEvent.stopImmediatePropagation();
+
+      desktopStore.sendDownloadRequest({
+        id: file.id,
+        url: file.api_url,
+        filename: file.filename,
+        mimetype: file.mimetype,
+        filetype: file.filetype,
+        previewUrl: file.preview_url
+      });
     }
-
-    return (
-      <small className="file-comment__groups">
-        Shared in
-        {groups.map(group => (
-          <span key={group.id}>
-            <Link to={`/rooms/${group.slug}`}>
-              {group.public ? "#" : "(Private) "}
-              {group.slug}
-            </Link>{" "}
-            <a onClick={() => this.onUnshareClick(group)}>
-              <i className="fa fa-minus-circle" />
-            </a>
-          </span>
-        ))}
-      </small>
-    );
-  }
+  };
 
   renderPublicLink(file) {
     if (!file.public_url) {
@@ -45,9 +38,15 @@ class FileDetails extends Component {
     const url = file.public_url;
 
     return (
-      <a href={url} target="_blank">
-        Open public link
-      </a>
+      <small className="file-comment__groups">
+        <a href={url} target="_blank">
+          Open public link
+        </a>
+
+        <a onClick={this.props.teamFileStore.revokePublicLink}>
+          <i className="fa fa-times-circle" />
+        </a>
+      </small>
     );
   }
 
@@ -57,17 +56,28 @@ class FileDetails extends Component {
     if (!file.id) return null;
 
     const fileCreator = this.props.usersStore.usersById[file.user_id];
-    const groups = this.props.groupsStore.groups.filter(
-      group =>
-        group.type !== "dm" &&
-        group.type !== "multi_dm" &&
-        file.shared_in.includes(group.id)
-    );
 
     return (
       <div className="file-details-addon">
-        <FileHeading user={fileCreator} file={file} />
-        {this.renderSharedInInfo(groups)}
+        <div className="file-heading">
+          <Avatar user={fileCreator} />
+          <div className="file-heading__content">
+            <div className="pull-right">
+              <AttachmentActions
+                url={file.url}
+                fileId={file.id}
+                user_id={file.user_id}
+                commentCount={file.comment_count}
+                onFileDownload={this.onFileDownload}
+              />
+            </div>
+            <div className="file-heading__content-user">
+              {fileCreator.full_name}{" "}
+            </div>
+            <div className="file-heading__content-file">{file.filename}</div>
+          </div>
+        </div>
+        <FileCommentGroup file={file} />
         {this.renderPublicLink(file)}
         <FileAttachment
           api_url={file.url}

@@ -6,6 +6,8 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import Button from "react-bootstrap/lib/Button";
 import { Groups } from "common/components";
+import { getGroupUrl } from "lib/utils";
+import history from "lib/history";
 
 @inject("teamFileStore", "groupsStore", "presenceStore")
 @observer
@@ -36,7 +38,7 @@ class FileShareModal extends Component {
       const group = groupsStore.getGroupById(groupId);
 
       if (group) {
-        groupsStore.openGroup(group.slug);
+        history.push(getGroupUrl(group));
       }
     });
   };

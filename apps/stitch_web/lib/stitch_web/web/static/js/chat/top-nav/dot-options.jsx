@@ -44,8 +44,11 @@ class DotOptions extends React.Component {
           <MenuItem onSelect={toggleAddonMenu("directory")}>
             <i className="fa fa-users m-r-5" /> Directory
           </MenuItem>
-          <MenuItem onSelect={toggleAddonMenu("files")}>
-            <i className="fa fa-folder-open m-r-5" /> Files
+          <MenuItem onSelect={toggleAddonMenu("files", "all")}>
+            <i className="fa fa-files-o m-r-5" /> All Files
+          </MenuItem>
+          <MenuItem onSelect={toggleAddonMenu("files", "yours")}>
+            <i className="fa fa-folder-open m-r-5" /> Your Files
           </MenuItem>
           <MenuItem onSelect={toggleAddonMenu("mentions")}>
             <i className="fa fa-at m-r-5" /> Mentions

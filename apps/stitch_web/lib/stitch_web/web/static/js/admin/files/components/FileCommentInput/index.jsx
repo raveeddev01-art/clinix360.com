@@ -41,7 +41,11 @@ class FileCommentInput extends Component {
             onChange={this.handleChange}
           />
           <div className="file-comment__edit-buttons file-comment__edit-buttons--add">
-            <FileCommentGroup file={file} />
+            <FileCommentGroup
+              file={file}
+              label="Commenting in"
+              showClose={false}
+            />
             <Button bsStyle="primary" onClick={this.addComment}>
               Add Comment
             </Button>

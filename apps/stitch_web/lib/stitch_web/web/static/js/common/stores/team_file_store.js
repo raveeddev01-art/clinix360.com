@@ -1,5 +1,6 @@
 import { observable, action } from "mobx";
 import uniqBy from "lodash/uniqBy";
+import { confirmModal } from "common/modals";
 
 class TeamFileStore {
   @observable file = {};
@@ -46,7 +47,15 @@ class TeamFileStore {
 
   @action
   deleteFile = () => {
-    return remove(`/api/v1/files/${this.file.id}`);
+    confirmModal({
+      title: "Delete File",
+      message:
+        "Are you sure you want to delete this file? This cannot be undone.",
+      okLabel: "Delete"
+    }).then(() => {
+      this.rootStore.addonStore.toggleAddons("files");
+      return remove(`/api/v1/files/${this.file.id}`);
+    });
   };
 
   @action

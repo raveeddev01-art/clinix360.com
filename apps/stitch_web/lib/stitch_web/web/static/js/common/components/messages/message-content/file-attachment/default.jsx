@@ -21,6 +21,8 @@ class DefaultFileAttachment extends Component {
       mimetype,
       size_in_bytes: size,
       url,
+      fileId,
+      user_id,
       comment_count: commentCount,
       onCommentsClick,
       onFileDownload,
@@ -51,6 +53,8 @@ class DefaultFileAttachment extends Component {
             message && (
               <AttachmentActions
                 url={url}
+                fileId={fileId}
+                user_id={user_id}
                 message={message}
                 commentCount={commentCount}
                 onCommentsClick={onCommentsClick}
@@ -72,6 +76,8 @@ DefaultFileAttachment.propTypes = {
   onCommentsClick: PropTypes.func,
   onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool,
+  user_id: PropTypes.number.isRequired,
+  fileId: PropTypes.number.isRequired,
   message: PropTypes.object
 };
 

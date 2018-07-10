@@ -63,11 +63,6 @@ class FileDetailPage extends Component {
       });
   };
 
-  downloadFile() {
-    const w = window.open(this.props.teamFileStore.file.url, "_blank");
-    w.focus();
-  }
-
   renderPublicLink(file) {
     const url = file.public_url;
 
@@ -96,7 +91,7 @@ class FileDetailPage extends Component {
           Download
         </MenuItem>
         <MenuItem divider />
-        {file && file.public_token ? (
+        {file.public_token ? (
           <MenuItem eventKey="2" onClick={this.revokePublicLink}>
             Remove External Link
           </MenuItem>
@@ -115,7 +110,6 @@ class FileDetailPage extends Component {
   }
 
   renderFile(file) {
-    // @TODO handle error when file or file id is not ready
     if (!file || !file.id) {
       return null;
     }

@@ -26,6 +26,8 @@ class ImageFileAttachment extends Component {
       onFileDownload,
       useActions,
       message,
+      fileId,
+      user_id,
       preview_height: height,
       preview_width: width,
       preview_url: previewUrl
@@ -76,6 +78,8 @@ class ImageFileAttachment extends Component {
                 message && (
                   <AttachmentActions
                     url={url}
+                    fileId={fileId}
+                    user_id={user_id}
                     message={message}
                     commentCount={commentCount}
                     onCommentsClick={onCommentsClick}
@@ -122,6 +126,8 @@ ImageFileAttachment.propTypes = {
   onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool,
   size: PropTypes.string,
+  fileId: PropTypes.number.isRequired,
+  user_id: PropTypes.number.isRequired,
   message: PropTypes.object
 };
 
