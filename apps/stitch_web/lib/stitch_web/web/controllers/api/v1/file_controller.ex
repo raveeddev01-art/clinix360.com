@@ -18,6 +18,7 @@ defmodule Stitch.Web.Api.V1.FileController do
   }
 
   alias StitchConnect.Web.{
+    GroupChannel,
     UserStatusService,
     MessageEventsService
   }
@@ -155,6 +156,7 @@ defmodule Stitch.Web.Api.V1.FileController do
            {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
          {:public_link, {:ok, upload}} <- {:public_link, Upload.create_public_link(upload)} do
+      file_public_link_events(upload)
       render(conn, "show.json", %{file: upload})
     else
       {:upload, _} ->
@@ -172,9 +174,11 @@ defmodule Stitch.Web.Api.V1.FileController do
     current_user = conn.assigns.current_user
 
     with {:upload, %Upload{} = upload} <-
-           {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
+           {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true) |> IO.inspect()},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
-         {:public_link, {:ok, _upload}} <- {:public_link, Upload.revoke_public_link(upload)} do
+         {:public_link, {:ok, upload}} <-
+           {:public_link, Upload.revoke_public_link(upload) |> IO.inspect()} do
+      file_public_link_events(upload)
       render(conn, "show.json", %{file: upload})
     else
       {:upload, _} ->
@@ -186,6 +190,10 @@ defmodule Stitch.Web.Api.V1.FileController do
       {:public_link, :error} ->
         {:error, :unprocessable_entity, "Error revoking public link"}
     end
+  end
+
+  def file_public_link_events(upload) do
+    GroupChannel.broadcast_file_public_link_updated(upload)
   end
 
   def delete(conn, %{"id" => upload_id}) do

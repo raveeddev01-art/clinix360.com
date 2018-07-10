@@ -184,7 +184,7 @@ defmodule Stitch.Files.Upload do
   @spec fields(Upload.t()) :: map
   def fields(%Upload{} = upload) do
     upload
-    |> Map.take(@attributes ++ [:comment_count])
+    |> Map.take(@attributes ++ [:comment_count, :public_token])
     |> Map.new(fn {k, v} -> {"#{k}", v} end)
   end
 

@@ -18,7 +18,8 @@ defmodule StitchConnect.Web.GroupChannel do
     Message,
     MessageAuthorization,
     MessageQueries,
-    ReadStatus
+    ReadStatus,
+    Web.UrlService
   }
 
   @endpoint Stitch.Web.Endpoint
@@ -429,6 +430,20 @@ defmodule StitchConnect.Web.GroupChannel do
 
     Enum.each(upload.shared_in, fn group_id ->
       @endpoint.broadcast("groups:id:#{group_id}", "file_comment_edited", file_json)
+    end)
+  end
+
+  def broadcast_file_public_link_updated(upload) do
+    url =
+      if upload.public_token,
+        do: UrlService.public_download_page(upload, upload.public_token),
+        else: nil
+
+    Enum.each(upload.shared_in, fn group_id ->
+      @endpoint.broadcast("groups:id:#{group_id}", "file_public_link_updated", %{
+        upload_id: upload.id,
+        public_url: url
+      })
     end)
   end
 

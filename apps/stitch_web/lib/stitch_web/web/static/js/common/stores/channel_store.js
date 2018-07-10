@@ -148,6 +148,10 @@ class ChannelStore {
       "file_comment_added",
       teamFileStore.onFileCommentAdded
     );
+    this.groupChannel.on(
+      "file_public_link_updated",
+      messageStore.onPublicLinkUpdate
+    );
 
     return joined;
   }
