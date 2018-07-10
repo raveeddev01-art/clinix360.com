@@ -20,7 +20,7 @@ class FileCommentGroup extends Component {
     }
 
     return (
-      <span className="file-comment__groups">
+      <small className="file-comment__groups">
         Commenting in
         {groups.map(group => (
           <span key={group.id}>
@@ -30,7 +30,7 @@ class FileCommentGroup extends Component {
             </Link>
           </span>
         ))}
-      </span>
+      </small>
     );
   }
 }

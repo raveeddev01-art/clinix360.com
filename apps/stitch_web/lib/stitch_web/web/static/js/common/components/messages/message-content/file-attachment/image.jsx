@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import cx from 'classnames';
+import cx from "classnames";
 import Modal from "react-bootstrap/lib/Modal";
 import AttachmentActions from "./components/attachment-actions";
 
@@ -25,6 +25,7 @@ class ImageFileAttachment extends Component {
       onCommentsClick,
       onFileDownload,
       useActions,
+      message,
       preview_height: height,
       preview_width: width,
       preview_url: previewUrl
@@ -49,8 +50,8 @@ class ImageFileAttachment extends Component {
       };
     }
 
-    const blockCN = cx('attachment-image-block', {
-      'attachment-image-block--sm': size === 'sm'
+    const blockCN = cx("attachment-image-block", {
+      "attachment-image-block--sm": size === "sm"
     });
 
     return (
@@ -71,14 +72,16 @@ class ImageFileAttachment extends Component {
               style={placeholderStyle}
               onClick={this.onToggleModal}
             >
-              {useActions && (
-                <AttachmentActions
-                  url={url}
-                  commentCount={commentCount}
-                  onCommentsClick={onCommentsClick}
-                  onFileDownload={onFileDownload}
-                />
-              )}
+              {useActions &&
+                message && (
+                  <AttachmentActions
+                    url={url}
+                    message={message}
+                    commentCount={commentCount}
+                    onCommentsClick={onCommentsClick}
+                    onFileDownload={onFileDownload}
+                  />
+                )}
             </div>
           ) : (
             <img
@@ -119,6 +122,7 @@ ImageFileAttachment.propTypes = {
   onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool,
   size: PropTypes.string,
+  message: PropTypes.object
 };
 
 ImageFileAttachment.defaultProps = {
@@ -129,8 +133,9 @@ ImageFileAttachment.defaultProps = {
   filename: "",
   api_url: "",
   comment_count: 0,
-  size: 'md',
-  onCommentsClick: () => undefined
+  size: "md",
+  onCommentsClick: () => undefined,
+  message: null
 };
 
 export default ImageFileAttachment;

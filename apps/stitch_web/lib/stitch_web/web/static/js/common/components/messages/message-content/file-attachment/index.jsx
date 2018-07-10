@@ -69,12 +69,14 @@ FileAttachment.propTypes = {
   filename: PropTypes.string.isRequired,
   filetype: PropTypes.string.isRequired,
   fileId: PropTypes.number.isRequired,
+  message: PropTypes.object,
   onCommentsClick: PropTypes.func.isRequired
 };
 
 FileAttachment.defaultProps = {
   onCommentsClick: () => undefined,
-  preview_url: ""
+  preview_url: "",
+  message: null
 };
 
 export default FileAttachment;

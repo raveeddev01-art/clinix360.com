@@ -24,7 +24,8 @@ class DefaultFileAttachment extends Component {
       comment_count: commentCount,
       onCommentsClick,
       onFileDownload,
-      useActions
+      useActions,
+      message
     } = this.props;
     const filetype = getFileType(mimetype);
 
@@ -46,14 +47,16 @@ class DefaultFileAttachment extends Component {
             </div>
           </div>
 
-          {useActions && (
-            <AttachmentActions
-              url={url}
-              commentCount={commentCount}
-              onCommentsClick={onCommentsClick}
-              onFileDownload={onFileDownload}
-            />
-          )}
+          {useActions &&
+            message && (
+              <AttachmentActions
+                url={url}
+                message={message}
+                commentCount={commentCount}
+                onCommentsClick={onCommentsClick}
+                onFileDownload={onFileDownload}
+              />
+            )}
         </div>
       </div>
     );
@@ -68,11 +71,13 @@ DefaultFileAttachment.propTypes = {
   comment_count: PropTypes.number,
   onCommentsClick: PropTypes.func,
   onFileDownload: PropTypes.func.isRequired,
-  useActions: PropTypes.bool
+  useActions: PropTypes.bool,
+  message: PropTypes.object
 };
 
 DefaultFileAttachment.defaultProps = {
   useActions: true,
+  message: null,
   comment_count: 0,
   onCommentsClick: () => undefined
 };

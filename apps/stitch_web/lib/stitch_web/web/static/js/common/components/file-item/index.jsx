@@ -17,19 +17,26 @@ class FileItem extends Component {
   };
 
   render() {
-    const { file, usersStore } = this.props;
+    const { file, usersStore, onFileClick } = this.props;
     const user = usersStore.usersById[file.user_id];
 
     return (
       <div className="file-item">
         <FileThumb mimetype={file.mimetype} previewUrl={file.preview_url} />
         <div className="file-item__content">
-          <Link
-            className="file-item__link"
-            to={`/admin/files/${file.encoded_id}`}
-          >
-            {file.filename}
-          </Link>
+          {onFileClick ? (
+            <a onClick={() => onFileClick(file.id)} className="file-item__link">
+              {file.filename}
+            </a>
+          ) : (
+            <Link
+              className="file-item__link"
+              to={`/admin/files/${file.encoded_id}`}
+            >
+              {file.filename}
+            </Link>
+          )}
+
           <div className="file-item__content-user">
             <UserProfileMenu user={user} className="name">
               {user && this._renderName(user)}
@@ -51,7 +58,12 @@ class FileItem extends Component {
 }
 
 FileItem.propTypes = {
-  file: PropTypes.object.isRequired
+  file: PropTypes.object.isRequired,
+  onFileClick: PropTypes.func
+};
+
+FileItem.defaultProps = {
+  onFileClick: null
 };
 
 export default FileItem;

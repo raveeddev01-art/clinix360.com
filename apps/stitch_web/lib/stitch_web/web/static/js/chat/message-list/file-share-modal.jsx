@@ -65,7 +65,7 @@ class FileShareModal extends Component {
           </FormGroup>
 
           <div className="file-comment">
-            <FormGroup className="file-comment__edit">
+            <FormGroup className="file-share-comment">
               <ControlLabel>Add Comment (optional)</ControlLabel>
               <FormControl
                 placeholder="Comment goes here..."
@@ -74,7 +74,7 @@ class FileShareModal extends Component {
                 bsSize="lg"
                 onChange={this.onChangeComment}
               />
-              <div className="file-comment__edit-buttons">
+              <div className="file-comment__edit-buttons margin">
                 <Button bsStyle="default" onClick={this.closeModal}>
                   Cancel
                 </Button>

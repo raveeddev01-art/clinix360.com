@@ -79,7 +79,7 @@ class Sidebar extends Component {
         active={this._isSelected("/admin/files", false)}
       >
         <Link to="/admin/files">
-          <i className="fa fa-file" />
+          <i className="fa fa-folder-open" />
           <span>Files</span>
         </Link>
       </ListGroupItem>

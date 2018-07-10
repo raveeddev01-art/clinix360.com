@@ -20,7 +20,7 @@ class FileDetails extends Component {
     }
 
     return (
-      <span className="file-comment__groups">
+      <small className="file-comment__groups">
         Shared in
         {groups.map(group => (
           <span key={group.id}>
@@ -28,10 +28,12 @@ class FileDetails extends Component {
               {group.public ? "#" : "(Private) "}
               {group.slug}
             </Link>{" "}
-            <a onClick={() => this.onUnshareClick(group)}>(Unshare)</a>
+            <a onClick={() => this.onUnshareClick(group)}>
+              <i className="fa fa-minus-circle" />
+            </a>
           </span>
         ))}
-      </span>
+      </small>
     );
   }
 
@@ -67,7 +69,12 @@ class FileDetails extends Component {
         <FileHeading user={fileCreator} file={file} />
         {this.renderSharedInInfo(groups)}
         {this.renderPublicLink(file)}
-        <FileAttachment api_url={file.url} fileId={file.id} size="sm" {...file} />
+        <FileAttachment
+          api_url={file.url}
+          fileId={file.id}
+          size="sm"
+          {...file}
+        />
         {file.comments.map(comment => (
           <FileComment comment={comment} key={comment.id} />
         ))}

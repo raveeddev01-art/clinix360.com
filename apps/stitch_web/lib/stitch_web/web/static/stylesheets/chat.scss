@@ -1258,28 +1258,6 @@
     font-size: 13px;
   }
 
-  .attachment-actions {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    background: -webkit-linear-gradient(
-      left,
-      rgba(255, 255, 255, 0) 0,
-      #fff 7.5%
-    );
-    padding: 15px;
-    opacity: 0;
-
-    .btn {
-      color: #036;
-      padding: 4px 8px;
-    }
-
-    .btn + .btn {
-      margin-left: 5px;
-    }
-  }
-
   &:hover {
     border: 1px solid rgba(0, 0, 0, 0.15);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1296,7 +1274,7 @@
   }
 
   &.attachment-image-block--sm {
-    .attachment-image-holder{
+    .attachment-image-holder {
       max-width: 320px;
 
       img {
@@ -1308,29 +1286,12 @@
   .attachment-image-holder {
     max-width: 360px;
     display: inline-block;
-    overflow-y: hidden;
     margin: 5px 0;
     position: relative;
 
     img {
       max-height: 360px;
       cursor: zoom-in;
-    }
-
-    .attachment-actions {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      opacity: 0;
-
-      .btn {
-        color: #036;
-        padding: 4px 8px;
-      }
-
-      .btn + .btn {
-        margin-left: 5px;
-      }
     }
 
     &:hover {

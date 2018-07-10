@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
-import Tabs from "react-bootstrap/lib/Tabs";
-import Tab from "react-bootstrap/lib/Tab";
+import Nav from "react-bootstrap/lib/Nav";
+import NavItem from "react-bootstrap/lib/NavItem";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 import FileList from "./components/FileList";
+import ListFilter from "./components/FileList/ListFilter";
 
 @inject("teamFilesStore", "usersStore")
 @observer
@@ -32,23 +35,28 @@ class FilesPage extends Component {
       <Panel className="admin-panel tabs-panel">
         <Panel.Heading>
           <h1>
-            <i className="fa fa-file" /> Files
+            <i className="fa fa-folder-open" /> Files
           </h1>
         </Panel.Heading>
         <Panel.Body>
-          <Tabs
-            id="admin-files-tabs"
+          <Nav
+            bsStyle="tabs"
             activeKey={this.state.tab}
             onSelect={this.onSelectTab}
-            unmountOnExit
           >
-            <Tab eventKey="all" title="All Files">
-              <FileList />
-            </Tab>
-            <Tab eventKey="mine" title="My Files">
-              <FileList />
-            </Tab>
-          </Tabs>
+            <NavItem eventKey="all">All Files</NavItem>
+            <NavItem eventKey="mine">My Files</NavItem>
+          </Nav>
+          <div className="tab-content">
+            <Row>
+              <Col sm={8}>
+                <FileList />
+              </Col>
+              <Col sm={4}>
+                <ListFilter />
+              </Col>
+            </Row>
+          </div>
         </Panel.Body>
       </Panel>
     );

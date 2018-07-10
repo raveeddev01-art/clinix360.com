@@ -36,7 +36,6 @@ class FileCommentInput extends Component {
         <FormGroup className="file-comment__edit">
           <FormControl
             placeholder="Comment goes here..."
-            bsSize="lg"
             type="text"
             value={this.state.commentText}
             onChange={this.handleChange}
