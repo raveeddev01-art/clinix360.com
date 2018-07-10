@@ -11,9 +11,9 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactionPicker } from "common/components";
-import { isAdmin } from "../../lib/utils";
+import { isAdmin, getFullUrl } from "../../lib/utils";
 
-@inject("messageStore", "teamFileStore")
+@inject("messageStore", "teamFileStore", "addonStore")
 class MessageActions extends PureComponent {
   constructor(props) {
     super(props);
@@ -95,8 +95,17 @@ class MessageActions extends PureComponent {
   };
 
   shareFile = () => {
-    const message = this.props.message;
+    const { message } = this.props;
     this.props.teamFileStore.openShareModal(message.upload_id);
+  };
+
+  showComments = () => {
+    const { addonStore, message } = this.props;
+
+    addonStore.setAddonPanel("files");
+    addonStore.toggleAddons(true);
+    addonStore.toggleAddonDetail(true);
+    addonStore.setAddonDetailPanel("File Details", message.upload_id);
   };
 
   markAsUnread = () => {
@@ -112,14 +121,19 @@ class MessageActions extends PureComponent {
   };
 
   delete = () => {
+    const { message, messageStore } = this.props;
+    let confirmMsg =
+      "Are you sure you want to delete this message? This cannot be undone.";
+
+    if (message.type === "upload") {
+      confirmMsg +=
+        " Note that deleting this message will not unshare the file.";
+    }
     confirmModal({
       title: "Delete Message",
-      message:
-        "Are you sure you want to delete this message? This cannot be undone.",
+      message: confirmMsg,
       okLabel: "Delete"
     }).then(() => {
-      const { message, messageStore } = this.props;
-
       messageStore.delete(message.id);
     });
   };
@@ -130,6 +144,10 @@ class MessageActions extends PureComponent {
     const unsent = message.status === "sending" || message.status === "failed";
     const { dropup, isEmojiPickerOpen } = this.state;
     const starredCX = message.starred ? "" : "-o";
+    const detailPageUrl =
+      message.fields &&
+      message.fields.encoded_id &&
+      getFullUrl(`/admin/files/${message.fields.encoded_id}`);
 
     // disabling context menu
     if (unsent) {
@@ -161,6 +179,18 @@ class MessageActions extends PureComponent {
             <i className="fa fa-smile-o" />
           </Button>
         </OverlayTrigger>
+
+        {(message.type === "upload" || message.type === "file_comment") && (
+            <OverlayTrigger
+              placement="top"
+              delayShow={150}
+              overlay={<Tooltip id="file-comments">Add Comment</Tooltip>}
+            >
+              <Button onClick={this.showComments}>
+                <i className="fa fa-comments" />
+              </Button>
+            </OverlayTrigger>
+          )}
 
         {message.type === "upload" && (
           <OverlayTrigger
@@ -225,10 +255,14 @@ class MessageActions extends PureComponent {
                 </MenuItem>
               )}
 
-            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+            <CopyToClipboard
+              text={detailPageUrl || message.text_content}
+              onCopy={this.copy}
+            >
               <MenuItem>
                 <span>
-                  <i className="fa fa-paste" />&nbsp;Copy message
+                  <i className="fa fa-paste" />&nbsp;Copy{" "}
+                  {detailPageUrl ? "Link" : "Message"}
                 </span>
               </MenuItem>
             </CopyToClipboard>
@@ -236,7 +270,7 @@ class MessageActions extends PureComponent {
             {mine && <MenuItem divider />}
 
             {mine &&
-              message.type !== "file_comment" && (
+              message.type === "chat" && (
                 <MenuItem onClick={this.edit}>
                   <span>
                     <i className="fa fa-pencil" />&nbsp;Edit message

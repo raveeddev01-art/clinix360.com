@@ -1342,11 +1342,11 @@ class MessageStore {
   @action
   onPublicLinkUpdate = payload => {
     const files = this.messages.filter(
-      message => message.upload_id === payload.id && message.type === "upload"
+      message => message.upload_id === payload.upload_id
     );
 
     files.forEach(file => {
-      const fields = { ...file.fields, url: payload.url };
+      const fields = { ...file.fields, public_url: payload.public_url };
       this.updateMessageData(file.id, { fields });
     });
   };

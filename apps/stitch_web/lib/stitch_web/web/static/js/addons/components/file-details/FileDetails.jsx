@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Avatar } from "common/components";
+import { Avatar, UserProfileMenu } from "common/components";
 import FileAttachment from "common/components/messages/message-content/file-attachment";
 import AttachmentActions from "common/components/messages/message-content/file-attachment/components/attachment-actions";
-import FileComment from "admin/files/components/FileComment";
-import FileCommentInput from "admin/files/components/FileCommentInput";
-import FileCommentGroup from "admin/files/components/FileCommentGroup";
+import FileComment from "common/components/file/FileComment";
+import FileCommentInput from "common/components/file/FileCommentInput";
+import FileCommentGroup from "common/components/file/FileCommentGroup";
+import FileInfo from "common/components/file/FileInfo";
 
 @inject("teamFileStore", "usersStore", "groupsStore", "desktopStore")
 @observer
@@ -39,13 +40,15 @@ class FileDetails extends Component {
 
     return (
       <small className="file-comment__groups">
-        <a href={url} target="_blank">
-          Open public link
-        </a>
+        <span className="file-comment__group-item">
+          <a href={url} target="_blank">
+            Open public link
+          </a>
 
-        <a onClick={() => this.props.teamFileStore.revokePublicLink()}>
-          <i className="fa fa-times-circle" />
-        </a>
+          <a onClick={() => this.props.teamFileStore.revokePublicLink()}>
+            <i className="fa fa-times-circle" />
+          </a>
+        </span>
       </small>
     );
   }
@@ -65,14 +68,17 @@ class FileDetails extends Component {
             <div className="pull-right">
               <AttachmentActions
                 url={file.url}
-                fileId={file.id}
+                file_id={file.id}
                 user_id={file.user_id}
+                encoded_id={file.encoded_id}
                 commentCount={file.comment_count}
                 onFileDownload={this.onFileDownload}
               />
             </div>
             <div className="file-heading__content-user">
-              {fileCreator.full_name}{" "}
+              <UserProfileMenu user={fileCreator} className="name">
+                {fileCreator.full_name}
+              </UserProfileMenu>
             </div>
             <div className="file-heading__content-file">{file.filename}</div>
           </div>
@@ -81,10 +87,12 @@ class FileDetails extends Component {
         {this.renderPublicLink(file)}
         <FileAttachment
           api_url={file.url}
-          fileId={file.id}
+          file_id={file.id}
           size="sm"
+          useActions={false}
           {...file}
         />
+        <FileInfo file={file} />
         {file.comments.map(comment => (
           <FileComment comment={comment} key={comment.id} />
         ))}

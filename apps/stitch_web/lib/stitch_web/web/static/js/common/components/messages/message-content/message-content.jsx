@@ -124,7 +124,7 @@ class MessageContent extends Component {
             {...message.fields}
             message={message}
             user_id={message.user_id}
-            fileId={message.upload_id}
+            file_id={message.upload_id}
             onCommentsClick={this.onCommentsClick}
           />
         )}

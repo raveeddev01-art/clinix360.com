@@ -162,3 +162,9 @@ export function prettyFileSize(size) {
   }
   return `${(size / 1024 / 1024 / 1024).toFixed(1)}GB`;
 }
+
+export function getFullUrl(url) {
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  return anchor.href;
+}

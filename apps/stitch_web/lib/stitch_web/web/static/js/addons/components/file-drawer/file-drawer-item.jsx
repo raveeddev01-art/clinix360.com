@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import FileThumb from "common/components/file-item/file-thumb";
+import FileThumb from "common/components/file/FileItem/file-thumb";
 
 @inject("desktopStore")
 class FileDrawerItem extends Component {

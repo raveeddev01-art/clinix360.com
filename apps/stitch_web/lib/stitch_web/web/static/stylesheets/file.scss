@@ -1,4 +1,5 @@
 .file-thumb {
+  min-width: 40px;
   width: 40px;
   height: 40px;
   background-color: #f3f3f3;
@@ -12,8 +13,12 @@
   width: 40px;
   font-size: 32px;
   line-height: 40px;
-  color: #036;
+  color: #003366;
   text-align: center;
+}
+
+.file-info {
+  display: inline-block;
 }
 
 // file item in the list
@@ -21,6 +26,15 @@
   display: flex;
   flex-direction: row;
   margin-bottom: 20px;
+  margin: 5px 0;
+  padding: 15px;
+  border: 1px solid #e2e2e2;
+  cursor: pointer;
+  border-radius: 4px;
+
+  .text-muted {
+    font-size: 12px;
+  }
 
   &__link {
     font-size: 16px;
@@ -55,6 +69,10 @@
     flex: 1;
 
     &-user {
+      a {
+        color: #003366;
+      }
+      font-weight: 700;
     }
 
     &-file {
@@ -134,7 +152,7 @@
     flex: 1;
 
     input.form-control {
-      font-size: 12px !important;
+      font-size: 14px !important;
     }
 
     &-buttons {
@@ -225,19 +243,21 @@
 }
 
 .files-addon {
+  background: #fff;
+
   .nav-pills {
     margin-bottom: 20px;
   }
 
   .nav-pills > li.active {
-    border-bottom: 2px solid #036;
+    border-bottom: 2px solid #003366;
   }
 
   .nav-pills > li.active > a,
   .nav-pills > li.active > a:hover,
   .nav-pills > li.active > a:focus {
     background: none;
-    color: #036;
+    color: #003366;
     font-weight: bold;
   }
 
@@ -248,7 +268,7 @@
   }
 
   .nav-pills > li > a {
-    color: #036;
+    color: #003366;
     font-size: 16px;
     padding: 5px 20px;
   }
@@ -290,7 +310,7 @@
     position: relative;
 
     &-action {
-      color: #036;
+      color: #003366;
       opacity: 0;
       position: absolute;
       right: -3px;
@@ -309,7 +329,7 @@
   }
 
   &__filename {
-    color: #036;
+    color: #003366;
     font-weight: bold;
     font-size: 16px;
     max-width: 200px;
@@ -332,7 +352,7 @@
     opacity: 0;
     margin-left: 10px;
     font-size: 16px;
-    color: #036;
+    color: #003366;
 
     &:hover {
       opacity: 0.7 !important;
@@ -367,7 +387,7 @@
 
   .btn {
     width: 34px;
-    color: #036;
+    color: #003366;
     background: #fff;
     border-color: rgba(0, 0, 0, 0.15);
     padding: 4px 8px;

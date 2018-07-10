@@ -1,28 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import getFileType from "lib/file-types";
+import { prettyFileSize } from "lib/utils";
 import AttachmentActions from "./components/attachment-actions";
 
 class DefaultFileAttachment extends Component {
-  getFileSize = size => {
-    if (size < 1024) {
-      return `${size} bytes`;
-    } else if (size < 1024 * 1024) {
-      return `${(size / 1024).toFixed(1)}KB`;
-    } else if (size < 1024 * 1024 * 1024) {
-      return `${(size / 1024 / 1024).toFixed(1)}MB`;
-    }
-    return `${(size / 1024 / 1024 / 1024).toFixed(1)}GB`;
-  };
-
   render() {
     const {
       filename,
       mimetype,
       size_in_bytes: size,
       url,
-      fileId,
+      file_id,
       user_id,
+      encoded_id,
+      public_url,
       comment_count: commentCount,
       onCommentsClick,
       onFileDownload,
@@ -45,7 +37,7 @@ class DefaultFileAttachment extends Component {
               </a>
             </div>
             <div className="attachment-detail">
-              {this.getFileSize(size)} {filetype.title}
+              {prettyFileSize(size)} {filetype.title}
             </div>
           </div>
 
@@ -53,8 +45,10 @@ class DefaultFileAttachment extends Component {
             message && (
               <AttachmentActions
                 url={url}
-                fileId={fileId}
+                file_id={file_id}
                 user_id={user_id}
+                encoded_id={encoded_id}
+                public_url={public_url}
                 message={message}
                 commentCount={commentCount}
                 onCommentsClick={onCommentsClick}
@@ -77,11 +71,15 @@ DefaultFileAttachment.propTypes = {
   onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool,
   user_id: PropTypes.number.isRequired,
-  fileId: PropTypes.number.isRequired,
+  encoded_id: PropTypes.string,
+  public_url: PropTypes.string,
+  file_id: PropTypes.number.isRequired,
   message: PropTypes.object
 };
 
 DefaultFileAttachment.defaultProps = {
+  encoded_id: "",
+  public_url: "",
   useActions: true,
   message: null,
   comment_count: 0,

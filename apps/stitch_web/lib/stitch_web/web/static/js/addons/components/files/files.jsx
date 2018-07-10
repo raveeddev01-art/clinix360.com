@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
-import FileList from "admin/files/components/FileList";
+import FileList from "common/components/file/FileList";
 
 @inject("teamFilesStore", "addonStore")
 @observer

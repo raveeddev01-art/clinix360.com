@@ -10,10 +10,10 @@ import { confirmModal } from "common/modals";
 import { isAdminOrOwner } from "lib/utils";
 
 import FileAttachment from "common/components/messages/message-content/file-attachment";
-import FileHeading from "./components/FileHeading";
-import FileInfo from "./components/FileInfo";
-import FileComment from "./components/FileComment";
-import FileCommentInput from "./components/FileCommentInput";
+import FileHeading from "common/components/file/FileHeading";
+import FileInfo from "common/components/file/FileInfo";
+import FileComment from "common/components/file/FileComment";
+import FileCommentInput from "common/components/file/FileCommentInput";
 
 @inject("usersStore", "teamFileStore", "titleStore")
 @observer
@@ -124,7 +124,7 @@ class FileDetailPage extends Component {
         <div className="file-detail__content">
           <FileAttachment
             api_url={file.url}
-            fileId={file.id}
+            file_id={file.id}
             {...file}
             useActions={false}
           />

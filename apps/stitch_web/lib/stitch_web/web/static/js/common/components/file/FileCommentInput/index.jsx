@@ -17,9 +17,16 @@ class FileCommentInput extends Component {
     };
   }
 
-  addComment = () => {
+  addComment = e => {
+    const { commentText } = this.state;
+    e.preventDefault();
+
+    if (!commentText) {
+      return;
+    }
+
     this.props.teamFileStore
-      .addComment(this.state.commentText)
+      .addComment(commentText)
       .then(() => this.setState({ commentText: "" }));
   };
 
@@ -31,11 +38,10 @@ class FileCommentInput extends Component {
     const { file } = this.props;
 
     return (
-      <div className="file-comment">
+      <form className="file-comment" onSubmit={this.addComment}>
         <Avatar user={currentUser} />
         <FormGroup className="file-comment__edit">
           <FormControl
-            placeholder="Comment goes here..."
             type="text"
             value={this.state.commentText}
             onChange={this.handleChange}
@@ -46,12 +52,12 @@ class FileCommentInput extends Component {
               label="Commenting in"
               showClose={false}
             />
-            <Button bsStyle="primary" onClick={this.addComment}>
+            <Button type="submit" bsStyle="primary">
               Add Comment
             </Button>
           </div>
         </FormGroup>
-      </div>
+      </form>
     );
   }
 }

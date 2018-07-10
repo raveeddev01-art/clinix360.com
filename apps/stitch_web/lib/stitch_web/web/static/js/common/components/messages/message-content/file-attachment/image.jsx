@@ -26,8 +26,10 @@ class ImageFileAttachment extends Component {
       onFileDownload,
       useActions,
       message,
-      fileId,
+      file_id,
+      encoded_id,
       user_id,
+      public_url,
       preview_height: height,
       preview_width: width,
       preview_url: previewUrl
@@ -78,8 +80,10 @@ class ImageFileAttachment extends Component {
                 message && (
                   <AttachmentActions
                     url={url}
-                    fileId={fileId}
+                    file_id={file_id}
                     user_id={user_id}
+                    encoded_id={encoded_id}
+                    public_url={public_url}
                     message={message}
                     commentCount={commentCount}
                     onCommentsClick={onCommentsClick}
@@ -126,7 +130,9 @@ ImageFileAttachment.propTypes = {
   onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool,
   size: PropTypes.string,
-  fileId: PropTypes.number.isRequired,
+  file_id: PropTypes.number.isRequired,
+  encoded_id: PropTypes.string,
+  public_url: PropTypes.string,
   user_id: PropTypes.number.isRequired,
   message: PropTypes.object
 };
@@ -136,8 +142,9 @@ ImageFileAttachment.defaultProps = {
   preview_height: 0,
   preview_width: 0,
   preview_url: "",
+  public_url: "",
   filename: "",
-  api_url: "",
+  encoded_id: "",
   comment_count: 0,
   size: "md",
   onCommentsClick: () => undefined,

@@ -5,8 +5,8 @@ import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import FileList from "./components/FileList";
-import ListFilter from "./components/FileList/ListFilter";
+import FileList from "common/components/file/FileList";
+import ListFilter from "common/components/file/FileList/ListFilter";
 
 @inject("teamFilesStore", "usersStore")
 @observer

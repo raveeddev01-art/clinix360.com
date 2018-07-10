@@ -8,7 +8,7 @@ class TeamFilesStore {
     limit: 10
   };
   @observable pageMeta = {};
-  @observable currentPage = 0;
+  @observable currentPage = 1;
   @observable creatorId = undefined;
   @observable fileType = "all";
   @observable pageLimit = 10;
@@ -18,17 +18,11 @@ class TeamFilesStore {
   }
 
   @computed
-  get pageInfo() {
-    const { skip, limit, count } = this.pageMeta;
-    return { from: skip + 1, to: skip + limit, count };
-  }
-
-  @computed
   get pages() {
     const meta = this.pageMeta;
-    const totalPages = Math.ceil(meta.count / meta.limit);
-    const currentPage = Math.ceil(meta.skip / meta.limit);
-    return { totalPages, currentPage };
+    const count = meta.count || 0;
+    const currentPage = Math.floor(meta.skip / meta.limit) + 1;
+    return { count, currentPage, limit: meta.limit || this.pageLimit };
   }
 
   @action
@@ -56,7 +50,7 @@ class TeamFilesStore {
       ...options,
       creator_id: this.creatorId,
       filetype: this.fileType,
-      skip: this.currentPage * this.pageLimit,
+      skip: (this.currentPage - 1) * this.pageLimit,
       limit: this.pageLimit
     });
 

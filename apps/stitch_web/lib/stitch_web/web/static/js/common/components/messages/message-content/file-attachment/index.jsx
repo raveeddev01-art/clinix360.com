@@ -27,7 +27,7 @@ class FileAttachment extends Component {
       filename,
       mimetype,
       filetype,
-      fileId
+      file_id
     } = this.props;
 
     if (desktopStore.isElectron) {
@@ -36,7 +36,7 @@ class FileAttachment extends Component {
       e.nativeEvent.stopImmediatePropagation();
 
       desktopStore.sendDownloadRequest({
-        id: fileId,
+        id: file_id,
         url: api_url,
         filename,
         mimetype,
@@ -68,7 +68,7 @@ FileAttachment.propTypes = {
   mimetype: PropTypes.string.isRequired,
   filename: PropTypes.string.isRequired,
   filetype: PropTypes.string.isRequired,
-  fileId: PropTypes.number.isRequired,
+  file_id: PropTypes.number.isRequired,
   message: PropTypes.object,
   onCommentsClick: PropTypes.func.isRequired
 };

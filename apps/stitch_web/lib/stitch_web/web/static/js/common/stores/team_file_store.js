@@ -13,9 +13,9 @@ class TeamFileStore {
 
   @action
   createPublicLink = fileId => {
-    post(
-      `/api/v1/files/${fileId || this.file.id}/create_public_link`
-    ).then(response => {
+    post(`/api/v1/files/${fileId || this.file.id}/create_public_link`, {
+      hideNotify: true
+    }).then(response => {
       this.file = { ...this.file, ...response.data };
 
       readonlyInputModal({
@@ -66,7 +66,8 @@ class TeamFileStore {
   updateComment = (commentId, commentText) => {
     const body = { file_comment: { text_content: commentText } };
     return put(`/api/v1/file_comments/${commentId}`, {
-      body
+      body,
+      hideNotify: true
     }).then(response => {
       this.file.comments = this.file.comments.map(
         comment => (comment.id === commentId ? response.data : comment)
@@ -99,7 +100,8 @@ class TeamFileStore {
   addComment(text) {
     const body = { file_comment: { text_content: text } };
     return post(`/api/v1/files/${this.file.id}/comments`, {
-      body
+      body,
+      hideNotify: true
     }).then(response => {
       this.file.comments = uniqBy([...this.file.comments, response.data], "id");
     });
@@ -117,7 +119,8 @@ class TeamFileStore {
   share = (groupId, textContent) => {
     const body = { group_id: groupId, text_content: textContent };
     return post(`/api/v1/files/${this.file.id}/share`, {
-      body
+      body,
+      hideNotify: true
     }).then(response => {
       this.file = response.data;
     });
@@ -127,7 +130,8 @@ class TeamFileStore {
   unshare = groupId => {
     const body = { group_id: groupId };
     return post(`/api/v1/files/${this.file.id}/unshare`, {
-      body
+      body,
+      hideNotify: true
     }).then(response => {
       this.file = response.data;
     });

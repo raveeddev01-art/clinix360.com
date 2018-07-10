@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import Pagination from "react-bootstrap/lib/Pagination";
-import times from "lodash/times";
-import FileItem from "common/components/file-item";
+import Pagination from "common/components/pagination";
+import FileItem from "common/components/file/FileItem";
 
 @inject("teamFilesStore")
 @observer
@@ -17,17 +16,13 @@ class FileList extends Component {
         {files.map(file => (
           <FileItem key={file.id} file={file} onFileClick={onFileClick} />
         ))}
-        <Pagination>
-          {times(pages.totalPages, i => (
-            <Pagination.Item
-              key={i}
-              onClick={() => setPage(i)}
-              active={i === pages.currentPage}
-            >
-              {i + 1}
-            </Pagination.Item>
-          ))}
-        </Pagination>
+        <Pagination
+          activePage={pages.currentPage}
+          perPage={pages.limit}
+          total={pages.count}
+          onPageClick={setPage}
+          maxAround={1}
+        />
       </div>
     );
   }
