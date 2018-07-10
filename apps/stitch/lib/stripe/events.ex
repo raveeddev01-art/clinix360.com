@@ -4,7 +4,7 @@ defmodule Stitch.Stripe.Events do
   """
   require Logger
   alias Stitch.Billing.{Plan, Notifications}
-  alias Stitch.{Billing, TeamQueries, AWS.S3}
+  alias Stitch.{Billing, TeamQueries, AWS.S3, Billing.Subscription}
   alias Stitch.Web.Api.V1.Billing.HistoryView
 
   # Successful payment
@@ -19,6 +19,7 @@ defmodule Stitch.Stripe.Events do
 
     with {:ok, subscription} <-
            Billing.update_subscription(customer_id, subscription_id, sub_params),
+         {:paid_tier, true} <- {:paid_tier, Subscription.paid_tier(subscription)},
          team = TeamQueries.get_by_id(subscription.team_id),
          owner = TeamQueries.get_team_owner(team) do
       Notifications.send_successful_payment(owner, team)
