@@ -151,7 +151,8 @@ defmodule Stitch.Web.Api.V1.FileController do
   def create_public_link(conn, %{"id" => upload_id}) do
     current_user = conn.assigns.current_user
 
-    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+    with {:upload, %Upload{} = upload} <-
+           {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
          {:public_link, {:ok, upload}} <- {:public_link, Upload.create_public_link(upload)} do
       render(conn, "show.json", %{file: upload})
@@ -170,7 +171,8 @@ defmodule Stitch.Web.Api.V1.FileController do
   def revoke_public_link(conn, %{"id" => upload_id}) do
     current_user = conn.assigns.current_user
 
-    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+    with {:upload, %Upload{} = upload} <-
+           {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
          {:public_link, {:ok, _upload}} <- {:public_link, Upload.revoke_public_link(upload)} do
       render(conn, "show.json", %{file: upload})
