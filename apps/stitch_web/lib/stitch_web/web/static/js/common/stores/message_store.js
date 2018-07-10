@@ -1341,16 +1341,12 @@ class MessageStore {
 
   @action
   onPublicLinkUpdate = payload => {
-    console.log("onPublicLinkUpdate", payload);
-
     const files = this.messages.filter(
       message => message.upload_id === payload.id && message.type === "upload"
     );
 
     files.forEach(file => {
-      console.log("old fields", file.fields);
       const fields = { ...file.fields, url: payload.url };
-      console.log("new fields", fields);
       this.updateMessageData(file.id, { fields });
     });
   };
