@@ -173,7 +173,7 @@
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_create",
-        "description": "Create a conversation message."
+        "description": "Create a conversation message as a patient."
       },
       "get": {
         "tags": [
@@ -218,6 +218,42 @@
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_index",
         "description": "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
+      }
+    },
+    "/api/v1/patient/conversations/{conversation_id}/mark_as_read": {
+      "post": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 100,
+            "type": "integer",
+            "required": true,
+            "name": "conversation_id",
+            "in": "path",
+            "description": "Conversation to mark as read"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_mark_as_read",
+        "description": "Marks a message as read as a patient."
       }
     },
     "/api/v1/patient/conversations/{conversation_id}": {
@@ -472,6 +508,57 @@
       }
     },
     "/api/v1/conversations/{conversation_id}/messages": {
+      "post": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ConversationMessage"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 209,
+            "type": "integer",
+            "required": true,
+            "name": "conversation_id",
+            "in": "path",
+            "description": "Conversation ID"
+          },
+          {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object"
+                }
+              }
+            },
+            "required": true,
+            "name": "message",
+            "in": "body",
+            "description": "Message to create. Must include 'text_content' attribute."
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.create",
+        "description": "Create a conversation message as a provider."
+      },
       "get": {
         "tags": [
           "ConversationMessage"
@@ -515,6 +602,42 @@
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.index",
         "description": "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
+      }
+    },
+    "/api/v1/conversation_messages/{conversation__message_id}": {
+      "delete": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "204": {
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 209,
+            "type": "integer",
+            "required": true,
+            "name": "conversation__message_id",
+            "in": "path",
+            "description": "Conversation Message ID"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.delete",
+        "description": "Deletes a conversation message as a provider."
       }
     }
   },

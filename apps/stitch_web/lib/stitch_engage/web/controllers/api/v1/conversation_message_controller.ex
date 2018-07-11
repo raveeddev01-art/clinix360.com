@@ -320,13 +320,19 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   #   MARK AS READ
   # ================
 
-  def mark_as_read(conn, %{"conversation_id" => conversation_id}) do
-    current_user = conn.assigns.current_user
+  def mark_as_read(conn, %{"conversation_id" => conversation_id} = params) do
+    do_mark_as_read(conn, params, conn.assigns.current_user)
+  end
 
+  def patient_mark_as_read(conn, %{"conversation_id" => conversation_id} = params) do
+    do_mark_as_read(conn, params, conn.assigns.patient)
+  end
+
+  def do_mark_as_read(conn, %{"conversation_id" => conversation_id}, user_or_patient) do
     with {:conversation, %Conversation{} = conversation} <-
            {:conversation, Repo.get(Conversation, conversation_id)},
          {:ok, response} <-
-           ReadStatus.mark_as_read(:conversation_message, conversation, current_user) do
+           ReadStatus.mark_as_read(:conversation_message, conversation, user_or_patient) do
       %{
         mark_conversation_messages_as_read: {_, conversation_messages},
         mark_conversation_as_read: {1, [conversation_user]}
@@ -348,7 +354,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
       mark_as_read_events(
         conversation,
-        current_user,
+        user_or_patient,
         conversation_messages_json,
         mark_as_read_json
       )

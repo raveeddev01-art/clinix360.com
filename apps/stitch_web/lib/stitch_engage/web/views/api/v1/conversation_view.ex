@@ -47,9 +47,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
       id: conversation.id,
       inbox_id: conversation.inbox_id,
       inserted_at: conversation.inserted_at,
-      updated_at: conversation.updated_at
-      # TODO: Implement read/unread for patients
-      # is_unread: Map.get(conversation, :is_unread)
+      updated_at: conversation.updated_at,
+      is_unread: Map.get(conversation, :is_unread)
     }
   end
 

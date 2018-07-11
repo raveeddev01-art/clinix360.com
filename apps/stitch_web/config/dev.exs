@@ -51,7 +51,7 @@ config :stitch_web, Stitch.Web.Endpoint,
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg|json)$},
       ~r{priv/gettext/.*(po)$},
       ~r{lib/stitch_web/web/views/.*(ex)$},
-      ~r{lib/stitch_web/web/controllers/.*(ex)$},
+      # ~r{lib/stitch_web/web/controllers/.*(ex)$},
       ~r{lib/stitch_web/web/templates/.*(eex)$}
     ]
   ],
