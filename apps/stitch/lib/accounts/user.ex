@@ -3,7 +3,6 @@ defmodule Stitch.Accounts.User do
   The User schema module.
   """
   use Ecto.Schema
-  import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.User
   alias Stitch.{Repo, Accounts.ProfileImage, GroupUser}

@@ -2,6 +2,7 @@ defmodule Stitch.Stripe.Events do
   @moduledoc """
   Handles Stripe webhook events.
   """
+  require Logger
   alias Stitch.Billing.{Plan, Notifications}
   alias Stitch.{Billing, TeamQueries, AWS.S3}
   alias Stitch.Web.Api.V1.Billing.HistoryView
@@ -142,14 +143,20 @@ defmodule Stitch.Stripe.Events do
       try do
         {:ok, %{status_code: 200}} = S3.upload(filename)
       rescue
-        _ -> nil
+        e ->
+          Logger.error("#{inspect(e)}")
+          nil
       catch
-        :exit, _ -> nil
+        :exit, e ->
+          Logger.error("#{inspect(e)}")
+          nil
       end
 
       S3.fullpath(filename)
     else
-      _ -> nil
+      e ->
+        Logger.error("#{inspect(e)}")
+        nil
     end
   end
 end
