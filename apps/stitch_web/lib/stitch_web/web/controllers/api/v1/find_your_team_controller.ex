@@ -1,5 +1,6 @@
 defmodule Stitch.Web.Api.V1.FindYourTeamController do
   use Stitch.Web, :controller
+  use Stitch.Web.Api.V1.FindYourTeamDocs
 
   alias Stitch.{
     FindYourTeam,

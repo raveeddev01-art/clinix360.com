@@ -1,6 +1,7 @@
 defmodule Stitch.Web.Api.V1.AuthenticationController do
   use Stitch.Web, :controller
   alias Stitch.User.{Authentication}
+  use Stitch.Web.Api.V1.AuthenticationDocs
 
   alias Stitch.{
     PatientQueries,
@@ -10,8 +11,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
   }
 
   alias Stitch.Accounts.{Email, User, PasswordResetToken}
-  alias Stitch.Web.Api.V1.UserView
-  alias Stitch.Web.Api.V1.AuthenticationView
+  alias Stitch.Web.Api.V1.{AuthenticationView, UserView, PatientView}
   alias Stitch.Web.EventsChannel
 
   action_fallback(Stitch.Web.Api.FallbackController)
@@ -32,6 +32,28 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
         conn
         |> login_user(user)
         |> render(UserView, "login.json", %{user: user, redirect_url: path})
+    end
+  end
+
+  def submit_patient_login(conn, %{"email" => email, "password" => password}) do
+    team = conn.assigns.team
+
+    case Stitch.User.Authentication.validate_patient_email_and_password(team.id, email, password) do
+      %Patient{} = patient ->
+        case patient.disabled do
+          false ->
+            redirect_url = get_session(conn, :redirect_url) || "/patient"
+
+            conn
+            |> login_patient(patient)
+            |> render(PatientView, "login.json", %{patient: patient, redirect_url: redirect_url})
+
+          true ->
+            {:error, :not_authorized, "This account is disabled."}
+        end
+
+      _ ->
+        {:error, :not_authorized, "Email or password is incorrect."}
     end
   end
 
