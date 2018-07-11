@@ -47,6 +47,7 @@ class AttachmentActions extends Component {
       url,
       onCommentsClick,
       onFileDownload,
+      isOriginalOpenVisible,
       message,
       public_url,
       encoded_id,
@@ -83,15 +84,17 @@ class AttachmentActions extends Component {
           </Button>
         </OverlayTrigger>
 
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          overlay={<Tooltip id="detail-page">Open Original</Tooltip>}
-        >
-          <Button target="_blank" href={detailPageUrl}>
-            <i className="fa fa-external-link" />
-          </Button>
-        </OverlayTrigger>
+        {isOriginalOpenVisible && (
+          <OverlayTrigger
+            placement="top"
+            delayShow={150}
+            overlay={<Tooltip id="detail-page">Open Original</Tooltip>}
+          >
+            <Button target="_blank" href={detailPageUrl}>
+              <i className="fa fa-external-link" />
+            </Button>
+          </OverlayTrigger>
+        )}
 
         <OverlayTrigger
           placement="top"
@@ -184,12 +187,14 @@ AttachmentActions.propTypes = {
   encoded_id: PropTypes.string,
   file_id: PropTypes.number.isRequired,
   message: PropTypes.object,
+  isOriginalOpenVisible: PropTypes.bool.isRequired,
   onCommentsClick: PropTypes.func,
   onFileDownload: PropTypes.func.isRequired
 };
 
 AttachmentActions.defaultProps = {
   encoded_id: "",
+  isOriginalOpenVisible: true,
   onCommentsClick: null,
   public_url: null,
   message: null

@@ -9,7 +9,6 @@ class FileInfo extends Component {
     const prettySize = prettyFileSize(file.size_in_bytes);
     const extension = file.filetype;
     const addedOn = moment(file.inserted_at).format("D MMMM, YYYY");
-    const accessPerm = file.public ? "Public File" : "Private File";
 
     return (
       <small className="file-info">
@@ -17,7 +16,6 @@ class FileInfo extends Component {
         <span className="file-comment__group-item">
           {prettySize} {extension.toUpperCase()}
         </span>
-        <span className="file-comment__group-item">{accessPerm}</span>
       </small>
     );
   }

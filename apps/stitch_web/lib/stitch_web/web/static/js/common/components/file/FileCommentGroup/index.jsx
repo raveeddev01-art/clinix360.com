@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Link } from "react-router-dom";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
-@inject("groupsStore")
+@inject("groupsStore", "teamFileStore")
 @observer
 class FileCommentGroup extends Component {
   onUnshareClick(group) {
@@ -11,8 +13,8 @@ class FileCommentGroup extends Component {
   }
 
   render() {
-    const { file, label, showClose } = this.props;
-    const groups = this.props.groupsStore.groups.filter(
+    const { file, label, showClose, groupsStore } = this.props;
+    const groups = groupsStore.groups.filter(
       group =>
         group.type !== "dm" &&
         group.type !== "multi_dm" &&
@@ -33,9 +35,19 @@ class FileCommentGroup extends Component {
               {group.slug}
             </Link>
             {showClose && (
-              <a onClick={() => this.onUnshareClick(group)}>
-                <i className="fa fa-minus-circle" />
-              </a>
+              <OverlayTrigger
+                placement="top"
+                delayShow={150}
+                overlay={
+                  <Tooltip id="close-share">
+                    Unshare from {groupsStore.getGroupName(group)}
+                  </Tooltip>
+                }
+              >
+                <a onClick={() => this.onUnshareClick(group)}>
+                  <i className="fa fa-minus-circle" />
+                </a>
+              </OverlayTrigger>
             )}
           </span>
         ))}

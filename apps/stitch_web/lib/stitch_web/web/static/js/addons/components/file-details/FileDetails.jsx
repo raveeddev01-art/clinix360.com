@@ -40,15 +40,14 @@ class FileDetails extends Component {
 
     return (
       <small className="file-comment__groups">
-        <span className="file-comment__group-item">
-          <a href={url} target="_blank">
-            Open public link
-          </a>
+        <span className="file-dot" />
+        <a className="no-margin" href={url} target="_blank">
+          Open public link
+        </a>
 
-          <a onClick={() => this.props.teamFileStore.revokePublicLink()}>
-            <i className="fa fa-times-circle" />
-          </a>
-        </span>
+        <a onClick={() => this.props.teamFileStore.revokePublicLink()}>
+          <i className="fa fa-times-circle" />
+        </a>
       </small>
     );
   }
@@ -83,16 +82,18 @@ class FileDetails extends Component {
             <div className="file-heading__content-file">{file.filename}</div>
           </div>
         </div>
-        <FileCommentGroup file={file} />
-        {this.renderPublicLink(file)}
         <FileAttachment
-          api_url={file.url}
+          api_url={file.api_url}
           file_id={file.id}
           size="sm"
           useActions={false}
           {...file}
         />
         <FileInfo file={file} />
+        <span className="file-dot" />
+        <FileCommentGroup file={file} />
+        {this.renderPublicLink(file)}
+        <span className="spacer-10" />
         {file.comments.map(comment => (
           <FileComment comment={comment} key={comment.id} />
         ))}
