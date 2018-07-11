@@ -78,17 +78,12 @@ class InboxMenu extends Component {
     return (
       <div className="inbox-menu">
         <div className="flex-header">
-          <Form>
-            <i className="fa fa-search" />
-            <FormControl type="email" placeholder="Search" />
-          </Form>
-
           <OverlayTrigger
             placement="bottom"
             overlay={<Tooltip id="compose-message">Compose Message</Tooltip>}
           >
-            <Button onClick={this.onComposeClick}>
-              <i className="fa fa-pencil-square-o" />
+            <Button block onClick={this.onComposeClick}>
+              <i className="fa fa-pencil-square-o" /> Compose
             </Button>
           </OverlayTrigger>
         </div>

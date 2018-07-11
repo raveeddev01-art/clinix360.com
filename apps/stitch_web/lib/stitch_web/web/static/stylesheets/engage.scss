@@ -109,13 +109,21 @@ $dark-border-color: #ccc;
     }
 
     button {
-      color: #c2c2c2;
-      font-size: 18px;
+      color: $brand-primary;
+      font-size: 15px;
+      font-weight: 700;
       background: #fff;
       border: 2px solid $border-color;
       border-radius: 4px;
-      padding: 2px 11px;
+      padding: 4px 11px;
       margin-left: 12px;
+
+      i.fa {
+        font-size: 18px;
+        margin-right: 2px;
+        position: relative;
+        top: 2px;
+      }
 
       &:hover {
         color: #fff;
@@ -181,7 +189,9 @@ $dark-border-color: #ccc;
 
       .item {
         display: flex;
-        height: 97px;
+        height: 122px;
+        text-decoration: none;
+        border-bottom: 1px solid $border-color-secondary;
         padding: 12px 0 0 15px;
 
         &:hover {
@@ -209,7 +219,6 @@ $dark-border-color: #ccc;
           flex: 1;
           color: #808080;
           font-size: 16px;
-          border-bottom: 1px solid $border-color-secondary;
           padding: 0 15px 12px 0;
 
           .heading {
@@ -220,7 +229,7 @@ $dark-border-color: #ccc;
             .user {
               flex: 1;
               color: $brand-primary;
-              font-weight: 600;
+              font-weight: 700;
             }
 
             .date {
@@ -236,12 +245,22 @@ $dark-border-color: #ccc;
           }
 
           .message {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            -webkit-line-clamp: 2;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            max-height: 48px;
+            .subject {
+              color: #333;
+              max-width: 350px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            .text {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              -webkit-line-clamp: 2;
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              max-height: 48px;
+            }
           }
         }
 
@@ -250,8 +269,7 @@ $dark-border-color: #ccc;
         }
 
         &.active {
-          background: #fff;
-          box-shadow: inset 6px 0 0 $brand-primary;
+          background: #f0f1f3;
 
           .item__content {
             color: #333;
@@ -266,7 +284,7 @@ $dark-border-color: #ccc;
 
       h3 {
         color: $brand-primary;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 700;
         margin: 0;
       }

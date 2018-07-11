@@ -50,9 +50,15 @@ class Conversation extends Component {
           </div>
 
           <div className="message">
-            {conversation.latest_conversation_message
-              ? conversation.latest_conversation_message.text_content
-              : conversation.conversation_messages[0].text_content}
+            <div className="subject">
+              This is a very long subject title, I hope it doesn't line break
+            </div>
+
+            <div className="text">
+              {conversation.latest_conversation_message
+                ? conversation.latest_conversation_message.text_content
+                : conversation.conversation_messages[0].text_content}
+            </div>
           </div>
         </div>
       </Link>
