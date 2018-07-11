@@ -40,9 +40,9 @@ defmodule Stitch.Web.Router do
   scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
-    post("/find-your-team", FindYourTeamController, :patient_create)
     get("/find-your-team", AuthenticationController, :index)
     get("/find-your-team/:token", AuthenticationController, :index)
+    post("/find-your-team", FindYourTeamController, :patient_create)
     delete("/find-your-team/:token", FindYourTeamController, :patient_delete)
   end
 
@@ -153,4 +153,26 @@ defmodule Stitch.Web.Router do
     Redirect,
     external: "https://1lyrransd9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-win"
   )
+
+  # ==============
+  #   DOC ROUTES
+  # ==============
+
+  scope "/api/docs" do
+    forward(
+      "/",
+      PhoenixSwagger.Plug.SwaggerUI,
+      otp_app: :stitch_web,
+      swagger_file: "swagger.json"
+    )
+  end
+
+  def swagger_info do
+    %{
+      info: %{
+        version: "1.0",
+        title: "Stitch"
+      }
+    }
+  end
 end

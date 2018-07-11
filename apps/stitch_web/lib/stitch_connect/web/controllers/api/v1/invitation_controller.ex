@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use Stitch.Web, :controller
+  use Stitch.Web.Api.V1.InvitationDocs
 
   alias Stitch.{Invitation, FeatureGateway, TeamAuthorization}
   alias Stitch.Web.{TeamChannel, EventsChannel}
@@ -256,7 +257,10 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     case Invitation.accept_and_complete_patient_onboarding(invite_token, params) do
       {:ok, %{patient: patient}} ->
         TeamChannel.broadcast_patient_updated(patient.team_id, patient)
-        json(conn, %{id: patient.id, email: patient.email, onboarded: patient.onboarded})
+
+        conn
+        |> login_patient(patient)
+        |> json(%{id: patient.id, email: patient.email, onboarded: patient.onboarded})
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

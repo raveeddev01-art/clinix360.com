@@ -26,6 +26,33 @@ defmodule Stitch.Web.Api.V1.Docs do
     quote do
       def swagger_definitions do
         %{
+          FindTeamLogin:
+            swagger_schema do
+              title("FindTeamLogin")
+              description("Info returned when given a find team token.")
+
+              properties do
+                teams(
+                  :array,
+                  "Teams to log into with name, slug, and login_token.",
+                  example: [%{name: "VUMC", slug: "vumc", login_token: "djif43b9fb"}]
+                )
+
+                login_token(:string, "Token used to log into found teams.", example: "djif43b9fb")
+              end
+            end,
+          PatientOnboardingCompletion:
+            swagger_schema do
+              title("PatientOnboardingCompletion")
+
+              description("Patient info returned on successful onboard.")
+
+              properties do
+                id(:integer, "Unique identifier")
+                email(:string, "Email of the patient", example: "jeff@teamstitch.com")
+                onboarded(:boolean, "Whether the patient is onboarded.")
+              end
+            end,
           PatientInbox:
             swagger_schema do
               title("Inbox")
@@ -307,6 +334,28 @@ defmodule Stitch.Web.Api.V1.Docs do
               description("A collection of ConversationMessages")
               type(:array)
               items(Schema.ref(:ConversationMessage))
+            end,
+          PatientLogin:
+            swagger_schema do
+              title("Patient")
+              description("A patient user.")
+
+              properties do
+                id(:integer)
+                avatar_thumb(:string)
+                avatar(:string)
+                disabled(:boolean)
+                email(:string)
+                first_name(:string)
+                full_name(:string)
+                inserted_at(:string)
+                last_name(:string)
+                mrn(:string)
+                onboarded(:booelan)
+                phone(:string)
+                token(:string)
+                redirect_url(:string)
+              end
             end,
           Patient:
             swagger_schema do

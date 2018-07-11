@@ -67,30 +67,4 @@ defmodule StitchConnect.Web.InvitationController do
       "error" => "Already onboarded"
     })
   end
-
-  # def patient_onboard(conn, %{"token" => invite_token, "patient" => patient_params}) do
-  #   case Invitation.accept_and_complete_patient_onboarding(invite_token, patient_params) do
-  #     {:ok, %{patient: patient}} ->
-  #       TeamChannel.broadcast_patient_updated(patient.team_id, patient)
-
-  #       conn
-  #       |> login_patient(patient)
-  #       |> redirect(to: "/patient")
-
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       conn
-  #       |> put_status(:unprocessable_entity)
-  #       |> json(%{message: changeset_errors_to_string(changeset)})
-
-  #     {:error, message} when is_binary(message) ->
-  #       conn
-  #       |> put_status(:unprocessable_entity)
-  #       |> json(%{message: message})
-
-  #     {:error, _} ->
-  #       conn
-  #       |> put_status(:unprocessable_entity)
-  #       |> json(%{message: "Could not finish onboarding patient."})
-  #   end
-  # end
 end
