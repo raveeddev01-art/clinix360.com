@@ -250,4 +250,12 @@ defmodule Stitch.GroupQueries do
     |> where([g], g.id in ^group_ids)
     |> Repo.all()
   end
+
+  def groups_for_comment(group_ids, user) do
+    Group
+    |> join(:inner, [g], gu in GroupUser, g.id == gu.group_id)
+    |> where([g, gu], gu.user_id == ^user.id)
+    |> where([g, gu], g.id in ^group_ids)
+    |> Repo.all()
+  end
 end
