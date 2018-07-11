@@ -98,11 +98,13 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
 
   def delete(conn, %{"id" => upload_comment_id}) do
     current_user = conn.assigns.current_user
+    team = conn.assigns.team
 
     with {:upload_comment, upload_comment} <-
            {:upload_comment, UploadComment.get(upload_comment_id)},
          {:authorized, true} <-
-           {:authorized, FileAuthorization.is_comment_creator?(upload_comment, current_user)},
+           {:authorized,
+            FileAuthorization.can_delete_comment?(upload_comment, current_user, team)},
          {:deleted_comment, {:ok, upload_comment, messages}} <-
            {:deleted_comment, UploadComment.delete(upload_comment, current_user)} do
       Enum.each(messages, fn message ->
