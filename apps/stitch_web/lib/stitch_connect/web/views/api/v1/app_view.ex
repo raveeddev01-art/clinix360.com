@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.AppView do
   use Stitch.Web, :view
 
-  def render("index.json", %{apps: apps} = attrs) do
+  def render("index.json", %{apps: apps}) do
     Enum.map(apps, &app_json/1)
   end
 

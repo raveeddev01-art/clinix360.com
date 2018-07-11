@@ -1,7 +1,6 @@
 defmodule Stitch.Drchrono do
   alias Stitch.Drchrono.{Bot, Token}
   alias Stitch.{Repo, Integration}
-  import Ecto.Query
   require Logger
 
   defp value_or_na(nil), do: "N/A"

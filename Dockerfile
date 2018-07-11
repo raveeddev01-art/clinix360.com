@@ -36,7 +36,7 @@ ADD apps/stitch_web/mix.exs apps/stitch_web/mix.exs
 ADD apps/stitch/mix.exs apps/stitch/mix.exs
 RUN mix deps.get
 RUN rm -rf _build/prod
-RUN mix compile
+RUN mix deps.compile
 
 ADD apps/stitch_web/package.json apps/stitch_web/package.json
 ADD apps/stitch_web/yarn.lock apps/stitch_web/yarn.lock
@@ -44,8 +44,9 @@ RUN cd apps/stitch_web && yarn
 
 # This actually adds the app
 ADD . .
-WORKDIR /app/apps/stitch_web
+RUN mix compile
 
+WORKDIR /app/apps/stitch_web
 RUN npm run deploy
 
 # Obviates the need for a Procfile

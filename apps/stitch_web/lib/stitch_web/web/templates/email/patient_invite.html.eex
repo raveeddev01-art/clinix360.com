@@ -1,0 +1,16 @@
+<%# This cannot be accessed by any users yet - added for internal purposes - will be replaced before going live %>
+
+<div>
+  <h1>
+    WELCOME TO STITCH
+  </h1>
+  <ul>
+    <li>
+      patient email: <%=@patient_email%>
+    </li>
+
+    <li>
+      join_link: <a href="<%=@join_link%>"> <%=@join_link%> </a>
+    </li>
+  </ul>
+</div>
