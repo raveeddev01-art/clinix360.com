@@ -433,6 +433,14 @@ defmodule StitchConnect.Web.GroupChannel do
     end)
   end
 
+  def broadcast_file_comment_deleted(upload) do
+    file_json = FileView.render("show_with_comments.json", %{file: upload})
+
+    Enum.each(upload.shared_in, fn group_id ->
+      @endpoint.broadcast("groups:id:#{group_id}", "file_comment_deleted", file_json)
+    end)
+  end
+
   def broadcast_file_public_link_updated(upload) do
     url =
       if upload.public_token,

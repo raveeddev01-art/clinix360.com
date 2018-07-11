@@ -149,6 +149,10 @@ class ChannelStore {
       teamFileStore.onFileCommentAdded
     );
     this.groupChannel.on(
+      "file_comment_deleted",
+      teamFileStore.onFileCommentDeleted
+    );
+    this.groupChannel.on(
       "file_public_link_updated",
       messageStore.onPublicLinkUpdate
     );
