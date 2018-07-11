@@ -87,7 +87,7 @@ defmodule Stitch.Files.UploadComment do
   defp decrement_comment_counter(result), do: result
 
   defp insert_file_comment_messages({:ok, upload_comment}, upload, user, presence, attrs) do
-    groups = GroupQueries.groups_for_comment(upload.shared_in, user) |> IO.inspect()
+    groups = GroupQueries.groups_for_comment(upload.shared_in, user)
 
     result =
       Enum.map(groups, fn group ->
