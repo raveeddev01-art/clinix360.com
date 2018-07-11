@@ -10,6 +10,7 @@ defmodule Stitch.ReadStatus do
   alias Stitch.{
     Repo,
     Accounts.User,
+    AppUserId,
     Patient,
     GroupUser,
     GroupQueries,
@@ -18,7 +19,8 @@ defmodule Stitch.ReadStatus do
     Engage.Conversation,
     Engage.ConversationMessage,
     Engage.ConversationProvider,
-    Engage.ConversationPatient
+    Engage.ConversationPatient,
+    Mobile.ConversationMessageNotificationQueue
   }
 
   alias Ecto.Multi
@@ -61,7 +63,7 @@ defmodule Stitch.ReadStatus do
       case result do
         {:ok, %{mark_messages_as_read: {_, messages}}} ->
           message_ids = Enum.map(messages, & &1.id)
-          Stitch.Mobile.NotificationQueue.remove_message_ids(user_id, message_ids)
+          Stitch.Mobile.MessageNotificationQueue.remove_message_ids(user_id, message_ids)
           result
 
         error ->
@@ -87,7 +89,7 @@ defmodule Stitch.ReadStatus do
         user.id
       )
       |> Repo.transaction()
-      |> handle_mark_as_read_multi()
+      |> handle_mark_as_read_multi(user)
     else
       _error -> {:error, "User is not part of this conversation"}
     end
@@ -105,7 +107,7 @@ defmodule Stitch.ReadStatus do
         patient.id
       )
       |> Repo.transaction()
-      |> handle_mark_as_read_multi()
+      |> handle_mark_as_read_multi(patient)
     else
       {:error, "Patient is not part of this conversation"}
     end
@@ -131,10 +133,18 @@ defmodule Stitch.ReadStatus do
     )
   end
 
-  defp handle_mark_as_read_multi(result) do
+  defp handle_mark_as_read_multi(result, user) do
     case result do
-      {:ok, %{mark_conversation_messages_as_read: {_, _conversation_messages}}} ->
+      {:ok, %{mark_conversation_messages_as_read: {_, conversation_messages}}} ->
         # Notifications: update mobile notifications here
+
+        conversation_message_ids = Enum.map(conversation_messages, & &1.id)
+
+        ConversationMessageNotificationQueue.remove_message_ids(
+          AppUserId.get(user),
+          conversation_message_ids
+        )
+
         result
 
       error ->

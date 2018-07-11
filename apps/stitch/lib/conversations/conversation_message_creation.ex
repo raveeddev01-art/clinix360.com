@@ -13,7 +13,8 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     Engage.Conversation,
     Engage.ConversationMessage,
     Patient,
-    ReadStatus
+    ReadStatus,
+    Mobile.ConversationMessageNotificationQueue
   }
 
   @doc """
@@ -93,9 +94,19 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     |> post_creation()
   end
 
-  defp post_creation(transaction_response) do
+  defp post_creation({:ok, %{message: message}} = transaction_response) do
     # Notifications: send necessary notifications here.
+    # TODO: get active users that should be notified based on their mobile notification settings.
+    notify_user_ids = %{mobile_active: []}
+
+    ConversationMessageNotificationQueue.async_enqueue_for_users(
+      notify_user_ids.mobile_active,
+      message.id
+    )
+
     # Analytics: add something like `track_conversation_message_sent(conversation_message, sender, conversation)`
     transaction_response
   end
+
+  defp post_creation(transaction_response), do: transaction_response
 end

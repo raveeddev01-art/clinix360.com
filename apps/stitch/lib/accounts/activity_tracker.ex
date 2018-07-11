@@ -12,7 +12,10 @@ defmodule Stitch.Accounts.ActivityTracker do
     Task,
     Accounts.User,
     TeamQueries,
-    Mobile.NotificationQueue
+    Mobile.MessageNotificationQueue,
+    Mobile.ConversationMessageNotificationQueue,
+    Patient,
+    AppUserId
   }
 
   require Logger
@@ -58,13 +61,22 @@ defmodule Stitch.Accounts.ActivityTracker do
     # Mark user as inactive first. That means they start getting PNs directly, bypassing the queue.
     # Only after that we start sending PNs that were queued during their activity period.
     with {:ok, _} <- Redix.command(["ZREM", "#{@prefix}:#{user.team_id}", to_string(user.id)]),
-         {:ok, message_ids} <- NotificationQueue.remove_user_id(user.id) do
+         {:ok, message_ids} <- remove_from_notification_queue(user) do
       {:ok, message_ids}
     else
       {:error, error} ->
         log_error(error)
         {:error, error}
     end
+  end
+
+  defp remove_from_notification_queue(%Patient{} = patient) do
+    ConversationMessageNotificationQueue.remove_user_id(AppUserId.get(patient))
+  end
+
+  defp remove_from_notification_queue(%User{} = user) do
+    MessageNotificationQueue.remove_user_id(user.id)
+    ConversationMessageNotificationQueue.remove_user_id(AppUserId.get(user))
   end
 
   @spec clean_stale((binary, list -> any)) :: :ok | {:error, any}
@@ -87,15 +99,15 @@ defmodule Stitch.Accounts.ActivityTracker do
     # a score between min and max" — Redis doc.
 
     TeamQueries.team_ids()
-    |> Task.async_stream(fn team_id ->
-      commands =
-        [
+    |> Task.async_stream(
+      fn team_id ->
+        commands = [
           ["MULTI"],
           [
             "ZRANGEBYSCORE",
             "#{@prefix}:#{team_id}",
             "-inf",
-            to_string(current_timestamp - 1),
+            to_string(current_timestamp - 1)
           ],
           [
             "ZREMRANGEBYSCORE",
@@ -103,31 +115,34 @@ defmodule Stitch.Accounts.ActivityTracker do
             "-inf",
             to_string(current_timestamp - 1)
           ],
-          ["EXEC"],
+          ["EXEC"]
         ]
 
-      case Redix.pipeline(commands) do
-        {:ok, ["OK", _, _, [[], 0]]} ->
-          :ok
+        case Redix.pipeline(commands) do
+          {:ok, ["OK", _, _, [[], 0]]} ->
+            :ok
 
-        {:ok, ["OK", _, _, [user_ids, _]]} ->
-          Enum.each(user_ids, fn user_id ->
-            with {:ok, message_ids} <- NotificationQueue.remove_user_id(user_id) do
-              fun.(user_id, message_ids)
-            else
-              error -> error
-            end
-          end)
+          {:ok, ["OK", _, _, [user_ids, _]]} ->
+            Enum.each(user_ids, fn user_id ->
+              with {:ok, message_ids} <- MessageNotificationQueue.remove_user_id(user_id) do
+                fun.(user_id, message_ids)
+              else
+                error -> error
+              end
+            end)
 
-        {:ok, command_error} ->
-          log_error(command_error)
-          {:error, command_error}
+          {:ok, command_error} ->
+            log_error(command_error)
+            {:error, command_error}
 
-        {:error, error} ->
-          log_error(error)
-          {:error, error}
-      end
-    end, max_concurrency: 10, timeout: 60_000)
+          {:error, error} ->
+            log_error(error)
+            {:error, error}
+        end
+      end,
+      max_concurrency: 10,
+      timeout: 60_000
+    )
     |> Stream.run()
   end
 
@@ -148,7 +163,7 @@ defmodule Stitch.Accounts.ActivityTracker do
         "ZRANGEBYSCORE",
         "#{@prefix}:#{team_id}",
         current_timestamap,
-        "+inf",
+        "+inf"
       ])
 
     case result do

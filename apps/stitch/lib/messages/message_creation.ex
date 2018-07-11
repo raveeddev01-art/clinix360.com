@@ -12,7 +12,7 @@ defmodule Stitch.Message.MessageCreation do
     Message,
     Message.Mention,
     Message.Notification,
-    Mobile.NotificationQueue,
+    Mobile.MessageNotificationQueue,
     ReadStatus,
     Repo
   }
@@ -97,7 +97,7 @@ defmodule Stitch.Message.MessageCreation do
 
   def post_creation({:ok, %{message: message} = result_map}, notify_user_ids) do
     MessageAnalytics.track_message_sent(message, message.user, message.group)
-    NotificationQueue.async_enqueue_for_users(notify_user_ids.mobile_active, message.id)
+    MessageNotificationQueue.async_enqueue_for_users(notify_user_ids.mobile_active, message.id)
     result_map = Map.put(result_map, :notify_user_ids, notify_user_ids)
 
     {:ok, result_map}

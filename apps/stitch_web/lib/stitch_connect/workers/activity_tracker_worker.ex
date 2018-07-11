@@ -8,7 +8,7 @@ defmodule StitchConnect.ActivityTrackerWorker do
   alias Stitch.{
     Accounts.ActivityTracker,
     Accounts.User,
-    UserQueries,
+    UserQueries
   }
 
   alias StitchConnect.Web.PushNotifications
