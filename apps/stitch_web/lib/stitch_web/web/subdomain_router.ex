@@ -235,6 +235,7 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/files/:id/unshare", FileController, :unshare)
     post("/files/:id/create_public_link", FileController, :create_public_link)
     post("/files/:id/revoke_public_link", FileController, :revoke_public_link)
+    get("/files/:id/presigned_url", FileController, :presigned_url)
 
     get("/patients", PatientController, :index)
     get("/patients/:id", PatientController, :show)

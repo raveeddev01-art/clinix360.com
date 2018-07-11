@@ -8,6 +8,10 @@ defmodule Stitch.Web.Api.V1.FileView do
     Web.UrlService
   }
 
+  @endpoint Stitch.Web.Endpoint
+
+  import Stitch.Web.SubdomainRouter.Helpers
+
   def render("index.json", %{files: %Paginator{data: data, meta: meta}}) do
     %{
       data: Enum.map(data, &file/1),
@@ -42,6 +46,7 @@ defmodule Stitch.Web.Api.V1.FileView do
       encoded_id: Upload.encode_url_id(file),
       url: UrlService.file_download_url(file),
       public_url: public_url(file),
+      api_url: api_v1_file_path(@endpoint, :presigned_url, file),
       comment_count: file.comment_count,
       starred: Map.get(file, :starred, false)
     }

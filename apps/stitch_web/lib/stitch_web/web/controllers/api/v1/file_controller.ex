@@ -248,6 +248,24 @@ defmodule Stitch.Web.Api.V1.FileController do
     end
   end
 
+  # This is solely for legacy electron apps
+  #
+  def presigned_url(conn, %{"id" => upload_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
+         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
+         {:url, {:ok, url}} <- {:url, Stitch.AWS.S3.presign(upload.url)} do
+      json(conn, %{presigned_url: url})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:authorized, false} ->
+        {:error, :not_authorized}
+    end
+  end
+
   def parse_query_params(conn, _opts) do
     types = %{
       creator_id: :integer,
