@@ -10,14 +10,15 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   }
 
   alias Stitch.Web.{
-    StarringEventsService
+    StarringEventsService,
+    UrlService
   }
 
   alias Stitch.{
     GroupAuthorization,
     GroupQueries,
     Group,
-    Files.Upload,
+    Files,
     StarrableItems.StarringService,
     Message,
     MessageAuthorization,
@@ -218,14 +219,17 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def download(conn, %{"id" => message_id}) do
-    message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
 
-    with {:authorized?, true} <-
-           {:authorized?, GroupAuthorization.can_view?(message.group, user)},
-         {:ok, presigned_url} <- Upload.presign(message) do
-      json(conn, %{presigned_url: presigned_url})
+    with {:message, %Message{type: "file_share"} = message} <-
+           {:message, MessageQueries.get_by_id(message_id)},
+         {:upload, %Files.Upload{} = upload} <-
+           {:upload, Files.FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)} do
+      url = UrlService.file_download_url(upload, %{authenticationToken: user.token})
+      json(conn, %{presigned_url: url})
     else
+      {:message, _} -> {:error, :not_found}
       {:authorized?, false} -> {:error, :not_found}
       :error -> {:error, :not_found}
     end
