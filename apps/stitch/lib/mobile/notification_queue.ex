@@ -6,7 +6,8 @@ defmodule Stitch.Mobile.NotificationQueue do
 
   require Logger
 
-  @prefix "notification_queue"
+  @connect_prefix "notification_queue"
+  @engage_prefix "engage_notification_queue"
 
   @spec async_enqueue_for_users([pos_integer], [binary]) :: {:ok, pid}
   def async_enqueue_for_users(user_ids, message_id) do
@@ -22,7 +23,7 @@ defmodule Stitch.Mobile.NotificationQueue do
       Enum.map(user_ids, fn user_id ->
         [
           "SADD",
-          "#{@prefix}:#{user_id}",
+          "#{@connect_prefix}:#{user_id}",
           to_string(message_id)
         ]
       end)
@@ -42,7 +43,7 @@ defmodule Stitch.Mobile.NotificationQueue do
     result =
       Redix.command([
         "SADD",
-        "#{@prefix}:#{user_id}",
+        "#{@connect_prefix}:#{user_id}",
         to_string(message_id)
       ])
 
@@ -70,7 +71,7 @@ defmodule Stitch.Mobile.NotificationQueue do
       Redix.command(
         [
           "SREM",
-          "#{@prefix}:#{user_id}"
+          "#{@connect_prefix}:#{user_id}"
         ] ++ message_ids
       )
 
@@ -95,8 +96,8 @@ defmodule Stitch.Mobile.NotificationQueue do
   def remove_user_id(user_id) do
     result =
       Redix.pipeline([
-        ["SMEMBERS", "#{@prefix}:#{user_id}"],
-        ["DEL", "#{@prefix}:#{user_id}"]
+        ["SMEMBERS", "#{@connect_prefix}:#{user_id}"],
+        ["DEL", "#{@connect_prefix}:#{user_id}"]
       ])
 
     case result do
