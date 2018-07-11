@@ -21,6 +21,16 @@
   display: inline-block;
 }
 
+.file-list-room {
+  padding: 0 15px;
+}
+
+.file-loading-icon {
+  color: #003366;
+  font-size: 20px;
+  margin: 15px;
+}
+
 // file item in the list
 .file-item {
   display: flex;

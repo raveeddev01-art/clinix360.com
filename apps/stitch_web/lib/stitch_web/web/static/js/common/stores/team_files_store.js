@@ -34,12 +34,14 @@ class TeamFilesStore {
   @action
   setFileTypeFilter = fileType => {
     this.fileType = fileType;
+    this.currentPage = 0;
     this.search();
   };
 
   @action
   setUserFilter = userId => {
     this.creatorId = userId;
+    this.currentPage = 0;
     this.search();
   };
 

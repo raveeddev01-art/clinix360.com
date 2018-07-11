@@ -7,7 +7,6 @@ import FilesStore from "./files_store";
 import TeamFileStore from "./team_file_store";
 import TeamFilesStore from "./team_files_store";
 import GlobalStarredMessageStore from "./global_starred_message_store";
-import GlobalFilesStore from "./global_files_store";
 import GroupStore from "./group_store";
 import GroupsStore from "./groups_store";
 import InvitationStore from "./invitation_store";
@@ -48,7 +47,6 @@ class RootStore {
     this.exportStore = new ExportStore(this);
     this.filesStore = new FilesStore(this);
     this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
-    this.globalFilesStore = new GlobalFilesStore(this);
     this.teamFileStore = new TeamFileStore(this);
     this.teamFilesStore = new TeamFilesStore(this);
     this.groupStore = new GroupStore(this);

@@ -62,7 +62,6 @@ class AddonStore {
         break;
 
       case "files":
-        this.rootStore.globalFilesStore.loadMore();
         this.rootStore.filesStore.onCollapseChange();
         this.setAddonPanelTab(panelType, panelTab || "all");
         break;
