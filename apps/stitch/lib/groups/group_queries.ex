@@ -258,6 +258,7 @@ defmodule Stitch.GroupQueries do
 
     query
     |> where([g, gu], g.id in ^group_ids)
+    |> where([g, gu], g.name not in ^@dm_groups)
     |> Repo.all()
   end
 end
