@@ -254,8 +254,8 @@ defmodule Stitch.Web.Api.V1.FileController do
     current_user = conn.assigns.current_user
 
     with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
-         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
-         {:url, {:ok, url}} <- {:url, Stitch.AWS.S3.presign(upload.url)} do
+         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)} do
+      url = UrlService.file_download_url(upload, %{authenticationToken: current_user.token})
       json(conn, %{presigned_url: url})
     else
       {:upload, _} ->

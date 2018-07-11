@@ -61,9 +61,10 @@ defmodule Stitch.Web.Files.FileController do
   def authenticated(_conn, %Upload{public_token: token}, %{"public_token" => token}),
     do: {:authenticated, true}
 
-  def authenticated(conn, %Upload{} = upload, _params) do
+  def authenticated(conn, %Upload{} = upload, params) do
     with {:user_token, user_token} when is_binary(user_token) <-
-           {:user_token, get_user_token_from_team(conn, upload.team_id)},
+           {:user_token,
+            get_user_token_from_team(conn, upload.team_id) || params["authenticationToken"]},
          {:team_user, current_user = %User{}} <-
            {:team_user, UserQueries.team_member_by_token(upload.team_id, user_token)},
          {:authenticated, true} <-
