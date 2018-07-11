@@ -10,7 +10,8 @@ class Message extends Component {
     const {
       conversation: { text_content, provider_id, inserted_at }
     } = this.props;
-    const user = this.props.usersStore.getUserById(provider_id);
+    // TODO: Handle either patients or providers
+    const user = this.props.usersStore.getUserById(provider_id) || {};
 
     return (
       <div className="message">

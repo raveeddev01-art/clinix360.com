@@ -57,7 +57,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       updated_at: conversation_message.updated_at,
       edited: !!conversation_message.edited_at,
       edited_at: conversation_message.edited_at,
-      reactions_web: conversation_message.provider_reactions,
+      provider_reactions_web: conversation_message.provider_reactions,
       patient_reactions_web: conversation_message.patient_reactions,
       link_previews: conversation_message.link_previews,
       request_id: conversation_message.request_id,

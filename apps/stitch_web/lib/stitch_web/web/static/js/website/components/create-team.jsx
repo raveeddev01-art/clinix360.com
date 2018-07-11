@@ -68,7 +68,12 @@ class CreateTeam extends Component {
                     onChange={this.onChange}
                   />
                 )}
-                <Button type="submit" bsStyle="primary" className="btn-form">
+                <Button
+                  type="submit"
+                  bsStyle="primary"
+                  className="btn-form"
+                  block={appSettings.hasLogin}
+                >
                   Get Started
                 </Button>
               </FormGroup>

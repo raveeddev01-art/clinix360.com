@@ -10,6 +10,7 @@ defmodule Stitch.Web.Endpoint do
   # Overwrite the conn.remote_ip with values taken from
   # X-Forwarded-For used in Heroku and Aptible.
   plug(RemoteIp)
+  # plug(Stitch.Web.Plug.PlugAttack)
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -21,7 +22,7 @@ defmodule Stitch.Web.Endpoint do
     from: :stitch_web,
     gzip: false,
     only:
-      ~w(js css fonts images audios favicon.ico robots.txt sitemap.xml notification.png notification-staging.png)
+      ~w(js css fonts images audios favicon.ico robots.txt sitemap.xml notification.png notification-staging.png carespace-swagger.json)
   )
 
   # Code reloading can be explicitly enabled under the

@@ -4,6 +4,9 @@ defmodule Stitch.Billing.Subscription do
   """
   use Ecto.Schema
   import Ecto.Changeset
+  alias Stitch.Billing.Subscription
+
+  @paid_tiers ["STANDARD", "PREMIUM"]
 
   schema "subscriptions" do
     field(:valid_until, :utc_datetime)
@@ -55,5 +58,9 @@ defmodule Stitch.Billing.Subscription do
       params,
       ~w(tier renewal_frequency subscription_id subscription_line_item_id valid_until renews estimated_invoice_amount)a
     )
+  end
+
+  def paid_tier(%Subscription{tier: tier}) do
+    tier in @paid_tiers
   end
 end

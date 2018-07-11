@@ -1,5 +1,6 @@
 defmodule StitchEngage.Web.Api.V1.InboxController do
   use Stitch.Web, :controller
+  use Stitch.Web.Api.V1.InboxDocs
 
   alias Stitch.{
     Repo,
@@ -14,19 +15,25 @@ defmodule StitchEngage.Web.Api.V1.InboxController do
   Returns the default inbox for a team and associated data necessary
   to render the main Engage page (conversations & latest message for each)
   """
-  def show_default(conn, _params) do
-    user = conn.assigns.current_user
+  def default(conn, _params) do
+    do_default(conn, conn.assigns.current_user, "show.json")
+  end
+
+  def patient_default(conn, _params) do
+    do_default(conn, conn.assigns.patient, "patient_show.json")
+  end
+
+  defp do_default(conn, user_or_patient, json_name) do
     team = conn.assigns.team
 
     with {:inbox, inbox} when not is_nil(inbox) <- {:inbox, InboxQueries.default_for_team(team)},
-         {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, user)} do
-      render(conn, "show.json", inbox: InboxQueries.with_show_values(inbox, user))
+         {:authorized?, true} <-
+           {:authorized?, InboxAuthorization.can_view?(inbox, user_or_patient)} do
+      inbox = InboxQueries.with_show_values(inbox, user_or_patient)
+      render(conn, json_name, %{inbox: inbox})
     else
-      {:authorized?, false} ->
-        {:error, :not_authorized, "You cannot view this inbox."}
-
-      {:inbox, _} ->
-        {:error, :not_found, "Inbox not found"}
+      {:authorized?, false} -> {:error, :not_authorized, "You cannot view this inbox."}
+      {:inbox?, _} -> {:error, :not_found, "Inbox not found"}
     end
   end
 

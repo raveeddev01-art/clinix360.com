@@ -19,12 +19,11 @@ html {
 
 body {
   line-height: 1.5;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
-  background: $body-bg;
   // overflow-y: hidden;
   // overflow-x: hidden;
 }
@@ -119,13 +118,15 @@ code {
     border-color: #d8d8d8;
   }
 
-  .btn:hover, .btn:active {
+  .btn:hover,
+  .btn:active {
     color: $brand-primary;
     background-color: transparent;
     border-color: #d8d8d8;
   }
 
-  .btn.active:hover, .btn.active:active {
+  .btn.active:hover,
+  .btn.active:active {
     color: $brand-primary;
     background-color: #fff;
   }
@@ -144,7 +145,7 @@ hr {
 .tooltip {
   font-size: 14px;
   font-weight: 700;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
 }
 .tooltip-inner {
   padding: 6px 10px;
@@ -280,7 +281,7 @@ hr {
   padding: 0 !important;
 
   &:before {
-    content: '';
+    content: "";
     display: inline-block;
     height: 100%;
     vertical-align: middle;
@@ -414,7 +415,8 @@ hr {
           margin-left: 5px;
         }
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           background: #edf7fd;
           border-color: #d3ecfa;
           border-radius: 3px;
@@ -523,12 +525,12 @@ i.fa {
     height: 60px;
     font-size: 28px;
     text-align: center;
-    
+
     &:nth-child(2) {
       border-left: 0;
       border-right: 0;
     }
-    
+
     &:nth-child(3) {
       border-right: 0;
     }

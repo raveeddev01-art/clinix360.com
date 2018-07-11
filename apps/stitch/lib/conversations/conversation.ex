@@ -83,12 +83,12 @@ defmodule Stitch.Engage.Conversation do
   Creates a conversation to a patient as a provider. Used when a provider
   sends the first message in a new conversation.
   """
-  @spec begin_conversation_as_provider(User.t(), map) :: {:ok, map} | {:error, map}
+  @spec begin_conversation_as_provider(User.t(), map) :: {:ok, map} | {:error, atom, term, term}
   def begin_conversation_as_provider(
         sender,
         params = %{
           "inbox_id" => inbox_id,
-          "patient_id" => team_patient_id
+          "patient_id" => patient_id
         }
       ) do
     Ecto.Multi.new()
@@ -96,7 +96,7 @@ defmodule Stitch.Engage.Conversation do
       create_for_inbox(inbox_id, params)
     end)
     |> Ecto.Multi.run(:conversation_patient, fn %{conversation: conversation} ->
-      ConversationPatient.create_for_conversation_and_patient(conversation.id, team_patient_id)
+      ConversationPatient.create_for_conversation_and_patient(conversation.id, patient_id)
     end)
     |> Ecto.Multi.run(:conversation_message, fn %{conversation: conversation} ->
       {:ok, %{conversation_message: conversation_message}} =
@@ -105,7 +105,29 @@ defmodule Stitch.Engage.Conversation do
       {:ok, conversation_message}
     end)
     |> Ecto.Multi.run(:patient_invitation, fn _multi_map ->
-      Invitation.invite_patient_if_necessary(sender.id, team_patient_id)
+      Invitation.invite_patient_if_necessary(sender.id, patient_id)
+    end)
+    |> Repo.transaction()
+  end
+
+  @doc """
+  Creates a conversation to an inbox as a patient. Used when a patient
+  sends the first message in a new conversation.
+  """
+  @spec begin_conversation_as_patient(Patient.t(), map) :: {:ok, map} | {:error, atom, term, term}
+  def begin_conversation_as_patient(patient, %{"inbox_id" => inbox_id} = params) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:conversation, fn _ ->
+      create_for_inbox(inbox_id, params)
+    end)
+    |> Ecto.Multi.run(:conversation_patient, fn %{conversation: conversation} ->
+      ConversationPatient.create_for_conversation_and_patient(conversation.id, patient.id)
+    end)
+    |> Ecto.Multi.run(:conversation_message, fn %{conversation: conversation} ->
+      {:ok, %{conversation_message: conversation_message}} =
+        ConversationMessageCreation.create(conversation, patient, params)
+
+      {:ok, conversation_message}
     end)
     |> Repo.transaction()
   end

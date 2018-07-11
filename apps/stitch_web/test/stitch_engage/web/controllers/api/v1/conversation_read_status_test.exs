@@ -8,6 +8,7 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
     now = NaiveDateTime.utc_now()
 
     team = insert(:team)
+    insert(:team_feature, name: "engage", team: team)
     user = insert(:user, team: team, inserted_at: three_days_ago)
     other_user = insert(:user, team: team, inserted_at: three_days_ago)
     user_with_explicit_unread = insert(:user, team: team)
@@ -17,6 +18,8 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
 
     conversation =
       insert(:conversation, inbox: inbox, updated_at: two_days_ago, inserted_at: two_days_ago)
+
+    patient = insert(:patient, team: team)
 
     first_message =
       insert(
@@ -43,7 +46,17 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
 
     newly_joined_user = insert(:user, team: team)
 
-    _with_unread_conversation_provider =
+    conversation_patient =
+      insert(
+        :conversation_patient,
+        conversation: conversation,
+        patient: patient,
+        unread_messages_count: 2,
+        inserted_at: three_days_ago,
+        last_read_at: three_days_ago
+      )
+
+    with_unread_conversation_provider =
       insert(
         :conversation_provider,
         conversation: conversation,
@@ -70,6 +83,10 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
      conversation: conversation,
      inbox: inbox,
      user: user,
+     author: other_user,
+     patient: patient,
+     conversation_patient: conversation_patient,
+     with_unread_conversation_provider: with_unread_conversation_provider,
      old_joined_user: other_user,
      newly_joined_user: newly_joined_user,
      user_with_explicit_unread: user_with_explicit_unread,
@@ -84,7 +101,7 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
     |> get(
       Routes.api_v1_conversation_path(
         setup_params.conn,
-        :show,
+        Map.get(overrides, :action_name, :show),
         Map.get(overrides, :conversation_id, setup_params.conversation.id)
       )
     )
@@ -96,13 +113,38 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
     |> get(
       Routes.api_v1_conversation_message_path(
         setup_params.conn,
-        :show,
+        Map.get(overrides, :action_name, :show),
         Map.get(
           overrides,
           :conversation_message_id,
           setup_params.first_message.id
         )
       )
+    )
+  end
+
+  def call_message_delete(setup_params) do
+    setup_params.conn
+    |> with_api_user(setup_params.author)
+    |> delete(
+      Routes.api_v1_conversation_message_path(
+        setup_params.conn,
+        :delete,
+        setup_params.first_message.id
+      )
+    )
+  end
+
+  def call_message_create(setup_params) do
+    setup_params.conn
+    |> with_api_user(setup_params.user)
+    |> post(
+      Routes.api_v1_conversation_message_path(
+        setup_params.conn,
+        :create,
+        setup_params.conversation.id
+      ),
+      %{message: %{text_content: "Hello."}}
     )
   end
 
@@ -128,16 +170,28 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest.Helper do
       %{conversation_message_id: conv_message_id}
     )
   end
+
+  def call_patient_mark_as_read(setup_params, params \\ %{}) do
+    setup_params.conn
+    |> with_api_user(Map.get(params, :user, setup_params.patient))
+    |> post(
+      Routes.api_v1_conversation_message_path(
+        setup_params.conn,
+        :patient_mark_as_read,
+        Map.get(params, :conversation_id, setup_params.conversation.id)
+      ),
+      %{}
+    )
+  end
 end
 
 defmodule Stitch.Web.Api.V1.ConversationReadStatusTest do
   use Stitch.Web.ConnCase, async: true
+  alias Stitch.{Repo, Engage.ConversationPatient, Engage.ConversationProvider}
   alias Stitch.Web.Api.V1.ConversationReadStatusTest.Helper
 
   describe "GET /api/v1/conversations/:conversation_id" do
-    setup %{conn: conn} do
-      Helper.setup(conn)
-    end
+    setup %{conn: conn}, do: Helper.setup(conn)
 
     test "is_unread is true if conversation has unread message and no conversation_provider value",
          setup_params do
@@ -175,10 +229,8 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest do
     end
   end
 
-  describe "GET /api/v1/conversations/:conversation_id/mark_as_read" do
-    setup %{conn: conn} do
-      Helper.setup(conn)
-    end
+  describe "POST /api/v1/conversations/:conversation_id/mark_as_read" do
+    setup %{conn: conn}, do: Helper.setup(conn)
 
     test "marks a message as read when no conversation provider exists", setup_params do
       params = %{
@@ -239,10 +291,8 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest do
     end
   end
 
-  describe "GET /api/v1/conversations/:conversation_id/mark_as_unread" do
-    setup %{conn: conn} do
-      Helper.setup(conn)
-    end
+  describe "POST /api/v1/conversations/:conversation_id/mark_as_unread" do
+    setup %{conn: conn}, do: Helper.setup(conn)
 
     test "marks a message as unread with no conversation_patient", setup_params do
       params = %{
@@ -302,6 +352,98 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest do
       next_conn = Helper.call_conversation_show(setup_params, params)
       assert response = json_response(next_conn, 200)
       assert response["is_unread"]
+    end
+  end
+
+  describe "POST /api/v1/patient/conversations/:conversation_id/mark_as_read" do
+    setup %{conn: conn}, do: Helper.setup(conn)
+
+    test "marks a message as read properly", setup_params do
+      params = %{
+        user: setup_params.patient,
+        conversation_message_id: setup_params.first_message.id,
+        action_name: :patient_show
+      }
+
+      conn = Helper.call_conversation_show(setup_params, params)
+      assert response = json_response(conn, 200)
+      assert response["is_unread"]
+
+      Helper.call_patient_mark_as_read(setup_params, params)
+
+      next_conn = Helper.call_conversation_show(setup_params, params)
+      assert response = json_response(next_conn, 200)
+      refute response["is_unread"]
+    end
+
+    test "marking a later message read marks all previous as read", setup_params do
+      first_message_params = %{
+        user: setup_params.patient,
+        conversation_message_id: setup_params.first_message.id,
+        action_name: :patient_show
+      }
+
+      later_message_params = %{
+        user: setup_params.patient,
+        conversation_message_id: setup_params.next_message.id,
+        action_name: :patient_show
+      }
+
+      get_read_status = & &1["patient_read_status"]["#{setup_params.patient.id}"]
+
+      conn = Helper.call_message_show(setup_params, first_message_params)
+      assert response = json_response(conn, 200)
+      refute get_read_status.(response)
+
+      Helper.call_patient_mark_as_read(setup_params)
+
+      next_conn = Helper.call_message_show(setup_params, first_message_params)
+      assert response = json_response(next_conn, 200)
+      assert get_read_status.(response) != nil
+    end
+  end
+
+  describe "Incrementing unread counts" do
+    setup %{conn: conn}, do: Helper.setup(conn)
+
+    test "Adding a message to a conversation increments unread counts properly", setup_params do
+      get_patient_unread = fn ->
+        Repo.get(ConversationPatient, setup_params.conversation_patient.id).unread_messages_count
+      end
+
+      get_provider_unread = fn ->
+        Repo.get(ConversationProvider, setup_params.with_unread_conversation_provider.id).unread_messages_count
+      end
+
+      assert get_patient_unread.() == 2
+      assert get_provider_unread.() == 2
+
+      Helper.call_message_create(setup_params)
+
+      assert get_patient_unread.() == 3
+      assert get_provider_unread.() == 3
+    end
+  end
+
+  describe "Decrementing unread counts" do
+    setup %{conn: conn}, do: Helper.setup(conn)
+
+    test "Deleting a message decrements unread counts properly", setup_params do
+      get_patient_unread = fn ->
+        Repo.get(ConversationPatient, setup_params.conversation_patient.id).unread_messages_count
+      end
+
+      get_provider_unread = fn ->
+        Repo.get(ConversationProvider, setup_params.with_unread_conversation_provider.id).unread_messages_count
+      end
+
+      assert get_patient_unread.() == 2
+      assert get_provider_unread.() == 2
+
+      Helper.call_message_delete(setup_params)
+
+      assert get_patient_unread.() == 1
+      assert get_provider_unread.() == 1
     end
   end
 end

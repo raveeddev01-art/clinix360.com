@@ -4,8 +4,10 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
 
   def setup(conn) do
     team = insert(:team)
+    insert(:team_feature, team: team, name: "engage")
     user = insert(:user, team: team)
     patient = insert(:patient, team: team, onboarded: true)
+    other_patient = insert(:patient, team: team, onboarded: true)
     insert(:patient_invitation, patient: patient)
     user_on_other_team = insert(:user, team: insert(:team))
 
@@ -17,7 +19,6 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
     conversation_c = insert(:conversation, inbox: inbox)
     closed_conversation = insert(:conversation, inbox: inbox, open: false)
 
-    # For data integrity purposes:
     insert(:conversation_message, conversation: conversation, provider: user)
     insert(:conversation_message, conversation: conversation_b, provider: user)
     insert(:conversation_message, conversation: conversation_c, provider: user)
@@ -25,8 +26,8 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
 
     insert(:conversation_patient, conversation: conversation, patient: patient)
     insert(:conversation_patient, conversation: conversation_b, patient: patient)
-    insert(:conversation_patient, conversation: conversation_c, patient: patient)
-    insert(:conversation_patient, conversation: closed_conversation, patient: patient)
+    insert(:conversation_patient, conversation: conversation_c, patient: other_patient)
+    insert(:conversation_patient, conversation: closed_conversation, patient: other_patient)
 
     conn = with_team_subdomain(conn, team)
 
@@ -56,6 +57,19 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
     )
   end
 
+  def call_patient_index(setup_params, params \\ %{}) do
+    setup_params.conn
+    |> with_api_user(setup_params.patient)
+    |> get(
+      Routes.api_v1_conversation_path(
+        setup_params.conn,
+        :patient_index,
+        setup_params.inbox.id
+      ),
+      params
+    )
+  end
+
   def call_show(setup_params, overrides \\ %{}) do
     setup_params.conn
     |> with_api_user(Map.get(overrides, :user, setup_params.user))
@@ -68,6 +82,18 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
     )
   end
 
+  def call_patient_show(setup_params, overrides \\ %{}) do
+    setup_params.conn
+    |> with_api_user(setup_params.patient)
+    |> get(
+      Routes.api_v1_conversation_path(
+        setup_params.conn,
+        :patient_show,
+        Map.get(overrides, :conversation_id, setup_params.conversation.id)
+      )
+    )
+  end
+
   def call_post(setup_params, params, overrides \\ %{}) do
     setup_params.conn
     |> with_api_user(Map.get(overrides, :user, setup_params.user))
@@ -75,6 +101,19 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest.Helper do
       Routes.api_v1_conversation_path(
         setup_params.conn,
         :create,
+        setup_params.inbox.id
+      ),
+      params
+    )
+  end
+
+  def call_patient_post(setup_params, params, overrides \\ %{}) do
+    setup_params.conn
+    |> with_api_user(Map.get(overrides, :user, setup_params.patient))
+    |> post(
+      Routes.api_v1_conversation_path(
+        setup_params.conn,
+        :patient_create,
         setup_params.inbox.id
       ),
       params
@@ -113,9 +152,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
   alias Stitch.Web.Api.V1.ConversationControllerTest.Helper
 
   describe "GET /api/v1/inbox/:inbox_id/conversations" do
-    setup %{conn: conn} do
-      Helper.setup(conn)
-    end
+    setup %{conn: conn}, do: Helper.setup(conn)
 
     test "lists the conversations in an inbox", setup_params do
       conn = Helper.call_index(setup_params, %{})
@@ -162,10 +199,26 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
     end
   end
 
-  describe "GET /api/v1/conversations/:id" do
-    setup %{conn: conn} do
-      Helper.setup(conn)
+  describe "GET /api/v1/patient/inbox/:inbox_id/conversations" do
+    setup %{conn: conn}, do: Helper.setup(conn)
+
+    test "lists only the patient's conversations in an inbox", setup_params do
+      conn = Helper.call_patient_index(setup_params, %{})
+
+      assert response = json_response(conn, 200)
+      conversation_ids = response |> Enum.map(& &1["id"]) |> Enum.sort()
+
+      ordered_ids = [
+        setup_params.conversation.id,
+        setup_params.conversation_b.id
+      ]
+
+      assert conversation_ids == ordered_ids
     end
+  end
+
+  describe "GET /api/v1/conversations/:id" do
+    setup %{conn: conn}, do: Helper.setup(conn)
 
     test "shows the conversation properly", setup_params do
       conn = Helper.call_show(setup_params)
@@ -186,10 +239,27 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
     end
   end
 
-  describe "POST /api/v1/inbox/:inbox_id/conversations" do
-    setup %{conn: conn} do
-      Helper.setup(conn)
+  describe "GET /api/v1/patient/conversations/:id" do
+    setup %{conn: conn}, do: Helper.setup(conn)
+
+    test "shows the conversation properly", setup_params do
+      conn =
+        Helper.call_patient_show(setup_params, %{conversation_id: setup_params.conversation.id})
+
+      assert response = json_response(conn, 200)
+      assert response["id"] == setup_params.conversation.id
     end
+
+    test "returns not found if other patient's conversation", setup_params do
+      conn =
+        Helper.call_patient_show(setup_params, %{conversation_id: setup_params.conversation_c.id})
+
+      assert json_response(conn, 404)
+    end
+  end
+
+  describe "POST /api/v1/inbox/:inbox_id/conversations" do
+    setup %{conn: conn}, do: Helper.setup(conn)
 
     test "creates a conversation properly", setup_params do
       post_params = %{
@@ -213,10 +283,21 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
     end
   end
 
-  describe "PUT /api/v1/conversations/:id/open" do
-    setup %{conn: conn} do
-      Helper.setup(conn)
+  describe "POST /api/v1/patient/inbox/:inbox_id/conversations" do
+    setup %{conn: conn}, do: Helper.setup(conn)
+
+    test "creates a conversation properly", setup_params do
+      text = "This is some text"
+      post_params = %{text_content: text}
+
+      conn = Helper.call_patient_post(setup_params, post_params, %{})
+      assert response = json_response(conn, 200)
+      assert Enum.at(response["conversation_messages"], 0)["text_content"] == text
     end
+  end
+
+  describe "PUT /api/v1/conversations/:id/open" do
+    setup %{conn: conn}, do: Helper.setup(conn)
 
     test "opens a closed inbox", setup_params do
       conn = Helper.call_put_open(setup_params, %{})
@@ -250,9 +331,7 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
   end
 
   describe "PUT /api/v1/conversations/:id/close" do
-    setup %{conn: conn} do
-      Helper.setup(conn)
-    end
+    setup %{conn: conn}, do: Helper.setup(conn)
 
     test "closes an open inbox", setup_params do
       conn = Helper.call_put_close(setup_params, %{})

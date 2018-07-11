@@ -7,7 +7,6 @@ defmodule Stitch.Web.Router do
 
   pipeline :browser do
     # reflect any changes in ErrorView.browser_pipeline_equivalent/1
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -17,7 +16,6 @@ defmodule Stitch.Web.Router do
 
   pipeline :no_csrf_browser do
     # reflect any changes in ErrorView.browser_pipeline_equivalent/1
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -25,13 +23,11 @@ defmodule Stitch.Web.Router do
   end
 
   pipeline :api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
   end
 
   pipeline :authenticated_api do
-    plug(Stitch.Web.Plug.PlugAttack)
     plug(:accepts, ["json"])
     plug(:fetch_session)
     plug(Stitch.Web.Plug.ApiAuthenticate, without_team_subdomain: true)

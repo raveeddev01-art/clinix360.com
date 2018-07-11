@@ -9,10 +9,11 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
 
   alias Stitch.{
     Repo,
-    ReadStatus,
     Accounts.User,
     Engage.Conversation,
-    Engage.ConversationMessage
+    Engage.ConversationMessage,
+    Patient,
+    ReadStatus
   }
 
   @doc """
@@ -22,37 +23,72 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
   - makes message as read for sender
   - kicks off related tasks
   """
-  @spec create(Conversation.t(), User.t(), map) :: {:ok, map} | {:error, term}
-  def create(%Conversation{} = conversation, %User{} = provider_sender, attrs) do
-    conversation = Repo.preload(conversation, [:providers])
-
-    providers = conversation.providers
+  @spec create(Conversation.t(), User.t() | Patient.t(), map) :: {:ok, map} | {:error, term}
+  def create(
+        %Conversation{} = conversation,
+        %User{} = provider_sender,
+        attrs
+      ) do
+    conversation = Repo.preload(conversation, [:providers, :patients])
 
     {read_status_map, provider_recipient_ids} =
-      ReadStatus.get_read_status(:conversation_message, providers, provider_sender)
+      ReadStatus.get_read_status(:conversation_message, conversation.providers, provider_sender)
 
-    attrs = Map.merge(attrs, %{"read_status" => read_status_map})
+    attrs = Map.merge(attrs, %{"provider_read_status" => read_status_map})
 
     struct = %ConversationMessage{
       conversation_id: conversation.id,
       provider_id: provider_sender.id
     }
 
-    increment_unread_query =
+    increment_provider_unread_query =
       ReadStatus.increment_unread_counter(
-        :conversation_message,
+        :conversation_message_provider,
         conversation.id,
         provider_recipient_ids
       )
 
+    increment_patient_unread_query =
+      ReadStatus.increment_unread_counter(
+        :conversation_message_patient,
+        conversation.id,
+        Enum.map(conversation.patients, & &1.id)
+      )
+
     Multi.new()
     |> Multi.insert(:conversation_message, ConversationMessage.changeset(struct, attrs))
-    |> Multi.update_all(:increment_unread_counter, increment_unread_query, [])
+    |> Multi.update_all(:increment_provider_unread_counter, increment_provider_unread_query, [])
+    |> Multi.update_all(:increment_patient_unread_counter, increment_patient_unread_query, [])
     |> ReadStatus.mark_as_read_on_creation(
       conversation,
       provider_sender,
       :conversation_message
     )
+    |> Repo.transaction()
+    |> post_creation()
+  end
+
+  def create(%Conversation{} = conversation, %Patient{} = patient_sender, attrs) do
+    struct = %ConversationMessage{
+      conversation_id: conversation.id,
+      patient_id: patient_sender.id
+    }
+
+    conversation = Repo.preload(conversation, [:providers])
+    providers = conversation.providers
+
+    provider_ids = Enum.map(providers, & &1.id)
+
+    increment_provider_unread_query =
+      ReadStatus.increment_unread_counter(
+        :conversation_message_provider,
+        conversation.id,
+        provider_ids
+      )
+
+    Multi.new()
+    |> Multi.insert(:conversation_message, ConversationMessage.changeset(struct, attrs))
+    |> Multi.update_all(:increment_provider_unread_counter, increment_provider_unread_query, [])
     |> Repo.transaction()
     |> post_creation()
   end

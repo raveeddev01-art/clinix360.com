@@ -2,7 +2,7 @@ defmodule Stitch.Engage.ConversationAuthorizationTest do
   use Stitch.DataCase, async: true
   alias Stitch.Engage.ConversationAuthorization
 
-  describe "Stitch.Engage.ConversationAuthorization all permissions" do
+  describe "Stitch.Engage.ConversationAuthorization: for providers" do
     setup _ do
       team = insert(:team)
       inbox = insert(:inbox, team: team)
@@ -40,6 +40,37 @@ defmodule Stitch.Engage.ConversationAuthorizationTest do
       refute ConversationAuthorization.can_view?(conversation, guest_on_team)
       refute ConversationAuthorization.can_update?(conversation, guest_on_team)
       refute ConversationAuthorization.can_message?(conversation, guest_on_team)
+    end
+  end
+
+  describe "Stitch.Engage.ConversationAuthorization: for patients" do
+    setup _ do
+      team = insert(:team)
+      inbox = insert(:inbox, team: team)
+      conversation = insert(:conversation, inbox: inbox)
+      patient = insert(:patient, team: team)
+      insert(:conversation_patient, patient: patient, conversation: conversation)
+
+      {:ok, conversation: conversation, team: team, patient: patient}
+    end
+
+    test "can view and message if part of conversation", %{
+      conversation: conversation,
+      patient: patient
+    } do
+      assert ConversationAuthorization.can_view?(conversation, patient)
+      assert ConversationAuthorization.can_message?(conversation, patient)
+      refute ConversationAuthorization.can_update?(conversation, patient)
+    end
+
+    test "can not view, message, or update if not part of conversation", %{
+      conversation: conversation,
+      team: team
+    } do
+      other_patient = insert(:patient, team: team)
+      refute ConversationAuthorization.can_view?(conversation, other_patient)
+      refute ConversationAuthorization.can_message?(conversation, other_patient)
+      refute ConversationAuthorization.can_update?(conversation, other_patient)
     end
   end
 end

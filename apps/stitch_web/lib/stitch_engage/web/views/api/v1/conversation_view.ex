@@ -7,8 +7,20 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
     conversations_json(conversations)
   end
 
+  def render("patient_index.json", %{conversations: conversations}) do
+    patient_conversations_json(conversations)
+  end
+
   def render("show.json", %{conversation: conversation}) do
     conversation_json_with_messages(conversation)
+  end
+
+  def render("patient_show.json", %{conversation: conversation}) do
+    patient_conversation_json_with_messages(conversation)
+  end
+
+  def patient_conversations_json(conversations) do
+    Enum.map(conversations, &patient_conversation_json_with_latest/1)
   end
 
   def conversations_json(conversations) do
@@ -30,6 +42,22 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
     }
   end
 
+  defp patient_conversation_json(conversation) do
+    %{
+      id: conversation.id,
+      inbox_id: conversation.inbox_id,
+      inserted_at: conversation.inserted_at,
+      updated_at: conversation.updated_at,
+      is_unread: Map.get(conversation, :is_unread)
+    }
+  end
+
+  def patient_conversation_json_with_latest(conversation) do
+    conversation
+    |> patient_conversation_json()
+    |> with_latest_message(conversation.latest_conversation_message)
+  end
+
   def conversation_json_with_latest(conversation) do
     conversation
     |> conversation_json()
@@ -39,6 +67,12 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
   defp conversation_json_with_messages(conversation) do
     conversation
     |> conversation_json()
+    |> with_messages(conversation.conversation_messages)
+  end
+
+  defp patient_conversation_json_with_messages(conversation) do
+    conversation
+    |> patient_conversation_json()
     |> with_messages(conversation.conversation_messages)
   end
 

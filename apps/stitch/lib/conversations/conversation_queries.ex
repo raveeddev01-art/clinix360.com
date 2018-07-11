@@ -6,19 +6,25 @@ defmodule Stitch.Engage.ConversationQueries do
   import Ecto.Query
 
   alias Stitch.{
-    Repo,
-    Message.Reaction,
     Engage.Conversation,
     Engage.ConversationMessage,
-    Engage.ConversationProvider
+    Engage.ConversationProvider,
+    Engage.ConversationPatient,
+    Message.Reaction,
+    Patient,
+    Accounts.User,
+    Repo
   }
 
   @doc """
-  Given a user, index and (potentially nil) updated_before and is_open values
-  Load the list of conversations for the index and any necessary relationships
+  Given a user, inbox and (potentially nil) updated_before and is_open values,
+  load the list of conversations for the inbox and any necessary relationships.
+
+  Given a patient, inbox and (potentially nil) updated_before value,
+  load the list of conversations for the inbox and any necessary relationships.
   """
-  @spec for_index(User.t(), integer, map) :: list(Conversation.t())
-  def for_index(user, inbox_id, params = %{}) do
+  @spec for_index(User.t() | Patient.t(), integer, map) :: list(Conversation.t())
+  def for_index(%User{} = user, inbox_id, params = %{}) do
     is_open = Map.get(params, "open", nil)
     updated_before = Map.get(params, "updated_before", nil)
 
@@ -31,6 +37,19 @@ defmodule Stitch.Engage.ConversationQueries do
     |> Repo.all()
     |> with_latest_message_for_each()
     |> with_unread_for_each(user)
+  end
+
+  def for_index(%Patient{id: patient_id} = patient, inbox_id, params = %{}) do
+    updated_before = Map.get(params, "updated_before", nil)
+
+    Conversation
+    |> where(inbox_id: ^inbox_id)
+    |> for_patient(patient_id)
+    |> updated_before(updated_before)
+    |> most_recent(Conversation.page_length())
+    |> Repo.all()
+    |> with_latest_message_for_each()
+    |> with_unread_for_each(patient)
   end
 
   @doc """
@@ -68,8 +87,8 @@ defmodule Stitch.Engage.ConversationQueries do
   @doc """
   Given a conversation id and user, load the conversation and any necessary relationships
   """
-  @spec for_show(integer | binary, User.t()) :: Conversation.t() | nil
-  def for_show(conversation_id, user) do
+  @spec for_show(integer | binary, User.t() | Patient.t()) :: Conversation.t() | nil
+  def for_show(conversation_id, %User{} = user) do
     conversation =
       Conversation
       |> where(id: ^conversation_id)
@@ -84,6 +103,20 @@ defmodule Stitch.Engage.ConversationQueries do
         conversation
         |> with_unread(user)
         |> with_latest_messages(ConversationMessage.page_length())
+    end
+  end
+
+  def for_show(conversation_id, %Patient{} = patient) do
+    case get_for_patient(conversation_id, patient) do
+      nil ->
+        nil
+
+      conversation ->
+        conversation
+        |> with_latest_messages(ConversationMessage.page_length())
+
+        # TODO: add once patient read/unread is implemented
+        # |> with_unread(user)
     end
   end
 
@@ -109,11 +142,11 @@ defmodule Stitch.Engage.ConversationQueries do
     Repo.preload(conversation_message, [:provider, :patient], force: true)
   end
 
-  # ===========
-  #   PRIVATE
-  # ===========
-
-  def with_unread(conversation, user) do
+  @doc """
+  Given a conversation and user or patient. Add is_unread value to conversation struct.
+  """
+  @spec with_unread(Conversation.t(), User.t() | Patient.t()) :: Conversation.t()
+  def with_unread(conversation, %User{} = user) do
     is_unread =
       case provider_for_conversation_and_user(conversation.id, user.id) do
         nil -> is_unread_without_join_record(conversation, user)
@@ -123,23 +156,60 @@ defmodule Stitch.Engage.ConversationQueries do
     Map.put_new(conversation, :is_unread, is_unread)
   end
 
-  defp with_unread_for_each(conversations, user) do
-    # Iterates over conversations and assigns is_unread
-    # based on conversation_provider (if exists) and/or user
-    # inserted_at value
-    conversation_ids = Enum.map(conversations, & &1.id)
-    cps = providers_for_conversations_and_user(conversation_ids, user.id)
-    cps_by_conversation_id = Enum.group_by(cps, & &1.conversation_id)
+  def with_unread(conversation, %Patient{} = patient) do
+    is_unread =
+      case conversation_patients_for_conversation_and_user(conversation.id, patient.id) do
+        nil -> is_unread_without_join_record(conversation, patient)
+        conversation_patient -> is_unread_with_join_record(conversation_patient)
+      end
 
-    Enum.map(conversations, fn conversation ->
+    Map.put_new(conversation, :is_unread, is_unread)
+  end
+
+  # ===========
+  #   PRIVATE
+  # ===========
+
+  @spec get_for_patient(binary | integer, Patient.t()) :: Conversation.t() | nil
+  defp get_for_patient(conversation_id, %Patient{} = patient) do
+    Conversation
+    |> where(id: ^conversation_id)
+    |> for_patient(patient.id)
+    |> Repo.one()
+  end
+
+  defp for_patient(query, patient_id) do
+    query
+    |> join(:inner, [c], p in assoc(c, :patients))
+    |> where([c, p], p.id == ^patient_id)
+  end
+
+  defp with_unread_for_each(conversations, %User{} = user) do
+    # Iterates over conversations and assigns is_unread based on
+    # conversation_provider (if exists) and/or user inserted_at value
+    conversation_ids = Enum.map(conversations, & &1.id)
+    conversation_providers_by_conversation_id = get_conversation_joins(conversation_ids, user)
+    Enum.map(conversations, make_add_unread_fn(conversation_providers_by_conversation_id, user))
+  end
+
+  defp with_unread_for_each(conversations, %Patient{} = patient) do
+    # Iterates over conversations and assigns is_unread based on
+    # conversation_patient (if exists) and/or inserted_at value
+    conversation_ids = Enum.map(conversations, & &1.id)
+    conversation_patients_by_conversation_id = get_conversation_joins(conversation_ids, patient)
+    Enum.map(conversations, make_add_unread_fn(conversation_patients_by_conversation_id, patient))
+  end
+
+  defp make_add_unread_fn(conversation_join_records, user_or_patient) do
+    fn conversation ->
       is_unread =
-        case cps_by_conversation_id[conversation.id] do
-          nil -> is_unread_without_join_record(conversation, user)
-          [conversation_provider] -> is_unread_with_join_record(conversation_provider)
+        case Enum.find(conversation_join_records, &(&1.id == conversation.id)) do
+          nil -> is_unread_without_join_record(conversation, user_or_patient)
+          conversation_user -> is_unread_with_join_record(conversation_user)
         end
 
       Map.put_new(conversation, :is_unread, is_unread)
-    end)
+    end
   end
 
   defp is_unread_with_join_record(conversation_user) do
@@ -154,9 +224,16 @@ defmodule Stitch.Engage.ConversationQueries do
     query |> preload(:patients)
   end
 
-  defp providers_for_conversations_and_user(conversation_ids, user_id) do
+  defp get_conversation_joins(conversation_ids, %User{id: user_id}) do
     ConversationProvider
     |> where([cp], cp.provider_id == ^user_id)
+    |> where([cp], cp.conversation_id in ^conversation_ids)
+    |> Repo.all()
+  end
+
+  defp get_conversation_joins(conversation_ids, %Patient{id: patient_id}) do
+    ConversationPatient
+    |> where([cp], cp.patient_id == ^patient_id)
     |> where([cp], cp.conversation_id in ^conversation_ids)
     |> Repo.all()
   end
@@ -164,6 +241,13 @@ defmodule Stitch.Engage.ConversationQueries do
   defp provider_for_conversation_and_user(conversation_id, user_id) do
     ConversationProvider
     |> where([cp], cp.provider_id == ^user_id)
+    |> where([cp], cp.conversation_id == ^conversation_id)
+    |> Repo.one()
+  end
+
+  defp conversation_patients_for_conversation_and_user(conversation_id, patient_id) do
+    ConversationPatient
+    |> where([cp], cp.patient_id == ^patient_id)
     |> where([cp], cp.conversation_id == ^conversation_id)
     |> Repo.one()
   end

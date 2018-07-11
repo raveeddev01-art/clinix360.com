@@ -9,26 +9,43 @@ defmodule Stitch.Engage.ConversationMessageAuthorization do
     Accounts.User,
     Engage.Conversation,
     Engage.ConversationMessage,
+    Patient,
     TeamAuthorization
   }
 
-  @spec can_delete?(ConversationMessage.t(), Conversation.t(), User.t()) :: boolean
+  @spec can_delete?(ConversationMessage.t(), Conversation.t(), User.t() | Patient.t()) :: boolean
   def can_delete?(%ConversationMessage{provider_id: id}, _, %User{id: id}) do
     # user sent the message
     true
   end
 
-  def can_delete?(_conversation_message, conversation, current_user) do
+  def can_delete?(_conversation_message, conversation, %User{} = current_user) do
     admin_on_team?(conversation, current_user)
   end
 
-  @spec can_edit?(ConversationMessage.t(), User.t()) :: boolean
+  def can_delete?(_, _, _), do: false
+
+  @spec can_edit?(ConversationMessage.t(), User.t() | Patient.t()) :: boolean
   def can_edit?(%ConversationMessage{provider_id: id}, %User{id: id}) do
     # user sent the message
     true
   end
 
   def can_edit?(_, _), do: false
+
+  @spec can_delete_link_preview?(
+          ConversationMessage.t(),
+          Conversation.t(),
+          User.t() | Patient.t()
+        ) :: boolean
+  def can_delete_link_preview?(%ConversationMessage{patient_id: id}, _, %Patient{id: id}) do
+    # patient sent the message
+    true
+  end
+
+  def can_delete_link_preview?(message, conversation, user) do
+    can_delete?(message, conversation, user)
+  end
 
   # ===========
   #   PRIVATE
