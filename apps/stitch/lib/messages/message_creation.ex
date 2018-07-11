@@ -8,6 +8,7 @@ defmodule Stitch.Message.MessageCreation do
     Files.Upload,
     Files.UploadComment,
     Files.FileAuthorization,
+    GroupUser,
     Message,
     Message.Mention,
     Message.Notification,
@@ -90,9 +91,18 @@ defmodule Stitch.Message.MessageCreation do
     |> Multi.insert(:message, Message.message_changeset(message, attrs))
     |> Multi.update_all(:mention_users, mention_users, [])
     |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
-    |> ReadStatus.mark_as_read_on_creation(group.id, user.id, :message)
+    |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
     |> Repo.transaction()
     |> post_creation(notify_user_ids)
+  end
+
+  def multi_mark_as_read_on_creation_if_member(multi, group_id, user_id, :message) do
+    if GroupUser.get(group_id, user_id) do
+      multi
+      |> ReadStatus.mark_as_read_on_creation(group_id, user_id, :message)
+    else
+      multi
+    end
   end
 
   def post_creation({:ok, %{message: message} = result_map}, notify_user_ids) do
