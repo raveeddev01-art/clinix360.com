@@ -244,21 +244,19 @@ defmodule Stitch.GroupQueries do
     Repo.all(query)
   end
 
-  def groups_for_file_comment(group_ids, user) do
-    query =
+  def groups_for_file_comment(upload, user) do
+    group_ids = upload.shared_in
+
+    if upload.public do
+      Group
+      |> where([g], g.id in ^group_ids)
+      |> where([g], g.public)
+      |> Repo.all()
+    else
       Group
       |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
-
-    query =
-      if User.guest?(user) do
-        query |> where([g, gu], not is_nil(gu.id))
-      else
-        query |> where([g, gu], g.public or not is_nil(gu.id))
-      end
-
-    query
-    |> where([g, gu], g.id in ^group_ids)
-    |> where([g, gu], g.name not in ^@dm_groups)
-    |> Repo.all()
+      |> where([g, gu], not is_nil(gu.id))
+      |> Repo.all()
+    end
   end
 end
