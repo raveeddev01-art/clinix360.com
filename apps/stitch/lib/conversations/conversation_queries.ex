@@ -72,6 +72,21 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   @doc """
+  Given a patient & inbox_id, load a page of open conversations, most_recent message for each of the conversations
+  """
+  @spec latest_for_patient(Patient.t(), integer | binary) :: list(Conversation.t())
+  def latest_for_patient(%Patient{id: patient_id} = patient, inbox_id) do
+    Conversation
+    |> where(inbox_id: ^inbox_id)
+    |> for_patient(patient_id)
+    |> most_recent(Conversation.page_length())
+    |> preload([:patients, :providers])
+    |> Repo.all()
+    |> with_latest_message_for_each()
+    |> with_unread_for_each(patient)
+  end
+
+  @doc """
   Given an inbox id, return the total count of open conversations.
   """
   @spec open_count_for_inbox(integer | binary) :: integer

@@ -50,6 +50,9 @@
         "summary": "",
         "responses": {
           "200": {
+            "schema": {
+              "$ref": "#/definitions/PatientLogin"
+            },
             "description": "OK"
           }
         },
@@ -881,8 +884,11 @@
     },
     "PatientLogin": {
       "type": "object",
-      "title": "Patient",
+      "title": "PatientLogin",
       "properties": {
+        "updated_at": {
+          "type": "string"
+        },
         "token": {
           "type": "string"
         },
@@ -930,7 +936,7 @@
     },
     "PatientInbox": {
       "type": "object",
-      "title": "Inbox",
+      "title": "PatientInbox",
       "properties": {
         "name": {
           "type": "string",
@@ -944,6 +950,9 @@
         "id": {
           "type": "integer",
           "description": "Unique identifier"
+        },
+        "conversations": {
+          "$ref": "#/definitions/ConversationMessages"
         }
       },
       "description": "A collection of conversations in Engage."
@@ -991,6 +1000,9 @@
       "type": "object",
       "title": "Patient",
       "properties": {
+        "updated_at": {
+          "type": "string"
+        },
         "phone": {
           "type": "string"
         },
