@@ -54,7 +54,7 @@ class FileItem extends Component {
   };
 
   render() {
-    const { file, usersStore, onFileClick } = this.props;
+    const { file, usersStore, isDownloadVisible, onFileClick } = this.props;
     const user = usersStore.usersById[file.user_id];
 
     return (
@@ -67,6 +67,7 @@ class FileItem extends Component {
               file_id={file.id}
               user_id={file.user_id}
               encoded_id={file.encoded_id}
+              isDownloadVisible={isDownloadVisible}
               isOriginalOpenVisible={false}
               commentCount={file.comment_count}
               onFileDownload={this.onFileDownload}
@@ -96,6 +97,7 @@ class FileItem extends Component {
           </div>
 
           <FileInfo file={file} />
+          <span className="file-dot" />
           <FileCommentGroup file={file} showClose={false} />
         </div>
       </div>
@@ -105,11 +107,13 @@ class FileItem extends Component {
 
 FileItem.propTypes = {
   file: PropTypes.object.isRequired,
+  isDownloadVisible: PropTypes.bool,
   onFileClick: PropTypes.func
 };
 
 FileItem.defaultProps = {
-  onFileClick: null
+  onFileClick: null,
+  isDownloadVisible: true
 };
 
 export default FileItem;

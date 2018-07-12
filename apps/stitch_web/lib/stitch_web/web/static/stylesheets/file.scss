@@ -55,6 +55,13 @@
     flex: 1;
     margin-left: 10px;
 
+    &-user {
+      font-size: 14px;
+      .text-muted {
+        font-size: 14px;
+      }
+    }
+
     .time {
       margin-left: 5px;
     }

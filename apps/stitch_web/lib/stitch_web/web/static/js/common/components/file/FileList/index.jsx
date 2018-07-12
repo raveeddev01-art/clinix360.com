@@ -8,13 +8,18 @@ import FileItem from "common/components/file/FileItem";
 @observer
 class FileList extends Component {
   render() {
-    const { teamFilesStore, onFileClick } = this.props;
+    const { teamFilesStore, onFileClick, isDownloadVisible } = this.props;
     const { pages, setPage, files } = teamFilesStore;
 
     return (
       <div className="file-list">
         {files.map(file => (
-          <FileItem key={file.id} file={file} onFileClick={onFileClick} />
+          <FileItem
+            key={file.id}
+            file={file}
+            onFileClick={onFileClick}
+            isDownloadVisible={isDownloadVisible}
+          />
         ))}
         <Pagination
           activePage={pages.currentPage}
@@ -29,11 +34,13 @@ class FileList extends Component {
 }
 
 FileList.propTypes = {
-  onFileClick: PropTypes.func
+  onFileClick: PropTypes.func,
+  isDownloadVisible: PropTypes.bool
 };
 
 FileList.defaultProps = {
-  onFileClick: null
+  onFileClick: null,
+  isDownloadVisible: true
 };
 
 export default FileList;

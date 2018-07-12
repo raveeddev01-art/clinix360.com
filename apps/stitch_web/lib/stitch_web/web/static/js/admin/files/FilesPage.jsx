@@ -50,7 +50,7 @@ class FilesPage extends Component {
           <div className="tab-content">
             <Row>
               <Col sm={8}>
-                <FileList />
+                <FileList isDownloadVisible={false} />
               </Col>
               <Col sm={4}>
                 <ListFilter />
