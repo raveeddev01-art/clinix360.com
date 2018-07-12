@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import { isAdminOrOwner } from "lib/utils";
+import { isAdmin } from "lib/utils";
 import { Avatar, TimestampTooltip } from "common/components";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -10,6 +10,10 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import { confirmModal } from "common/modals";
 import ActionToggle from "./ActionToggle";
+
+const isOwner = comment => {
+  return comment.user_id === currentUser.id;
+};
 
 @inject("usersStore", "teamFileStore")
 @observer
@@ -70,9 +74,11 @@ class FileComment extends Component {
             <i className="file-comment__action fa fa-gear" />
           </ActionToggle>
           <Dropdown.Menu>
-            <MenuItem eventKey="1" onClick={this.editComment}>
-              Edit
-            </MenuItem>
+            {isOwner(comment) && (
+              <MenuItem eventKey="1" onClick={this.editComment}>
+                Edit
+              </MenuItem>
+            )}
             <MenuItem eventKey="2" onClick={this.deleteComment}>
               Delete
             </MenuItem>
@@ -107,7 +113,7 @@ class FileComment extends Component {
       <div className="file-comment__details">
         <div className="file-comment__details-header">
           <TimestampTooltip timestamp={comment.inserted_at} className="time" />
-          {isAdminOrOwner(comment.user_id) && this.renderActions()}
+          {(isOwner(comment) || isAdmin()) && this.renderActions()}
         </div>
         <p>{comment.text_content}</p>
       </div>
