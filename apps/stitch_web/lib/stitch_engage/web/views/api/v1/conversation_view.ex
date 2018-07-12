@@ -35,6 +35,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
       id: conversation.id,
       inbox_id: conversation.inbox_id,
       open: conversation.open,
+      subject: conversation.subject,
       patient: patient_json,
       inserted_at: conversation.inserted_at,
       updated_at: conversation.updated_at,
@@ -45,6 +46,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
   defp patient_conversation_json(conversation) do
     %{
       id: conversation.id,
+      subject: conversation.subject,
       inbox_id: conversation.inbox_id,
       inserted_at: conversation.inserted_at,
       updated_at: conversation.updated_at,

@@ -1237,6 +1237,7 @@
       "type": "object",
       "title": "Conversation",
       "required": [
+        "subject",
         "inbox_id"
       ],
       "properties": {
@@ -1244,6 +1245,11 @@
           "type": "string",
           "example": "2018-07-04T15:58:42.059546",
           "description": "Last time updated in db"
+        },
+        "subject": {
+          "type": "string",
+          "example": "Elbow Issue",
+          "description": "Subject line for the conversation"
         },
         "patient": {
           "$ref": "#/definitions/Patient"
