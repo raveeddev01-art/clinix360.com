@@ -68,7 +68,14 @@ defmodule Stitch.Web.SubdomainRouter do
   end
 
   pipeline :patient_api do
+    plug(:accepts, ["json"])
+    plug(:fetch_session)
     plug(Stitch.Web.Plug.PatientAuthenticate, [:api])
+  end
+
+  pipeline :patient_auth_api do
+    plug(:accepts, ["json"])
+    plug(:fetch_session)
   end
 
   pipeline :patient_auth do
@@ -132,9 +139,11 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/patient", as: :patient do
     pipe_through([:browser, :patient_auth])
     get("/login", StitchEngage.Web.PatientAuthenticationController, :login)
-    post("/login", StitchEngage.Web.PatientAuthenticationController, :submit_login)
 
     get("/logout", StitchEngage.Web.PatientAuthenticationController, :logout)
+    get("/logged-out", StitchEngage.Web.PatientAuthenticationController, :logged_out)
+
+    get("/login", StitchEngage.Web.PatientAuthenticationController, :login)
 
     scope "/invitations" do
       get("/error", StitchConnect.Web.InvitationController, :error)
@@ -142,7 +151,6 @@ defmodule Stitch.Web.SubdomainRouter do
       scope "/accept" do
         get("/:token", StitchConnect.Web.InvitationController, :patient_accept)
         get("/:token/:step", StitchConnect.Web.InvitationController, :patient_accept)
-        post("/:token", StitchConnect.Web.InvitationController, :patient_onboard)
       end
     end
   end
@@ -306,7 +314,9 @@ defmodule Stitch.Web.SubdomainRouter do
     put("/teams/:id", TeamController, :update)
 
     post("/login", AuthenticationController, :submit_login)
+    post("/patient/login", AuthenticationController, :submit_patient_login)
     post("/reset_password", AuthenticationController, :reset_password)
+    post("/patient/reset_password", AuthenticationController, :patient_reset_password)
   end
 
   # API routes which need token.
@@ -323,10 +333,14 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/login", AuthenticationController, :login)
 
     get("/find-your-team/:token/login", AuthenticationController, :auto_login)
+    get("/patient/find-your-team/:token/login", AuthenticationController, :patient_auto_login)
     get("/logged-out", AuthenticationController, :logged_out)
 
     get("/reset-password", AuthenticationController, :reset_password)
     get("/reset-password/:token", AuthenticationController, :change_password)
+
+    get("/patient/reset-password", AuthenticationController, :patient_reset_password)
+    get("/patient/reset-password/:token", AuthenticationController, :patient_change_password)
   end
 
   # Authenticated routes.
@@ -386,6 +400,7 @@ defmodule Stitch.Web.SubdomainRouter do
     pipe_through(:api)
 
     post("/invitations/accept/:token", InvitationController, :accept)
+    post("/patient/invitations/accept/:token", InvitationController, :patient_accept)
     get("/apps", AppController, :index)
     get("/news", NewsController, :index)
   end
@@ -532,7 +547,11 @@ defmodule Stitch.Web.SubdomainRouter do
     # post("/conversation_messages/search", ConversationMessageController, :search)
   end
 
-  scope "/api/swagger" do
+  # ==============
+  #   DOC ROUTES
+  # ==============
+
+  scope "/api/docs" do
     forward(
       "/",
       PhoenixSwagger.Plug.SwaggerUI,

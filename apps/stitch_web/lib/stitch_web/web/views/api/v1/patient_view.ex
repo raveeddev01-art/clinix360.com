@@ -9,6 +9,10 @@ defmodule Stitch.Web.Api.V1.PatientView do
     patient_json(patient)
   end
 
+  def render("login.json", %{patient: patient, redirect_url: redirect_url}) do
+    Map.merge(patient_json(patient), %{token: patient.token, redirect_url: redirect_url})
+  end
+
   def patient_json(nil), do: nil
 
   def patient_json(patient) when not is_nil(patient) do
