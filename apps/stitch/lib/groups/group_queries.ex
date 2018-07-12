@@ -255,6 +255,7 @@ defmodule Stitch.GroupQueries do
     else
       Group
       |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
+      |> where([g], g.id in ^group_ids)
       |> where([g, gu], not is_nil(gu.id))
       |> Repo.all()
     end
