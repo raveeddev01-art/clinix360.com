@@ -24,13 +24,14 @@ class ComposeModal extends Component {
     this.state = {
       error: "",
       patient: {},
+      subject: "",
       message: ""
     };
   }
 
   componentWillMount() {
     this.setState({
-      patient: {},
+      patient: null,
       error: null
     });
   }
@@ -39,8 +40,14 @@ class ComposeModal extends Component {
     this.setState({ patient: value });
   };
 
-  handleChange = evt => {
-    this.setState({ message: evt.target.value });
+  handleChange = event => {
+    const target = event.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
   };
 
   createConversation = () => {
@@ -105,7 +112,11 @@ class ComposeModal extends Component {
                 bsSize="large"
                 bsStyle="primary"
                 onClick={this.createConversation}
-                disabled={!this.state.patient || !this.state.message}
+                disabled={
+                  !this.state.patient ||
+                  !this.state.subject ||
+                  !this.state.message
+                }
               >
                 Send
               </Button>
@@ -117,7 +128,7 @@ class ComposeModal extends Component {
   }
 
   renderComposeModal() {
-    const { patient, message } = this.state;
+    const { patient, subject, message } = this.state;
 
     return (
       <Modal.Body>
@@ -137,6 +148,21 @@ class ComposeModal extends Component {
                 onChange={this.handlePatientChange}
                 value={patient}
                 showAddPatientModal={this.props.showAddPatientModal}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup bsSize="large">
+            <Col componentClass={ControlLabel} sm={3}>
+              Subject
+            </Col>
+
+            <Col sm={9}>
+              <FormControl
+                name="subject"
+                type="text"
+                value={subject}
+                onChange={this.handleChange}
               />
             </Col>
           </FormGroup>

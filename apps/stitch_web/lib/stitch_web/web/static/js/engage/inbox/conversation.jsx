@@ -50,9 +50,7 @@ class Conversation extends Component {
           </div>
 
           <div className="message">
-            <div className="subject">
-              This is a very long subject title, I hope it doesn't line break
-            </div>
+            <div className="subject">This is a temporary hardcoded subject</div>
 
             <div className="text">
               {conversation.latest_conversation_message
