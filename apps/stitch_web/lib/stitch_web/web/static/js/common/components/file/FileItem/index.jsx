@@ -54,25 +54,26 @@ class FileItem extends Component {
   };
 
   render() {
-    const { file, usersStore, isDownloadVisible, onFileClick } = this.props;
+    const { file, usersStore, isActionsVisible, onFileClick } = this.props;
     const user = usersStore.usersById[file.user_id];
 
     return (
       <div className="file-item" onClick={this.onClick}>
         <FileThumb mimetype={file.mimetype} previewUrl={file.preview_url} />
         <div className="file-item__content">
-          <div className="pull-right">
-            <AttachmentActions
-              url={file.url}
-              file_id={file.id}
-              user_id={file.user_id}
-              encoded_id={file.encoded_id}
-              isDownloadVisible={isDownloadVisible}
-              isOriginalOpenVisible={false}
-              commentCount={file.comment_count}
-              onFileDownload={this.onFileDownload}
-            />
-          </div>
+          {isActionsVisible && (
+            <div className="pull-right">
+              <AttachmentActions
+                url={file.url}
+                file_id={file.id}
+                user_id={file.user_id}
+                encoded_id={file.encoded_id}
+                isOriginalOpenVisible={false}
+                commentCount={file.comment_count}
+                onFileDownload={this.onFileDownload}
+              />
+            </div>
+          )}
 
           {onFileClick ? (
             <a onClick={() => onFileClick(file.id)} className="file-item__link">
@@ -88,7 +89,6 @@ class FileItem extends Component {
           )}
 
           <div className="file-item__content-user">
-            <span className="text-muted">Uploaded by&nbsp;</span>
             <span onClick={e => e.stopPropagation()}>
               <UserProfileMenu user={user} className="name">
                 {user && this.renderName(user)}
@@ -107,13 +107,13 @@ class FileItem extends Component {
 
 FileItem.propTypes = {
   file: PropTypes.object.isRequired,
-  isDownloadVisible: PropTypes.bool,
+  isActionsVisible: PropTypes.bool,
   onFileClick: PropTypes.func
 };
 
 FileItem.defaultProps = {
   onFileClick: null,
-  isDownloadVisible: true
+  isActionsVisible: true
 };
 
 export default FileItem;

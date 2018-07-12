@@ -13,11 +13,13 @@
           <span class="filesize">
             <%= @app_params.file.size_in_bytes %>
           </span>
-          <span class="filetype">
-            <%= @app_params.file.filetype %>
-          </span>
-          <span class="download-text">
-            - Click to download
+          <span class="file-content">
+            <span class="filetype">
+              <%= @app_params.file.filetype %>
+            </span>
+            <span class="download-text">
+              - Click to download
+            </span>
           </span>
         </div>
       </div>

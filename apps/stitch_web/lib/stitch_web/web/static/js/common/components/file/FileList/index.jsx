@@ -8,7 +8,7 @@ import FileItem from "common/components/file/FileItem";
 @observer
 class FileList extends Component {
   render() {
-    const { teamFilesStore, onFileClick, isDownloadVisible } = this.props;
+    const { teamFilesStore, onFileClick, isActionsVisible } = this.props;
     const { pages, setPage, files } = teamFilesStore;
 
     return (
@@ -18,7 +18,7 @@ class FileList extends Component {
             key={file.id}
             file={file}
             onFileClick={onFileClick}
-            isDownloadVisible={isDownloadVisible}
+            isActionsVisible={isActionsVisible}
           />
         ))}
         <Pagination
@@ -35,12 +35,12 @@ class FileList extends Component {
 
 FileList.propTypes = {
   onFileClick: PropTypes.func,
-  isDownloadVisible: PropTypes.bool
+  isActionsVisible: PropTypes.bool
 };
 
 FileList.defaultProps = {
   onFileClick: null,
-  isDownloadVisible: true
+  isActionsVisible: true
 };
 
 export default FileList;

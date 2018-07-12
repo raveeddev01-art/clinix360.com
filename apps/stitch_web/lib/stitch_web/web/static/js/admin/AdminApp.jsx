@@ -90,8 +90,7 @@ class AdminApp extends Component {
         key="route_admin_integrations_drchrono_edit"
         path={`/admin/integrations/drchrono/:id/edit`}
         component={DrChronoEditSettings}
-      />,
-      <Route key="route_admin_files" path="/admin/files" component={Files} />
+      />
     ];
   };
 
@@ -116,6 +115,7 @@ class AdminApp extends Component {
               <Switch>
                 {isAdmin() && this.renderAdminRoutes()}
                 {isMemberOrAdmin() && this.renderMemberOrAdminRoutes()}
+                <Route path="/admin/files" component={Files} />
                 <Route
                   path={`/admin/you/notifications`}
                   component={YouNotifications}

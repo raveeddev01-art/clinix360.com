@@ -73,17 +73,7 @@ class Sidebar extends Component {
   };
 
   _nonGuestOptions = () => {
-    const result = [
-      <ListGroupItem
-        key="files"
-        active={this._isSelected("/admin/files", false)}
-      >
-        <Link to="/admin/files">
-          <i className="fa fa-folder-open" />
-          <span>Files</span>
-        </Link>
-      </ListGroupItem>
-    ];
+    const result = [];
 
     if (window.electronApp) {
       result.push(
@@ -173,6 +163,15 @@ class Sidebar extends Component {
                 <Link to="/admin/you/notifications">
                   <i className="fa fa-bell" />
                   <span>Notifications</span>
+                </Link>
+              </ListGroupItem>
+              <ListGroupItem
+                key="files"
+                active={this._isSelected("/admin/files", false)}
+              >
+                <Link to="/admin/files">
+                  <i className="fa fa-folder-open" />
+                  <span>Files</span>
                 </Link>
               </ListGroupItem>
 

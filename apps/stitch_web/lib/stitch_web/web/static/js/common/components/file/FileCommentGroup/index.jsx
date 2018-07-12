@@ -21,13 +21,13 @@ class FileCommentGroup extends Component {
         file.shared_in.includes(group.id)
     );
 
-    if (groups.length === 0) {
-      return null;
-    }
-
     return (
       <small className="file-comment__groups">
-        {label}
+        {groups.length ? (
+          label
+        ) : (
+          <span className="file-comment__group-item">Private File</span>
+        )}
         {groups.map(group => (
           <span key={group.id} className="file-comment__group-item">
             <Link to={`/rooms/${group.slug}`}>
