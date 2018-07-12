@@ -97,11 +97,15 @@ defmodule Stitch.Web.SubdomainRouter do
   #   PATIENT ROUTES
   # ==================
 
+  scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
+    pipe_through([:api, :patient_api])
+    put("/info", PatientController, :update_as_patient)
+  end
+
   scope "/api/v1/patient", StitchEngage.Web.Api.V1, as: :api_v1 do
     pipe_through([:api, :patient_api])
 
     get("/", PatientController, :show)
-
     get("/inboxes/default", InboxController, :patient_default)
 
     get("/inboxes/:inbox_id/conversations", ConversationController, :patient_index)

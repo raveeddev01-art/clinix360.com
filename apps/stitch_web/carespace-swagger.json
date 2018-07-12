@@ -134,6 +134,58 @@
         "description": "Accepts an invitation and completes patient onboarding."
       }
     },
+    "/api/v1/patient/info": {
+      "put": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Patient"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "first_name",
+            "in": "query",
+            "description": "First name of the patient."
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "last_name",
+            "in": "query",
+            "description": "Last name of the patient."
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "phone_number",
+            "in": "query",
+            "description": "Patient's phone number."
+          }
+        ],
+        "operationId": "Stitch.Web.Api.V1.PatientController.update_as_patient",
+        "description": "Updates patient info as the patient."
+      }
+    },
     "/api/v1/patient/inboxes/{inbox_id}/conversations": {
       "post": {
         "tags": [
