@@ -455,6 +455,14 @@ defmodule StitchConnect.Web.GroupChannel do
     end)
   end
 
+  def broadcast_file_details_update(upload) do
+    file_json = FileView.render("show_with_comments.json", %{file: upload})
+
+    Enum.each(upload.shared_in, fn group_id ->
+      @endpoint.broadcast("groups:id:#{group_id}", "file_details_updated", file_json)
+    end)
+  end
+
   defp endpoint_broadcast(group, event, payload) do
     # TODO: Remove this once no one is using older version of mobile app.
     @endpoint.broadcast("groups:#{group.slug}", event, payload)

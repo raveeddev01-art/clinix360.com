@@ -156,6 +156,10 @@ class ChannelStore {
       "file_public_link_updated",
       messageStore.onPublicLinkUpdate
     );
+    this.groupChannel.on(
+      "file_details_updated",
+      messageStore.onFileDetailsUpdate
+    );
 
     return joined;
   }

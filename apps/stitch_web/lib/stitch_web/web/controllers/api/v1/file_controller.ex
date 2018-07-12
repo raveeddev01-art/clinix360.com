@@ -87,6 +87,8 @@ defmodule Stitch.Web.Api.V1.FileController do
            {:comment, FileService.create_optional_comment(upload, current_user, presence, attrs)} do
       message = MessageQueries.get_by_id(message.id)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
+      upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
+      file_details_update(upload)
 
       render(conn, "show_with_comments.json", %{file: upload})
     else
@@ -122,6 +124,10 @@ defmodule Stitch.Web.Api.V1.FileController do
     MessageCreation.do_create(message, attrs, presence)
   end
 
+  def file_details_update(upload) do
+    GroupChannel.broadcast_file_details_update(upload)
+  end
+
   def unshare(conn, %{"group_id" => group_id, "id" => upload_id}) do
     current_user = conn.assigns.current_user
 
@@ -130,6 +136,7 @@ defmodule Stitch.Web.Api.V1.FileController do
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
          {:unshared, {:ok, _}} <- {:unshared, Upload.unshare_from_group(upload, group)} do
       upload = FileQueries.get_by_id(upload_id, preload_assoc: true)
+      file_details_update(upload)
       render(conn, "show_with_comments.json", %{file: upload})
     else
       {:upload, _} ->

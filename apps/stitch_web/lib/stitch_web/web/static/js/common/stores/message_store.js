@@ -1342,7 +1342,21 @@ class MessageStore {
   @action
   onPublicLinkUpdate = payload => {
     const files = this.messages.filter(
-      message => message.upload_id === payload.upload_id
+      message =>
+        message.upload_id === payload.upload_id && message.type === "upload"
+    );
+
+    files.forEach(file => {
+      const fields = { ...file.fields, public_url: payload.public_url };
+      this.updateMessageData(file.id, { fields });
+    });
+  };
+
+  @action
+  onFileDetailsUpdate = payload => {
+    const files = this.messages.filter(
+      message =>
+        message.upload_id === payload.upload_id && message.type === "upload"
     );
 
     files.forEach(file => {
