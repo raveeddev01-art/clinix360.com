@@ -41,6 +41,8 @@ class AuthenticationRouter extends Component {
           `}</script>
         </Helmet>
         <Switch>
+          {/* PROVIDER ROUTES */}
+          <Route path="/signup" component={Registration} />
           <Route exact path="/getstarted" component={GetStarted} />
           <Route exact path="/signin" component={TeamPicker} />
           <Route exact path="/find-your-team" component={FindTeam} />
@@ -50,7 +52,6 @@ class AuthenticationRouter extends Component {
             path="/find-your-team/:token/login"
             component={FindTeamError}
           />
-
           <Route exact path="/login" render={() => <Login {...this.props} />} />
           <Route
             exact
@@ -62,18 +63,71 @@ class AuthenticationRouter extends Component {
             path="/apps"
             render={() => <DownloadApps {...this.props} />}
           />
-
-          <Route path="/signup" component={Registration} />
-
           <Route exact path="/reset-password" component={SendEmail} />
           <Route exact path="/reset-password/:token" component={SetPassword} />
-
           <Route
             path="/invitations/accept/:token"
             render={() => <Invitation {...this.props} />}
           />
           <Route exact path="/invitations/error" component={InvitationError} />
 
+          {/* PATIENT ROUTES */}
+          <Route
+            exact
+            path="/patient/getstarted"
+            component={props => <GetStarted asPatient {...props} />}
+          />
+          <Route
+            exact
+            path="/patient/signin"
+            component={props => <TeamPicker asPatient {...props} />}
+          />
+          <Route
+            exact
+            path="/patient/find-your-team"
+            component={props => <FindTeam asPatient {...props} />}
+          />
+          <Route
+            exact
+            path="/patient/find-your-team/:token"
+            component={props => <SelectTeam asPatient {...props} />}
+          />
+          <Route
+            exact
+            path="/patient/find-your-team/:token/login"
+            component={props => <Login asPatient {...props} />}
+          />
+          <Route
+            exact
+            path="/patient/login"
+            render={props => <Login asPatient {...props} />}
+          />
+          <Route
+            exact
+            path="/patient/logged-out"
+            render={props => <LoggedOut asPatient {...props} />}
+          />
+          <Route
+            exact
+            path="/patient/reset-password"
+            component={props => <SendEmail asPatient {...props} />}
+          />
+          <Route
+            exact
+            path="/patient/reset-password/:token"
+            component={props => <SetPassword asPatient {...props} />}
+          />
+          <Route
+            path="/patient/invitations/accept/:token"
+            render={() => <Invitation asPatient {...this.props} />}
+          />
+          <Route
+            exact
+            path="/patient/invitations/error"
+            component={InvitationError}
+          />
+
+          {/* HARD REDIRECT */}
           <Route
             exact
             push

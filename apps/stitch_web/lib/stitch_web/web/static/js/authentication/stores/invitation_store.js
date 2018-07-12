@@ -21,7 +21,8 @@ class InvitationStore {
 
   @action
   verifyInvitation = () => {
-    return get(`/api/v1/invitations/${this.token}`, {
+    const url = `/api/v1/invitations/${this.token}`;
+    return get(url, {
       hideNotify: true
     }).then(resp => {
       this.email = resp.data.email;
@@ -32,9 +33,13 @@ class InvitationStore {
   };
 
   @action
-  completeInvitation = () => {
+  completeInvitation = asPatient => {
+    const completeUrl = asPatient
+      ? `/api/v1/patient/invitations/accept/${this.token}`
+      : `/api/v1/invitations/accept/${this.token}`;
+
     this.saving = true;
-    return post(`/api/v1/invitations/accept/${this.token}`, {
+    return post(completeUrl, {
       body: {
         first_name: this.firstname,
         last_name: this.lastname,
@@ -47,7 +52,11 @@ class InvitationStore {
     })
       .then(() => {
         this.saving = false;
-        history.push("/apps");
+        if (asPatient) {
+          window.location = "/patient";
+        } else {
+          history.push("/apps");
+        }
       })
       .catch(err => {
         this.saving = false;

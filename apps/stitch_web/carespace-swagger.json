@@ -1,6 +1,139 @@
 {
   "swagger": "2.0",
   "paths": {
+    "/api/v1/patient/reset_password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "required": false,
+            "name": "email",
+            "in": "query",
+            "description": "Patients email (sent without other params)"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "token",
+            "in": "query",
+            "description": "Password reset token (sent with password param - not email param)"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "password",
+            "in": "query",
+            "description": "Password for the user (sent with token param - not email param)"
+          }
+        ],
+        "operationId": "Stitch.Web.Api.V1.AuthenticationController.patient_reset_password",
+        "description": "If posted with an email param, sends a password reset email with token. If posted with token and new password, resets password."
+      }
+    },
+    "/api/v1/patient/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "required": false,
+            "name": "email",
+            "in": "query",
+            "description": "Email for the patient."
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "password",
+            "in": "query",
+            "description": "Password for the patient."
+          }
+        ],
+        "operationId": "Stitch.Web.Api.V1.AuthenticationController.submit_patient_login",
+        "description": "Logs a patient in. Returns Patient info including redirect_url and token for future api calls."
+      }
+    },
+    "/api/v1/patient/invitations/accept/{token}": {
+      "post": {
+        "tags": [
+          "Invitation"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/PatientOnboardingCompletion"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "required": false,
+            "name": "token",
+            "in": "query",
+            "description": "invite_token on the invitation sent to the patient"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "first_name",
+            "in": "query",
+            "description": "First name of the patient."
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "last_name",
+            "in": "query",
+            "description": "Last name of the patient."
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "pin",
+            "in": "query",
+            "description": "4 digit PIN for the patient."
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "password",
+            "in": "query",
+            "description": "Patient's password."
+          }
+        ],
+        "operationId": "StitchConnect.Web.Api.V1.InvitationController.patient_accept",
+        "description": "Accepts an invitation and completes patient onboarding."
+      }
+    },
     "/api/v1/patient/inboxes/{inbox_id}/conversations": {
       "post": {
         "tags": [
@@ -646,6 +779,75 @@
     "title": "Stitch"
   },
   "definitions": {
+    "PatientOnboardingCompletion": {
+      "type": "object",
+      "title": "PatientOnboardingCompletion",
+      "properties": {
+        "onboarded": {
+          "type": "boolean",
+          "description": "Whether the patient is onboarded."
+        },
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier"
+        },
+        "email": {
+          "type": "string",
+          "example": "jeff@teamstitch.com",
+          "description": "Email of the patient"
+        }
+      },
+      "description": "Patient info returned on successful onboard."
+    },
+    "PatientLogin": {
+      "type": "object",
+      "title": "Patient",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "redirect_url": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "onboarded": {
+          "type": "booelan"
+        },
+        "mrn": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "inserted_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "avatar_thumb": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        }
+      },
+      "description": "A patient user."
+    },
     "PatientInbox": {
       "type": "object",
       "title": "Inbox",
@@ -776,6 +978,29 @@
         }
       },
       "description": "A collection of conversations in Engage."
+    },
+    "FindTeamLogin": {
+      "type": "object",
+      "title": "FindTeamLogin",
+      "properties": {
+        "teams": {
+          "type": "array",
+          "example": [
+            {
+              "slug": "vumc",
+              "name": "VUMC",
+              "login_token": "djif43b9fb"
+            }
+          ],
+          "description": "Teams to log into with name, slug, and login_token."
+        },
+        "login_token": {
+          "type": "string",
+          "example": "djif43b9fb",
+          "description": "Token used to log into found teams."
+        }
+      },
+      "description": "Info returned when given a find team token."
     },
     "Conversations": {
       "type": "array",

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 
 import { Link } from "react-router-dom";
@@ -11,7 +12,7 @@ import { mobile } from "../../lib/browser_details";
 
 @inject("titleStore")
 @observer
-export default class FindTeam extends Component {
+class FindTeam extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
@@ -30,7 +31,12 @@ export default class FindTeam extends Component {
 
   _onSubmit = event => {
     event.preventDefault();
-    post("/api/v1/find-your-team", {
+
+    const url = this.props.asPatient
+      ? "/api/v1/patient/find-your-team"
+      : "/api/v1/find-your-team";
+
+    post(url, {
       body: { email: this.state.email },
       hideNotify: true
     }).then(() => {
@@ -40,6 +46,8 @@ export default class FindTeam extends Component {
 
   renderFindTeam() {
     const { email } = this.state;
+
+    const singinUrl = this.props.asPatient ? "/patient/signin" : "/signin";
 
     return (
       <OnboardPage
@@ -66,7 +74,7 @@ export default class FindTeam extends Component {
         </FormGroup>
         <div className="team-picker-find-team-helper">
           Know your carespace URL?{" "}
-          <Link to="/signin">
+          <Link to={singinUrl}>
             <strong>Sign In</strong>
           </Link>
         </div>
@@ -76,6 +84,9 @@ export default class FindTeam extends Component {
 
   renderCheckEmail() {
     const { email } = this.state;
+    const findTeamLink = this.props.asPatient
+      ? "/patient/find-your-team"
+      : "/find-your-team";
 
     return (
       <OnboardPage
@@ -85,7 +96,7 @@ export default class FindTeam extends Component {
           <span>
             We've emailed a confirmation link to {email}. Click the link to
             confirm your address and get started. <br /> <br />Wrong email?{" "}
-            <a href="/find-your-team">Please re-enter your address. </a>
+            <a href={findTeamLink}>Please re-enter your address. </a>
           </span>
         }
         hideFooter
@@ -97,3 +108,13 @@ export default class FindTeam extends Component {
     return !this.state.sent ? this.renderFindTeam() : this.renderCheckEmail();
   }
 }
+
+FindTeam.defaultProps = {
+  asPatient: false
+};
+
+FindTeam.propTypes = {
+  asPatient: PropTypes.bool
+};
+
+export default FindTeam;
