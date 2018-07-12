@@ -28,11 +28,13 @@ defmodule Stitch.Engage.ConversationQueries do
     is_open = Map.get(params, "open", nil)
     updated_before = Map.get(params, "updated_before", nil)
 
+    limit = parse_limit(Map.get(params, "limit"), :conversation)
+
     Conversation
     |> where(inbox_id: ^inbox_id)
     |> with_open_value(is_open)
     |> updated_before(updated_before)
-    |> most_recent(Conversation.page_length())
+    |> most_recent(limit)
     |> with_patients()
     |> Repo.all()
     |> with_latest_message_for_each()
@@ -41,12 +43,13 @@ defmodule Stitch.Engage.ConversationQueries do
 
   def for_index(%Patient{id: patient_id} = patient, inbox_id, params = %{}) do
     updated_before = Map.get(params, "updated_before", nil)
+    limit = parse_limit(Map.get(params, "limit"), :conversation)
 
     Conversation
     |> where(inbox_id: ^inbox_id)
     |> for_patient(patient_id)
     |> updated_before(updated_before)
-    |> most_recent(Conversation.page_length())
+    |> most_recent(limit)
     |> Repo.all()
     |> with_latest_message_for_each()
     |> with_unread_for_each(patient)
@@ -124,12 +127,14 @@ defmodule Stitch.Engage.ConversationQueries do
   Given a conversation id and (potentially nil) updated_before,
   return list of conversation messages (limited to page_length)
   """
-  @spec messages_for_conversation(integer | binary, binary | nil) :: list()
-  def messages_for_conversation(conversation_id, updated_before) do
+  @spec messages_for_conversation(integer | binary, binary | nil, integer) :: list()
+  def messages_for_conversation(conversation_id, updated_before, limit \\ nil) do
+    limit = parse_limit(limit, :conversation_message)
+
     ConversationMessage
     |> where(conversation_id: ^conversation_id)
     |> updated_before(updated_before)
-    |> most_recent(ConversationMessage.page_length())
+    |> most_recent(limit)
     |> Repo.all()
     |> Reaction.apply_reactions(:conversation_message)
   end
@@ -304,6 +309,24 @@ defmodule Stitch.Engage.ConversationQueries do
 
     Repo.one(from(c in query, select: count("*")))
   end
+
+  defp parse_limit(nil, type) do
+    default_limit_for_type(type)
+  end
+
+  defp parse_limit(given_limit, type) when is_number(given_limit) do
+    min(default_limit_for_type(type), given_limit)
+  end
+
+  defp parse_limit(given_limit, type) when is_binary(given_limit) do
+    case Integer.parse(given_limit) do
+      {int_limit, _} -> parse_limit(int_limit, type)
+      _ -> default_limit_for_type(type)
+    end
+  end
+
+  defp default_limit_for_type(:conversation), do: 20
+  defp default_limit_for_type(:conversation_message), do: 50
 
   defp most_recent(query, count) do
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)

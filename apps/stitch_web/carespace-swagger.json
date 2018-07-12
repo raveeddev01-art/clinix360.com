@@ -266,6 +266,13 @@
             "description": "Inbox ID"
           },
           {
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "Number of conversations to return. Maximum of 20."
+          },
+          {
             "type": "string",
             "required": false,
             "name": "updated_before",
@@ -392,6 +399,13 @@
             "name": "conversation_id",
             "in": "path",
             "description": "Conversation ID"
+          },
+          {
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "Number of conversation messages to return. Maximum of 50."
           },
           {
             "type": "string",
@@ -649,6 +663,13 @@
             "description": "Later bound for updated_at time for conversations."
           },
           {
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "Number of conversations to return. Maximum of 20."
+          },
+          {
             "x-example": false,
             "type": "boolean",
             "required": false,
@@ -776,6 +797,13 @@
             "name": "conversation_id",
             "in": "path",
             "description": "Conversation ID"
+          },
+          {
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "Number of conversation messages to return. Maximum of 50."
           },
           {
             "type": "string",
