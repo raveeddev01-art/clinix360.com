@@ -19,7 +19,7 @@ class FileListFilter extends Component {
 
   render() {
     const { teamFilesStore, usersStore } = this.props;
-    const users = usersStore.users.toJS();
+    const users = usersStore.connectedAndActivatedUsers;
 
     return (
       <div className="file-list__filter">

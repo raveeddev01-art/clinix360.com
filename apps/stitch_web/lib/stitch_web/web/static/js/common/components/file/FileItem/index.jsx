@@ -56,6 +56,7 @@ class FileItem extends Component {
   render() {
     const { file, usersStore, isActionsVisible, onFileClick } = this.props;
     const user = usersStore.usersById[file.user_id];
+    const username = user && this.renderName(user);
 
     return (
       <div className="file-item" onClick={this.onClick}>
@@ -90,9 +91,13 @@ class FileItem extends Component {
 
           <div className="file-item__content-user">
             <span onClick={e => e.stopPropagation()}>
-              <UserProfileMenu user={user} className="name">
-                {user && this.renderName(user)}
-              </UserProfileMenu>
+              {isActionsVisible ? (
+                <UserProfileMenu user={user} className="name">
+                  {username}
+                </UserProfileMenu>
+              ) : (
+                username
+              )}
             </span>
           </div>
 
