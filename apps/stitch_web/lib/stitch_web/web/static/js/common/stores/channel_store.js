@@ -160,6 +160,10 @@ class ChannelStore {
       "file_details_updated",
       messageStore.onFileDetailsUpdate
     );
+    this.groupChannel.on(
+      "file_details_updated",
+      teamFileStore.onFileDetailsUpdate
+    );
 
     return joined;
   }

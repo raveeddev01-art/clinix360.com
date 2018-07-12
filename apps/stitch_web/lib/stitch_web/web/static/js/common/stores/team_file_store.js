@@ -165,6 +165,13 @@ class TeamFileStore {
       this.file = file;
     }
   };
+
+  @action
+  onFileDetailsUpdate = file => {
+    if (file.id === this.file.id) {
+      this.file = file;
+    }
+  };
 }
 
 export default TeamFileStore;
