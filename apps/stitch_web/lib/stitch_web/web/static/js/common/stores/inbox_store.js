@@ -72,6 +72,20 @@ class InboxStore {
   };
 
   @action
+  loadPatientApp = async () => {
+    try {
+      await this.loadInbox(true);
+      await this.loadConversations(this.currentInbox.id, true);
+    } catch (e) {
+      // TODO if error occurs here, redirect to error page
+      console.error(e); // eslint-disable-line
+    }
+
+    // Hide the HTML loading elements.
+    $(".html-loading-element").remove();
+  };
+
+  @action
   loadEngage = async () => {
     try {
       await this.loadInbox();
@@ -87,15 +101,23 @@ class InboxStore {
 
   // Loading only default inbox for now
   @action
-  loadInbox = () => {
-    return get("/api/v1/inboxes/default").then(response => {
+  loadInbox = asPatient => {
+    const url = asPatient
+      ? "/api/v1/patient/inboxes/default"
+      : "/api/v1/inboxes/default";
+
+    return get(url).then(response => {
       this.currentInbox = response.data;
     });
   };
 
   @action
-  loadConversations = id => {
-    return get(`/api/v1/inboxes/${id}/conversations`).then(response => {
+  loadConversations = (id, asPatient) => {
+    const url = asPatient
+      ? `/api/v1/patient/inboxes/${id}/conversations`
+      : `/api/v1/inboxes/${id}/conversations`;
+
+    return get(url).then(response => {
       this.conversations = response.data;
     });
   };
@@ -108,8 +130,12 @@ class InboxStore {
   };
 
   @action
-  loadConversation = id => {
-    return get(`/api/v1/conversations/${id}`).then(response => {
+  loadConversation = (id, asPatient) => {
+    const url = asPatient
+      ? `/api/v1/patient/conversations/${id}`
+      : `/api/v1/conversations/${id}`;
+
+    return get(url).then(response => {
       this.currentConversation = response.data;
       this.messagesLoaded = true;
     });
