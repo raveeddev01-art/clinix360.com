@@ -34,10 +34,6 @@ class FileCommentGroup extends Component {
         file.shared_in.includes(group.id)
     );
 
-    if (!showClose && !groups.length) {
-      return <span />;
-    }
-
     return (
       <small className="file-comment__groups">
         {groups.length ? (
