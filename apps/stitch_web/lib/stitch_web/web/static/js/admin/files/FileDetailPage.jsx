@@ -6,7 +6,6 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Button from "react-bootstrap/lib/Button";
 import { inject, observer } from "mobx-react";
-import { confirmModal } from "common/modals";
 import { isAdminOrOwner } from "lib/utils";
 
 import FileAttachment from "common/components/messages/message-content/file-attachment";

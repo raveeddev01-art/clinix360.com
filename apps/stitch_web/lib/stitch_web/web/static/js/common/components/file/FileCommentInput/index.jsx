@@ -35,11 +35,12 @@ class FileCommentInput extends Component {
   };
 
   render() {
-    const { file } = this.props;
+    const { file, usersStore } = this.props;
+    const user = usersStore.usersById[currentUser.id];
 
     return (
       <form className="file-comment" onSubmit={this.addComment}>
-        <Avatar user={currentUser} />
+        <Avatar user={user} />
         <FormGroup className="file-comment__edit">
           <FormControl
             type="text"
