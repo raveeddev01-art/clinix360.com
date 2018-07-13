@@ -202,6 +202,7 @@ defmodule Stitch.Web.Api.V1.FileController do
 
   def file_public_link_events(upload) do
     GroupChannel.broadcast_file_public_link_updated(upload)
+    file_details_update(upload)
   end
 
   def delete(conn, %{"id" => upload_id}) do
