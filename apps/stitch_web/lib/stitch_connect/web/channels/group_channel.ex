@@ -463,6 +463,12 @@ defmodule StitchConnect.Web.GroupChannel do
     end)
   end
 
+  def broadcast_file_deleted(upload) do
+    Enum.each(upload.shared_in, fn group_id ->
+      @endpoint.broadcast("groups:id:#{group_id}", "file_deleted", %{upload_id: upload.id})
+    end)
+  end
+
   defp endpoint_broadcast(group, event, payload) do
     # TODO: Remove this once no one is using older version of mobile app.
     @endpoint.broadcast("groups:#{group.slug}", event, payload)

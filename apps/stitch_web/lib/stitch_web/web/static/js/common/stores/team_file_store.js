@@ -172,6 +172,11 @@ class TeamFileStore {
       this.file = file;
     }
   };
+
+  @action
+  onFileDeleted = _payload => {
+    // handle file delete
+  };
 }
 
 export default TeamFileStore;

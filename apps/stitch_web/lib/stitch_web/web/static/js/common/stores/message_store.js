@@ -1364,6 +1364,23 @@ class MessageStore {
       this.updateMessageData(file.id, { fields });
     });
   };
+
+  @action
+  onFileDeleted = payload => {
+    const files = this.messages.filter(
+      message =>
+        message.upload_id === payload.upload_id &&
+        (message.type === "upload" || message.type === "file_comment")
+    );
+
+    files.forEach(file => {
+      const messageIndex = this.messages.findIndex(m => m.id === file.id);
+
+      if (messageIndex > -1) {
+        this.messages.splice(messageIndex, 1);
+      }
+    });
+  };
 }
 
 export default MessageStore;

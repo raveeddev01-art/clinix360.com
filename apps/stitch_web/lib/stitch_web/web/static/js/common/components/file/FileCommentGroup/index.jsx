@@ -29,7 +29,7 @@ class FileCommentGroup extends Component {
       <small className="file-comment__groups">
         {groups.length ? (
           label
-        ) : (
+        ) : file.public ? null : (
           <span className="file-comment__group-item">Private File</span>
         )}
         {groups.map(group => (
