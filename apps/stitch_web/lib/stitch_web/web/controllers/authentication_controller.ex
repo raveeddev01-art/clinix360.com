@@ -17,7 +17,11 @@ defmodule Stitch.Web.AuthenticationController do
     conn
     |> assign(:title, title_for_path(path))
     |> assign(:description, description_for_path(path))
-    |> render("index.html", subdomain: conn.private[:subdomain], login_params: login_params)
+    |> render(
+      "index.html",
+      subdomain: conn.private[:subdomain],
+      login_params: login_params
+    )
   end
 
   def login(conn, _params) do
@@ -56,8 +60,17 @@ defmodule Stitch.Web.AuthenticationController do
         to: Stitch.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
       )
     else
-      _error ->
-        render(conn, "auto_login_error.html")
+      _error -> render(conn, "auto_login_error.html")
+    end
+  end
+
+  def patient_auto_login(conn, %{"token" => token}) do
+    with {:ok, patient} <- FindYourTeam.activate_patient_login_token(conn.assigns.team, token) do
+      conn
+      |> login_patient(patient)
+      |> redirect(to: "/patient")
+    else
+      _error -> render(conn, "auto_login_error.html")
     end
   end
 
@@ -119,6 +132,42 @@ defmodule Stitch.Web.AuthenticationController do
       })
 
     render(conn, "reset_password.html", reset_password_params: reset_password_params)
+  end
+
+  def patient_reset_password(conn, _) do
+    reset_password_params =
+      Poison.encode!(%{
+        "teamName" => conn.private[:team_name],
+        "teamSlug" => conn.private[:team_slug]
+      })
+
+    render(conn, "reset_password.html", reset_password_params: reset_password_params)
+  end
+
+  # DRY UP!
+  def patient_change_password(conn, %{"token" => token}) do
+    team = conn.assigns.team
+
+    with %PasswordResetToken{} = password_reset_token <-
+           PasswordResetToken.get_valid_token(token),
+         true <- password_reset_token.patient.team_id == team.id do
+      PasswordResetToken.activate(password_reset_token)
+
+      change_password_params =
+        Poison.encode!(%{
+          "teamName" => conn.private[:team_name],
+          "teamSlug" => conn.private[:team_slug],
+          "patient" => password_reset_token.patient.id,
+          "token" => password_reset_token.token
+        })
+
+      render(conn, "change_password.html", change_password_params: change_password_params)
+    else
+      _e ->
+        conn
+        |> put_flash(:invalid_login, "Invalid Token.")
+        |> redirect(to: "/patient/login")
+    end
   end
 
   def change_password(conn, %{"token" => token}) do

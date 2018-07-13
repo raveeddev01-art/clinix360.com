@@ -108,6 +108,10 @@ module.exports = [
           to: path.resolve(__dirname, "priv/static/images")
         },
         {
+          from: "./swagger.json",
+          to: path.resolve(__dirname, "priv/static")
+        },
+        {
           from: "./carespace-swagger.json",
           to: path.resolve(__dirname, "priv/static")
         }
