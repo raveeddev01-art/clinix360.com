@@ -35,7 +35,11 @@ class FileCommentGroup extends Component {
         {groups.map(group => (
           <span key={group.id} className="file-comment__group-item">
             <Link to={`/rooms/${group.slug}`}>
-              {group.public ? "#" : "(Private) "}
+              <i
+                className={`file-comment__group-item__icon fa fa-${group.public
+                  ? "comments"
+                  : "lock"}`}
+              />
               {group.slug}
             </Link>
             {showClose && (

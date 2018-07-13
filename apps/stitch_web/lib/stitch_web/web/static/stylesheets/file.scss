@@ -216,6 +216,15 @@
     }
   }
 
+  &__group {
+    &-item {
+      display: inline-block;
+      &__icon {
+        margin-right: 2px;
+      }
+    }
+  }
+
   &__group-item:not(:first-of-type) {
     &:before {
       color: #aaa;
@@ -230,6 +239,11 @@
   }
 
   &__groups {
+    .fa-minus-circle,
+    .fa-times-circle {
+      color: #e33a2f;
+    }
+
     a {
       margin-left: 3px;
 

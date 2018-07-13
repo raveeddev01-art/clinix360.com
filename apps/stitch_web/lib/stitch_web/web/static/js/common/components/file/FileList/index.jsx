@@ -13,6 +13,9 @@ class FileList extends Component {
 
     return (
       <div className="file-list">
+        {!files.length && (
+          <span className="files-list__nofound">No files found</span>
+        )}
         {files.map(file => (
           <FileItem
             key={file.id}

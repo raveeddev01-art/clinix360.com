@@ -39,9 +39,12 @@ class TeamFilesStore {
   };
 
   @action
-  setUserFilter = userId => {
+  setUserFilter = (userId, resetOthers = false) => {
     this.creatorId = userId;
     this.currentPage = 0;
+    if (resetOthers) {
+      this.fileType = "all";
+    }
     this.search();
   };
 

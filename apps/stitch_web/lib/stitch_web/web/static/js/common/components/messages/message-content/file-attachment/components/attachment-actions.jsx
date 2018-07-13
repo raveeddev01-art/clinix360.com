@@ -5,8 +5,9 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Button from "react-bootstrap/lib/Button";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
+import Dropdown from "react-bootstrap/lib/Dropdown";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { SmartDropdown, PortalDropdownMenu } from "common/components";
 import { isAdminOrOwner, getFullUrl } from "lib/utils";
 
 @inject("messageStore", "teamFileStore")
@@ -99,85 +100,60 @@ class AttachmentActions extends Component {
           </OverlayTrigger>
         )}
 
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          overlay={<Tooltip id="message-actions">More Actions</Tooltip>}
-        >
-          <DropdownButton
-            pullRight
-            noCaret
-            title={<i className="fa fa-ellipsis-h" />}
-            id="file-actions-dropdown"
-            onToggle={this.onToggleContextualMenu}
-          >
-            <MenuItem onClick={this.shareFile}>
-              <span>
-                <i className="fa fa-share" />&nbsp;Share File
-              </span>
-            </MenuItem>
+        <SmartDropdown id="file-actions-dropdown">
+          <Dropdown.Toggle useAnchor noCaret>
+            <OverlayTrigger
+              placement="top"
+              delayShow={150}
+              overlay={<Tooltip id="message-actions">More Actions</Tooltip>}
+            >
+              <Button>
+                <i className="fa fa-ellipsis-h" />
+              </Button>
+            </OverlayTrigger>
+          </Dropdown.Toggle>
+          <PortalDropdownMenu bsRole="menu">
+            <MenuItem onClick={this.shareFile}>Share File</MenuItem>
 
             {message && (
               <MenuItem onClick={this.togglePin}>
-                <span>
-                  <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Unpin" : "Pin"}{" "}
-                  message
-                </span>
+                {message.pinned ? "Unpin" : "Pin"} message
               </MenuItem>
             )}
 
             <CopyToClipboard text={detailPageUrl} onCopy={this.copy}>
-              <MenuItem>
-                <span>
-                  <i className="fa fa-paste" />&nbsp;Copy Link
-                </span>
-              </MenuItem>
+              <MenuItem>Copy Link</MenuItem>
             </CopyToClipboard>
 
             {!public_url && (
               <MenuItem onClick={this.createPublicLink}>
-                <span>
-                  <i className="fa fa-external-link" />&nbsp;Create External
-                  Link
-                </span>
+                Create External Link
               </MenuItem>
             )}
 
             {public_url && (
               <MenuItem onClick={this.revokePublicLink}>
-                <span>
-                  <i className="fa fa-minus-circle" />&nbsp;Revoke External Link
-                </span>
+                Revoke External Link
               </MenuItem>
             )}
 
             {public_url && (
               <MenuItem target="_blank" href={public_url}>
-                <span>
-                  <i className="fa fa-external-link" />&nbsp;Open Public Link
-                </span>
+                Open Public Link
               </MenuItem>
             )}
 
             {isAdminOrOwner(user_id) && <MenuItem divider />}
 
             {onCommentsClick && (
-              <MenuItem onClick={onCommentsClick}>
-                <span>
-                  <i className="fa fa-info" />&nbsp;View Details
-                </span>
-              </MenuItem>
+              <MenuItem onClick={onCommentsClick}>View Details</MenuItem>
             )}
 
             {isAdminOrOwner(user_id) && (
-              <MenuItem onClick={this.delete}>
-                <span>
-                  <i className="fa fa-trash" />&nbsp;Delete File
-                </span>
-              </MenuItem>
+              <MenuItem onClick={this.delete}>Delete File</MenuItem>
             )}
-          </DropdownButton>
-        </OverlayTrigger>
+          </PortalDropdownMenu>
+        </SmartDropdown>
       </div>
     );
   }

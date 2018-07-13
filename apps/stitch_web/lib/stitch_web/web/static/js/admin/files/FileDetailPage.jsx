@@ -48,19 +48,10 @@ class FileDetailPage extends Component {
   };
 
   deleteFile = () => {
-    confirmModal({
-      title: "Delete File",
-      message:
-        "Are you sure you want to delete this file? This cannot be undone.",
-      okLabel: "Delete"
-    })
-      .then(() => {
-        const { teamFileStore } = this.props;
-        return teamFileStore.deleteFile();
-      })
-      .then(() => {
-        this.props.history.push("/admin/files");
-      });
+    const { teamFileStore } = this.props;
+    return teamFileStore.deleteFile().then(() => {
+      this.props.history.push("/admin/files");
+    });
   };
 
   renderPublicLink(file) {

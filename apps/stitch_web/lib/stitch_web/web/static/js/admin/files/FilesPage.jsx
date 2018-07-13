@@ -11,26 +11,22 @@ import ListFilter from "common/components/file/FileList/ListFilter";
 @inject("teamFilesStore", "usersStore")
 @observer
 class FilesPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tab: "all"
-    };
-  }
-
   componentWillMount() {
     this.props.teamFilesStore.search();
   }
 
   onSelectTab = eventKey => {
     const { teamFilesStore } = this.props;
-    this.setState({ tab: eventKey });
     teamFilesStore.setUserFilter(
       eventKey === "all" ? undefined : currentUser.id
     );
   };
 
   render() {
+    const { teamFilesStore } = this.props;
+    const { creatorId } = teamFilesStore;
+    const tab = creatorId === currentUser.id ? "yours" : "all";
+
     return (
       <Panel className="admin-panel tabs-panel">
         <Panel.Heading>
@@ -39,11 +35,7 @@ class FilesPage extends Component {
           </h1>
         </Panel.Heading>
         <Panel.Body>
-          <Nav
-            bsStyle="tabs"
-            activeKey={this.state.tab}
-            onSelect={this.onSelectTab}
-          >
+          <Nav bsStyle="tabs" activeKey={tab} onSelect={this.onSelectTab}>
             <NavItem eventKey="all">All Files</NavItem>
             <NavItem eventKey="yours">Your Files</NavItem>
           </Nav>

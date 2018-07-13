@@ -248,43 +248,24 @@ class MessageActions extends PureComponent {
             onToggle={this.onToggleContextualMenu}
           >
             {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
-                <MenuItem onClick={this.markAsUnread}>
-                  <span>
-                    <i className="fa fa-circle" />&nbsp;Mark as unread
-                  </span>
-                </MenuItem>
+                <MenuItem onClick={this.markAsUnread}>Mark as unread</MenuItem>
               )}
 
             <CopyToClipboard
               text={detailPageUrl || message.text_content}
               onCopy={this.copy}
             >
-              <MenuItem>
-                <span>
-                  <i className="fa fa-paste" />&nbsp;Copy{" "}
-                  {detailPageUrl ? "Link" : "Message"}
-                </span>
-              </MenuItem>
+              <MenuItem>Copy {detailPageUrl ? "Link" : "Message"}</MenuItem>
             </CopyToClipboard>
-
-            {mine && <MenuItem divider />}
 
             {mine &&
               message.type === "chat" && (
-                <MenuItem onClick={this.edit}>
-                  <span>
-                    <i className="fa fa-pencil" />&nbsp;Edit message
-                  </span>
-                </MenuItem>
+                <MenuItem onClick={this.edit}>Edit message</MenuItem>
               )}
 
             {(mine || isAdmin()) &&
               message.type !== "file_comment" && (
-                <MenuItem onClick={this.delete}>
-                  <span>
-                    <i className="fa fa-trash" />&nbsp;Delete message
-                  </span>
-                </MenuItem>
+                <MenuItem onClick={this.delete}>Delete message</MenuItem>
               )}
           </DropdownButton>
         </OverlayTrigger>

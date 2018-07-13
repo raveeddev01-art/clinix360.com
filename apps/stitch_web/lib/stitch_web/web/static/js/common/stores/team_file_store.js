@@ -77,7 +77,7 @@ class TeamFileStore {
 
   @action
   deleteFile = fileId => {
-    confirmModal({
+    return confirmModal({
       title: "Delete File",
       message:
         "Are you sure you want to delete this file? This cannot be undone.",

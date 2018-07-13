@@ -35,7 +35,8 @@ class AddonStore {
     switch (panelType) {
       case "files":
         this.rootStore.teamFilesStore.setUserFilter(
-          panelTab === "all" ? undefined : currentUser.id
+          panelTab === "all" ? undefined : currentUser.id,
+          true
         );
         break;
       default:
