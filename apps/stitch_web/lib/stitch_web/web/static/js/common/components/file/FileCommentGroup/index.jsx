@@ -42,7 +42,9 @@ class FileCommentGroup extends Component {
       <small className="file-comment__groups">
         {groups.length ? (
           label
-        ) : file.public ? null : (
+        ) : file.public ? (
+          <span className="file-comment__group-item">File</span>
+        ) : (
           <span className="file-comment__group-item">Private File</span>
         )}
         {groups.map(group => (
@@ -53,7 +55,7 @@ class FileCommentGroup extends Component {
                   ? "comments"
                   : "lock"}`}
               />
-              {group.slug}
+              {groupsStore.getGroupName(group)}
             </Link>
             {showClose && (
               <OverlayTrigger

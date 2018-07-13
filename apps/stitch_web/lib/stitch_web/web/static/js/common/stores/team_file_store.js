@@ -88,7 +88,8 @@ class TeamFileStore {
       })
       .then(() => {
         this.rootStore.addonStore.toggleAddons("files");
-      });
+      })
+      .catch(() => {});
   };
 
   @action
