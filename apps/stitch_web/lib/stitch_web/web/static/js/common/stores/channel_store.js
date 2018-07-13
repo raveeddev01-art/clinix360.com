@@ -164,8 +164,10 @@ class ChannelStore {
       "file_details_updated",
       teamFileStore.onFileDetailsUpdate
     );
-    this.groupChannel.on("file_deleted", messageStore.onFileDeleted);
-    this.groupChannel.on("file_deleted", teamFileStore.onFileDeleted);
+    this.groupChannel.on("file_deleted", (...args) => {
+      messageStore.onFileDeleted(...args);
+      teamFileStore.onFileDeleted(...args);
+    });
     return joined;
   }
 

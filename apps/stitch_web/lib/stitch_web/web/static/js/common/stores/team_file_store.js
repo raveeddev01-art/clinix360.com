@@ -174,8 +174,9 @@ class TeamFileStore {
   };
 
   @action
-  onFileDeleted = _payload => {
-    // handle file delete
+  onFileDeleted = () => {
+    this.file = {};
+    this.rootStore.addonStore.toggleAddons(false);
   };
 }
 
