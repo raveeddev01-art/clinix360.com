@@ -4,13 +4,26 @@ import { inject, observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
+import { confirmModal } from "common/modals";
 
 @inject("groupsStore", "teamFileStore")
 @observer
 class FileCommentGroup extends Component {
-  onUnshareClick(group) {
-    this.props.teamFileStore.unshare(group.id);
-  }
+  onUnshareClick = group => {
+    const { groupsStore } = this.props;
+    return confirmModal({
+      title: "Un-share File",
+      message: `Are you sure you want to un-share this file from the ${groupsStore.getGroupName(
+        group
+      )} room?
+          Unsharing the file will prevent future comments from displaying in the room, but will not remove the existing message and comments.`,
+      okLabel: "OK"
+    })
+      .then(() => {
+        return this.props.teamFileStore.unshare(group.id);
+      })
+      .catch(() => {});
+  };
 
   render() {
     const { file, label, showClose, groupsStore } = this.props;
