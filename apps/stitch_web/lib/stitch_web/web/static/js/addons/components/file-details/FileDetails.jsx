@@ -69,6 +69,7 @@ class FileDetails extends Component {
                 url={file.url}
                 file_id={file.id}
                 user_id={file.user_id}
+                public_url={file.public_url}
                 encoded_id={file.encoded_id}
                 commentCount={file.comment_count}
                 onFileDownload={this.onFileDownload}
