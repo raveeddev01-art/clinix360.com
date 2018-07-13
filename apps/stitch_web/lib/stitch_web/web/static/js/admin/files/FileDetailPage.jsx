@@ -14,7 +14,7 @@ import FileInfo from "common/components/file/FileInfo";
 import FileComment from "common/components/file/FileComment";
 import FileCommentInput from "common/components/file/FileCommentInput";
 
-@inject("usersStore", "teamFileStore", "titleStore")
+@inject("usersStore", "teamFileStore", "titleStore", "desktopStore")
 @observer
 class FileDetailPage extends Component {
   constructor(props) {
@@ -70,6 +70,7 @@ class FileDetailPage extends Component {
   }
 
   renderActions(file) {
+    const { desktopStore } = this.props;
     return (
       <DropdownButton
         id="file-action-dropdown"
@@ -77,9 +78,11 @@ class FileDetailPage extends Component {
         bsStyle="default"
         pullRight
       >
-        <MenuItem eventKey="1" href={file.url} target="_blank">
-          Download
-        </MenuItem>
+        {!desktopStore.isElectron && (
+          <MenuItem eventKey="1" href={file.url} target="_blank">
+            Download
+          </MenuItem>
+        )}
         <MenuItem divider />
         {file.public_token ? (
           <MenuItem eventKey="2" onClick={this.revokePublicLink}>
