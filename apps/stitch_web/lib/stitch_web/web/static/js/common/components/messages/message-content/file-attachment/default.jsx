@@ -32,9 +32,13 @@ class DefaultFileAttachment extends Component {
           </div>
           <div className="attachment-description">
             <div className="attachment-title">
-              <a onClick={onCommentsClick}>
+              {onCommentsClick ? (
+                <a onClick={onCommentsClick}>
+                  <strong>{filename}</strong>
+                </a>
+              ) : (
                 <strong>{filename}</strong>
-              </a>
+              )}
             </div>
             <div className="attachment-detail">
               {prettyFileSize(size)} {filetype.title}
@@ -83,7 +87,7 @@ DefaultFileAttachment.defaultProps = {
   useActions: true,
   message: null,
   comment_count: 0,
-  onCommentsClick: () => undefined
+  onCommentsClick: undefined
 };
 
 export default DefaultFileAttachment;

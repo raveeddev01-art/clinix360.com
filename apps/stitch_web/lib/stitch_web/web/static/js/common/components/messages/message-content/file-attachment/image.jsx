@@ -147,7 +147,7 @@ ImageFileAttachment.defaultProps = {
   encoded_id: "",
   comment_count: 0,
   size: "md",
-  onCommentsClick: () => undefined,
+  onCommentsClick: undefined,
   message: null
 };
 

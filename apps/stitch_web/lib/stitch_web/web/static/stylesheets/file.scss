@@ -415,16 +415,25 @@
   }
 }
 
-.file-detail__content .attachment-block {
-  min-width: 350px;
+.file-detail__content {
+  .attachment-block,
+  .file-comment-list {
+    width: 350px;
+  }
 }
 
-.attachment-block .attachment-actions {
-  background: -webkit-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0,
-    #fff 7.5%
-  );
+.attachment-block {
+  .attachment-title {
+    color: #003366 !important;
+  }
+
+  .attachment-actions {
+    background: -webkit-linear-gradient(
+      left,
+      rgba(255, 255, 255, 0) 0,
+      #fff 7.5%
+    );
+  }
 }
 
 .attachment-block .attachment-actions,

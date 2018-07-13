@@ -47,7 +47,7 @@ class FileAttachment extends Component {
   };
 
   render() {
-    const { mimetype } = this.props;
+    const { mimetype, onCommentsClick } = this.props;
     const filetype = getFileType(mimetype);
     const Renderer =
       FileAttachmentRenderer[filetype.title] || FileAttachmentRenderer.File;
@@ -55,7 +55,7 @@ class FileAttachment extends Component {
     return (
       <Renderer
         {...this.props}
-        onCommentsClick={this.onCommentsClick}
+        onCommentsClick={onCommentsClick ? this.onCommentsClick : undefined}
         onFileDownload={this.onFileDownload}
       />
     );
@@ -70,11 +70,11 @@ FileAttachment.propTypes = {
   filetype: PropTypes.string.isRequired,
   file_id: PropTypes.number.isRequired,
   message: PropTypes.object,
-  onCommentsClick: PropTypes.func.isRequired
+  onCommentsClick: PropTypes.func
 };
 
 FileAttachment.defaultProps = {
-  onCommentsClick: () => undefined,
+  onCommentsClick: undefined,
   preview_url: "",
   message: null
 };
