@@ -35,6 +35,18 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     Accounts.User
   }
 
+  # This is to achieve a loose idempotence in case when run this script on the same data more than once
+  # Assuming the probability of having more than one upload_comment with the same param is extrimely low.
+  def upload_comment_exists(message) do
+    UploadComment
+    |> where(text_content: ^message.text_content)
+    |> where(upload_id: ^message.upload_id)
+    |> where(inserted_at: ^message.inserted_at)
+    |> where(updated_at: ^message.updated_at)
+    |> limit(1)
+    |> Repo.one()
+  end
+
   def run do
     Repo.transaction(
       fn ->
@@ -48,15 +60,7 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
 
             with {:upload, %Upload{} = upload} <-
                    {:upload, FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
-                 {:exists, nil} <-
-                   {:exists,
-                    Repo.get_by(
-                      UploadComment,
-                      text_content: message.text_content,
-                      upload_id: message.upload_id,
-                      inserted_at: upload.inserted_at,
-                      updated_at: upload.updated_at
-                    )},
+                 {:exists, nil} <- {:exists, upload_comment_exists(message)},
                  user = UserQueries.get_by_id(upload.user_id),
                  {:created,
                   {:ok,
@@ -73,8 +77,8 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
                     )} do
               correct_timestamp(message, upload_comment, inserted_messages_for_group)
             else
-              {:exists, file_comment} ->
-                Logger.warn("File comment already exists")
+              {:exists, upload_comment} ->
+                Logger.warn("File comment already exists, (#{inspect(upload_comment.id)})")
 
               {:created, error} ->
                 Logger.error("Error inserting file comment (#{inspect(error)})")
