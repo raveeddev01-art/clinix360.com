@@ -35,7 +35,7 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     Accounts.User
   }
 
-  # This is to achieve a loose idempotence in case when run this script on the same data more than once
+  # This is to achieve a loose idempotence in case when we run this script on the same data more than once
   # Assuming the probability of having more than one upload_comment with the same param is extrimely low.
   def upload_comment_exists(message) do
     UploadComment
@@ -125,7 +125,7 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     |> DateTime.to_naive()
   end
 
-  # This is to staging state closer to prod, by removign already created file comments.
+  # This is to make staging state closer to prod, by removign already created file comments.
   def clean_staging() do
     UploadComment
     |> Repo.delete_all()
