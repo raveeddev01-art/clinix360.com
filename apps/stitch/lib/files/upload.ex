@@ -187,7 +187,7 @@ defmodule Stitch.Files.Upload do
     upload
     |> Map.take(@attributes ++ [:comment_count, :public_token])
     |> Map.new(fn {k, v} -> {"#{k}", v} end)
-    |> Map.put(:encoded_id, encode_url_id(upload))
+    |> Map.put("encoded_id", encode_url_id(upload))
   end
 
   @spec has_public_token?(Upload.t()) :: boolean
