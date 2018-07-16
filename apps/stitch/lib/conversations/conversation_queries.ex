@@ -368,15 +368,11 @@ defmodule Stitch.Engage.ConversationQueries do
   defp updated_before(query, nil), do: query
 
   defp updated_before(query, updated_at_limit) do
-    with {:parse_ms, {ms, ""}} <- {:parse_ms, Integer.parse(updated_at_limit)},
+    with {:parse_ms, {ms, ""}} <- {:parse_ms, Integer.parse("#{updated_at_limit}")},
          {:ok, date_time} <- DateTime.from_unix(ms) do
       from(m in query, where: m.updated_at < ^date_time)
     else
-      {:parse_ms, _} ->
-        from(m in query, where: m.updated_at < ^updated_at_limit)
-
-      _ ->
-        query
+      _ -> query
     end
   end
 end
