@@ -243,7 +243,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
            {:message, MessageQueries.get_by_id(message_id)},
          {:authorized?, true} <-
            {:authorized?, MessageAuthorization.can_edit?(message, current_user)},
-         {:updated, message} <- {:updated, Message.update(message, message_params)} do
+         {:updated, {:ok, message}} <- {:updated, Message.update(message, message_params)} do
       message = MessageQueries.load_info(message)
       MessageEventsService.message_edit_events(message)
       render(conn, "show.json", message: message, user_id: current_user.id)
@@ -289,7 +289,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
            {:group, GroupQueries.get_by_id(message.group_id, current_user)},
          {:authorized?, true} <-
            {:authorized?, MessageAuthorization.can_delete?(message, current_user, group)},
-         {:deleted, message} <- {:deleted, Message.delete(message, current_user)} do
+         {:deleted, {:ok, %{message: message}}} <-
+           {:deleted, Message.delete(message, current_user)} do
       MessageEventsService.message_delete_events(message)
       send_resp(conn, :no_content, "")
     else
