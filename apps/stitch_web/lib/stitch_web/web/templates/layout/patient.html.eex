@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= render "_tag_manager_head.html" %>
+    <%= render "_shared_head.html" %>
+    <title><%= if assigns[:title], do: @title, else: "Stitch" %></title>
+    <meta name="description" content="<%= if assigns[:description], do: @description, else: "" %>" />
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/patient_app.css") %>">
+    <%= render "_ie_compat.html" %>
+  </head>
+
+  <body>
+    <%= render "_tag_manager_body.html" %>
+    <div id="toastr" data-component="Toastr"></div>
+    <%= render @view_module, @view_template, assigns %>
+    <%= render "_js_variables.html", conn: @conn %>
+    <%= render "_patient_js_variables.html", conn: @conn %>
+    <%= render "_sentry.html", conn: @conn %>
+    <script src="<%= static_path(@conn, "/js/patient_app.js") %>"></script>
+    <%= render "_intercom.html", conn: @conn %>
+    <%= render "_segment.html", conn: @conn %>
+  </body>
+</html>

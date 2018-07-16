@@ -162,7 +162,8 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/patient", StitchEngage.Web, as: :patient do
     pipe_through([:browser, :patient_browser])
 
-    get("/", PatientController, :show)
+    get("/", PatientController, :index)
+    get("/*path", PatientController, :index)
   end
 
   # ================

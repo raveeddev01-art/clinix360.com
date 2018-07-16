@@ -76,7 +76,7 @@ class RootStore {
     this.notificationStore.loadPreferences();
     this.newsStore.loadNewsStories();
 
-    if (currentUser.roles.includes("admin")) {
+    if (currentUser.roles && currentUser.roles.includes("admin")) {
       this.billingStore.initialBillingLoad();
     }
   }
