@@ -245,6 +245,14 @@ defmodule Stitch.Files.Upload do
     changeset = where(Upload, id: ^upload_id)
 
     Ecto.Multi.new()
+    |> multi_update_comment_counter(upload_id, by)
+    |> Repo.transaction()
+  end
+
+  def multi_update_comment_counter(multi, upload_id, by) do
+    changeset = where(Upload, id: ^upload_id)
+
+    multi
     |> Ecto.Multi.update_all(:upload, changeset, [inc: [comment_count: by]], returning: true)
     |> Ecto.Multi.run(:messages, fn
       %{upload: {1, [upload]}} ->
@@ -254,6 +262,5 @@ defmodule Stitch.Files.Upload do
       %{upload: _} ->
         {:error, nil}
     end)
-    |> Repo.transaction()
   end
 end

@@ -40,11 +40,16 @@ defmodule Stitch.Files.UploadComment do
   def create(%Upload{} = upload, %User{} = user, attrs, presence) do
     attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
 
-    %UploadComment{user_id: user.id, upload_id: upload.id}
-    |> new(attrs)
-    |> Repo.insert()
-    |> increment_comment_counter()
-    |> insert_file_comment_messages(upload, user, presence, attrs)
+    uplooad_comment_changeset =
+      %UploadComment{user_id: user.id, upload_id: upload.id} |> new(attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:upload_comment, uplooad_comment_changeset)
+    |> Upload.multi_update_comment_counter(upload.id, 1)
+    |> Ecto.Multi.run(:insert_file_comment_messages, fn %{upload_comment: upload_comment} ->
+      {:ok, insert_file_comment_messages(upload_comment, upload, user, presence, attrs)}
+    end)
+    |> Repo.transaction()
   end
 
   @spec update(UploadComment.t(), String.t(), User.t()) ::
@@ -86,26 +91,27 @@ defmodule Stitch.Files.UploadComment do
 
   defp decrement_comment_counter(result), do: result
 
-  defp insert_file_comment_messages({:ok, upload_comment}, upload, user, presence, attrs) do
+  defp insert_file_comment_messages(upload_comment, upload, user, presence, attrs) do
     groups = GroupQueries.groups_for_file_comment(upload, user)
 
-    result =
-      Enum.map(groups, fn group ->
-        attrs = %{
-          "type" => "file_comment",
-          "upload_id" => upload_comment.upload_id,
-          "text_content" => attrs["text_content"]
-        }
+    Enum.reduce(groups, [], fn group, acc ->
+      attrs = %{
+        "type" => "file_comment",
+        "upload_id" => upload_comment.upload_id,
+        "text_content" => attrs["text_content"]
+      }
 
-        result = MessageCreation.create(group, user, attrs, presence, upload, upload_comment)
+      result = MessageCreation.create(group, user, attrs, presence, upload, upload_comment)
 
-        %{group: group, result: result}
-      end)
+      case result do
+        {:ok, message_creation_result} ->
+          [%{group: group, message_creation_result: message_creation_result} | acc]
 
-    {:ok, upload_comment, result}
+        _ ->
+          acc
+      end
+    end)
   end
-
-  defp insert_file_comment_messages(result, _upload, _user, _presence, _attrs), do: result
 
   def update_file_comment_message({:ok, upload_comment}) do
     {_, updated_messages} = Message.update_file_comments(upload_comment)

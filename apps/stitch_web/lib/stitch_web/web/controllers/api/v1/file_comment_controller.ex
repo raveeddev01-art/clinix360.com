@@ -27,9 +27,13 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
     with {:upload, %Upload{} = upload} <-
            {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
-         {:upload_comment, {:ok, upload_comment, groups}} <-
-           {:upload_comment, UploadComment.create(upload, current_user, attrs, presence)} do
-      file_comment_creation_events(groups, upload)
+         {:upload_comment,
+          {:ok,
+           %{
+             insert_file_comment_messages: inserted_messages_for_group,
+             upload_comment: upload_comment
+           }}} <- {:upload_comment, UploadComment.create(upload, current_user, attrs, presence)} do
+      file_comment_creation_events(inserted_messages_for_group, upload)
 
       conn
       |> put_status(:created)
@@ -41,20 +45,23 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
       {:authorized, false} ->
         {:error, :not_found}
 
-      {:upload_comment, {:error, changeset}} ->
+      {:upload_comment, {:error, action, changeset, _}} ->
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
   end
 
-  def file_comment_creation_events(groups, upload) do
+  def file_comment_creation_events(inserted_messages_for_group, upload) do
     upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
     GroupChannel.broadcast_file_comment_added(upload)
 
-    Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
+    Enum.each(inserted_messages_for_group, fn %{
+                                                group: group,
+                                                message_creation_result: message_creation_result
+                                              } ->
       MessageEventsService.message_creation_events(
-        result.message,
+        message_creation_result.message,
         group,
-        result.notify_user_ids
+        message_creation_result.notify_user_ids
       )
     end)
   end

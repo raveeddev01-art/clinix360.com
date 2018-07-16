@@ -1,5 +1,5 @@
 defmodule Stitch.Audit.UploadComment do
-  def track_update({:ok, upload_comment}, user, comment_before_edit) do
+  def track_update({:ok, %{upload_comment: upload_comment}}, user, comment_before_edit) do
     Stitch.Version.insert(comment_before_edit, %{
       committed_by_id: upload_comment.user_id,
       source: "application"
