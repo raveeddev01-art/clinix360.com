@@ -515,6 +515,16 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           LinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
+          message = Repo.preload(message, :upload, force: true)
+
+          StitchConnect.Web.Api.V1.MessageController.create_optional_upload_comment(
+            message,
+            group,
+            user,
+            presence_user_ids,
+            attrs
+          )
+
           Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
 
           Stitch.Task.start(fn ->
