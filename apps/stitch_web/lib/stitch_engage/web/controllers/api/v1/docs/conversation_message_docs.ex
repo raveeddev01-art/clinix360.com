@@ -9,7 +9,7 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
         produces("application/json")
 
         description(
-          "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
+          "List of 50 most recent conversation messages for a conversation. Pass in max_id to move backward in time."
         )
 
         CommonParams.auth()
@@ -23,10 +23,10 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
             "Number of conversation messages to return. Maximum of 50."
           )
 
-          updated_before(
+          max_id(
             :query,
-            :string,
-            "Later bound for updated_at time for messages."
+            :integer,
+            "Upper bound for conversation message ids."
           )
         end
 
@@ -38,7 +38,7 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
         produces("application/json")
 
         description(
-          "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
+          "List of 50 most recent conversation messages for a conversation. Pass in max_id to move backward in time."
         )
 
         CommonParams.auth()
@@ -52,10 +52,10 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
             "Number of conversation messages to return. Maximum of 50."
           )
 
-          updated_before(
+          max_id(
             :query,
-            :string,
-            "Later bound for updated_at time for messages."
+            :integer,
+            "Upper bound for conversation message ids."
           )
         end
 

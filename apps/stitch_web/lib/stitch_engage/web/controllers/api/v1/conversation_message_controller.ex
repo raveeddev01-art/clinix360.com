@@ -44,7 +44,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
            {:conversation, Repo.get(Conversation, id)},
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
-      conversation_messages = load_messages(id, params["updated_before"], params["limit"])
+      conversation_messages = load_messages(id, params["max_id"], params["limit"])
 
       render(conn, "index.json", conversation_messages: conversation_messages)
     else
@@ -53,10 +53,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  defp load_messages(id, updated_before, limit) do
+  defp load_messages(id, max_id, limit) do
     ConversationQueries.messages_for_conversation(
       id,
-      updated_before,
+      max_id,
       limit
     )
   end
@@ -130,15 +130,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       # Notifications: get notify_user_ids in the create and pass them into events
       notify_user_ids = %{}
 
-      conversation_message =
-        case user_or_patient do
-          %User{} ->
-            %{conversation_message | provider: user_or_patient}
-
-          %Patient{} ->
-            %{conversation_message | patient: user_or_patient}
-        end
-
+      conversation_message = Repo.preload(conversation_message, [:provider, :patient])
       conversation_message_events(conversation_message, conversation, notify_user_ids)
 
       conn

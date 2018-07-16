@@ -107,18 +107,24 @@ defmodule Stitch.Web.Api.V1.Docs do
                   example: "2018-07-03T15:58:42.059546"
                 )
 
+                subject(
+                  :string,
+                  "Subject line for the conversation",
+                  example: "Elbow Issue",
+                  required: true
+                )
+
                 updated_at(
                   :string,
                   "Last time updated in db",
                   example: "2018-07-04T15:58:42.059546"
                 )
 
-                # TODO: Implement read/unread for patients
-                # is_unread(
-                #   :boolean,
-                #   "Whether current user has read the most recent message.",
-                #   example: false
-                # )
+                is_unread(
+                  :boolean,
+                  "Whether current user has read the most recent message.",
+                  example: false
+                )
 
                 latest_conversation_message(Schema.ref(:ConversationMessage))
               end

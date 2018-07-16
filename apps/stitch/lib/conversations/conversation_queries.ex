@@ -143,13 +143,14 @@ defmodule Stitch.Engage.ConversationQueries do
   return list of conversation messages (limited to page_length)
   """
   @spec messages_for_conversation(integer | binary, binary | nil, integer) :: list()
-  def messages_for_conversation(conversation_id, updated_before, limit \\ nil) do
+  def messages_for_conversation(conversation_id, max_id, limit \\ nil) do
     limit = parse_limit(limit, :conversation_message)
 
     ConversationMessage
     |> where(conversation_id: ^conversation_id)
-    |> updated_before(updated_before)
-    |> most_recent(limit)
+    |> before_id(max_id)
+    |> most_recent_messages(limit)
+    |> preload([:provider, :patient])
     |> Repo.all()
     |> Reaction.apply_reactions(:conversation_message)
   end
@@ -288,6 +289,7 @@ defmodule Stitch.Engage.ConversationQueries do
       |> where(conversation_id: ^conversation.id)
       |> order_by(desc: :inserted_at)
       |> limit(1)
+      |> preload([:patient, :provider])
       |> Repo.one()
 
     latest_message =
@@ -347,15 +349,30 @@ defmodule Stitch.Engage.ConversationQueries do
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
   end
 
+  defp most_recent_messages(query, count) do
+    from(m in query, order_by: [desc: m.inserted_at], limit: ^count)
+  end
+
   defp with_open_value(query, nil), do: query
 
   defp with_open_value(query, open_val) do
     query |> where(open: ^open_val)
   end
 
+  defp before_id(query, nil), do: query
+
+  defp before_id(query, max_id) do
+    query |> where([m], m.id < ^max_id)
+  end
+
   defp updated_before(query, nil), do: query
 
   defp updated_before(query, updated_at_limit) do
-    from(m in query, where: m.updated_at < ^updated_at_limit)
+    with {:parse_ms, {ms, ""}} <- {:parse_ms, Integer.parse("#{updated_at_limit}")},
+         {:ok, date_time} <- DateTime.from_unix(ms) do
+      from(m in query, where: m.updated_at < ^date_time)
+    else
+      _ -> query
+    end
   end
 end
