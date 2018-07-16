@@ -2,18 +2,25 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
   @moduledoc """
   Creates file comment for each upload with text_content.
 
-  sh> mix run apps/stitch/priv/repo/create_file_comment_from_upload_text_content.exs
+  ## For staging (Remove already existing file comments first):
+
+  iex> Code.load_file("apps/stitch/priv/repo/create_file_comment_from_upload_text_content.exs")
+  iex> Stitch.Repo.Scripts.CreateFileCommentFromUpload.clean_staging()
+  iex> Stitch.Repo.Scripts.CreateFileCommentFromUpload.run()
+
+  ## For prod
 
   iex> Code.load_file("apps/stitch/priv/repo/create_file_comment_from_upload_text_content.exs")
   iex> Stitch.Repo.Scripts.CreateFileCommentFromUpload.run()
 
-  Remove already existing comments from staging
-  iex> Stitch.Repo.Scripts.CreateFileCommentFromUpload.clean_staging()
+  # Alternatively, run from shell (will execute the `run` command)
+  sh> mix run apps/stitch/priv/repo/create_file_comment_from_upload_text_content.exs
   """
 
   use Ecto.Migration
 
   import Ecto.Query
+  import Ecto.Changeset
   require Logger
 
   alias Stitch.{
@@ -37,8 +44,6 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
         |> Repo.stream()
         |> Stream.each(fn message ->
           try do
-            # TODO: update with TX
-
             presence = StitchConnect.Web.UserStatusService.new()
 
             with {:upload, %Upload{} = upload} <-
@@ -53,17 +58,20 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
                       updated_at: upload.updated_at
                     )},
                  user = UserQueries.get_by_id(upload.user_id),
-                 # TODO: update response after TX implt.
-                 {:created, {:ok, _, _}} <-
+                 {:created,
+                  {:ok,
+                   %{
+                     insert_file_comment_messages: inserted_messages_for_group,
+                     upload_comment: upload_comment
+                   }}} <-
                    {:created,
                     UploadComment.create(
                       upload,
                       user,
                       %{"text_content" => message.text_content},
-                      presence,
-                      first_comment: true
+                      presence
                     )} do
-              nil
+              correct_timestamp(message, upload_comment, inserted_messages_for_group)
             else
               {:exists, file_comment} ->
                 Logger.warn("File comment already exists")
@@ -91,9 +99,26 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     )
   end
 
-  def correct_timestamp(upload) do
-    # get comment
-    # get file_comment message
+  # This is needed for the first file comment to appear right below the file share
+  def correct_timestamp(file_share_message, file_comment, file_comment_messages) do
+    file_comment
+    |> change(updated_at: file_share_message.updated_at)
+    |> change(inserted_at: file_share_message.inserted_at)
+    |> Repo.update()
+
+    Enum.each(file_comment_messages, fn %{message_creation_result: message_creation_result} ->
+      message_creation_result.message
+      |> change(updated_at: add_microsecond(file_share_message.updated_at))
+      |> change(inserted_at: add_microsecond(file_share_message.inserted_at))
+      |> Repo.update()
+    end)
+  end
+
+  def add_microsecond(timestamp) do
+    timestamp
+    |> DateTime.from_naive!("Etc/UTC")
+    |> Timex.shift(microseconds: 1)
+    |> DateTime.to_naive()
   end
 
   # This is to staging state closer to prod, by removign already created file comments.
