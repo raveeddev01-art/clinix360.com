@@ -56,7 +56,7 @@ class Conversation extends Component {
           </div>
 
           <div className="message">
-            <div className="subject">This is a temporary hardcoded subject</div>
+            <div className="subject">{conversation.subject}</div>
 
             <div className="text">
               {conversation.latest_conversation_message

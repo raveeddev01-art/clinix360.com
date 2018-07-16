@@ -56,6 +56,7 @@ class ComposeModal extends Component {
     inboxStore
       .createConversation({
         patient_id: this.state.patient.id,
+        subject: this.state.subject,
         text_content: this.state.message
       })
       .then(() => {
