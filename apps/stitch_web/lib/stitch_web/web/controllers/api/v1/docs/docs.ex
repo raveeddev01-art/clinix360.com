@@ -141,6 +141,13 @@ defmodule Stitch.Web.Api.V1.Docs do
                   example: true
                 )
 
+                subject(
+                  :string,
+                  "Subject line for the conversation",
+                  example: "Elbow Issue",
+                  required: true
+                )
+
                 inserted_at(
                   :string,
                   "Time inserted into db",
