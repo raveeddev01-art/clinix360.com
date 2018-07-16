@@ -30,6 +30,10 @@ class InboxMenu extends Component {
     };
   }
 
+  onSearch = event => {
+    event.preventDefault();
+  };
+
   onComposeClick = () => {
     this.showComposeModal();
   };
@@ -103,9 +107,9 @@ class InboxMenu extends Component {
           <h3>All Conversations</h3>
 
           <div className="flex-box">
-            <Form className="flex-item">
+            <Form className="flex-item" onSubmit={this.onSearch}>
               <i className="fa fa-search" />
-              <FormControl type="email" placeholder="Search" />
+              <FormControl type="text" placeholder="Search" />
             </Form>
 
             <OverlayTrigger

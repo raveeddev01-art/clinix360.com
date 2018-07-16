@@ -22,6 +22,10 @@ class Conversation extends Component {
       active: parseInt(this.props.match.params.id, 10) === conversation.id
     });
 
+    const dateClass = cx("date", {
+      "hide-date": conversation.open
+    });
+
     return (
       <Link to={`/conversations/${conversation.id}`} className={linkClass}>
         <div className="item__icon">
@@ -32,7 +36,7 @@ class Conversation extends Component {
           <div className="heading">
             <div className="user">{patient.full_name}</div>
 
-            <div className="date">
+            <div className={dateClass}>
               {moment
                 .utc(conversation.updated_at)
                 .local()
@@ -44,9 +48,11 @@ class Conversation extends Component {
                 })}
             </div>
 
-            <div className="closed" onClick={this.onCloseConversation}>
-              <i className="fa fa-check" /> Close
-            </div>
+            {conversation.open && (
+              <div className="closed" onClick={this.onCloseConversation}>
+                <i className="fa fa-check" /> Close
+              </div>
+            )}
           </div>
 
           <div className="message">
