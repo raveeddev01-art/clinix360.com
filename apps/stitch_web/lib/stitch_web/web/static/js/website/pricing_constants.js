@@ -78,6 +78,12 @@ export const PRICING_TABLE = {
   ],
   PATIENT_COMMUNICATION: [
     {
+      feature: "Unlimited Patients",
+      basic: false,
+      standard: true,
+      premium: true
+    },
+    {
       feature: "In-app Messaging",
       basic: false,
       standard: true,
@@ -103,6 +109,12 @@ export const PRICING_TABLE = {
     },
     {
       feature: "Family Access",
+      basic: false,
+      standard: false,
+      premium: true
+    },
+    {
+      feature: "Templates & Macros",
       basic: false,
       standard: false,
       premium: true
@@ -308,6 +320,7 @@ export const PRICING_TABLE_MOBILE = {
       { feature: "Unlimited File Storage" }
     ],
     PATIENT_COMMUNICATION: [
+      { feature: "Unlimited Patients" },
       { feature: "In-App Messaging" },
       { feature: "Assignments" },
       { feature: "Search & File Uploads" },
@@ -329,6 +342,7 @@ export const PRICING_TABLE_MOBILE = {
   PREMIUM: {
     PATIENT_COMMUNICATION: [
       { feature: "Family Access" },
+      { feature: "Templates & Macros" },
       { feature: "Internal Notes" },
       { feature: "Custom Inboxes" },
       { feature: "Custom Forms" },
