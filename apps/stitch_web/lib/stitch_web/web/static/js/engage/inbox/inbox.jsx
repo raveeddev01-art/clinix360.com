@@ -132,15 +132,13 @@ class InboxMenu extends Component {
                     eventKey="1.1"
                     onClick={() => this.setState({ openConversations: true })}
                   >
-                    Open ({inboxStore.currentInbox.open_conversations_count})
+                    <i className="fa fa-inbox" /> Open ({inboxStore.currentInbox.open_conversations_count})
                   </MenuItem>
                   <MenuItem
                     eventKey="1.2"
                     onClick={() => this.setState({ openConversations: false })}
                   >
-                    Closed ({
-                      inboxStore.currentInbox.closed_conversations_count
-                    })
+                    <i className="fa fa-check" /> Closed ({inboxStore.currentInbox.closed_conversations_count})
                   </MenuItem>
                 </NavDropdown>
 
