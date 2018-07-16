@@ -1,11 +1,7 @@
 defmodule StitchConnect.Web.InvitationController do
   use Stitch.Web, :controller
 
-  alias Stitch.{
-    Invitation,
-    PatientQueries,
-    Web.TeamChannel
-  }
+  alias Stitch.Invitation
 
   def accept(conn, %{"token" => invite_token}) do
     get_is_onboarded = fn invitation ->
