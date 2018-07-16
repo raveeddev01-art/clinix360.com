@@ -44,7 +44,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
            {:conversation, Repo.get(Conversation, id)},
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
-      conversation_messages = load_messages(id, params["updated_before"])
+      conversation_messages = load_messages(id, params["updated_before"], params["limit"])
 
       render(conn, "index.json", conversation_messages: conversation_messages)
     else
@@ -53,10 +53,11 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  defp load_messages(id, updated_before) do
+  defp load_messages(id, updated_before, limit) do
     ConversationQueries.messages_for_conversation(
       id,
-      updated_before
+      updated_before,
+      limit
     )
   end
 

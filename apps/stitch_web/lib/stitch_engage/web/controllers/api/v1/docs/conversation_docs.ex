@@ -23,6 +23,12 @@ defmodule Stitch.Web.Api.V1.ConversationDocs do
             "Later bound for updated_at time for conversations."
           )
 
+          limit(
+            :query,
+            :integer,
+            "Number of conversations to return. Maximum of 20."
+          )
+
           open(
             :query,
             :boolean,
@@ -46,6 +52,12 @@ defmodule Stitch.Web.Api.V1.ConversationDocs do
 
         parameters do
           inbox_id(:path, :integer, "Inbox ID", required: true, example: 3)
+
+          limit(
+            :query,
+            :integer,
+            "Number of conversations to return. Maximum of 20."
+          )
 
           updated_before(
             :query,

@@ -17,6 +17,12 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
         parameters do
           conversation_id(:path, :integer, "Conversation ID", required: true, example: 3)
 
+          limit(
+            :query,
+            :integer,
+            "Number of conversation messages to return. Maximum of 50."
+          )
+
           updated_before(
             :query,
             :string,
@@ -39,6 +45,12 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
 
         parameters do
           conversation_id(:path, :integer, "Conversation ID", required: true, example: 3)
+
+          limit(
+            :query,
+            :integer,
+            "Number of conversation messages to return. Maximum of 50."
+          )
 
           updated_before(
             :query,

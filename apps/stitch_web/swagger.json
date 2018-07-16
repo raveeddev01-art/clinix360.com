@@ -86,8 +86,11 @@
     },
     "PatientLogin": {
       "type": "object",
-      "title": "Patient",
+      "title": "PatientLogin",
       "properties": {
+        "updated_at": {
+          "type": "string"
+        },
         "token": {
           "type": "string"
         },
@@ -135,7 +138,7 @@
     },
     "PatientInbox": {
       "type": "object",
-      "title": "Inbox",
+      "title": "PatientInbox",
       "properties": {
         "name": {
           "type": "string",
@@ -149,6 +152,9 @@
         "id": {
           "type": "integer",
           "description": "Unique identifier"
+        },
+        "conversations": {
+          "$ref": "#/definitions/ConversationMessages"
         }
       },
       "description": "A collection of conversations in Engage."
@@ -196,6 +202,9 @@
       "type": "object",
       "title": "Patient",
       "properties": {
+        "updated_at": {
+          "type": "string"
+        },
         "phone": {
           "type": "string"
         },
@@ -430,6 +439,7 @@
       "type": "object",
       "title": "Conversation",
       "required": [
+        "subject",
         "inbox_id"
       ],
       "properties": {
@@ -437,6 +447,11 @@
           "type": "string",
           "example": "2018-07-04T15:58:42.059546",
           "description": "Last time updated in db"
+        },
+        "subject": {
+          "type": "string",
+          "example": "Elbow Issue",
+          "description": "Subject line for the conversation"
         },
         "patient": {
           "$ref": "#/definitions/Patient"
