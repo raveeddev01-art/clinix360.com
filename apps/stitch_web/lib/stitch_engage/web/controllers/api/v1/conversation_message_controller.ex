@@ -130,15 +130,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       # Notifications: get notify_user_ids in the create and pass them into events
       notify_user_ids = %{}
 
-      conversation_message =
-        case user_or_patient do
-          %User{} ->
-            %{conversation_message | provider: user_or_patient}
-
-          %Patient{} ->
-            %{conversation_message | patient: user_or_patient}
-        end
-
+      conversation_message = Repo.preload(conversation_message, [:provider, :patient])
       conversation_message_events(conversation_message, conversation, notify_user_ids)
 
       conn

@@ -44,7 +44,9 @@ defmodule Stitch.Engage.ConversationMessage do
     :link_previews_generated,
     :client_device_type,
     :client_os,
-    :client_name
+    :client_name,
+    :provider_id,
+    :patient_id
   ]
 
   @required_attributes [:text_content]
