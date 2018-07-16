@@ -30,6 +30,11 @@ defmodule StitchEngage.Web.Api.V1.InboxView do
   end
 
   defp patient_inbox_json(inbox) do
-    %{id: inbox.id, name: inbox.name}
+    %{
+      id: inbox.id,
+      name: inbox.name,
+      is_default: inbox.is_default,
+      conversations: ConversationView.conversations_json(inbox.conversations_for_patient)
+    }
   end
 end

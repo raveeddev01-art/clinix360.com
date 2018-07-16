@@ -26,8 +26,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationDocs do
           )
         end
 
-        # response(200, "OK", Schema.ref(:PatientLogin))
-        response(200, "OK")
+        response(200, "OK", Schema.ref(:PatientLogin))
       end
 
       swagger_path :patient_reset_password do

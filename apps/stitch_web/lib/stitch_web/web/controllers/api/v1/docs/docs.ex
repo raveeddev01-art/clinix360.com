@@ -55,7 +55,7 @@ defmodule Stitch.Web.Api.V1.Docs do
             end,
           PatientInbox:
             swagger_schema do
-              title("Inbox")
+              title("PatientInbox")
 
               description("A collection of conversations in Engage.")
 
@@ -63,6 +63,7 @@ defmodule Stitch.Web.Api.V1.Docs do
                 id(:integer, "Unique identifier")
                 name(:string, "Inbox name", example: "General")
                 is_default(:boolean, "Whether the inbox is the team's default")
+                conversations(Schema.ref(:ConversationMessages))
               end
             end,
           Inbox:
@@ -138,6 +139,13 @@ defmodule Stitch.Web.Api.V1.Docs do
                   :boolean,
                   "If the conversation is open or closed",
                   example: true
+                )
+
+                subject(
+                  :string,
+                  "Subject line for the conversation",
+                  example: "Elbow Issue",
+                  required: true
                 )
 
                 inserted_at(
@@ -337,7 +345,7 @@ defmodule Stitch.Web.Api.V1.Docs do
             end,
           PatientLogin:
             swagger_schema do
-              title("Patient")
+              title("PatientLogin")
               description("A patient user.")
 
               properties do
@@ -349,6 +357,7 @@ defmodule Stitch.Web.Api.V1.Docs do
                 first_name(:string)
                 full_name(:string)
                 inserted_at(:string)
+                updated_at(:string)
                 last_name(:string)
                 mrn(:string)
                 onboarded(:booelan)
@@ -371,6 +380,7 @@ defmodule Stitch.Web.Api.V1.Docs do
                 first_name(:string)
                 full_name(:string)
                 inserted_at(:string)
+                updated_at(:string)
                 last_name(:string)
                 mrn(:string)
                 onboarded(:booelan)
