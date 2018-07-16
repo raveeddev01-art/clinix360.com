@@ -24,6 +24,12 @@ export const PRICING_TABLE = {
       basic: true,
       standard: true,
       premium: true
+    },
+    {
+      feature: "API Access",
+      basic: true,
+      standard: true,
+      premium: true
     }
   ],
   TEAM_MESSAGING: [
@@ -277,7 +283,8 @@ export const PRICING_TABLE_MOBILE = {
       { feature: "Full HIPAA Compliance" },
       { feature: "iOS & Android Apps" },
       { feature: "Mac & Windows Apps" },
-      { feature: "EHR Integrations" }
+      { feature: "EHR Integrations" },
+      { feature: "API Access" }
     ],
     TEAM_MESSAGING: [
       { feature: "Public & Private Rooms" },
