@@ -8,10 +8,11 @@ import Button from "react-bootstrap/lib/Button";
 import Modal from "react-bootstrap/lib/Modal";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
+import NavDropdown from "react-bootstrap/lib/NavDropdown";
+import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import Scrollbar from "common/components/scrollbar";
 
@@ -22,6 +23,13 @@ import AddPatientModal from "./modals/add_patient_modal";
 @inject("inboxStore")
 @observer
 class InboxMenu extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openConversations: true
+    };
+  }
+
   onComposeClick = () => {
     this.showComposeModal();
   };
@@ -75,43 +83,70 @@ class InboxMenu extends Component {
   render() {
     const { inboxStore } = this.props;
 
+    const dropdownTitle = this.state.openConversations ? (
+      <span>
+        <i className="fa fa-inbox" /> Open ({
+          inboxStore.currentInbox.open_conversations_count
+        })
+      </span>
+    ) : (
+      <span>
+        <i className="fa fa-check" /> Closed ({
+          inboxStore.currentInbox.closed_conversations_count
+        })
+      </span>
+    );
+
     return (
       <div className="inbox-menu">
         <div className="flex-header">
-          <OverlayTrigger
-            placement="bottom"
-            overlay={<Tooltip id="compose-message">Compose Message</Tooltip>}
-          >
-            <Button block onClick={this.onComposeClick}>
-              <i className="fa fa-pencil-square-o" /> Compose
-            </Button>
-          </OverlayTrigger>
+          <h3>All Conversations</h3>
+
+          <div className="flex-box">
+            <Form className="flex-item">
+              <i className="fa fa-search" />
+              <FormControl type="email" placeholder="Search" />
+            </Form>
+
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="compose-message">Compose Message</Tooltip>}
+            >
+              <Button onClick={this.onComposeClick}>
+                <i className="fa fa-pencil-square-o" />
+              </Button>
+            </OverlayTrigger>
+          </div>
         </div>
 
         <div className="flex-content">
-          <Tab.Container id="conversations-tabs" defaultActiveKey="first">
+          <Tab.Container id="conversations-tabs" defaultActiveKey="1.1">
             <div>
-              <Nav justified className="status-filter">
-                <NavItem eventKey="first">
-                  Open{" "}
-                  {inboxStore.currentInbox.open_conversations_count > 0 && (
-                    <span>
-                      ({inboxStore.currentInbox.open_conversations_count})
-                    </span>
-                  )}
-                </NavItem>
-                <NavItem eventKey="second">
-                  Closed{" "}
-                  {inboxStore.currentInbox.closed_conversations_count > 0 && (
-                    <span>
-                      ({inboxStore.currentInbox.closed_conversations_count})
-                    </span>
-                  )}
+              <Nav bsStyle="tabs" className="status-filter">
+                <NavDropdown eventKey="1" title={dropdownTitle}>
+                  <MenuItem
+                    eventKey="1.1"
+                    onClick={() => this.setState({ openConversations: true })}
+                  >
+                    Open ({inboxStore.currentInbox.open_conversations_count})
+                  </MenuItem>
+                  <MenuItem
+                    eventKey="1.2"
+                    onClick={() => this.setState({ openConversations: false })}
+                  >
+                    Closed ({
+                      inboxStore.currentInbox.closed_conversations_count
+                    })
+                  </MenuItem>
+                </NavDropdown>
+
+                <NavItem className="sort-menu" disabled>
+                  <i className="fa fa-sort" /> Sort
                 </NavItem>
               </Nav>
 
               <Tab.Content animation={false} unmountOnExit>
-                <Tab.Pane eventKey="first">
+                <Tab.Pane eventKey="1.1">
                   <Scrollbar
                     className="scrollbar"
                     viewRef={ref => {
@@ -137,7 +172,7 @@ class InboxMenu extends Component {
                   </Scrollbar>
                 </Tab.Pane>
 
-                <Tab.Pane eventKey="second">
+                <Tab.Pane eventKey="1.2">
                   <Scrollbar
                     className="scrollbar"
                     viewRef={ref => {

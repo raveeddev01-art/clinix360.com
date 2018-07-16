@@ -79,9 +79,22 @@ $dark-border-color: #ccc;
 
   .flex-header {
     flex-basis: auto;
+    flex-direction: column;
+    align-items: normal;
     color: #333;
     background: transparent;
-    padding: 18px 15px;
+    padding: 25px 15px;
+
+    h3 {
+      color: $brand-primary;
+      font-weight: 900;
+      margin: 0 0 20px;
+    }
+
+    .flex-box {
+      display: flex;
+      flex-direction: row;
+    }
 
     form {
       flex: 1;
@@ -98,7 +111,7 @@ $dark-border-color: #ccc;
 
       .form-control {
         border-radius: 4px;
-        border: 2px solid $border-color;
+        border: 1px solid $border-color-dark;
         box-shadow: none;
         padding-left: 34px;
 
@@ -113,14 +126,13 @@ $dark-border-color: #ccc;
       font-size: 15px;
       font-weight: 700;
       background: #fff;
-      border: 2px solid $border-color;
+      border: 1px solid $border-color-dark;
       border-radius: 4px;
       padding: 4px 11px;
       margin-left: 12px;
 
       i.fa {
         font-size: 18px;
-        margin-right: 2px;
         position: relative;
         top: 2px;
       }
@@ -138,36 +150,84 @@ $dark-border-color: #ccc;
     position: relative;
     overflow: hidden;
 
+    .inbox-nav {
+      border-top: 1px solid $dark-border-color;
+      border-bottom: 1px solid $dark-border-color;
+      padding: 10px 15px;
+
+      .btn-default {
+        color: $brand-primary;
+        font-size: 16px;
+        font-weight: 600;
+        background: none;
+        border: 0;
+        box-shadow: none;
+        padding: 6px 0;
+
+        i.fa {
+          margin-right: 4px;
+        }
+      }
+    }
+
+    .conversations-list {
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
     .status-filter {
-      box-shadow: inset 0 -1px 0 $dark-border-color;
+      border-top: 1px solid $dark-border-color;
+      border-bottom: 1px solid $dark-border-color;
+      padding: 0 15px;
+
+      li {
+        margin-bottom: 0;
+      }
 
       a {
-        display: block;
-        color: #a1a1a1;
-        text-align: center;
-        text-transform: uppercase;
-        text-decoration: none;
-        padding: 0 0 5px 0;
+        color: $brand-primary;
+        font-size: 16px;
+        font-weight: 600;
+        border: 0;
+        padding: 13px 0;
         outline: none;
+
+        i.fa {
+          margin-right: 4px;
+        }
 
         &:hover,
         &:focus {
+          color: $brand-primary;
+          background: transparent;
+          border: 0;
+        }
+      }
+
+      .dropdown-menu {
+        margin-top: 0;
+
+        a {
+          display: block;
+          padding: 4px 12px;
+          outline: none;
+        }
+
+        .active > a {
           background: transparent;
         }
       }
 
-      .active > a {
-        color: $brand-primary;
-        font-weight: 600;
-        background: transparent;
-        box-shadow: inset 0 -2px 0 $brand-primary;
+      .sort-menu {
+        float: right;
       }
     }
 
     .scrollbar {
       position: absolute;
       left: 0;
-      top: 26px;
+      top: 50px;
       right: 0;
       bottom: 0;
     }
@@ -270,10 +330,7 @@ $dark-border-color: #ccc;
 
         &.active {
           background: #f0f1f3;
-
-          .item__content {
-            color: #333;
-          }
+          box-shadow: inset 7px 0 0 $brand-primary;
         }
       }
     }
@@ -320,6 +377,7 @@ $dark-border-color: #ccc;
 
         h4 {
           color: $brand-primary;
+          font-size: 20px;
           font-weight: 900;
           overflow: hidden;
           white-space: nowrap;
