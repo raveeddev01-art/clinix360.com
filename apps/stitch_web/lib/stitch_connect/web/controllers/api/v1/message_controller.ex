@@ -285,10 +285,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
     with {:message, %Message{type: message_type} = message} when message_type in ["chat"] <-
            {:message, MessageQueries.get_by_id(message_id)},
-         message = {:group, {:ok, group}} <-
+         {:group, {:ok, group}} <-
            {:group, GroupQueries.get_by_id(message.group_id, current_user)},
          {:authorized?, true} <-
-           {:authorized?, MessageAuthorization.can_delete?(message, current_user)},
+           {:authorized?, MessageAuthorization.can_delete?(message, current_user, group)},
          {:deleted, message} <- {:deleted, Message.delete(message, current_user)} do
       MessageEventsService.message_delete_events(message)
       send_resp(conn, :no_content, "")
