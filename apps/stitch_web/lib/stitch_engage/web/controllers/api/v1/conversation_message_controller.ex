@@ -13,8 +13,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.ConversationMessage.ConversationMessageCreation,
     Engage.ConversationAuthorization,
     Engage.ConversationMessageAuthorization,
-    Patient,
-    Accounts.User,
     ReadStatus
   }
 
@@ -267,14 +265,14 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
   def delete_message_link_preview(
         conn,
-        %{"id" => conversation_message_id, "link" => link} = params
+        %{"id" => _conversation_message_id, "link" => _link} = params
       ) do
     do_delete_message_link_preview(conn, params, conn.assigns.current_user)
   end
 
   def patient_delete_message_link_preview(
         conn,
-        %{"id" => conversation_message_id, "link" => link} = params
+        %{"id" => _conversation_message_id, "link" => _link} = params
       ) do
     do_delete_message_link_preview(conn, params, conn.assigns.patient)
   end
@@ -313,11 +311,11 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   #   MARK AS READ
   # ================
 
-  def mark_as_read(conn, %{"conversation_id" => conversation_id} = params) do
+  def mark_as_read(conn, %{"conversation_id" => _conversation_id} = params) do
     do_mark_as_read(conn, params, conn.assigns.current_user)
   end
 
-  def patient_mark_as_read(conn, %{"conversation_id" => conversation_id} = params) do
+  def patient_mark_as_read(conn, %{"conversation_id" => _conversation_id} = params) do
     do_mark_as_read(conn, params, conn.assigns.patient)
   end
 
