@@ -283,8 +283,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     current_user = conn.assigns.current_user
     team = conn.assigns.team
 
-    with {:message, %Message{type: message_type} = message} when message_type in ["chat"] <-
-           {:message, MessageQueries.get_by_id(message_id)},
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
          {:group, {:ok, group}} <-
            {:group, GroupQueries.get_by_id(message.group_id, current_user)},
          {:authorized?, true} <-
@@ -294,21 +293,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       MessageEventsService.message_delete_events(message)
       send_resp(conn, :no_content, "")
     else
-      # When an old client is trynig to delete "file_comment" via messages API
-      # TODO: Deprecate once most client start using the new file API.
-      {:message, %Message{type: "file_comment"} = message} ->
-        upload_comment_id = message.upload_comment_id
-
-        file_comment_delete_result =
-          FileService.delete_file_comment(upload_comment_id, current_user, team)
-
-        with {:deleted_upload_comment, _updated_upload_comment} <- file_comment_delete_result do
-          MessageEventsService.message_delete_events(message)
-          send_resp(conn, :no_content, "")
-        else
-          error -> error
-        end
-
       {:authorized?, false} ->
         conn
         |> put_status(:unauthorized)

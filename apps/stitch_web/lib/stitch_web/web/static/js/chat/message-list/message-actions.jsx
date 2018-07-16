@@ -277,7 +277,8 @@ class MessageActions extends PureComponent {
             </CopyToClipboard>
 
             {mine &&
-              message.type !== "upload" && (
+              message.type !== "upload" &&
+              message.type !== "file_comment" && (
                 <MenuItem onClick={this.edit}>Edit message</MenuItem>
               )}
 
