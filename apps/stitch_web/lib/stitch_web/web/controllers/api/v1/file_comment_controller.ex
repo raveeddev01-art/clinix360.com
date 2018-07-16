@@ -76,7 +76,9 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
            {:upload_comment, UploadComment.get(upload_comment_id)},
          {:authorized, true} <-
            {:authorized, FileAuthorization.is_comment_creator?(upload_comment, current_user)},
-         {:updated_comment, {:ok, upload_comment, messages}} <-
+         {:updated_comment,
+          {:ok,
+           %{update_upload_comment: upload_comment, update_file_comment_messages: {_, messages}}}} <-
            {:updated_comment, UploadComment.update(upload_comment, text_content, current_user)} do
       file_comment_edit_events(messages, upload_comment.upload_id)
 

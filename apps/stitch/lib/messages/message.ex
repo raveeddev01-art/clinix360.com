@@ -276,12 +276,6 @@ defmodule Stitch.Message do
     |> Repo.update_all(set: [fields: Upload.fields(upload)])
   end
 
-  def update_file_comments(upload_comment) do
-    Message
-    |> where([m], m.upload_comment_id == ^upload_comment.id)
-    |> Repo.update_all([set: [text_content: upload_comment.text_content]], returning: true)
-  end
-
   def file_comment_ids(upload_comment) do
     Message
     |> where([m], m.upload_comment_id == ^upload_comment.id)

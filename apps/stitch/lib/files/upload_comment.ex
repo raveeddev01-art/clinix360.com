@@ -4,11 +4,14 @@ defmodule Stitch.Files.UploadComment do
     Audit,
     Files.Upload,
     Files.UploadComment,
+    Files.FileService,
     GroupQueries,
     Message,
     Message.MessageCreation,
     Repo
   }
+
+  alias Ecto.Multi
 
   use Ecto.Schema
   import Ecto.Changeset
@@ -55,10 +58,19 @@ defmodule Stitch.Files.UploadComment do
   @spec update(UploadComment.t(), String.t(), User.t()) ::
           {:ok, UploadComment.t()} | {:error, Ecto.Changeset.t()}
   def update(%UploadComment{} = upload_comment, text_content, author) do
-    upload_comment
-    |> change(text_content: text_content)
-    |> Repo.update()
-    |> update_file_comment_message()
+    uplooad_comment_changeset =
+      upload_comment
+      |> change(text_content: text_content)
+
+    Multi.new()
+    |> Multi.update(:update_upload_comment, uplooad_comment_changeset)
+    |> Multi.update_all(
+      :update_file_comment_messages,
+      FileService.update_file_comment_messages(upload_comment.id, text_content),
+      [],
+      returning: true
+    )
+    |> Repo.transaction()
     |> Audit.UploadComment.track_update(author, upload_comment)
   end
 
@@ -111,11 +123,6 @@ defmodule Stitch.Files.UploadComment do
           acc
       end
     end)
-  end
-
-  def update_file_comment_message({:ok, upload_comment}) do
-    {_, updated_messages} = Message.update_file_comments(upload_comment)
-    {:ok, upload_comment, updated_messages}
   end
 
   def update_file_comment_message(result), do: result
