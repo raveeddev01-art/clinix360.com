@@ -288,6 +288,7 @@ defmodule Stitch.Engage.ConversationQueries do
       |> where(conversation_id: ^conversation.id)
       |> order_by(desc: :inserted_at)
       |> limit(1)
+      |> preload([:patient, :provider])
       |> Repo.one()
 
     latest_message =
