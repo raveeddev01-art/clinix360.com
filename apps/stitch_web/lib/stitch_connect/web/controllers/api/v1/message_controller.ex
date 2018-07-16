@@ -11,7 +11,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   alias Stitch.Web.{
     StarringEventsService,
-    UrlService
+    UrlService,
+    FileService
   }
 
   alias Stitch.{
@@ -254,11 +255,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         upload_comment_id = message.upload_comment_id
 
         file_comment_update_result =
-          Stitch.Web.FileService.update_file_comment(
-            text_content,
-            upload_comment_id,
-            current_user
-          )
+          FileService.update_file_comment(text_content, upload_comment_id, current_user)
 
         with {:updated_upload_comment, _updated_upload_comment} <- file_comment_update_result do
           message = MessageQueries.get_by_id(message_id)
@@ -283,27 +280,46 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def delete(conn, %{"id" => message_id}) do
-    message = MessageQueries.get_by_id(message_id)
-    user = conn.assigns.current_user
-    group = GroupQueries.get_by_id(message.group_id)
+    current_user = conn.assigns.current_user
+    team = conn.assigns.team
 
-    case MessageAuthorization.can_delete?(message, user, group) do
-      true ->
-        case Message.delete(message, user) do
-          {:ok, _message} ->
-            MessageEventsService.message_delete_events(message)
-            send_resp(conn, :no_content, "")
+    with {:message, %Message{type: message_type} = message} when message_type in ["chat"] <-
+           {:message, MessageQueries.get_by_id(message_id)},
+         message = {:group, {:ok, group}} <-
+           {:group, GroupQueries.get_by_id(message.group_id, current_user)},
+         {:authorized?, true} <-
+           {:authorized?, MessageAuthorization.can_delete?(message, current_user)},
+         {:deleted, message} <- {:deleted, Message.delete(message, current_user)} do
+      MessageEventsService.message_delete_events(message)
+      send_resp(conn, :no_content, "")
+    else
+      # When an old client is trynig to delete "file_comment" via messages API
+      # TODO: Deprecate once most client start using the new file API.
+      {:message, %Message{type: "file_comment"} = message} ->
+        upload_comment_id = message.upload_comment_id
 
-          {:error, _failed_operation, _failed_value, _changeset} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: "Failed to delete message"})
+        file_comment_delete_result =
+          FileService.delete_file_comment(upload_comment_id, current_user, team)
+
+        with {:deleted_upload_comment, _updated_upload_comment} <- file_comment_delete_result do
+          MessageEventsService.message_delete_events(message)
+          send_resp(conn, :no_content, "")
+        else
+          error -> error
         end
 
-      false ->
+      {:authorized?, false} ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "You can't delete other users' messages"})
+
+      {:deleted, {:error, _failed_operation, _failed_value, _changeset}} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Failed to delete message"})
+
+      _ ->
+        {:error, :not_found}
     end
   end
 

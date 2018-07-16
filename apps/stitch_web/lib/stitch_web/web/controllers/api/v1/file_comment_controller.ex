@@ -91,37 +91,18 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
     current_user = conn.assigns.current_user
     team = conn.assigns.team
 
-    with {:upload_comment, upload_comment} <-
-           {:upload_comment, UploadComment.get(upload_comment_id)},
-         {:authorized, true} <-
-           {:authorized,
-            FileAuthorization.can_delete_comment?(upload_comment, current_user, team)},
-         file_comment_messages = FileQueries.file_comment_messages(upload_comment),
-         {:deleted_comment, {:ok, %{delete_upload_comment: upload_comment}}} <-
-           {:deleted_comment, UploadComment.delete(upload_comment, current_user)} do
-      file_comment_delete_events(file_comment_messages, upload_comment.upload_id)
+    file_comment_delete_result =
+      Stitch.Web.FileService.delete_file_comment(
+        upload_comment_id,
+        current_user,
+        team
+      )
 
+    with {:deleted_upload_comment, upload_comment} <- file_comment_delete_result do
       conn
       |> render("show.json", file_comment: upload_comment)
     else
-      {:upload_comment, nil} ->
-        {:error, :not_found}
-
-      {:authorized, false} ->
-        {:error, :not_found}
-
-      {:deleted_comment, {:error, changeset}} ->
-        {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
+      error -> error
     end
-  end
-
-  def file_comment_delete_events(file_comment_messages, upload_id) do
-    upload = FileQueries.get_by_id(upload_id, preload_assoc: true)
-
-    GroupChannel.broadcast_file_comment_deleted(upload)
-
-    Enum.each(file_comment_messages, fn message ->
-      MessageEventsService.message_delete_events(message)
-    end)
   end
 end
