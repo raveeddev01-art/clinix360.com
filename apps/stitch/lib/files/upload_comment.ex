@@ -46,10 +46,10 @@ defmodule Stitch.Files.UploadComment do
     uplooad_comment_changeset =
       %UploadComment{user_id: user.id, upload_id: upload.id} |> new(attrs)
 
-    Ecto.Multi.new()
-    |> Ecto.Multi.insert(:upload_comment, uplooad_comment_changeset)
+    Multi.new()
+    |> Multi.insert(:upload_comment, uplooad_comment_changeset)
     |> Upload.multi_update_comment_counter(upload.id, 1)
-    |> Ecto.Multi.run(:insert_file_comment_messages, fn %{upload_comment: upload_comment} ->
+    |> Multi.run(:insert_file_comment_messages, fn %{upload_comment: upload_comment} ->
       {:ok, insert_file_comment_messages(upload_comment, upload, user, presence, attrs)}
     end)
     |> Repo.transaction()
@@ -77,13 +77,11 @@ defmodule Stitch.Files.UploadComment do
   @spec delete(UploadComment.t(), User.t()) ::
           {:ok, UploadComment.t()} | {:error, Ecto.Changeset.t()}
   def delete(%UploadComment{} = upload_comment, author) do
-    message_file_comment_ids = Message.file_comment_ids(upload_comment)
-
-    upload_comment
-    |> Repo.delete()
+    Multi.new()
+    |> Multi.delete(:delete_upload_comment, upload_comment)
+    |> Upload.multi_update_comment_counter(upload_comment.upload_id, -1)
+    |> Repo.transaction()
     |> Audit.UploadComment.track_delete(author)
-    |> decrement_comment_counter()
-    |> delete_file_comment_messages(message_file_comment_ids)
   end
 
   @spec get(pos_integer) :: UploadComment.t() | nil

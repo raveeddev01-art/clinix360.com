@@ -114,9 +114,10 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
          {:authorized, true} <-
            {:authorized,
             FileAuthorization.can_delete_comment?(upload_comment, current_user, team)},
-         {:deleted_comment, {:ok, upload_comment, messages}} <-
+         file_comment_messages = FileQueries.file_comment_messages(upload_comment),
+         {:deleted_comment, {:ok, %{delete_upload_comment: upload_comment}}} <-
            {:deleted_comment, UploadComment.delete(upload_comment, current_user)} do
-      file_comment_delete_events(messages, upload_comment.upload_id)
+      file_comment_delete_events(file_comment_messages, upload_comment.upload_id)
 
       conn
       |> render("show.json", file_comment: upload_comment)
@@ -132,11 +133,12 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
     end
   end
 
-  def file_comment_delete_events(messages, upload_id) do
+  def file_comment_delete_events(file_comment_messages, upload_id) do
     upload = FileQueries.get_by_id(upload_id, preload_assoc: true)
+
     GroupChannel.broadcast_file_comment_deleted(upload)
 
-    Enum.each(messages, fn message ->
+    Enum.each(file_comment_messages, fn message ->
       MessageEventsService.message_delete_events(message)
     end)
   end

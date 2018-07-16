@@ -11,7 +11,7 @@ defmodule Stitch.Audit.UploadComment do
 
   def track_update(result, _user, _message), do: result
 
-  def track_delete({:ok, upload_comment} = result, user) do
+  def track_delete(:ok, %{upload_comment: upload_comment} = result, user) do
     Stitch.Version.insert(upload_comment, %{
       committed_by_id: upload_comment.user_id,
       source: "application"

@@ -8,6 +8,7 @@ defmodule Stitch.Files.FileQueries do
     Files.UploadComment,
     Files.GroupUpload,
     Files.FileTypes,
+    Message,
     Paginator
   }
 
@@ -118,5 +119,12 @@ defmodule Stitch.Files.FileQueries do
       _ ->
         nil
     end
+  end
+
+  @spec file_comment_messages(UploadComment.t()) :: [Message.t()]
+  def file_comment_messages(%UploadComment{} = upload_comment) do
+    Message
+    |> where([m], m.upload_comment_id == ^upload_comment.id)
+    |> Repo.all()
   end
 end
