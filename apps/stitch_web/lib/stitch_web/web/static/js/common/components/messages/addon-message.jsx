@@ -21,8 +21,14 @@ class AddonMessage extends Component {
 
   render() {
     const { message, usersStore } = this.props;
-    const userId = message.user.id;
+    // user_id needed for starred messages
+    const userId = message.user_id || message.user.id;
     const user = usersStore.usersById[userId];
+
+    // Starred messages without user
+    if (!message.user) {
+      message.user = user;
+    }
 
     return (
       <div className="message-container addon">

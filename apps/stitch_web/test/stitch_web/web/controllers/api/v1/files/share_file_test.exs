@@ -23,10 +23,11 @@ defmodule StitchConnect.Web.MessageController.ShareFileTest do
     insert(:group_upload, upload: upload, group: group)
 
     conn
-    |> post(api_v1_message_path(conn, :create, group), %{
-      message: %{type: "file_share", upload_id: upload.id}
+    |> post(api_v1_file_path(conn, :share, upload), %{
+      group_id: group.id,
+      text_content: "Testing file sharing"
     })
-    |> json_response(201)
+    |> json_response(200)
   end
 
   test "can't share a file they don't have access to", %{
@@ -36,11 +37,12 @@ defmodule StitchConnect.Web.MessageController.ShareFileTest do
   } do
     response =
       conn
-      |> post(api_v1_message_path(conn, :create, group), %{
-        message: %{type: "file_share", upload_id: private_upload.id}
+      |> post(api_v1_file_path(conn, :share, private_upload), %{
+        group_id: group.id,
+        text_content: "Testing file sharing"
       })
-      |> json_response(422)
+      |> json_response(401)
 
-    assert response["message"] == "Upload not found"
+    assert response["message"] == "You are not authorized to access this resource."
   end
 end

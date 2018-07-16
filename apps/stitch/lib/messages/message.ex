@@ -8,6 +8,7 @@ defmodule Stitch.Message do
     Accounts.User,
     Audit,
     Files.Upload,
+    Files.UploadComment,
     Group,
     GroupQueries,
     GroupUser,
@@ -19,7 +20,7 @@ defmodule Stitch.Message do
     Repo
   }
 
-  @valid_types ["chat", "system", "upload", "file_share"]
+  @valid_types ["chat", "system", "upload", "file_share", "file_comment"]
 
   schema "messages" do
     belongs_to(:user, User)
@@ -44,10 +45,22 @@ defmodule Stitch.Message do
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
     belongs_to(:upload, Upload)
+    belongs_to(:upload_comment, UploadComment)
     embeds_many(:link_previews, LinkPreview, on_replace: :delete)
 
     timestamps()
   end
+
+  @upload_castable_attributes [
+    :fields,
+    :type,
+    :request_id,
+    :mentioned_user_ids,
+    :read_status,
+    :client_device_type,
+    :client_os,
+    :client_name
+  ]
 
   def changeset(%Message{} = struct, params) do
     struct
@@ -104,19 +117,16 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [
-      :fields,
-      :type,
-      :request_id,
-      :text_content,
-      :mentioned_user_ids,
-      :read_status,
-      :client_device_type,
-      :client_os,
-      :client_name
-    ])
+    |> cast(params, @upload_castable_attributes)
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["file_share", "upload"])
+  end
+
+  def file_comment_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, @upload_castable_attributes ++ [:text_content])
+    |> validate_required([:fields, :type, :text_content])
+    |> validate_inclusion(:type, ["file_comment"])
   end
 
   def system_changeset(%Message{} = struct, params \\ %{}) do
@@ -151,6 +161,10 @@ defmodule Stitch.Message do
 
   def message_changeset(message, %{"type" => "file_share"} = attrs) do
     message |> upload_changeset(attrs)
+  end
+
+  def message_changeset(message, %{"type" => "file_comment"} = attrs) do
+    message |> file_comment_changeset(attrs)
   end
 
   def update(message, attributes) do
@@ -253,5 +267,12 @@ defmodule Stitch.Message do
 
   def leave_message_changeset(%Group{} = group, user_id) do
     leave_message_changeset(group, Repo.get(User, user_id))
+  end
+
+  @spec update_shared_uploads(Upload.t()) :: {integer(), nil | list}
+  def update_shared_uploads(%Upload{} = upload) do
+    Message
+    |> where(upload_id: ^upload.id)
+    |> Repo.update_all(set: [fields: Upload.fields(upload)])
   end
 end

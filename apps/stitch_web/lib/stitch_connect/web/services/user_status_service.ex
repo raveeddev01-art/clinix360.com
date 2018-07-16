@@ -42,4 +42,8 @@ defmodule StitchConnect.Web.UserStatusService do
       %{active: active_user_ids, online: online_user_ids}
     end)
   end
+
+  def new() do
+    %{active: [], online: []}
+  end
 end

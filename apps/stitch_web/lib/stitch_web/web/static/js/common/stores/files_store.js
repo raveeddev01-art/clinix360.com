@@ -2,33 +2,48 @@ import { observable, computed, action } from "mobx";
 import { stringify } from "qs";
 
 class FilesStore {
-  @observable files = [];
   @observable loading = false;
-  @observable hasMore = true;
-  limit = 10;
+  @observable collapsed = false;
+  @observable files = [];
+  @observable pageMeta = {};
+  @observable currentPage = 1;
+  @observable creatorId = undefined;
+  @observable fileType = "all";
+  @observable pageLimit = 10;
+  defaultParams = {
+    skip: 0,
+    limit: 10
+  };
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-    this.skip = 0;
+  }
+
+  @computed
+  get pages() {
+    const meta = this.pageMeta;
+    const count = meta.count || 0;
+    const currentPage = Math.floor(meta.skip / meta.limit) + 1;
+    return { count, currentPage, limit: meta.limit || this.pageLimit };
   }
 
   @action
   reset() {
-    this.skip = 0;
+    this.currentPage = 1;
     this.loading = false;
-    this.hasMore = true;
     this.files = [];
+    this.pageMeta = {};
 
     if (this.collapsed) {
-      this.loadMore();
+      this.search();
     }
   }
 
   @action
   onCollapseChange = collapsed => {
     this.collapsed = collapsed;
-    if (collapsed && this.files.length === 0 && this.hasMore) {
-      this.loadMore();
+    if (collapsed && this.files.length === 0) {
+      this.setPage(1);
     }
   };
 
@@ -37,34 +52,34 @@ class FilesStore {
     return this.rootStore.groupStore.group.id;
   }
 
-  @computed
-  get isEmpty() {
-    return this.files.length === 0;
-  }
+  @action
+  setPage = page => {
+    this.currentPage = page;
+    this.search();
+  };
 
   @action
-  loadMore() {
-    if (this.loading || !this.hasMore) {
-      return;
-    }
+  search = (options = {}) => {
+    this.loading = true;
+
     const params = stringify({
-      skip: this.files.length,
-      limit: this.limit,
+      ...this.defaultParams,
+      ...options,
+      filetype: "all",
       group_id: this.groupId,
-      authenticated_urls: true
+      skip: (this.currentPage - 1) * this.pageLimit,
+      limit: this.pageLimit
     });
 
     this.loading = true;
 
-    get(`/api/v1/uploads?${params}`).then(response => {
+    get(`/api/v1/files?${params}`).then(response => {
       this.loading = false;
-
       const { data, meta } = response.data;
-
-      this.files = this.files.concat(data);
-      this.hasMore = this.files.length < meta.count;
+      this.files = data;
+      this.pageMeta = meta;
     });
-  }
+  };
 }
 
 export default FilesStore;
