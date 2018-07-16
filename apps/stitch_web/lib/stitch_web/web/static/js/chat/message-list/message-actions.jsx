@@ -126,9 +126,23 @@ class MessageActions extends PureComponent {
       "Are you sure you want to delete this message? This cannot be undone.";
 
     if (message.type === "upload") {
-      confirmMsg +=
-        " Note that deleting this message will not unshare the file.";
+      confirmMsg = (
+        <span>
+          Are you sure you want to delete this message? This cannot be undone.
+          <br />
+          Note that deleting this message will not unshare the file.
+        </span>
+      );
+    } else if (message.type === "file_comment") {
+      confirmMsg = (
+        <span>
+          Are you sure you want to delete this message? This cannot be undone.
+          <br />
+          Note that deleting this message will not delete the comment.
+        </span>
+      );
     }
+
     confirmModal({
       title: "Delete Message",
       message: confirmMsg,
@@ -252,19 +266,22 @@ class MessageActions extends PureComponent {
               )}
 
             <CopyToClipboard
-              text={detailPageUrl || message.text_content}
+              text={
+                message.type === "upload" ? detailPageUrl : message.text_content
+              }
               onCopy={this.copy}
             >
-              <MenuItem>Copy {detailPageUrl ? "Link" : "Message"}</MenuItem>
+              <MenuItem>
+                Copy {message.type === "upload" ? "Link" : "Message"}
+              </MenuItem>
             </CopyToClipboard>
 
             {mine &&
-              message.type === "chat" && (
+              message.type !== "upload" && (
                 <MenuItem onClick={this.edit}>Edit message</MenuItem>
               )}
 
-            {(mine || isAdmin()) &&
-              message.type !== "file_comment" && (
+            {(mine || isAdmin()) && (
                 <MenuItem onClick={this.delete}>Delete message</MenuItem>
               )}
           </DropdownButton>
