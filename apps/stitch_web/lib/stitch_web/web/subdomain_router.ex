@@ -163,7 +163,6 @@ defmodule Stitch.Web.SubdomainRouter do
     pipe_through([:browser, :patient_browser])
 
     get("/", PatientController, :index)
-    get("/*path", PatientController, :index)
   end
 
   # ================
@@ -497,6 +496,12 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/messages/:id/download", MessageController, :download)
 
     get("/exports/:id/download", ExportController, :download)
+  end
+
+  # Catch any remaining patient routes
+
+  scope "/patient", StitchEngage.Web, as: :patient do
+    get("/*path", PatientController, :index)
   end
 
   # =========================
