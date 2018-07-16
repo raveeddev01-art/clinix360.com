@@ -236,27 +236,49 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def update(conn, %{"id" => message_id, "message" => message_params}) do
-    message = MessageQueries.get_by_id(message_id)
-    user = conn.assigns.current_user
+    current_user = conn.assigns.current_user
 
-    case user.id == message.user_id do
-      true ->
-        case Message.update(message, message_params) do
-          {:ok, message} ->
-            message = MessageQueries.load_info(message)
-            MessageEventsService.message_edit_events(message)
-            render(conn, "show.json", message: message, user_id: user.id)
+    with {:message, %Message{type: message_type} = message} when message_type in ["chat"] <-
+           {:message, MessageQueries.get_by_id(message_id)},
+         {:authorized?, true} <-
+           {:authorized?, MessageAuthorization.can_edit?(message, current_user)},
+         {:updated, message} <- {:updated, Message.update(message, message_params)} do
+      message = MessageQueries.load_info(message)
+      MessageEventsService.message_edit_events(message)
+      render(conn, "show.json", message: message, user_id: current_user.id)
+    else
+      # When an old client is trynig to update "file_comment" via messages API
+      # TODO: Deprecate once most client start using the new file API.
+      {:message, %Message{type: "file_comment"} = message} ->
+        text_content = message_params["text_content"]
+        upload_comment_id = message.upload_comment_id
 
-          {:error, :message, changeset, _changeset_so_far} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: changeset_errors_to_string(changeset)})
+        file_comment_update_result =
+          Stitch.Web.FileService.update_file_comment(
+            text_content,
+            upload_comment_id,
+            current_user
+          )
+
+        with {:updated_upload_comment, _updated_upload_comment} <- file_comment_update_result do
+          message = MessageQueries.get_by_id(message_id)
+          message = MessageQueries.load_info(message)
+          MessageEventsService.message_edit_events(message)
+          render(conn, "show.json", message: message, user_id: current_user.id)
+        else
+          error -> error
         end
 
-      false ->
+      {:message, _} ->
+        {:error, :not_found}
+
+      {:authorized?, false} ->
+        {:error, :not_found}
+
+      {:error, :message, changeset, _changeset_so_far} ->
         conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "You can't edit other users' messages"})
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
     end
   end
 

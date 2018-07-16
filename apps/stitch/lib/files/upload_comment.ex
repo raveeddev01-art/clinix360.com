@@ -38,6 +38,13 @@ defmodule Stitch.Files.UploadComment do
     |> validate_required([:text_content])
   end
 
+  @spec edit_changeset(UploadComment.t(), map) :: Ecto.Changeset.t()
+  def edit_changeset(%UploadComment{} = struct, attrs) do
+    struct
+    |> cast(attrs, [:text_content])
+    |> validate_required([:text_content])
+  end
+
   @spec create(Upload.t(), User.t(), map, map) ::
           {:ok, UploadComment.t(), list} | {:error, Ecto.Changeset.t()}
   def create(%Upload{} = upload, %User{} = user, attrs, presence) do
@@ -60,7 +67,7 @@ defmodule Stitch.Files.UploadComment do
   def update(%UploadComment{} = upload_comment, text_content, author) do
     uplooad_comment_changeset =
       upload_comment
-      |> change(text_content: text_content)
+      |> edit_changeset(%{"text_content" => text_content})
 
     Multi.new()
     |> Multi.update(:update_upload_comment, uplooad_comment_changeset)

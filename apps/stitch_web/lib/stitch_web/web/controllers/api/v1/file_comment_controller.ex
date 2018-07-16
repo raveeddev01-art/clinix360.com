@@ -72,37 +72,19 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
       }) do
     current_user = conn.assigns.current_user
 
-    with {:upload_comment, upload_comment} <-
-           {:upload_comment, UploadComment.get(upload_comment_id)},
-         {:authorized, true} <-
-           {:authorized, FileAuthorization.is_comment_creator?(upload_comment, current_user)},
-         {:updated_comment,
-          {:ok,
-           %{update_upload_comment: upload_comment, update_file_comment_messages: {_, messages}}}} <-
-           {:updated_comment, UploadComment.update(upload_comment, text_content, current_user)} do
-      file_comment_edit_events(messages, upload_comment.upload_id)
+    file_comment_update_result =
+      Stitch.Web.FileService.update_file_comment(
+        text_content,
+        upload_comment_id,
+        current_user
+      )
 
+    with {:updated_upload_comment, upload_comment} <- file_comment_update_result do
       conn
       |> render("show.json", file_comment: upload_comment)
     else
-      {:upload_comment, nil} ->
-        {:error, :not_found}
-
-      {:authorized, false} ->
-        {:error, :not_found}
-
-      {:updated_comment, {:error, changeset}} ->
-        {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
+      error -> error
     end
-  end
-
-  def file_comment_edit_events(messages, upload_id) do
-    upload = FileQueries.get_by_id(upload_id, preload_assoc: true)
-    GroupChannel.broadcast_file_comment_edited(upload)
-
-    Enum.each(messages, fn message ->
-      MessageEventsService.message_edit_events(message)
-    end)
   end
 
   def delete(conn, %{"id" => upload_comment_id}) do

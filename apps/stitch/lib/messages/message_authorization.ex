@@ -8,4 +8,7 @@ defmodule Stitch.MessageAuthorization do
   end
 
   def can_delete?(_, _, _), do: false
+
+  def can_edit?(%Message{user_id: user_id}, %User{id: user_id}), do: true
+  def can_edit?(_message, _user), do: false
 end
