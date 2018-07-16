@@ -1,4 +1,5 @@
 import { getTimezone } from "../../lib/utils";
+const noop = () => {};
 
 /**
  * Channel store
@@ -186,6 +187,53 @@ class ChannelStore {
 
   get teamChannel() {
     return this.channels[this.teamChannelTopic];
+  }
+
+  teamPatientChannelTopic(teamId) {
+    return `team:patient:${teamId}`;
+  }
+
+  eventPatientChannelTopic(patientId) {
+    return `events:patient:${patientId}`;
+  }
+
+  teamPatientChannel(teamId) {
+    return this.channels[this.teamPatientChannelTopic(teamId)];
+  }
+
+  eventPatientChannel(patientId) {
+    return this.channels[this.eventPatientChannelTopic(patientId)];
+  }
+
+  joinTeamPatientChannel(teamId, options = {}) {
+    const timezone = this.getTimezoneInfo();
+    const topic = this.teamPatientChannelTopic(teamId);
+
+    const joined = this.join(topic, { ...options, timezone });
+
+    this.teamPatientChannel(teamId).on(
+      "team_renamed",
+      this.rootStore.teamStore.onRenamed
+    );
+
+    this.teamPatientChannel(teamId).on("team_deleted", noop);
+
+    return joined;
+  }
+
+  joinEventPatientChannel(patientId, options = {}) {
+    const topic = this.eventPatientChannelTopic(patientId);
+    const joined = this.join(topic, { ...options });
+    const eventChannel = this.eventPatientChannel(patientId);
+
+    eventChannel.on("new_app_version", () => {
+      socket.disconnect(() => window.location.reload(true));
+    });
+
+    eventChannel.on("conversation_created", noop);
+    eventChannel.on("conversation_updated", noop);
+
+    return joined;
   }
 
   joinTeamChannel(options = {}) {

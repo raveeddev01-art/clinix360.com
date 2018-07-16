@@ -38,18 +38,6 @@ defmodule Stitch.Web.EventsChannel do
     end
   end
 
-  def join("events:patient:" <> patient_id, _params, socket) do
-    patient_id = String.to_integer(patient_id)
-
-    if patient_id == socket.assigns.patient.id do
-      send(self(), :after_join)
-
-      {:ok, socket}
-    else
-      {:error, %{message: "Unauthorized"}}
-    end
-  end
-
   def handle_info(:after_join, socket) do
     current_app_version = StitchWeb.version()
     socket_app_version = socket.assigns.application_version
