@@ -24,21 +24,30 @@ defmodule Stitch.Web.FileService do
         presence,
         %{"text_content" => _text_content} = attrs
       ) do
-    with {:ok, comment, groups} <- UploadComment.create(upload, current_user, attrs, presence) do
-      Enum.each(groups, fn %{group: group, result: {:ok, result}} ->
+    with {:ok,
+          %{
+            upload_comment: upload_comment,
+            insert_file_comment_messages: insert_file_comment_messages
+          }} <- UploadComment.create(upload, current_user, attrs, presence) do
+      Enum.each(insert_file_comment_messages, fn %{
+                                                   group: group,
+                                                   message_creation_result:
+                                                     message_creation_result
+                                                 } ->
         MessageEventsService.message_creation_events(
-          result.message,
+          message_creation_result.message,
           group,
-          result.notify_user_ids
+          message_creation_result.notify_user_ids
         )
       end)
 
-      upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
+      upload = FileQueries.get_by_id(upload_comment.upload_id, preload_assoc: true)
       GroupChannel.broadcast_file_comment_added(upload)
 
-      {:ok, comment, groups}
+      :ok
     else
-      _ -> :error
+      _ ->
+        :error
     end
   end
 
@@ -90,9 +99,6 @@ defmodule Stitch.Web.FileService do
          {:deleted_comment, {:ok, %{delete_upload_comment: upload_comment}}} <-
            {:deleted_comment, UploadComment.delete(upload_comment, current_user)} do
       file_comment_delete_events(file_comment_messages, upload_comment.upload_id)
-
-      # conn
-      # |> render("show.json", file_comment: upload_comment)
 
       {:deleted_upload_comment, upload_comment}
     else

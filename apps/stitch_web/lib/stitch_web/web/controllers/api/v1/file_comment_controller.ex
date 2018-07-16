@@ -30,10 +30,10 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
          {:upload_comment,
           {:ok,
            %{
-             insert_file_comment_messages: inserted_messages_for_group,
+             insert_file_comment_messages: inserted_messages_for_groups,
              upload_comment: upload_comment
            }}} <- {:upload_comment, UploadComment.create(upload, current_user, attrs, presence)} do
-      file_comment_creation_events(inserted_messages_for_group, upload)
+      file_comment_creation_events(inserted_messages_for_groups, upload)
 
       conn
       |> put_status(:created)
@@ -50,14 +50,14 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
     end
   end
 
-  def file_comment_creation_events(inserted_messages_for_group, upload) do
+  def file_comment_creation_events(inserted_messages_for_groups, upload) do
     upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
     GroupChannel.broadcast_file_comment_added(upload)
 
-    Enum.each(inserted_messages_for_group, fn %{
-                                                group: group,
-                                                message_creation_result: message_creation_result
-                                              } ->
+    Enum.each(inserted_messages_for_groups, fn %{
+                                                 group: group,
+                                                 message_creation_result: message_creation_result
+                                               } ->
       MessageEventsService.message_creation_events(
         message_creation_result.message,
         group,
