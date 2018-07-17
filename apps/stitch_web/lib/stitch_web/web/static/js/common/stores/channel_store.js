@@ -58,7 +58,8 @@ class ChannelStore {
       groupsStore,
       notificationStore,
       presenceStore,
-      invitationStore
+      invitationStore,
+      teamFileStore
     } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
@@ -76,6 +77,9 @@ class ChannelStore {
     this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
     this.eventChannel.on("members_updated", groupsStore.onMembersUpdated);
     this.eventChannel.on("group_favorite", groupsStore.onFavoriteChanged);
+    this.eventChannel.on("upload_comment_added", upload => {
+      teamFileStore.onFileUpdate(upload);
+    });
     this.eventChannel.on(
       "notification_preference_update",
       notificationStore.onPreferencesLoaded
@@ -114,7 +118,7 @@ class ChannelStore {
   }
 
   joinGroupChannel(options = {}) {
-    const { messageStore, groupStore } = this.rootStore;
+    const { messageStore, groupStore, teamFileStore } = this.rootStore;
 
     const joined = this.join(this.groupChannelTopic, options);
 
@@ -135,7 +139,35 @@ class ChannelStore {
     this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
     this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
     this.groupChannel.on("is_typing", groupStore.onStartedTyping);
-
+    this.groupChannel.on(
+      "file_comment_edited",
+      teamFileStore.onFileCommentEdited
+    );
+    this.groupChannel.on("file_comment_added", messageStore.onFileCommentAdded);
+    this.groupChannel.on(
+      "file_comment_added",
+      teamFileStore.onFileCommentAdded
+    );
+    this.groupChannel.on(
+      "file_comment_deleted",
+      teamFileStore.onFileCommentDeleted
+    );
+    this.groupChannel.on(
+      "file_public_link_updated",
+      messageStore.onPublicLinkUpdate
+    );
+    this.groupChannel.on(
+      "file_details_updated",
+      messageStore.onFileDetailsUpdate
+    );
+    this.groupChannel.on(
+      "file_details_updated",
+      teamFileStore.onFileDetailsUpdate
+    );
+    this.groupChannel.on("file_deleted", (...args) => {
+      messageStore.onFileDeleted(...args);
+      teamFileStore.onFileDeleted(...args);
+    });
     return joined;
   }
 

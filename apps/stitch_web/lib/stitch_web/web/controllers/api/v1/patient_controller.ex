@@ -1,5 +1,6 @@
 defmodule Stitch.Web.Api.V1.PatientController do
   use Stitch.Web, :controller
+  use Stitch.Web.Api.V1.PatientDocs
 
   # We should add analytics before activating
   # alias Stitch.Analytics.Patient, as: PatientAnalytics
@@ -67,6 +68,28 @@ defmodule Stitch.Web.Api.V1.PatientController do
     else
       {:authorized?, false} ->
         {:error, :not_authorized, "You cannot update this patient."}
+
+      {:error, _model_errored, changeset, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+    end
+  end
+
+  def update_as_patient(conn, params) do
+    patient = conn.assigns.patient
+
+    with {:onboarded?, true} <- {:onboarded?, patient.onboarded},
+         {:ok, updated_patient} <- Patient.update_as_patient(patient, params) do
+      TeamChannel.broadcast_patient_updated(
+        conn.assigns.team.id,
+        updated_patient
+      )
+
+      render(conn, "show.json", patient: updated_patient)
+    else
+      {:onboarded?, _} ->
+        {:error, :not_authorized, "You must be onboarded to update your information."}
 
       {:error, _model_errored, changeset, _} ->
         conn

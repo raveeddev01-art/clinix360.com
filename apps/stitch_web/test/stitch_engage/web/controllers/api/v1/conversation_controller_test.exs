@@ -171,7 +171,10 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
     end
 
     test "lists only conversations before updated_before", setup_params do
-      one_day_ago = Timex.shift(NaiveDateTime.utc_now(), days: -1)
+      one_day_ago =
+        NaiveDateTime.utc_now()
+        |> Timex.shift(days: -1)
+        |> Timex.to_unix()
 
       conn =
         Helper.call_index(setup_params, %{
@@ -264,17 +267,20 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
     test "creates a conversation properly", setup_params do
       post_params = %{
         text_content: "This is some text",
-        patient_id: setup_params.patient.id
+        patient_id: setup_params.patient.id,
+        subject: "Elbow Issue"
       }
 
       conn = Helper.call_post(setup_params, post_params, %{})
       assert response = json_response(conn, 200)
       assert response["open"] == true
+      assert response["subject"] == "Elbow Issue"
     end
 
     test "errors if not authorized", setup_params do
       post_params = %{
         text_content: "This is some text",
+        subject: "Elbow Issue",
         patient_id: setup_params.patient.id
       }
 
@@ -288,10 +294,16 @@ defmodule Stitch.Web.Api.V1.ConversationControllerTest do
 
     test "creates a conversation properly", setup_params do
       text = "This is some text"
-      post_params = %{text_content: text}
+      subject = "Elbow Issue"
+
+      post_params = %{
+        text_content: text,
+        subject: subject
+      }
 
       conn = Helper.call_patient_post(setup_params, post_params, %{})
       assert response = json_response(conn, 200)
+      assert response["subject"] == subject
       assert Enum.at(response["conversation_messages"], 0)["text_content"] == text
     end
   end

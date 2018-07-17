@@ -5,6 +5,7 @@ class AddonStore {
   @observable showAddonDetail = false;
   @observable addonPanelType = null;
   @observable addonPanelData = null;
+  @observable addonPanelTab = null;
   @observable detailPanelType = null;
   @observable detailPanelData = null;
 
@@ -28,10 +29,26 @@ class AddonStore {
   }
 
   @action
-  setAddonPanel(panelType, panelData) {
+  setAddonPanelTab(panelType, panelTab) {
+    this.addonPanelTab = panelTab;
+
+    switch (panelType) {
+      case "files":
+        this.rootStore.teamFilesStore.setUserFilter(
+          panelTab === "all" ? undefined : currentUser.id,
+          true
+        );
+        break;
+      default:
+    }
+  }
+
+  @action
+  setAddonPanel(panelType, panelData, panelTab) {
     if (panelType || panelData) {
       this.addonPanelType = panelType;
       this.addonPanelData = panelData;
+      this.addonPanelTab = panelTab;
     }
 
     this.showAddonDetail = false;
@@ -46,8 +63,8 @@ class AddonStore {
         break;
 
       case "files":
-        this.rootStore.globalFilesStore.loadMore();
         this.rootStore.filesStore.onCollapseChange();
+        this.setAddonPanelTab(panelType, panelTab || "all");
         break;
 
       default:
@@ -68,6 +85,13 @@ class AddonStore {
     if (panelType || panelData) {
       this.detailPanelType = panelType;
       this.detailPanelData = panelData;
+    }
+
+    switch (panelType) {
+      case "File Details":
+        this.rootStore.teamFileStore.load(panelData);
+        break;
+      default:
     }
   }
 }

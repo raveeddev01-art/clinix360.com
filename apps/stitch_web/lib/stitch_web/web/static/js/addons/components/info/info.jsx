@@ -5,7 +5,7 @@ import AddonCollapse from "./addon-collapse/addon-collapse";
 import RoomDetails from "./room-details/room-details";
 import PeopleList from "../people-list/people-list";
 import PinnedMessages from "./pinned-messages/pinned-messages";
-import Files from "../files/files";
+import RoomFiles from "../files/room-files";
 import NotificationPreferences from "./notification-preferences/notification-preferences";
 
 @inject("pinnedMessageStore", "filesStore")
@@ -34,7 +34,7 @@ class Info extends Component {
           title="Files"
           onCollapse={onFilesCollapse}
         >
-          <Files roomFiles />
+          <RoomFiles />
         </AddonCollapse>
         <AddonCollapse icon="bell" title="Notifications">
           <NotificationPreferences />

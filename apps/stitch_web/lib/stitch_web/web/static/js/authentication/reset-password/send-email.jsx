@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 
 import Button from "react-bootstrap/lib/Button";
@@ -33,7 +34,7 @@ class SendEmail extends Component {
   _onSubmit = evt => {
     evt.preventDefault();
     this.props.resetPasswordStore
-      .sendEmail(this.state.email)
+      .sendEmail(this.state.email, this.props.asPatient)
       .then(() => {
         this.setState({
           sent: true
@@ -115,5 +116,13 @@ class SendEmail extends Component {
     return !this.state.sent ? this.renderToSend() : this.renderSent();
   }
 }
+
+SendEmail.defaultProps = {
+  asPatient: false
+};
+
+SendEmail.propTypes = {
+  asPatient: PropTypes.bool
+};
 
 export default SendEmail;

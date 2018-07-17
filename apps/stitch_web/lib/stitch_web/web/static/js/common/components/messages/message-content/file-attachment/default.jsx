@@ -1,62 +1,64 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { inject } from "mobx-react";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Button from "react-bootstrap/lib/Button";
-import getFileType from "../file-types";
+import getFileType from "lib/file-types";
+import { prettyFileSize } from "lib/utils";
+import AttachmentActions from "./components/attachment-actions";
 
-@inject("desktopStore")
 class DefaultFileAttachment extends Component {
-  onFileDownload = () => {
-    const { desktopStore, api_url, filename } = this.props;
-    desktopStore.sendDownloadRequest(api_url, filename);
-  };
-
-  getFileSize = size => {
-    if (size < 1024) {
-      return `${size} bytes`;
-    } else if (size < 1024 * 1024) {
-      return `${(size / 1024).toFixed(1)}KB`;
-    } else if (size < 1024 * 1024 * 1024) {
-      return `${(size / 1024 / 1024).toFixed(1)}MB`;
-    }
-    return `${(size / 1024 / 1024 / 1024).toFixed(1)}GB`;
-  };
-
   render() {
-    const { filename, mimetype, size_in_bytes: size, url } = this.props;
+    const {
+      filename,
+      mimetype,
+      size_in_bytes: size,
+      url,
+      file_id,
+      user_id,
+      encoded_id,
+      public_url,
+      comment_count: commentCount,
+      onCommentsClick,
+      onFileDownload,
+      useActions,
+      message
+    } = this.props;
     const filetype = getFileType(mimetype);
 
     return (
       <div>
-        <span className="text-muted">uploaded this file: </span>
+        {useActions && <span className="text-muted">uploaded this file: </span>}
         <div className="attachment-block">
           <div className="attachment-icon">
             <i className={filetype.icon} />
           </div>
           <div className="attachment-description">
             <div className="attachment-title">
-              <a target="_blank" href={url} onClick={this.onFileDownload}>
+              {onCommentsClick ? (
+                <a onClick={onCommentsClick}>
+                  <strong>{filename}</strong>
+                </a>
+              ) : (
                 <strong>{filename}</strong>
-              </a>
+              )}
             </div>
             <div className="attachment-detail">
-              {this.getFileSize(size)} {filetype.title}
+              {prettyFileSize(size)} {filetype.title}
             </div>
           </div>
 
-          <div className="attachment-actions">
-            <OverlayTrigger
-              placement="top"
-              delayShow={150}
-              overlay={<Tooltip id="download-file">Download</Tooltip>}
-            >
-              <Button target="_blank" href={url} onClick={this.onFileDownload}>
-                <i className="fa fa-download" />
-              </Button>
-            </OverlayTrigger>
-          </div>
+          {useActions &&
+            message && (
+              <AttachmentActions
+                url={url}
+                file_id={file_id}
+                user_id={user_id}
+                encoded_id={encoded_id}
+                public_url={public_url}
+                message={message}
+                commentCount={commentCount}
+                onCommentsClick={onCommentsClick}
+                onFileDownload={onFileDownload}
+              />
+            )}
         </div>
       </div>
     );
@@ -68,7 +70,24 @@ DefaultFileAttachment.propTypes = {
   mimetype: PropTypes.string.isRequired,
   size_in_bytes: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired,
-  api_url: PropTypes.string.isRequired
+  comment_count: PropTypes.number,
+  onCommentsClick: PropTypes.func,
+  onFileDownload: PropTypes.func.isRequired,
+  useActions: PropTypes.bool,
+  user_id: PropTypes.number.isRequired,
+  encoded_id: PropTypes.string,
+  public_url: PropTypes.string,
+  file_id: PropTypes.number.isRequired,
+  message: PropTypes.object
+};
+
+DefaultFileAttachment.defaultProps = {
+  encoded_id: "",
+  public_url: "",
+  useActions: true,
+  message: null,
+  comment_count: 0,
+  onCommentsClick: undefined
 };
 
 export default DefaultFileAttachment;

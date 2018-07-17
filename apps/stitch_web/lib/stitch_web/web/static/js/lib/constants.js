@@ -238,3 +238,13 @@ export const NOTIFICATION_CARD_DURATION = 5000;
 // path to default avatar on s3
 export const DEFAULT_AVATAR_PATH = "default-avatar.png";
 export const DEFAULT_GREY_AVATAR_PATH = "default-avatar-grey.png";
+
+export const FILE_TYPES = [
+  { label: "All Files Types", value: "all" },
+  { label: "Images", value: "images" },
+  { label: "PDFs", value: "pdf" },
+  { label: "Videos", value: "videos" },
+  { label: "Audio", value: "audio" },
+  { label: "Text", value: "text" },
+  { label: "Archive", value: "archive" }
+];

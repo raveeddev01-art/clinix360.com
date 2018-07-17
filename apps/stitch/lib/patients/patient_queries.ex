@@ -34,6 +34,34 @@ defmodule Stitch.PatientQueries do
   end
 
   @doc """
+  Given an email return boolean if onboarded patient with that email exists.
+  """
+  @spec onboarded_patient_with_email_exists?(binary) :: boolean
+  def onboarded_patient_with_email_exists?(email) do
+    query =
+      from(
+        u in Patient,
+        where: u.onboarded == ^true,
+        where: u.email == ^email,
+        select: u.id,
+        limit: 1
+      )
+
+    !!Repo.one(query)
+  end
+
+  @doc """
+  Return Patient with team_id and email.
+  """
+  @spec team_member_with_email(integer | binary, binary) :: Patient.t() | nil
+  def team_member_with_email(team_id, email) do
+    Patient
+    |> where(team_id: ^team_id)
+    |> where(email: ^email)
+    |> Repo.one()
+  end
+
+  @doc """
   Given a team id (and optional subquery), return a list of patients for a team.
   """
   @spec patients_for_team_id(Ecto.Query.t(), number | binary) :: list(Patient.t())

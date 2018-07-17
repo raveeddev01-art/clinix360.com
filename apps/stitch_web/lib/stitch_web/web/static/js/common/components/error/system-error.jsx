@@ -1,13 +1,14 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-function reloadApp() {
-  window.location = "/";
-}
+const reloadApp = destination => () => {
+  window.location = destination;
+};
 
 // This almost the same as the raw html 500 page.
 // If you change wording here, make sure to update it
 // there as well.
-const SystemError = () => (
+const SystemError = ({ reloadDestination }) => (
   <div className="system_error">
     <div className="system_error__inner">
       <h2>
@@ -25,7 +26,7 @@ const SystemError = () => (
         <button
           id="reload"
           className="system_error__button"
-          onClick={reloadApp}
+          onClick={reloadApp(reloadDestination)}
         >
           Reload
         </button>
@@ -33,5 +34,13 @@ const SystemError = () => (
     </div>
   </div>
 );
+
+SystemError.propTypes = {
+  reloadDestination: PropTypes.string
+};
+
+SystemError.defaultProps = {
+  reloadDestination: "/"
+};
 
 export default SystemError;

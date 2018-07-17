@@ -24,12 +24,13 @@ defmodule Stitch.Engage.Conversation do
 
   @type t :: %__MODULE__{}
 
-  @castable_attributes [:open]
+  @castable_attributes [:open, :subject]
   @required_attributes []
   @page_length 20
 
   schema "conversations" do
     field(:open, :boolean, default: true)
+    field(:subject, :string)
 
     belongs_to(:inbox, Inbox)
     has_many(:conversation_messages, ConversationMessage, on_delete: :delete_all)

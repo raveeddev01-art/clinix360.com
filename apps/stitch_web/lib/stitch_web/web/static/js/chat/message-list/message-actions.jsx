@@ -11,9 +11,9 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactionPicker } from "common/components";
-import { isAdmin } from "../../lib/utils";
+import { isAdmin, getFullUrl } from "../../lib/utils";
 
-@inject("messageStore")
+@inject("messageStore", "teamFileStore", "addonStore")
 class MessageActions extends PureComponent {
   constructor(props) {
     super(props);
@@ -94,6 +94,20 @@ class MessageActions extends PureComponent {
     this.setState({ isEmojiPickerOpen: true });
   };
 
+  shareFile = () => {
+    const { message } = this.props;
+    this.props.teamFileStore.openShareModal(message.upload_id);
+  };
+
+  showComments = () => {
+    const { addonStore, message } = this.props;
+
+    addonStore.setAddonPanel("files");
+    addonStore.toggleAddons(true);
+    addonStore.toggleAddonDetail(true);
+    addonStore.setAddonDetailPanel("File Details", message.upload_id);
+  };
+
   markAsUnread = () => {
     const { message, messageStore } = this.props;
 
@@ -107,14 +121,33 @@ class MessageActions extends PureComponent {
   };
 
   delete = () => {
+    const { message, messageStore } = this.props;
+    let confirmMsg =
+      "Are you sure you want to delete this message? This cannot be undone.";
+
+    if (message.type === "upload") {
+      confirmMsg = (
+        <span>
+          Are you sure you want to delete this message? This cannot be undone.
+          <br />
+          Note that deleting this message will not unshare the file.
+        </span>
+      );
+    } else if (message.type === "file_comment") {
+      confirmMsg = (
+        <span>
+          Are you sure you want to delete this message? This cannot be undone.
+          <br />
+          Note that deleting this message will not delete the comment.
+        </span>
+      );
+    }
+
     confirmModal({
       title: "Delete Message",
-      message:
-        "Are you sure you want to delete this message? This cannot be undone.",
+      message: confirmMsg,
       okLabel: "Delete"
     }).then(() => {
-      const { message, messageStore } = this.props;
-
       messageStore.delete(message.id);
     });
   };
@@ -125,6 +158,10 @@ class MessageActions extends PureComponent {
     const unsent = message.status === "sending" || message.status === "failed";
     const { dropup, isEmojiPickerOpen } = this.state;
     const starredCX = message.starred ? "" : "-o";
+    const detailPageUrl =
+      message.fields &&
+      message.fields.encoded_id &&
+      getFullUrl(`/admin/files/${message.fields.encoded_id}`);
 
     // disabling context menu
     if (unsent) {
@@ -156,6 +193,30 @@ class MessageActions extends PureComponent {
             <i className="fa fa-smile-o" />
           </Button>
         </OverlayTrigger>
+
+        {(message.type === "upload" || message.type === "file_comment") && (
+            <OverlayTrigger
+              placement="top"
+              delayShow={150}
+              overlay={<Tooltip id="file-comments">Add Comment</Tooltip>}
+            >
+              <Button onClick={this.showComments}>
+                <i className="fa fa-comments" />
+              </Button>
+            </OverlayTrigger>
+          )}
+
+        {message.type === "upload" && (
+          <OverlayTrigger
+            placement="top"
+            delayShow={150}
+            overlay={<Tooltip id="message-react">Share file</Tooltip>}
+          >
+            <Button onClick={this.shareFile}>
+              <i className="fa fa-share" />
+            </Button>
+          </OverlayTrigger>
+        )}
 
         <OverlayTrigger
           placement="top"
@@ -201,37 +262,28 @@ class MessageActions extends PureComponent {
             onToggle={this.onToggleContextualMenu}
           >
             {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
-                <MenuItem onClick={this.markAsUnread}>
-                  <span>
-                    <i className="fa fa-circle" />&nbsp;Mark as unread
-                  </span>
-                </MenuItem>
+                <MenuItem onClick={this.markAsUnread}>Mark as unread</MenuItem>
               )}
 
-            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+            <CopyToClipboard
+              text={
+                message.type === "upload" ? detailPageUrl : message.text_content
+              }
+              onCopy={this.copy}
+            >
               <MenuItem>
-                <span>
-                  <i className="fa fa-paste" />&nbsp;Copy message
-                </span>
+                Copy {message.type === "upload" ? "Link" : "Message"}
               </MenuItem>
             </CopyToClipboard>
 
-            {mine && <MenuItem divider />}
-
-            {mine && (
-              <MenuItem onClick={this.edit}>
-                <span>
-                  <i className="fa fa-pencil" />&nbsp;Edit message
-                </span>
-              </MenuItem>
-            )}
+            {mine &&
+              message.type !== "upload" &&
+              message.type !== "file_comment" && (
+                <MenuItem onClick={this.edit}>Edit message</MenuItem>
+              )}
 
             {(mine || isAdmin()) && (
-                <MenuItem onClick={this.delete}>
-                  <span>
-                    <i className="fa fa-trash" />&nbsp;Delete message
-                  </span>
-                </MenuItem>
+                <MenuItem onClick={this.delete}>Delete message</MenuItem>
               )}
           </DropdownButton>
         </OverlayTrigger>

@@ -200,6 +200,14 @@ class Header extends Component {
               >
                 <i className="fa fa-book" /> Blog
               </MenuItem>
+
+              <MenuItem
+                href="https://stitch.readme.io/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="fa fa-code" /> API Docs
+              </MenuItem>
             </NavDropdown>
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
