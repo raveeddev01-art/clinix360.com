@@ -23,6 +23,14 @@ defmodule Stitch.Files.FileAuthorization do
 
   def is_creator?(_upload, _user), do: false
 
+  def can_delete?(%Upload{user_id: user_id}, %User{id: user_id}), do: true
+
+  def can_delete?(%Upload{team_id: team_id}, %User{team_id: team_id} = user) do
+    "admin" in user.roles
+  end
+
+  def can_delete?(_upload, _user), do: false
+
   @spec is_comment_creator?(UploadComment.t(), User.t()) :: boolean
   def is_comment_creator?(%UploadComment{user_id: user_id}, %User{id: user_id}), do: true
   def is_comment_creator?(_upload_comment, _user), do: false
