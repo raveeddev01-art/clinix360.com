@@ -42,7 +42,9 @@ class Topbar extends Component {
       <div className="topbar">
         <div className="header-text">
           <h4>{inboxStore.currentConversation.patient.full_name}</h4>
-          <div className="subject">This is a temporary hardcoded subject</div>
+          <div className="subject">
+            {inboxStore.currentConversation.subject}
+          </div>
         </div>
 
         <div className="header-nav">
