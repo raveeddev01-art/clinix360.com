@@ -137,7 +137,8 @@ defmodule Stitch.Web.Api.V1.FileController do
 
     with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
          {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
+         {:authorized, true} <-
+           {:authorized, FileAuthorization.can_unshare?(upload, current_user, group)},
          {:unshared, {:ok, _}} <- {:unshared, Upload.unshare_from_group(upload, group)} do
       upload = FileQueries.get_by_id(upload_id, preload_assoc: true)
       file_details_update(upload)
