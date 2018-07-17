@@ -202,16 +202,17 @@ $dark-border-color: #ccc;
       }
 
       .dropdown-menu {
-        border-color: $brand-primary;
+        min-width: 172px;
         border-radius: 4px;
-        padding: 10px 9px;
+        padding: 10px 0;
         margin-top: 8px;
 
         a {
           display: block;
           color: #333;
           border: 0;
-          padding: 4px 0;
+          border-radius: 0;
+          padding: 5px 9px;
           outline: none;
 
           i.pull-right {
@@ -219,11 +220,25 @@ $dark-border-color: #ccc;
             margin-right: 0;
             margin-top: 3px;
           }
+
+          &:hover {
+            color: #fff;
+            background: $brand-primary;
+          }
+        }
+
+        li:first-of-type a {
+          margin-bottom: 5px;
         }
 
         .active > a {
           color: $brand-primary;
           background: transparent;
+
+          &:hover {
+            color: #fff;
+            background: $brand-primary;
+          }
 
           i.pull-right {
             visibility: visible;
