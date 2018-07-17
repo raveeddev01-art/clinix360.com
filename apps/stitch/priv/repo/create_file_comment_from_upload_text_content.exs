@@ -44,6 +44,7 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     |> where(inserted_at: ^message.inserted_at)
     |> where(updated_at: ^message.updated_at)
     |> limit(1)
+    |> select([uc], %{id: uc.id})
     |> Repo.one()
   end
 
@@ -75,7 +76,8 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
                     upload,
                     user,
                     %{"text_content" => message.text_content},
-                    presence
+                    presence,
+                    %{silent: true}
                   )} do
             correct_timestamp(message, upload_comment, inserted_messages_for_group)
           else
