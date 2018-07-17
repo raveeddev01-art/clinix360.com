@@ -1,6 +1,6 @@
 defmodule Stitch.TeamQueries do
   import Ecto.Query
-  alias Stitch.{Repo, Team, Patient}
+  alias Stitch.{Repo, Team}
   alias Stitch.Accounts.{User, Role}
 
   @guest_roles Role.guests()
@@ -10,14 +10,6 @@ defmodule Stitch.TeamQueries do
     Team
     |> join(:inner, [t], u in User, u.team_id == t.id and u.email == ^email)
     |> select([t, u], t)
-    |> Repo.all()
-  end
-
-  @spec all_with_patient_email(binary) :: [Team.t()]
-  def all_with_patient_email(email) do
-    Team
-    |> join(:inner, [t], p in Patient, p.team_id == t.id and p.email == ^email)
-    |> select([t, p], t)
     |> Repo.all()
   end
 

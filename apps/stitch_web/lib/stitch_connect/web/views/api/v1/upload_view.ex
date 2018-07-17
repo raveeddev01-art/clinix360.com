@@ -10,7 +10,6 @@ defmodule StitchConnect.Web.Api.V1.UploadView do
     data =
       Enum.map(data, fn message ->
         MessageView.message_json(message, authenticated_urls, files_url)
-        |> Map.put(:text_content, message.text_content)
       end)
 
     %{data: data, meta: meta}

@@ -4,8 +4,7 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
   """
   alias Stitch.{
     AWS.S3,
-    Files.Upload,
-    Web.UrlService
+    Files.Upload
   }
 
   @endpoint Stitch.Web.Endpoint
@@ -37,8 +36,7 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
     |> Map.merge(%{
       "url" => url,
       "api_url" => api_v1_message_path(@endpoint, :download, message.id),
-      "preview_url" => preview_url,
-      "public_url" => get_public_token(message)
+      "preview_url" => preview_url
     })
   end
 
@@ -87,12 +85,4 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   defp put_preview_presigned_url(fields, _authenticated_urls, _message_id, _files_endpoint),
     do: fields
-
-  def get_public_token(message) do
-    if token = message.fields["public_token"] do
-      UrlService.public_download_page(%Upload{id: message.upload_id}, token)
-    else
-      nil
-    end
-  end
 end

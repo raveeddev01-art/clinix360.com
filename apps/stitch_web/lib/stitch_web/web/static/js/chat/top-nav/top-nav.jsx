@@ -45,24 +45,17 @@ class TopNav extends Component {
     document.dispatchEvent(new MouseEvent("click"));
   };
 
-  _toggleAddonMenu = (menuName, tabName) => () => {
+  _toggleAddonMenu = menuName => () => {
     const { addonStore } = this.props;
 
     if (menuName === "Updates") {
       this.props.newsStore.markAsRead();
     }
 
-    if (
-      addonStore.addonPanelType === menuName &&
-      addonStore.showAddons &&
-      addonStore.addonPanelTab === tabName
-    ) {
+    if (addonStore.addonPanelType === menuName && addonStore.showAddons) {
       addonStore.toggleAddons(false);
     } else {
       addonStore.setAddonPanel(menuName);
-      if (tabName) {
-        addonStore.setAddonPanelTab(menuName, tabName);
-      }
       addonStore.toggleAddons(true);
     }
   };

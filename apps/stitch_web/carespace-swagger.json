@@ -1,194 +1,6 @@
 {
   "swagger": "2.0",
   "paths": {
-    "/api/v1/patient/reset_password": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "summary": "",
-        "responses": {
-          "200": {
-            "description": "ok"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "type": "string",
-            "required": false,
-            "name": "email",
-            "in": "query",
-            "description": "Patients email (sent without other params)"
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "token",
-            "in": "query",
-            "description": "Password reset token (sent with password param - not email param)"
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "password",
-            "in": "query",
-            "description": "Password for the user (sent with token param - not email param)"
-          }
-        ],
-        "operationId": "Stitch.Web.Api.V1.AuthenticationController.patient_reset_password",
-        "description": "If posted with an email param, sends a password reset email with token. If posted with token and new password, resets password."
-      }
-    },
-    "/api/v1/patient/login": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "summary": "",
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/PatientLogin"
-            },
-            "description": "OK"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "type": "string",
-            "required": false,
-            "name": "email",
-            "in": "query",
-            "description": "Email for the patient."
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "password",
-            "in": "query",
-            "description": "Password for the patient."
-          }
-        ],
-        "operationId": "Stitch.Web.Api.V1.AuthenticationController.submit_patient_login",
-        "description": "Logs a patient in. Returns Patient info including redirect_url and token for future api calls."
-      }
-    },
-    "/api/v1/patient/invitations/accept/{token}": {
-      "post": {
-        "tags": [
-          "Invitation"
-        ],
-        "summary": "",
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/PatientOnboardingCompletion"
-            },
-            "description": "OK"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "type": "string",
-            "required": false,
-            "name": "token",
-            "in": "query",
-            "description": "invite_token on the invitation sent to the patient"
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "first_name",
-            "in": "query",
-            "description": "First name of the patient."
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "last_name",
-            "in": "query",
-            "description": "Last name of the patient."
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "pin",
-            "in": "query",
-            "description": "4 digit PIN for the patient."
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "password",
-            "in": "query",
-            "description": "Patient's password."
-          }
-        ],
-        "operationId": "StitchConnect.Web.Api.V1.InvitationController.patient_accept",
-        "description": "Accepts an invitation and completes patient onboarding."
-      }
-    },
-    "/api/v1/patient/info": {
-      "put": {
-        "tags": [
-          "Patient"
-        ],
-        "summary": "",
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/Patient"
-            },
-            "description": "OK"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
-            "type": "string",
-            "required": true,
-            "name": "authenticationToken",
-            "in": "query",
-            "description": "token for user or patient auth"
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "first_name",
-            "in": "query",
-            "description": "First name of the patient."
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "last_name",
-            "in": "query",
-            "description": "Last name of the patient."
-          },
-          {
-            "type": "string",
-            "required": false,
-            "name": "phone_number",
-            "in": "query",
-            "description": "Patient's phone number."
-          }
-        ],
-        "operationId": "Stitch.Web.Api.V1.PatientController.update_as_patient",
-        "description": "Updates patient info as the patient."
-      }
-    },
     "/api/v1/patient/inboxes/{inbox_id}/conversations": {
       "post": {
         "tags": [
@@ -222,14 +34,6 @@
             "name": "inbox_id",
             "in": "path",
             "description": "Inbox ID"
-          },
-          {
-            "x-example": "Recent elbow issue.",
-            "type": "string",
-            "required": true,
-            "name": "subject",
-            "in": "query",
-            "description": "Subject of Conversation"
           },
           {
             "x-example": "Hello doc? Can we talk?",
@@ -277,18 +81,11 @@
             "description": "Inbox ID"
           },
           {
-            "type": "integer",
-            "required": false,
-            "name": "limit",
-            "in": "query",
-            "description": "Number of conversations to return. Maximum of 20."
-          },
-          {
-            "type": "double",
+            "type": "string",
             "required": false,
             "name": "updated_before",
             "in": "query",
-            "description": "Later bound for updated_at time for conversations in MS."
+            "description": "Later bound for updated_at time for conversations."
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationController.patient_index",
@@ -412,22 +209,15 @@
             "description": "Conversation ID"
           },
           {
-            "type": "integer",
+            "type": "string",
             "required": false,
-            "name": "limit",
+            "name": "updated_before",
             "in": "query",
-            "description": "Number of conversation messages to return. Maximum of 50."
-          },
-          {
-            "type": "integer",
-            "required": false,
-            "name": "max_id",
-            "in": "query",
-            "description": "Upper bound for conversation message ids."
+            "description": "Later bound for updated_at time for messages."
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_index",
-        "description": "List of 50 most recent conversation messages for a conversation. Pass in max_id to move backward in time."
+        "description": "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
       }
     },
     "/api/v1/patient/conversations/{conversation_id}/mark_as_read": {
@@ -667,18 +457,11 @@
             "description": "Inbox ID"
           },
           {
-            "type": "double",
+            "type": "string",
             "required": false,
             "name": "updated_before",
             "in": "query",
-            "description": "Later bound for updated_at time for conversations in MS."
-          },
-          {
-            "type": "integer",
-            "required": false,
-            "name": "limit",
-            "in": "query",
-            "description": "Number of conversations to return. Maximum of 20."
+            "description": "Later bound for updated_at time for conversations."
           },
           {
             "x-example": false,
@@ -810,22 +593,15 @@
             "description": "Conversation ID"
           },
           {
-            "type": "integer",
+            "type": "string",
             "required": false,
-            "name": "limit",
+            "name": "updated_before",
             "in": "query",
-            "description": "Number of conversation messages to return. Maximum of 50."
-          },
-          {
-            "type": "integer",
-            "required": false,
-            "name": "max_id",
-            "in": "query",
-            "description": "Upper bound for conversation message ids."
+            "description": "Later bound for updated_at time for messages."
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.index",
-        "description": "List of 50 most recent conversation messages for a conversation. Pass in max_id to move backward in time."
+        "description": "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
       }
     },
     "/api/v1/conversation_messages/{conversation__message_id}": {
@@ -870,81 +646,9 @@
     "title": "Stitch"
   },
   "definitions": {
-    "PatientOnboardingCompletion": {
-      "type": "object",
-      "title": "PatientOnboardingCompletion",
-      "properties": {
-        "onboarded": {
-          "type": "boolean",
-          "description": "Whether the patient is onboarded."
-        },
-        "id": {
-          "type": "integer",
-          "description": "Unique identifier"
-        },
-        "email": {
-          "type": "string",
-          "example": "jeff@teamstitch.com",
-          "description": "Email of the patient"
-        }
-      },
-      "description": "Patient info returned on successful onboard."
-    },
-    "PatientLogin": {
-      "type": "object",
-      "title": "PatientLogin",
-      "properties": {
-        "updated_at": {
-          "type": "string"
-        },
-        "token": {
-          "type": "string"
-        },
-        "redirect_url": {
-          "type": "string"
-        },
-        "phone": {
-          "type": "string"
-        },
-        "onboarded": {
-          "type": "booelan"
-        },
-        "mrn": {
-          "type": "string"
-        },
-        "last_name": {
-          "type": "string"
-        },
-        "inserted_at": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer"
-        },
-        "full_name": {
-          "type": "string"
-        },
-        "first_name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "disabled": {
-          "type": "boolean"
-        },
-        "avatar_thumb": {
-          "type": "string"
-        },
-        "avatar": {
-          "type": "string"
-        }
-      },
-      "description": "A patient user."
-    },
     "PatientInbox": {
       "type": "object",
-      "title": "PatientInbox",
+      "title": "Inbox",
       "properties": {
         "name": {
           "type": "string",
@@ -958,9 +662,6 @@
         "id": {
           "type": "integer",
           "description": "Unique identifier"
-        },
-        "conversations": {
-          "$ref": "#/definitions/ConversationMessages"
         }
       },
       "description": "A collection of conversations in Engage."
@@ -977,7 +678,6 @@
       "type": "object",
       "title": "PatientConversation",
       "required": [
-        "subject",
         "inbox_id"
       ],
       "properties": {
@@ -986,18 +686,8 @@
           "example": "2018-07-04T15:58:42.059546",
           "description": "Last time updated in db"
         },
-        "subject": {
-          "type": "string",
-          "example": "Elbow Issue",
-          "description": "Subject line for the conversation"
-        },
         "latest_conversation_message": {
           "$ref": "#/definitions/ConversationMessage"
-        },
-        "is_unread": {
-          "type": "boolean",
-          "example": false,
-          "description": "Whether current user has read the most recent message."
         },
         "inserted_at": {
           "type": "string",
@@ -1019,9 +709,6 @@
       "type": "object",
       "title": "Patient",
       "properties": {
-        "updated_at": {
-          "type": "string"
-        },
         "phone": {
           "type": "string"
         },
@@ -1089,29 +776,6 @@
         }
       },
       "description": "A collection of conversations in Engage."
-    },
-    "FindTeamLogin": {
-      "type": "object",
-      "title": "FindTeamLogin",
-      "properties": {
-        "teams": {
-          "type": "array",
-          "example": [
-            {
-              "slug": "vumc",
-              "name": "VUMC",
-              "login_token": "djif43b9fb"
-            }
-          ],
-          "description": "Teams to log into with name, slug, and login_token."
-        },
-        "login_token": {
-          "type": "string",
-          "example": "djif43b9fb",
-          "description": "Token used to log into found teams."
-        }
-      },
-      "description": "Info returned when given a find team token."
     },
     "Conversations": {
       "type": "array",
@@ -1256,7 +920,6 @@
       "type": "object",
       "title": "Conversation",
       "required": [
-        "subject",
         "inbox_id"
       ],
       "properties": {
@@ -1264,11 +927,6 @@
           "type": "string",
           "example": "2018-07-04T15:58:42.059546",
           "description": "Last time updated in db"
-        },
-        "subject": {
-          "type": "string",
-          "example": "Elbow Issue",
-          "description": "Subject line for the conversation"
         },
         "patient": {
           "$ref": "#/definitions/Patient"

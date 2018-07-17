@@ -8,7 +8,7 @@ import EngageApp from "../engage/EngageApp";
 import ManageApp from "../manage/ManageApp";
 import PatientsRepoApp from "../patients/PatientsRepoApp";
 import ChatApp from "../chat/ChatApp";
-import withError from "../util/with_error_page";
+import SystemError from "../common/components/error/system-error";
 import browserDetails from "../lib/browser_details";
 
 @inject("presenceStore", "sidemenuStore", "teamStore")
@@ -16,8 +16,14 @@ import browserDetails from "../lib/browser_details";
 class LockableApp extends Component {
   constructor(props) {
     super(props);
+
     const shouldRedirect = browserDetails.mobile;
-    this.state = { shouldRedirect };
+
+    this.state = {
+      hasError: false,
+      shouldRedirect
+    };
+
     if (shouldRedirect) window.location.href = "/apps";
   }
 
@@ -73,6 +79,10 @@ class LockableApp extends Component {
     } = this.props;
     const { shouldRedirect } = this.state;
 
+    if (this.state.hasError) {
+      return <SystemError />;
+    }
+
     if (presenceStore.locked) {
       return <LockedApp />;
     }
@@ -98,4 +108,4 @@ class LockableApp extends Component {
   }
 }
 
-export default withRouter(withError("/", LockableApp));
+export default withRouter(LockableApp);

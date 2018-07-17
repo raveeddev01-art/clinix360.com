@@ -51,8 +51,8 @@ defmodule StitchConnect.Web.MessageController.UpdateTest do
           text_content: "new message text"
         }
       })
-      |> json_response(404)
+      |> json_response(401)
 
-    assert json["message"] == "The resource you are looking for does not exist."
+    assert json["message"] == "You can't edit other users' messages"
   end
 end

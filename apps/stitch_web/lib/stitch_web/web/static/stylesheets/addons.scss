@@ -38,6 +38,7 @@
     position: relative;
     flex-direction: column;
     overflow: hidden;
+    overflow-y: auto;
 
     .user-list-heading,
     .collapse-content h5 {
@@ -119,7 +120,6 @@
     right: 0;
     top: 0;
     bottom: 0;
-    overflow-y: auto;
 
     &.opened {
       transform: translateX(0%);
@@ -133,20 +133,10 @@
       transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;
     opacity: 0;
     width: 100%;
-    overflow-y: auto;
 
     &.opened {
       transform: translateX(0);
       opacity: 1;
-    }
-  }
-
-  .attachment-block {
-    .attachment-title {
-      max-width: 220px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
   }
 }

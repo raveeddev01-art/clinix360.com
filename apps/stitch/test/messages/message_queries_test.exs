@@ -1,7 +1,6 @@
 defmodule Stitch.MessageQueriesTest do
   use Stitch.DataCase, async: true
   alias Stitch.MessageQueries
-  alias Stitch.StarrableItems.StarringService
 
   describe "Stitch.MessageQueries.search/2" do
     test "returns messages containing that word" do
@@ -112,7 +111,7 @@ defmodule Stitch.MessageQueriesTest do
   test "Stitch.MessageQueries.user_starred_messages/1" do
     user = insert(:user)
     message = insert(:message)
-    {true, {:ok, _message_action}} = StarringService.toggle_star(message, user)
+    {:ok, true, _message_action} = Stitch.MessageAction.toggle_star(message, user)
     _unstarred_message = insert(:message)
 
     starred_message_ids =

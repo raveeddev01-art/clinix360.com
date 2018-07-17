@@ -1,14 +1,12 @@
 defmodule StitchEngage.Web.PatientController do
   use Stitch.Web, :controller
-  alias Stitch.Repo
-  alias Stitch.Web.PageService
 
-  def index(conn, _) do
-    patient = Repo.preload(conn.assigns.patient, :team)
+  def show(conn, _) do
+    patient = conn.assigns.patient
 
-    conn
-    |> assign(:patient, patient)
-    |> put_layout("patient.html")
-    |> render(Stitch.Web.PatientView, "index.html", app_params: PageService.app_params(conn))
+    json(conn, %{
+      name: patient.first_name <> " " <> patient.last_name,
+      token: patient.token
+    })
   end
 end

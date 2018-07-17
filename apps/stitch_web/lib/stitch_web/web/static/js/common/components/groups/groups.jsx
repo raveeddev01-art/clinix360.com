@@ -74,7 +74,7 @@ class Groups extends Component {
         value={value}
         onChange={this.onChange}
         clearable={!multi}
-        searchable
+        searchable={false}
       />
     );
   }

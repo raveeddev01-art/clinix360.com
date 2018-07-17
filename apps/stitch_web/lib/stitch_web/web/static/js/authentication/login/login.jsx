@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Link, withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
@@ -55,14 +54,11 @@ class Login extends Component {
   onSubmit = evt => {
     this.setState({ saving: true });
     evt.preventDefault();
-    const { history, asPatient } = this.props;
+    const { history } = this.props;
     const { email, password } = this.state;
 
     this.setState({ saving: true });
-
-    const loginPath = asPatient ? "/api/v1/patient/login" : "/api/v1/login";
-
-    post(loginPath, {
+    post("/api/v1/login", {
       body: { email, password },
       hideNotify: true
     })
@@ -93,38 +89,6 @@ class Login extends Component {
     const { saving } = this.state;
 
     return saving && <LoadingIcon className="on-right" />;
-  };
-
-  renderHelpers = () => {
-    if (this.props.asPatient) {
-      return (
-        <div className="login-helpers">
-          <div>
-            <Link to="/patient/reset-password"> Forgot your password? </Link>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="login-helpers">
-        <div>
-          <Link to="/reset-password"> Forgot your password?</Link>
-        </div>
-
-        <div>
-          <b>Don't have an account with this carespace?</b>
-          <br />
-          Contact the carespace administrator for an invitation.
-        </div>
-
-        <div>
-          Just getting started?{" "}
-          <a href={`https://${applicationHost}/signup/email`}>
-            Create a new carespace.
-          </a>
-        </div>
-      </div>
-    );
   };
 
   render() {
@@ -189,18 +153,27 @@ class Login extends Component {
           </Button>
         </Form>
 
-        {this.renderHelpers()}
+        <div className="login-helpers">
+          <div>
+            <Link to="/reset-password"> Forgot your password?</Link>
+          </div>
+
+          <div>
+            <b>Don't have an account with this carespace?</b>
+            <br />
+            Contact the carespace administrator for an invitation.
+          </div>
+
+          <div>
+            Just getting started?{" "}
+            <a href={`https://${applicationHost}/signup/email`}>
+              Create a new carespace.
+            </a>
+          </div>
+        </div>
       </AuthenticationPage>
     );
   }
 }
-
-Login.defaultProps = {
-  asPatient: false
-};
-
-Login.propTypes = {
-  asPatient: PropTypes.bool
-};
 
 export default withRouter(Login);

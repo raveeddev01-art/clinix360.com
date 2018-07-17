@@ -15,8 +15,7 @@ defmodule Stitch.Invitation do
     Team,
     TeamAuthorization,
     TimedMessage,
-    Patient,
-    PatientEmail
+    Patient
   }
 
   alias Stitch.Analytics.Invitation, as: InvitationAnalytics
@@ -230,7 +229,7 @@ defmodule Stitch.Invitation do
   defp send_invite_reminder_if_needed(%Patient{onboarded: true}, _), do: :ok
 
   defp send_invite_reminder_if_needed(patient, invitation) do
-    PatientEmail.send_reminder(patient, invitation)
+    Invitation.PatientEmail.send_reminder(patient, invitation)
   end
 
   defp create_and_send_patient_invitation(patient, team) do
@@ -247,7 +246,7 @@ defmodule Stitch.Invitation do
     # InvitationAnalytics.track_new_patient_invitation(patient, user, team)
     # TimedMessage.Event.new_patient_invitation(invitation)
 
-    PatientEmail.send_invitation(patient, invitation)
+    Invitation.PatientEmail.send_invitation(patient, invitation)
 
     {:ok, invitation}
   end

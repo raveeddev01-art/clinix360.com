@@ -70,17 +70,6 @@ class NamesCards extends Component {
     this.setState({ [field]: val });
   };
 
-  onPatientNext = () => {
-    const { firstName, lastName } = this.state;
-    this.resetErrors();
-    if (this.checkForAndSetError()) {
-      // short circuit if error gets set
-      return;
-    }
-
-    this.props.onNext({ firstname: firstName, lastname: lastName });
-  };
-
   onNext = () => {
     const { firstName, lastName, username } = this.state;
 
@@ -158,12 +147,6 @@ class NamesCards extends Component {
       return true;
     }
 
-    // dont check username if patient
-    // (since not setting username)
-    if (this.props.asPatient) {
-      return false;
-    }
-
     if (!username) {
       this.setState({
         usernameError: "You must provide a username"
@@ -180,35 +163,6 @@ class NamesCards extends Component {
     }
   };
 
-  renderUserName() {
-    const { username, usernameError, generalError } = this.state;
-    return (
-      <div>
-        <FormGroup
-          bsSize="large"
-          validationState={((usernameError || generalError) && "error") || null}
-        >
-          <ControlLabel>Username</ControlLabel>
-          <FormControl
-            required
-            placeholder="username"
-            value={username}
-            onChange={this.onChange("username")}
-            maxLength={20}
-            onKeyPress={this.onKeyPress}
-          />
-          {(usernameError || generalError) && (
-              <InputErrorBlock>{usernameError || generalError}</InputErrorBlock>
-            )}
-        </FormGroup>
-        <HelpBlock className="onboarding-hint m-b-20">
-          Usernames must be lowercase and contian only letters, numbers,
-          periods, hyphens, and underscores.
-        </HelpBlock>
-      </div>
-    );
-  }
-
   render() {
     const {
       firstName,
@@ -216,26 +170,25 @@ class NamesCards extends Component {
       username,
       firstNameError,
       lastNameError,
+      usernameError,
+      generalError,
       loading
     } = this.state;
-    const { asPatient } = this.props;
-
-    const description = asPatient
-      ? ""
-      : "Your name will appear alongside your messages, files, tasks, and more in Stitch.";
-
-    const disableNext = !firstName || !lastName || (!asPatient && !username);
-    const nextCb = asPatient ? this.onPatientNext : this.onNext;
 
     return (
       <div>
         <OnboardPage
           {...this.props}
           title="What is your name?"
-          description={description}
-          disableNext={disableNext}
+          description={
+            <span>
+              Your name will appear alongside your messages, files, tasks, and
+              more in Stitch.
+            </span>
+          }
+          disableNext={!firstName || !lastName || !username}
           loading={loading}
-          onNext={nextCb}
+          onNext={this.onNext}
         >
           <FormGroup
             bsSize="large"
@@ -272,19 +225,38 @@ class NamesCards extends Component {
               <InputErrorBlock>{lastNameError}</InputErrorBlock>
             )}
           </FormGroup>
-          {!asPatient && this.renderUserName()}
+          <FormGroup
+            bsSize="large"
+            validationState={
+              ((usernameError || generalError) && "error") || null
+            }
+          >
+            <ControlLabel>Username</ControlLabel>
+            <FormControl
+              required
+              placeholder="username"
+              value={username}
+              onChange={this.onChange("username")}
+              maxLength={20}
+              onKeyPress={this.onKeyPress}
+            />
+            {(usernameError || generalError) && (
+                <InputErrorBlock>
+                  {usernameError || generalError}
+                </InputErrorBlock>
+              )}
+          </FormGroup>
+          <HelpBlock className="onboarding-hint m-b-20">
+            Usernames must be lowercase and contian only letters, numbers,
+            periods, hyphens, and underscores.
+          </HelpBlock>
         </OnboardPage>
       </div>
     );
   }
 }
 
-NamesCards.defaultProps = {
-  asPatient: false
-};
-
 NamesCards.propTypes = {
-  asPatient: PropTypes.bool,
   onNext: PropTypes.func.isRequired
 };
 

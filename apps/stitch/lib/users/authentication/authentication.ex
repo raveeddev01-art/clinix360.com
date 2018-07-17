@@ -19,22 +19,21 @@ defmodule Stitch.User.Authentication do
 
   @spec validate_user_email_and_password(binary, binary, Team.t()) :: User.t() | boolean
   def validate_user_email_and_password(email, password, team) do
-    user = UserQueries.team_member_with_email(team.id, email)
-    do_validate_email_and_password(user, password)
+    with %User{} = user <- UserQueries.team_member_with_email(team.id, email) do
+      Comeonin.Bcrypt.checkpw(password, user.password_hash) && user
+    else
+      nil ->
+        Comeonin.Bcrypt.dummy_checkpw()
+    end
   end
 
   @spec validate_patient_email_and_password(integer, binary, binary) :: Patient.t() | boolean
   def validate_patient_email_and_password(team_id, email, password) do
-    patient = PatientQueries.for_team_and_email(team_id, email)
-    do_validate_email_and_password(patient, password)
-  end
-
-  @spec do_validate_email_and_password(User.t() | Patient.t() | nil, binary) ::
-          boolean | Patient.t() | User.t()
-  defp do_validate_email_and_password(nil = _user_or_patient, _), do: false
-
-  defp do_validate_email_and_password(user_or_patient, password) do
-    Comeonin.Bcrypt.checkpw(password, user_or_patient.password_hash) && user_or_patient
+    with %Patient{} = patient <- PatientQueries.for_team_and_email(team_id, email) do
+      Comeonin.Bcrypt.checkpw(password, patient.password_hash) && patient
+    else
+      _ -> false
+    end
   end
 
   @spec password_update_changeset(User.t() | Patient.t(), map) :: Changeset.t()

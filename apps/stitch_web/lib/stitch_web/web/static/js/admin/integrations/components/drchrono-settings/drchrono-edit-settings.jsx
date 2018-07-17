@@ -146,6 +146,8 @@ class DrChronoEditSettings extends Component {
   };
 
   render() {
+    console.log(this.props.integrationStore.selectedIntegration);
+
     return (
       <Panel className="admin-panel integrations-settings">
         <Panel.Heading className="integrations-settings__overview">

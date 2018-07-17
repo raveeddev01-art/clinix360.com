@@ -12,10 +12,6 @@ function goToPath(path) {
 }
 
 class AuthenticationHeader extends Component {
-  get asPatient() {
-    return window.location.pathname.includes("patient");
-  }
-
   goToFindTeam() {
     goToPath("find-your-team");
   }
@@ -43,7 +39,7 @@ class AuthenticationHeader extends Component {
   renderCTA() {
     const { mobile } = browserDetails;
 
-    if (mobile || this.asPatient || this.props.type === "no-cta") {
+    if (mobile || this.props.type === "no-cta") {
       return null;
     }
 

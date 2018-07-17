@@ -5,16 +5,14 @@ import cx from "classnames";
 import Info from "./components/info/info";
 import Directory from "./components/directory/directory";
 import MessageSearch from "./components/message-search/message-search";
-import FileDetails from "./components/file-details/FileDetails";
 import GlobalStarredMessages from "./components/global-starred-messages/global-starred-messages";
 
 import PeopleDetail from "./components/people-detail/people-detail";
 import Mentions from "./components/mentions/mentions";
 import Files from "./components/files/files";
-import FileDrawer from "./components/file-drawer";
 import Updates from "./components/updates/updates";
 
-@inject("addonStore", "searchStore", "desktopStore")
+@inject("addonStore", "searchStore")
 @observer
 class Addons extends Component {
   toggleAddons = () => {
@@ -28,10 +26,6 @@ class Addons extends Component {
   toggleAddonDetail = () => {
     this.props.addonStore.toggleAddonDetail();
   };
-
-  resetDownload = () => {
-    this.props.desktopStore.send('resetList');
-  }
 
   render() {
     const { addonStore } = this.props;
@@ -63,9 +57,6 @@ class Addons extends Component {
             </a>
           )}
           <h4 className="text-capitalize">{addonPanelTitle}</h4>
-          {addonStore.addonPanelType === "downloads" && <a className="file-drawer-clear" onClick={this.resetDownload}>
-            Clear All
-          </a>}
           <a role="button" onClick={this.toggleAddons}>
             <i className="fa fa-close" />
           </a>
@@ -84,13 +75,9 @@ class Addons extends Component {
             )}
             {addonStore.addonPanelType === "files" && <Files />}
             {addonStore.addonPanelType === "Updates" && <Updates />}
-            {addonStore.addonPanelType === "downloads" && <FileDrawer />}
           </div>
 
           <div className={rightPanelClass}>
-            {addonStore.detailPanelType === "File Details" && (
-              <FileDetails fileId={addonStore.detailPanelData} />
-            )}
             {addonStore.detailPanelType === "people" && (
               <PeopleDetail user={addonStore.detailPanelData} />
             )}

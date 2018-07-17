@@ -24,12 +24,6 @@ export const PRICING_TABLE = {
       basic: true,
       standard: true,
       premium: true
-    },
-    {
-      feature: "API Access",
-      basic: true,
-      standard: true,
-      premium: true
     }
   ],
   TEAM_MESSAGING: [
@@ -78,12 +72,6 @@ export const PRICING_TABLE = {
   ],
   PATIENT_COMMUNICATION: [
     {
-      feature: "Unlimited Patients",
-      basic: false,
-      standard: true,
-      premium: true
-    },
-    {
       feature: "In-app Messaging",
       basic: false,
       standard: true,
@@ -109,12 +97,6 @@ export const PRICING_TABLE = {
     },
     {
       feature: "Family Access",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "Templates & Macros",
       basic: false,
       standard: false,
       premium: true
@@ -295,8 +277,7 @@ export const PRICING_TABLE_MOBILE = {
       { feature: "Full HIPAA Compliance" },
       { feature: "iOS & Android Apps" },
       { feature: "Mac & Windows Apps" },
-      { feature: "EHR Integrations" },
-      { feature: "API Access" }
+      { feature: "EHR Integrations" }
     ],
     TEAM_MESSAGING: [
       { feature: "Public & Private Rooms" },
@@ -320,7 +301,6 @@ export const PRICING_TABLE_MOBILE = {
       { feature: "Unlimited File Storage" }
     ],
     PATIENT_COMMUNICATION: [
-      { feature: "Unlimited Patients" },
       { feature: "In-App Messaging" },
       { feature: "Assignments" },
       { feature: "Search & File Uploads" },
@@ -342,7 +322,6 @@ export const PRICING_TABLE_MOBILE = {
   PREMIUM: {
     PATIENT_COMMUNICATION: [
       { feature: "Family Access" },
-      { feature: "Templates & Macros" },
       { feature: "Internal Notes" },
       { feature: "Custom Inboxes" },
       { feature: "Custom Forms" },

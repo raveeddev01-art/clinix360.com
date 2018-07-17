@@ -37,15 +37,6 @@ defmodule Stitch.Web.Router do
   #   STITCH ROUTES (CROSS-PRODUCT)
   # =================================
 
-  scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
-    pipe_through(:api)
-
-    get("/find-your-team", AuthenticationController, :index)
-    get("/find-your-team/:token", AuthenticationController, :index)
-    post("/find-your-team", FindYourTeamController, :patient_create)
-    delete("/find-your-team/:token", FindYourTeamController, :patient_delete)
-  end
-
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
     # Onboarding routes for new users.
@@ -105,17 +96,13 @@ defmodule Stitch.Web.Router do
     get("/find-your-team", AuthenticationController, :index)
     get("/find-your-team/:token", AuthenticationController, :index)
 
-    get("/patient/getstarted", AuthenticationController, :index)
-    get("/patient/signin", AuthenticationController, :index)
-    get("/patient/find-your-team", AuthenticationController, :index)
-    get("/patient/find-your-team/:token", AuthenticationController, :index)
-    get("/patient/signup/email", AuthenticationController, :index)
-    get("/patient/onboarding/:step", AuthenticationController, :index)
+    # get "/reset-password", AuthenticationController, :index
 
     get("/signup/email", AuthenticationController, :index)
     get("/signup/confirmation-code", AuthenticationController, :index)
     get("/signup/onboarding/:step", AuthenticationController, :index)
     get("/signup/app-download", AuthenticationController, :index)
+
     # get "/signup/phone-number", AuthenticationController, :index
   end
 
@@ -153,26 +140,4 @@ defmodule Stitch.Web.Router do
     Redirect,
     external: "https://1lyrransd9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-win"
   )
-
-  # ==============
-  #   DOC ROUTES
-  # ==============
-
-  scope "/api/docs" do
-    forward(
-      "/",
-      PhoenixSwagger.Plug.SwaggerUI,
-      otp_app: :stitch_web,
-      swagger_file: "swagger.json"
-    )
-  end
-
-  def swagger_info do
-    %{
-      info: %{
-        version: "1.0",
-        title: "Stitch"
-      }
-    }
-  end
 end

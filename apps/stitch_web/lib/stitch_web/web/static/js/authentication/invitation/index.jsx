@@ -30,17 +30,6 @@ class Invitation extends Component {
           path="/invitations/accept/:token/:currentStep"
           component={JoinTeam}
         />
-
-        <Route
-          exact
-          path="/patient/invitations/accept/:token"
-          component={props => <Welcome asPatient {...props} />}
-        />
-        <Route
-          exact
-          path="/patient/invitations/accept/:token/:currentStep"
-          component={props => <JoinTeam asPatient {...props} />}
-        />
       </Switch>
     );
   }

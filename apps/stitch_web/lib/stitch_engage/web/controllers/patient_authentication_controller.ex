@@ -14,46 +14,48 @@ defmodule StitchEngage.Web.PatientAuthenticationController do
       redirect(conn, to: "/patient")
     else
       _ ->
-        login_params =
-          Poison.encode!(%{
-            "teamName" => conn.private[:team_name],
-            "teamSlug" => conn.private[:team_slug],
-            "invalidLogin" => get_flash(conn, :invalid_login)
-          })
-
         conn
         |> assign(:title, "Patient Login")
         |> assign(:description, "Log in to Stitch Health")
-        |> render(Stitch.Web.AuthenticationView, "login.html", login_params: login_params)
+        |> render("patient_login.html")
     end
   end
 
   def logout(conn, _) do
     conn
     |> delete_patient_session(conn.assigns.team.id)
-    |> delete_session(:redirect_url)
-    |> redirect(to: "/patient/logged-out")
-  end
-
-  def logged_out(conn, _) do
-    logged_out_params =
-      Poison.encode!(%{
-        "teamName" => conn.private[:team_name],
-        "teamSlug" => conn.private[:team_slug]
-      })
-
-    conn
-    |> delete_patient_session(conn.assigns.team.id)
-    |> delete_session(:redirect_url)
-    |> render(
-      Stitch.Web.AuthenticationView,
-      "logged_out.html",
-      logged_out_params: logged_out_params
-    )
+    |> redirect(to: "/patient/login")
   end
 
   def show(conn, _) do
     patient = conn.assigns.patient
     json(conn, %{name: patient.first_name <> " " <> patient.last_name})
+  end
+
+  def submit_login(conn, %{"patient" => %{"email" => email, "password" => password}}) do
+    team = conn.assigns.team
+
+    case Stitch.User.Authentication.validate_patient_email_and_password(team.id, email, password) do
+      %Patient{} = patient ->
+        case patient.disabled do
+          false ->
+            conn
+            |> login_patient(patient)
+            |> redirect(to: "/patient")
+
+          true ->
+            conn
+            |> put_flash(
+              :invalid_login,
+              "This account is disabled.."
+            )
+            |> redirect(to: "/patient/login")
+        end
+
+      _ ->
+        conn
+        |> put_flash(:invalid_login, "Sorry, you entered an invalid email or password.")
+        |> redirect(to: "/patient/login")
+    end
   end
 end

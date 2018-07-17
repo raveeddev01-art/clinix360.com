@@ -22,7 +22,7 @@ defmodule Stitch.Web.Endpoint do
     from: :stitch_web,
     gzip: false,
     only:
-      ~w(js css fonts images audios favicon.ico robots.txt sitemap.xml notification.png notification-staging.png swagger.json carespace-swagger.json)
+      ~w(js css fonts images audios favicon.ico robots.txt sitemap.xml notification.png notification-staging.png carespace-swagger.json)
   )
 
   # Code reloading can be explicitly enabled under the

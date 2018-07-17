@@ -3,12 +3,8 @@ import { observable } from "mobx";
 class ResetPasswordStore {
   @observable token = "";
 
-  sendEmail = (email, asPatient) => {
-    const resetPath = asPatient
-      ? "/api/v1/patient/reset_password"
-      : "/api/v1/reset_password";
-
-    return post(resetPath, {
+  sendEmail = email => {
+    return post(`/api/v1/reset_password`, {
       body: {
         email
       },
@@ -16,12 +12,8 @@ class ResetPasswordStore {
     });
   };
 
-  resetPassword = (password, asPatient) => {
-    const resetPath = asPatient
-      ? "/api/v1/patient/reset_password"
-      : "/api/v1/reset_password";
-
-    return post(resetPath, {
+  resetPassword = password => {
+    return post(`/api/v1/reset_password`, {
       body: { token: this.token, password },
       hideNotify: true
     });

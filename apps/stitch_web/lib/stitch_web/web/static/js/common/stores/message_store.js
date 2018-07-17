@@ -256,21 +256,14 @@ class MessageStore {
         return [
           firstMsg,
           ...messages.map(msg => {
-            if (msg.upload_id && msg.type === "chat") {
-              msg.type = "file_comment";
-            }
-
             if (
-              (sequentialStart.upload_id === msg.upload_id &&
-                msg.type === "file_comment") ||
-              (msg.user.id === sequentialStart.user.id &&
-                sequentialStart.type !== "system" &&
-                msg.type !== "upload" &&
-                msg.type !== "file_comment" &&
-                moment(msg.inserted_at).diff(
-                  moment(sequentialStart.inserted_at),
-                  "seconds"
-                ) < SEQUENTIAL_SPLIT_SECONDS)
+              msg.user.id === sequentialStart.user.id &&
+              sequentialStart.type !== "system" &&
+              sequentialStart.type !== "upload" &&
+              moment(msg.inserted_at).diff(
+                moment(sequentialStart.inserted_at),
+                "seconds"
+              ) < SEQUENTIAL_SPLIT_SECONDS
             ) {
               return { ...msg, is_sequential: true };
             }
@@ -677,12 +670,7 @@ class MessageStore {
   @action
   loadPastMessages = (stayScroll = true) => {
     return new Promise((resolve, reject) => {
-      if (
-        this.loadedAll ||
-        !this.messages.length ||
-        !this.loadedInitial ||
-        this.isLoadingPast
-      ) {
+      if (this.loadedAll || !this.messages.length || !this.loadedInitial || this.isLoadingPast) {
         resolve();
         return;
       }
@@ -1313,71 +1301,6 @@ class MessageStore {
           this.readStatusCache[message_id],
           payload.messages[message_id]
         );
-      }
-    });
-  };
-
-  @action
-  onFileCommentAdded = payload => {
-    const files = this.messages.filter(
-      message => message.upload_id === payload.id && message.type === "upload"
-    );
-
-    files.forEach(file => {
-      this.updateMessageData(file.id, { fields: payload });
-    });
-  };
-
-  @action
-  onFileCommentEdited = payload => {
-    const files = this.messages.filter(
-      message => message.upload_id === payload.id && message.type === "upload"
-    );
-
-    files.forEach(file => {
-      this.updateMessageData(file.id, { fields: payload });
-    });
-  };
-
-  @action
-  onPublicLinkUpdate = payload => {
-    const files = this.messages.filter(
-      message =>
-        message.upload_id === payload.upload_id && message.type === "upload"
-    );
-
-    files.forEach(file => {
-      const fields = { ...file.fields, public_url: payload.public_url };
-      this.updateMessageData(file.id, { fields });
-    });
-  };
-
-  @action
-  onFileDetailsUpdate = payload => {
-    const files = this.messages.filter(
-      message =>
-        message.upload_id === payload.upload_id && message.type === "upload"
-    );
-
-    files.forEach(file => {
-      const fields = { ...file.fields, public_url: payload.public_url };
-      this.updateMessageData(file.id, { fields });
-    });
-  };
-
-  @action
-  onFileDeleted = payload => {
-    const files = this.messages.filter(
-      message =>
-        message.upload_id === payload.upload_id &&
-        (message.type === "upload" || message.type === "file_comment")
-    );
-
-    files.forEach(file => {
-      const messageIndex = this.messages.findIndex(m => m.id === file.id);
-
-      if (messageIndex > -1) {
-        this.messages.splice(messageIndex, 1);
       }
     });
   };

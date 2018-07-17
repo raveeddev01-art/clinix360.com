@@ -17,8 +17,8 @@ defmodule Stitch.Web.PageService do
     %{struct_url | host: "#{subdomain}.#{struct_url.host}"}
   end
 
-  def get_logins(conn, map_name \\ :login_map) do
-    login_map = Plug.Conn.get_session(conn, map_name) || %{}
+  def get_logins(conn) do
+    login_map = Plug.Conn.get_session(conn, :login_map) || %{}
 
     login_map
     |> Map.keys()
@@ -29,9 +29,6 @@ defmodule Stitch.Web.PageService do
   end
 
   def get_logins_json(conn) do
-    Poison.encode!(%{
-      teams: get_logins(conn, :login_map),
-      patient_teams: get_logins(conn, :patient_login_map)
-    })
+    Poison.encode!(%{teams: get_logins(conn)})
   end
 end

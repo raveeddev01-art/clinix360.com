@@ -1,81 +1,43 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
 import { Link } from "react-router-dom";
 
 import Button from "react-bootstrap/lib/Button";
 import { AuthenticationPage } from "common/components";
 import OrLine from "../or-line/or-line";
 
-const TeamLink = ({ asPatient, name, slug }) => {
-  const path = asPatient ? "patient" : "";
-
-  return (
-    <div className="select-team-item">
-      <div className="select-team-item-name">{name}</div>
-      <div className="select-team-item-link-holder">
-        <Button
-          key={slug}
-          href={`https://${slug}.${applicationHost}/${path}`}
-          bsStyle="primary"
-        >
-          Launch
-        </Button>
-      </div>
+const TeamLink = ({ name, slug }) => (
+  <div className="select-team-item">
+    <div className="select-team-item-name">{name}</div>
+    <div className="select-team-item-link-holder">
+      <Button
+        key={slug}
+        href={`https://${slug}.${applicationHost}/`}
+        bsStyle="primary"
+      >
+        Launch
+      </Button>
     </div>
-  );
-};
+  </div>
+);
 
-const YourTeams = ({ asPatient, teams }) => {
-  const findTeamLink = asPatient
-    ? "/patient/find-your-team"
-    : "/find-your-team";
-
-  const userType = asPatient ? "patient in" : "member of";
-
-  return (
-    <div>
-      <h1>Your Carespaces</h1>
-      <p>{`You are a ${userType} these Stitch carespaces:`}</p>
-      <div className="select-team-list m-b-40">
-        {teams.map(team => (
-          <TeamLink asPatient={asPatient} key={team.slug} {...team} />
-        ))}
-      </div>
-      <p>
-        If you are looking for a different carespace, you can try a{" "}
-        <Link to={findTeamLink}> different email address</Link>
-        {asPatient
-          ? "."
-          : " or request an invitation from your carespace administrator."}
-      </p>
+const YourTeams = ({ teams }) => (
+  <div>
+    <h1>Your Carespaces</h1>
+    <p>{"You are a member of these Stitch carespaces:"}</p>
+    <div className="select-team-list m-b-40">
+      {teams.map(team => <TeamLink key={team.slug} {...team} />)}
     </div>
-  );
-};
+    <p>
+      If you are looking for a different carespace, you can try a{" "}
+      <Link to="/find-your-team"> different email address</Link> or request an
+      invitation from your carespace administrator.
+    </p>
+  </div>
+);
 
-class GetStartedCard extends Component {
-  renderYourTeams() {
-    if (this.props.asPatient) {
-      return (
-        window.appSettings.hasPatientLogin && (
-          <YourTeams asPatient teams={window.appSettings.patientTeams} />
-        )
-      );
-    }
-
-    return (
-      window.appSettings.hasLogin && (
-        <YourTeams teams={window.appSettings.teams} />
-      )
-    );
-  }
-
+export default class GetStartedCard extends Component {
   render() {
-    const { asPatient } = this.props;
-    const showSignup = !asPatient;
-    const findTeamLink = asPatient
-      ? "/patient/find-your-team"
-      : "/find-your-team";
-
     return (
       <div>
         <AuthenticationPage
@@ -93,23 +55,21 @@ class GetStartedCard extends Component {
           headerCTA="signin"
         >
           <div className="get-started-card">
-            {showSignup && (
-              <div className="get-started-card-link-wrapper">
-                <Link
-                  to="/signup/email"
-                  className="btn btn-onboarding btn-onboarding-primary"
-                >
-                  Create a New Carespace
-                </Link>
-                <div className="get-started-card-link-description">
-                  Set up your carespace on Stitch
-                </div>
-              </div>
-            )}
-            {showSignup && <OrLine />}
             <div className="get-started-card-link-wrapper">
               <Link
-                to={findTeamLink}
+                to="/signup/email"
+                className="btn btn-onboarding btn-onboarding-primary"
+              >
+                Create a New Carespace
+              </Link>
+              <div className="get-started-card-link-description">
+                Set up your carespace on Stitch
+              </div>
+            </div>
+            <OrLine />
+            <div className="get-started-card-link-wrapper">
+              <Link
+                to="/find-your-team"
                 className="btn btn-onboarding btn-onboarding-inverse"
               >
                 Find Your Carespace
@@ -119,19 +79,11 @@ class GetStartedCard extends Component {
               </div>
             </div>
           </div>
-          {this.renderYourTeams()}
+          {appSettings.hasLogin && (
+            <YourTeams teams={appSettings.teams} />
+          )}
         </AuthenticationPage>
       </div>
     );
   }
 }
-
-GetStartedCard.defaultProps = {
-  asPatient: false
-};
-
-GetStartedCard.propTypes = {
-  asPatient: PropTypes.bool
-};
-
-export default GetStartedCard;

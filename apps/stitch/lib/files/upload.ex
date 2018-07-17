@@ -2,10 +2,8 @@ defmodule Stitch.Files.Upload do
   alias Stitch.{
     Accounts.User,
     Files.Upload,
-    Files.UploadComment,
     Files.GroupUpload,
     Files.Thumb,
-    Message,
     Rand,
     Repo,
     Team,
@@ -13,9 +11,7 @@ defmodule Stitch.Files.Upload do
   }
 
   use Ecto.Schema
-  import Ecto.Query
   import Ecto.Changeset
-  alias Ecto.Multi
 
   @type t :: %__MODULE__{}
 
@@ -23,7 +19,6 @@ defmodule Stitch.Files.Upload do
     belongs_to(:user, User)
     belongs_to(:team, Team)
     has_many(:group_uploads, GroupUpload)
-    has_many(:upload_comments, UploadComment)
     has_many(:groups, through: [:group_uploads, :groups])
     field(:filename, :string)
     field(:url, :string)
@@ -34,10 +29,8 @@ defmodule Stitch.Files.Upload do
     field(:preview_width, :integer)
     field(:preview_url, :string)
     field(:public, :boolean, default: true)
-    field(:public_token, :string)
+    field(:public_link, :string)
     field(:shared_in, {:array, :integer}, virtual: true, default: [])
-    field(:starred, :boolean, virtual: true, default: false)
-    field(:comment_count, :integer)
 
     timestamps()
   end
@@ -185,82 +178,26 @@ defmodule Stitch.Files.Upload do
   @spec fields(Upload.t()) :: map
   def fields(%Upload{} = upload) do
     upload
-    |> Map.take(@attributes ++ [:comment_count, :public_token])
+    |> Map.take(@attributes)
     |> Map.new(fn {k, v} -> {"#{k}", v} end)
-    |> Map.put("encoded_id", encode_url_id(upload))
   end
 
-  @spec has_public_token?(Upload.t()) :: boolean
-  def has_public_token?(%Upload{} = upload) do
-    !!upload.public_token
+  @spec has_public_link?(Upload.t()) :: boolean
+  def has_public_link?(%Upload{} = upload) do
+    !!upload.public_link
   end
 
   @spec create_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
   def create_public_link(%Upload{} = upload) do
-    token =
-      10
-      |> :crypto.strong_rand_bytes()
-      |> Base.encode32(case: :lower)
-      |> binary_part(0, 10)
-
-    upload_changset = change(upload, public_token: token)
-
-    Multi.new()
-    |> Multi.update(:upload, upload_changset)
-    |> Multi.run(:update_shared_uploads, fn %{upload: upload} ->
-      {:ok, Message.update_shared_uploads(upload)}
-    end)
-    |> Repo.transaction()
+    upload
+    |> change(public_link: Rand.token(32))
+    |> Repo.update()
   end
 
   @spec revoke_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
   def revoke_public_link(%Upload{} = upload) do
-    upload_changeset = change(upload, public_token: nil)
-
-    Multi.new()
-    |> Multi.update(:upload, upload_changeset)
-    |> Multi.run(:update_shared_uploads, fn %{upload: upload} ->
-      {:ok, Message.update_shared_uploads(upload)}
-    end)
-    |> Repo.transaction()
-  end
-
-  @spec delete(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
-  def delete(%Upload{} = upload) do
     upload
-    |> Repo.delete()
-  end
-
-  @spec increment_comment_counter(pos_integer) :: {integer(), nil | list}
-  def increment_comment_counter(upload_id) do
-    update_comment_counter(upload_id, 1)
-  end
-
-  @spec decrement_comment_counter(pos_integer) :: {integer(), nil | list}
-  def decrement_comment_counter(upload_id) do
-    update_comment_counter(upload_id, -1)
-  end
-
-  def update_comment_counter(upload_id, by) do
-    changeset = where(Upload, id: ^upload_id)
-
-    Ecto.Multi.new()
-    |> multi_update_comment_counter(upload_id, by)
-    |> Repo.transaction()
-  end
-
-  def multi_update_comment_counter(multi, upload_id, by) do
-    changeset = where(Upload, id: ^upload_id)
-
-    multi
-    |> Ecto.Multi.update_all(:upload, changeset, [inc: [comment_count: by]], returning: true)
-    |> Ecto.Multi.run(:messages, fn
-      %{upload: {1, [upload]}} ->
-        Message.update_shared_uploads(upload)
-        {:ok, nil}
-
-      %{upload: _} ->
-        {:error, nil}
-    end)
+    |> change(public_link: nil)
+    |> Repo.update()
   end
 end

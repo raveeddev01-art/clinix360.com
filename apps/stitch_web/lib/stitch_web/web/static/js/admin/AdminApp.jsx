@@ -20,7 +20,6 @@ import AccountSettings from "./you/account";
 import Users from "./users";
 import Billing from "./billing/billing";
 import Analytics from "./analytics";
-import Files from "./files";
 import Integrations from "./integrations";
 import DrChronoPage from "./integrations/drchrono";
 import DrChronoNewSettings from "./integrations/components/drchrono-settings/drchrono-new-settings";
@@ -65,7 +64,7 @@ class AdminApp extends Component {
     ];
   };
 
-  renderMemberOrAdminRoutes = () => {
+  renderIntegrationRoutes = () => {
     return [
       <Route
         exact
@@ -114,8 +113,7 @@ class AdminApp extends Component {
             <div className="admin-content-wrapper">
               <Switch>
                 {isAdmin() && this.renderAdminRoutes()}
-                {isMemberOrAdmin() && this.renderMemberOrAdminRoutes()}
-                <Route path="/admin/files" component={Files} />
+                {isMemberOrAdmin() && this.renderIntegrationRoutes()}
                 <Route
                   path={`/admin/you/notifications`}
                   component={YouNotifications}

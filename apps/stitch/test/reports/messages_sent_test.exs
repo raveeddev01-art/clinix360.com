@@ -3,8 +3,7 @@ defmodule Stitch.Reports.MessagesSentTest do
   alias Stitch.Reports.MessagesSent
 
   test "with ':last_30_days' option" do
-    # year, month, day, hour, minute, second
-    {:ok, datetime_1} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
+    {:ok, datetime_1} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0) # year, month, day, hour, minute, second
     {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 5, 0, 0, 0)
     {:ok, datetime_3} = NaiveDateTime.new(2016, 9, 1, 0, 0, 0)
     {:ok, datetime_4} = NaiveDateTime.new(2017, 2, 1, 0, 0, 0)
@@ -25,12 +24,9 @@ defmodule Stitch.Reports.MessagesSentTest do
     insert(:message, user: user_1, group: group_2, inserted_at: datetime_1)
     insert(:message, user: user_2, group: group_3, inserted_at: datetime_2)
     insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
-    # not in range
-    insert(:message, user: user_3, group: group_3, inserted_at: datetime_3)
-    # not in range
-    insert(:message, user: user_3, group: group_3, inserted_at: datetime_4)
-    # not in team
-    insert(:message, user: user_4, group: group_4, inserted_at: datetime_1)
+    insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not in range
+    insert(:message, user: user_3, group: group_3, inserted_at: datetime_4) # not in range
+    insert(:message, user: user_4, group: group_4, inserted_at: datetime_1) # not in team
 
     opts = [time_period: :last_30_days, end_at: end_at]
     results = MessagesSent.build(team, opts)
@@ -44,7 +40,8 @@ defmodule Stitch.Reports.MessagesSentTest do
       |> Date.range(end_at)
       |> Enum.map(&Date.to_iso8601/1)
 
-    keys_with_zero_messages = expected_keys -- ["2017-01-01", "2017-01-05"]
+    keys_with_zero_messages =
+      expected_keys -- ["2017-01-01", "2017-01-05"]
 
     for key <- keys_with_zero_messages do
       assert Map.get(results, key) == 0
@@ -67,22 +64,15 @@ defmodule Stitch.Reports.MessagesSentTest do
     user_2 = insert(:user, team: team)
     user_3 = insert(:user, team: team)
     user_4 = insert(:user, team: team_2)
-    # not in range
-    insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
-    # not in range
-    insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
-    # not in range
-    insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
-    # not in range
-    insert(:message, user: user_1, group: group_2, inserted_at: datetime_1)
+    insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in range
+    insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not in range
+    insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not in range
+    insert(:message, user: user_1, group: group_2, inserted_at: datetime_1) # not in range
     insert(:message, user: user_2, group: group_3, inserted_at: datetime_2)
     insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
-    # not in range
-    insert(:message, user: user_3, group: group_3, inserted_at: datetime_3)
-    # not in range
-    insert(:message, user: user_3, group: group_3, inserted_at: datetime_4)
-    # not in team
-    insert(:message, user: user_4, group: group_4, inserted_at: datetime_1)
+    insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not in range
+    insert(:message, user: user_3, group: group_3, inserted_at: datetime_4) # not in range
+    insert(:message, user: user_4, group: group_4, inserted_at: datetime_1) # not in team
 
     opts = [time_period: :last_7_days, end_at: end_at]
     results = MessagesSent.build(team, opts)
@@ -95,7 +85,8 @@ defmodule Stitch.Reports.MessagesSentTest do
       |> Date.range(end_at)
       |> Enum.map(&Date.to_iso8601/1)
 
-    keys_with_zero_messages = expected_keys -- ["2017-01-25"]
+    keys_with_zero_messages =
+      expected_keys -- ["2017-01-25"]
 
     for key <- keys_with_zero_messages do
       assert Map.get(results, key) == 0
@@ -126,8 +117,7 @@ defmodule Stitch.Reports.MessagesSentTest do
     insert(:message, user: user_2, group: group_3, inserted_at: datetime_2)
     insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
     insert(:message, user: user_3, group: group_3, inserted_at: datetime_3)
-    # not in team
-    insert(:message, user: user_4, group: group_4, inserted_at: datetime_1)
+    insert(:message, user: user_4, group: group_4, inserted_at: datetime_1) # not in team
 
     opts = [time_period: :all_time, end_at: end_at]
     results = MessagesSent.build(team, opts)
@@ -138,11 +128,12 @@ defmodule Stitch.Reports.MessagesSentTest do
 
     expected_keys =
       team_inserted_at
-      |> NaiveDateTime.to_date()
+      |> NaiveDateTime.to_date
       |> Date.range(end_at)
       |> Enum.map(&Date.to_iso8601/1)
 
-    keys_with_zero_messages = expected_keys -- ["2016-12-29", "2017-01-01", "2017-01-25"]
+    keys_with_zero_messages =
+      expected_keys -- ["2016-12-29", "2017-01-01", "2017-01-25"]
 
     for key <- keys_with_zero_messages do
       assert Map.get(results, key) == 0
@@ -176,9 +167,8 @@ defmodule Stitch.Reports.MessagesSentTest do
     insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
 
     # these two should be in the report
-
-    insert(:upload, user: user_1, team: team, inserted_at: datetime_2)
-    insert(:upload, user: user_2, team: team, inserted_at: datetime_2)
+    insert(:message, type: "upload", user: user_1, group: group_2, inserted_at: datetime_2)
+    insert(:message, type: "upload", user: user_2, group: group_3, inserted_at: datetime_2)
 
     # not an upload
     insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
@@ -203,7 +193,8 @@ defmodule Stitch.Reports.MessagesSentTest do
       |> Date.range(end_at)
       |> Enum.map(&Date.to_iso8601/1)
 
-    keys_with_zero_messages = expected_keys -- ["2017-01-25"]
+    keys_with_zero_messages =
+      expected_keys -- ["2017-01-25"]
 
     for key <- keys_with_zero_messages do
       assert Map.get(results, key) == 0

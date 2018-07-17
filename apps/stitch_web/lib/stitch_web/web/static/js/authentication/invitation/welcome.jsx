@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 
@@ -19,12 +18,8 @@ class Welcome extends Component {
   }
 
   onNext = () => {
-    const { history, invitationStore, asPatient } = this.props;
-    const url = asPatient
-      ? `/patient/invitations/accept/${invitationStore.token}/names`
-      : `/invitations/accept/${invitationStore.token}/names`;
-
-    history.push(url);
+    const { history, invitationStore } = this.props;
+    history.push(`/invitations/accept/${invitationStore.token}/names`);
   };
 
   render() {
@@ -36,8 +31,7 @@ class Welcome extends Component {
           headerCTA="no-cta"
           description={
             <span>
-              Time to join the <strong>{invitationStore.teamName}</strong>{" "}
-              carespace.
+              Time to join the <strong>{invitationStore.teamName}</strong> team.
             </span>
           }
         >
@@ -59,13 +53,5 @@ class Welcome extends Component {
     );
   }
 }
-
-Welcome.defaultProps = {
-  asPatient: false
-};
-
-Welcome.propTypes = {
-  asPatient: PropTypes.bool
-};
 
 export default withRouter(Welcome);

@@ -19,14 +19,8 @@ defmodule Stitch.Web.Api.V1.ConversationDocs do
 
           updated_before(
             :query,
-            :double,
-            "Later bound for updated_at time for conversations in MS."
-          )
-
-          limit(
-            :query,
-            :integer,
-            "Number of conversations to return. Maximum of 20."
+            :string,
+            "Later bound for updated_at time for conversations."
           )
 
           open(
@@ -53,16 +47,10 @@ defmodule Stitch.Web.Api.V1.ConversationDocs do
         parameters do
           inbox_id(:path, :integer, "Inbox ID", required: true, example: 3)
 
-          limit(
-            :query,
-            :integer,
-            "Number of conversations to return. Maximum of 20."
-          )
-
           updated_before(
             :query,
-            :double,
-            "Later bound for updated_at time for conversations in MS."
+            :string,
+            "Later bound for updated_at time for conversations."
           )
         end
 
@@ -94,14 +82,6 @@ defmodule Stitch.Web.Api.V1.ConversationDocs do
 
         parameters do
           inbox_id(:path, :integer, "Inbox ID", required: true, example: 1)
-
-          subject(
-            :query,
-            :string,
-            "Subject of Conversation",
-            required: true,
-            example: "Recent elbow issue."
-          )
 
           text_content(
             :query,

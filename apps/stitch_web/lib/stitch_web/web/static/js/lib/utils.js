@@ -15,10 +15,6 @@ export function isMemberOrAdmin() {
   );
 }
 
-export function isAdminOrOwner(userId) {
-  return isAdmin() || userId === currentUser.id;
-}
-
 export function extractEmails(text) {
   return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
 }
@@ -150,21 +146,4 @@ export function getTimezone() {
  */
 export function isDev() {
   return window.applicationHost === "teamstitchapp.com";
-}
-
-export function prettyFileSize(size) {
-  if (size < 1024) {
-    return `${size} bytes`;
-  } else if (size < 1024 * 1024) {
-    return `${(size / 1024).toFixed(1)}KB`;
-  } else if (size < 1024 * 1024 * 1024) {
-    return `${(size / 1024 / 1024).toFixed(1)}MB`;
-  }
-  return `${(size / 1024 / 1024 / 1024).toFixed(1)}GB`;
-}
-
-export function getFullUrl(url) {
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  return anchor.href;
 }

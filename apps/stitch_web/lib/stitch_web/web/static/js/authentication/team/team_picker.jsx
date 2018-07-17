@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { Link } from "react-router-dom";
 
@@ -10,7 +9,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import { AuthenticationPage, InputErrorBlock } from "common/components";
 
 @inject("titleStore")
-class TeamPicker extends Component {
+export default class TeamPicker extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
@@ -30,16 +29,11 @@ class TeamPicker extends Component {
 
   onSubmit = event => {
     const { teamUrl } = this.state;
-    let successLocation = `https://${teamUrl}.${applicationHost}`;
-    if (this.props.asPatient) {
-      successLocation = `${successLocation}/patient`;
-    }
-
     event.preventDefault();
     Promise.all([this.checkBlacklist(teamUrl), this.checkAvailability(teamUrl)])
       .then(resp => {
         if (resp[0].data.available && !resp[1].data.available) {
-          window.location = successLocation;
+          window.location = `https://${teamUrl}.${applicationHost}`;
         } else {
           this.setState({
             showAlert: true
@@ -51,15 +45,11 @@ class TeamPicker extends Component {
       });
   };
 
-  get findTeamLink() {
-    return this.props.asPatient ? "/patient/find-your-team" : "/find-your-team";
-  }
-
   get errorText() {
     return (
       <span>
         We don't have that carespace URL in our system. If you'd like, we can
-        help you <Link to={this.findTeamLink}>find your carespace</Link>.
+        help you <Link to="/find-your-team">find your carespace</Link>.
       </span>
     );
   }
@@ -125,7 +115,7 @@ class TeamPicker extends Component {
 
         <div className="team-picker-find-team-helper">
           Don't know your carespace's URL?{" "}
-          <Link to={this.findTeamLink}>
+          <Link to="/find-your-team">
             <strong>Find your carespace</strong>
           </Link>
         </div>
@@ -133,13 +123,3 @@ class TeamPicker extends Component {
     );
   }
 }
-
-TeamPicker.defaultProps = {
-  asPatient: false
-};
-
-TeamPicker.propTypes = {
-  asPatient: PropTypes.bool
-};
-
-export default TeamPicker;

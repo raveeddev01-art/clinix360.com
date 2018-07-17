@@ -4,8 +4,6 @@ defmodule StitchConnect.Web.GroupChannel do
   alias Stitch.Accounts.{User, ActivityTracker}
   alias Stitch.LinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
-  alias Stitch.Web.Api.V1.FileView
-  alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
 
@@ -18,8 +16,7 @@ defmodule StitchConnect.Web.GroupChannel do
     Message,
     MessageAuthorization,
     MessageQueries,
-    ReadStatus,
-    Web.UrlService
+    ReadStatus
   }
 
   @endpoint Stitch.Web.Endpoint
@@ -417,58 +414,6 @@ defmodule StitchConnect.Web.GroupChannel do
     endpoint_broadcast(group, "is_typing", %{user_id: user.id})
   end
 
-  def broadcast_file_comment_added(upload) do
-    file_json = FileView.render("show_with_comments.json", %{file: upload})
-
-    Enum.each(upload.shared_in, fn group_id ->
-      @endpoint.broadcast("groups:id:#{group_id}", "file_comment_added", file_json)
-    end)
-  end
-
-  def broadcast_file_comment_edited(upload) do
-    file_json = FileView.render("show_with_comments.json", %{file: upload})
-
-    Enum.each(upload.shared_in, fn group_id ->
-      @endpoint.broadcast("groups:id:#{group_id}", "file_comment_edited", file_json)
-    end)
-  end
-
-  def broadcast_file_comment_deleted(upload) do
-    file_json = FileView.render("show_with_comments.json", %{file: upload})
-
-    Enum.each(upload.shared_in, fn group_id ->
-      @endpoint.broadcast("groups:id:#{group_id}", "file_comment_deleted", file_json)
-    end)
-  end
-
-  def broadcast_file_public_link_updated(upload) do
-    url =
-      if upload.public_token,
-        do: UrlService.public_download_page(upload, upload.public_token),
-        else: nil
-
-    Enum.each(upload.shared_in, fn group_id ->
-      @endpoint.broadcast("groups:id:#{group_id}", "file_public_link_updated", %{
-        upload_id: upload.id,
-        public_url: url
-      })
-    end)
-  end
-
-  def broadcast_file_details_update(upload) do
-    file_json = FileView.render("show_with_comments.json", %{file: upload})
-
-    Enum.each(upload.shared_in, fn group_id ->
-      @endpoint.broadcast("groups:id:#{group_id}", "file_details_updated", file_json)
-    end)
-  end
-
-  def broadcast_file_deleted(upload) do
-    Enum.each(upload.shared_in, fn group_id ->
-      @endpoint.broadcast("groups:id:#{group_id}", "file_deleted", %{upload_id: upload.id})
-    end)
-  end
-
   defp endpoint_broadcast(group, event, payload) do
     # TODO: Remove this once no one is using older version of mobile app.
     @endpoint.broadcast("groups:#{group.slug}", event, payload)
@@ -515,16 +460,6 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           LinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
-          message = Repo.preload(message, :upload, force: true)
-
-          StitchConnect.Web.Api.V1.MessageController.create_optional_upload_comment(
-            message,
-            group,
-            user,
-            presence_user_ids,
-            attrs
-          )
-
           Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
 
           Stitch.Task.start(fn ->

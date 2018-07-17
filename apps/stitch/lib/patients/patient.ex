@@ -33,12 +33,6 @@ defmodule Stitch.Patient do
     :mrn
   ]
 
-  @patient_changeable_attrs [
-    :first_name,
-    :last_name,
-    :phone_number
-  ]
-
   schema "patients" do
     belongs_to(:team, Team)
 
@@ -77,15 +71,6 @@ defmodule Stitch.Patient do
     |> Stitch.Validators.validate_no_emojis(:last_name)
     |> unique_constraint(:mrn, name: :patients_mrn_team_id_index)
     |> unique_constraint(:email, name: :patients_email_team_id_index)
-  end
-
-  def patient_update_changeset(%Stitch.Patient{} = struct, attrs) do
-    struct
-    |> cast(attrs, @patient_changeable_attrs)
-    |> validate_required(@required_attributes)
-    |> Stitch.Accounts.ProfileImage.default_profile_image_changeset(attrs)
-    |> Stitch.Validators.validate_no_emojis(:first_name)
-    |> Stitch.Validators.validate_no_emojis(:last_name)
   end
 
   def disabled_changeset(%Patient{} = struct, disabled) do
@@ -133,16 +118,6 @@ defmodule Stitch.Patient do
         |> changeset(Map.delete(params, "onboarded"))
         |> Repo.update()
     end
-  end
-
-  @doc """
-  Updates the patient as themselves.
-  """
-  @spec update_as_patient(Patient.t(), map) :: {:ok, Patient.t()} | {:error, Ecto.Changeset.t()}
-  def update_as_patient(patient, params) do
-    patient
-    |> patient_update_changeset(params)
-    |> Repo.update()
   end
 
   @doc """

@@ -50,17 +50,6 @@ defmodule Stitch.Web.UrlService do
     SubdomainRoutes.api_v1_file_path(struct_url, :show, encoded_file_id)
   end
 
-  def public_download_page(upload, token) do
-    struct_url = @endpoint.files_struct_url()
-    encoded_file_id = Upload.encode_url_id(upload)
-
-    SubdomainRoutes.files_public_file_url(
-      struct_url,
-      :public_download,
-      "#{encoded_file_id}-#{token}"
-    )
-  end
-
   @spec file_download_url(Upload.t(), map | nil) :: binary
   def file_download_url(%Upload{} = upload, query_params \\ %{}) do
     struct_url = @endpoint.files_struct_url()

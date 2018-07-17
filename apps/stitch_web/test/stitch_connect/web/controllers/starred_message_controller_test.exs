@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.StarredMessageControllerTest do
   use Stitch.Web.ConnCase, async: true
-  alias Stitch.StarrableItems.StarringService
+  alias Stitch.MessageAction
 
   describe "GET /api/v1/starred_messages" do
     test "responds with 30 latest ", %{conn: conn} do
@@ -15,7 +15,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
       [_oldest_starred_message | latest_starred_messages] =
         fn ->
           message = insert(:message, group: Enum.random(groups))
-          {true, {:ok, _message_action}} = StarringService.toggle_star(message, user)
+          {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
           message
         end
         |> Stream.repeatedly()
@@ -57,7 +57,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
 
       fn ->
         message = insert(:message, group: group)
-        {true, {:ok, _message_action}} = StarringService.toggle_star(message, user)
+        {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
         message
       end
       |> Stream.repeatedly()
@@ -79,7 +79,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
 
       fn ->
         message = insert(:message, group: group)
-        {true, {:ok, _message_action}} = StarringService.toggle_star(message, user)
+        {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
         message
       end
       |> Stream.repeatedly()
@@ -102,7 +102,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
       starred_messages =
         fn ->
           message = insert(:message, group: group)
-          {true, {:ok, _message_action}} = StarringService.toggle_star(message, user)
+          {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
           message
         end
         |> Stream.repeatedly()
@@ -129,7 +129,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
       starred_messages =
         fn ->
           message = insert(:message, group: group)
-          {true, {:ok, _message_action}} = StarringService.toggle_star(message, user)
+          {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
           message
         end
         |> Stream.repeatedly()
@@ -156,7 +156,7 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
       starred_messages =
         fn ->
           message = insert(:message, group: group)
-          {true, {:ok, _message_action}} = StarringService.toggle_star(message, user)
+          {:ok, true, _message_action} = MessageAction.toggle_star(message, user)
           message
         end
         |> Stream.repeatedly()

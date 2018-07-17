@@ -104,7 +104,7 @@ class Message extends PureComponent {
     const user = usersStore.usersById[userId];
 
     return (
-      (!message.is_sequential || message.type === "file_comment") && (
+      !message.is_sequential && (
         <MessageHeader user={user} timestamp={insertedAt} />
       )
     );

@@ -7,8 +7,7 @@ module.exports = [
   {
     entry: {
       index: "./lib/stitch_web/web/static/js/index.js",
-      landing_app: "./lib/stitch_web/web/static/js/landing_app.js",
-      patient_app: "./lib/stitch_web/web/static/js/patient_app.js"
+      landing_app: "./lib/stitch_web/web/static/js/landing_app.js"
     },
     output: {
       path: path.resolve(__dirname, "priv/static/js"),
@@ -52,8 +51,7 @@ module.exports = [
       app: "./lib/stitch_web/web/static/stylesheets/app.scss",
       landing: "./lib/stitch_web/web/static/stylesheets/landing.scss",
       "landing-non-critical":
-        "./lib/stitch_web/web/static/stylesheets/landing-non-critical.scss",
-      patient_app: "./lib/stitch_web/web/static/stylesheets/patient_app.scss"
+        "./lib/stitch_web/web/static/stylesheets/landing-non-critical.scss"
     },
     output: {
       path: path.resolve(__dirname, "priv/static/css"),
@@ -108,10 +106,6 @@ module.exports = [
         {
           from: "./lib/stitch_web/web/static/images",
           to: path.resolve(__dirname, "priv/static/images")
-        },
-        {
-          from: "./swagger.json",
-          to: path.resolve(__dirname, "priv/static")
         },
         {
           from: "./carespace-swagger.json",

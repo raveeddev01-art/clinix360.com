@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use Stitch.Web, :controller
-  use Stitch.Web.Api.V1.InvitationDocs
 
   alias Stitch.{Invitation, FeatureGateway, TeamAuthorization}
   alias Stitch.Web.{TeamChannel, EventsChannel}

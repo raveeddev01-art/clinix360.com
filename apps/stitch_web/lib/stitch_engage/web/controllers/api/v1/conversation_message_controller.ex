@@ -13,6 +13,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.ConversationMessage.ConversationMessageCreation,
     Engage.ConversationAuthorization,
     Engage.ConversationMessageAuthorization,
+    Patient,
+    Accounts.User,
     ReadStatus
   }
 
@@ -42,7 +44,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
            {:conversation, Repo.get(Conversation, id)},
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
-      conversation_messages = load_messages(id, params["max_id"], params["limit"])
+      conversation_messages = load_messages(id, params["updated_before"])
 
       render(conn, "index.json", conversation_messages: conversation_messages)
     else
@@ -51,11 +53,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     end
   end
 
-  defp load_messages(id, max_id, limit) do
+  defp load_messages(id, updated_before) do
     ConversationQueries.messages_for_conversation(
       id,
-      max_id,
-      limit
+      updated_before
     )
   end
 
@@ -128,7 +129,15 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       # Notifications: get notify_user_ids in the create and pass them into events
       notify_user_ids = %{}
 
-      conversation_message = Repo.preload(conversation_message, [:provider, :patient])
+      conversation_message =
+        case user_or_patient do
+          %User{} ->
+            %{conversation_message | provider: user_or_patient}
+
+          %Patient{} ->
+            %{conversation_message | patient: user_or_patient}
+        end
+
       conversation_message_events(conversation_message, conversation, notify_user_ids)
 
       conn
@@ -265,14 +274,14 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
   def delete_message_link_preview(
         conn,
-        %{"id" => _conversation_message_id, "link" => _link} = params
+        %{"id" => conversation_message_id, "link" => link} = params
       ) do
     do_delete_message_link_preview(conn, params, conn.assigns.current_user)
   end
 
   def patient_delete_message_link_preview(
         conn,
-        %{"id" => _conversation_message_id, "link" => _link} = params
+        %{"id" => conversation_message_id, "link" => link} = params
       ) do
     do_delete_message_link_preview(conn, params, conn.assigns.patient)
   end
@@ -311,11 +320,11 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   #   MARK AS READ
   # ================
 
-  def mark_as_read(conn, %{"conversation_id" => _conversation_id} = params) do
+  def mark_as_read(conn, %{"conversation_id" => conversation_id} = params) do
     do_mark_as_read(conn, params, conn.assigns.current_user)
   end
 
-  def patient_mark_as_read(conn, %{"conversation_id" => _conversation_id} = params) do
+  def patient_mark_as_read(conn, %{"conversation_id" => conversation_id} = params) do
     do_mark_as_read(conn, params, conn.assigns.patient)
   end
 

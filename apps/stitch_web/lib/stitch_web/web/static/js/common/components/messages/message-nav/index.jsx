@@ -29,7 +29,7 @@ class MessageNav extends Component {
               sameDay: "[Today]",
               lastDay: "[Yesterday]",
               lastWeek: "MMM Do",
-              sameElse: function () {
+              sameElse: function() {
                 if (this.year() === now.year()) {
                   return "MMM Do";
                 } else {

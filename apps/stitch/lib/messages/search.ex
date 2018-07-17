@@ -349,7 +349,6 @@ defmodule Stitch.Messages.Search do
         m in Message,
         where: m.group_id in ^user_groups_ids,
         where: m.type != ^"system",
-        where: m.type != ^"file_share",
         limit: ^limit,
         offset: ^skip
       )

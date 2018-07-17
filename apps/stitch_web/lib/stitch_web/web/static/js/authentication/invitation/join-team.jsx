@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { withRouter, Redirect } from "react-router-dom";
 
@@ -19,36 +18,30 @@ const stepList = [
 class JoinTeam extends Component {
   componentWillMount() {
     const { invitationStore, history } = this.props;
-
     if (!invitationStore.token) {
-      history.replace(`${this.baseUrl}/error`);
+      history.replace(`/invitations/error`);
     }
 
     if (!invitationStore.verified) {
-      history.replace(`${this.baseUrl}/accept/${invitationStore.token}`);
+      history.replace(`/invitations/accept/${invitationStore.token}`);
     }
   }
 
   onSave = () => {
-    const { invitationStore, history, asPatient } = this.props;
-    const resetUrl = `${this
-      .baseUrl}/accept/${invitationStore.token}/${stepList[0].field}`;
-
-    invitationStore.completeInvitation(asPatient).catch(() => {
+    const { invitationStore, history } = this.props;
+    invitationStore.completeInvitation().catch(() => {
       alertModal({
         title: "Error in joining team",
         message:
           "Sorry, we had an issue completing your onboarding. Could you please start over?",
         okLabel: "Restart"
       }).then(() => {
-        history.push(resetUrl);
+        history.push(
+          `/invitations/accept/${invitationStore.token}/${stepList[0].field}`
+        );
       });
     });
   };
-
-  get baseUrl() {
-    return this.props.asPatient ? "/patient/invitations" : "/invitations";
-  }
 
   render() {
     const {
@@ -59,13 +52,11 @@ class JoinTeam extends Component {
     const stepIndex = stepList.findIndex(s => s.field === currentStep);
 
     if (stepIndex === -1) {
-      const redirectUrl = `${this.baseUrl}/accept/${invitationStore.token}`;
-      return <Redirect to={redirectUrl} />;
+      return <Redirect to={`/invitations/accept/${invitationStore.token}`} />;
     }
 
     return React.createElement(stepList[stepIndex].component, {
       headerCTA: "no-cta",
-      asPatient: this.props.asPatient,
       onNext: value => {
         if (typeof value === "object") {
           Object.assign(invitationStore, value);
@@ -76,24 +67,16 @@ class JoinTeam extends Component {
         if (stepList.length <= stepIndex + 1) {
           this.onSave();
         } else {
-          const nextUrl = `${this
-            .baseUrl}/accept/${invitationStore.token}/${stepList[stepIndex + 1]
-            .field}`;
-
-          history.push(nextUrl);
+          history.push(
+            `/invitations/accept/${invitationStore.token}/${stepList[
+              stepIndex + 1
+            ].field}`
+          );
         }
       },
       saving: invitationStore.saving
     });
   }
 }
-
-JoinTeam.defaultProps = {
-  asPatient: false
-};
-
-JoinTeam.propTypes = {
-  asPatient: PropTypes.bool
-};
 
 export default withRouter(JoinTeam);

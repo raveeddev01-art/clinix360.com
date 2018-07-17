@@ -34,7 +34,7 @@ defmodule StitchConnect.Web.MessageController.StarTest do
   end
 
   test "unstars a message", %{conn: conn, message: message} do
-    Stitch.StarrableItems.StarringService.toggle_star(message, message.user)
+    Stitch.MessageAction.toggle_star(message, message.user)
 
     json =
       conn

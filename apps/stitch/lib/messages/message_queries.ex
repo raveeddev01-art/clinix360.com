@@ -206,7 +206,6 @@ defmodule Stitch.MessageQueries do
         left_join: u in assoc(m, :user),
         where: a.category == "star",
         where: a.user_id == ^user_id,
-        where: m.type != ^"file_share",
         order_by: [desc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
@@ -525,18 +524,4 @@ defmodule Stitch.MessageQueries do
   end
 
   defp yesterday, do: Date.add(Date.utc_today(), -1)
-
-  def file_shares_and_comments(upload_id) do
-    Message
-    |> where([m], m.upload_id == ^upload_id)
-    |> Repo.all()
-  end
-
-  @spec file_shares(pos_integer) :: [Message.t()]
-  def file_shares(upload_id) do
-    Message
-    |> where([m], m.upload_id == ^upload_id)
-    |> where([m], m.type == ^"file_share")
-    |> Repo.all()
-  end
 end

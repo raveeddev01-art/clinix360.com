@@ -5,30 +5,21 @@ defmodule Stitch.Files.FileQueries do
     Repo,
     GroupUser,
     Files.Upload,
-    Files.UploadComment,
-    Files.GroupUpload,
-    Files.FileTypes,
-    Message,
-    Paginator
+    Files.GroupUpload
   }
 
   @spec for_user(User.t(), map | nil) :: [Upload.t()]
   def for_user(user, options \\ %{}) do
     group_ids = GroupUser.group_ids(user.id)
-    limit = options[:limit] || 30
-    offset = options[:skip] || 0
 
     Upload
     |> join(:inner, [f], gu in GroupUpload, f.id == gu.upload_id)
-    |> join(:left, [f, gu], ma in Stitch.MessageAction, ma.upload_id == f.id)
     |> where([f, gu], gu.group_id in ^group_ids)
-    |> group_by([f, gu, ma], [f.id, ma.id])
-    |> order_by([f, gu, ma], desc: f.inserted_at)
+    |> group_by([f, gu], f.id)
+    |> order_by([f, gu], desc: f.inserted_at)
     |> filter_by_filetype(options)
     |> filter_by_creator_id(options)
-    |> filter_by_filename(options)
-    |> filter_by_group_id(options)
-    |> select([f, gu, ma], %Upload{
+    |> select([f, gu], %Upload{
       id: f.id,
       filename: f.filename,
       mimetype: f.mimetype,
@@ -37,38 +28,15 @@ defmodule Stitch.Files.FileQueries do
       shared_in: fragment("array_agg(?)", gu.group_id),
       user_id: f.user_id,
       updated_at: f.updated_at,
-      inserted_at: f.inserted_at,
-      preview_url: f.preview_url,
-      preview_height: f.preview_height,
-      preview_width: f.preview_width,
-      comment_count: f.comment_count,
-      starred: not is_nil(ma.id)
+      inserted_at: f.inserted_at
     })
-    |> Paginator.new(limit: limit, skip: offset)
+    |> Repo.all()
   end
 
-  def filter_by_filetype(query, %{filetype: "all"}), do: query
-
-  def filter_by_filetype(query, %{filetype: "images"}),
-    do: where(query, [f, fg], f.filetype in ^FileTypes.images())
-
-  def filter_by_filetype(query, %{filetype: "pdfs"}),
-    do: where(query, [f, fg], f.filetype == ^"pdf")
-
-  def filter_by_filetype(query, %{filetype: "videos"}),
-    do: where(query, [f, fg], f.filetype in ^FileTypes.videos())
-
-  def filter_by_filetype(query, %{filetype: "audio"}),
-    do: where(query, [f, fg], f.filetype in ^FileTypes.audio())
-
-  def filter_by_filetype(query, %{filetype: "archive"}),
-    do: where(query, [f, fg], f.filetype in ^FileTypes.archive())
-
-  def filter_by_filetype(query, %{filetype: "text"}),
-    do: where(query, [f, fg], f.filetype in ^FileTypes.text())
-
-  def filter_by_filetype(query, %{filetype: filetype}),
-    do: where(query, [f, fg], f.filetype == ^filetype)
+  def filter_by_filetype(query, %{filetype: filetype}) do
+    query
+    |> where([f, fg], f.filetype == ^filetype)
+  end
 
   def filter_by_filetype(query, _opts), do: query
 
@@ -79,37 +47,14 @@ defmodule Stitch.Files.FileQueries do
 
   def filter_by_creator_id(query, _opts), do: query
 
-  def filter_by_filename(query, %{filename: filename}) do
-    query
-    |> where([f, fg], ilike(f.filename, ^"%#{filename}%"))
-  end
-
-  def filter_by_filename(query, _opts), do: query
-
-  def filter_by_group_id(query, %{group_id: group_id}) do
-    query
-    |> having([f, gu], fragment("array_agg(?) @> ?", gu.group_id, ^[group_id]))
-  end
-
-  def filter_by_group_id(query, _opts), do: query
-
   @spec get_by_id(pos_integer, list) :: Upload.t() | nil
   def get_by_id(upload_id, opts \\ [])
 
-  def get_by_id(upload_id, []) do
-    Repo.get(Upload, upload_id)
-  end
-
   def get_by_id(upload_id, preload_assoc: true) do
-    upload_comments_query =
-      UploadComment
-      |> order_by([uc], uc.inserted_at)
-
     result =
       Upload
-      |> where([u], u.id == ^upload_id)
+      |> where([f], f.id == ^upload_id)
       |> preload([:group_uploads])
-      |> preload(upload_comments: ^upload_comments_query)
       |> Repo.one()
 
     case result do
@@ -121,10 +66,7 @@ defmodule Stitch.Files.FileQueries do
     end
   end
 
-  @spec file_comment_messages(UploadComment.t()) :: [Message.t()]
-  def file_comment_messages(%UploadComment{} = upload_comment) do
-    Message
-    |> where([m], m.upload_comment_id == ^upload_comment.id)
-    |> Repo.all()
+  def get_by_id(upload_id, _opts) do
+    Repo.get(Upload, upload_id)
   end
 end

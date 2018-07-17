@@ -79,7 +79,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
          {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, user)},
          {:ok, %{conversation: conversation, conversation_message: conversation_message}} <-
            Conversation.begin_conversation_as_provider(user, params) do
-      conversation_message = Repo.preload(conversation_message, [:patient, :provider])
       conversation = conversation_with_show_data(conversation, user, [conversation_message])
 
       InboxChannel.broadcast_conversation_creation(conversation)
@@ -96,7 +95,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
          {:authorized?, true} <- {:authorized?, InboxAuthorization.can_view?(inbox, patient)},
          {:ok, %{conversation: conversation, conversation_message: conversation_message}} <-
            Conversation.begin_conversation_as_patient(patient, params) do
-      conversation_message = Repo.preload(conversation_message, [:patient, :provider])
       conversation = conversation_with_show_data(conversation, patient, [conversation_message])
 
       InboxChannel.broadcast_conversation_creation(conversation)
@@ -170,7 +168,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
        ) do
     conversation =
       conversation
-      |> Repo.preload([:conversation_messages, :patients, :providers])
+      |> Repo.preload([:conversation_messages, :patients])
       |> ConversationQueries.with_unread(user_or_patient)
 
     conversation_messages =

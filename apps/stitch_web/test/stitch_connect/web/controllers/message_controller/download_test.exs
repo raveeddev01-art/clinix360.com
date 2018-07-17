@@ -8,17 +8,7 @@ defmodule StitchConnect.Web.MessageController.DownloadTest do
     setup %{conn: conn} do
       team = insert(:team)
       group = insert(:group, team: team)
-      upload = insert(:upload, team: team)
-
-      message =
-        insert(
-          :message,
-          type: "file_share",
-          fields: %{"url" => @url},
-          group: group,
-          upload: upload
-        )
-
+      message = insert(:message, type: "upload", fields: %{"url" => @url}, group: group)
       user = insert(:user, team: team)
 
       conn =
@@ -43,16 +33,8 @@ defmodule StitchConnect.Web.MessageController.DownloadTest do
     } do
       other_group = insert(:group, team: team)
 
-      upload = insert(:upload, team: team)
-
       other_message =
-        insert(
-          :message,
-          type: "file_share",
-          fields: %{"url" => @url},
-          group: other_group,
-          upload: upload
-        )
+        insert(:message, type: "upload", fields: %{"url" => @url}, group: other_group)
 
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
