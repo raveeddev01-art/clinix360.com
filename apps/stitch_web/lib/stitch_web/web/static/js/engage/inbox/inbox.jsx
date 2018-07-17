@@ -95,9 +95,7 @@ class InboxMenu extends Component {
       </span>
     ) : (
       <span>
-        <i className="fa fa-check" /> Closed ({
-          inboxStore.currentInbox.closed_conversations_count
-        })
+        <i className="fa fa-check-circle" /> Closed ({inboxStore.currentInbox.closed_conversations_count})
       </span>
     );
 
@@ -132,13 +130,15 @@ class InboxMenu extends Component {
                     eventKey="1.1"
                     onClick={() => this.setState({ openConversations: true })}
                   >
-                    <i className="fa fa-inbox" /> Open ({inboxStore.currentInbox.open_conversations_count})
+                    <i className="fa fa-inbox" /> Open ({inboxStore.currentInbox.open_conversations_count}){" "}
+                    <i className="fa fa-check pull-right" />
                   </MenuItem>
                   <MenuItem
                     eventKey="1.2"
                     onClick={() => this.setState({ openConversations: false })}
                   >
-                    <i className="fa fa-check" /> Closed ({inboxStore.currentInbox.closed_conversations_count})
+                    <i className="fa fa-check-circle" /> Closed ({inboxStore.currentInbox.closed_conversations_count}){" "}
+                    <i className="fa fa-check pull-right" />
                   </MenuItem>
                 </NavDropdown>
 

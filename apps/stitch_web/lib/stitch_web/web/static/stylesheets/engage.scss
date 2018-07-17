@@ -83,7 +83,7 @@ $dark-border-color: #ccc;
     align-items: normal;
     color: #333;
     background: transparent;
-    padding: 25px 15px;
+    padding: 25px 20px;
 
     h3 {
       color: $brand-primary;
@@ -150,26 +150,6 @@ $dark-border-color: #ccc;
     position: relative;
     overflow: hidden;
 
-    .inbox-nav {
-      border-top: 1px solid $dark-border-color;
-      border-bottom: 1px solid $dark-border-color;
-      padding: 10px 15px;
-
-      .btn-default {
-        color: $brand-primary;
-        font-size: 16px;
-        font-weight: 600;
-        background: none;
-        border: 0;
-        box-shadow: none;
-        padding: 6px 0;
-
-        i.fa {
-          margin-right: 4px;
-        }
-      }
-    }
-
     .conversations-list {
       height: 100%;
       position: relative;
@@ -179,7 +159,7 @@ $dark-border-color: #ccc;
     .status-filter {
       border-top: 1px solid $dark-border-color;
       border-bottom: 1px solid $dark-border-color;
-      padding: 0 15px;
+      padding: 8px 10px;
 
       li {
         margin-bottom: 0;
@@ -189,33 +169,65 @@ $dark-border-color: #ccc;
         color: $brand-primary;
         font-size: 16px;
         font-weight: 600;
-        border: 0;
-        padding: 13px 0;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        padding: 4px 9px;
         outline: none;
+        cursor: pointer !important;
 
         i.fa {
           margin-right: 4px;
         }
 
-        &:hover,
-        &:focus {
+        &:hover {
           color: $brand-primary;
           background: transparent;
-          border: 0;
+          border: 1px solid $brand-primary;
         }
       }
 
+      li.active > a:focus {
+        color: $brand-primary;
+        border-color: transparent;
+      }
+
+      li.active > a:hover {
+        border-color: $brand-primary;
+      }
+
+      li.open > a,
+      li.open > a:focus {
+        color: #fff;
+        background: $brand-primary;
+      }
+
       .dropdown-menu {
-        margin-top: 0;
+        border-color: $brand-primary;
+        border-radius: 4px;
+        padding: 10px 9px;
+        margin-top: 8px;
 
         a {
           display: block;
-          padding: 4px 12px;
+          color: #333;
+          border: 0;
+          padding: 4px 0;
           outline: none;
+
+          i.pull-right {
+            visibility: hidden;
+            margin-right: 0;
+            margin-top: 3px;
+          }
         }
 
         .active > a {
+          color: $brand-primary;
           background: transparent;
+
+          i.pull-right {
+            visibility: visible;
+          }
         }
       }
 
