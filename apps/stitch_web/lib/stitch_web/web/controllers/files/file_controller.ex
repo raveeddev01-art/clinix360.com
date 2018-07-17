@@ -114,7 +114,7 @@ defmodule Stitch.Web.Files.FileController do
     case put_cache_header(conn, filename, upload) do
       {:stale, conn} ->
         conn
-        |> put_resp_header("Content-Length", "#{upload.size_in_bytes}")
+        |> put_resp_header("Content-Length", "#{upload.size_in_bytes || 0}")
         |> send_chunked(200)
         |> Stitch.AWS.S3.stream(filename, fn conn, bytes ->
           case chunk(conn, bytes) do
