@@ -4,7 +4,7 @@ import { Link, withRouter, matchPath } from "react-router-dom";
 import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
-@inject("currentPatientStore")
+@inject("currentPatientStore", "teamStore")
 @observer
 class PatientSidebar extends Component {
   componentWillMount() {}
@@ -15,14 +15,15 @@ class PatientSidebar extends Component {
   }
 
   render() {
-    const { firstName, lastName, team } = this.props.currentPatientStore;
+    const { firstName, lastName } = this.props.currentPatientStore;
+    const teamName = this.props.teamStore.name;
     const fullName = `${firstName} ${lastName}`;
 
     return (
       <div className="sidebar patients-sidebar">
         <div className="flex-header m-b-10">
           <div className="team-user">
-            <h4 className="team-name">{team.name}</h4>
+            <h4 className="team-name">{teamName}</h4>
             <div className="user-name">
               <span className="user-name__text">{fullName}</span>
             </div>
@@ -49,6 +50,13 @@ class PatientSidebar extends Component {
                 <i className="fa fa-user" />
                 <span>Profile</span>
               </Link>
+            </ListGroupItem>
+            <br />
+            <ListGroupItem>
+              <a href="/patient/logout">
+                <i className="fa fa-sign-out" />
+                <span>Logout</span>
+              </a>
             </ListGroupItem>
           </ListGroup>
         </div>

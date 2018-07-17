@@ -1,5 +1,5 @@
 /**
- * User store
+ * Current Patient Store
  *
  * This store keeps track of data of the current patient
  */
@@ -13,7 +13,6 @@ class CurrentPatientStore {
   @observable email = patient.email;
   @observable firstName = patient.firstName;
   @observable lastName = patient.lastName;
-  @observable team = patient.team;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
