@@ -3,7 +3,7 @@ defmodule Stitch.GroupQueries do
   Module in charge of all group related queries.
   """
 
-  alias Stitch.{Repo, Group, GroupUser, Team}
+  alias Stitch.{Repo, Group, GroupUser, Team, Accounts.User}
   alias Stitch.Accounts.User
   import Ecto.Query
 
@@ -242,5 +242,22 @@ defmodule Stitch.GroupQueries do
       )
 
     Repo.all(query)
+  end
+
+  def groups_for_file_comment(upload, user) do
+    group_ids = upload.shared_in
+
+    if upload.public do
+      Group
+      |> where([g], g.id in ^group_ids)
+      |> where([g], g.public)
+      |> Repo.all()
+    else
+      Group
+      |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
+      |> where([g], g.id in ^group_ids)
+      |> where([g, gu], not is_nil(gu.id))
+      |> Repo.all()
+    end
   end
 end

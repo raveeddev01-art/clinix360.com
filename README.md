@@ -178,6 +178,13 @@ in the project run the command:
 mix dialyzer
 ```
 
+---
+
+JS development tools (will format on save in VSCode):
+
+- ESLint
+- Prettier (https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
 ### Stitch.Analytics Maintenance & Development Recommendations
 
 When working on maintaining or extending `Stitch.Analytics` consider these

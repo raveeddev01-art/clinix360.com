@@ -1,77 +1,45 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
+import Nav from "react-bootstrap/lib/Nav";
+import NavItem from "react-bootstrap/lib/NavItem";
+import FileList from "common/components/file/FileList";
 
-import { AddonMessage } from "common/components";
-import LoadingIcon from "common/components/loading-icon";
-
-@inject("filesStore", "globalFilesStore")
+@inject("teamFilesStore", "addonStore")
 @observer
 class Files extends Component {
-  loadMore = () => {
-    const fileStore = this.activeFileStore();
-    fileStore.loadMore();
-  };
-
-  activeFileStore = () => {
-    const { filesStore, globalFilesStore, roomFiles } = this.props;
-    return roomFiles ? filesStore : globalFilesStore;
-  };
-
-  renderFilesResults() {
-    const fileStore = this.activeFileStore();
-
-    if (fileStore.loading) {
-      return (
-        <div className="text-center">
-          <LoadingIcon size={2} />
-        </div>
-      );
-    }
-
-    if (fileStore.files.length > 0) {
-      return (
-        <div>
-          {fileStore.files.map(file => (
-            <AddonMessage key={file.id} message={file} />
-          ))}
-        </div>
-      );
-    }
-
-    return <div className="text-muted empty-files">Upload the first file!</div>;
+  componentWillMount() {
+    this.props.teamFilesStore.search();
   }
 
-  render() {
-    const fileStore = this.activeFileStore();
+  onFileClick = fileId => {
+    const { addonStore } = this.props;
 
+    addonStore.setAddonPanel("files");
+    addonStore.toggleAddons(true);
+    addonStore.toggleAddonDetail(true);
+    addonStore.setAddonDetailPanel("File Details", fileId);
+  };
+
+  onSelectTab = eventKey => {
+    const { addonStore } = this.props;
+    addonStore.setAddonPanelTab("files", eventKey);
+  };
+
+  render() {
     return (
       <div className="files-addon">
-        {this.renderFilesResults()}
-
-        <div className="footer">
-          {fileStore.hasMore &&
-            !fileStore.loading && (
-              <button
-                className="btn btn-default btn-sm"
-                disabled={fileStore.loading}
-                onClick={this.loadMore}
-              >
-                Load more…
-              </button>
-            )}
-        </div>
+        <Nav
+          bsStyle="pills"
+          activeKey={this.props.addonStore.addonPanelTab}
+          onSelect={this.onSelectTab}
+        >
+          <NavItem eventKey="all">All Files</NavItem>
+          <NavItem eventKey="yours">Your Files</NavItem>
+        </Nav>
+        <FileList onFileClick={this.onFileClick} />
       </div>
     );
   }
 }
-
-Files.defaultProps = {
-  roomFiles: false
-};
-
-Files.propTypes = {
-  roomFiles: PropTypes.bool
-};
 
 export default Files;

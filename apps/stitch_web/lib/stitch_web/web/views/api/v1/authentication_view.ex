@@ -16,7 +16,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationView do
   defp base_url(conn) do
     case Application.get_env(:stitch_web, :env) do
       :dev -> "https://#{conn.host}:#{conn.port}"
-      _ -> "https://#{conn.host}/reset-password"
+      _ -> "https://#{conn.host}"
     end
   end
 end

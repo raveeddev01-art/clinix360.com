@@ -89,6 +89,7 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/", Stitch.Web.Files, as: :files, host: "files." do
     pipe_through([:files])
 
+    get("/f/:file_id", PublicFileController, :public_download)
     get("/file/:file_id/:filename", FileController, :download)
     get("/preview/:file_id", FileController, :download_preview)
   end
@@ -162,7 +163,7 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/patient", StitchEngage.Web, as: :patient do
     pipe_through([:browser, :patient_browser])
 
-    get("/", PatientController, :show)
+    get("/", PatientController, :index)
   end
 
   # ================
@@ -234,11 +235,19 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/users/search", UserController, :search)
     post("/users/access", UserController, :access)
 
-    get("/files", FileController, :index)
-    get("/files/:id", FileController, :show)
+    scope "/files/:upload_id" do
+      resources("/comments", FileCommentController, only: [:create])
+    end
+
+    resources("/file_comments", FileCommentController, only: [:update, :delete])
+    resources("/files", FileController, only: [:index, :show, :delete])
+
+    post("/files/:id/toggle_star", FileController, :toggle_star)
+    post("/files/:id/share", FileController, :share)
     post("/files/:id/unshare", FileController, :unshare)
     post("/files/:id/create_public_link", FileController, :create_public_link)
     post("/files/:id/revoke_public_link", FileController, :revoke_public_link)
+    get("/files/:id/presigned_url", FileController, :presigned_url)
 
     get("/patients", PatientController, :index)
     get("/patients/:id", PatientController, :show)
@@ -387,6 +396,9 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/manage", PageController, :index)
     get("/patients", PageController, :index)
+
+    get("/admin/files", PageController, :index)
+    get("/admin/files/:id", PageController, :index)
   end
 
   # =========================
@@ -428,6 +440,7 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/messages/search", MessageController, :search)
 
     get("/starred_messages", StarredMessageController, :index)
+    get("/starred_items", StarredItemController, :index)
     get("/pinned_messages", PinnedMessageController, :index)
     get("/mentions", MentionController, :index)
 
@@ -496,6 +509,12 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/messages/:id/download", MessageController, :download)
 
     get("/exports/:id/download", ExportController, :download)
+  end
+
+  # Catch any remaining patient routes
+
+  scope "/patient", StitchEngage.Web, as: :patient do
+    get("/*path", PatientController, :index)
   end
 
   # =========================

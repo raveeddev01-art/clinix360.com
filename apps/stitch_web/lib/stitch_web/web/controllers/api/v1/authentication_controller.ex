@@ -57,8 +57,6 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
     end
   end
 
-  # Given an email (as opposed to token/password)
-
   def reset_password(conn, %{"email" => email}) do
     team = conn.assigns.team
 
@@ -69,6 +67,20 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
       conn |> json(%{status: "ok"})
     else
       any -> handle_email_reset_with(any)
+    end
+  end
+
+  def reset_password(conn, %{"token" => token, "password" => password}) do
+    team = conn.assigns.team
+
+    with {:token, %PasswordResetToken{} = token} <-
+           {:token, PasswordResetToken.get_valid_token(token)},
+         {:team_member?, true} <- {:team_member?, token.user.team_id == team.id},
+         {:ok, %{user: user}} <- Authentication.reset_password(token.user, password) do
+      EventsChannel.broadcast_logout_from_all_sessions(user)
+      json(conn, %{message: "Password was successfully changed"})
+    else
+      any -> handle_token_reset_with(any)
     end
   end
 
@@ -86,6 +98,19 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
     end
   end
 
+  def patient_reset_password(conn, %{"token" => token, "password" => password}) do
+    team = conn.assigns.team
+
+    with {:token, %PasswordResetToken{} = token} <-
+           {:token, PasswordResetToken.get_valid_token(token)},
+         {:team_member?, true} <- {:team_member?, token.patient.team_id == team.id},
+         {:ok, %{patient: _patient}} <- Authentication.reset_password(token.patient, password) do
+      json(conn, %{message: "Password was successfully changed"})
+    else
+      any -> handle_token_reset_with(any)
+    end
+  end
+
   defp handle_email_reset_with({:user, nil}) do
     {:error, :not_authorized, "User is not part of the team or email does not exist"}
   end
@@ -96,35 +121,6 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
 
   defp handle_email_reset_with({:error, changeset}) do
     {:error, changeset}
-  end
-
-  # Given a token & password (as opposed to an email)
-
-  def reset_password(conn, %{"token" => token, "password" => password}) do
-    team = conn.assigns.team
-
-    with {:token, %PasswordResetToken{} = token} <-
-           {:token, PasswordResetToken.get_valid_token(token)},
-         {:team_member?, true} <- {:team_member?, token.user.team_id == team.id},
-         {:ok, %{user: user}} <- Authentication.reset_password(token.user, password) do
-      EventsChannel.broadcast_logout_from_all_sessions(user)
-      json(conn, %{message: "Password was successfully changed"})
-    else
-      any -> handle_token_reset_with(any)
-    end
-  end
-
-  def patient_reset_password(conn, %{"token" => token, "password" => password}) do
-    team = conn.assigns.team
-
-    with {:token, %PasswordResetToken{} = token} <-
-           {:token, PasswordResetToken.get_valid_token(token)},
-         {:team_member?, true} <- {:team_member?, token.patient.team_id == team.id},
-         {:ok, %{patient: patient}} <- Authentication.reset_password(token.patient, password) do
-      json(conn, %{message: "Password was successfully changed"})
-    else
-      any -> handle_token_reset_with(any)
-    end
   end
 
   defp handle_token_reset_with({:token, nil}) do

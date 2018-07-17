@@ -137,6 +137,21 @@ defmodule Stitch.Factory do
     }
   end
 
+  def upload_comment_factory do
+    %Stitch.Files.UploadComment{
+      user: build(:user),
+      upload: build(:upload),
+      text_content: "Lorem ipsum",
+      fields: %{
+        filename: "file.pdf",
+        url: "url",
+        mimetype: "application/pdf",
+        filetype: "pdf",
+        size_in_bytes: 42
+      }
+    }
+  end
+
   def group_upload_factory do
     %Stitch.Files.GroupUpload{
       group: build(:group),

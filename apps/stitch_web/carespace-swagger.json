@@ -224,6 +224,14 @@
             "description": "Inbox ID"
           },
           {
+            "x-example": "Recent elbow issue.",
+            "type": "string",
+            "required": true,
+            "name": "subject",
+            "in": "query",
+            "description": "Subject of Conversation"
+          },
+          {
             "x-example": "Hello doc? Can we talk?",
             "type": "string",
             "required": true,
@@ -276,11 +284,11 @@
             "description": "Number of conversations to return. Maximum of 20."
           },
           {
-            "type": "string",
+            "type": "double",
             "required": false,
             "name": "updated_before",
             "in": "query",
-            "description": "Later bound for updated_at time for conversations."
+            "description": "Later bound for updated_at time for conversations in MS."
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationController.patient_index",
@@ -411,15 +419,15 @@
             "description": "Number of conversation messages to return. Maximum of 50."
           },
           {
-            "type": "string",
+            "type": "integer",
             "required": false,
-            "name": "updated_before",
+            "name": "max_id",
             "in": "query",
-            "description": "Later bound for updated_at time for messages."
+            "description": "Upper bound for conversation message ids."
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_index",
-        "description": "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
+        "description": "List of 50 most recent conversation messages for a conversation. Pass in max_id to move backward in time."
       }
     },
     "/api/v1/patient/conversations/{conversation_id}/mark_as_read": {
@@ -659,11 +667,11 @@
             "description": "Inbox ID"
           },
           {
-            "type": "string",
+            "type": "double",
             "required": false,
             "name": "updated_before",
             "in": "query",
-            "description": "Later bound for updated_at time for conversations."
+            "description": "Later bound for updated_at time for conversations in MS."
           },
           {
             "type": "integer",
@@ -809,15 +817,15 @@
             "description": "Number of conversation messages to return. Maximum of 50."
           },
           {
-            "type": "string",
+            "type": "integer",
             "required": false,
-            "name": "updated_before",
+            "name": "max_id",
             "in": "query",
-            "description": "Later bound for updated_at time for messages."
+            "description": "Upper bound for conversation message ids."
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.index",
-        "description": "List of 50 most recent conversation messages for a conversation. Pass in updated_before to move backward in time."
+        "description": "List of 50 most recent conversation messages for a conversation. Pass in max_id to move backward in time."
       }
     },
     "/api/v1/conversation_messages/{conversation__message_id}": {
@@ -969,6 +977,7 @@
       "type": "object",
       "title": "PatientConversation",
       "required": [
+        "subject",
         "inbox_id"
       ],
       "properties": {
@@ -977,8 +986,18 @@
           "example": "2018-07-04T15:58:42.059546",
           "description": "Last time updated in db"
         },
+        "subject": {
+          "type": "string",
+          "example": "Elbow Issue",
+          "description": "Subject line for the conversation"
+        },
         "latest_conversation_message": {
           "$ref": "#/definitions/ConversationMessage"
+        },
+        "is_unread": {
+          "type": "boolean",
+          "example": false,
+          "description": "Whether current user has read the most recent message."
         },
         "inserted_at": {
           "type": "string",
