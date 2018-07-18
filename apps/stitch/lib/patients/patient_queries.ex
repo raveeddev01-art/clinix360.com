@@ -11,15 +11,33 @@ defmodule Stitch.PatientQueries do
   }
 
   @doc """
-  Given a team id (and optional subquery), return a list of team patients with preloaded patients.
+  Given a token and an optional query to scope results. Return patient or nil.
   """
-  @spec get_by_token(binary) :: Patient.t() | nil
-  def get_by_token(token) do
-    Patient
+  @spec get_by_token(Ecto.Query.t(), binary) :: Patient.t() | nil
+  def get_by_token(query \\ Patient, token) do
+    query
     |> where(token: ^token)
     |> limit(1)
     |> preload(:team)
     |> Repo.one()
+  end
+
+  @doc """
+  Gets active and onboarded patients.
+  """
+  @spec active_and_onboarded(Ecto.Query.t()) :: Ecto.Query.t()
+  def active_and_onboarded(query \\ Patient) do
+    query
+    |> where(onboarded: true)
+    |> where(disabled: false)
+  end
+
+  @doc """
+  Given a token, return matching patient if active and onboarded.
+  """
+  @spec get_active_by_token(binary) :: Patient.t() | nil
+  def get_active_by_token(token) do
+    get_by_token(active_and_onboarded, token)
   end
 
   @doc """
