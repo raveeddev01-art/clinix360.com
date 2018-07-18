@@ -101,6 +101,7 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through([:api, :patient_api])
     put("/info", PatientController, :update_as_patient)
+    put("/update_password", PatientController, :update_password)
   end
 
   scope "/api/v1/patient", StitchEngage.Web.Api.V1, as: :api_v1 do
