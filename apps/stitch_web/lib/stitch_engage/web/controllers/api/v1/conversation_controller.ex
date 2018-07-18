@@ -16,6 +16,13 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
   action_fallback(Stitch.Web.Api.FallbackController)
 
+  # =========================
+  #   PATIENT CONVERSATIONS
+  # =========================
+  def conversations_with_patient(conn, params) do
+    # do_patient_conversations(conn, params, conn.assigns.current_user, "index.json")
+  end
+
   # =========
   #   INDEX
   # =========

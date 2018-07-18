@@ -539,6 +539,7 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/conversation_messages/:id", ConversationMessageController, :show)
     put("/conversation_messages/:id", ConversationMessageController, :update)
     delete("/conversation_messages/:id", ConversationMessageController, :delete)
+    get("/patient_conversations/:id", ConversationController, :conversations_with_patient)
 
     put(
       "/conversation_messages/:id/delete_link_preview",

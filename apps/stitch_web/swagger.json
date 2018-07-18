@@ -94,6 +94,9 @@
         "token": {
           "type": "string"
         },
+        "team_id": {
+          "type": "integer"
+        },
         "redirect_url": {
           "type": "string"
         },
@@ -215,6 +218,9 @@
       "properties": {
         "updated_at": {
           "type": "string"
+        },
+        "team_id": {
+          "type": "integer"
         },
         "phone": {
           "type": "string"
