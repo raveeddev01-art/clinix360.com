@@ -113,10 +113,6 @@ defmodule Stitch.Web.Api.V1.FileController do
     with false <- Group.direct_message?(group),
          false <- GroupAuthorization.is_member?(group.id, user.id) do
       Group.add_user(group, user.id)
-
-      Stitch.Task.start(fn ->
-        GroupChannel.broadcast_members_update(group, [], [user])
-      end)
     else
       true -> :ok
     end
@@ -137,8 +133,7 @@ defmodule Stitch.Web.Api.V1.FileController do
 
     with {:upload, %Upload{} = upload} <- {:upload, FileQueries.get_by_id(upload_id)},
          {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:authorized, true} <-
-           {:authorized, FileAuthorization.can_unshare?(upload, current_user, group)},
+         {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
          {:unshared, {:ok, _}} <- {:unshared, Upload.unshare_from_group(upload, group)} do
       upload = FileQueries.get_by_id(upload_id, preload_assoc: true)
       file_details_update(upload)
@@ -216,7 +211,7 @@ defmodule Stitch.Web.Api.V1.FileController do
     with {:upload, %Upload{} = upload} <-
            {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true} <-
-           {:authorized, FileAuthorization.can_delete?(upload, current_user)},
+           {:authorized, FileAuthorization.is_creator?(upload, current_user)},
          {:deleted, {:ok, upload}} <- {:deleted, Upload.delete(upload)} do
       GroupChannel.broadcast_file_deleted(upload)
       render(conn, "show.json", %{file: upload})

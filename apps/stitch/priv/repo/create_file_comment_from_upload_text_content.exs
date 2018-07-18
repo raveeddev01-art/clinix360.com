@@ -44,74 +44,62 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     |> where(inserted_at: ^message.inserted_at)
     |> where(updated_at: ^message.updated_at)
     |> limit(1)
-    |> select([uc], %{id: uc.id})
     |> Repo.one()
   end
 
   def run do
-    message_file_share_ids =
-      Message
-      |> where([m], m.type == "file_share")
-      |> where([m], not is_nil(m.text_content))
-      |> order_by([m], desc: m.id)
-      |> select([m], m.id)
-      |> Repo.all()
+    Message
+    |> where([m], m.type == "file_share")
+    |> where([m], not is_nil(m.text_content))
+    |> Stitch.ChunkStream.chunk_desc(1)
+    |> Stream.each(fn
+      [] ->
+        nil
 
-    message_file_share_ids
-    |> Enum.chunk_every(2)
-    |> Enum.each(fn message_ids ->
-      message_ids
-      |> Elixir.Task.async_stream(fn message_id ->
-        message = Stitch.Repo.get(Message, message_id)
-        handle_message(message)
-      end)
-      |> Stream.run()
+      [message] ->
+        try do
+          presence = StitchConnect.Web.UserStatusService.new()
+
+          with {:upload, %Upload{} = upload} <-
+                 {:upload, FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
+               {:exists, nil} <- {:exists, upload_comment_exists(message)},
+               user = UserQueries.get_by_id(upload.user_id),
+               {:created,
+                {:ok,
+                 %{
+                   insert_file_comment_messages: inserted_messages_for_group,
+                   upload_comment: upload_comment
+                 }}} <-
+                 {:created,
+                  UploadComment.create(
+                    upload,
+                    user,
+                    %{"text_content" => message.text_content},
+                    presence
+                  )} do
+            correct_timestamp(message, upload_comment, inserted_messages_for_group)
+          else
+            {:exists, upload_comment} ->
+              Logger.warn("File comment already exists, (#{inspect(upload_comment.id)})")
+
+            {:created, error} ->
+              Logger.error("Error inserting file comment (#{inspect(error)})")
+
+            error ->
+              Logger.error("[#{inspect(__MODULE__)}] #{inspect(error)}")
+          end
+        rescue
+          error ->
+            Logger.error(
+              "Error creating file comment for upload message (#{inspect(message)}): \n#{
+                inspect(error)
+              }"
+            )
+
+            :error
+        end
     end)
-  end
-
-  def handle_message(message) do
-    try do
-      presence = StitchConnect.Web.UserStatusService.new()
-
-      with {:upload, %Upload{} = upload} <-
-             {:upload, FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
-           {:exists, nil} <- {:exists, upload_comment_exists(message)},
-           user = UserQueries.get_by_id(upload.user_id),
-           {:created,
-            {:ok,
-             %{
-               insert_file_comment_messages: inserted_messages_for_group,
-               upload_comment: upload_comment
-             }}} <-
-             {:created,
-              UploadComment.create(
-                upload,
-                user,
-                %{"text_content" => message.text_content},
-                presence,
-                %{silent: true}
-              )} do
-        correct_timestamp(message, upload_comment, inserted_messages_for_group)
-      else
-        {:exists, upload_comment} ->
-          Logger.warn("File comment already exists, (#{inspect(upload_comment.id)})")
-
-        {:created, error} ->
-          Logger.error("Error inserting file comment (#{inspect(error)})")
-
-        error ->
-          Logger.error("[#{inspect(__MODULE__)}] #{inspect(error)}")
-      end
-    rescue
-      error ->
-        Logger.error(
-          "Error creating file comment for upload message (#{inspect(message)}): \n#{
-            inspect(error)
-          }"
-        )
-
-        :error
-    end
+    |> Stream.run()
   end
 
   # This is needed for the first file comment to appear right below the file share
@@ -145,3 +133,5 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     |> Repo.update_all(set: [comment_count: 0])
   end
 end
+
+Stitch.Repo.Scripts.CreateFileCommentFromUpload.run()

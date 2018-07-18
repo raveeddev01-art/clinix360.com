@@ -45,9 +45,9 @@ defmodule Stitch.Files.UploadComment do
     |> validate_required([:text_content])
   end
 
-  @spec create(Upload.t(), User.t(), map, map, map | nil) ::
+  @spec create(Upload.t(), User.t(), map, map) ::
           {:ok, UploadComment.t(), list} | {:error, Ecto.Changeset.t()}
-  def create(%Upload{} = upload, %User{} = user, attrs, presence, opts \\ %{}) do
+  def create(%Upload{} = upload, %User{} = user, attrs, presence) do
     attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
 
     uplooad_comment_changeset =
@@ -57,7 +57,7 @@ defmodule Stitch.Files.UploadComment do
     |> Multi.insert(:upload_comment, uplooad_comment_changeset)
     |> Upload.multi_update_comment_counter(upload.id, 1)
     |> Multi.run(:insert_file_comment_messages, fn %{upload_comment: upload_comment} ->
-      {:ok, insert_file_comment_messages(upload_comment, upload, user, presence, attrs, opts)}
+      {:ok, insert_file_comment_messages(upload_comment, upload, user, presence, attrs)}
     end)
     |> Repo.transaction()
   end
@@ -108,7 +108,7 @@ defmodule Stitch.Files.UploadComment do
 
   defp decrement_comment_counter(result), do: result
 
-  defp insert_file_comment_messages(upload_comment, upload, user, presence, attrs, opts) do
+  defp insert_file_comment_messages(upload_comment, upload, user, presence, attrs) do
     groups = GroupQueries.groups_for_file_comment(upload, user)
 
     Enum.reduce(groups, [], fn group, acc ->
@@ -118,7 +118,7 @@ defmodule Stitch.Files.UploadComment do
         "text_content" => attrs["text_content"]
       }
 
-      result = MessageCreation.create(group, user, attrs, presence, upload, upload_comment, opts)
+      result = MessageCreation.create(group, user, attrs, presence, upload, upload_comment)
 
       case result do
         {:ok, message_creation_result} ->

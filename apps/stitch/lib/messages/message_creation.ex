@@ -19,7 +19,7 @@ defmodule Stitch.Message.MessageCreation do
 
   alias Stitch.Analytics.Message, as: MessageAnalytics
 
-  @spec create(Group.t(), User.t(), map, map, Upload.t(), UploadComment.t(), map | nil) ::
+  @spec create(Group.t(), User.t(), map, map, Upload.t(), UploadComment.t()) ::
           {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
 
   @spec create(Group.t(), User.t(), map, map | nil) ::
@@ -27,19 +27,11 @@ defmodule Stitch.Message.MessageCreation do
 
   def create(group, user, attrs, presence \\ %{})
 
-  def create(
-        group,
-        user,
-        %{"type" => "file_comment"} = attrs,
-        presence,
-        upload,
-        upload_comment,
-        opts
-      ) do
+  def create(group, user, %{"type" => "file_comment"} = attrs, presence, upload, upload_comment) do
     with {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
       message = %Message{group: group, user: user, upload: upload, upload_comment: upload_comment}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
-      do_create(message, attrs, presence, opts)
+      do_create(message, attrs, presence)
     else
       _ ->
         changeset = %Message{} |> change() |> add_error(:upload_id, "not found")
@@ -51,7 +43,7 @@ defmodule Stitch.Message.MessageCreation do
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
       message = %Message{group: group, user: user, upload: upload}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
-      do_create(message, attrs, presence)
+      do_create(message, attrs, presence, upload)
     else
       _ ->
         changeset = %Message{} |> change() |> add_error(:upload_id, "Error creating file")
@@ -70,7 +62,7 @@ defmodule Stitch.Message.MessageCreation do
     {:error, :message, changeset, nil}
   end
 
-  def do_create(message, attrs, presence, opts \\ %{}) do
+  def do_create(message, attrs, presence, upload \\ nil) do
     user = message.user
     group = Repo.preload(message.group, :users)
     users = group.users
@@ -95,20 +87,13 @@ defmodule Stitch.Message.MessageCreation do
 
     increment_unread_counter = ReadStatus.increment_unread_counter(:message, group.id, recipients)
 
-    if opts[:silent] == true do
-      Multi.new()
-      |> Multi.insert(:message, Message.message_changeset(message, attrs))
-      |> Repo.transaction()
-      |> silent_post_creation()
-    else
-      Multi.new()
-      |> Multi.insert(:message, Message.message_changeset(message, attrs))
-      |> Multi.update_all(:mention_users, mention_users, [])
-      |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
-      |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
-      |> Repo.transaction()
-      |> post_creation(notify_user_ids)
-    end
+    Multi.new()
+    |> Multi.insert(:message, Message.message_changeset(message, attrs))
+    |> Multi.update_all(:mention_users, mention_users, [])
+    |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
+    |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
+    |> Repo.transaction()
+    |> post_creation(notify_user_ids)
   end
 
   def multi_mark_as_read_on_creation_if_member(multi, group_id, user_id, :message) do
@@ -129,18 +114,4 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def post_creation(error, _notify_user_ids), do: error
-
-  def silent_post_creation({:ok, result_map}) do
-    notify_user_ids = %{
-      mobile: [],
-      desktop: [],
-      email: []
-    }
-
-    result_map = Map.put(result_map, :notify_user_ids, notify_user_ids)
-
-    {:ok, result_map}
-  end
-
-  def silent_post_creation(error), do: error
 end
