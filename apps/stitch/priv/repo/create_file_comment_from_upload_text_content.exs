@@ -35,17 +35,10 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     Accounts.User
   }
 
-  # This is to achieve a loose idempotence in case when we run this script on the same data more than once
-  # Assuming the probability of having more than one upload_comment with the same param is extrimely low.
-  def upload_comment_exists(message) do
+  def reset_upload_comments(message) do
     UploadComment
-    |> where(text_content: ^message.text_content)
     |> where(upload_id: ^message.upload_id)
-    |> where(inserted_at: ^message.inserted_at)
-    |> where(updated_at: ^message.updated_at)
-    |> limit(1)
-    |> select([uc], %{id: uc.id})
-    |> Repo.one()
+    |> Repo.delete_all()
   end
 
   def run do
@@ -61,10 +54,13 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
     |> Enum.chunk_every(2)
     |> Enum.each(fn message_ids ->
       message_ids
-      |> Elixir.Task.async_stream(fn message_id ->
-        message = Stitch.Repo.get(Message, message_id)
-        handle_message(message)
-      end)
+      |> Elixir.Task.async_stream(
+        fn message_id ->
+          message = Stitch.Repo.get(Message, message_id)
+          handle_message(message)
+        end,
+        timeout: :infinity
+      )
       |> Stream.run()
     end)
   end
@@ -75,7 +71,8 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
 
       with {:upload, %Upload{} = upload} <-
              {:upload, FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
-           {:exists, nil} <- {:exists, upload_comment_exists(message)},
+           {:reset_upload_comments, _} <-
+             {:reset_upload_comments, reset_upload_comments(message)},
            user = UserQueries.get_by_id(upload.user_id),
            {:created,
             {:ok,
