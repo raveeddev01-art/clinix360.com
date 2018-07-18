@@ -23,17 +23,10 @@ class ComposeModal extends Component {
 
     this.state = {
       error: "",
-      patient: {},
+      patient: null,
       subject: "",
       message: ""
     };
-  }
-
-  componentWillMount() {
-    this.setState({
-      patient: null,
-      error: null
-    });
   }
 
   handlePatientChange = value => {
