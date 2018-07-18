@@ -14,16 +14,17 @@ class Conversation extends Component {
     inboxStore.closeConversation(conversation.id);
   };
 
+  onOpenConversation = () => {
+    const { inboxStore, conversation } = this.props;
+    inboxStore.openConversation(conversation.id);
+  };
+
   render() {
     const { conversation } = this.props;
     const { patient } = conversation;
 
     const linkClass = cx("item", {
       active: parseInt(this.props.match.params.id, 10) === conversation.id
-    });
-
-    const dateClass = cx("date", {
-      "hide-date": conversation.open
     });
 
     return (
@@ -36,7 +37,7 @@ class Conversation extends Component {
           <div className="heading">
             <div className="user">{patient.full_name}</div>
 
-            <div className={dateClass}>
+            <div className="date">
               {moment
                 .utc(conversation.updated_at)
                 .local()
@@ -48,9 +49,13 @@ class Conversation extends Component {
                 })}
             </div>
 
-            {conversation.open && (
+            {conversation.open ? (
               <div className="closed" onClick={this.onCloseConversation}>
                 <i className="fa fa-check" /> Close
+              </div>
+            ) : (
+              <div className="closed" onClick={this.onOpenConversation}>
+                <i className="fa fa-inbox" /> Reopen
               </div>
             )}
           </div>

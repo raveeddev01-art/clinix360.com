@@ -142,9 +142,14 @@ class InboxMenu extends Component {
                   </MenuItem>
                 </NavDropdown>
 
-                <NavItem className="sort-menu" disabled>
-                  <i className="fa fa-sort" /> Sort
-                </NavItem>
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip id="tooltip-sort">Coming Soon!</Tooltip>}
+                >
+                  <NavItem className="sort-menu" disabled>
+                    <i className="fa fa-sort" /> Sort <span className="caret" />
+                  </NavItem>
+                </OverlayTrigger>
               </Nav>
 
               <Tab.Content animation={false} unmountOnExit>
