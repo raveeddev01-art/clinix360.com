@@ -370,6 +370,7 @@ defmodule Stitch.Web.Api.V1.Docs do
                 phone(:string)
                 token(:string)
                 redirect_url(:string)
+                team_id(:integer)
               end
             end,
           Patient:
@@ -391,6 +392,7 @@ defmodule Stitch.Web.Api.V1.Docs do
                 mrn(:string)
                 onboarded(:booelan)
                 phone(:string)
+                team_id(:integer)
               end
             end
         }
