@@ -14,6 +14,11 @@ class Conversation extends Component {
     inboxStore.closeConversation(conversation.id);
   };
 
+  onOpenConversation = () => {
+    const { inboxStore, conversation } = this.props;
+    inboxStore.openConversation(conversation.id);
+  };
+
   render() {
     const { conversation } = this.props;
     const { patient } = conversation;
@@ -44,15 +49,25 @@ class Conversation extends Component {
                 })}
             </div>
 
-            <div className="closed" onClick={this.onCloseConversation}>
-              <i className="fa fa-check" /> Close
-            </div>
+            {conversation.open ? (
+              <div className="closed" onClick={this.onCloseConversation}>
+                <i className="fa fa-check" /> Close
+              </div>
+            ) : (
+              <div className="closed" onClick={this.onOpenConversation}>
+                <i className="fa fa-inbox" /> Reopen
+              </div>
+            )}
           </div>
 
           <div className="message">
-            {conversation.latest_conversation_message
-              ? conversation.latest_conversation_message.text_content
-              : conversation.conversation_messages[0].text_content}
+            <div className="subject">{conversation.subject}</div>
+
+            <div className="text">
+              {conversation.latest_conversation_message
+                ? conversation.latest_conversation_message.text_content
+                : conversation.conversation_messages[0].text_content}
+            </div>
           </div>
         </div>
       </Link>

@@ -4,7 +4,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background-color: darken($brand-primary, 5%);
+  background-color: $brand-primary;
+  border-right: 1px solid #0b3d6e;
   padding: 15px 10px;
   min-width: 65px;
   z-index: 11;
@@ -35,17 +36,20 @@
       color: #fff;
       outline: none;
 
-      i, .switcher__top-home {
+      i,
+      .switcher__top-home {
         opacity: 1;
       }
     }
 
-    i, .switcher__top-home{
+    i,
+    .switcher__top-home {
       opacity: 0.6;
     }
 
     &.active {
-      i, .switcher__top-home {
+      i,
+      .switcher__top-home {
         opacity: 1;
       }
 
