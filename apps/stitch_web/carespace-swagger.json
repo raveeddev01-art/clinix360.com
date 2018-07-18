@@ -1,6 +1,45 @@
 {
   "swagger": "2.0",
   "paths": {
+    "/api/v1/patient_conversations/{patient_id}": {
+      "get": {
+        "tags": [
+          "PatientTimeline"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Conversation"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 3,
+            "type": "integer",
+            "required": true,
+            "name": "patient_id",
+            "in": "path",
+            "description": "Patient ID"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.PatientTimelineController.conversations_with_patient",
+        "description": "Returns a sorted list of the patient conversations (with latest_conversation_message).\n"
+      }
+    },
     "/api/v1/patient/reset_password": {
       "post": {
         "tags": [

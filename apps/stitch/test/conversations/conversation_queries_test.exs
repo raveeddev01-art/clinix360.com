@@ -11,6 +11,7 @@ defmodule Stitch.Engage.ConversationQueriesTest do
       patient_b = insert(:patient, team: team)
 
       conversation_with_patient_a = insert(:conversation, inbox: inbox_a)
+      insert(:conversation_patient, patient: patient_a, conversation: conversation_with_patient_a)
 
       _ =
         insert(
@@ -26,30 +27,43 @@ defmodule Stitch.Engage.ConversationQueriesTest do
           patient: patient_a
         )
 
-      conversation_with_patient_b = insert(:conversation, inbox: inbox_b)
+      conversation_with_patient_a_and_b = insert(:conversation, inbox: inbox_b)
+
+      insert(
+        :conversation_patient,
+        patient: patient_a,
+        conversation: conversation_with_patient_a_and_b
+      )
+
+      insert(
+        :conversation_patient,
+        patient: patient_b,
+        conversation: conversation_with_patient_a_and_b
+      )
 
       _ =
         insert(
           :patient_conversation_message,
-          conversation: conversation_with_patient_b,
+          conversation: conversation_with_patient_a_and_b,
           patient: patient_a
         )
 
       _ =
         insert(
           :patient_conversation_message,
-          conversation: conversation_with_patient_b,
+          conversation: conversation_with_patient_a_and_b,
           patient: patient_b
         )
 
       latest_2 =
         insert(
           :conversation_message,
-          conversation: conversation_with_patient_b,
+          conversation: conversation_with_patient_a_and_b,
           provider: provider
         )
 
       conversation_with_patient_b = insert(:conversation, inbox: inbox_a)
+      insert(:conversation_patient, patient: patient_b, conversation: conversation_with_patient_b)
 
       _ =
         insert(
@@ -66,7 +80,7 @@ defmodule Stitch.Engage.ConversationQueriesTest do
         )
 
       latest_conversation_messages =
-        Stitch.Engage.ConversationQueries.with_patient(patient_a, params = %{})
+        Stitch.Engage.ConversationQueries.with_patient(patient_a, %{})
 
       assert_conversation_messages(latest_conversation_messages, [latest_1, latest_2])
     end

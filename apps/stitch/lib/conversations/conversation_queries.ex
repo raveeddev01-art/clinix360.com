@@ -59,16 +59,10 @@ defmodule Stitch.Engage.ConversationQueries do
   Given a patient, return a list of latest conversation messages where the patient is a member
   """
   def with_patient(%Patient{} = patient, params = %{}) do
-    # conversations_with_patient =
-    #   ConversationPatient
-    #   |> where([cp], cp.patient_id == ^patient.id)
-    #   |> select([cp], %{id: cp.conversation_id})
-
     conversations_with_patient =
-      ConversationMessage
-      |> where([cm], cm.patient_id == ^patient.id)
-      |> group_by([cm], cm.conversation_id)
-      |> select([cm], %{id: cm.conversation_id})
+      ConversationPatient
+      |> where([cp], cp.patient_id == ^patient.id)
+      |> select([cp], %{id: cp.conversation_id})
 
     recently_updated_conversations_with_patient =
       ConversationMessage
@@ -91,6 +85,7 @@ defmodule Stitch.Engage.ConversationQueries do
       rc in subquery(recently_updated_conversations_with_patient),
       cm.conversation_id == rc.conversation_id and cm.updated_at == rc.latest_updated_at
     )
+    |> preload(:conversation)
     |> Repo.all()
   end
 
