@@ -1,5 +1,6 @@
 defmodule Stitch.Files.FileAuthorization do
   alias Stitch.{
+    Group,
     Files.Upload,
     Files.UploadComment,
     Accounts.User,
@@ -22,6 +23,24 @@ defmodule Stitch.Files.FileAuthorization do
   def is_creator?(%Upload{user_id: user_id}, %User{id: user_id}), do: true
 
   def is_creator?(_upload, _user), do: false
+
+  def can_delete?(%Upload{user_id: user_id}, %User{id: user_id}), do: true
+
+  def can_delete?(%Upload{team_id: team_id}, %User{team_id: team_id} = user) do
+    "admin" in user.roles
+  end
+
+  def can_delete?(_upload, _user), do: false
+
+  @spec can_unshare?(Upload.t(), User.t(), Group.t()) :: boolean
+  def can_unshare?(%Upload{team_id: team_id, public: true}, %User{team_id: team_id}, _group),
+    do: true
+
+  def can_unshare?(%Upload{public: false} = upload, %User{} = user, %Group{} = group) do
+    group.id in upload.shared_in && Stitch.GroupAuthorization.can_view?(group, user)
+  end
+
+  def can_unshare?(_upload, _user, _group), do: false
 
   @spec is_comment_creator?(UploadComment.t(), User.t()) :: boolean
   def is_comment_creator?(%UploadComment{user_id: user_id}, %User{id: user_id}), do: true
