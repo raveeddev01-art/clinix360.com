@@ -45,13 +45,14 @@ defmodule Stitch.Team.Onboarding do
   @doc """
   Creates a team with the given name and slug.
   """
-  # def create_team(name, slug, tier \\ "FREE")
-
   def create_team(name, slug, tier \\ "FREE") do
     changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
 
     Multi.new()
     |> Multi.insert(:team, changeset)
+    |> Multi.run(:subscription, fn %{team: team} ->
+      Stitch.Billing.setup_new_team(team, tier)
+    end)
     |> Multi.run(:default_group, fn %{team: team} ->
       Repo.insert(%Group{team_id: team.id, name: "General", slug: "general", is_default: true})
     end)
