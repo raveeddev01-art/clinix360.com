@@ -521,6 +521,7 @@ defmodule Stitch.Web.SubdomainRouter do
   # Catch any remaining patient routes
 
   scope "/patient", StitchEngage.Web, as: :patient do
+    pipe_through([:browser, :patient_browser])
     get("/*path", PatientController, :index)
   end
 

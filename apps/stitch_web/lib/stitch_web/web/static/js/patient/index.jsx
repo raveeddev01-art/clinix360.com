@@ -6,22 +6,15 @@ import history from "../lib/history";
 import RootPatientStore from "../common/stores/root_patient_store";
 import withError from "../util/with_error_page";
 
+import PatientEngageApp from "./PatientEngageApp";
+
 const App = props => {
-  const rootStore = new RootPatientStore(props);
+  const rootPatientStore = new RootPatientStore(props);
 
   return (
     <Router history={history}>
-      <Provider {...rootStore}>
-        <div>
-          <h1> Patient Info: </h1>
-          <ul>
-            <li>
-              Name: {currentUser.firstName} {currentUser.lastName}
-            </li>
-            <li>Email: {currentUser.email}</li>
-            <li>Token: {window.authenticationToken}</li>
-          </ul>
-        </div>
+      <Provider {...rootPatientStore}>
+        <PatientEngageApp />
       </Provider>
     </Router>
   );
