@@ -6,6 +6,8 @@ defmodule Stitch.Web.UserSocket do
   channel("groups:*", StitchConnect.Web.GroupChannel)
   channel("team:lobby:*", Stitch.Web.TeamChannel)
   channel("events:*", Stitch.Web.EventsChannel)
+  channel("inbox:*", Stitch.Web.InboxChannel)
+  channel("conversation:*", Stitch.Web.ConversationChannel)
 
   ## Transports
   transport(
@@ -13,6 +15,7 @@ defmodule Stitch.Web.UserSocket do
     Phoenix.Transports.WebSocket,
     timeout: 45_000,
     check_origin: [
+      "//*.teamstitch-staging.com",
       "//*.teamstitchapp.com",
       "//*.teamstitch.com",
       "//*.#{Application.fetch_env!(:stitch_web, :application_host)}"

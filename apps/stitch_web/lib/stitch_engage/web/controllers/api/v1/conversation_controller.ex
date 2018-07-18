@@ -83,6 +83,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       conversation = conversation_with_show_data(conversation, user, [conversation_message])
 
       InboxChannel.broadcast_conversation_creation(conversation)
+      # EventChannel.broadcast_conversation_creation_to_patient(patient_id)
+
       render(conn, "show.json", conversation: conversation)
     else
       any -> handle_create_with(any)
@@ -100,6 +102,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       conversation = conversation_with_show_data(conversation, patient, [conversation_message])
 
       InboxChannel.broadcast_conversation_creation(conversation)
+      # EventChannel.broadcast_conversation_creation_to_patient(patient_id)
+
       render(conn, "patient_show.json", conversation: conversation)
     else
       any -> handle_create_with(any)

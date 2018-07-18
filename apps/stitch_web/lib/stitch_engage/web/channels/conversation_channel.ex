@@ -21,7 +21,7 @@ defmodule StitchEngage.Web.ConversationChannel do
   # ===========
 
   def join("conversation:" <> conversation_id, _params, socket) do
-    user = socket.assigns.current_user
+    user = socket.assigns.current_user || socket.assigns.patient
 
     with {:conversation, %Conversation{} = conversation} <-
            {:conversation, Repo.get(Conversation, conversation_id)},

@@ -35,4 +35,5 @@ patient =
   window.authenticationToken = "<%= authenticationToken %>";
   window.currentUser = <%= raw patient %>;
   window.patient = window.currentUser
+  window.socketEndpoint = "patient_socket"
 </script>

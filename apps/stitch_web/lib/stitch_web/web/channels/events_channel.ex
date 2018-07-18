@@ -24,6 +24,18 @@ defmodule Stitch.Web.EventsChannel do
     end
   end
 
+  def join("events:patient:" <> patient_id, _params, socket) do
+    patient_id = String.to_integer(patient_id)
+
+    if patient_id == socket.assigns.patient.id do
+      send(self(), :after_join)
+
+      {:ok, socket}
+    else
+      {:error, %{message: "Unauthorized"}}
+    end
+  end
+
   def handle_info(:after_join, socket) do
     current_app_version = StitchWeb.version()
     socket_app_version = socket.assigns.application_version
@@ -235,5 +247,24 @@ defmodule Stitch.Web.EventsChannel do
         user_id: user_id
       })
     end)
+  end
+
+  # TODO: Make the actual broadcasts!
+  def broadcast_conversation_creation_to_patient(patient_id, conversation) do
+    conversation_json = ConversationView.conversation_json_with_latest(conversation)
+
+    @endpoint.broadcast("patient_inbox:#{patient_id}", "conversation_created", %{
+      conversation: conversation_json
+    })
+  end
+
+  def broadcast_conversation_update_to_patient(patient_id, conversation) do
+    # For opening and closing conversations
+    # Also for latest_message updates (and reordering based on latest message times)
+    conversation_json = ConversationView.conversation_json_with_latest(conversation)
+
+    @endpoint.broadcast("patient_inbox:#{patient_id}", "conversation_updated", %{
+      conversation: conversation_json
+    })
   end
 end

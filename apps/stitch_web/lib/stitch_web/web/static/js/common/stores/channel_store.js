@@ -188,6 +188,33 @@ class ChannelStore {
     return this.channels[this.teamChannelTopic];
   }
 
+  joinTeamPatientChannel(teamId, options = {}) {
+    // TODO: clean this up (the topic stuff and teamChan getting)
+
+    const timezone = this.getTimezoneInfo();
+    const teamChanTopic = `team:patient:${teamId}`;
+    const joined = this.join(teamChanTopic, { ...options, timezone });
+
+    const teamPatientChannel = this.channels[teamChanTopic];
+    teamPatientChannel.on("team_renamed", this.rootStore.teamStore.onRenamed);
+    // handle team_deleted
+
+    return joined;
+  }
+
+  joinEventPatientChannel(patientId, options = {}) {
+    // TODO: clean this up (the topic stuff and teamChan getting)
+    const eventChanTopic = `events:patient:${patientId}`;
+    const joined = this.join(eventChanTopic, { ...options });
+
+    const eventChannel = this.channels[eventChanTopic];
+    eventChannel.on("new_app_version", () => {
+      socket.disconnect(() => window.location.reload(true));
+    });
+
+    return joined;
+  }
+
   joinTeamChannel(options = {}) {
     const {
       presenceStore,

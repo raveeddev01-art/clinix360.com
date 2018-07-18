@@ -1,6 +1,7 @@
 defmodule Stitch.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :stitch_web
 
+  socket("/patient_socket", Stitch.Web.PatientSocket)
   socket("/socket", Stitch.Web.UserSocket)
 
   if Application.get_env(:stitch_web, :sql_sandbox) do

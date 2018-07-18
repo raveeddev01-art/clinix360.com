@@ -27,7 +27,8 @@ class RootPatientStore {
   }
 
   joinChannels() {
-    // TODO: Set up channels & callbacks for patient
+    this.channelStore.joinTeamPatientChannel(patient.team.id);
+    this.channelStore.joinEventPatientChannel(patient.id);
   }
 }
 
