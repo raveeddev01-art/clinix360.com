@@ -99,6 +99,12 @@ defmodule Stitch.Web.SubdomainRouter do
   # ==================
 
   scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
+    # Token not needed
+    pipe_through([:api])
+    post("/exists", PatientController, :exists)
+  end
+
+  scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through([:api, :patient_api])
     put("/info", PatientController, :update_as_patient)
     put("/update_password", PatientController, :update_password)

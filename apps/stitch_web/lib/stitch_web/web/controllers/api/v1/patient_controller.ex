@@ -153,4 +153,13 @@ defmodule Stitch.Web.Api.V1.PatientController do
         |> json(%{message: changeset_errors_to_string(changeset)})
     end
   end
+
+  def exists(conn, %{"email" => email}) do
+    team_id = conn.private[:team_id]
+
+    case PatientQueries.team_member_with_email(team_id, email) do
+      %Patient{} -> json(conn, %{exists: true})
+      _ -> json(conn, %{exists: false})
+    end
+  end
 end
