@@ -8,9 +8,6 @@ import { observable, computed, action } from "mobx";
 import BaseMessageStore from "common/abstract-stores/base-message-store";
 
 class ConversationMessageStore extends BaseMessageStore {
-  @observable messages = [];
-  @observable messageInEdit = null; // Message currently being edited
-
   // ===========================
   // Getters
   // ===========================
@@ -30,6 +27,15 @@ class ConversationMessageStore extends BaseMessageStore {
   // ===========================
 
   sendMessage = () => {};
+
+  // ===========================
+  // Methods
+  // ===========================
+
+  reset() {
+    this.messages = [];
+    this.messageInEdit = null;
+  }
 
   // ===========================
   // Event Handlers

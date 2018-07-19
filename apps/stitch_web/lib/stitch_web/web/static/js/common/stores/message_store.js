@@ -4,7 +4,7 @@
  * This store keps track of data that are related with messages in the current group
  */
 
-import { observable, action, computed, when, extendObservable } from "mobx";
+import { observable, action, computed, when } from "mobx";
 import moment from "moment";
 
 import debounce from "lodash/debounce";
@@ -30,10 +30,6 @@ class MessageStore extends BaseMessageStore {
   @observable messageVisibility = {}; // current visibility status of messages
 
   @observable mountedMessages = [];
-  @observable messages = []; // messages currently loaded
-
-  @observable messageInEdit = null; // Message currently being edited
-  @observable textInEdit = ""; // Current text of message in edit
 
   @observable jumpMode = false; // indicates if message list is currently at jumping mode
   @observable isJumpLoaded = false; // indicates if surrounded messages are loaded
@@ -72,12 +68,6 @@ class MessageStore extends BaseMessageStore {
   // ////////////// //
   //    GETTERS     //
   // ////////////// //
-
-  getMessageById = (id, enforceSent = false) => {
-    const matchCondition = m =>
-      m.id === id && (!enforceSent || this.isSentMessage(m));
-    return this.messages.find(matchCondition);
-  };
 
   // Return the message that is immediately after the timestamp given, but not temp message
   getMessageAfterTimestamp = timestamp => {
@@ -282,14 +272,6 @@ class MessageStore extends BaseMessageStore {
       });
     }
   }
-
-  @action
-  updateMessageData = (id, data) => {
-    const message = this.getMessageById(id);
-    if (message) {
-      extendObservable(message, data);
-    }
-  };
 
   @action
   updateGroupData(data) {
@@ -753,35 +735,6 @@ class MessageStore extends BaseMessageStore {
   };
 
   @action
-  startEdit(id) {
-    const message = this.getMessageById(id);
-
-    if (message) {
-      this.messageInEdit = message;
-      this.textInEdit = this.decodeMentions(message.text_content);
-    }
-  }
-
-  @action
-  editLastMessage() {
-    const message = this.messages.find(m => m.user_id === currentUser.id);
-
-    if (this.isSentMessage(message)) {
-      this.messageInEdit = message;
-      this.textInEdit = this.decodeMentions(message.text_content);
-    }
-  }
-
-  @action
-  editText(text) {
-    if (!this.messageInEdit) {
-      return;
-    }
-
-    this.textInEdit = text;
-  }
-
-  @action
   finishEdit() {
     if (!this.messageInEdit) {
       return;
@@ -805,12 +758,6 @@ class MessageStore extends BaseMessageStore {
         text_content: this.encodeMessage(trimmedEditText)
       }
     });
-  }
-
-  @action
-  cancelEdit() {
-    this.messageInEdit = null;
-    this.textInEdit = "";
   }
 
   @action

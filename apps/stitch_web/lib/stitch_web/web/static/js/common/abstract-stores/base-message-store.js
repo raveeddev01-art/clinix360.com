@@ -1,4 +1,5 @@
 import moment from "moment";
+import { observable, action, extendObservable } from "mobx";
 
 import flow from "lodash/flow";
 import groupBy from "lodash/fp/groupBy";
@@ -16,9 +17,69 @@ export function sortableDateFromMessage(message) {
 }
 
 export default class BaseMessageStore {
+  @observable messages = []; // messages currently loaded
+  @observable messageInEdit = null; // Message currently being edited
+  @observable textInEdit = ""; // Current text of message in edit
+
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
+
+  getMessageById = (id, enforceSent = false) => {
+    const matchCondition = m =>
+      m.id === id && (!enforceSent || this.isSentMessage(m));
+    return this.messages.find(matchCondition);
+  };
+
+  @action
+  updateMessageData = (id, data) => {
+    const message = this.getMessageById(id);
+    if (message) {
+      extendObservable(message, data);
+    }
+  };
+
+  // ===========================
+  // Message Edit Actions
+  // ===========================
+
+  @action
+  startEdit(id) {
+    const message = this.getMessageById(id);
+
+    if (message) {
+      this.messageInEdit = message;
+      this.textInEdit = this.decodeMentions(message.text_content);
+    }
+  }
+
+  @action
+  editLastMessage() {
+    const message = this.messages.find(m => m.user_id === currentUser.id);
+
+    if (this.isSentMessage(message)) {
+      this.startEdit(message.id);
+    }
+  }
+
+  @action
+  editText(text) {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    this.textInEdit = text;
+  }
+
+  @action
+  cancelEdit() {
+    this.messageInEdit = null;
+    this.textInEdit = "";
+  }
+
+  // ===========================
+  // Utilities
+  // ===========================
 
   groupMessagesByDate(messagesToGroup) {
     return flow(
