@@ -3,20 +3,20 @@ defmodule StitchEngage.Web.Api.V1.PatientTimelineView do
   alias Stitch.Web.Api.V1.PatientView
   alias StitchEngage.Web.Api.V1.ConversationMessageView
 
-  def render("conversations_with_patient.json", %{conversation_messages: conversation_messages}) do
-    conversations_json(conversation_messages)
+  def render("conversations_with_patient.json", %{conversations: conversations}) do
+    conversations_json(conversations)
   end
 
-  def conversations_json(conversation_messages) do
-    conversation_messages
-    |> Enum.map(fn conversation_message ->
-      conversation = conversation_message.conversation
-
-      # TODO: preload reactions
+  def conversations_json(conversations) do
+    conversations
+    |> Enum.map(fn conversation ->
       latest_conversation_message =
-        ConversationMessageView.conversation_message_json(conversation_message, %{
-          load_reactions: true
-        })
+        ConversationMessageView.conversation_message_json(
+          conversation.latest_conversation_message,
+          %{
+            load_reactions: true
+          }
+        )
 
       %{
         id: conversation.id,

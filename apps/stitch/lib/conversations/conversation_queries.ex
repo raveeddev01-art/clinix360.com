@@ -59,33 +59,20 @@ defmodule Stitch.Engage.ConversationQueries do
   Given a patient, return a list of latest conversation messages where the patient is a member
   """
   def with_patient(%Patient{} = patient, params = %{}) do
-    conversations_with_patient =
-      ConversationPatient
-      |> where([cp], cp.patient_id == ^patient.id)
-      |> select([cp], %{id: cp.conversation_id})
-
-    recently_updated_conversations_with_patient =
+    latest_conversation_message_query =
       ConversationMessage
-      |> join(
-        :inner,
-        [cm],
-        cp in subquery(conversations_with_patient),
-        cm.conversation_id == cp.id
-      )
-      |> group_by([cm, cp], cm.conversation_id)
-      |> select([cm], %{
-        conversation_id: cm.conversation_id,
-        latest_updated_at: max(cm.updated_at)
-      })
+      |> distinct([cm], cm.conversation_id)
+      |> order_by([cm], desc: cm.updated_at)
 
-    ConversationMessage
+    Conversation
     |> join(
       :inner,
-      [cm],
-      rc in subquery(recently_updated_conversations_with_patient),
-      cm.conversation_id == rc.conversation_id and cm.updated_at == rc.latest_updated_at
+      [c],
+      cp in ConversationPatient,
+      cp.patient_id == ^patient.id and c.id == cp.conversation_id
     )
-    |> preload(:conversation)
+    |> order_by([c, cp], desc: c.updated_at)
+    |> preload(latest_conversation_message: ^latest_conversation_message_query)
     |> Repo.all()
   end
 

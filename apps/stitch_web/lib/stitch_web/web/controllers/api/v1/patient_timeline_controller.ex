@@ -22,13 +22,9 @@ defmodule StitchEngage.Web.Api.V1.PatientTimelineController do
          {:authorized?, true} <-
            {:authorized?,
             PatientAuthorization.can_view_patient_as_provider?(current_user, patient)} do
-      conversation_messages = ConversationQueries.with_patient(patient, params)
+      conversations = ConversationQueries.with_patient(patient, params)
 
-      render(
-        conn,
-        "conversations_with_patient.json",
-        conversation_messages: conversation_messages
-      )
+      render(conn, "conversations_with_patient.json", conversations: conversations)
     else
       {:patient, _} -> {:error, :not_found}
       {:authorized?, _} -> {:error, :unauthorized}
