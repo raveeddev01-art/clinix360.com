@@ -16,6 +16,18 @@ defmodule Stitch.Web.Api.V1.PatientTimelineDocs do
 
         parameters do
           patient_id(:path, :integer, "Patient ID", required: true, example: 3)
+
+          limit(
+            :query,
+            :integer,
+            "Number of conversation messages to return. Maximum of 60."
+          )
+
+          skip(
+            :query,
+            :integer,
+            "Number of conversation messages to skip."
+          )
         end
 
         response(200, "OK", Schema.ref(:Conversation))

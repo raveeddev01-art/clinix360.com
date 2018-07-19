@@ -80,7 +80,7 @@ defmodule Stitch.Engage.ConversationQueriesTest do
         )
 
       conversations_with_latest_conversation_messages =
-        Stitch.Engage.ConversationQueries.with_patient(patient_a, %{})
+        Stitch.Engage.ConversationQueries.with_patient(patient_a, %{}).data
 
       latest_conversation_messages =
         Enum.map(
@@ -88,7 +88,7 @@ defmodule Stitch.Engage.ConversationQueriesTest do
           & &1.latest_conversation_message
         )
 
-      assert_conversation_messages(latest_conversation_messages, [latest_1, latest_2])
+      assert_conversation_messages(latest_conversation_messages, [latest_2, latest_1])
     end
   end
 

@@ -13,7 +13,8 @@ defmodule Stitch.Engage.ConversationQueries do
     Message.Reaction,
     Patient,
     Accounts.User,
-    Repo
+    Repo,
+    Paginator
   }
 
   @doc """
@@ -58,7 +59,10 @@ defmodule Stitch.Engage.ConversationQueries do
   @doc """
   Given a patient, return a list of latest conversation messages where the patient is a member
   """
-  def with_patient(%Patient{} = patient, params = %{}) do
+  def with_patient(%Patient{} = patient, options = %{}) do
+    limit = Enum.min([options[:limit], 60])
+    offset = options[:skip] || 0
+
     latest_conversation_message_query =
       ConversationMessage
       |> distinct([cm], cm.conversation_id)
@@ -73,7 +77,7 @@ defmodule Stitch.Engage.ConversationQueries do
     )
     |> order_by([c, cp], desc: c.updated_at)
     |> preload(latest_conversation_message: ^latest_conversation_message_query)
-    |> Repo.all()
+    |> Paginator.new(limit: limit, skip: offset)
   end
 
   @doc """

@@ -1,10 +1,18 @@
 defmodule StitchEngage.Web.Api.V1.PatientTimelineView do
   use Stitch.Web, :view
-  alias Stitch.Web.Api.V1.PatientView
   alias StitchEngage.Web.Api.V1.ConversationMessageView
 
-  def render("conversations_with_patient.json", %{conversations: conversations}) do
-    conversations_json(conversations)
+  alias Stitch.{
+    Paginator
+  }
+
+  def render("conversations_with_patient.json", %{
+        conversations: %Paginator{data: conversations, meta: meta}
+      }) do
+    %{
+      data: conversations_json(conversations),
+      meta: meta
+    }
   end
 
   def conversations_json(conversations) do
