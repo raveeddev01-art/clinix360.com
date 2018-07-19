@@ -93,9 +93,13 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     |> post_creation()
   end
 
-  defp post_creation(transaction_response) do
+  defp post_creation({:ok, %{conversation_message: conversation_message}} = transaction_response) do
     # Notifications: send necessary notifications here.
     # Analytics: add something like `track_conversation_message_sent(conversation_message, sender, conversation)`
+
+    Stitch.Elasticsearch.ConversationMessageSearch.add_to_index(conversation_message)
     transaction_response
   end
+
+  defp post_creation(transaction_response), do: transaction_response
 end

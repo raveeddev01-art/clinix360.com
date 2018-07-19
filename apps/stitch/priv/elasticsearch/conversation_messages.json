@@ -1,0 +1,40 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "english_exact": {
+          "tokenizer": "standard",
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "author": {
+          "type": "keyword"
+        },
+
+        "text_content": {
+          "type": "text",
+          "analyzer": "english",
+          "fields": {
+            "exact": {
+              "type": "text",
+              "analyzer": "english_exact"
+            }
+          }
+        },
+
+        "inserted_at": {
+          "type": "date"
+        },
+
+        "conversation_id": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}

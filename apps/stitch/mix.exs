@@ -61,7 +61,8 @@ defmodule Stitch.Mixfile do
       {:ua_inspector, "~> 0.17"},
       {:murmur, "~> 1.0"},
       {:exq, "~> 0.11.0"},
-      {:exq_ui, "~> 0.9.0"}
+      {:exq_ui, "~> 0.9.0"},
+      {:elasticsearch, "~> 0.4.1"}
     ]
   end
 
