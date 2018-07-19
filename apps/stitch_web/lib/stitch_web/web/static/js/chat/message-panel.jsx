@@ -111,7 +111,7 @@ export default class MessagePanel extends Component {
   }
 
   renderFooter() {
-    const { groupStore, groupsStore } = this.props;
+    const { groupStore, groupsStore, messageStore } = this.props;
 
     if (groupsStore.isCurrentGroupDeactivated) {
       const text =
@@ -154,7 +154,7 @@ export default class MessagePanel extends Component {
 
     return (
       <div className="flex-footer">
-        <MessageForm />
+        <MessageForm messageStore={messageStore} />
       </div>
     );
   }

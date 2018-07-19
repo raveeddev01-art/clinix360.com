@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
@@ -15,13 +16,7 @@ import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 
-@inject(
-  "messageStore",
-  "socketStore",
-  "uploadStore",
-  "billingStore",
-  "sidemenuStore"
-)
+@inject("socketStore", "uploadStore", "billingStore", "sidemenuStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -29,8 +24,8 @@ class MessageForm extends Component {
 
     this.state = {
       text: "",
-      openMentionMenu: false,
       searchFilter: "",
+      openMentionMenu: false,
       openEmojiSearch: false,
       isFocused: true
     };
@@ -312,6 +307,7 @@ class MessageForm extends Component {
 
   renderInput() {
     const { messageStore: { messageInEdit }, socketStore } = this.props;
+    const { isFocused } = this.state;
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
@@ -320,7 +316,7 @@ class MessageForm extends Component {
     });
 
     const inputWrapperClass = classNames("message-input-wrapper", {
-      isFocused: this.state.isFocused || messageInEdit
+      isFocused: isFocused || messageInEdit
     });
 
     return (
@@ -360,19 +356,21 @@ class MessageForm extends Component {
   }
 
   render() {
-    const { searchFilter, openMentionMenu, openEmojiSearch } = this.state;
+    const { searchFilter, openMentionMenu, openEmojiSearch, text } = this.state;
+    const { allowTypingUsers, allowMention } = this.props;
 
     return (
       <div className="message-form">
         <JumpingIndicator />
 
-        {openMentionMenu && (
-          <MentionMenu
-            filter={searchFilter}
-            onSelect={this.onSelectMention}
-            onClose={this.onCloseMentionMenu}
-          />
-        )}
+        {allowMention &&
+          openMentionMenu && (
+            <MentionMenu
+              filter={searchFilter}
+              onSelect={this.onSelectMention}
+              onClose={this.onCloseMentionMenu}
+            />
+          )}
 
         {openEmojiSearch && (
           <EmojiSearch filter={searchFilter} onSelect={this.onSelectEmoji} />
@@ -380,18 +378,28 @@ class MessageForm extends Component {
 
         {this.renderInput()}
 
-        {this.state.text &&
-          this.state.text.length < 4000 && <FormattingGuide />}
-        {this.state.text.length > 3999 && (
+        {text && text.length < 4000 && <FormattingGuide />}
+        {text.length > 3999 && (
           <div className="character-limit">
             You have reached the 4000 character limit per message.
           </div>
         )}
-        <TypingUsers />
+        {allowTypingUsers && <TypingUsers />}
         <EditingCommand />
       </div>
     );
   }
 }
+
+MessageForm.propTypes = {
+  messageStore: PropTypes.object.isRequired,
+  allowTypingUsers: PropTypes.bool,
+  allowMention: PropTypes.bool
+};
+
+MessageForm.defaultProps = {
+  allowTypingUsers: true,
+  allowMention: true
+};
 
 export default MessageForm;
