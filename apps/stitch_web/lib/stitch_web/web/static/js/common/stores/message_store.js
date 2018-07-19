@@ -21,11 +21,10 @@ import {
   START_TYPING_THROTTLE_MS,
   MAX_MESSAGE_COUNT_PER_BATCH
 } from "lib/constants";
-import REGEX from "lib/regex";
-import { isSentMessage, groupMessagesByDate } from "lib/message-utils";
 import TimeoutManager from "lib/TimeoutManager";
+import BaseMessageStore from "common/abstract-stores/base-message-store";
 
-class MessageStore {
+class MessageStore extends BaseMessageStore {
   @observable chatDiv = null; // Div element of chat pane
   messageElements = {}; // Div elements of messages loaded in the chat div
   @observable messageVisibility = {}; // current visibility status of messages
@@ -66,7 +65,7 @@ class MessageStore {
   @observable syncedTime = false; // sends timestamp only after synced time
 
   constructor(rootStore) {
-    this.rootStore = rootStore;
+    super(rootStore);
     this.timeoutManager = new TimeoutManager();
   }
 
@@ -76,7 +75,7 @@ class MessageStore {
 
   getMessageById = (id, enforceSent = false) => {
     const matchCondition = m =>
-      m.id === id && (!enforceSent || isSentMessage(m));
+      m.id === id && (!enforceSent || this.isSentMessage(m));
     return this.messages.find(matchCondition);
   };
 
@@ -228,7 +227,7 @@ class MessageStore {
 
   @computed
   get messagesByDate() {
-    return groupMessagesByDate(this.messages);
+    return this.groupMessagesByDate(this.messages);
   }
 
   @computed
@@ -753,35 +752,6 @@ class MessageStore {
     }
   };
 
-  decodeMentions(text = "") {
-    const { usersById } = this.rootStore.usersStore;
-    const messageToFilter = text.split(" ");
-
-    const filteredMessage = messageToFilter.map(part => {
-      // Replace userMentionId with UserMention
-      const match = part.match(REGEX.getUserMentionDecode());
-      if (match) {
-        return part.replace(
-          REGEX.getUserMentionDecode(),
-          `@${usersById[match[1]].username}`
-        );
-      }
-
-      // Replace groupMentionId with GroupMention
-      const groupMatch = part.match(REGEX.getGroupMentionDecode());
-      if (groupMatch) {
-        return part.replace(
-          REGEX.getGroupMentionDecode(),
-          `@${[groupMatch[1]]}`
-        );
-      }
-
-      return part;
-    });
-
-    return filteredMessage.join(" ");
-  }
-
   @action
   startEdit(id) {
     const message = this.getMessageById(id);
@@ -796,7 +766,7 @@ class MessageStore {
   editLastMessage() {
     const message = this.messages.find(m => m.user_id === currentUser.id);
 
-    if (isSentMessage(message)) {
+    if (this.isSentMessage(message)) {
       this.messageInEdit = message;
       this.textInEdit = this.decodeMentions(message.text_content);
     }
@@ -1207,29 +1177,6 @@ class MessageStore {
       });
       this.keepScrollAtBottom();
     }
-  };
-
-  /**
-   * Encodes message for backend compatible format
-   * - @emil -> <@U123>
-   * @param {string} messageText
-   * @returns {string} encoded message
-   */
-  encodeMessage = (messageText = "") => {
-    const { usersByUsername } = this.rootStore.usersStore;
-    return messageText.replace(
-      REGEX.getUserMentionEncode(),
-      (match, username) => {
-        const user = usersByUsername[username];
-        if (["everyone", "room", "here"].indexOf(username) > -1) {
-          return `<@G${username}>`;
-        } else if (user) {
-          return `<@U${user.id}>`;
-        }
-
-        return match;
-      }
-    );
   };
 
   @action

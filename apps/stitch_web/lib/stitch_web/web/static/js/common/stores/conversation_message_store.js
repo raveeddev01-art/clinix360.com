@@ -5,14 +5,11 @@
  */
 
 import { observable, computed, action } from "mobx";
-import { groupMessagesByDate } from "lib/message-utils";
+import BaseMessageStore from "common/abstract-stores/base-message-store";
 
-class ConversationMessageStore {
+class ConversationMessageStore extends BaseMessageStore {
   @observable messages = [];
-
-  constructor(rootStore) {
-    this.rootStore = rootStore;
-  }
+  @observable messageInEdit = null; // Message currently being edited
 
   // ===========================
   // Getters
@@ -25,7 +22,7 @@ class ConversationMessageStore {
 
   @computed
   get messagesByDate() {
-    return groupMessagesByDate(this.messages);
+    return this.groupMessagesByDate(this.messages);
   }
 
   // ===========================

@@ -150,7 +150,7 @@ class MessageForm extends Component {
           break;
       }
 
-      if (evt.keyCode !== 13) {
+      if (evt.keyCode !== 13 && this.props.allowTypingUsers) {
         this.typingStarted();
       }
     }

@@ -28,7 +28,12 @@ class ConversationPanel extends Component {
       <div className="chat-container">
         <Topbar asPatient={asPatient} />
         <MessageList />
-        {!asPatient && <MessageForm messageStore={conversationMessageStore} />}
+        {!asPatient && (
+          <MessageForm
+            messageStore={conversationMessageStore}
+            allowTypingUsers={false}
+          />
+        )}
       </div>
     );
   }
