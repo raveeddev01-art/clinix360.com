@@ -1,8 +1,9 @@
 import { Socket } from "phoenix";
 
 if (window.authenticationToken !== "") {
+  const socketPath = window.socketPath || "socket";
   window.socket = new Socket(
-    `${websocketScheme}${window.applicationHost}/socket`,
+    `${websocketScheme}${window.applicationHost}/${socketPath}`,
     {
       params: {
         authenticationToken: window.authenticationToken,
