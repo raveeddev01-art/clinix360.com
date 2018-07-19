@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
 
 import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -13,6 +14,10 @@ import Patient from "./patient";
 @inject("patientsStore")
 @observer
 class Sidebar extends Component {
+  onSearch = event => {
+    event.preventDefault();
+  };
+
   render() {
     const { patientsStore } = this.props;
 
@@ -21,27 +26,23 @@ class Sidebar extends Component {
         <div className="flex-header">
           <h3>All Patients</h3>
 
-          <div className="search-wrapper">
-            <div className="flex-box">
-              <Form className="flex-item" onSubmit={this.onSearch}>
-                <i className="fa fa-search" />
-                <FormControl type="text" placeholder="Search" />
-              </Form>
+          <div className="flex-box">
+            <Form className="flex-item" onSubmit={this.onSearch}>
+              <i className="fa fa-search" />
+              <FormControl type="text" placeholder="Search" />
+            </Form>
 
-              <OverlayTrigger
-                placement="bottom"
-                overlay={
-                  <Tooltip id="compose-message">Compose Message</Tooltip>
-                }
-              >
-                <Button onClick={this.onComposeClick}>
-                  <i className="fa fa-pencil-square-o" />
-                </Button>
-              </OverlayTrigger>
-            </div>
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="add-patient">Add Patient</Tooltip>}
+            >
+              <Button onClick={this.onComposeClick}>
+                <i className="fa fa-plus" />
+              </Button>
+            </OverlayTrigger>
           </div>
 
-          <div className="selected-actions">
+          {/* <div className="selected-actions">
             <ButtonGroup>
               <Button>
                 <i className="fa fa-bullhorn" />
@@ -59,7 +60,7 @@ class Sidebar extends Component {
                 <i className="fa fa-times" />
               </Button>
             </ButtonGroup>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex-content">
@@ -74,4 +75,4 @@ class Sidebar extends Component {
   }
 }
 
-export default Sidebar;
+export default withRouter(Sidebar);

@@ -80,6 +80,7 @@ const statusMatch = (patient, statusFilter) => {
 
 class PatientsStore {
   @observable patients = [];
+  @observable currentPatient = {};
   @observable page = 0;
   @observable listSort = "first_name";
   @observable sortDirection = "asc";
@@ -117,6 +118,18 @@ class PatientsStore {
   loadPatients = () => {
     return get(`/api/v1/patients`).then(response => {
       this.patients = response.data;
+    });
+  };
+
+  @action
+  openPatient = id => {
+    this.loadPatient(id);
+  };
+
+  @action
+  loadPatient = id => {
+    return get(`/api/v1/patients/${id}`).then(response => {
+      this.currentPatient = response.data;
     });
   };
 
