@@ -22,18 +22,17 @@ class PatientsRepoApp extends Component {
     return (
       <div id="app">
         <AppAlert />
-        <div className="patients-wrapper appContainer">
+        <div className="appContainer">
           <Helmet>
             <title>{titleStore.title}</title>
           </Helmet>
+
           <Switcher />
-          <Sidebar />
-          <div className="patients-content">
-            <Switch>
-              <Route path="/patients" component={PatientsRepo} />
-              <Redirect to="/" />
-            </Switch>
-          </div>
+
+          <Switch>
+            <Route path="/patients/:id" component={PatientsRepo} />
+            <Redirect from="*" to="/patients/1" />
+          </Switch>
         </div>
       </div>
     );

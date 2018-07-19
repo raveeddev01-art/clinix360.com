@@ -1,26 +1,23 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import PatientListItem from "./PatientListItem";
+import Sidebar from "./sidebar/sidebar";
 import PatientModal from "./PatientModal";
-import PatientsHeader from "./PatientsHeader";
 
 @inject("patientsStore")
 @observer
 class PatientsRepo extends Component {
   render() {
-    const { patientsStore } = this.props;
-
     return (
-      <div className="patients">
-        <PatientsHeader />
-        <div className="patients-list-wrapper">
-          <div className="patients-list">
-            {patientsStore.patientsForPage.map((patient, i) => (
-              <PatientListItem key={i} patient={patient} />
-            ))}
+      <div className="engage-wrapper">
+        <Sidebar />
+
+        <div id="main">
+          <div className="flex-content">
+            <h1>the main panel</h1>
           </div>
         </div>
+
         <PatientModal />
       </div>
     );

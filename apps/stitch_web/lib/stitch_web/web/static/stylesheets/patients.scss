@@ -155,3 +155,41 @@ $patients-header-height: 60px;
     }
   }
 }
+
+// ==========================================
+
+.engage-wrapper {
+  .inbox-menu {
+    .search-wrapper {
+      margin-bottom: 20px;
+    }
+
+    .btn-group {
+      button {
+        border-right-width: 0;
+
+        &:last-of-type {
+          border-right-width: 2px;
+        }
+      }
+    }
+
+    .patients-list {
+      .item {
+        display: block;
+        color: $brand-primary;
+        font-size: 16px;
+        border-bottom: 1px solid $border-color-secondary;
+        padding: 8px 20px;
+
+        &:hover {
+          text-decoration: none;
+        }
+
+        &:focus {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
