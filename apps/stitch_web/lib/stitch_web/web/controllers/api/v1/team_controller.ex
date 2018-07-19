@@ -21,15 +21,12 @@ defmodule Stitch.Web.Api.V1.TeamController do
   end
 
   def create(conn, %{"name" => name, "url" => slug}) do
-    case Team.Onboarding.create_team(name, slug) do
-      {:error, message} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: message})
-
-      team ->
-        conn
-        |> json(%{id: team.id, name: team.name, slug: team.slug})
+    with {:team, {:ok, %{team: team}}} <- {:team, Team.Onboarding.create_team(name, slug)} do
+      conn
+      |> json(%{id: team.id, name: team.name, slug: team.slug})
+    else
+      {:team, {:error, _action, changeset, _}} ->
+        {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
   end
 
