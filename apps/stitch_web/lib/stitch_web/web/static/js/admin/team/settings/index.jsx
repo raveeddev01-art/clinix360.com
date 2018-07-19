@@ -1,54 +1,22 @@
 import React, { Component } from "react";
 import { inject } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
-import Alert from "react-bootstrap/lib/Alert";
+
+import withAlertState from "../../../util/with_alert_state";
 import TeamNamePanel from "./team-name-panel";
 import SecurityLockoutPanel from "./security-lockout-panel";
 import InvitationControlPanel from "./invitation-control-panel";
 // import DeleteTeamPanel from "./delete-team-panel";
 
 @inject("titleStore", "adminPanelStore")
+@withAlertState
 class TeamSettings extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      alertMessage: "",
-      alertStyle: "",
-      alertVisible: false
-    };
-  }
-
   componentWillMount() {
     this.props.titleStore.setPageName("Team Settings");
     this.props.adminPanelStore.setHeading("Settings", "fa-cogs");
   }
 
-  onSuccess = message => {
-    this.setState({
-      alertMessage: message,
-      alertVisible: true,
-      alertStyle: "success"
-    });
-  };
-
-  onError = message => {
-    this.setState({
-      alertMessage: message,
-      alertVisible: true,
-      alertStyle: "danger"
-    });
-  };
-
-  hideAlert = () => {
-    this.setState({
-      alertVisible: false
-    });
-  };
-
   render() {
-    const { alertMessage, alertVisible, alertStyle } = this.state;
-
     return (
       <Panel className="admin-panel">
         <Panel.Heading>
@@ -58,7 +26,7 @@ class TeamSettings extends Component {
         </Panel.Heading>
 
         <Panel.Body>
-          {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+          {this.renderAlert()}
           <TeamNamePanel
             onSuccess={this.onSuccess}
             onError={this.onError}
