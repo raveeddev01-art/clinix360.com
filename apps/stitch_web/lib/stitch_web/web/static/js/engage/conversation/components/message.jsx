@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import PropTypes from "prop-types";
 
 import { Avatar, MessageHeader } from "common/components";
 
@@ -25,5 +26,9 @@ class Message extends Component {
     );
   }
 }
+
+Message.propTypes = {
+  message: PropTypes.object.isRequired
+};
 
 export default Message;

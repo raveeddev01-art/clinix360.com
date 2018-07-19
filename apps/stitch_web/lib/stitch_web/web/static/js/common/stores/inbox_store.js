@@ -18,6 +18,10 @@ class InboxStore {
   @observable messagesLoaded = false;
   @observable conversationsLoaded = false;
   @observable isLoadingConversationPage = false;
+  @observable currentConversationId = null;
+  @observable messagesLoaded = false;
+  @observable engageLoaded = false;
+  @observable currentModal = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -48,19 +52,24 @@ class InboxStore {
   get sortedConversations() {
     return this.conversations.sort(this.sortByUpdated);
   }
+  @computed
+  get currentConversation() {
+    return this.getConversationById(this.currentConversationId);
+  }
 
   @computed
   get openedConversations() {
-    return this.conversations
-      .filter(conversations => conversations.open)
-      .sort(this.sortByUpdated);
+    return this.conversations.filter(conversations => conversations.open);
   }
 
   @computed
   get closedConversations() {
-    return this.conversations
-      .filter(conversations => !conversations.open)
-      .sort(this.sortByUpdated);
+    return this.conversations.filter(conversations => !conversations.open);
+  }
+
+  @computed
+  get currentInboxId() {
+    return this.currentInbox.id;
   }
 
   @computed
@@ -110,6 +119,15 @@ class InboxStore {
   };
 
   @action
+  updateConversationData = (id, data) => {
+    const conversation = this.getConversationById(id);
+
+    if (conversation) {
+      Object.assign(conversation, data);
+    }
+  };
+
+  @action
   closeConversation = id => {
     return put(`/api/v1/conversations/${id}/close`);
   };
@@ -148,6 +166,7 @@ class InboxStore {
     try {
       await this.loadInbox();
       await this.loadConversations(this.currentInbox.id);
+      this.engageLoaded = true;
     } catch (e) {
       // TODO if error occurs here, redirect to error page
       console.error(e); // eslint-disable-line
@@ -177,7 +196,7 @@ class InboxStore {
   @action
   loadConversations = id => {
     return get(`/api/v1/inboxes/${id}/conversations`).then(response => {
-      this.conversations = response.data;
+      this.conversations = response.data.sort(this.sortByUpdated);
       this.conversationsLoaded = true;
     });
   };
@@ -234,8 +253,11 @@ class InboxStore {
 
   @action
   loadConversation = id => {
+    this.currentConversationId = parseInt(id, 10);
     return get(`/api/v1/conversations/${id}`).then(response => {
-      this.currentConversation = response.data;
+      this.rootStore.conversationMessageStore.onConversationLoaded(
+        response.data
+      );
       this.messagesLoaded = true;
     });
   };
@@ -250,18 +272,19 @@ class InboxStore {
 
   @action
   createConversation = params => {
-    return post(`/api/v1/inboxes/${this.currentInbox.id}/conversations`, {
+    return post(`/api/v1/inboxes/${this.currentInboxId}/conversations`, {
       body: params
     }).then(response => {
       this.changeCountsAsNeeded(response.data);
       this.addConversations([response.data]);
+      return response.data.id;
     });
   };
 
   @action
   createConversationAsPatient = params => {
     return post(
-      `/api/v1/patient/inboxes/${this.currentInbox.id}/conversations`,
+      `/api/v1/patient/inboxes/${this.currentInboxId}/conversations`,
       {
         body: params
       }
@@ -362,6 +385,21 @@ class InboxStore {
     if (!isNaN(this.currentInbox[type])) {
       this.currentInbox[type] = this.currentInbox[type] - 1;
     }
+  };
+  // ============================
+  // Event Handlers
+  // ============================
+
+  @action
+  onConversationCreated = conversation => {
+    if (!this.getConversationById(conversation.id)) {
+      this.conversations.push(conversation);
+    }
+  };
+
+  @action
+  onConversationUpdated = conversation => {
+    this.updateConversationData(conversation.id, conversation);
   };
 }
 

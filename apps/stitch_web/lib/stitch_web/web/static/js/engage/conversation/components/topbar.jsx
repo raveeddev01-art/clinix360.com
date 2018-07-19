@@ -15,7 +15,7 @@ import AddPatientModal from "../../inbox/modals/add_patient_modal";
 class Topbar extends Component {
   onCloseConversation = () => {
     const { inboxStore } = this.props;
-    inboxStore.closeConversation(inboxStore.currentConversation.id);
+    inboxStore.closeConversation(inboxStore.currentConversationId);
   };
 
   onToggle = isOpen => {
