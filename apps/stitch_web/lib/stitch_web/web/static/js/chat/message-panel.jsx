@@ -154,7 +154,10 @@ export default class MessagePanel extends Component {
 
     return (
       <div className="flex-footer">
-        <MessageForm messageStore={messageStore} />
+        <MessageForm
+          messageStore={messageStore}
+          currentGroup={groupsStore.currentGroup}
+        />
       </div>
     );
   }

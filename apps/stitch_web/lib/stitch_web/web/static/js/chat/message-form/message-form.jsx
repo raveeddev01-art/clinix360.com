@@ -357,7 +357,7 @@ class MessageForm extends Component {
 
   render() {
     const { searchFilter, openMentionMenu, openEmojiSearch, text } = this.state;
-    const { allowTypingUsers, allowMention } = this.props;
+    const { allowTypingUsers, allowMention, currentGroup } = this.props;
 
     return (
       <div className="message-form">
@@ -366,6 +366,7 @@ class MessageForm extends Component {
         {allowMention &&
           openMentionMenu && (
             <MentionMenu
+              currentGroup={currentGroup}
               filter={searchFilter}
               onSelect={this.onSelectMention}
               onClose={this.onCloseMentionMenu}
@@ -394,12 +395,14 @@ class MessageForm extends Component {
 MessageForm.propTypes = {
   messageStore: PropTypes.object.isRequired,
   allowTypingUsers: PropTypes.bool,
-  allowMention: PropTypes.bool
+  allowMention: PropTypes.bool,
+  currentGroup: PropTypes.object
 };
 
 MessageForm.defaultProps = {
   allowTypingUsers: true,
-  allowMention: true
+  allowMention: true,
+  currentGroup: null
 };
 
 export default MessageForm;
