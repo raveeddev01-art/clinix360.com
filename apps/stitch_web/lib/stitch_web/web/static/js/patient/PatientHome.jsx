@@ -32,7 +32,7 @@ class PatientHome extends Component {
                   title="Messages"
                   description="View and send secure messages to your provider."
                   openButtonText="Open"
-                  link="/patient/messages"
+                  link="/patient/conversations"
                 />
                 <HomeItem
                   icon="fa-user"

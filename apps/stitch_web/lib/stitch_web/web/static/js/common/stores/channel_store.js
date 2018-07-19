@@ -42,6 +42,10 @@ class ChannelStore {
     }
   }
 
+  disconnectAndReload() {
+    socket.disconnect(() => window.location.reload(true));
+  }
+
   // ///////////// //
   // Event Channel //
   // ///////////// //
@@ -51,6 +55,26 @@ class ChannelStore {
 
   get eventChannel() {
     return this.channels[this.eventChannelTopic];
+  }
+
+  eventPatientChannelTopic(patientId) {
+    return `events:patient:${patientId}`;
+  }
+
+  eventPatientChannel(patientId) {
+    return this.channels[this.eventPatientChannelTopic(patientId)];
+  }
+
+  joinEventPatientChannel(patientId, options = {}) {
+    const topic = this.eventPatientChannelTopic(patientId);
+    const joined = this.join(topic, { ...options });
+    const eventChannel = this.eventPatientChannel(patientId);
+
+    eventChannel.on("new_app_version", this.disconnectAndReload);
+    eventChannel.on("conversation_created", noop);
+    eventChannel.on("conversation_updated", noop);
+
+    return joined;
   }
 
   joinEventChannel(options = {}) {
@@ -92,9 +116,7 @@ class ChannelStore {
     );
 
     // App related
-    this.eventChannel.on("new_app_version", () => {
-      socket.disconnect(() => window.location.reload(true));
-    });
+    this.eventChannel.on("new_app_version", this.disconnectAndReload);
     this.eventChannel.on("logout", presenceStore.onLogout);
 
     return joined;
@@ -193,16 +215,8 @@ class ChannelStore {
     return `team:patient:${teamId}`;
   }
 
-  eventPatientChannelTopic(patientId) {
-    return `events:patient:${patientId}`;
-  }
-
   teamPatientChannel(teamId) {
     return this.channels[this.teamPatientChannelTopic(teamId)];
-  }
-
-  eventPatientChannel(patientId) {
-    return this.channels[this.eventPatientChannelTopic(patientId)];
   }
 
   joinTeamPatientChannel(teamId, options = {}) {
@@ -217,21 +231,6 @@ class ChannelStore {
     );
 
     this.teamPatientChannel(teamId).on("team_deleted", noop);
-
-    return joined;
-  }
-
-  joinEventPatientChannel(patientId, options = {}) {
-    const topic = this.eventPatientChannelTopic(patientId);
-    const joined = this.join(topic, { ...options });
-    const eventChannel = this.eventPatientChannel(patientId);
-
-    eventChannel.on("new_app_version", () => {
-      socket.disconnect(() => window.location.reload(true));
-    });
-
-    eventChannel.on("conversation_created", noop);
-    eventChannel.on("conversation_updated", noop);
 
     return joined;
   }

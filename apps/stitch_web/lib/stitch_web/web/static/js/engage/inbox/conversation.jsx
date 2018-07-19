@@ -19,23 +19,40 @@ class Conversation extends Component {
     inboxStore.openConversation(conversation.id);
   };
 
-  render() {
+  renderStatusToggle() {
     const { conversation } = this.props;
-    const { patient } = conversation;
+
+    return conversation.open ? (
+      <div className="closed" onClick={this.onCloseConversation}>
+        <i className="fa fa-check" /> Close
+      </div>
+    ) : (
+      <div className="closed" onClick={this.onOpenConversation}>
+        <i className="fa fa-inbox" /> Reopen
+      </div>
+    );
+  }
+
+  render() {
+    const { asPatient, conversation } = this.props;
 
     const linkClass = cx("item", {
       active: parseInt(this.props.match.params.id, 10) === conversation.id
     });
 
+    const linkLocation = asPatient
+      ? `/patient/conversations/${conversation.id}`
+      : `/conversations/${conversation.id}`;
+
     return (
-      <Link to={`/conversations/${conversation.id}`} className={linkClass}>
+      <Link to={linkLocation} className={linkClass}>
         <div className="item__icon">
           <i className="fa fa-circle" />
         </div>
 
         <div className="item__content">
           <div className="heading">
-            <div className="user">{patient.full_name}</div>
+            <div className="user">{conversation.subject}</div>
 
             <div className="date">
               {moment
@@ -49,20 +66,10 @@ class Conversation extends Component {
                 })}
             </div>
 
-            {conversation.open ? (
-              <div className="closed" onClick={this.onCloseConversation}>
-                <i className="fa fa-check" /> Close
-              </div>
-            ) : (
-              <div className="closed" onClick={this.onOpenConversation}>
-                <i className="fa fa-inbox" /> Reopen
-              </div>
-            )}
+            {!asPatient && this.renderStatusToggle()}
           </div>
 
           <div className="message">
-            <div className="subject">{conversation.subject}</div>
-
             <div className="text">
               {conversation.latest_conversation_message
                 ? conversation.latest_conversation_message.text_content
@@ -76,10 +83,12 @@ class Conversation extends Component {
 }
 
 Conversation.defaultProps = {
+  asPatient: false,
   conversation: PropTypes.object.isRequired
 };
 
 Conversation.propTypes = {
+  asPatient: PropTypes.bool,
   conversation: PropTypes.object
 };
 

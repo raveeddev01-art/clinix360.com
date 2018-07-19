@@ -7,9 +7,7 @@ import { Avatar, MessageHeader } from "common/components";
 @observer
 class Message extends Component {
   render() {
-    const {
-      conversation: { text_content, provider_id, inserted_at }
-    } = this.props;
+    const { message: { text_content, provider_id, inserted_at } } = this.props;
     // TODO: Handle either patients or providers
     const user = this.props.usersStore.getUserById(provider_id) || {};
 

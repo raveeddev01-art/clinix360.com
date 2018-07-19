@@ -27,7 +27,12 @@ class PatientEngageApp extends Component {
               <Route exact path="/patient/home" component={PatientHome} />
               <Route
                 exact
-                path="/patient/messages"
+                path="/patient/conversations"
+                component={PatientConversations}
+              />
+              <Route
+                exact
+                path="/patient/conversations/:id"
                 component={PatientConversations}
               />
               <Route exact path="/patient/profile" component={PatientProfile} />

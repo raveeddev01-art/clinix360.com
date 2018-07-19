@@ -43,7 +43,11 @@ class PatientSidebar extends Component {
         <div className="flex-container">
           <ListGroup>
             {this.renderLink("/patient/home", "fa fa-home", "Home")}
-            {this.renderLink("/patient/messages", "fa fa-comments", "Messages")}
+            {this.renderLink(
+              "/patient/conversations",
+              "fa fa-comments",
+              "Messages"
+            )}
             {this.renderLink("/patient/profile", "fa fa-user", "Profile")}
             <br />
             <ListGroupItem>

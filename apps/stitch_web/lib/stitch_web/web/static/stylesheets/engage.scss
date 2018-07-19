@@ -156,6 +156,10 @@ $dark-border-color: #ccc;
       overflow: hidden;
     }
 
+    .header-separator {
+      border-top: 1px solid $dark-border-color;
+    }
+
     .status-filter {
       border-top: 1px solid $dark-border-color;
       border-bottom: 1px solid $dark-border-color;
@@ -251,10 +255,18 @@ $dark-border-color: #ccc;
       }
     }
 
-    .scrollbar {
+    .provider-scrollbar {
       position: absolute;
       left: 0;
       top: 50px;
+      right: 0;
+      bottom: 0;
+    }
+
+    .patient-scrollbar {
+      position: absolute;
+      left: 0;
+      top: 0;
       right: 0;
       bottom: 0;
     }
@@ -285,7 +297,7 @@ $dark-border-color: #ccc;
           background: #f0f1f3;
           text-decoration: none;
 
-          .item__content .heading .date {
+          .item__content .heading .provider-date {
             display: none;
           }
 

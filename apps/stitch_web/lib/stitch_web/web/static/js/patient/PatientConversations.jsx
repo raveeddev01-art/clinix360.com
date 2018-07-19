@@ -10,6 +10,9 @@ import LoadingPanel from "../engage/LoadingPanel";
 @observer
 class PatientConversations extends Component {
   componentWillMount() {
+    this.props.inboxStore.loadEngageAsPatient(() => {
+      $(".html-loading-element").remove();
+    });
     this.openConversation(this.props.match.params.id);
   }
 
@@ -19,21 +22,21 @@ class PatientConversations extends Component {
     }
   }
 
-  openConversation() {
-    // const { inboxStore } = this.props;
-    // inboxStore.openConversation(params);
+  openConversation(id) {
+    const { inboxStore } = this.props;
+    inboxStore.loadConversationAsPatient(id);
   }
 
   render() {
     const { inboxStore } = this.props;
-    const loaded = inboxStore.messagesLoaded;
+    const loaded = inboxStore.conversationsLoaded;
 
     return (
       <div className="engage-wrapper">
-        <InboxMenu />
+        <InboxMenu asPatient loaded={loaded} />
         <div id="main">
           <div className="flex-content">
-            {loaded ? <ConversationPanel /> : <LoadingPanel />}
+            {loaded ? <ConversationPanel asPatient /> : <LoadingPanel />}
           </div>
         </div>
       </div>

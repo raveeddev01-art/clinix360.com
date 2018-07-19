@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -36,12 +37,14 @@ class Topbar extends Component {
   };
 
   render() {
-    const { inboxStore } = this.props;
+    const { asPatient, inboxStore } = this.props;
 
     return (
       <div className="topbar">
         <div className="header-text">
-          <h4>{inboxStore.currentConversation.patient.full_name}</h4>
+          {!asPatient && (
+            <h4>{inboxStore.currentConversation.patient.full_name}</h4>
+          )}
           <div className="subject">
             {inboxStore.currentConversation.subject}
           </div>
@@ -105,5 +108,13 @@ class Topbar extends Component {
     );
   }
 }
+
+Topbar.propTypes = {
+  asPatient: PropTypes.bool
+};
+
+Topbar.defaultProps = {
+  asPatient: false
+};
 
 export default Topbar;
