@@ -98,6 +98,30 @@ defmodule Stitch.Web.Api.V1.PatientController do
     end
   end
 
+  def update_password(conn, %{
+        "new_password" => new_password,
+        "old_password" => old_password
+      }) do
+    case Stitch.User.Authentication.update_password(
+           conn.assigns.patient,
+           old_password,
+           new_password
+         ) do
+      {:ok, patient} ->
+        # TODO: Broadcast session logout
+
+        conn
+        |> update_user_session_token(patient)
+        |> json(%{token: patient.token})
+
+      {:error, message} when is_binary(message) ->
+        {:error, :unprocessable_entity, message}
+
+      {:error, message} ->
+        {:error, message}
+    end
+  end
+
   def activate(conn, params) do
     change_active_value(conn, params, true)
   end
