@@ -64,14 +64,15 @@ defmodule Stitch.User.Authentication do
   def put_new_password(changeset), do: changeset
 
   @doc """
-  Authenticates a user with the current password and updates it.
+  Authenticates a user or patient with the current password and updates it.
   """
-  @spec update_password(User.t(), binary, binary) ::
-          {:ok, User.t()} | {:error, binary} | {:error, Changeset.t()}
-  def update_password(%User{} = user, current_password, new_password) do
+  @spec update_password(User.t() | Patient.t(), binary, binary) ::
+          {:ok, User.t() | Patient.t()} | {:error, binary} | {:error, Changeset.t()}
+  def update_password(user_or_patient, current_password, new_password) do
     with {:authenticated?, true} <-
-           {:authenticated?, Comeonin.Bcrypt.checkpw(current_password, user.password_hash)} do
-      user
+           {:authenticated?,
+            Comeonin.Bcrypt.checkpw(current_password, user_or_patient.password_hash)} do
+      user_or_patient
       |> password_update_changeset(%{password: new_password})
       |> Repo.update()
     else
