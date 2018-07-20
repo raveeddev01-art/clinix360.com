@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.UploadView do
+defmodule Stitch.Web.Api.V1.UploadView do
   alias Stitch.Paginator
   use Stitch.Web, :view
   alias StitchConnect.Web.Api.V1.MessageView

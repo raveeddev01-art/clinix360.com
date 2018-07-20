@@ -106,6 +106,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
   scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through([:api, :patient_api])
+    post("/upload-signature", UploadController, :patient_create)
     put("/info", PatientController, :update_as_patient)
     put("/update_password", PatientController, :update_password)
   end
@@ -154,8 +155,6 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/logout", StitchEngage.Web.PatientAuthenticationController, :logout)
     get("/logged-out", StitchEngage.Web.PatientAuthenticationController, :logged_out)
-
-    get("/login", StitchEngage.Web.PatientAuthenticationController, :login)
 
     scope "/invitations" do
       get("/error", StitchConnect.Web.InvitationController, :error)
@@ -337,6 +336,9 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/patient/login", AuthenticationController, :submit_patient_login)
     post("/reset_password", AuthenticationController, :reset_password)
     post("/patient/reset_password", AuthenticationController, :patient_reset_password)
+
+    get("/uploads", UploadController, :index)
+    post("/upload-signature", UploadController, :create)
   end
 
   # API routes which need token.
@@ -489,9 +491,6 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/groups/:group_id/notification-preference", NotificationPreferenceController, :show)
     put("/groups/:group_id/notification-preference", NotificationPreferenceController, :update)
-
-    get("/uploads", UploadController, :index)
-    post("/upload-signature", UploadController, :create)
 
     resources("/devices", DeviceController, only: [:create, :delete])
     post("/devices/unregister", DeviceController, :delete)
