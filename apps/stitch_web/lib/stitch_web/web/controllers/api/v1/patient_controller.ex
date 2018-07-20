@@ -9,7 +9,8 @@ defmodule Stitch.Web.Api.V1.PatientController do
     PatientAuthorization,
     PatientQueries,
     Patient,
-    Web.TeamChannel
+    Web.TeamChannel,
+    Web.EventsChannel
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -59,7 +60,7 @@ defmodule Stitch.Web.Api.V1.PatientController do
            {:authorized?, PatientAuthorization.can_update_as_provider?(id, current_user)},
          {:ok, patient} when not is_nil(patient) <- {:ok, PatientQueries.get_patient(id)},
          {:ok, updated_patient} <- Patient.update_as_provider(patient, params) do
-      TeamChannel.broadcast_patient_updated(
+      broadcast_patient_updated(
         conn.assigns.team.id,
         updated_patient
       )
@@ -81,7 +82,7 @@ defmodule Stitch.Web.Api.V1.PatientController do
 
     with {:onboarded?, true} <- {:onboarded?, patient.onboarded},
          {:ok, updated_patient} <- Patient.update_as_patient(patient, params) do
-      TeamChannel.broadcast_patient_updated(
+      broadcast_patient_updated(
         conn.assigns.team.id,
         updated_patient
       )
@@ -137,7 +138,7 @@ defmodule Stitch.Web.Api.V1.PatientController do
            {:authorized?, PatientAuthorization.can_update_as_provider?(id, current_user)},
          {:ok, patient} when not is_nil(patient) <- {:ok, PatientQueries.get_patient(id)},
          {:ok, patient} <- Patient.change_disabled_status_as_provider(patient, active_status) do
-      TeamChannel.broadcast_patient_updated(
+      broadcast_patient_updated(
         conn.assigns.team.id,
         patient
       )
@@ -161,5 +162,13 @@ defmodule Stitch.Web.Api.V1.PatientController do
       %Patient{} -> json(conn, %{exists: true})
       _ -> json(conn, %{exists: false})
     end
+  end
+
+  defp broadcast_patient_updated(team_id, patient) do
+    # To the providers
+    TeamChannel.broadcast_patient_updated(team_id, patient)
+
+    # To the patient
+    EventsChannel.broadcast_patient_updated(patient)
   end
 end
