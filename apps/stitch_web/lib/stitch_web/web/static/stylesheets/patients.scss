@@ -203,7 +203,6 @@ $patients-header-height: 60px;
 
   .info-panel {
     flex: 1;
-    // padding: 30px 20px;
     position: relative;
 
     .scrollbar {
@@ -259,13 +258,11 @@ $patients-header-height: 60px;
       .timeline {
         display: flex;
         flex-direction: column;
-        // border-left: 1px solid #ebebeb;
 
         .item {
           display: flex;
           flex-direction: row;
           align-items: center;
-          // margin-left: -5px;
           padding: 15px 0;
           position: relative;
 
@@ -293,9 +290,17 @@ $patients-header-height: 60px;
             .dot {
               width: 10px;
               height: 10px;
+              color: #fff;
               background: $brand-primary;
               border-radius: 50%;
               margin: 0 5px;
+
+              i.fa {
+                font-size: 12px;
+                position: relative;
+                top: -3px;
+                left: 5px;
+              }
             }
           }
 

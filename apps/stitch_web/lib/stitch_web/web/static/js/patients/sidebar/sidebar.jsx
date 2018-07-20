@@ -4,18 +4,47 @@ import { withRouter } from "react-router-dom";
 
 import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
-import ButtonGroup from "react-bootstrap/lib/ButtonGroup";
+import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Patient from "./patient";
+import AddPatientModal from "../../engage/inbox/modals/add_patient_modal";
 
 @inject("patientsStore")
 @observer
 class Sidebar extends Component {
   onSearch = event => {
     event.preventDefault();
+  };
+
+  onPatientModalClick = () => {
+    this.showAddPatientModal();
+  };
+
+  get currentModal() {
+    return this.props.patientsStore.currentModal;
+  }
+
+  get isShowing() {
+    return this.currentModal === "compose" || this.currentModal === "add";
+  }
+
+  showAddPatientModal = () => {
+    this.props.patientsStore.setModal("add");
+  };
+
+  closeModal = () => {
+    this.props.patientsStore.closeModal();
+  };
+
+  renderModal = () => {
+    return (
+      <Modal className="inbox-modal" show onHide={this.closeModal}>
+        <AddPatientModal closeModal={this.closeModal} />
+      </Modal>
+    );
   };
 
   render() {
@@ -36,31 +65,11 @@ class Sidebar extends Component {
               placement="bottom"
               overlay={<Tooltip id="add-patient">Add Patient</Tooltip>}
             >
-              <Button onClick={this.onComposeClick}>
+              <Button onClick={this.onPatientModalClick}>
                 <i className="fa fa-plus" />
               </Button>
             </OverlayTrigger>
           </div>
-
-          {/* <div className="selected-actions">
-            <ButtonGroup>
-              <Button>
-                <i className="fa fa-bullhorn" />
-              </Button>
-              <Button>
-                <i className="fa fa-tasks" />
-              </Button>
-              <Button>
-                <i className="fa fa-pie-chart" />
-              </Button>
-              <Button>
-                <i className="fa fa-trash" />
-              </Button>
-              <Button>
-                <i className="fa fa-times" />
-              </Button>
-            </ButtonGroup>
-          </div> */}
         </div>
 
         <div className="flex-content">
@@ -70,6 +79,8 @@ class Sidebar extends Component {
             ))}
           </ul>
         </div>
+
+        {this.isShowing && this.renderModal()}
       </div>
     );
   }

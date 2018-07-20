@@ -64,7 +64,9 @@ class Main extends Component {
             <div className="timeline">
               <div className="item">
                 <div className="dot-holder">
-                  <div className="dot" />
+                  <div className="dot">
+                    <i className="fa fa-plus" />
+                  </div>
                 </div>
 
                 <div className="description">

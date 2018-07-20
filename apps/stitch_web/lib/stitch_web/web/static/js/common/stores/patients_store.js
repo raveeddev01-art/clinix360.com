@@ -88,6 +88,7 @@ class PatientsStore {
   @observable searchFilter = "";
   @observable modalOpen = false;
   @observable modalPatient = null;
+  @observable currentModal = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -204,16 +205,20 @@ class PatientsStore {
   // Modal-related
 
   @action
-  closeModal = () => {
-    this.modalOpen = false;
-    this.modalPatient = null;
+  setModal = modalName => {
+    this.currentModal = modalName;
   };
 
   @action
-  openModal = patientId => {
-    this.modalOpen = true;
-    this.modalPatientId = patientId;
+  closeModal = () => {
+    this.currentModal = null;
   };
+
+  // @action
+  // openModal = patientId => {
+  //   this.modalOpen = true;
+  //   this.modalPatientId = patientId;
+  // };
 
   // ======================
   //   COMPUTED PROPERTIES
