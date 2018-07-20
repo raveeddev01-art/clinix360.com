@@ -44,6 +44,9 @@ defmodule Stitch.Message do
     field(:client_name, :string, default: "unknown")
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
+    # Remove on the next release
+    field(:requires_fallback_comment, :boolean, default: true)
+
     belongs_to(:upload, Upload)
     belongs_to(:upload_comment, UploadComment)
     embeds_many(:link_previews, LinkPreview, on_replace: :delete)

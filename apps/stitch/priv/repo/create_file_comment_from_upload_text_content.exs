@@ -89,6 +89,7 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
                 %{silent: true}
               )} do
         correct_timestamp(message, upload_comment, inserted_messages_for_group)
+        message |> change(requires_fallback_comment: false) |> Repo.update()
       else
         {:exists, upload_comment} ->
           Logger.warn("File comment already exists, (#{inspect(upload_comment.id)})")
