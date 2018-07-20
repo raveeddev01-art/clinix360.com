@@ -3,7 +3,7 @@ defmodule Stitch.PatientAuthorization do
   Authorization module for patient related logic.
   """
 
-  alias Stitch.{TeamAuthorization, Accounts.User}
+  alias Stitch.{TeamAuthorization, Accounts.User, Patient}
 
   @doc """
   Given a team_id and user. Check if user can create a patient.
@@ -24,5 +24,13 @@ defmodule Stitch.PatientAuthorization do
 
   defp is_full_team_member?(team_id, user) do
     TeamAuthorization.user_is_member?(team_id, user.id) && !User.guest?(user)
+  end
+
+  @doc """
+  Given a user and patient, check if user can view the patient.
+  """
+  @spec can_view_patient_as_provider?(User.t(), Patient.t()) :: boolean
+  def can_view_patient_as_provider?(%User{} = current_user, %Patient{} = patient) do
+    is_full_team_member?(patient.team_id, current_user)
   end
 end
