@@ -352,25 +352,22 @@ defmodule Stitch.Web.Api.V1.Docs do
           PatientLogin:
             swagger_schema do
               title("PatientLogin")
-              description("A patient user.")
+              description("Response when a patient logs in.")
 
               properties do
-                id(:integer)
-                avatar_thumb(:string)
-                avatar(:string)
-                disabled(:boolean)
-                email(:string)
-                first_name(:string)
-                full_name(:string)
-                inserted_at(:string)
-                updated_at(:string)
-                last_name(:string)
-                mrn(:string)
-                onboarded(:booelan)
-                phone(:string)
-                token(:string)
+                team(
+                  Schema.new do
+                    properties do
+                      id(:integer)
+                      name(:string)
+                      slug(:string)
+                    end
+                  end
+                )
+
                 redirect_url(:string)
-                team_id(:integer)
+                token(:string)
+                patient(Schema.ref(:Patient))
               end
             end,
           Patient:
