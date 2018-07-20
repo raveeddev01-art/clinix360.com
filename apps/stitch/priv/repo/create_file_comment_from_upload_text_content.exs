@@ -67,12 +67,15 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
 
   def handle_message(message) do
     try do
+      ts_start = log_with_timestamp("Started message id #{message.id}")
+
       presence = StitchConnect.Web.UserStatusService.new()
 
       with {:upload, %Upload{} = upload} <-
              {:upload, FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
            {:reset_upload_comments, _} <-
              {:reset_upload_comments, reset_upload_comments(message)},
+           ts_reset = log_with_timestamp("Reset upload comments for message id #{message.id}"),
            user = UserQueries.get_by_id(upload.user_id),
            {:created,
             {:ok,
@@ -90,6 +93,13 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
               )} do
         correct_timestamp(message, upload_comment, inserted_messages_for_group)
         message |> change(requires_fallback_comment: false) |> Repo.update()
+        ts_finished = log_with_timestamp("Finished message id #{message.id}")
+
+        Logger.info(
+          "[Message id #{message.id} stat (milli_seconds)] reset: #{ts_reset - ts_start}, creation: #{
+            ts_finished - ts_reset
+          }"
+        )
       else
         {:exists, upload_comment} ->
           Logger.warn("File comment already exists, (#{inspect(upload_comment.id)})")
@@ -141,5 +151,11 @@ defmodule Stitch.Repo.Scripts.CreateFileCommentFromUpload do
 
     Upload
     |> Repo.update_all(set: [comment_count: 0])
+  end
+
+  def log_with_timestamp(content) do
+    ts = :os.system_time(:milli_seconds)
+    Logger.info("#{ts} #{content}")
+    ts
   end
 end
