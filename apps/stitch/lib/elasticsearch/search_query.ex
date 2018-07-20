@@ -24,23 +24,31 @@ defmodule Stitch.Elasticsearch.SearchQuery do
             before: nil,
             after: nil,
             current_user: nil,
-            conversation_id: nil
-
-  @type search_order :: nil | :recency | :relevance
+            conversation_id: nil,
+            inbox_id: nil,
+            team_id: nil,
+            limit: nil,
+            skip: nil
 
   @type t :: %SearchQuery{
           term: String.t() | nil,
           author: String.t() | nil,
-          order: search_order,
+          order: String.t() | nil,
           before: DateTime.t() | nil,
           after: DateTime.t() | nil,
           current_user: User.t() | nil,
-          conversation_id: pos_integer | nil
+          conversation_id: pos_integer | [pos_integer] | nil,
+          inbox_id: pos_integer | [pos_integer] | nil,
+          team_id: pos_integer | nil,
+          limit: pos_integer | nil,
+          skip: pos_integer | nil
         }
 
   @type elasticsearch_query :: map
 
   @highlight_tag "%&$&%"
+
+  @max_limit 60
 
   @doc """
   Creates a SearchQuery struct
@@ -65,17 +73,70 @@ defmodule Stitch.Elasticsearch.SearchQuery do
     |> before_filter(search_query)
     |> after_filter(search_query)
     |> conversation_filter(search_query)
+    |> inbox_filter(search_query)
+    |> team_filter(search_query)
+    |> apply_limit(search_query)
+    |> apply_skip(search_query)
     |> highlighter()
   end
 
-  @spec before_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
-  def conversation_filter(query, %SearchQuery{conversation_id: conversation_id})
-      when is_integer(conversation_id) do
+  @spec apply_limit(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def apply_limit(query, %SearchQuery{} = search_query) do
+    limit = Enum.min([search_query.limit, @max_limit])
+    Map.put(query, "size", limit)
+  end
+
+  @spec apply_skip(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def apply_skip(query, %SearchQuery{skip: skip}) when is_integer(skip) do
+    Map.put(query, "from", skip)
+  end
+
+  def apply_skip(query, _search_query), do: query
+
+  @spec team_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def team_filter(query, %SearchQuery{team_id: team_id}) when is_integer(team_id) do
     subquery = %{
       constant_score: %{
         filter: %{
           term: %{
-            conversation_id: conversation_id
+            team_id: team_id
+          }
+        }
+      }
+    }
+
+    add_must_field(query, subquery)
+  end
+
+  def team_filter(query, _search_query), do: query
+
+  @spec inbox_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def inbox_filter(query, %SearchQuery{inbox_id: inbox_id})
+      when is_integer(inbox_id) or is_list(inbox_id) do
+    subquery = %{
+      constant_score: %{
+        filter: %{
+          terms: %{
+            inbox_id: List.wrap(inbox_id)
+          }
+        }
+      }
+    }
+
+    add_must_field(query, subquery)
+  end
+
+  def inbox_filter(query, _search_query), do: query
+
+  @spec conversation_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+
+  def conversation_filter(query, %SearchQuery{conversation_id: conversation_ids})
+      when is_integer(conversation_ids) or is_list(conversation_ids) do
+    subquery = %{
+      constant_score: %{
+        filter: %{
+          terms: %{
+            conversation_id: List.wrap(conversation_ids)
           }
         }
       }
@@ -165,11 +226,11 @@ defmodule Stitch.Elasticsearch.SearchQuery do
   end
 
   @spec sort(elasticsearch_query, SearchQuery.t()) :: SearchQuery.t()
-  def sort(query, %SearchQuery{order: :recency}) do
+  def sort(query, %SearchQuery{order: "recency"}) do
     Map.put(query, :sort, %{inserted_at: "desc"})
   end
 
-  def sort(query, %SearchQuery{order: :relevance}), do: query
+  def sort(query, %SearchQuery{}), do: query
 
   @spec add_must_field(elasticsearch_query, any) :: elasticsearch_query
   def add_must_field(query, value) do
