@@ -5,14 +5,19 @@
  */
 
 import { observable, computed, action } from "mobx";
+import { stringify } from "qs";
+import unionBy from "lodash/unionBy";
+import moment from "moment";
 
 class InboxStore {
   @observable conversations = [];
   @observable currentInbox = {};
   @observable currentConversation = {};
+  @observable currentInboxFilter = null; // ["open", "closed", null]
   @observable currentModal = null;
   @observable messagesLoaded = false;
   @observable conversationsLoaded = false;
+  @observable isLoadingConversationPage = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -58,9 +63,41 @@ class InboxStore {
       .sort(this.sortByUpdated);
   }
 
+  @computed
+  get fullyLoadedForCurrentFilter() {
+    return this.conversationsForFilter.length >= this.totalForFilter;
+  }
+
+  @computed
+  get conversationsForFilter() {
+    if (!this.currentInboxFilter) {
+      return this.conversations;
+    }
+
+    return this.currentInboxFilter === "open"
+      ? this.openedConversations
+      : this.closedConversations;
+  }
+
+  @computed
+  get totalForFilter() {
+    if (!this.currentInboxFilter) {
+      return this.currentInbox.conversations_count;
+    }
+
+    return this.currentInboxFilter === "open"
+      ? this.currentInbox.open_conversations_count
+      : this.currentInbox.closed_conversations_count;
+  }
+
   // ===========
   //   ACTIONS
   // ===========
+
+  @action
+  setCurrentInboxFilter = filter => {
+    this.currentInboxFilter = filter;
+  };
 
   @action
   setModal = modalName => {
@@ -80,6 +117,15 @@ class InboxStore {
   @action
   openConversation = id => {
     return put(`/api/v1/conversations/${id}/open`);
+  };
+
+  @action
+  addConversations = newConversations => {
+    this.conversations = unionBy(
+      newConversations,
+      this.conversations,
+      c => c.id
+    );
   };
 
   @action
@@ -142,6 +188,42 @@ class InboxStore {
     });
   };
 
+  loadNextConversationPage = asPatient => {
+    const id = this.currentInbox.id;
+    const urlBase = asPatient
+      ? `/api/v1/patient/inboxes/${id}/conversations`
+      : `/api/v1/inboxes/${id}/conversations`;
+
+    const lastConvo = this.sortedConversations[
+      this.sortedConversations.length - 1
+    ];
+
+    if (lastConvo) {
+      const updatedBefore = moment(lastConvo.updated_at).unix();
+      let openParam;
+      if (this.currentInboxFilter) {
+        openParam = this.currentInboxFilter === "open";
+      }
+
+      const params = stringify({
+        updated_before: updatedBefore,
+        open: openParam
+      });
+
+      this.isLoadingConversationPage = true;
+
+      return get(`${urlBase}?${params}`)
+        .then(response => {
+          // TODO: add a smart merger here
+          this.addConversations(response.data);
+          this.isLoadingConversationPage = false;
+        })
+        .catch(() => {
+          this.isLoadingConversationPage = false;
+        });
+    }
+  };
+
   // Called from the conversations panel component
   @action
   openConversation = id => {
@@ -167,7 +249,7 @@ class InboxStore {
 
   @action
   createConversation = params => {
-    return post(`/api/v1/inboxes/1/conversations`, {
+    return post(`/api/v1/inboxes/${this.currentInbox.id}/conversations`, {
       body: params
     }).then(response => {
       this.conversations.push(response.data);
@@ -176,9 +258,12 @@ class InboxStore {
 
   @action
   createConversationAsPatient = params => {
-    return post(`/api/v1/patient/inboxes/1/conversations`, {
-      body: params
-    }).then(response => {
+    return post(
+      `/api/v1/patient/inboxes/${this.currentInbox.id}/conversations`,
+      {
+        body: params
+      }
+    ).then(response => {
       this.conversations.push(response.data);
     });
   };
