@@ -128,6 +128,19 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   @doc """
+  Given a patient id and inbox id, return the total count of conversations for that patient.
+  """
+  @spec count_for_patient_in_inbox(integer | binary, integer | binary) :: integer
+  def count_for_patient_in_inbox(patient_id, inbox_id) do
+    query =
+      Conversation
+      |> where(inbox_id: ^inbox_id)
+      |> for_patient(patient_id)
+
+    Repo.one(from(c in query, select: count("*")))
+  end
+
+  @doc """
   Given a conversation id and user, load the conversation and any necessary relationships
   """
   @spec for_show(integer | binary, User.t() | Patient.t()) :: Conversation.t() | nil
@@ -367,8 +380,8 @@ defmodule Stitch.Engage.ConversationQueries do
     end
   end
 
-  defp default_limit_for_type(:conversation), do: 20
-  defp default_limit_for_type(:conversation_message), do: 50
+  defp default_limit_for_type(:conversation), do: Conversation.page_length()
+  defp default_limit_for_type(:conversation_message), do: ConversationMessage.page_length()
 
   defp most_recent(query, count) do
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
