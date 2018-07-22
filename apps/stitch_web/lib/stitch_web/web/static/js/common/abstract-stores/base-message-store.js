@@ -39,6 +39,10 @@ export default class BaseMessageStore {
     }
   };
 
+  isCurrentChannelPayload() {
+    console.warn(`isCurrentChannelPayload should be overriden`); // eslint-disable-line no-console
+  }
+
   // ===========================
   // Message Edit Actions
   // ===========================
@@ -78,6 +82,97 @@ export default class BaseMessageStore {
   }
 
   // ===========================
+  // Event Handlers
+  // ===========================
+
+  @action
+  onEditMessage = editedMessage => {
+    if (!this.isCurrentChannelPayload(editedMessage)) {
+      return;
+    }
+
+    this.cancelEdit();
+
+    this.updateMessageData(editedMessage.id, {
+      edited: editedMessage.edited,
+      edited_at: editedMessage.edited_at,
+      text_content: editedMessage.text_content
+    });
+  };
+
+  @action
+  onDeleteMessage = deletedMessage => {
+    const messageIndex = this.messages.findIndex(
+      m => m.id === deletedMessage.id
+    );
+
+    if (messageIndex > -1) {
+      this.messages.splice(messageIndex, 1);
+    }
+  };
+
+  @action
+  onLinkPreviewGenerated = payload => {
+    if (!this.isCurrentChannelPayload(payload)) {
+      return;
+    }
+
+    if (payload.link_previews && payload.link_previews.length) {
+      this.updateMessageData(payload.id, {
+        link_previews: payload.link_previews
+      });
+      this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  onLinkPreviewDeleted = payload => {
+    const message = this.getMessageById(payload.message_id);
+
+    if (message) {
+      this.updateMessageData(payload.message_id, {
+        link_previews: message.link_previews.filter(
+          p => p.link !== payload.link
+        )
+      });
+      this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  onReactionUpdate = payload => {
+    this.updateMessageData(payload.message_id, {
+      reactions_web: payload.reactions_web
+    });
+  };
+
+  @action
+  onReadStatusUpdate = payload => {
+    if (!payload.messages) return;
+
+    Object.keys(payload.messages).forEach(message_id => {
+      const message = this.getMessageById(parseInt(message_id, 10));
+      if (message) {
+        this.updateMessageData(parseInt(message_id, 10), {
+          read_status: Object.assign(
+            {},
+            message.read_status || {},
+            payload.messages[message_id]
+          )
+        });
+      } else {
+        // cache read status because this event was broadcasted before new_msg due to network slowness
+        this.readStatusCache[message_id] =
+          this.readStatusCache[message_id] || {};
+        Object.assign(
+          this.readStatusCache[message_id],
+          payload.messages[message_id]
+        );
+      }
+    });
+  };
+
+  // ===========================
   // Utilities
   // ===========================
 
@@ -95,10 +190,15 @@ export default class BaseMessageStore {
               msg.type = "file_comment";
             }
 
+            const sameUser =
+              (msg.user && msg.user.id === sequentialStart.user.id) ||
+              msg.provider_id === sequentialStart.provider_id ||
+              msg.patient_id === sequentialStart.provider_id;
+
             if (
               (sequentialStart.upload_id === msg.upload_id &&
                 msg.type === "file_comment") ||
-              (msg.user.id === sequentialStart.user.id &&
+              (sameUser &&
                 sequentialStart.type !== "system" &&
                 msg.type !== "upload" &&
                 msg.type !== "file_comment" &&

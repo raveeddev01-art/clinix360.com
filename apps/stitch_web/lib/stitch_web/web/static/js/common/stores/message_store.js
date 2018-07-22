@@ -172,6 +172,10 @@ class MessageStore extends BaseMessageStore {
     );
   }
 
+  isCurrentChannelPayload(payload) {
+    return payload.group_id === this.group.id;
+  }
+
   /**
    * Returns the position of first unread message in chat div
    *
@@ -1036,32 +1040,6 @@ class MessageStore extends BaseMessageStore {
   };
 
   @action
-  onEditMessage = editedMessage => {
-    if (editedMessage.group_id !== this.group.id) {
-      return;
-    }
-
-    this.cancelEdit();
-
-    this.updateMessageData(editedMessage.id, {
-      edited: editedMessage.edited,
-      edited_at: editedMessage.edited_at,
-      text_content: editedMessage.text_content
-    });
-  };
-
-  @action
-  onDeleteMessage = deletedMessage => {
-    const messageIndex = this.messages.findIndex(
-      m => m.id === deletedMessage.id
-    );
-
-    if (messageIndex > -1) {
-      this.messages.splice(messageIndex, 1);
-    }
-  };
-
-  @action
   onStarredMessage = message => {
     const { globalStarredMessageStore } = this.rootStore;
 
@@ -1096,67 +1074,6 @@ class MessageStore extends BaseMessageStore {
     } else {
       pinnedMessageStore.remove(message.id);
     }
-  };
-
-  @action
-  onLinkPreviewGenerated = payload => {
-    if (payload.group_id !== this.group.id) {
-      return;
-    }
-
-    if (payload.link_previews && payload.link_previews.length) {
-      this.updateMessageData(payload.id, {
-        link_previews: payload.link_previews
-      });
-      this.keepScrollAtBottom();
-    }
-  };
-
-  @action
-  onLinkPreviewDeleted = payload => {
-    const message = this.getMessageById(payload.message_id);
-
-    if (message) {
-      this.updateMessageData(payload.message_id, {
-        link_previews: message.link_previews.filter(
-          p => p.link !== payload.link
-        )
-      });
-      this.keepScrollAtBottom();
-    }
-  };
-
-  @action
-  onReactionUpdate = payload => {
-    this.updateMessageData(payload.message_id, {
-      reactions_web: payload.reactions_web
-    });
-  };
-
-  @action
-  onReadStatusUpdate = payload => {
-    if (!payload.messages) return;
-
-    Object.keys(payload.messages).forEach(message_id => {
-      const message = this.getMessageById(parseInt(message_id, 10));
-      if (message) {
-        this.updateMessageData(parseInt(message_id, 10), {
-          read_status: Object.assign(
-            {},
-            message.read_status || {},
-            payload.messages[message_id]
-          )
-        });
-      } else {
-        // cache read status because this event was broadcasted before new_msg due to network slowness
-        this.readStatusCache[message_id] =
-          this.readStatusCache[message_id] || {};
-        Object.assign(
-          this.readStatusCache[message_id],
-          payload.messages[message_id]
-        );
-      }
-    });
   };
 
   @action

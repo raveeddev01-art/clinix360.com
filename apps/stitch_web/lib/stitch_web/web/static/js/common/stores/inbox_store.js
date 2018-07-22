@@ -257,12 +257,15 @@ class InboxStore {
 
   @action
   loadConversation = id => {
+    const { conversationMessageStore, channelStore } = this.rootStore;
     this.currentConversationId = parseInt(id, 10);
     return get(`/api/v1/conversations/${id}`).then(response => {
-      this.rootStore.conversationMessageStore.onConversationLoaded(
-        response.data
-      );
+      conversationMessageStore.onConversationLoaded(response.data);
       this.messagesLoaded = true;
+
+      channelStore
+        .joinConversationChannel({ authenticated_urls: true })
+        .receive("error", err => notify.show(err.message, "error"));
     });
   };
 
