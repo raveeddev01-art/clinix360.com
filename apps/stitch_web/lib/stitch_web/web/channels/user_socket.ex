@@ -5,8 +5,8 @@ defmodule Stitch.Web.UserSocket do
   channel("groups:*", StitchConnect.Web.GroupChannel)
   channel("team:lobby:*", Stitch.Web.TeamChannel)
   channel("events:*", Stitch.Web.EventsChannel)
-  channel("inbox:*", StitchEngage.Web.InboxChannel)
-  channel("conversation:*", StitchEngage.Web.ConversationChannel)
+  channel("inbox:*", Stitch.Web.InboxChannel)
+  channel("conversations:*", StitchEngage.Web.ConversationChannel)
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
