@@ -14,22 +14,17 @@ import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import unionBy from "lodash/unionBy";
 
-import { animateScroll, scroller } from "react-scroll";
+import { scroller } from "react-scroll";
 import { Promise } from "es6-promise";
 import shortid from "shortid";
 import {
   START_TYPING_THROTTLE_MS,
   MAX_MESSAGE_COUNT_PER_BATCH
 } from "lib/constants";
-import TimeoutManager from "lib/TimeoutManager";
 import BaseMessageStore from "common/abstract-stores/base-message-store";
 
 class MessageStore extends BaseMessageStore {
-  @observable chatDiv = null; // Div element of chat pane
-  messageElements = {}; // Div elements of messages loaded in the chat div
   @observable messageVisibility = {}; // current visibility status of messages
-
-  @observable mountedMessages = [];
 
   @observable jumpMode = false; // indicates if message list is currently at jumping mode
   @observable isJumpLoaded = false; // indicates if surrounded messages are loaded
@@ -59,11 +54,6 @@ class MessageStore extends BaseMessageStore {
   readStatusCache = {}; // cache to store read status for when readstatus broadcast arrives before new_msg
   loadedGroupId = null; // indicates joined group id. populated after onJoinedGroup is run. It's to prevent onJoinedGroup happen again by rejoining internally in pheonix_socket.js
   @observable syncedTime = false; // sends timestamp only after synced time
-
-  constructor(rootStore) {
-    super(rootStore);
-    this.timeoutManager = new TimeoutManager();
-  }
 
   // ////////////// //
   //    GETTERS     //
@@ -302,38 +292,6 @@ class MessageStore extends BaseMessageStore {
     groupsStore.updateGroupCursor(this.group.id, cursor);
   }
 
-  // Scroll to the bottom of chat div with animation
-  scrollToBottom(cb = null, duration = 0, delay = 100) {
-    this.timeoutManager.setTimeout(() => {
-      animateScroll.scrollToBottom({
-        containerId: "chat",
-        duration
-      });
-
-      this.timeoutManager.setTimeout(() => {
-        if (typeof cb === "function") {
-          cb();
-        }
-      }, duration || 300);
-    }, delay);
-  }
-
-  // Scroll to specific message in chat div instantly
-  scrollTo(messageId, duration = 1000, cb, offset = -50) {
-    scroller.scrollTo(`message_${messageId}`, {
-      containerId: "chat",
-      smooth: true,
-      duration,
-      offset
-    });
-
-    this.timeoutManager.setTimeout(() => {
-      if (typeof cb === "function") {
-        cb();
-      }
-    }, duration + 1);
-  }
-
   @action
   scrollToNewBanner = () => {
     // If unread messages remain, scroll to top,
@@ -476,23 +434,6 @@ class MessageStore extends BaseMessageStore {
     this.messages = this.messageTemp.slice(0);
     this.jumpMode = false;
     this.scrollToBottom();
-  }
-
-  /**
-   * Registers chat div
-   *
-   * @param {DOMElement} div
-   */
-  loadChatDiv(div) {
-    this.chatDiv = div;
-  }
-
-  /**
-   * Unregisters chat div
-   *
-   */
-  unloadChatDiv() {
-    this.chatDiv = null;
   }
 
   @action
@@ -795,12 +736,6 @@ class MessageStore extends BaseMessageStore {
     this.groupChannel.push("is_typing");
   }, START_TYPING_THROTTLE_MS);
 
-  keepScrollAtBottom = () => {
-    if (this.isScrollBottom) {
-      this.scrollToBottom();
-    }
-  };
-
   generateTempMessage = text => {
     // generates unique temporary request ID
     const tempId = shortid.generate();
@@ -866,26 +801,6 @@ class MessageStore extends BaseMessageStore {
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };
 
-  /**
-   * Registers message div when message component is mounted
-   *
-   * @param {Integer} messageId
-   * @param {DOMElement} messageDiv
-   */
-  @action
-  onMessageMounted(messageId, messageDiv) {
-    if (this.mountedMessages.indexOf(messageId) === -1) {
-      this.mountedMessages.push(messageId);
-    }
-
-    this.messageElements[messageId] = { div: messageDiv };
-  }
-
-  @action
-  onMessageUnmounted(messageId) {
-    this.mountedMessages = this.mountedMessages.filter(id => id !== messageId);
-  }
-
   @action
   onScrollTopReached() {
     // no loading of past message if jumping surrounded msgs are not loaded yet
@@ -924,7 +839,7 @@ class MessageStore extends BaseMessageStore {
     }
   }
 
-  onMessageShow(id) {
+  onMessageShow = id => {
     this.messageVisibility[id] = true;
 
     if (!this.groupCursor || this.groupCursor > id) {
@@ -953,9 +868,9 @@ class MessageStore extends BaseMessageStore {
         debouncedMarkAsRead(false);
       }, 1000);
     }
-  }
+  };
 
-  onMessageHide(id) {
+  onMessageHide = id => {
     if (this.messageElements[id]) {
       this.messageVisibility[id] = false;
     }
@@ -966,7 +881,7 @@ class MessageStore extends BaseMessageStore {
         this.updateGroupCursor(this.messages[index - 1].id);
       }
     }
-  }
+  };
 
   @action
   onNewMessage = newMessage => {

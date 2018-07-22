@@ -1,5 +1,6 @@
 import moment from "moment";
 import { observable, action, extendObservable } from "mobx";
+import { animateScroll, scroller } from "react-scroll";
 
 import flow from "lodash/flow";
 import groupBy from "lodash/fp/groupBy";
@@ -8,6 +9,7 @@ import sortBy from "lodash/fp/sortBy";
 
 import REGEX from "lib/regex";
 import { SEQUENTIAL_SPLIT_SECONDS } from "lib/constants";
+import TimeoutManager from "lib/TimeoutManager";
 
 export function sortableDateFromMessage(message) {
   return moment
@@ -17,12 +19,16 @@ export function sortableDateFromMessage(message) {
 }
 
 export default class BaseMessageStore {
+  @observable chatDiv = null; // Div element of chat pane
   @observable messages = []; // messages currently loaded
   @observable messageInEdit = null; // Message currently being edited
   @observable textInEdit = ""; // Current text of message in edit
+  @observable mountedMessages = [];
+  messageElements = {}; // Div elements of messages loaded in the chat div
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.timeoutManager = new TimeoutManager();
   }
 
   getMessageById = (id, enforceSent = false) => {
@@ -42,6 +48,48 @@ export default class BaseMessageStore {
   isCurrentChannelPayload() {
     console.warn(`isCurrentChannelPayload should be overriden`); // eslint-disable-line no-console
   }
+
+  // ===========================
+  // Scroll Actions
+  // ===========================
+
+  // Scroll to the bottom of chat div with animation
+  scrollToBottom = (cb = null, duration = 0, delay = 100) => {
+    this.timeoutManager.setTimeout(() => {
+      animateScroll.scrollToBottom({
+        containerId: "chat",
+        duration
+      });
+
+      this.timeoutManager.setTimeout(() => {
+        if (typeof cb === "function") {
+          cb();
+        }
+      }, duration || 300);
+    }, delay);
+  };
+
+  // Scroll to specific message in chat div instantly
+  scrollTo(messageId, duration = 1000, cb, offset = -50) {
+    scroller.scrollTo(`message_${messageId}`, {
+      containerId: "chat",
+      smooth: true,
+      duration,
+      offset
+    });
+
+    this.timeoutManager.setTimeout(() => {
+      if (typeof cb === "function") {
+        cb();
+      }
+    }, duration + 1);
+  }
+
+  keepScrollAtBottom = () => {
+    if (this.isScrollBottom) {
+      this.scrollToBottom();
+    }
+  };
 
   // ===========================
   // Message Edit Actions
@@ -81,9 +129,46 @@ export default class BaseMessageStore {
     this.textInEdit = "";
   }
 
+  /**
+   * Registers chat div
+   *
+   * @param {DOMElement} div
+   */
+  loadChatDiv = div => {
+    this.chatDiv = div;
+  };
+
+  /**
+   * Unregisters chat div
+   *
+   */
+  unloadChatDiv = () => {
+    this.chatDiv = null;
+  };
+
   // ===========================
   // Event Handlers
   // ===========================
+
+  /**
+   * Registers message div when message component is mounted
+   *
+   * @param {Integer} messageId
+   * @param {DOMElement} messageDiv
+   */
+  @action
+  onMessageMounted = (messageId, messageDiv) => {
+    if (this.mountedMessages.indexOf(messageId) === -1) {
+      this.mountedMessages.push(messageId);
+    }
+
+    this.messageElements[messageId] = { div: messageDiv };
+  };
+
+  @action
+  onMessageUnmounted = messageId => {
+    this.mountedMessages = this.mountedMessages.filter(id => id !== messageId);
+  };
 
   @action
   onEditMessage = editedMessage => {
@@ -191,7 +276,9 @@ export default class BaseMessageStore {
             }
 
             const sameUser =
-              (msg.user && msg.user.id === sequentialStart.user.id) ||
+              (msg.user &&
+                sequentialStart.user &&
+                msg.user.id === sequentialStart.user.id) ||
               msg.provider_id === sequentialStart.provider_id ||
               msg.patient_id === sequentialStart.provider_id;
 

@@ -9,7 +9,7 @@ import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
-@inject("usersStore", "messageStore", "addonStore")
+@inject("usersStore", "addonStore")
 @observer
 class MessageContent extends Component {
   onToggle = emoji => {
@@ -27,7 +27,9 @@ class MessageContent extends Component {
 
   renderLinkPreviews() {
     const {
-      message: { link_previews: linkPreviews, id, user_id: userId }
+      message: { link_previews: linkPreviews, id },
+      user,
+      messageStore
     } = this.props;
 
     if (linkPreviews && linkPreviews.length) {
@@ -35,8 +37,9 @@ class MessageContent extends Component {
         <LinkPreview
           key={`message_${id}_link_${index}`}
           {...link}
+          deleteLinkPreview={messageStore.deleteLinkPreview}
           messageId={id}
-          senderId={userId}
+          senderId={user.id}
         />
       ));
     }
@@ -93,9 +96,7 @@ class MessageContent extends Component {
   };
 
   render() {
-    const { inSearch, message } = this.props;
-    const userId = message.user.id;
-    const user = this.props.usersStore.usersById[userId];
+    const { inSearch, message, user } = this.props;
     const textContent = inSearch
       ? message.highlighted_text_content || message.text_content
       : message.text_content;
@@ -123,7 +124,7 @@ class MessageContent extends Component {
           <FileAttachment
             {...message.fields}
             message={message}
-            user_id={message.user_id}
+            user_id={user.id}
             file_id={message.upload_id}
             onCommentsClick={this.onCommentsClick}
           />
@@ -154,7 +155,9 @@ MessageContent.defaultProps = {
 
 MessageContent.propTypes = {
   inSearch: PropTypes.bool,
-  message: PropTypes.any.isRequired
+  user: PropTypes.any.isRequired,
+  message: PropTypes.any.isRequired,
+  messageStore: PropTypes.object.isRequired
 };
 
 export default MessageContent;

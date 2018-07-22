@@ -13,7 +13,7 @@ import {
 } from "common/components";
 import MessageActions from "./message-actions";
 
-@inject("messageStore", "usersStore")
+@inject("usersStore")
 class Message extends PureComponent {
   constructor(props) {
     super(props);
@@ -25,24 +25,24 @@ class Message extends PureComponent {
   }
 
   componentDidMount() {
-    const { message, messageStore } = this.props;
+    const { message, onMounted } = this.props;
 
-    messageStore.onMessageMounted(message.id, this.messageDiv);
+    onMounted(message.id, this.messageDiv);
   }
 
   componentWillUnmount() {
-    const { message, messageStore } = this.props;
+    const { message, onUnmounted } = this.props;
 
-    messageStore.onMessageUnmounted(message.id);
+    onUnmounted(message.id);
   }
 
   onVisibleChange = isVisible => {
-    const { message, messageStore } = this.props;
+    const { message, onShow, onHide } = this.props;
 
     if (isVisible) {
-      messageStore.onMessageShow(message.id);
+      onShow(message.id);
     } else {
-      messageStore.onMessageHide(message.id);
+      onHide(message.id);
     }
   };
 
@@ -54,15 +54,22 @@ class Message extends PureComponent {
     this.setState({ isActionsVisible: false });
   };
 
+  getUser = message => {
+    const { usersStore } = this.props;
+    const userId =
+      (message.user && message.user.id) ||
+      message.provider_id ||
+      message.patient_id;
+    return usersStore.usersById[userId];
+  };
+
   setSelected = newState => {
     this.setState(newState);
   };
 
   renderGutter(message) {
-    const { usersStore } = this.props;
     const { inserted_at: insertedAt } = message;
-    const userId = message.user.id;
-    const user = usersStore.usersById[userId];
+    const user = this.getUser(message);
 
     return (
       <div className="message-gutter">
@@ -98,10 +105,8 @@ class Message extends PureComponent {
   }
 
   renderHeader(message) {
-    const { usersStore } = this.props;
     const { inserted_at: insertedAt } = message;
-    const userId = message.user.id;
-    const user = usersStore.usersById[userId];
+    const user = this.getUser(message);
 
     return (
       (!message.is_sequential || message.type === "file_comment") && (
@@ -114,15 +119,14 @@ class Message extends PureComponent {
     const { isActionsVisible, isSelected } = this.state;
     const {
       message,
-      messageStore,
-      usersStore,
       hasNML,
-      isHighlighted
+      isHighlighted,
+      chatDiv,
+      messageStore,
+      isConversationMessage,
+      lastOtherUserMessage
     } = this.props;
-    const { chatDiv } = messageStore;
-
-    const userId = message.user.id;
-    const user = usersStore.usersById[userId];
+    const user = this.getUser(message);
 
     const messageClassName = cx("message", {
       sequential: message.is_sequential,
@@ -180,14 +184,22 @@ class Message extends PureComponent {
                 {this.renderHeader(message)}
 
                 <div className="message-content-wrapper">
-                  <MessageContent message={message} />
+                  <MessageContent
+                    messageStore={messageStore}
+                    message={message}
+                    user={user}
+                  />
                 </div>
               </div>
 
               {(isActionsVisible || isSelected) && (
                   <MessageActions
+                    user={user}
                     message={message}
+                    lastOtherUserMessage={lastOtherUserMessage}
+                    messageStore={messageStore}
                     setSelected={this.setSelected}
+                    isConversationMessage={isConversationMessage}
                   />
                 )}
             </Element>
@@ -201,12 +213,27 @@ class Message extends PureComponent {
 Message.propTypes = {
   hasNML: PropTypes.bool,
   isHighlighted: PropTypes.bool,
-  message: PropTypes.object.isRequired
+  message: PropTypes.object.isRequired,
+  onMounted: PropTypes.func,
+  onUnmounted: PropTypes.func,
+  onShow: PropTypes.func,
+  onHide: PropTypes.func,
+  chatDiv: PropTypes.object,
+  messageStore: PropTypes.object.isRequired,
+  isConversationMessage: PropTypes.bool,
+  lastOtherUserMessage: PropTypes.object
 };
 
 Message.defaultProps = {
   hasNML: false,
-  isHighlighted: false
+  isHighlighted: false,
+  onMounted: () => undefined,
+  onUnmounted: () => undefined,
+  onShow: () => undefined,
+  onHide: () => undefined,
+  lastOtherUserMessage: null,
+  isConversationMessage: false,
+  chatDiv: null
 };
 
 export default Message;

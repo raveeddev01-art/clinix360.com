@@ -87,6 +87,13 @@ class MessageList extends Component {
                         newMessageLineMessage &&
                         newMessageLineMessage.id === message.id
                       }
+                      lastOtherUserMessage={messageStore.lastOtherUserMessage}
+                      messageStore={messageStore}
+                      chatDiv={messageStore.chatDiv}
+                      onMounted={messageStore.onMessageMounted}
+                      onUnmounted={messageStore.onMessageUnmounted}
+                      onShow={messageStore.onMessageShow}
+                      onHide={messageStore.onMessageHide}
                       isHighlighted={highlightId === message.id}
                     />
                   )

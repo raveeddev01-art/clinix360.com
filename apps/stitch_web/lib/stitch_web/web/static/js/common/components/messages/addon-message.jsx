@@ -69,6 +69,7 @@ class AddonMessage extends Component {
               <MessageHeader timestamp={message.inserted_at} user={user} />
               <MessageContent
                 inSearch={this.props.inSearch}
+                user={user}
                 message={Object.assign({}, message, { reactions_web: null })}
               />
             </div>

@@ -8,6 +8,8 @@ import { observable, computed, action } from "mobx";
 import BaseMessageStore from "common/abstract-stores/base-message-store";
 
 class ConversationMessageStore extends BaseMessageStore {
+  @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
+
   // ===========================
   // Getters
   // ===========================
@@ -40,7 +42,7 @@ class ConversationMessageStore extends BaseMessageStore {
       ...additionalFields
     };
 
-    post(`/api/v1/conversations/${this.conversation.id}/messages`, {
+    return post(`/api/v1/conversations/${this.conversation.id}/messages`, {
       body: {
         message: newMsg,
         authenticated_urls: true
@@ -53,8 +55,6 @@ class ConversationMessageStore extends BaseMessageStore {
     if (!this.messageInEdit) {
       return;
     }
-
-    this.startTyping.flush(); // flushing throttle
 
     const trimmedEditText = this.textInEdit.trim();
 
@@ -75,12 +75,40 @@ class ConversationMessageStore extends BaseMessageStore {
     });
   }
 
+  @action
+  deleteLinkPreview = (messageId, link) => {
+    return put(
+      `/api/v1/conversation_messages/${this.conversation
+        .id}/delete_link_preview`,
+      {
+        body: {
+          id: messageId,
+          link
+        }
+      }
+    );
+  };
+
+  @action
+  toggleReaction = (messageId, emoji) => {
+    return put(
+      `/api/v1/conversation_messages/${this.conversation.id}/toggle_reaction`,
+      {
+        body: {
+          message_id: messageId,
+          emoji_name: emoji
+        }
+      }
+    );
+  };
+
   // ===========================
   // Methods
   // ===========================
 
   reset() {
     this.messages = [];
+    this.mountedMessages = [];
     this.messageInEdit = null;
   }
 
@@ -91,6 +119,19 @@ class ConversationMessageStore extends BaseMessageStore {
   // ===========================
   // Event Handlers
   // ===========================
+
+  @action
+  onScrollTopReached() {}
+
+  @action
+  onScrollBottomReached() {
+    this.isScrollBottom = true;
+  }
+
+  @action
+  onScrollBottomLeft() {
+    this.isScrollBottom = false;
+  }
 
   @action
   onConversationLoaded = conversation => {
