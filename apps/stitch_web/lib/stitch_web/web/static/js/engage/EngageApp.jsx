@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
+import UploadZone from "file-upload/upload-zone";
 
 import { Switcher, Loading, AppAlert } from "common/components";
 
@@ -19,13 +20,14 @@ class EngageApp extends Component {
 
   render() {
     const { titleStore, inboxStore } = this.props;
+    const { lastConversation } = inboxStore;
 
     if (!inboxStore.engageLoaded) {
       return <Loading />;
     }
 
     return (
-      <div id="app">
+      <UploadZone>
         <AppAlert />
         <div className="appContainer">
           <Helmet>
@@ -34,11 +36,13 @@ class EngageApp extends Component {
           <Switcher />
 
           <Switch>
-            <Route path="/conversations/:id" component={Engage} />
-            <Redirect from="*" to="/conversations/1" />
+            <Route exact path="/conversations/:id" component={Engage} />
+            {lastConversation && (
+              <Redirect from="*" to={`/conversations/${lastConversation.id}`} />
+            )}
           </Switch>
         </div>
-      </div>
+      </UploadZone>
     );
   }
 }

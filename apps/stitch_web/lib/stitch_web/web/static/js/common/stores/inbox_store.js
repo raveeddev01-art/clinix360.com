@@ -48,6 +48,10 @@ class InboxStore {
   //   COMPUTED
   // ===========
 
+  get lastConversation() {
+    return this.conversations[0];
+  }
+
   @computed
   get sortedConversations() {
     return this.conversations.sort(this.sortByUpdated);
