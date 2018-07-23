@@ -401,6 +401,7 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/logout", AuthenticationController, :logout)
 
     get("/engage", PageController, :index)
+    get("/conversations", PageController, :index)
     get("/conversations/:id", PageController, :index)
 
     get("/manage", PageController, :index)
