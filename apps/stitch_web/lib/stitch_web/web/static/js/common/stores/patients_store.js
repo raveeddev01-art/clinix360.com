@@ -10,7 +10,7 @@ import { action, computed, extendObservable, observable } from "mobx";
 //   CONSTANTS
 // =============
 
-const pageLength = 20;
+const pageLength = 1000;
 
 // ====================
 //   HELPER FUNCTIONS
