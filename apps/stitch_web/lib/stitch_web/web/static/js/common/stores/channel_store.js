@@ -66,13 +66,20 @@ class ChannelStore {
   }
 
   joinEventPatientChannel(patientId, options = {}) {
+    const { inboxStore } = this.rootStore;
     const topic = this.eventPatientChannelTopic(patientId);
     const joined = this.join(topic, { ...options });
     const eventChannel = this.eventPatientChannel(patientId);
 
     eventChannel.on("new_app_version", this.disconnectAndReload);
-    eventChannel.on("conversation_created", noop);
-    eventChannel.on("conversation_updated", noop);
+    eventChannel.on(
+      "conversation_created",
+      inboxStore.onConversationCreateEvent
+    );
+    eventChannel.on(
+      "conversation_updated",
+      inboxStore.onConversationUpdateEvent
+    );
 
     return joined;
   }
@@ -118,6 +125,28 @@ class ChannelStore {
     // App related
     this.eventChannel.on("new_app_version", this.disconnectAndReload);
     this.eventChannel.on("logout", presenceStore.onLogout);
+
+    return joined;
+  }
+
+  // ///////////// //
+  // Inbox Channel //
+  // ///////////// //
+
+  joinInboxChannel(inboxId, options = {}) {
+    const { inboxStore } = this.rootStore;
+    const topic = `inbox:${inboxId}`;
+    const joined = this.join(topic, options);
+    const inboxChannel = this.channels[topic];
+
+    inboxChannel.on(
+      "conversation_created",
+      inboxStore.onConversationCreateEvent
+    );
+    inboxChannel.on(
+      "conversation_updated",
+      inboxStore.onConversationUpdateEvent
+    );
 
     return joined;
   }
