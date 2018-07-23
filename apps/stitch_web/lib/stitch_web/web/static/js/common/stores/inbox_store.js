@@ -352,14 +352,14 @@ class InboxStore {
 
   @action
   incCount = type => {
-    if (this.currentInbox[type] !== undefined) {
+    if (!isNaN(this.currentInbox[type])) {
       this.currentInbox[type] = this.currentInbox[type] + 1;
     }
   };
 
   @action
   decCount = type => {
-    if (this.currentInbox[type] !== undefined) {
+    if (!isNaN(this.currentInbox[type])) {
       this.currentInbox[type] = this.currentInbox[type] - 1;
     }
   };
