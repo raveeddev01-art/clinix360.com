@@ -6,9 +6,19 @@ defmodule Stitch.Web.EventsChannel do
 
   use Stitch.Web, :channel
   import Ecto.Query
-  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
+
+  alias Stitch.{
+    Repo,
+    Group,
+    GroupUser,
+    TeamQueries,
+    Accounts.User,
+    Patient
+  }
+
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView, NotificationPreferenceView}
   alias StitchEngage.Web.Api.V1.ConversationView
+  alias Stitch.Web.Api.V1.PatientView
 
   @endpoint Stitch.Web.Endpoint
 
@@ -268,6 +278,15 @@ defmodule Stitch.Web.EventsChannel do
 
     @endpoint.broadcast("events:patient:#{patient_id}", "conversation_updated", %{
       conversation: conversation_json
+    })
+  end
+
+  @spec broadcast_patient_updated(Patient.t()) :: term
+  def broadcast_patient_updated(patient) do
+    patient_json = PatientView.patient_json(patient)
+
+    @endpoint.broadcast("events:patient:#{patient.id}", "patient_updated", %{
+      patient: patient_json
     })
   end
 end

@@ -4,7 +4,7 @@ defmodule Stitch.Web.PatientSocket do
   ## Channels
   channel("team:patient:*", Stitch.Web.TeamChannel)
   channel("events:patient:*", Stitch.Web.EventsChannel)
-  channel("conversation:*", Stitch.Web.ConversationChannel)
+  channel("conversation:*", StitchEngage.Web.ConversationChannel)
 
   def connect(%{"authenticationToken" => token} = params, socket) do
     channel_action(__MODULE__, :connect, socket, fn ->
