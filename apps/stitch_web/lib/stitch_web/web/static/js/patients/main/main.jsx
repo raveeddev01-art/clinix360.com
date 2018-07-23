@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import pick from "lodash/pick";
+import moment from "moment";
 
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Modal from "react-bootstrap/lib/Modal";
-import pick from "lodash/pick";
 
 import Scrollbar from "common/components/scrollbar";
 import ComposeModal from "./modals/compose-modal";
@@ -198,7 +199,13 @@ class Main extends Component {
 
                   <div className="content">
                     <div className="action">Account created</div>
-                    <div className="text-muted">Created on May 19, 2018</div>
+                    <div className="text-muted">
+                      Created on{" "}
+                      {moment
+                        .utc(currentPatient.inserted_at)
+                        .local()
+                        .format("MMMM D, YYYY")}
+                    </div>
                   </div>
                 </div>
               </div>
