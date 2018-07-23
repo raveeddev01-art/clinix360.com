@@ -10,10 +10,18 @@ defmodule Stitch.Web.Api.V1.PatientView do
   end
 
   def render("login.json", %{patient: patient, redirect_url: redirect_url}) do
-    Map.merge(patient_json(patient), %{
+    patient = Stitch.Repo.preload(patient, :team)
+
+    %{
+      patient: patient_json(patient),
+      redirect_url: redirect_url,
       token: patient.token,
-      redirect_url: redirect_url
-    })
+      team: %{
+        id: patient.team.id,
+        name: patient.team.name,
+        slug: patient.team.slug
+      }
+    }
   end
 
   def patient_json(nil), do: nil

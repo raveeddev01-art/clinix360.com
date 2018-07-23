@@ -19,3 +19,7 @@ erl_crash.dump
 /node_modules
 
 /apps/stitch_web/priv/static/
+
+# Swagger generated files
+swagger.json
+carespace-swagger.json
