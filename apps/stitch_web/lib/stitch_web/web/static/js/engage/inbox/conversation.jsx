@@ -16,7 +16,7 @@ class Conversation extends Component {
 
   onOpenConversation = () => {
     const { inboxStore, conversation } = this.props;
-    inboxStore.openConversation(conversation.id);
+    inboxStore.reopenConversation(conversation.id);
   };
 
   renderStatusToggle() {

@@ -115,7 +115,7 @@ class InboxStore {
   };
 
   @action
-  openConversation = id => {
+  reopenConversation = id => {
     return put(`/api/v1/conversations/${id}/open`);
   };
 
@@ -161,6 +161,7 @@ class InboxStore {
   @action
   loadInbox = () => {
     return get("/api/v1/inboxes/default").then(response => {
+      this.rootStore.channelStore.joinInboxChannel(response.data.id);
       this.currentInbox = response.data;
     });
   };
@@ -168,6 +169,7 @@ class InboxStore {
   @action
   loadInboxAsPatient = () => {
     return get("/api/v1/patient/inboxes/default").then(response => {
+      this.rootStore.channelStore.joinInboxChannel(response.data.id);
       this.currentInbox = response.data;
     });
   };
@@ -214,7 +216,6 @@ class InboxStore {
 
       return get(`${urlBase}?${params}`)
         .then(response => {
-          // TODO: add a smart merger here
           this.addConversations(response.data);
           this.isLoadingConversationPage = false;
         })
@@ -252,7 +253,8 @@ class InboxStore {
     return post(`/api/v1/inboxes/${this.currentInbox.id}/conversations`, {
       body: params
     }).then(response => {
-      this.conversations.push(response.data);
+      this.changeCountsAsNeeded(response.data);
+      this.addConversations([response.data]);
     });
   };
 
@@ -264,8 +266,102 @@ class InboxStore {
         body: params
       }
     ).then(response => {
-      this.conversations.push(response.data);
+      this.changeCountsAsNeeded(response.data);
+      this.addConversations([response.data]);
     });
+  };
+
+  // ===================
+  //   HANDLING EVENTS
+  // ===================
+
+  @action
+  onConversationCreateEvent = ({ conversation }) => {
+    this.changeCountsAsNeeded(conversation);
+    this.addConversations([conversation]);
+  };
+
+  @action
+  onConversationUpdateEvent = ({ conversation }) => {
+    this.changeCountsAsNeeded(conversation);
+    this.addConversations([conversation]);
+  };
+
+  // ===================
+  //   CHANGING COUNTS
+  // ===================
+
+  @action
+  changeCountsAsNeeded(conversation) {
+    const oldVersion = this.conversations.find(c => c.id === conversation.id);
+
+    // Just increment the necessary counts
+    // Decrementing not needed
+    if (!oldVersion) {
+      this.incTotalCount();
+
+      if (conversation.open) {
+        this.incOpenCount();
+      } else {
+        this.incClosedCount();
+      }
+
+      return;
+    }
+
+    // Do nothing
+    if (oldVersion.open === conversation.open) {
+      return;
+    }
+
+    // Increment and decrement counts
+    // as old and new open values differ
+    if (conversation.open) {
+      this.incOpenCount();
+      this.decClosedCount();
+    } else {
+      this.decOpenCount();
+      this.incClosedCount();
+    }
+  }
+
+  @action
+  incTotalCount = () => {
+    this.incCount("conversations_count");
+  };
+
+  @action
+  incOpenCount = () => {
+    this.incCount("open_conversations_count");
+  };
+
+  @action
+  incClosedCount = () => {
+    this.incCount("closed_conversations_count");
+  };
+
+  @action
+  decOpenCount = () => {
+    this.decCount("open_conversations_count");
+  };
+
+  @action
+  decClosedCount = () => {
+    this.decCount("closed_conversations_count");
+  };
+
+  @action
+  incCount = type => {
+    if (this.currentInbox[type] !== undefined) {
+      this.currentInbox[type] = this.currentInbox[type] + 1;
+    }
+  };
+
+  @action
+  decCount = type => {
+    if (this.currentInbox[type] !== undefined) {
+      this.currentInbox[type] = this.currentInbox[type] - 1;
+    }
   };
 }
 
