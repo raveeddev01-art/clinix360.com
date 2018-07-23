@@ -14,6 +14,11 @@ const stepList = [
   { field: "pin", component: Pin }
 ];
 
+const patientStepList = [
+  { field: "names", component: Names },
+  { field: "password", component: Password }
+];
+
 @inject("invitationStore")
 @observer
 class JoinTeam extends Component {
@@ -31,8 +36,8 @@ class JoinTeam extends Component {
 
   onSave = () => {
     const { invitationStore, history, asPatient } = this.props;
-    const resetUrl = `${this
-      .baseUrl}/accept/${invitationStore.token}/${stepList[0].field}`;
+    const resetUrl = `${this.baseUrl}/accept/${invitationStore.token}/${this
+      .stepList[0].field}`;
 
     invitationStore.completeInvitation(asPatient).catch(() => {
       alertModal({
@@ -46,6 +51,10 @@ class JoinTeam extends Component {
     });
   };
 
+  get stepList() {
+    return this.props.asPatient ? patientStepList : stepList;
+  }
+
   get baseUrl() {
     return this.props.asPatient ? "/patient/invitations" : "/invitations";
   }
@@ -56,14 +65,14 @@ class JoinTeam extends Component {
       match: { params: { currentStep } },
       history
     } = this.props;
-    const stepIndex = stepList.findIndex(s => s.field === currentStep);
+    const stepIndex = this.stepList.findIndex(s => s.field === currentStep);
 
     if (stepIndex === -1) {
       const redirectUrl = `${this.baseUrl}/accept/${invitationStore.token}`;
       return <Redirect to={redirectUrl} />;
     }
 
-    return React.createElement(stepList[stepIndex].component, {
+    return React.createElement(this.stepList[stepIndex].component, {
       headerCTA: "no-cta",
       asPatient: this.props.asPatient,
       onNext: value => {
@@ -73,12 +82,13 @@ class JoinTeam extends Component {
           invitationStore[currentStep] = value;
         }
 
-        if (stepList.length <= stepIndex + 1) {
+        if (this.stepList.length <= stepIndex + 1) {
           this.onSave();
         } else {
           const nextUrl = `${this
-            .baseUrl}/accept/${invitationStore.token}/${stepList[stepIndex + 1]
-            .field}`;
+            .baseUrl}/accept/${invitationStore.token}/${this.stepList[
+            stepIndex + 1
+          ].field}`;
 
           history.push(nextUrl);
         }

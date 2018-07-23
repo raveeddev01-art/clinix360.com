@@ -418,12 +418,16 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/groups", GroupController, :index)
   end
 
+  scope "/api/v1/patient", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:patient_auth_api)
+    post("/invitations/accept/:token", InvitationController, :patient_accept)
+  end
+
   # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
     post("/invitations/accept/:token", InvitationController, :accept)
-    post("/patient/invitations/accept/:token", InvitationController, :patient_accept)
     get("/apps", AppController, :index)
     get("/news", NewsController, :index)
   end
