@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
+import VisibilitySensor from "react-visibility-sensor";
 
 import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -25,15 +26,28 @@ import AddPatientModal from "./modals/add_patient_modal";
 @inject("inboxStore")
 @observer
 class InboxMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      openConversations: true
-    };
+  componentWillMount() {
+    const intialFilter = this.props.asPatient ? null : "open";
+    this.props.inboxStore.setCurrentInboxFilter(intialFilter);
   }
 
   onSearch = event => {
     event.preventDefault();
+  };
+
+  onBottomVisibilityChange = isVisible => {
+    const {
+      fullyLoadedForCurrentFilter,
+      isLoadingConversationPage
+    } = this.props.inboxStore;
+
+    if (
+      isVisible &&
+      !fullyLoadedForCurrentFilter &&
+      !isLoadingConversationPage
+    ) {
+      this.props.inboxStore.loadNextConversationPage(this.props.asPatient);
+    }
   };
 
   onComposeClick = () => {
@@ -72,6 +86,27 @@ class InboxMenu extends Component {
     this.props.inboxStore.closeModal();
   };
 
+  changeFilter = newFilter => () => {
+    this.props.inboxStore.setCurrentInboxFilter(newFilter);
+  };
+
+  renderLoading = () => {
+    const showSpinner = this.props.inboxStore.isLoadingConversationPage;
+
+    return (
+      <VisibilitySensor onChange={this.onBottomVisibilityChange}>
+        <div>
+          {showSpinner && (
+            <div className="inbox-loading-conversations">
+              {" "}
+              Loading Conversations...{" "}
+            </div>
+          )}
+        </div>
+      </VisibilitySensor>
+    );
+  };
+
   renderModalBody = () => {
     if (this.currentModal === "patientCompose") {
       return <PatientComposeModal closeModal={this.closeModal} />;
@@ -108,33 +143,28 @@ class InboxMenu extends Component {
   renderProviderOptions() {
     const { inboxStore } = this.props;
 
-    const dropdownTitle = this.state.openConversations ? (
-      <span>
-        <i className="fa fa-inbox" /> Open ({
-          inboxStore.currentInbox.open_conversations_count
-        })
-      </span>
-    ) : (
-      <span>
-        <i className="fa fa-check-circle" /> Closed ({inboxStore.currentInbox.closed_conversations_count})
-      </span>
-    );
+    const dropdownTitle =
+      inboxStore.currentInboxFilter === "open" ? (
+        <span>
+          <i className="fa fa-inbox" /> Open ({
+            inboxStore.currentInbox.open_conversations_count
+          })
+        </span>
+      ) : (
+        <span>
+          <i className="fa fa-check-circle" /> Closed ({inboxStore.currentInbox.closed_conversations_count})
+        </span>
+      );
 
     return (
       <Nav bsStyle="tabs" className="status-filter">
         <NavDropdown eventKey="1" title={dropdownTitle}>
-          <MenuItem
-            eventKey="1.1"
-            onClick={() => this.setState({ openConversations: true })}
-          >
+          <MenuItem eventKey="1.1" onClick={this.changeFilter("open")}>
             <i className="fa fa-inbox" /> Open ({
               inboxStore.currentInbox.open_conversations_count
             }) <i className="fa fa-check pull-right" />
           </MenuItem>
-          <MenuItem
-            eventKey="1.2"
-            onClick={() => this.setState({ openConversations: false })}
-          >
+          <MenuItem eventKey="1.2" onClick={this.changeFilter("closed")}>
             <i className="fa fa-check-circle" /> Closed ({inboxStore.currentInbox.closed_conversations_count}){" "}
             <i className="fa fa-check pull-right" />
           </MenuItem>
@@ -156,6 +186,7 @@ class InboxMenu extends Component {
     const scrollbarClass = this.props.asPatient
       ? "patient-scrollbar"
       : "provider-scrollbar";
+
     return (
       <Scrollbar
         className={scrollbarClass}
@@ -177,6 +208,7 @@ class InboxMenu extends Component {
               <h3>{this.props.loaded && emptyText}</h3>
             </div>
           )}
+          {this.renderLoading()}
         </div>
       </Scrollbar>
     );
