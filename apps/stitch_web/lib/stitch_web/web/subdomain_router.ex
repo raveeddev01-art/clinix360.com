@@ -403,6 +403,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/manage", PageController, :index)
     get("/patients", PageController, :index)
+    get("/patients/:id", PageController, :index)
 
     get("/admin/files", PageController, :index)
     get("/admin/files/:id", PageController, :index)
