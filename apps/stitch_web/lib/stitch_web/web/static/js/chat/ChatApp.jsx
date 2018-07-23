@@ -1,26 +1,17 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
-import Dropzone from "react-dropzone";
-import ConnectTour from '../common/components/joy-ride/connect-tour';
-import UploadModal from "file-upload/upload-modal";
+import ConnectTour from "common/components/joy-ride/connect-tour";
 import { AppAlert, Loading, Switcher } from "common/components";
 import RoleChangedModal from "common/modals/role-changed-modal";
+import UploadZone from "file-upload/upload-zone";
 import Sidemenu from "sidemenu/sidemenu";
 import Chat from "./Chat";
 
-@inject("uploadStore", "sidemenuStore", "groupsStore", "messageStore")
+@inject("sidemenuStore", "groupsStore", "messageStore")
 @observer
 class ChatApp extends Component {
   static requiresAdmin = false;
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dropzoneActive: false,
-    };
-  }
 
   componentWillMount() {
     const { sidemenuStore } = this.props;
@@ -41,36 +32,6 @@ class ChatApp extends Component {
     sidemenuStore.isInChat = false;
   }
 
-  onDragEnter = () => {
-    this.setState({
-      dropzoneActive: true
-    });
-  };
-
-  onDragLeave = () => {
-    this.setState({
-      dropzoneActive: false
-    });
-  };
-
-  onDrop = files => {
-    const { uploadStore } = this.props;
-
-    if (files.length) {
-      uploadStore.openUploadModal(files[0]);
-    }
-
-    this.setState({
-      dropzoneActive: false
-    });
-  };
-
-  setDropzoneRef = ref => {
-    const { uploadStore } = this.props;
-
-    uploadStore.dropzoneRef = ref;
-  };
-
   handleKeyboardShortcuts = e => {
     const code = e.charCode || e.keyCode;
     const hitK = code === 75;
@@ -79,7 +40,7 @@ class ChatApp extends Component {
       this.props.sidemenuStore.setModal("search");
       e.preventDefault();
     }
-  }
+  };
 
   render() {
     const { groupsStore: { defaultGroup }, messageStore } = this.props;
@@ -88,22 +49,8 @@ class ChatApp extends Component {
       <div>
         {messageStore.loadedInitialMessages || <Loading />}
 
-        <Dropzone
-          id="app"
-          disableClick
-          style={{}}
-          onDrop={this.onDrop}
-          ref={this.setDropzoneRef}
-          onDragEnter={this.onDragEnter}
-          onDragLeave={this.onDragLeave}
-        >
-          {this.state.dropzoneActive && (
-            <div className="dropzone-overlay">
-              <div>Drop to Upload File</div>
-            </div>
-          )}
+        <UploadZone>
           <ConnectTour />
-          <UploadModal />
           <AppAlert />
           <div className="appContainer">
             <Switcher />
@@ -125,7 +72,7 @@ class ChatApp extends Component {
             </Switch>
             <RoleChangedModal />
           </div>
-        </Dropzone>
+        </UploadZone>
       </div>
     );
   }

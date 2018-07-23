@@ -2,45 +2,40 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
-import Scrollbar from "common/components/scrollbar";
-
+import MessageForm from "chat/message-form/message-form";
 import Topbar from "./components/topbar";
-import Message from "./components/message";
-import MessageForm from "./components/message-form";
+import MessageList from "./components/message-list";
 
-@inject("inboxStore")
+@inject("conversationMessageStore")
 @observer
 class ConversationPanel extends Component {
-  renderMessageForConversation = message => {
-    return this.props.asPatient ? (
-      <div> {message.text_content} </div>
-    ) : (
-      <Message key={`msg_key_${message.id}`} message={message} />
-    );
-  };
+  renderMessageList() {
+    // Temporarily return just this for the patients
+    if (this.props.asPatient) {
+      return (
+        <div className="messages-container">
+          <div>Messages Go here</div>
+        </div>
+      );
+    }
+
+    return <MessageList />;
+  }
 
   render() {
-    const { inboxStore } = this.props;
-
+    const { conversationMessageStore, asPatient } = this.props;
     return (
-      <div className="chat-container">
-        <Topbar asPatient />
-
-        <div className="messages-container">
-          <Scrollbar
-            className="scrollbar"
-            viewRef={ref => {
-              this.scrollbar = ref;
-            }}
-          >
-            {inboxStore.currentConversation.conversation_messages &&
-              inboxStore.currentConversation.conversation_messages.map(
-                this.renderMessageForConversation
-              )}
-          </Scrollbar>
-        </div>
-
-        <MessageForm />
+      <div id="chat-container">
+        <Topbar asPatient={asPatient} />
+        <MessageList />
+        {!asPatient && (
+          <div className="flex-footer">
+            <MessageForm
+              messageStore={conversationMessageStore}
+              allowTypingUsers={false}
+            />
+          </div>
+        )}
       </div>
     );
   }

@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Link, Element } from "react-scroll";
-
+import DateSeparator from "common/components/date-separator/date-separator";
 import WelcomeMessage from "./welcome-message";
 import Message from "./message";
 import SystemMessage from "./system-message";
-import DateSeparator from "./date-separator";
 import MessageInfoModal from "./message-info-modal";
 import FileShareModal from "./file-share-modal";
 
@@ -28,7 +27,7 @@ class MessageList extends Component {
     this.props.messageStore.onScrollTopReached();
   };
 
-  onLoseTopScroll = () => { };
+  onLoseTopScroll = () => {};
 
   onScrollBottom = () => {
     this.props.messageStore.onScrollBottomReached();
@@ -72,25 +71,32 @@ class MessageList extends Component {
                       message={message}
                     />
                   ) : (
-                      <Message
-                        // start of dummy prop so that message list react to message prop change
-                        edited_at={message.edited_at}
-                        pinned={message.pinned}
-                        starred={message.starred}
-                        status={message.status}
-                        is_sequential={message.is_sequential}
-                        reactions_web={message.reactions_web}
-                        link_previews={message.link_previews}
-                        // end of dummy prop
-                        key={`message_${message.id}`}
-                        message={message}
-                        hasNML={
-                          newMessageLineMessage &&
-                          newMessageLineMessage.id === message.id
-                        }
-                        isHighlighted={highlightId === message.id}
-                      />
-                    )
+                    <Message
+                      // start of dummy prop so that message list react to message prop change
+                      edited_at={message.edited_at}
+                      pinned={message.pinned}
+                      starred={message.starred}
+                      status={message.status}
+                      is_sequential={message.is_sequential}
+                      reactions_web={message.reactions_web}
+                      link_previews={message.link_previews}
+                      // end of dummy prop
+                      key={`message_${message.id}`}
+                      message={message}
+                      hasNML={
+                        newMessageLineMessage &&
+                        newMessageLineMessage.id === message.id
+                      }
+                      lastOtherUserMessage={messageStore.lastOtherUserMessage}
+                      messageStore={messageStore}
+                      chatDiv={messageStore.chatDiv}
+                      onMounted={messageStore.onMessageMounted}
+                      onUnmounted={messageStore.onMessageUnmounted}
+                      onShow={messageStore.onMessageShow}
+                      onHide={messageStore.onMessageHide}
+                      isHighlighted={highlightId === message.id}
+                    />
+                  )
               )}
             </div>
           ))}

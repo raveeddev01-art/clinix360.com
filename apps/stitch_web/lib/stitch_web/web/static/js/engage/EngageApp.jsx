@@ -2,58 +2,47 @@ import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
-import cx from "classnames";
+import UploadZone from "file-upload/upload-zone";
 
-import { Switcher, AppAlert } from "common/components";
-import EmptySidebar from "../common/components/sidebar/empty-sidebar";
-import Sidebar from "./sidebar/sidebar";
+import { Switcher, Loading, AppAlert } from "common/components";
 
 import Engage from "./Engage";
-import EngagePreview from "./EngagePreview";
 
 @inject("titleStore", "teamStore", "inboxStore")
 @observer
 class EngageApp extends Component {
   componentWillMount() {
-    const { titleStore, inboxStore, teamStore } = this.props;
-    titleStore.setPageName("Engage");
+    const { titleStore, inboxStore } = this.props;
 
-    if (teamStore.engageEnabled) {
-      inboxStore.loadEngage();
-    }
+    titleStore.setPageName("Engage");
+    inboxStore.loadEngage();
   }
 
   render() {
-    const { titleStore } = this.props;
-    const { engageEnabled } = this.props.teamStore;
+    const { titleStore, inboxStore } = this.props;
+    const { lastConversation } = inboxStore;
+
+    if (!inboxStore.engageLoaded) {
+      return <Loading />;
+    }
 
     return (
-      <div id="app">
+      <UploadZone>
         <AppAlert />
-        <div
-          className={cx("appContainer", {
-            "engage-wrapper": !engageEnabled
-          })}
-        >
+        <div className="appContainer">
           <Helmet>
             <title>{titleStore.title}</title>
           </Helmet>
           <Switcher />
 
-          {!engageEnabled && <EmptySidebar />}
-
           <Switch>
-            <Route path="/engage" component={EngagePreview} />
-            <Route path="/conversations/:id" component={Engage} />
-
-            {engageEnabled ? (
-              <Redirect from="*" to="/conversations/1" />
-            ) : (
-              <Redirect from="*" to="/engage" />
+            <Route exact path="/conversations/:id" component={Engage} />
+            {lastConversation && (
+              <Redirect from="*" to={`/conversations/${lastConversation.id}`} />
             )}
           </Switch>
         </div>
-      </div>
+      </UploadZone>
     );
   }
 }

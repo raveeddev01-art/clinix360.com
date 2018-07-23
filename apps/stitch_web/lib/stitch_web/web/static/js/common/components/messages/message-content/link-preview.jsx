@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import { isAdmin } from "lib/utils";
 import { confirmModal } from "../../../modals";
 
-@inject("messageStore")
 class LinkPreview extends Component {
   constructor() {
     super();
@@ -19,8 +17,8 @@ class LinkPreview extends Component {
       message: "Are you sure you want to remove the link preview?",
       okLable: "Delete"
     }).then(() => {
-      const { link, messageId, messageStore } = this.props;
-      messageStore.deleteLinkPreview(messageId, link);
+      const { link, messageId, deleteLinkPreview } = this.props;
+      deleteLinkPreview(messageId, link);
     });
   };
 
@@ -101,7 +99,8 @@ LinkPreview.propTypes = {
   favicon_url: PropTypes.string,
   site_name: PropTypes.string,
   senderId: PropTypes.number.isRequired,
-  messageId: PropTypes.number.isRequired
+  messageId: PropTypes.number.isRequired,
+  deleteLinkPreview: PropTypes.func.isRequired
 };
 
 LinkPreview.defaultProps = {
@@ -110,7 +109,8 @@ LinkPreview.defaultProps = {
   link: "",
   title: "",
   favicon_url: "",
-  site_name: ""
+  site_name: "",
+  deleteLinkPreview: () => undefined
 };
 
 export default LinkPreview;

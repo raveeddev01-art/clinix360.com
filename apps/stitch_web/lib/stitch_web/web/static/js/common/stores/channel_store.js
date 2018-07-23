@@ -1,4 +1,5 @@
 import { getTimezone } from "../../lib/utils";
+
 const noop = () => {};
 
 /**
@@ -148,6 +149,59 @@ class ChannelStore {
       inboxStore.onConversationUpdateEvent
     );
 
+    return joined;
+  }
+
+  // //////////////////// //
+  // Conversation Channel //
+  // //////////////////// //
+  get conversationChannelTopic() {
+    const { inboxStore } = this.rootStore;
+
+    // avoid socket ping error
+    if (inboxStore.currentConversationId) {
+      return `conversations:${inboxStore.currentConversationId}`;
+    }
+
+    return "";
+  }
+
+  get conversationChannel() {
+    return this.channels[this.conversationChannelTopic];
+  }
+
+  joinConversationChannel(options = {}) {
+    const joined = this.join(this.conversationChannelTopic, options);
+    const { conversationMessageStore } = this.rootStore;
+
+    this.conversationChannel.on(
+      "new_conversation_message",
+      conversationMessageStore.onNewMessage
+    );
+    this.conversationChannel.on(
+      "edited_conversation_message",
+      conversationMessageStore.onEditMessage
+    );
+    this.conversationChannel.on(
+      "deleted_conversation_message",
+      conversationMessageStore.onDeleteMessage
+    );
+    this.conversationChannel.on(
+      "read_status_update",
+      conversationMessageStore.onDeleteMessage
+    );
+    this.conversationChannel.on(
+      "conversation_message_link_previews_generated",
+      conversationMessageStore.onLinkPreviewGenerated
+    );
+    this.conversationChannel.on(
+      "conversation_message_link_preview_deleted",
+      conversationMessageStore.onLinkPreviewDeleted
+    );
+    this.conversationChannel.on(
+      "reactions_updated",
+      conversationMessageStore.onReactionUpdate
+    );
     return joined;
   }
 
