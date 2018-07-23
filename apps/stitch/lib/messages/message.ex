@@ -44,6 +44,9 @@ defmodule Stitch.Message do
     field(:client_name, :string, default: "unknown")
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
+    # Remove on the next release
+    field(:requires_fallback_comment, :boolean, default: true)
+
     belongs_to(:upload, Upload)
     belongs_to(:upload_comment, UploadComment)
     embeds_many(:link_previews, LinkPreview, on_replace: :delete)
@@ -60,7 +63,8 @@ defmodule Stitch.Message do
     :read_status,
     :client_device_type,
     :client_os,
-    :client_name
+    :client_name,
+    :requires_fallback_comment
   ]
 
   def changeset(%Message{} = struct, params) do
@@ -119,6 +123,7 @@ defmodule Stitch.Message do
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
     |> cast(params, @upload_castable_attributes)
+    |> put_change(:requires_fallback_comment, false)
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["file_share", "upload"])
   end

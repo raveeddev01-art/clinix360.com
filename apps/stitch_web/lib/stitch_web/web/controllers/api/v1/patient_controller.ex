@@ -98,6 +98,30 @@ defmodule Stitch.Web.Api.V1.PatientController do
     end
   end
 
+  def update_password(conn, %{
+        "new_password" => new_password,
+        "old_password" => old_password
+      }) do
+    case Stitch.User.Authentication.update_password(
+           conn.assigns.patient,
+           old_password,
+           new_password
+         ) do
+      {:ok, patient} ->
+        # TODO: Broadcast session logout
+
+        conn
+        |> update_user_session_token(patient)
+        |> json(%{token: patient.token})
+
+      {:error, message} when is_binary(message) ->
+        {:error, :unprocessable_entity, message}
+
+      {:error, message} ->
+        {:error, message}
+    end
+  end
+
   def activate(conn, params) do
     change_active_value(conn, params, true)
   end
@@ -127,6 +151,15 @@ defmodule Stitch.Web.Api.V1.PatientController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: changeset_errors_to_string(changeset)})
+    end
+  end
+
+  def exists(conn, %{"email" => email}) do
+    team_id = conn.private[:team_id]
+
+    case PatientQueries.team_member_with_email(team_id, email) do
+      %Patient{} -> json(conn, %{exists: true})
+      _ -> json(conn, %{exists: false})
     end
   end
 end

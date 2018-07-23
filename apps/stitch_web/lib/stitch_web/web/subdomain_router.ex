@@ -99,8 +99,15 @@ defmodule Stitch.Web.SubdomainRouter do
   # ==================
 
   scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
+    # Token not needed
+    pipe_through([:api])
+    post("/exists", PatientController, :exists)
+  end
+
+  scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through([:api, :patient_api])
     put("/info", PatientController, :update_as_patient)
+    put("/update_password", PatientController, :update_password)
   end
 
   scope "/api/v1/patient", StitchEngage.Web.Api.V1, as: :api_v1 do
@@ -539,6 +546,7 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/conversation_messages/:id", ConversationMessageController, :show)
     put("/conversation_messages/:id", ConversationMessageController, :update)
     delete("/conversation_messages/:id", ConversationMessageController, :delete)
+    get("/patient_conversations/:id", PatientTimelineController, :conversations_with_patient)
 
     put(
       "/conversation_messages/:id/delete_link_preview",

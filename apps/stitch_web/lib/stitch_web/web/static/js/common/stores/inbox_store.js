@@ -72,6 +72,11 @@ class InboxStore {
   };
 
   @action
+  openConversation = id => {
+    return put(`/api/v1/conversations/${id}/open`);
+  };
+
+  @action
   loadEngage = async () => {
     try {
       await this.loadInbox();

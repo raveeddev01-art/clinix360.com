@@ -1,6 +1,59 @@
 {
   "swagger": "2.0",
   "paths": {
+    "/api/v1/patient_conversations/{patient_id}": {
+      "get": {
+        "tags": [
+          "PatientTimeline"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Conversation"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 3,
+            "type": "integer",
+            "required": true,
+            "name": "patient_id",
+            "in": "path",
+            "description": "Patient ID"
+          },
+          {
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "Number of conversation messages to return. Maximum of 60."
+          },
+          {
+            "type": "integer",
+            "required": false,
+            "name": "skip",
+            "in": "query",
+            "description": "Number of conversation messages to skip."
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.PatientTimelineController.conversations_with_patient",
+        "description": "Returns a sorted list of the patient conversations (with latest_conversation_message).\n"
+      }
+    },
     "/api/v1/patient/reset_password": {
       "post": {
         "tags": [
@@ -324,6 +377,33 @@
         ],
         "operationId": "StitchEngage.Web.Api.V1.InboxController.patient_default",
         "description": "Return the default inbox for a team."
+      }
+    },
+    "/api/v1/patient/exists": {
+      "post": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "required": false,
+            "name": "email",
+            "in": "query",
+            "description": "Email of the potential patient."
+          }
+        ],
+        "operationId": "Stitch.Web.Api.V1.PatientController.exists",
+        "description": "Checks if a patient exists given an email. Returns {\"exists\": true} or {\"exists\": false}"
       }
     },
     "/api/v1/patient/conversations/{conversation_id}/messages": {
@@ -894,53 +974,31 @@
       "type": "object",
       "title": "PatientLogin",
       "properties": {
-        "updated_at": {
-          "type": "string"
-        },
         "token": {
           "type": "string"
+        },
+        "team": {
+          "type": "object",
+          "properties": {
+            "slug": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "id": {
+              "type": "integer"
+            }
+          }
         },
         "redirect_url": {
           "type": "string"
         },
-        "phone": {
-          "type": "string"
-        },
-        "onboarded": {
-          "type": "booelan"
-        },
-        "mrn": {
-          "type": "string"
-        },
-        "last_name": {
-          "type": "string"
-        },
-        "inserted_at": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer"
-        },
-        "full_name": {
-          "type": "string"
-        },
-        "first_name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "disabled": {
-          "type": "boolean"
-        },
-        "avatar_thumb": {
-          "type": "string"
-        },
-        "avatar": {
-          "type": "string"
+        "patient": {
+          "$ref": "#/definitions/Patient"
         }
       },
-      "description": "A patient user."
+      "description": "Response when a patient logs in."
     },
     "PatientInbox": {
       "type": "object",
@@ -1021,6 +1079,9 @@
       "properties": {
         "updated_at": {
           "type": "string"
+        },
+        "team_id": {
+          "type": "integer"
         },
         "phone": {
           "type": "string"

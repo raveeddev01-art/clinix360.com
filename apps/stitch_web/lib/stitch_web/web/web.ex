@@ -74,6 +74,25 @@ defmodule Stitch.Web do
     end
   end
 
+  def socket do
+    quote do
+      use Phoenix.Socket
+      import Appsignal.Phoenix.Channel, only: [channel_action: 4]
+
+      transport(
+        :websocket,
+        Phoenix.Transports.WebSocket,
+        timeout: 45_000,
+        check_origin: [
+          "//*.teamstitch-staging.com",
+          "//*.teamstitchapp.com",
+          "//*.teamstitch.com",
+          "//*.#{Application.fetch_env!(:stitch_web, :application_host)}"
+        ]
+      )
+    end
+  end
+
   @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """

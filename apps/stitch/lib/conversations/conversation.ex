@@ -20,6 +20,7 @@ defmodule Stitch.Engage.Conversation do
     ConversationMessage.ConversationMessageCreation
   }
 
+  alias Stitch.Web.EventsChannel
   alias StitchEngage.Web.InboxChannel
 
   @type t :: %__MODULE__{}
@@ -164,7 +165,14 @@ defmodule Stitch.Engage.Conversation do
           |> Repo.preload(:patients)
           |> Map.put(:latest_conversation_message, latest_conversation_message)
 
+        patient = conversation_with_preloads.patients |> List.first()
+
         InboxChannel.broadcast_conversation_update(conversation_with_preloads)
+
+        EventsChannel.broadcast_conversation_update_to_patient(
+          patient.id,
+          conversation_with_preloads
+        )
 
       other ->
         other

@@ -88,53 +88,31 @@
       "type": "object",
       "title": "PatientLogin",
       "properties": {
-        "updated_at": {
-          "type": "string"
-        },
         "token": {
           "type": "string"
+        },
+        "team": {
+          "type": "object",
+          "properties": {
+            "slug": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "id": {
+              "type": "integer"
+            }
+          }
         },
         "redirect_url": {
           "type": "string"
         },
-        "phone": {
-          "type": "string"
-        },
-        "onboarded": {
-          "type": "booelan"
-        },
-        "mrn": {
-          "type": "string"
-        },
-        "last_name": {
-          "type": "string"
-        },
-        "inserted_at": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer"
-        },
-        "full_name": {
-          "type": "string"
-        },
-        "first_name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "disabled": {
-          "type": "boolean"
-        },
-        "avatar_thumb": {
-          "type": "string"
-        },
-        "avatar": {
-          "type": "string"
+        "patient": {
+          "$ref": "#/definitions/Patient"
         }
       },
-      "description": "A patient user."
+      "description": "Response when a patient logs in."
     },
     "PatientInbox": {
       "type": "object",
@@ -215,6 +193,9 @@
       "properties": {
         "updated_at": {
           "type": "string"
+        },
+        "team_id": {
+          "type": "integer"
         },
         "phone": {
           "type": "string"

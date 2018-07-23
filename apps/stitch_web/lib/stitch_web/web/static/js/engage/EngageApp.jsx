@@ -40,7 +40,7 @@ class EngageApp extends Component {
           </Helmet>
           <Switcher />
 
-          {engageEnabled ? <Sidebar /> : <EmptySidebar />}
+          {!engageEnabled && <EmptySidebar />}
 
           <Switch>
             <Route path="/engage" component={EngagePreview} />
