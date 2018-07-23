@@ -1,4 +1,5 @@
 import { getTimezone } from "../../lib/utils";
+const noop = () => {};
 
 /**
  * Channel store
@@ -41,6 +42,10 @@ class ChannelStore {
     }
   }
 
+  disconnectAndReload() {
+    socket.disconnect(() => window.location.reload(true));
+  }
+
   // ///////////// //
   // Event Channel //
   // ///////////// //
@@ -50,6 +55,26 @@ class ChannelStore {
 
   get eventChannel() {
     return this.channels[this.eventChannelTopic];
+  }
+
+  eventPatientChannelTopic(patientId) {
+    return `events:patient:${patientId}`;
+  }
+
+  eventPatientChannel(patientId) {
+    return this.channels[this.eventPatientChannelTopic(patientId)];
+  }
+
+  joinEventPatientChannel(patientId, options = {}) {
+    const topic = this.eventPatientChannelTopic(patientId);
+    const joined = this.join(topic, { ...options });
+    const eventChannel = this.eventPatientChannel(patientId);
+
+    eventChannel.on("new_app_version", this.disconnectAndReload);
+    eventChannel.on("conversation_created", noop);
+    eventChannel.on("conversation_updated", noop);
+
+    return joined;
   }
 
   joinEventChannel(options = {}) {
@@ -91,9 +116,7 @@ class ChannelStore {
     );
 
     // App related
-    this.eventChannel.on("new_app_version", () => {
-      socket.disconnect(() => window.location.reload(true));
-    });
+    this.eventChannel.on("new_app_version", this.disconnectAndReload);
     this.eventChannel.on("logout", presenceStore.onLogout);
 
     return joined;
@@ -186,6 +209,30 @@ class ChannelStore {
 
   get teamChannel() {
     return this.channels[this.teamChannelTopic];
+  }
+
+  teamPatientChannelTopic(teamId) {
+    return `team:patient:${teamId}`;
+  }
+
+  teamPatientChannel(teamId) {
+    return this.channels[this.teamPatientChannelTopic(teamId)];
+  }
+
+  joinTeamPatientChannel(teamId, options = {}) {
+    const timezone = this.getTimezoneInfo();
+    const topic = this.teamPatientChannelTopic(teamId);
+
+    const joined = this.join(topic, { ...options, timezone });
+
+    this.teamPatientChannel(teamId).on(
+      "team_renamed",
+      this.rootStore.teamStore.onRenamed
+    );
+
+    this.teamPatientChannel(teamId).on("team_deleted", noop);
+
+    return joined;
   }
 
   joinTeamChannel(options = {}) {

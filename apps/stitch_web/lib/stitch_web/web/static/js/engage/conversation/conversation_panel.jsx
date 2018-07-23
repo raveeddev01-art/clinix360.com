@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
 import Scrollbar from "common/components/scrollbar";
@@ -10,12 +11,20 @@ import MessageForm from "./components/message-form";
 @inject("inboxStore")
 @observer
 class ConversationPanel extends Component {
+  renderMessageForConversation = message => {
+    return this.props.asPatient ? (
+      <div> {message.text_content} </div>
+    ) : (
+      <Message key={`msg_key_${message.id}`} message={message} />
+    );
+  };
+
   render() {
     const { inboxStore } = this.props;
 
     return (
       <div className="chat-container">
-        <Topbar />
+        <Topbar asPatient />
 
         <div className="messages-container">
           <Scrollbar
@@ -24,16 +33,10 @@ class ConversationPanel extends Component {
               this.scrollbar = ref;
             }}
           >
-            {inboxStore.currentConversation.conversation_messages.map(
-              conversation => {
-                return (
-                  <Message
-                    key={`msg_key_${conversation.id}`}
-                    conversation={conversation}
-                  />
-                );
-              }
-            )}
+            {inboxStore.currentConversation.conversation_messages &&
+              inboxStore.currentConversation.conversation_messages.map(
+                this.renderMessageForConversation
+              )}
           </Scrollbar>
         </div>
 
@@ -42,5 +45,13 @@ class ConversationPanel extends Component {
     );
   }
 }
+
+ConversationPanel.propTypes = {
+  asPatient: PropTypes.bool
+};
+
+ConversationPanel.defaultProps = {
+  asPatient: false
+};
 
 export default ConversationPanel;

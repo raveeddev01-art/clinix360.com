@@ -12,6 +12,7 @@ class InboxStore {
   @observable currentConversation = {};
   @observable currentModal = null;
   @observable messagesLoaded = false;
+  @observable conversationsLoaded = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -37,6 +38,11 @@ class InboxStore {
   // ===========
   //   COMPUTED
   // ===========
+
+  @computed
+  get sortedConversations() {
+    return this.conversations.sort(this.sortByUpdated);
+  }
 
   @computed
   get openedConversations() {
@@ -77,6 +83,21 @@ class InboxStore {
   };
 
   @action
+  loadEngageAsPatient = async onLoaded => {
+    try {
+      await this.loadInboxAsPatient();
+      await this.loadConversationsAsPatient(this.currentInbox.id);
+    } catch (e) {
+      // TODO if error occurs here, redirect to error page
+      console.error(e); // eslint-disable-line
+    }
+
+    if (onLoaded) {
+      onLoaded();
+    }
+  };
+
+  @action
   loadEngage = async () => {
     try {
       await this.loadInbox();
@@ -99,9 +120,25 @@ class InboxStore {
   };
 
   @action
+  loadInboxAsPatient = () => {
+    return get("/api/v1/patient/inboxes/default").then(response => {
+      this.currentInbox = response.data;
+    });
+  };
+
+  @action
   loadConversations = id => {
     return get(`/api/v1/inboxes/${id}/conversations`).then(response => {
       this.conversations = response.data;
+      this.conversationsLoaded = true;
+    });
+  };
+
+  @action
+  loadConversationsAsPatient = id => {
+    return get(`/api/v1/patient/inboxes/${id}/conversations`).then(response => {
+      this.conversations = response.data;
+      this.conversationsLoaded = true;
     });
   };
 
@@ -121,8 +158,25 @@ class InboxStore {
   };
 
   @action
+  loadConversationAsPatient = id => {
+    return get(`/api/v1/patient/conversations/${id}`).then(response => {
+      this.currentConversation = response.data;
+      this.messagesLoaded = true;
+    });
+  };
+
+  @action
   createConversation = params => {
     return post(`/api/v1/inboxes/1/conversations`, {
+      body: params
+    }).then(response => {
+      this.conversations.push(response.data);
+    });
+  };
+
+  @action
+  createConversationAsPatient = params => {
+    return post(`/api/v1/patient/inboxes/1/conversations`, {
       body: params
     }).then(response => {
       this.conversations.push(response.data);
