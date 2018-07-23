@@ -25,14 +25,16 @@ class ConversationPanel extends Component {
   render() {
     const { conversationMessageStore, asPatient } = this.props;
     return (
-      <div className="chat-container">
+      <div id="chat-container">
         <Topbar asPatient={asPatient} />
         <MessageList />
         {!asPatient && (
-          <MessageForm
-            messageStore={conversationMessageStore}
-            allowTypingUsers={false}
-          />
+          <div className="flex-footer">
+            <MessageForm
+              messageStore={conversationMessageStore}
+              allowTypingUsers={false}
+            />
+          </div>
         )}
       </div>
     );
