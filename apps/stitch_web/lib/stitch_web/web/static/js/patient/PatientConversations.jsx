@@ -13,7 +13,9 @@ class PatientConversations extends Component {
     this.props.inboxStore.loadEngageAsPatient(() => {
       $(".html-loading-element").remove();
     });
-    this.openConversation(this.props.match.params.id);
+    if (this.props.match.params.id) {
+      this.openConversation(this.props.match.params.id);
+    }
   }
 
   componentWillReceiveProps(nextProps) {

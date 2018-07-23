@@ -44,6 +44,10 @@ class Conversation extends Component {
       ? `/patient/conversations/${conversation.id}`
       : `/conversations/${conversation.id}`;
 
+    const dateClass = cx("date", {
+      "provider-date": !asPatient
+    });
+
     return (
       <Link to={linkLocation} className={linkClass}>
         <div className="item__icon">
@@ -54,7 +58,7 @@ class Conversation extends Component {
           <div className="heading">
             <div className="user">{conversation.subject}</div>
 
-            <div className="date">
+            <div className={dateClass}>
               {moment
                 .utc(conversation.updated_at)
                 .local()
