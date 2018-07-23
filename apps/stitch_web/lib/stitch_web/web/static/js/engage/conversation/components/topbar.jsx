@@ -45,9 +45,12 @@ class Topbar extends Component {
           {!asPatient && (
             <h4>{inboxStore.currentConversation.patient.full_name}</h4>
           )}
-          <div className="subject">
-            {inboxStore.currentConversation.subject}
-          </div>
+          {/* TODO: add topic as patient */}
+          {!asPatient && (
+            <div className="subject">
+              {inboxStore.currentConversation.subject}
+            </div>
+          )}
         </div>
 
         <div className="header-nav">

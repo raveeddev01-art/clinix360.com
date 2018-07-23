@@ -12,7 +12,6 @@ import moment from "moment";
 class InboxStore {
   @observable conversations = [];
   @observable currentInbox = {};
-  @observable currentConversation = {};
   @observable currentInboxFilter = null; // ["open", "closed", null]
   @observable currentModal = null;
   @observable messagesLoaded = false;
@@ -271,6 +270,8 @@ class InboxStore {
 
   @action
   loadConversationAsPatient = id => {
+    this.currentConversationId = parseInt(id, 10);
+
     return get(`/api/v1/patient/conversations/${id}`).then(response => {
       this.currentConversation = response.data;
       this.messagesLoaded = true;
