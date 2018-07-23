@@ -66,8 +66,7 @@ class ConversationMessageStore extends BaseMessageStore {
       return;
     }
 
-    // FIXME confirm below event name
-    this.conversationChannel.push("edit_conversation_message", {
+    this.conversationChannel.push("edited_conversation_message", {
       message_id: this.messageInEdit.id,
       params: {
         text_content: this.encodeMessage(trimmedEditText)
@@ -110,6 +109,7 @@ class ConversationMessageStore extends BaseMessageStore {
     this.messages = [];
     this.mountedMessages = [];
     this.messageInEdit = null;
+    this.isScrollBottom = true;
   }
 
   isCurrentChannelPayload(payload) {
@@ -136,11 +136,14 @@ class ConversationMessageStore extends BaseMessageStore {
   @action
   onConversationLoaded = conversation => {
     this.messages = conversation.conversation_messages;
+    this.scrollToBottom();
   };
 
+  // @TODO manage granular control over scrolling when receiving message from other users
   @action
   onNewMessage = newMessage => {
     this.messages.unshift(newMessage);
+    this.scrollToBottom();
   };
 }
 
