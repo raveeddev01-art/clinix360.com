@@ -391,6 +391,22 @@ defmodule Stitch.Web.Api.V1.Docs do
                 phone(:string)
                 team_id(:integer)
               end
+            end,
+          UploadSignature:
+            swagger_schema do
+              title("UploadSignature")
+              description("Credentials and information to upload file to S3.")
+
+              example(%{
+                "success_action_status" => "201",
+                "signature" => "ShfkFCOUgioUK3iyTpSnf(1YnvE",
+                "policy" => "fneiwufjioewffh4h9fgf439qgfqg43qf49qfj4f40f42gt92gfh8in4m0943j",
+                "key" => "ArmFractureImage",
+                "action" => "https://s3.amazonaws.com/stitch-content/",
+                "acl" => "private",
+                "Content-Type" => "image/jpeg",
+                "AWSAccessKeyId" => "AKIA9KNNBXIRIQI82JN"
+              })
             end
         }
       end

@@ -1,5 +1,6 @@
-defmodule StitchConnect.Web.Api.V1.UploadController do
+defmodule Stitch.Web.Api.V1.UploadController do
   use Stitch.Web, :controller
+  use Stitch.Web.Api.V1.UploadDocs
   alias Stitch.{Repo, Group, MessageQueries, AWS.S3}
 
   def index(conn, %{"group_id" => group_id} = params) do
@@ -35,7 +36,15 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
     })
   end
 
-  def create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
+  def create(conn, params = %{"filename" => _filename, "mimetype" => _mimetype}) do
+    do_create(conn, params)
+  end
+
+  def patient_create(conn, params = %{"filename" => _filename, "mimetype" => _mimetype}) do
+    do_create(conn, params)
+  end
+
+  defp do_create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     conn
     |> put_status(:created)
     |> render("create.json", signature: S3.signature(filename, mimetype))
