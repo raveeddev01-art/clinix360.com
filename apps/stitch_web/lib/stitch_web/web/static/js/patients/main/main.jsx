@@ -1,16 +1,107 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
+import Alert from "react-bootstrap/lib/Alert";
+import Button from "react-bootstrap/lib/Button";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+import Modal from "react-bootstrap/lib/Modal";
+import pick from "lodash/pick";
 
 import Scrollbar from "common/components/scrollbar";
+import ComposeModal from "./modals/compose-modal";
+import NoteModal from "./modals/note-modal";
+
+import FirstName from "./profile/first-name";
+import LastName from "./profile/last-name";
+import Mrn from "./profile/mrn";
+import Email from "./profile/email";
+import Phone from "./profile/phone";
 
 @inject("patientsStore")
 @observer
 class Main extends Component {
-  render() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      alertMessage: "",
+      alertStyle: "",
+      alertVisible: false
+    };
+  }
+
+  onSuccess = message => {
+    this.setState({
+      alertMessage: message,
+      alertVisible: true,
+      alertStyle: "success"
+    });
+  };
+
+  onError = message => {
+    this.setState({
+      alertMessage: message,
+      alertVisible: true,
+      alertStyle: "danger"
+    });
+  };
+
+  onComposeModalClick = () => {
+    this.props.patientsStore.setModal("compose");
+  };
+
+  onNoteModalClick = event => {
+    event.preventDefault();
+    // Hide Note modal until backend is available
+    // this.props.patientsStore.setModal("note");
+  };
+
+  get currentModal() {
+    return this.props.patientsStore.currentModal;
+  }
+
+  get isShowing() {
+    return this.currentModal === "compose" || this.currentModal === "note";
+  }
+
+  hideAlert = () => {
+    this.setState({
+      alertVisible: false
+    });
+  };
+
+  closeModal = () => {
+    this.props.patientsStore.closeModal();
+  };
+
+  renderModalBody = () => {
     const { patientsStore: { currentPatient } } = this.props;
+
+    if (this.currentModal === "note") {
+      return (
+        <NoteModal closeModal={this.closeModal} patient={currentPatient} />
+      );
+    }
+
+    return (
+      <ComposeModal closeModal={this.closeModal} patient={currentPatient} />
+    );
+  };
+
+  renderModal = () => {
+    return (
+      <Modal className="inbox-modal" show onHide={this.closeModal}>
+        {this.renderModalBody()}
+      </Modal>
+    );
+  };
+
+  render() {
+    const { alertMessage, alertVisible, alertStyle } = this.state;
+    const inputFieldProps = pick(this, "onSuccess", "onError", "hideAlert");
+
+    const { patientsStore: { currentPatient } } = this.props;
+
     return (
       <div className="info-panel">
         <Scrollbar
@@ -23,40 +114,12 @@ class Main extends Component {
 
           <h4>Profile</h4>
           <div className="card">
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">First Name</div>
-              </Col>
-              <Col sm={9}>{currentPatient.first_name}</Col>
-            </Row>
-
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">Last Name</div>
-              </Col>
-              <Col sm={9}>{currentPatient.last_name}</Col>
-            </Row>
-
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">MRN</div>
-              </Col>
-              <Col sm={9}>{currentPatient.mrn}</Col>
-            </Row>
-
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">Email</div>
-              </Col>
-              <Col sm={9}>{currentPatient.email}</Col>
-            </Row>
-
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">Phone</div>
-              </Col>
-              <Col sm={9}>{currentPatient.phone}</Col>
-            </Row>
+            {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+            <FirstName {...inputFieldProps} />
+            <LastName {...inputFieldProps} />
+            <Mrn {...inputFieldProps} />
+            <Email {...inputFieldProps} />
+            <Phone {...inputFieldProps} />
           </div>
 
           <h4>Timeline</h4>
@@ -70,18 +133,39 @@ class Main extends Component {
                 </div>
 
                 <div className="description">
-                  <a role="button" className="btn btn-default">
+                  <Button onClick={this.onComposeModalClick}>
                     Send Message
-                  </a>
-                  <a role="button" className="btn btn-default">
-                    Add Note
-                  </a>
-                  <a role="button" className="btn btn-default">
-                    Create Task
-                  </a>
-                  <a role="button" className="btn btn-default">
-                    Upload File
-                  </a>
+                  </Button>
+
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id="tooltip-info">Coming Soon!</Tooltip>}
+                    ref={ref => {
+                      this.tooltipOverlay = ref;
+                    }}
+                  >
+                    <Button onClick={this.onNoteModalClick}>Add Note</Button>
+                  </OverlayTrigger>
+
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id="tooltip-info">Coming Soon!</Tooltip>}
+                    ref={ref => {
+                      this.tooltipOverlay = ref;
+                    }}
+                  >
+                    <Button onClick={this.onNoteModalClick}>Create Task</Button>
+                  </OverlayTrigger>
+
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id="tooltip-info">Coming Soon!</Tooltip>}
+                    ref={ref => {
+                      this.tooltipOverlay = ref;
+                    }}
+                  >
+                    <Button onClick={this.onNoteModalClick}>Upload File</Button>
+                  </OverlayTrigger>
                 </div>
               </div>
 
@@ -96,7 +180,7 @@ class Main extends Component {
                   </div>
 
                   <div className="content">
-                    <div className="action">Appoint requested</div>
+                    <div className="action">Conversation started</div>
                     <div className="text-muted">Started on May 30, 2018</div>
                   </div>
                 </div>
@@ -121,6 +205,8 @@ class Main extends Component {
             </div>
           </div>
         </Scrollbar>
+
+        {this.isShowing && this.renderModal()}
       </div>
     );
   }

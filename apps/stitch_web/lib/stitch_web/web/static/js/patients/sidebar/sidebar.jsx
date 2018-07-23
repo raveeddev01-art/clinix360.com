@@ -28,7 +28,7 @@ class Sidebar extends Component {
   }
 
   get isShowing() {
-    return this.currentModal === "compose" || this.currentModal === "add";
+    return this.currentModal === "add";
   }
 
   showAddPatientModal = () => {
