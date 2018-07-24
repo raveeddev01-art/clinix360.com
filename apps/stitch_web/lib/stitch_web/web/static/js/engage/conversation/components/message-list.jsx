@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { Link, Element } from "react-scroll";
 import DateSeparator from "common/components/date-separator/date-separator";
@@ -35,7 +36,7 @@ class MessageList extends Component {
   };
 
   render() {
-    const { conversationMessageStore } = this.props;
+    const { conversationMessageStore, asPatient } = this.props;
     const { messagesByDate } = conversationMessageStore;
 
     return (
@@ -59,6 +60,7 @@ class MessageList extends Component {
                 // end of dummy prop
                 key={`message_${message.id}`}
                 isConversationMessage
+                asPatient={asPatient}
                 message={message}
                 messageStore={conversationMessageStore}
                 chatDiv={conversationMessageStore.chatDiv}
@@ -94,5 +96,13 @@ class MessageList extends Component {
     );
   }
 }
+
+MessageList.propTypes = {
+  asPatient: PropTypes.bool
+};
+
+MessageList.defaultProps = {
+  asPatient: false
+};
 
 export default MessageList;

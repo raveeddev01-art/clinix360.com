@@ -69,6 +69,7 @@ class Message extends PureComponent {
 
   renderGutter(message) {
     const { inserted_at: insertedAt } = message;
+    const { asPatient } = this.props;
     const user = this.getUser(message);
 
     return (
@@ -89,11 +90,13 @@ class Message extends PureComponent {
             <i className="fa fa-exclamation-triangle" />
           </div>
         )}
-        {!message.is_sequential && (
-          <UserProfileMenu user={user}>
-            <Avatar user={user} />
-          </UserProfileMenu>
-        )}
+        {!message.is_sequential &&
+          !asPatient && (
+            <UserProfileMenu user={user}>
+              <Avatar user={user} />
+            </UserProfileMenu>
+          )}
+        {asPatient && <Avatar user={user} />}
         {message.is_sequential && (
           <TimestampTooltip
             timestamp={insertedAt}
@@ -106,11 +109,16 @@ class Message extends PureComponent {
 
   renderHeader(message) {
     const { inserted_at: insertedAt } = message;
+    const { asPatient } = this.props;
     const user = this.getUser(message);
 
     return (
       (!message.is_sequential || message.type === "file_comment") && (
-        <MessageHeader user={user} timestamp={insertedAt} />
+        <MessageHeader
+          user={user}
+          timestamp={insertedAt}
+          asPatient={asPatient}
+        />
       )
     );
   }
@@ -221,7 +229,8 @@ Message.propTypes = {
   chatDiv: PropTypes.object,
   messageStore: PropTypes.object.isRequired,
   isConversationMessage: PropTypes.bool,
-  lastOtherUserMessage: PropTypes.object
+  lastOtherUserMessage: PropTypes.object,
+  asPatient: PropTypes.bool
 };
 
 Message.defaultProps = {
@@ -233,7 +242,8 @@ Message.defaultProps = {
   onHide: () => undefined,
   lastOtherUserMessage: null,
   isConversationMessage: false,
-  chatDiv: null
+  chatDiv: null,
+  asPatient: false
 };
 
 export default Message;

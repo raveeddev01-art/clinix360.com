@@ -270,11 +270,16 @@ class InboxStore {
 
   @action
   loadConversationAsPatient = id => {
+    const { conversationMessageStore, channelStore } = this.rootStore;
     this.currentConversationId = parseInt(id, 10);
 
     return get(`/api/v1/patient/conversations/${id}`).then(response => {
-      this.currentConversation = response.data;
+      conversationMessageStore.onConversationLoaded(response.data);
       this.messagesLoaded = true;
+
+      channelStore
+        .joinConversationChannel({ authenticated_urls: true })
+        .receive("error", err => notify.show(err.message, "error"));
     });
   };
 

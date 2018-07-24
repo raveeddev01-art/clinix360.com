@@ -24,6 +24,21 @@ class RootPatientStore {
     this.socketStore = new SocketStore(this);
     this.conversationMessageStore = new ConversationMessageStore(this);
     this.inboxStore = new InboxStore(this);
+    this.addonStore = {};
+    this.uploadStore = {};
+    this.billingStore = {};
+    this.sidemenuStore = {};
+    this.teamFileStore = {};
+    this.usersStore = {
+      usersById: new Proxy(
+        {},
+        {
+          get: (target, id) => {
+            return { id: parseInt(id, 10), full_name: "Anonymous" };
+          }
+        }
+      )
+    };
   }
 
   joinChannels() {
