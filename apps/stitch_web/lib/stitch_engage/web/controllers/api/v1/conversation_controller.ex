@@ -176,7 +176,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
        ) do
     conversation =
       conversation
-      |> Repo.preload([:conversation_messages, :patients, :providers])
+      |> Repo.preload([:patients, :providers, conversation_messages: [:patient, :provider]])
       |> ConversationQueries.with_unread(user_or_patient)
 
     conversation_messages =
