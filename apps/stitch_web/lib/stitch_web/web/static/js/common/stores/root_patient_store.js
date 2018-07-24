@@ -27,8 +27,8 @@ class RootPatientStore {
   }
 
   joinChannels() {
-    this.channelStore.joinTeamPatientChannel(patient.team.id);
-    this.channelStore.joinEventPatientChannel(patient.id);
+    this.channelStore.joinTeamPatientChannel(currentPatient.team.id);
+    this.channelStore.joinEventPatientChannel(currentPatient.id);
   }
 }
 

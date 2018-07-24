@@ -8,11 +8,11 @@ import { observable, action } from "mobx";
 
 class CurrentPatientStore {
   @observable loading = false;
-  @observable id = patient.id;
-  @observable phone = patient.phone || "";
-  @observable email = patient.email;
-  @observable firstName = patient.firstName;
-  @observable lastName = patient.lastName;
+  @observable id = currentPatient.id;
+  @observable phone = currentPatient.phone || "";
+  @observable email = currentPatient.email;
+  @observable firstName = currentPatient.first_name;
+  @observable lastName = currentPatient.last_name;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -20,8 +20,8 @@ class CurrentPatientStore {
 
   @action
   onPatientInfo = patient => {
-    this.firstName = patient.firstName;
-    this.lastName = patient.lastName;
+    this.firstName = patient.first_name;
+    this.lastName = patient.last_name;
     this.phone = patient.phone;
   };
 
