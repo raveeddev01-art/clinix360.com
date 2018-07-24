@@ -7,7 +7,8 @@ defmodule Stitch.PatientQueries do
 
   alias Stitch.{
     Repo,
-    Patient
+    Patient,
+    Engage.ConversationPatient
   }
 
   @doc """
@@ -37,7 +38,7 @@ defmodule Stitch.PatientQueries do
   """
   @spec get_active_by_token(binary) :: Patient.t() | nil
   def get_active_by_token(token) do
-    get_by_token(active_and_onboarded, token)
+    get_by_token(active_and_onboarded(), token)
   end
 
   @doc """
@@ -103,5 +104,36 @@ defmodule Stitch.PatientQueries do
   @spec get_patient(number | binary) :: Patient.t() | nil
   def get_patient(patient_id) do
     Patient |> where(id: ^patient_id) |> Repo.one()
+  end
+
+  @doc """
+  Count of unread conversation messages given a patient id.
+  """
+  @spec unread_conversation_messages_count(integer | binary) :: integer | nil
+  def unread_conversation_messages_count(patient_id) do
+    query =
+      from(
+        cp in ConversationPatient,
+        where: cp.patient_id == ^patient_id,
+        select: sum(cp.unread_messages_count)
+      )
+
+    Repo.one(query)
+  end
+
+  @doc """
+  Count of unread conversations given a patient id.
+  """
+  @spec unread_conversations_count(integer | binary) :: integer | nil
+  def unread_conversations_count(patient_id) do
+    query =
+      from(
+        cp in ConversationPatient,
+        where: cp.patient_id == ^patient_id,
+        where: cp.unread_messages_count > 0,
+        select: count(cp.id, :distinct)
+      )
+
+    Repo.one(query)
   end
 end

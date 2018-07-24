@@ -19,4 +19,19 @@ defmodule Stitch.PatientQueriesTest do
       assert query_res == []
     end
   end
+
+  describe "Stitch.PatientQueries unread counts" do
+    test "returns correct unread counts for a patient" do
+      patient = insert(:patient, %{})
+      insert(:conversation_patient, %{patient: patient, unread_messages_count: 0})
+      insert(:conversation_patient, %{patient: patient, unread_messages_count: 1})
+      insert(:conversation_patient, %{patient: patient, unread_messages_count: 3})
+
+      unread_messages_count = PatientQueries.unread_conversation_messages_count(patient.id)
+      assert unread_messages_count == 4
+
+      unread_conversations_count = PatientQueries.unread_conversations_count(patient.id)
+      assert unread_conversations_count == 2
+    end
+  end
 end
