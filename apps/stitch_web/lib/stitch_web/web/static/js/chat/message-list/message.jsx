@@ -13,7 +13,7 @@ import {
 } from "common/components";
 import MessageActions from "./message-actions";
 
-@inject("usersStore")
+@inject("usersStore", "patientsStore")
 class Message extends PureComponent {
   constructor(props) {
     super(props);
@@ -55,12 +55,13 @@ class Message extends PureComponent {
   };
 
   getUser = message => {
-    const { usersStore } = this.props;
-    const userId =
-      (message.user && message.user.id) ||
-      message.provider_id ||
-      message.patient_id;
-    return usersStore.usersById[userId];
+    const { usersStore, patientsStore } = this.props;
+    const userId = (message.user && message.user.id) || message.provider_id;
+    if (userId) {
+      return usersStore.usersById[userId];
+    }
+
+    return patientsStore.getPatient(message.patient_id);
   };
 
   setSelected = newState => {
@@ -69,7 +70,6 @@ class Message extends PureComponent {
 
   renderGutter(message) {
     const { inserted_at: insertedAt } = message;
-    const { asPatient } = this.props;
     const user = this.getUser(message);
 
     return (
@@ -90,13 +90,11 @@ class Message extends PureComponent {
             <i className="fa fa-exclamation-triangle" />
           </div>
         )}
-        {!message.is_sequential &&
-          !asPatient && (
-            <UserProfileMenu user={user}>
-              <Avatar user={user} />
-            </UserProfileMenu>
-          )}
-        {asPatient && <Avatar user={user} />}
+        {!message.is_sequential && (
+          <UserProfileMenu user={user}>
+            <Avatar user={user} />
+          </UserProfileMenu>
+        )}
         {message.is_sequential && (
           <TimestampTooltip
             timestamp={insertedAt}

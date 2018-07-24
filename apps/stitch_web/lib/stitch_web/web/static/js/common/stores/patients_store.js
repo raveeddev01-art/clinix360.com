@@ -27,6 +27,8 @@ const stringSort = stringAttrName => (patientA, patientB) => {
     patientB[stringAttrName].toLowerCase()
   )
     return 1;
+
+  return 0;
 };
 
 const insertedAtSort = (patientA, patientB) => {
@@ -92,7 +94,19 @@ class PatientsStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-    if (this.rootStore.teamStore.engageEnabled) {
+
+    if (this.rootStore.isPatient) {
+      // @TODO load conversation patients as patient
+      // @FIXME window.patient should have consistent format of first_name, last_name as the other patients
+      this.patients = [
+        {
+          ...window.patient,
+          first_name: window.patient.firstName,
+          last_name: window.patient.lastName,
+          full_name: `${window.patient.firstName} ${window.patient.lastName}`
+        }
+      ];
+    } else if (this.rootStore.teamStore.engageEnabled) {
       this.loadPatients();
     }
   }

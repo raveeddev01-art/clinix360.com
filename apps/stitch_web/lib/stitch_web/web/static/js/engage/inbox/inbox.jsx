@@ -46,7 +46,7 @@ class InboxMenu extends Component {
       !fullyLoadedForCurrentFilter &&
       !isLoadingConversationPage
     ) {
-      this.props.inboxStore.loadNextConversationPage(this.props.asPatient);
+      this.props.inboxStore.loadNextConversationPage();
     }
   };
 
