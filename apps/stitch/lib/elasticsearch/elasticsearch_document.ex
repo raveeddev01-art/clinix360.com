@@ -12,7 +12,10 @@ defimpl Elasticsearch.Document, for: Stitch.Engage.ConversationMessage do
       author: author(conversation_message),
       text_content: conversation_message.text_content,
       inserted_at: inserted_at(conversation_message.inserted_at),
-      conversation_id: conversation_message.conversation_id
+      conversation_id: conversation_message.conversation_id,
+      inbox_id: conversation_message.conversation.inbox_id,
+      team_id: conversation_message.conversation.inbox.team_id,
+      conversation_message_id: conversation_message.id
     }
   end
 

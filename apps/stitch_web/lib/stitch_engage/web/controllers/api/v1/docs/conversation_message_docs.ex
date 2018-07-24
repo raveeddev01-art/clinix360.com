@@ -134,6 +134,55 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
         response(200, "OK", Schema.ref(:ConversationMessage))
       end
 
+      swagger_path :search do
+        post("/api/v1/conversation_messages/search")
+        produces("application/json")
+
+        description("Returns conversation messages matching the given criteria.")
+
+        CommonParams.auth()
+        CommonParams.pagination()
+
+        parameters do
+          term(
+            :query,
+            :string,
+            "The query string",
+            example: ~s("exact term", -minus, starting with pattern  *)
+          )
+
+          conversation_id(
+            :query,
+            :array,
+            "Search the given conversations ([1, 2])",
+            items: %{type: :integer}
+          )
+
+          author(
+            :query,
+            :string,
+            "Search messages from the given user (\"patient-{id}\" or \"provider-{id})\"",
+            example: "patient-1"
+          )
+
+          order(
+            :query,
+            :string,
+            "Order by relevance or recency (accepts either \"relevance\" or \"recency\"))",
+            example: "recency"
+          )
+
+          inbox_id(
+            :query,
+            :array,
+            "Search the given inboxes ([1, 2])",
+            items: %{type: :integer}
+          )
+        end
+
+        response(200, "OK", Schema.ref(:ConversationMessages))
+      end
+
       swagger_path :patient_create do
         post("/api/v1/patient/conversations/{conversation_id}/messages")
         produces("application/json")
@@ -243,6 +292,55 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
         end
 
         response(200, "ok")
+      end
+
+      swagger_path :patient_search do
+        post("/api/v1/patient/conversation_messages/search")
+        produces("application/json")
+
+        description("Returns conversation messages matching the given criteria for a patient.")
+
+        CommonParams.auth()
+        CommonParams.pagination()
+
+        parameters do
+          term(
+            :query,
+            :string,
+            "The query string",
+            example: ~s("exact term", -minus, starting with pattern  *)
+          )
+
+          conversation_id(
+            :query,
+            :array,
+            "Search the given conversations ([1, 2])",
+            items: %{type: :integer}
+          )
+
+          author(
+            :query,
+            :string,
+            "Search messages from the given user (\"patient-{id}\" or \"provider-{id})\"",
+            example: "patient-1"
+          )
+
+          order(
+            :query,
+            :string,
+            "Order by relevance or recency (accepts either \"relevance\" or \"recency\"))",
+            example: "recency"
+          )
+
+          inbox_id(
+            :query,
+            :array,
+            "Search the given inboxes ([1, 2])",
+            items: %{type: :integer}
+          )
+        end
+
+        response(200, "OK", Schema.ref(:ConversationMessages))
       end
     end
   end

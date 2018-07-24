@@ -171,4 +171,16 @@ defmodule Stitch.Web.ControllerHelpers do
 
   def get_include_user_ids(%{"includeUserIds" => "false"}), do: false
   def get_include_user_ids(_params), do: true
+
+  @doc """
+  Casts params using Ecto type casting.
+  Ex.
+
+  cast_params(%{author_id: :integer}, %{"author_id": "1"})
+  > %{author_id: 1}
+  """
+  def cast_params(types, params) do
+    changeset = Ecto.Changeset.cast({%{}, types}, params, Map.keys(types))
+    changeset.changes
+  end
 end
