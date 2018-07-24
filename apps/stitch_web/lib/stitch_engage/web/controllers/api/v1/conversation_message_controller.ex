@@ -13,6 +13,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.ConversationMessage.ConversationMessageCreation,
     Engage.ConversationAuthorization,
     Engage.ConversationMessageAuthorization,
+    Elasticsearch.ConversationMessageSearch,
     ReadStatus
   }
 
@@ -57,6 +58,43 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       max_id,
       limit
     )
+  end
+
+  # ==========
+  #   SEARCH
+  # ==========
+
+  def search(conn, params) do
+    do_search(conn, params, conn.assigns.current_user)
+  end
+
+  def patient_search(conn, params) do
+    do_search(conn, params, conn.assigns.patient)
+  end
+
+  def do_search(conn, params, user_or_patient) do
+    types = %{
+      term: :string,
+      skip: :integer,
+      limit: :integer,
+      order: :string,
+      after: :string,
+      before: :string,
+      author_id: :integer,
+      conversation_id: {:array, :integer}
+    }
+
+    search_options = cast_params(types, params)
+    result = ConversationMessageSearch.search_for_params(user_or_patient, search_options)
+    render_search_result(conn, result)
+  end
+
+  def render_search_result(conn, {:ok, result}) do
+    render(conn, "search.json", result)
+  end
+
+  def render_search_result(conn, _result) do
+    {:error, :unprocessable_entity, "Error peforming the search."}
   end
 
   # ========
@@ -167,6 +205,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
       ConversationChannel.broadcast_message_edited(updated_message_with_assocs)
       LinkPreviewGenerator.queue(updated_message_with_assocs)
+      Stitch.Elasticsearch.ConversationMessageSearch.add_to_index(updated_conversation_message)
 
       render(conn, "show.json", conversation_message: updated_message_with_assocs)
     else
@@ -206,6 +245,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
         id: id
       })
 
+      # Reminder to also remove from index when conversation, patient, provider, or inbox deletion are implemented
+      #   (the deletion of those records trigger the cascading delete of conversation_messages).
+      Stitch.Elasticsearch.ConversationMessageSearch.delete_from_index(conversation_message)
       send_resp(conn, :no_content, "")
     else
       {:conversation, _} ->

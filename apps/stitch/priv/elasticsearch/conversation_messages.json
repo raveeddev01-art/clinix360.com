@@ -33,6 +33,12 @@
 
         "conversation_id": {
           "type": "keyword"
+        },
+        "inbox_id": {
+          "type": "keyword"
+        },
+        "team_id": {
+          "type": "keyword"
         }
       }
     }

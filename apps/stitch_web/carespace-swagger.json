@@ -802,6 +802,97 @@
         "description": "Show a conversation message for a patient."
       }
     },
+    "/api/v1/patient/conversation_messages/search": {
+      "post": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ConversationMessages"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "limit the amount of returned records"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "skip",
+            "in": "query",
+            "description": "skip the given number of records"
+          },
+          {
+            "x-example": "\"exact term\", -minus, starting with pattern  *",
+            "type": "string",
+            "required": false,
+            "name": "term",
+            "in": "query",
+            "description": "The query string"
+          },
+          {
+            "type": "array",
+            "required": false,
+            "name": "conversation_id",
+            "items": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "Search the given conversations ([1, 2])"
+          },
+          {
+            "x-example": "patient-1",
+            "type": "string",
+            "required": false,
+            "name": "author",
+            "in": "query",
+            "description": "Search messages from the given user (\"patient-{id}\" or \"provider-{id})\""
+          },
+          {
+            "x-example": "recency",
+            "type": "string",
+            "required": false,
+            "name": "order",
+            "in": "query",
+            "description": "Order by relevance or recency (accepts either \"relevance\" or \"recency\"))"
+          },
+          {
+            "type": "array",
+            "required": false,
+            "name": "inbox_id",
+            "items": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "Search the given inboxes ([1, 2])"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_search",
+        "description": "Returns conversation messages matching the given criteria for a patient."
+      }
+    },
     "/api/v1/inboxes/{inbox_id}/conversations": {
       "get": {
         "tags": [
@@ -1032,6 +1123,97 @@
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.delete",
         "description": "Deletes a conversation message as a provider."
+      }
+    },
+    "/api/v1/conversation_messages/search": {
+      "post": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ConversationMessages"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "limit the amount of returned records"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "skip",
+            "in": "query",
+            "description": "skip the given number of records"
+          },
+          {
+            "x-example": "\"exact term\", -minus, starting with pattern  *",
+            "type": "string",
+            "required": false,
+            "name": "term",
+            "in": "query",
+            "description": "The query string"
+          },
+          {
+            "type": "array",
+            "required": false,
+            "name": "conversation_id",
+            "items": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "Search the given conversations ([1, 2])"
+          },
+          {
+            "x-example": "patient-1",
+            "type": "string",
+            "required": false,
+            "name": "author",
+            "in": "query",
+            "description": "Search messages from the given user (\"patient-{id}\" or \"provider-{id})\""
+          },
+          {
+            "x-example": "recency",
+            "type": "string",
+            "required": false,
+            "name": "order",
+            "in": "query",
+            "description": "Order by relevance or recency (accepts either \"relevance\" or \"recency\"))"
+          },
+          {
+            "type": "array",
+            "required": false,
+            "name": "inbox_id",
+            "items": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "Search the given inboxes ([1, 2])"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.search",
+        "description": "Returns conversation messages matching the given criteria."
       }
     }
   },

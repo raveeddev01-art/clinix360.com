@@ -147,6 +147,8 @@ defmodule Stitch.Web.SubdomainRouter do
       ConversationMessageController,
       :patient_mark_as_read
     )
+
+    post("/conversation_messages/search", ConversationMessageController, :patient_search)
   end
 
   scope "/patient", as: :patient do
@@ -401,6 +403,7 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/logout", AuthenticationController, :logout)
 
     get("/engage", PageController, :index)
+    get("/conversations", PageController, :index)
     get("/conversations/:id", PageController, :index)
 
     get("/manage", PageController, :index)
@@ -580,7 +583,7 @@ defmodule Stitch.Web.SubdomainRouter do
     # Expected future Engage routes:
     # get("/conversation_messages/:id/download", ConversationMessageController, :download)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
-    # post("/conversation_messages/search", ConversationMessageController, :search)
+    post("/conversation_messages/search", ConversationMessageController, :search)
   end
 
   # ==============
