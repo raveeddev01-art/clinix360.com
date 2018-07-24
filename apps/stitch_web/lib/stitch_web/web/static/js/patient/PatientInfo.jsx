@@ -7,9 +7,9 @@ class PatientInfo extends Component {
         <h1> Patient Info: </h1>
         <ul>
           <li>
-            Name: {currentUser.firstName} {currentUser.lastName}
+            Name: {currentPatient.first_name} {currentPatient.last_name}
           </li>
-          <li>Email: {currentUser.email}</li>
+          <li>Email: {currentPatient.email}</li>
           <li>Token: {window.authenticationToken}</li>
         </ul>
       </div>
