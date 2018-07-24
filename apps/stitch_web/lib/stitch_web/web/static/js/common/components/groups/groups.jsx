@@ -32,7 +32,7 @@ class Groups extends Component {
       iconClass = "fa-link";
     }
 
-    return cx("fa", iconClass);
+    return cx("fa", "Select-Icon", iconClass);
   }
 
   get groupOptions() {
@@ -53,6 +53,11 @@ class Groups extends Component {
     };
   };
 
+  filterOption = (option, filterString) => {
+    if (!filterString && option.room.type === "multi_dm") return false;
+    return option.label.toLowerCase().includes(filterString.toLowerCase());
+  };
+
   renderOption = option => {
     return (
       <span>
@@ -69,12 +74,13 @@ class Groups extends Component {
         className="multi-select-large"
         options={this.groupOptions}
         optionRenderer={this.renderOption}
+        filterOption={this.filterOption}
         simpleValue
         multi={multi}
         value={value}
         onChange={this.onChange}
         clearable={!multi}
-        searchable={false}
+        searchable
       />
     );
   }

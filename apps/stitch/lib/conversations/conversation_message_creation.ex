@@ -94,7 +94,7 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     |> post_creation()
   end
 
-  defp post_creation({:ok, %{message: message}} = transaction_response) do
+  defp post_creation({:ok, %{conversation_message: conversation_message}} = transaction_response) do
     # Notifications: send necessary notifications here.
     # TODO: get active users that should be notified based on their mobile notification settings.
     notify_user_ids = %{mobile_active: []}
@@ -105,6 +105,8 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     )
 
     # Analytics: add something like `track_conversation_message_sent(conversation_message, sender, conversation)`
+
+    Stitch.Elasticsearch.ConversationMessageSearch.add_to_index(conversation_message)
     transaction_response
   end
 

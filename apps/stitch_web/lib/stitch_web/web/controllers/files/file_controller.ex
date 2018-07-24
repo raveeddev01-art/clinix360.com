@@ -58,12 +58,13 @@ defmodule Stitch.Web.Files.FileController do
   @spec authenticated(Conn.t(), Upload.t(), map) ::
           {:authenticated, boolean} | {:authenticated, boolean, Upload.t() | Message.t()}
 
-  def authenticated(_conn, %Upload{public_link: token}, %{"public_token" => token}),
+  def authenticated(_conn, %Upload{public_token: token}, %{"public_token" => token}),
     do: {:authenticated, true}
 
-  def authenticated(conn, %Upload{} = upload, _params) do
+  def authenticated(conn, %Upload{} = upload, params) do
     with {:user_token, user_token} when is_binary(user_token) <-
-           {:user_token, get_user_token_from_team(conn, upload.team_id)},
+           {:user_token,
+            get_user_token_from_team(conn, upload.team_id) || params["authenticationToken"]},
          {:team_user, current_user = %User{}} <-
            {:team_user, UserQueries.team_member_by_token(upload.team_id, user_token)},
          {:authenticated, true} <-
@@ -113,6 +114,7 @@ defmodule Stitch.Web.Files.FileController do
     case put_cache_header(conn, filename, upload) do
       {:stale, conn} ->
         conn
+        |> put_resp_header("Content-Length", "#{upload.size_in_bytes || 0}")
         |> send_chunked(200)
         |> Stitch.AWS.S3.stream(filename, fn conn, bytes ->
           case chunk(conn, bytes) do

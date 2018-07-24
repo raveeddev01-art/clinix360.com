@@ -10,11 +10,18 @@ defmodule StitchConnect.Web.Api.V1.InvitationView do
   end
 
   def invitation_json(invitation) do
+    email =
+      case invitation.user do
+        nil -> invitation.patient.email
+        user -> user.email
+      end
+
     %{
       id: invitation.id,
       team_id: invitation.team_id,
       user_id: invitation.user_id,
-      email: invitation.user.email,
+      patient_id: invitation.patient_id,
+      email: email,
       invite_token: invitation.invite_token,
       accepted: invitation.accepted
     }

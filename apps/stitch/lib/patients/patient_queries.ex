@@ -11,15 +11,33 @@ defmodule Stitch.PatientQueries do
   }
 
   @doc """
-  Given a team id (and optional subquery), return a list of team patients with preloaded patients.
+  Given a token and an optional query to scope results. Return patient or nil.
   """
-  @spec get_by_token(binary) :: Patient.t() | nil
-  def get_by_token(token) do
-    Patient
+  @spec get_by_token(Ecto.Query.t(), binary) :: Patient.t() | nil
+  def get_by_token(query \\ Patient, token) do
+    query
     |> where(token: ^token)
     |> limit(1)
     |> preload(:team)
     |> Repo.one()
+  end
+
+  @doc """
+  Gets active and onboarded patients.
+  """
+  @spec active_and_onboarded(Ecto.Query.t()) :: Ecto.Query.t()
+  def active_and_onboarded(query \\ Patient) do
+    query
+    |> where(onboarded: true)
+    |> where(disabled: false)
+  end
+
+  @doc """
+  Given a token, return matching patient if active and onboarded.
+  """
+  @spec get_active_by_token(binary) :: Patient.t() | nil
+  def get_active_by_token(token) do
+    get_by_token(active_and_onboarded, token)
   end
 
   @doc """
@@ -30,6 +48,34 @@ defmodule Stitch.PatientQueries do
     Patient
     |> join(:inner, [p], i in assoc(p, :invitation))
     |> where([p, i], i.invite_token == ^invite_token)
+    |> Repo.one()
+  end
+
+  @doc """
+  Given an email return boolean if onboarded patient with that email exists.
+  """
+  @spec onboarded_patient_with_email_exists?(binary) :: boolean
+  def onboarded_patient_with_email_exists?(email) do
+    query =
+      from(
+        u in Patient,
+        where: u.onboarded == ^true,
+        where: u.email == ^email,
+        select: u.id,
+        limit: 1
+      )
+
+    !!Repo.one(query)
+  end
+
+  @doc """
+  Return Patient with team_id and email.
+  """
+  @spec team_member_with_email(integer | binary, binary) :: Patient.t() | nil
+  def team_member_with_email(team_id, email) do
+    Patient
+    |> where(team_id: ^team_id)
+    |> where(email: ^email)
     |> Repo.one()
   end
 

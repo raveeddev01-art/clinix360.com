@@ -5,7 +5,12 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
     Message.Reaction
   }
 
-  alias Stitch.Web.Api.V1.MessagesHelper
+  alias Stitch.Web.Api.V1.{
+    MessagesHelper,
+    PatientView,
+    UserView
+  }
+
   use Stitch.Web, :view
 
   @endpoint Stitch.Web.Endpoint
@@ -67,16 +72,10 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
     }
   end
 
-  def sender_info(nil, nil), do: sender_info(nil)
-  def sender_info(provider = %User{}, nil), do: sender_info(provider)
-  def sender_info(nil, patient = %Patient{}), do: sender_info(patient)
-  def sender_info(_, _), do: sender_info(nil)
-
-  def sender_info(nil), do: nil
-
-  def sender_info(%{id: id, first_name: first_name, last_name: last_name}) do
-    %{id: id, first_name: first_name, last_name: last_name}
-  end
+  def sender_info(nil, nil), do: nil
+  def sender_info(provider = %User{}, nil), do: UserView.user_json(provider)
+  def sender_info(nil, patient = %Patient{}), do: PatientView.patient_json(patient)
+  def sender_info(_, _), do: nil
 
   def type("file_share"), do: "upload"
   def type(type), do: type

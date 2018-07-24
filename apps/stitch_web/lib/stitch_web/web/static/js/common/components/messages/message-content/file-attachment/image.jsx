@@ -1,13 +1,9 @@
 import React, { Component } from "react";
-import { inject } from "mobx-react";
 import PropTypes from "prop-types";
-
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Button from "react-bootstrap/lib/Button";
+import cx from "classnames";
 import Modal from "react-bootstrap/lib/Modal";
+import AttachmentActions from "./components/attachment-actions";
 
-@inject("desktopStore")
 class ImageFileAttachment extends Component {
   constructor(props) {
     super(props);
@@ -15,11 +11,6 @@ class ImageFileAttachment extends Component {
       showModal: false
     };
   }
-
-  onFileDownload = () => {
-    const { desktopStore, api_url, filename } = this.props;
-    desktopStore.sendDownloadRequest(api_url, filename);
-  };
 
   onToggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
@@ -29,6 +20,16 @@ class ImageFileAttachment extends Component {
     const {
       filename,
       url,
+      size,
+      comment_count: commentCount,
+      onCommentsClick,
+      onFileDownload,
+      useActions,
+      message,
+      file_id,
+      encoded_id,
+      user_id,
+      public_url,
       preview_height: height,
       preview_width: width,
       preview_url: previewUrl
@@ -53,16 +54,21 @@ class ImageFileAttachment extends Component {
       };
     }
 
+    const blockCN = cx("attachment-image-block", {
+      "attachment-image-block--sm": size === "sm"
+    });
+
     return (
-      <div className="attachment-image-block">
-        {filename && (
-          <div className="attachment-title">
-            <span>uploaded this image: </span>
-            <a target="_blank" href={url} onClick={this.onFileDownload}>
-              <strong>{filename}</strong>
-            </a>
-          </div>
-        )}
+      <div className={blockCN}>
+        {filename &&
+          useActions && (
+            <div className="attachment-title">
+              <span>uploaded this image: </span>
+              <a onClick={onCommentsClick}>
+                <strong>{filename}</strong>
+              </a>
+            </div>
+          )}
         <div className="attachment-image-holder" style={holderStyle}>
           {placeholderStyle ? (
             <div
@@ -70,21 +76,20 @@ class ImageFileAttachment extends Component {
               style={placeholderStyle}
               onClick={this.onToggleModal}
             >
-              <div className="attachment-actions">
-                <OverlayTrigger
-                  placement="top"
-                  delayShow={150}
-                  overlay={<Tooltip id="download-file">Download</Tooltip>}
-                >
-                  <Button
-                    target="_blank"
-                    href={url}
-                    onClick={this.onFileDownload}
-                  >
-                    <i className="fa fa-download" />
-                  </Button>
-                </OverlayTrigger>
-              </div>
+              {useActions &&
+                message && (
+                  <AttachmentActions
+                    url={url}
+                    file_id={file_id}
+                    user_id={user_id}
+                    encoded_id={encoded_id}
+                    public_url={public_url}
+                    message={message}
+                    commentCount={commentCount}
+                    onCommentsClick={onCommentsClick}
+                    onFileDownload={onFileDownload}
+                  />
+                )}
             </div>
           ) : (
             <img
@@ -120,15 +125,30 @@ ImageFileAttachment.propTypes = {
   preview_url: PropTypes.string,
   filename: PropTypes.string,
   url: PropTypes.string.isRequired,
-  api_url: PropTypes.string
+  comment_count: PropTypes.number,
+  onCommentsClick: PropTypes.func,
+  onFileDownload: PropTypes.func.isRequired,
+  useActions: PropTypes.bool,
+  size: PropTypes.string,
+  file_id: PropTypes.number.isRequired,
+  encoded_id: PropTypes.string,
+  public_url: PropTypes.string,
+  user_id: PropTypes.number.isRequired,
+  message: PropTypes.object
 };
 
 ImageFileAttachment.defaultProps = {
+  useActions: true,
   preview_height: 0,
   preview_width: 0,
   preview_url: "",
+  public_url: "",
   filename: "",
-  api_url: ""
+  encoded_id: "",
+  comment_count: 0,
+  size: "md",
+  onCommentsClick: undefined,
+  message: null
 };
 
 export default ImageFileAttachment;

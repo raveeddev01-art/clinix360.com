@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.MessageView do
   use Stitch.Web, :view
   alias Stitch.Web.Api.V1.MessagesHelper
+  alias Stitch.Message
   @endpoint Stitch.Web.Endpoint
 
   def render("index.json", %{messages: messages} = opts) do
@@ -49,9 +50,9 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       user: user_info(message),
       group_id: message.group_id,
       deleted: message.deleted,
-      text_content: message.text_content,
+      text_content: text_content(message),
       fields: MessagesHelper.render_fields(message, authenticated_url, files_url),
-      type: type(message.type),
+      type: type(message.type, authenticated_url),
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,
       starred: Map.get(message, :starred, false),
@@ -71,8 +72,14 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     }
   end
 
-  def type("file_share"), do: "upload"
-  def type(type), do: type
+  # TODO: remove `requires_fallback_comment: false` guard on the next release
+  def text_content(%Message{type: "file_share", requires_fallback_comment: false}), do: nil
+  def text_content(message), do: message.text_content
+
+  def type("file_share", _), do: "upload"
+  def type("file_comment", false), do: "chat"
+  def type("file_comment", true), do: "file_comment"
+  def type(type, _), do: type
 
   def user_info(nil), do: nil
 

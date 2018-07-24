@@ -11,6 +11,16 @@ defmodule Stitch.Web.TeamChannel do
 
   @endpoint Stitch.Web.Endpoint
 
+  def join("team:patient:" <> team_id, params, socket) do
+    team_id = String.to_integer(team_id)
+
+    if team_id == socket.assigns.team_id do
+      {:ok, assign(socket, :meta, %{})}
+    else
+      {:error, %{message: "Unauthorized"}}
+    end
+  end
+
   def join("team:lobby:" <> team_id, params, socket) do
     sync_timestamp = get_sync_users(params)
     fetch_users_and_groups? = get_fetch_users_and_groups(params)
@@ -281,14 +291,14 @@ defmodule Stitch.Web.TeamChannel do
   end
 
   def broadcast_team_rename(%Stitch.Team{} = team) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "team_renamed", %{
+    broadcast_to_patients_and_providers(team.id, "team_renamed", %{
       name: team.name,
       slug: team.slug
     })
   end
 
   def broadcast_team_deleted(%Stitch.Team{} = team) do
-    @endpoint.broadcast("team:lobby:#{team.id}", "team_deleted", %{})
+    broadcast_to_patients_and_providers(team.id, "team_deleted", %{})
   end
 
   def broadcast_security_lockout_update(team) do
@@ -296,5 +306,13 @@ defmodule Stitch.Web.TeamChannel do
       security_lockout_enabled: team.security_lockout,
       seconds_to_lockout: team.seconds_to_lockout
     })
+  end
+
+  defp broadcast_to_patients_and_providers(team_id, topic, params) do
+    rooms = ["team:patient:#{team_id}", "team:lobby:#{team_id}"]
+
+    Enum.each(rooms, fn room_name ->
+      @endpoint.broadcast(room_name, topic, params)
+    end)
   end
 end

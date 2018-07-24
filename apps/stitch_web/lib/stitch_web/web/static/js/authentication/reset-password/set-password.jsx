@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -37,9 +38,13 @@ class SetPassword extends Component {
     evt.preventDefault();
     this.setState({ error: false });
     this.props.resetPasswordStore
-      .resetPassword(this.state.password)
+      .resetPassword(this.state.password, this.props.asPatient)
       .then(() => {
-        this.props.history.push("/login", { passwordReset: true });
+        if (this.props.asPatient) {
+          window.location.href = "/patient/login";
+        } else {
+          this.props.history.push("/login", { passwordReset: true });
+        }
       })
       .catch(err => {
         this.setState({
@@ -93,5 +98,13 @@ class SetPassword extends Component {
     );
   }
 }
+
+SetPassword.defaultProps = {
+  asPatient: false
+};
+
+SetPassword.propTypes = {
+  asPatient: PropTypes.bool
+};
 
 export default SetPassword;

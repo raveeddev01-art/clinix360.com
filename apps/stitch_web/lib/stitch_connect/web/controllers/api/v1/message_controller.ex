@@ -1,25 +1,34 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use Stitch.Web, :controller
-  alias Stitch.LinkPreviewGenerator
 
   alias StitchConnect.Web.{
     GroupChannel,
     PushNotifications,
     UserStatusService,
-    Api.V1.MessageView
+    Api.V1.MessageView,
+    MessageEventsService
+  }
+
+  alias Stitch.Web.{
+    StarringEventsService,
+    UrlService,
+    FileService
   }
 
   alias Stitch.{
     GroupAuthorization,
     GroupQueries,
     Group,
+    Files,
+    StarrableItems.StarringService,
     Message,
     MessageAuthorization,
     MessageAction,
     MessageQueries,
     Message.Upload,
     ReadStatus,
-    Web.EventsChannel
+    Web.EventsChannel,
+    Web.FileService
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -104,6 +113,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     current_user = conn.assigns.current_user
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
 
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
@@ -111,11 +121,12 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <-
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
-         presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id),
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(group, current_user, message_params_with_client, presence_user_ids) do
+           Message.create(group, current_user, message_params_with_client, presence) do
       message = %{message | user: current_user}
-      message_events(message, group, notify_user_ids)
+      create_optional_upload_comment(message, group, current_user, presence, message_params)
+      message = MessageQueries.get_by_id(message.id)
+      MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
       conn
       |> put_status(:created)
@@ -132,18 +143,18 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  defp message_events(message, group, notify_user_ids) do
-    Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
-
-    Stitch.Task.start(fn ->
-      LinkPreviewGenerator.queue(message)
-      GroupChannel.broadcast_message_created(message)
-      EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-      PushNotifications.notify_users(group, message, notify_user_ids.mobile)
-      PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-      Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-    end)
+  def create_optional_upload_comment(
+        %Message{type: "file_share"} = message,
+        group,
+        current_user,
+        presence,
+        attrs
+      ) do
+    upload = %{message.upload | shared_in: [group.id]}
+    FileService.create_optional_comment(upload, current_user, presence, attrs)
   end
+
+  def create_optional_upload_comment(_message, _group, _current_user, _presence, _attrs), do: nil
 
   def mark_as_read(conn, %{"group_id" => group_id}) do
     current_user = conn.assigns.current_user
@@ -209,69 +220,91 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def download(conn, %{"id" => message_id}) do
-    message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
 
-    with {:authorized?, true} <-
-           {:authorized?, GroupAuthorization.can_view?(message.group, user)},
-         {:ok, presigned_url} <- Upload.presign(message) do
-      json(conn, %{presigned_url: presigned_url})
+    with {:message, %Message{type: "file_share"} = message} <-
+           {:message, MessageQueries.get_by_id(message_id)},
+         {:upload, %Files.Upload{} = upload} <-
+           {:upload, Files.FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)} do
+      url = UrlService.file_download_url(upload, %{authenticationToken: user.token})
+      json(conn, %{presigned_url: url})
     else
+      {:message, _} -> {:error, :not_found}
       {:authorized?, false} -> {:error, :not_found}
       :error -> {:error, :not_found}
     end
   end
 
   def update(conn, %{"id" => message_id, "message" => message_params}) do
-    message = MessageQueries.get_by_id(message_id)
-    user = conn.assigns.current_user
+    current_user = conn.assigns.current_user
 
-    case user.id == message.user_id do
-      true ->
-        case Message.update(message, message_params) do
-          {:ok, message} ->
-            LinkPreviewGenerator.queue(message)
-            message = MessageQueries.load_info(message)
-            GroupChannel.broadcast_message_edited(message)
-            render(conn, "show.json", message: message, user_id: user.id)
+    with {:message, %Message{type: message_type} = message} when message_type in ["chat"] <-
+           {:message, MessageQueries.get_by_id(message_id)},
+         {:authorized?, true} <-
+           {:authorized?, MessageAuthorization.can_edit?(message, current_user)},
+         {:updated, {:ok, message}} <- {:updated, Message.update(message, message_params)} do
+      message = MessageQueries.load_info(message)
+      MessageEventsService.message_edit_events(message)
+      render(conn, "show.json", message: message, user_id: current_user.id)
+    else
+      # When an old client is trynig to update "file_comment" via messages API
+      # TODO: Deprecate once most client start using the new file API.
+      {:message, %Message{type: "file_comment"} = message} ->
+        text_content = message_params["text_content"]
+        upload_comment_id = message.upload_comment_id
 
-          {:error, :message, changeset, _changeset_so_far} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: changeset_errors_to_string(changeset)})
+        file_comment_update_result =
+          FileService.update_file_comment(text_content, upload_comment_id, current_user)
+
+        with {:updated_upload_comment, _updated_upload_comment} <- file_comment_update_result do
+          message = MessageQueries.get_by_id(message_id)
+          message = MessageQueries.load_info(message)
+          MessageEventsService.message_edit_events(message)
+          render(conn, "show.json", message: message, user_id: current_user.id)
+        else
+          error -> error
         end
 
-      false ->
+      {:message, _} ->
+        {:error, :not_found}
+
+      {:authorized?, false} ->
+        {:error, :not_found}
+
+      {:error, :message, changeset, _changeset_so_far} ->
         conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "You can't edit other users' messages"})
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
     end
   end
 
   def delete(conn, %{"id" => message_id}) do
-    message = MessageQueries.get_by_id(message_id)
-    user = conn.assigns.current_user
-    group = GroupQueries.get_by_id(message.group_id)
+    current_user = conn.assigns.current_user
+    team = conn.assigns.team
 
-    case MessageAuthorization.can_delete?(message, user, group) do
-      true ->
-        case Message.delete(message, user) do
-          {:ok, _message} ->
-            GroupChannel.broadcast_message_deleted(message)
-            EventsChannel.broadcast_group_msg_deleted(message.group, message)
-            PushNotifications.push_badge_update(message)
-            send_resp(conn, :no_content, "")
-
-          {:error, _failed_operation, _failed_value, _changeset} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: "Failed to delete message"})
-        end
-
-      false ->
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
+         {:group, {:ok, group}} <-
+           {:group, GroupQueries.get_by_id(message.group_id, current_user)},
+         {:authorized?, true} <-
+           {:authorized?, MessageAuthorization.can_delete?(message, current_user, group)},
+         {:deleted, {:ok, %{message: message}}} <-
+           {:deleted, Message.delete(message, current_user)} do
+      MessageEventsService.message_delete_events(message)
+      send_resp(conn, :no_content, "")
+    else
+      {:authorized?, false} ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "You can't delete other users' messages"})
+
+      {:deleted, {:error, _failed_operation, _failed_value, _changeset}} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Failed to delete message"})
+
+      _ ->
+        {:error, :not_found}
     end
   end
 
@@ -282,14 +315,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
     case GroupAuthorization.can_view?(group, user) do
       true ->
-        case MessageAction.toggle_star(message, user) do
-          {:ok, result, _changeset} ->
+        case StarringService.toggle_star(message, user) do
+          {result, {:ok, changest}} ->
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
-            GroupChannel.broadcast_message_starred(message, user.id)
+            StarringEventsService.star_events(message, user, result)
             render(conn, "starred.json", message: message, user_id: user.id)
 
-          {:error, changeset} ->
+          {_result, {:error, changeset}} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 import PropTypes from "prop-types";
-import getFileType from "../file-types";
+import getFileType from "lib/file-types";
 import DefaultFileAttachment from "./default";
 import ImageFileAttachment from "./image";
 
@@ -9,19 +10,73 @@ const FileAttachmentRenderer = {
   Image: ImageFileAttachment
 };
 
+@inject("desktopStore")
 class FileAttachment extends Component {
+  onCommentsClick = e => {
+    e.stopPropagation();
+    e.preventDefault();
+    e.nativeEvent.stopImmediatePropagation();
+    this.props.onCommentsClick();
+  };
+
+  onFileDownload = e => {
+    const {
+      desktopStore,
+      api_url,
+      preview_url,
+      filename,
+      mimetype,
+      filetype,
+      file_id
+    } = this.props;
+
+    if (desktopStore.isElectron) {
+      e.stopPropagation();
+      e.preventDefault();
+      e.nativeEvent.stopImmediatePropagation();
+
+      desktopStore.sendDownloadRequest({
+        id: file_id,
+        url: api_url,
+        filename,
+        mimetype,
+        filetype,
+        previewUrl: preview_url
+      });
+    }
+  };
+
   render() {
-    const { mimetype } = this.props;
+    const { mimetype, onCommentsClick } = this.props;
     const filetype = getFileType(mimetype);
     const Renderer =
       FileAttachmentRenderer[filetype.title] || FileAttachmentRenderer.File;
 
-    return <Renderer {...this.props} />;
+    return (
+      <Renderer
+        {...this.props}
+        onCommentsClick={onCommentsClick ? this.onCommentsClick : undefined}
+        onFileDownload={this.onFileDownload}
+      />
+    );
   }
 }
 
 FileAttachment.propTypes = {
-  mimetype: PropTypes.string.isRequired
+  api_url: PropTypes.string.isRequired,
+  preview_url: PropTypes.string,
+  mimetype: PropTypes.string.isRequired,
+  filename: PropTypes.string.isRequired,
+  filetype: PropTypes.string.isRequired,
+  file_id: PropTypes.number.isRequired,
+  message: PropTypes.object,
+  onCommentsClick: PropTypes.func
+};
+
+FileAttachment.defaultProps = {
+  onCommentsClick: undefined,
+  preview_url: "",
+  message: null
 };
 
 export default FileAttachment;

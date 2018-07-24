@@ -1,0 +1,39 @@
+<%
+# TODO: implement locked for patients
+# locked = !!Stitch.Web.SessionService.get_user_session_lock_status(@conn)
+locked = false
+patient = Map.get(@conn.assigns, :patient)
+authenticationToken = patient && patient.token
+patient =
+  case patient do
+    nil ->
+      Poison.encode!(%{})
+    patient ->
+      Poison.encode!(%{
+        "id" => patient.id,
+        "firstName" => patient.first_name,
+        "lastName" => patient.last_name,
+        "email" => patient.email,
+        "phone" => patient.phone_number,
+        "avatar" => patient.profile_image_url,
+        "avatar_thumb" => patient.profile_image_thumb_url,
+        "team" => %{
+          "securityLockoutEnabled" => patient.team.security_lockout,
+          "secondsToLockout" => patient.team.seconds_to_lockout,
+          "openInvitationsEnabled" => patient.team.open_invitations_enabled,
+          "name" => patient.team.name,
+          "slug" => patient.team.slug,
+          "concealEnabled" => patient.team.conceal_enabled,
+          "id" => patient.team.id
+        }
+      })
+  end
+%>
+
+<script>
+  window.locked = <%= locked %>;
+  window.authenticationToken = "<%= authenticationToken %>";
+  window.currentUser = <%= raw patient %>;
+  window.patient = window.currentUser
+  window.socketPath = "patient_socket"
+</script>

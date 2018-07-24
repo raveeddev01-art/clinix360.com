@@ -1,23 +1,12 @@
 defmodule Stitch.Web.UserSocket do
-  use Phoenix.Socket
-  import Appsignal.Phoenix.Channel, only: [channel_action: 4]
+  use Stitch.Web, :socket
 
   ## Channels
   channel("groups:*", StitchConnect.Web.GroupChannel)
   channel("team:lobby:*", Stitch.Web.TeamChannel)
   channel("events:*", Stitch.Web.EventsChannel)
-
-  ## Transports
-  transport(
-    :websocket,
-    Phoenix.Transports.WebSocket,
-    timeout: 45_000,
-    check_origin: [
-      "//*.teamstitchapp.com",
-      "//*.teamstitch.com",
-      "//*.#{Application.fetch_env!(:stitch_web, :application_host)}"
-    ]
-  )
+  channel("inbox:*", StitchEngage.Web.InboxChannel)
+  channel("conversations:*", StitchEngage.Web.ConversationChannel)
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

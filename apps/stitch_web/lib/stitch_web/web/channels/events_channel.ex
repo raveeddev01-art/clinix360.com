@@ -6,12 +6,36 @@ defmodule Stitch.Web.EventsChannel do
 
   use Stitch.Web, :channel
   import Ecto.Query
-  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
+
+  alias Stitch.{
+    Repo,
+    Group,
+    GroupUser,
+    TeamQueries,
+    Accounts.User,
+    Patient
+  }
+
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView, NotificationPreferenceView}
+  alias StitchEngage.Web.Api.V1.ConversationView
+  alias Stitch.Web.Api.V1.PatientView
 
   @endpoint Stitch.Web.Endpoint
 
   @decorate channel_action()
+
+  def join("events:patient:" <> patient_id, _params, socket) do
+    patient_id = String.to_integer(patient_id)
+
+    if patient_id == socket.assigns.patient.id do
+      send(self(), :after_join)
+
+      {:ok, socket}
+    else
+      {:error, %{message: "Unauthorized"}}
+    end
+  end
+
   def join("events:" <> user_id, _params, socket) do
     user_id = String.to_integer(user_id)
 
@@ -235,5 +259,34 @@ defmodule Stitch.Web.EventsChannel do
         user_id: user_id
       })
     end)
+  end
+
+  @spec broadcast_conversation_creation_to_patient(integer, Conversation.t()) :: term
+  def broadcast_conversation_creation_to_patient(patient_id, conversation) do
+    conversation_json = ConversationView.conversation_json_with_latest(conversation)
+
+    @endpoint.broadcast("events:patient:#{patient_id}", "conversation_created", %{
+      conversation: conversation_json
+    })
+  end
+
+  @spec broadcast_conversation_update_to_patient(integer, Conversation.t()) :: term
+  def broadcast_conversation_update_to_patient(patient_id, conversation) do
+    # For opening and closing conversations
+    # Also for latest_message updates (and reordering based on latest message times)
+    conversation_json = ConversationView.conversation_json_with_latest(conversation)
+
+    @endpoint.broadcast("events:patient:#{patient_id}", "conversation_updated", %{
+      conversation: conversation_json
+    })
+  end
+
+  @spec broadcast_patient_updated(Patient.t()) :: term
+  def broadcast_patient_updated(patient) do
+    patient_json = PatientView.patient_json(patient)
+
+    @endpoint.broadcast("events:patient:#{patient.id}", "patient_updated", %{
+      patient: patient_json
+    })
   end
 end

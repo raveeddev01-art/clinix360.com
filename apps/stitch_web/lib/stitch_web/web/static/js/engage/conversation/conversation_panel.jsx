@@ -1,46 +1,52 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
-import Scrollbar from "common/components/scrollbar";
-
+import MessageForm from "chat/message-form/message-form";
 import Topbar from "./components/topbar";
-import Message from "./components/message";
-import MessageForm from "./components/message-form";
+import MessageList from "./components/message-list";
 
-@inject("inboxStore")
+@inject("conversationMessageStore")
 @observer
 class ConversationPanel extends Component {
-  render() {
-    const { inboxStore } = this.props;
-
-    return (
-      <div className="chat-container">
-        <Topbar />
-
+  renderMessageList() {
+    // Temporarily return just this for the patients
+    if (this.props.asPatient) {
+      return (
         <div className="messages-container">
-          <Scrollbar
-            className="scrollbar"
-            viewRef={ref => {
-              this.scrollbar = ref;
-            }}
-          >
-            {inboxStore.currentConversation.conversation_messages.map(
-              conversation => {
-                return (
-                  <Message
-                    key={`msg_key_${conversation.id}`}
-                    conversation={conversation}
-                  />
-                );
-              }
-            )}
-          </Scrollbar>
+          <div>Messages Go here</div>
         </div>
+      );
+    }
 
-        <MessageForm />
+    return <MessageList />;
+  }
+
+  render() {
+    const { conversationMessageStore, asPatient } = this.props;
+    return (
+      <div id="chat-container">
+        <Topbar asPatient={asPatient} />
+        <MessageList />
+        {!asPatient && (
+          <div className="flex-footer">
+            <MessageForm
+              messageStore={conversationMessageStore}
+              allowTypingUsers={false}
+            />
+          </div>
+        )}
       </div>
     );
   }
 }
+
+ConversationPanel.propTypes = {
+  asPatient: PropTypes.bool
+};
+
+ConversationPanel.defaultProps = {
+  asPatient: false
+};
 
 export default ConversationPanel;

@@ -13,7 +13,8 @@ defmodule Stitch.Engage.ConversationQueries do
     Message.Reaction,
     Patient,
     Accounts.User,
-    Repo
+    Repo,
+    Paginator
   }
 
   @doc """
@@ -28,11 +29,13 @@ defmodule Stitch.Engage.ConversationQueries do
     is_open = Map.get(params, "open", nil)
     updated_before = Map.get(params, "updated_before", nil)
 
+    limit = parse_limit(Map.get(params, "limit"), :conversation)
+
     Conversation
     |> where(inbox_id: ^inbox_id)
     |> with_open_value(is_open)
     |> updated_before(updated_before)
-    |> most_recent(Conversation.page_length())
+    |> most_recent(limit)
     |> with_patients()
     |> Repo.all()
     |> with_latest_message_for_each()
@@ -41,15 +44,40 @@ defmodule Stitch.Engage.ConversationQueries do
 
   def for_index(%Patient{id: patient_id} = patient, inbox_id, params = %{}) do
     updated_before = Map.get(params, "updated_before", nil)
+    limit = parse_limit(Map.get(params, "limit"), :conversation)
 
     Conversation
     |> where(inbox_id: ^inbox_id)
     |> for_patient(patient_id)
     |> updated_before(updated_before)
-    |> most_recent(Conversation.page_length())
+    |> most_recent(limit)
     |> Repo.all()
     |> with_latest_message_for_each()
     |> with_unread_for_each(patient)
+  end
+
+  @doc """
+  Given a patient, return a list of latest conversation messages where the patient is a member
+  """
+  def with_patient(%Patient{} = patient, options = %{}) do
+    limit = Enum.min([options[:limit], 60])
+    offset = options[:skip] || 0
+
+    latest_conversation_message_query =
+      ConversationMessage
+      |> distinct([cm], cm.conversation_id)
+      |> order_by([cm], desc: cm.updated_at)
+
+    Conversation
+    |> join(
+      :inner,
+      [c],
+      cp in ConversationPatient,
+      cp.patient_id == ^patient.id and c.id == cp.conversation_id
+    )
+    |> order_by([c, cp], desc: c.updated_at)
+    |> preload(latest_conversation_message: ^latest_conversation_message_query)
+    |> Paginator.new(limit: limit, skip: offset)
   end
 
   @doc """
@@ -69,6 +97,21 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   @doc """
+  Given a patient & inbox_id, load a page of open conversations, most_recent message for each of the conversations
+  """
+  @spec latest_for_patient(Patient.t(), integer | binary) :: list(Conversation.t())
+  def latest_for_patient(%Patient{id: patient_id} = patient, inbox_id) do
+    Conversation
+    |> where(inbox_id: ^inbox_id)
+    |> for_patient(patient_id)
+    |> most_recent(Conversation.page_length())
+    |> preload([:patients, :providers])
+    |> Repo.all()
+    |> with_latest_message_for_each()
+    |> with_unread_for_each(patient)
+  end
+
+  @doc """
   Given an inbox id, return the total count of open conversations.
   """
   @spec open_count_for_inbox(integer | binary) :: integer
@@ -82,6 +125,19 @@ defmodule Stitch.Engage.ConversationQueries do
   @spec closed_count_for_inbox(integer | binary) :: integer
   def closed_count_for_inbox(inbox_id) do
     count_by_open_val(inbox_id, false)
+  end
+
+  @doc """
+  Given a patient id and inbox id, return the total count of conversations for that patient.
+  """
+  @spec count_for_patient_in_inbox(integer | binary, integer | binary) :: integer
+  def count_for_patient_in_inbox(patient_id, inbox_id) do
+    query =
+      Conversation
+      |> where(inbox_id: ^inbox_id)
+      |> for_patient(patient_id)
+
+    Repo.one(from(c in query, select: count("*")))
   end
 
   @doc """
@@ -124,12 +180,15 @@ defmodule Stitch.Engage.ConversationQueries do
   Given a conversation id and (potentially nil) updated_before,
   return list of conversation messages (limited to page_length)
   """
-  @spec messages_for_conversation(integer | binary, binary | nil) :: list()
-  def messages_for_conversation(conversation_id, updated_before) do
+  @spec messages_for_conversation(integer | binary, binary | nil, integer) :: list()
+  def messages_for_conversation(conversation_id, max_id, limit \\ nil) do
+    limit = parse_limit(limit, :conversation_message)
+
     ConversationMessage
     |> where(conversation_id: ^conversation_id)
-    |> updated_before(updated_before)
-    |> most_recent(ConversationMessage.page_length())
+    |> before_id(max_id)
+    |> most_recent_messages(limit)
+    |> preload([:provider, :patient])
     |> Repo.all()
     |> Reaction.apply_reactions(:conversation_message)
   end
@@ -268,6 +327,7 @@ defmodule Stitch.Engage.ConversationQueries do
       |> where(conversation_id: ^conversation.id)
       |> order_by(desc: :inserted_at)
       |> limit(1)
+      |> preload([:patient, :provider])
       |> Repo.one()
 
     latest_message =
@@ -305,8 +365,30 @@ defmodule Stitch.Engage.ConversationQueries do
     Repo.one(from(c in query, select: count("*")))
   end
 
+  defp parse_limit(nil, type) do
+    default_limit_for_type(type)
+  end
+
+  defp parse_limit(given_limit, type) when is_number(given_limit) do
+    min(default_limit_for_type(type), given_limit)
+  end
+
+  defp parse_limit(given_limit, type) when is_binary(given_limit) do
+    case Integer.parse(given_limit) do
+      {int_limit, _} -> parse_limit(int_limit, type)
+      _ -> default_limit_for_type(type)
+    end
+  end
+
+  defp default_limit_for_type(:conversation), do: Conversation.page_length()
+  defp default_limit_for_type(:conversation_message), do: ConversationMessage.page_length()
+
   defp most_recent(query, count) do
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
+  end
+
+  defp most_recent_messages(query, count) do
+    from(m in query, order_by: [desc: m.inserted_at], limit: ^count)
   end
 
   defp with_open_value(query, nil), do: query
@@ -315,9 +397,20 @@ defmodule Stitch.Engage.ConversationQueries do
     query |> where(open: ^open_val)
   end
 
+  defp before_id(query, nil), do: query
+
+  defp before_id(query, max_id) do
+    query |> where([m], m.id < ^max_id)
+  end
+
   defp updated_before(query, nil), do: query
 
   defp updated_before(query, updated_at_limit) do
-    from(m in query, where: m.updated_at < ^updated_at_limit)
+    with {:parse_ms, {ms, ""}} <- {:parse_ms, Integer.parse("#{updated_at_limit}")},
+         {:ok, date_time} <- DateTime.from_unix(ms) do
+      from(m in query, where: m.updated_at < ^date_time)
+    else
+      _ -> query
+    end
   end
 end

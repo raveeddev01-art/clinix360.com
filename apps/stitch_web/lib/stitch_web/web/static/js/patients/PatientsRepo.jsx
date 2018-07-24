@@ -1,26 +1,42 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import PatientListItem from "./PatientListItem";
+import Sidebar from "./sidebar/sidebar";
+import Topbar from "./main/topbar";
+import Main from "./main/main";
 import PatientModal from "./PatientModal";
-import PatientsHeader from "./PatientsHeader";
 
 @inject("patientsStore")
 @observer
 class PatientsRepo extends Component {
-  render() {
-    const { patientsStore } = this.props;
+  componentWillMount() {
+    this.openPatient(this.props.match.params.id);
+  }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.match.params.id !== nextProps.match.params.id) {
+      this.openPatient(nextProps.match.params.id);
+    }
+  }
+
+  openPatient(params) {
+    const { patientsStore } = this.props;
+    patientsStore.openPatient(params);
+  }
+
+  render() {
     return (
-      <div className="patients">
-        <PatientsHeader />
-        <div className="patients-list-wrapper">
-          <div className="patients-list">
-            {patientsStore.patientsForPage.map((patient, i) => (
-              <PatientListItem key={i} patient={patient} />
-            ))}
+      <div className="engage-wrapper patients-wrapper">
+        <Sidebar />
+
+        <div id="main">
+          <Topbar />
+
+          <div className="flex-content">
+            <Main />
           </div>
         </div>
+
         <PatientModal />
       </div>
     );

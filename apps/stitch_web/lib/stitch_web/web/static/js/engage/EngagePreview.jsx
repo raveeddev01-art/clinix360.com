@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+import { Helmet } from "react-helmet";
+import cx from "classnames";
+
+import { Switcher, AppAlert } from "common/components";
+import EmptySidebar from "../common/components/sidebar/empty-sidebar";
 
 import ModulePreview from "../common/components/module-preview/module-preview";
 
@@ -23,13 +28,25 @@ class EngagePreview extends Component {
 
   render() {
     return (
-      <div className="engage-content">
-        <ModulePreview
-          tagLine={this.renderTagline()}
-          moduleDescription={this.renderDescription()}
-          requestUrl="https://teamstitch.typeform.com/to/Ncn8x8"
-          iconClass="fa fa-bullhorn"
-        />
+      <div id="app">
+        <AppAlert />
+        <div className={cx("appContainer", "engage-wrapper")}>
+          <Helmet>
+            <title>Engage</title>
+          </Helmet>
+          <Switcher />
+
+          <EmptySidebar />
+
+          <div className="engage-content">
+            <ModulePreview
+              tagLine={this.renderTagline()}
+              moduleDescription={this.renderDescription()}
+              requestUrl="https://teamstitch.typeform.com/to/Ncn8x8"
+              iconClass="fa fa-bullhorn"
+            />
+          </div>
+        </div>
       </div>
     );
   }

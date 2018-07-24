@@ -20,13 +20,13 @@ defmodule StitchEngage.Web.ConversationChannel do
   #   JOINING
   # ===========
 
-  def join("conversation:" <> conversation_id, _params, socket) do
-    user = socket.assigns.current_user
+  def join("conversations:" <> conversation_id, _params, socket) do
+    user_or_patient = socket.assigns.current_user || socket.assigns.patient
 
     with {:conversation, %Conversation{} = conversation} <-
            {:conversation, Repo.get(Conversation, conversation_id)},
          {:authorized?, true} <-
-           {:authorized?, ConversationAuthorization.can_view?(conversation, user)} do
+           {:authorized?, ConversationAuthorization.can_view?(conversation, user_or_patient)} do
       {:ok, %{}, assign(socket, :conversation, conversation)}
     else
       {:authorized?, false} ->

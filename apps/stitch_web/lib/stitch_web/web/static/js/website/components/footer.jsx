@@ -68,6 +68,15 @@ export default class Footer extends Component {
                         Blog
                       </a>
                     </li>
+                    <li>
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="https://stitch.readme.io/"
+                      >
+                        API Docs
+                      </a>
+                    </li>
                   </ul>
                 </Col>
 

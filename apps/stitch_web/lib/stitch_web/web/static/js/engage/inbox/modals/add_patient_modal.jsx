@@ -129,7 +129,7 @@ class AddPatientModal extends Component {
               <FormControl
                 name="firstName"
                 type="text"
-                placeholder="First Name"
+                placeholder="First name"
                 value={firstName}
                 onChange={this.updateValue("firstName")}
               />
@@ -145,7 +145,7 @@ class AddPatientModal extends Component {
               <FormControl
                 name="lastName"
                 type="text"
-                placeholder="Last Name"
+                placeholder="Last name"
                 value={lastName}
                 onChange={this.updateValue("lastName")}
               />

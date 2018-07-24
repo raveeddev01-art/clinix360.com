@@ -20,7 +20,7 @@ class Switcher extends Component {
       active = "engage";
     } else if (path === "/manage") {
       active = "manage";
-    } else if (path === "/patients") {
+    } else if (path.startsWith("/patients")) {
       active = "patients";
     }
 

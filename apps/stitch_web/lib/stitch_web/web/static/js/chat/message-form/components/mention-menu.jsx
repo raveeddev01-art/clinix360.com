@@ -7,7 +7,7 @@ import noop from "lodash/noop";
 
 import { filterUsers, isFullMember } from "lib/utils";
 
-@inject("presenceStore", "usersStore", "groupsStore")
+@inject("presenceStore", "usersStore")
 @observer
 class MenutionMenu extends Component {
   constructor(...args) {
@@ -73,30 +73,32 @@ class MenutionMenu extends Component {
   };
 
   getUsers = () => {
-    const { usersStore, filter, groupsStore: { currentGroup } } = this.props;
+    const { usersStore, filter, currentGroup } = this.props;
     const users = [];
 
-    if (currentGroup.is_default) {
-      users.push({
-        username: "everyone",
-        description: "Notifies everyone in the team",
-        isGroupMention: true
-      });
-    }
+    if (currentGroup) {
+      if (currentGroup.is_default) {
+        users.push({
+          username: "everyone",
+          description: "Notifies everyone in the team",
+          isGroupMention: true
+        });
+      }
 
-    if (currentGroup.type === "regular") {
-      users.push(
-        {
-          username: "here",
-          description: "Notifies online people in the room",
-          isGroupMention: true
-        },
-        {
-          username: "room",
-          description: "Notifies everyone in the room",
-          isGroupMention: true
-        }
-      );
+      if (currentGroup.type === "regular") {
+        users.push(
+          {
+            username: "here",
+            description: "Notifies online people in the room",
+            isGroupMention: true
+          },
+          {
+            username: "room",
+            description: "Notifies everyone in the room",
+            isGroupMention: true
+          }
+        );
+      }
     }
 
     return filterUsers(
@@ -176,13 +178,15 @@ class MenutionMenu extends Component {
 MenutionMenu.propTypes = {
   filter: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  currentGroup: PropTypes.object
 };
 
 MenutionMenu.defaultProps = {
   filter: "",
   onSelect: noop,
-  onClose: noop
+  onClose: noop,
+  currentGroup: null
 };
 
 export default MenutionMenu;

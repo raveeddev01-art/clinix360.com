@@ -20,16 +20,18 @@ defmodule Stitch.Engage.Conversation do
     ConversationMessage.ConversationMessageCreation
   }
 
+  alias Stitch.Web.EventsChannel
   alias StitchEngage.Web.InboxChannel
 
   @type t :: %__MODULE__{}
 
-  @castable_attributes [:open]
+  @castable_attributes [:open, :subject]
   @required_attributes []
   @page_length 20
 
   schema "conversations" do
     field(:open, :boolean, default: true)
+    field(:subject, :string)
 
     belongs_to(:inbox, Inbox)
     has_many(:conversation_messages, ConversationMessage, on_delete: :delete_all)
@@ -163,7 +165,14 @@ defmodule Stitch.Engage.Conversation do
           |> Repo.preload(:patients)
           |> Map.put(:latest_conversation_message, latest_conversation_message)
 
+        patient = conversation_with_preloads.patients |> List.first()
+
         InboxChannel.broadcast_conversation_update(conversation_with_preloads)
+
+        EventsChannel.broadcast_conversation_update_to_patient(
+          patient.id,
+          conversation_with_preloads
+        )
 
       other ->
         other

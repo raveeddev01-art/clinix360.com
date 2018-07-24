@@ -10,7 +10,7 @@ import { action, computed, extendObservable, observable } from "mobx";
 //   CONSTANTS
 // =============
 
-const pageLength = 20;
+const pageLength = 1000;
 
 // ====================
 //   HELPER FUNCTIONS
@@ -80,6 +80,7 @@ const statusMatch = (patient, statusFilter) => {
 
 class PatientsStore {
   @observable patients = [];
+  @observable currentPatient = {};
   @observable page = 0;
   @observable listSort = "first_name";
   @observable sortDirection = "asc";
@@ -87,6 +88,7 @@ class PatientsStore {
   @observable searchFilter = "";
   @observable modalOpen = false;
   @observable modalPatient = null;
+  @observable currentModal = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -117,6 +119,18 @@ class PatientsStore {
   loadPatients = () => {
     return get(`/api/v1/patients`).then(response => {
       this.patients = response.data;
+    });
+  };
+
+  @action
+  openPatient = id => {
+    this.loadPatient(id);
+  };
+
+  @action
+  loadPatient = id => {
+    return get(`/api/v1/patients/${id}`).then(response => {
+      this.currentPatient = response.data;
     });
   };
 
@@ -191,16 +205,20 @@ class PatientsStore {
   // Modal-related
 
   @action
-  closeModal = () => {
-    this.modalOpen = false;
-    this.modalPatient = null;
+  setModal = modalName => {
+    this.currentModal = modalName;
   };
 
   @action
-  openModal = patientId => {
-    this.modalOpen = true;
-    this.modalPatientId = patientId;
+  closeModal = () => {
+    this.currentModal = null;
   };
+
+  // @action
+  // openModal = patientId => {
+  //   this.modalOpen = true;
+  //   this.modalPatientId = patientId;
+  // };
 
   // ======================
   //   COMPUTED PROPERTIES

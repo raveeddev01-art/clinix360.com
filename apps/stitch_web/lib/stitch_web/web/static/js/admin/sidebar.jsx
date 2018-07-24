@@ -73,23 +73,34 @@ class Sidebar extends Component {
   };
 
   _nonGuestOptions = () => {
+    const result = [];
+
     if (window.electronApp) {
-      return (
-        <ListGroupItem href="/admin/integrations" target="_blank">
+      result.push(
+        <ListGroupItem
+          key="integrations"
+          href="/admin/integrations"
+          target="_blank"
+        >
           <i className="fa fa-database" />
           Integrations <i className="fa fa-external-link sm" />
         </ListGroupItem>
       );
+    } else {
+      result.push(
+        <ListGroupItem
+          key="integrations"
+          active={this._isSelected("/admin/integrations", false)}
+        >
+          <Link to="/admin/integrations">
+            <i className="fa fa-database" />
+            <span>Integrations</span>
+          </Link>
+        </ListGroupItem>
+      );
     }
 
-    return (
-      <ListGroupItem active={this._isSelected("/admin/integrations", false)}>
-        <Link to="/admin/integrations">
-          <i className="fa fa-database" />
-          <span>Integrations</span>
-        </Link>
-      </ListGroupItem>
-    );
+    return result;
   };
 
   toggleInviteModal = () => {
@@ -152,6 +163,15 @@ class Sidebar extends Component {
                 <Link to="/admin/you/notifications">
                   <i className="fa fa-bell" />
                   <span>Notifications</span>
+                </Link>
+              </ListGroupItem>
+              <ListGroupItem
+                key="files"
+                active={this._isSelected("/admin/files", false)}
+              >
+                <Link to="/admin/files">
+                  <i className="fa fa-folder-open" />
+                  <span>Files</span>
                 </Link>
               </ListGroupItem>
 

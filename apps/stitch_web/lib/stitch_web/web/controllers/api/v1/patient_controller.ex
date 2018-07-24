@@ -1,5 +1,6 @@
 defmodule Stitch.Web.Api.V1.PatientController do
   use Stitch.Web, :controller
+  use Stitch.Web.Api.V1.PatientDocs
 
   # We should add analytics before activating
   # alias Stitch.Analytics.Patient, as: PatientAnalytics
@@ -8,7 +9,8 @@ defmodule Stitch.Web.Api.V1.PatientController do
     PatientAuthorization,
     PatientQueries,
     Patient,
-    Web.TeamChannel
+    Web.TeamChannel,
+    Web.EventsChannel
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -58,7 +60,7 @@ defmodule Stitch.Web.Api.V1.PatientController do
            {:authorized?, PatientAuthorization.can_update_as_provider?(id, current_user)},
          {:ok, patient} when not is_nil(patient) <- {:ok, PatientQueries.get_patient(id)},
          {:ok, updated_patient} <- Patient.update_as_provider(patient, params) do
-      TeamChannel.broadcast_patient_updated(
+      broadcast_patient_updated(
         conn.assigns.team.id,
         updated_patient
       )
@@ -72,6 +74,52 @@ defmodule Stitch.Web.Api.V1.PatientController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: changeset_errors_to_string(changeset)})
+    end
+  end
+
+  def update_as_patient(conn, params) do
+    patient = conn.assigns.patient
+
+    with {:onboarded?, true} <- {:onboarded?, patient.onboarded},
+         {:ok, updated_patient} <- Patient.update_as_patient(patient, params) do
+      broadcast_patient_updated(
+        conn.assigns.team.id,
+        updated_patient
+      )
+
+      render(conn, "show.json", patient: updated_patient)
+    else
+      {:onboarded?, _} ->
+        {:error, :not_authorized, "You must be onboarded to update your information."}
+
+      {:error, _model_errored, changeset, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+    end
+  end
+
+  def update_password(conn, %{
+        "new_password" => new_password,
+        "old_password" => old_password
+      }) do
+    case Stitch.User.Authentication.update_password(
+           conn.assigns.patient,
+           old_password,
+           new_password
+         ) do
+      {:ok, patient} ->
+        # TODO: Broadcast session logout
+
+        conn
+        |> update_user_session_token(patient)
+        |> json(%{token: patient.token})
+
+      {:error, message} when is_binary(message) ->
+        {:error, :unprocessable_entity, message}
+
+      {:error, message} ->
+        {:error, message}
     end
   end
 
@@ -90,7 +138,7 @@ defmodule Stitch.Web.Api.V1.PatientController do
            {:authorized?, PatientAuthorization.can_update_as_provider?(id, current_user)},
          {:ok, patient} when not is_nil(patient) <- {:ok, PatientQueries.get_patient(id)},
          {:ok, patient} <- Patient.change_disabled_status_as_provider(patient, active_status) do
-      TeamChannel.broadcast_patient_updated(
+      broadcast_patient_updated(
         conn.assigns.team.id,
         patient
       )
@@ -105,5 +153,22 @@ defmodule Stitch.Web.Api.V1.PatientController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: changeset_errors_to_string(changeset)})
     end
+  end
+
+  def exists(conn, %{"email" => email}) do
+    team_id = conn.private[:team_id]
+
+    case PatientQueries.team_member_with_email(team_id, email) do
+      %Patient{} -> json(conn, %{exists: true})
+      _ -> json(conn, %{exists: false})
+    end
+  end
+
+  defp broadcast_patient_updated(team_id, patient) do
+    # To the providers
+    TeamChannel.broadcast_patient_updated(team_id, patient)
+
+    # To the patient
+    EventsChannel.broadcast_patient_updated(patient)
   end
 end

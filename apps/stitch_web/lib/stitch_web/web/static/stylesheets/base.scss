@@ -3,6 +3,7 @@ $medium-gray: #f0f1f3;
 $brand-primary: #036;
 $border-color: #d8d8d8;
 $border-color-secondary: #e4e4e4;
+$border-color-dark: #ccc;
 
 $screen-sm: 768px;
 $screen-md: 992px;
@@ -455,6 +456,12 @@ hr {
       font-size: 16px;
       margin: 3px;
     }
+  }
+
+  .Select-Icon {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
   }
 
   .Select-placeholder {

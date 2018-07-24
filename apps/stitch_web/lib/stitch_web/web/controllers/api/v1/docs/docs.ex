@@ -26,9 +26,36 @@ defmodule Stitch.Web.Api.V1.Docs do
     quote do
       def swagger_definitions do
         %{
+          FindTeamLogin:
+            swagger_schema do
+              title("FindTeamLogin")
+              description("Info returned when given a find team token.")
+
+              properties do
+                teams(
+                  :array,
+                  "Teams to log into with name, slug, and login_token.",
+                  example: [%{name: "VUMC", slug: "vumc", login_token: "djif43b9fb"}]
+                )
+
+                login_token(:string, "Token used to log into found teams.", example: "djif43b9fb")
+              end
+            end,
+          PatientOnboardingCompletion:
+            swagger_schema do
+              title("PatientOnboardingCompletion")
+
+              description("Patient info returned on successful onboard.")
+
+              properties do
+                id(:integer, "Unique identifier")
+                email(:string, "Email of the patient", example: "jeff@teamstitch.com")
+                onboarded(:boolean, "Whether the patient is onboarded.")
+              end
+            end,
           PatientInbox:
             swagger_schema do
-              title("Inbox")
+              title("PatientInbox")
 
               description("A collection of conversations in Engage.")
 
@@ -36,6 +63,7 @@ defmodule Stitch.Web.Api.V1.Docs do
                 id(:integer, "Unique identifier")
                 name(:string, "Inbox name", example: "General")
                 is_default(:boolean, "Whether the inbox is the team's default")
+                conversations(Schema.ref(:ConversationMessages))
               end
             end,
           Inbox:
@@ -79,18 +107,24 @@ defmodule Stitch.Web.Api.V1.Docs do
                   example: "2018-07-03T15:58:42.059546"
                 )
 
+                subject(
+                  :string,
+                  "Subject line for the conversation",
+                  example: "Elbow Issue",
+                  required: true
+                )
+
                 updated_at(
                   :string,
                   "Last time updated in db",
                   example: "2018-07-04T15:58:42.059546"
                 )
 
-                # TODO: Implement read/unread for patients
-                # is_unread(
-                #   :boolean,
-                #   "Whether current user has read the most recent message.",
-                #   example: false
-                # )
+                is_unread(
+                  :boolean,
+                  "Whether current user has read the most recent message.",
+                  example: false
+                )
 
                 latest_conversation_message(Schema.ref(:ConversationMessage))
               end
@@ -111,6 +145,13 @@ defmodule Stitch.Web.Api.V1.Docs do
                   :boolean,
                   "If the conversation is open or closed",
                   example: true
+                )
+
+                subject(
+                  :string,
+                  "Subject line for the conversation",
+                  example: "Elbow Issue",
+                  required: true
                 )
 
                 inserted_at(
@@ -308,6 +349,27 @@ defmodule Stitch.Web.Api.V1.Docs do
               type(:array)
               items(Schema.ref(:ConversationMessage))
             end,
+          PatientLogin:
+            swagger_schema do
+              title("PatientLogin")
+              description("Response when a patient logs in.")
+
+              properties do
+                team(
+                  Schema.new do
+                    properties do
+                      id(:integer)
+                      name(:string)
+                      slug(:string)
+                    end
+                  end
+                )
+
+                redirect_url(:string)
+                token(:string)
+                patient(Schema.ref(:Patient))
+              end
+            end,
           Patient:
             swagger_schema do
               title("Patient")
@@ -322,11 +384,29 @@ defmodule Stitch.Web.Api.V1.Docs do
                 first_name(:string)
                 full_name(:string)
                 inserted_at(:string)
+                updated_at(:string)
                 last_name(:string)
                 mrn(:string)
                 onboarded(:booelan)
                 phone(:string)
+                team_id(:integer)
               end
+            end,
+          UploadSignature:
+            swagger_schema do
+              title("UploadSignature")
+              description("Credentials and information to upload file to S3.")
+
+              example(%{
+                "success_action_status" => "201",
+                "signature" => "ShfkFCOUgioUK3iyTpSnf(1YnvE",
+                "policy" => "fneiwufjioewffh4h9fgf439qgfqg43qf49qfj4f40f42gt92gfh8in4m0943j",
+                "key" => "ArmFractureImage",
+                "action" => "https://s3.amazonaws.com/stitch-content/",
+                "acl" => "private",
+                "Content-Type" => "image/jpeg",
+                "AWSAccessKeyId" => "AKIA9KNNBXIRIQI82JN"
+              })
             end
         }
       end

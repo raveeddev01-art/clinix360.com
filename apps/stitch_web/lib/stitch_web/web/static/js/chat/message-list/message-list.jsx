@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Link, Element } from "react-scroll";
-
+import DateSeparator from "common/components/date-separator/date-separator";
 import WelcomeMessage from "./welcome-message";
 import Message from "./message";
 import SystemMessage from "./system-message";
-import DateSeparator from "./date-separator";
 import MessageInfoModal from "./message-info-modal";
+import FileShareModal from "./file-share-modal";
 
 @inject("messageStore")
 @observer
@@ -87,6 +87,13 @@ class MessageList extends Component {
                         newMessageLineMessage &&
                         newMessageLineMessage.id === message.id
                       }
+                      lastOtherUserMessage={messageStore.lastOtherUserMessage}
+                      messageStore={messageStore}
+                      chatDiv={messageStore.chatDiv}
+                      onMounted={messageStore.onMessageMounted}
+                      onUnmounted={messageStore.onMessageUnmounted}
+                      onShow={messageStore.onMessageShow}
+                      onHide={messageStore.onMessageHide}
                       isHighlighted={highlightId === message.id}
                     />
                   )
@@ -120,6 +127,7 @@ class MessageList extends Component {
           isDynamic
         />
         <MessageInfoModal />
+        <FileShareModal />
       </div>
     );
   }

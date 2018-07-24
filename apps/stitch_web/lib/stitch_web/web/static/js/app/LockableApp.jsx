@@ -5,10 +5,11 @@ import { Switch, withRouter, Route } from "react-router-dom";
 import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
 import EngageApp from "../engage/EngageApp";
+import EngagePreview from "../engage/EngagePreview";
 import ManageApp from "../manage/ManageApp";
 import PatientsRepoApp from "../patients/PatientsRepoApp";
 import ChatApp from "../chat/ChatApp";
-import SystemError from "../common/components/error/system-error";
+import withError from "../util/with_error_page";
 import browserDetails from "../lib/browser_details";
 
 @inject("presenceStore", "sidemenuStore", "teamStore")
@@ -16,14 +17,8 @@ import browserDetails from "../lib/browser_details";
 class LockableApp extends Component {
   constructor(props) {
     super(props);
-
     const shouldRedirect = browserDetails.mobile;
-
-    this.state = {
-      hasError: false,
-      shouldRedirect
-    };
-
+    this.state = { shouldRedirect };
     if (shouldRedirect) window.location.href = "/apps";
   }
 
@@ -79,10 +74,6 @@ class LockableApp extends Component {
     } = this.props;
     const { shouldRedirect } = this.state;
 
-    if (this.state.hasError) {
-      return <SystemError />;
-    }
-
     if (presenceStore.locked) {
       return <LockedApp />;
     }
@@ -91,10 +82,10 @@ class LockableApp extends Component {
       return (
         <Switch>
           <Route path="/admin" component={AdminApp} />
-          <Route path="/engage" component={EngageApp} />
+          <Route path="/engage" component={EngagePreview} />
           <Route exact path="/manage" component={ManageApp} />
           {engageEnabled && (
-            <Route exact path="/patients" component={PatientsRepoApp} />
+            <Route path="/patients" component={PatientsRepoApp} />
           )}
           {engageEnabled && (
             <Route path="/conversations" component={EngageApp} />
@@ -108,4 +99,4 @@ class LockableApp extends Component {
   }
 }
 
-export default withRouter(LockableApp);
+export default withRouter(withError("/", LockableApp));
