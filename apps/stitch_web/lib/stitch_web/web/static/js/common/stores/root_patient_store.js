@@ -7,6 +7,10 @@ import SocketStore from "./socket_store";
 import TeamStore from "./team_store";
 
 class RootPatientStore {
+  get apiBasePath() {
+    return "/api/v1/patient";
+  }
+
   constructor(props) {
     this.appParams = Object.assign({}, props);
     this.createStores();

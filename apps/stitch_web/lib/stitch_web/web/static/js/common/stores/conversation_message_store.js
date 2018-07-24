@@ -30,6 +30,11 @@ class ConversationMessageStore extends BaseMessageStore {
     return channelStore.conversationChannel;
   }
 
+  get apiBasePath() {
+    const { apiBasePath } = this.rootStore;
+    return `${apiBasePath}/conversations`;
+  }
+
   // ===========================
   // Actions
   // ===========================
@@ -42,7 +47,7 @@ class ConversationMessageStore extends BaseMessageStore {
       ...additionalFields
     };
 
-    return post(`/api/v1/conversations/${this.conversation.id}/messages`, {
+    return post(`${this.apiBasePath}/${this.conversation.id}/messages`, {
       body: {
         message: newMsg,
         authenticated_urls: true
@@ -77,8 +82,7 @@ class ConversationMessageStore extends BaseMessageStore {
   @action
   deleteLinkPreview = (messageId, link) => {
     return put(
-      `/api/v1/conversation_messages/${this.conversation
-        .id}/delete_link_preview`,
+      `${this.apiBasePath}/${this.conversation.id}/delete_link_preview`,
       {
         body: {
           id: messageId,
@@ -90,15 +94,12 @@ class ConversationMessageStore extends BaseMessageStore {
 
   @action
   toggleReaction = (messageId, emoji) => {
-    return put(
-      `/api/v1/conversation_messages/${this.conversation.id}/toggle_reaction`,
-      {
-        body: {
-          message_id: messageId,
-          emoji_name: emoji
-        }
+    return put(`${this.apiBasePath}/${this.conversation.id}/toggle_reaction`, {
+      body: {
+        message_id: messageId,
+        emoji_name: emoji
       }
-    );
+    });
   };
 
   // ===========================
