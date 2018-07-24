@@ -15,9 +15,12 @@ defmodule Stitch.Web.Api.V1.PatientController do
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
-  def index(conn, _params) do
-    patients = PatientQueries.patients_for_team_id(conn.private[:team_id])
-    render(conn, "index.json", patients: patients)
+  def index(conn, params) do
+    team_id = conn.private[:team_id]
+    pagination_opts = parse_pagination_params(params, [:limit, :skip])
+    paginated_result = PatientQueries.page_of_patients_for_team(team_id, pagination_opts)
+
+    render(conn, "index.json", paginated_result)
   end
 
   def show(conn, %{"id" => id}) do
