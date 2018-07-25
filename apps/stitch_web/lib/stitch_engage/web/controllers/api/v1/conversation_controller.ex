@@ -4,6 +4,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
   alias Stitch.{
     Repo,
+    PatientQueries,
     Message.Reaction,
     Engage.Inbox,
     Engage.InboxAuthorization,
@@ -84,8 +85,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       conversation = conversation_with_show_data(conversation, user, [conversation_message])
       patient = conversation.patients |> List.first()
 
-      InboxChannel.broadcast_conversation_creation(conversation)
-      EventsChannel.broadcast_conversation_creation_to_patient(patient.id, conversation)
+      creation_events(conversation, patient)
 
       render(conn, "show.json", conversation: conversation)
     else
@@ -103,8 +103,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       conversation_message = Repo.preload(conversation_message, [:patient, :provider])
       conversation = conversation_with_show_data(conversation, patient, [conversation_message])
 
-      InboxChannel.broadcast_conversation_creation(conversation)
-      EventsChannel.broadcast_conversation_creation_to_patient(patient.id, conversation)
+      creation_events(conversation, patient)
 
       render(conn, "patient_show.json", conversation: conversation)
     else
@@ -124,6 +123,16 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
   defp handle_create_with(_) do
     {:error, :unprocessable_entity, "There was a problem creating this conversation."}
+  end
+
+  defp creation_events(conversation, patient) do
+    Stitch.Task.start(fn ->
+      InboxChannel.broadcast_conversation_creation(conversation)
+      EventsChannel.broadcast_conversation_creation_to_patient(patient.id, conversation)
+
+      unread_conversations_count = PatientQueries.unread_conversations_count(patient.id)
+      EventsChannel.broadcast_unread_conversations_count(patient, unread_conversations_count)
+    end)
   end
 
   # ==============
@@ -176,7 +185,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
        ) do
     conversation =
       conversation
-      |> Repo.preload([:conversation_messages, :patients, :providers])
+      |> Repo.preload([:patients, :providers, conversation_messages: [:patient, :provider]])
       |> ConversationQueries.with_unread(user_or_patient)
 
     conversation_messages =

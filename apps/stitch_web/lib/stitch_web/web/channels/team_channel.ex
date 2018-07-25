@@ -11,11 +11,11 @@ defmodule Stitch.Web.TeamChannel do
 
   @endpoint Stitch.Web.Endpoint
 
-  def join("team:patient:" <> team_id, params, socket) do
+  def join("team:patient:" <> team_id, _params, socket) do
     team_id = String.to_integer(team_id)
 
     if team_id == socket.assigns.team_id do
-      {:ok, assign(socket, :meta, %{})}
+      {:ok, %{}, assign(socket, :meta, %{})}
     else
       {:error, %{message: "Unauthorized"}}
     end
