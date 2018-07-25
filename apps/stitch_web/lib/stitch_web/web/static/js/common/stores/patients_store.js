@@ -101,10 +101,10 @@ class PatientsStore {
       this.patients = [
         {
           ...window.currentPatient,
-          first_name: window.currentPatient.firstName,
-          last_name: window.currentPatient.lastName,
-          full_name: `${window.currentPatient.firstName} ${window.currentPatient
-            .firstName}`
+          first_name: window.currentPatient.first_name,
+          last_name: window.currentPatient.last_name,
+          full_name: `${window.currentPatient.first_name} ${window
+            .currentPatient.last_name}`
         }
       ];
     } else if (this.rootStore.teamStore.engageEnabled) {
