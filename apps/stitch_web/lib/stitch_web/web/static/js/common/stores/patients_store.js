@@ -241,7 +241,7 @@ class PatientsStore {
 
   @computed
   get sortedAndFilteredPatients() {
-    return this.patients.filter(this.patientsFiler).sort(this.patientsSorter);
+    return this.patients.filter(this.patientsFilter).sort(this.patientsSorter);
   }
 
   @computed
@@ -271,7 +271,7 @@ class PatientsStore {
   }
 
   @computed
-  get patientsFiler() {
+  get patientsFilter() {
     // function of statusFilter && searchFilter
     return p =>
       statusMatch(p, this.statusFilter) &&
