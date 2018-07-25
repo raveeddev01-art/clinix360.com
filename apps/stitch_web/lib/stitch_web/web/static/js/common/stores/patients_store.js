@@ -95,19 +95,7 @@ class PatientsStore {
   constructor(rootStore) {
     this.rootStore = rootStore;
 
-    if (this.rootStore.isPatient) {
-      // @TODO load conversation patients as patient
-      // @FIXME window.patient should have consistent format of first_name, last_name as the other patients
-      this.patients = [
-        {
-          ...window.currentPatient,
-          first_name: window.currentPatient.first_name,
-          last_name: window.currentPatient.last_name,
-          full_name: `${window.currentPatient.first_name} ${window
-            .currentPatient.last_name}`
-        }
-      ];
-    } else if (this.rootStore.teamStore.engageEnabled) {
+    if (this.rootStore.teamStore.engageEnabled) {
       this.loadPatients();
     }
   }

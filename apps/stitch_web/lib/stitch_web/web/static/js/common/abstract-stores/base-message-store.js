@@ -275,12 +275,7 @@ export default class BaseMessageStore {
               msg.type = "file_comment";
             }
 
-            const sameUser =
-              (msg.user &&
-                sequentialStart.user &&
-                msg.user.id === sequentialStart.user.id) ||
-              msg.provider_id === sequentialStart.provider_id ||
-              msg.patient_id === sequentialStart.provider_id;
+            const sameUser = msg.user.id === sequentialStart.user.id;
 
             if (
               (sequentialStart.upload_id === msg.upload_id &&

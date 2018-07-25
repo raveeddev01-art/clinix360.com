@@ -37,21 +37,7 @@ class RootPatientStore {
     this.groupsStore = {};
     this.sidemenuStore = {};
     this.teamFileStore = {};
-    // FIXME need usersStore for patient
-    this.usersStore = {
-      usersById: new Proxy(
-        {},
-        {
-          get: (target, id) => {
-            return {
-              id: parseInt(id, 10),
-              full_name: "Anonymous",
-              username: "mr.provider"
-            };
-          }
-        }
-      )
-    };
+    this.usersStore = {};
   }
 
   joinChannels() {

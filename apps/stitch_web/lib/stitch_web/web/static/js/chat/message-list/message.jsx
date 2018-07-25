@@ -13,7 +13,7 @@ import {
 } from "common/components";
 import MessageActions from "./message-actions";
 
-@inject("usersStore", "patientsStore")
+@inject("usersStore")
 class Message extends PureComponent {
   constructor(props) {
     super(props);
@@ -55,13 +55,13 @@ class Message extends PureComponent {
   };
 
   getUser = message => {
-    const { usersStore, patientsStore } = this.props;
-    const userId = (message.user && message.user.id) || message.provider_id;
-    if (userId) {
-      return usersStore.usersById[userId];
+    const { usersStore } = this.props;
+    if (window.currentPatient) {
+      return message.user;
     }
 
-    return patientsStore.getPatient(message.patient_id);
+    const userId = message.user && message.user.id;
+    return usersStore.usersById[userId] || message.user;
   };
 
   setSelected = newState => {
