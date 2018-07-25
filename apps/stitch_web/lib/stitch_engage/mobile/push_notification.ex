@@ -18,12 +18,49 @@ defmodule StitchEngage.Mobile.PushNotification do
     push_fn.(notification, opts)
   end
 
+  def notify_providers(providers, conversation_message) do
+    Enum.each(providers, fn provider ->
+      notify_provider(provider, conversation_message)
+    end)
+  end
+
+  def notify_provider(%User{} = provider, conversation_message) do
+    %{"ios" => ios_devices, "android" => android_devices} =
+      Mobile.list_user_devices(provider.id)
+      |> Enum.group_by(fn device -> device.type end)
+      |> Map.put_new("ios", [])
+      |> Map.put_new("android", [])
+
+    conversation_message =
+      Stitch.Repo.preload(conversation_message, [:patient, :provider, conversation: :inbox])
+      |> Map.put(:provider_reactions, [])
+      |> Map.put(:patient_reactions, [])
+
+    conversation_message_author = conversation_message.patient || conversation_message.provider
+    inbox = conversation_message.conversation.inbox
+
+    conversation_notification =
+      %{
+        conversation_message: conversation_message,
+        patient: nil,
+        provider: provider,
+        conversation_message_author: conversation_message_author,
+        inbox: inbox
+      }
+      |> ConversationNotificationView.new()
+
+    notify_provider_ios_devices(ios_devices, conversation_notification)
+  end
+
+  def notify_patients(patients, conversation_message) do
+    Enum.each(patients, fn patient ->
+      notify_patient(patient, conversation_message)
+    end)
+  end
+
   def notify_patient(%Patient{} = patient, conversation_message) do
     %{"ios" => ios_devices, "android" => android_devices} =
       Mobile.list_patient_devices(patient.id)
-
-    inbox = nil
-    conversation_message_author = nil
 
     conversation_message =
       Stitch.Repo.preload(conversation_message, [:patient, :provider, conversation: :inbox])
@@ -37,12 +74,27 @@ defmodule StitchEngage.Mobile.PushNotification do
       %{
         conversation_message: conversation_message,
         patient: patient,
+        provider: nil,
         conversation_message_author: conversation_message_author,
         inbox: inbox
       }
       |> ConversationNotificationView.new()
 
     notify_patient_ios_devices(ios_devices, conversation_notification)
+  end
+
+  defp notify_provider_ios_devices([], conversation_notification), do: nil
+
+  defp notify_provider_ios_devices(ios_devices, conversation_notification) do
+    import APNS.Notification
+
+    ios_devices
+    |> Enum.map(fn device ->
+      %{conversation_notification | provider_device: device}
+      |> ConversationNotificationView.conversation_message_notification()
+    end)
+    |> IO.inspect()
+    |> apns_push(on_response: &handle_apns_push/1)
   end
 
   defp notify_patient_ios_devices([], conversation_notification), do: nil
@@ -55,6 +107,7 @@ defmodule StitchEngage.Mobile.PushNotification do
       %{conversation_notification | patient_device: device}
       |> ConversationNotificationView.conversation_message_notification()
     end)
+    |> IO.inspect()
     |> apns_push(on_response: &handle_apns_push/1, to: :apns_engage)
   end
 

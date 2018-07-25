@@ -490,6 +490,26 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       ConversationChannel.broadcast_message_created(conversation_message)
       LinkPreviewGenerator.queue(conversation_message)
 
+      patients = Stitch.Engage.ConversationQueries.conversation_patients(conversation)
+
+      patients =
+        Enum.filter(
+          patients,
+          &(!(conversation_message.patient && &1.id == conversation_message.patient.id))
+        )
+
+      StitchEngage.Mobile.PushNotification.notify_patients(patients, conversation_message)
+
+      providers = Stitch.Engage.ConversationQueries.conversation_providers(conversation)
+
+      providers =
+        Enum.filter(
+          providers,
+          &(!(conversation_message.provider && &1.id == conversation_message.provider.id))
+        )
+
+      StitchEngage.Mobile.PushNotification.notify_providers(providers, conversation_message)
+
       # Notifications: dispatch notifications, badge updates, and emails here
       # (see message view for similar code)
     end)

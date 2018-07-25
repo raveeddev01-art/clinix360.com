@@ -6,7 +6,8 @@ defmodule StitchEngage.Mobile.ConversationNotificationView do
     Engage.ConversationMessage,
     Engage.Inbox,
     Patient,
-    PatientDevice,
+    Mobile.PatientDevice,
+    Mobile.Device,
     Repo
   }
 
@@ -19,16 +20,20 @@ defmodule StitchEngage.Mobile.ConversationNotificationView do
 
   defstruct conversation_message: nil,
             patient: nil,
+            provider: nil,
             conversation_message_author: nil,
             inbox: nil,
-            patient_device: nil
+            patient_device: nil,
+            provider_device: nil
 
   @type t :: %ConversationNotificationView{
           conversation_message: ConversationMessage.t() | nil,
           patient: Patient.t() | nil,
+          provider: User.t() | nil,
           conversation_message_author: Patient.t() | User.t() | nil,
           inbox: Inbox.t() | nil,
-          patient_device: PatientDevice.t() | nil
+          patient_device: PatientDevice.t() | nil,
+          provider_device: Device.t() | nil
         }
 
   def new(map) do
@@ -41,9 +46,10 @@ defmodule StitchEngage.Mobile.ConversationNotificationView do
     import APNS.Notification
 
     message_body = text_body(notification)
+    device = notification.patient_device || notification.provider_device
 
     message_body
-    |> new(notification.patient_device.token, @apns_engage_topic)
+    |> new(device.token, @apns_engage_topic)
     |> put_alert(%{
       "title" => title(notification),
       "body" => message_body
@@ -51,8 +57,9 @@ defmodule StitchEngage.Mobile.ConversationNotificationView do
     |> put_sound("chime")
     |> put_custom(%{
       ejson: sanitize_notification_payload(notification.conversation_message),
-      device_id: notification.patient_device.id,
-      patient_id: notification.patient.id,
+      device_id: device.id,
+      patient_id: notification.patient && notification.patient.id,
+      provider_id: notification.provider && notification.provider.id,
       conversation_message_id: notification.conversation_message.id
     })
   end
