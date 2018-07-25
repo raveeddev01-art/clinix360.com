@@ -40,11 +40,17 @@ class FirstName extends Component {
     });
   };
 
-  _onBlur = () => {
+  _onFocus = e => {
+    const val = e.target.value;
+    e.target.value = "";
+    e.target.value = val;
+  };
+
+  _onBlur = (saveChanges = true) => () => {
     const currentFirstName = this.props.patientsStore.currentPatient.first_name;
     const { firstName } = this.state;
 
-    if (firstName !== currentFirstName) {
+    if (saveChanges && firstName !== currentFirstName) {
       this._onSave();
     } else {
       this._onCancel();
@@ -106,12 +112,8 @@ class FirstName extends Component {
                   value={firstName}
                   onChange={this._onChangeFirstName}
                   onKeyDown={this.onKeyDown}
-                  onFocus={e => {
-                    const val = e.target.value;
-                    e.target.value = "";
-                    e.target.value = val;
-                  }}
-                  onBlur={this._onBlur}
+                  onFocus={this._onFocus}
+                  onBlur={this._onBlur()}
                   style={{
                     minWidth: "40px",
                     width: (firstName.length + 1) * 12 + "px",
@@ -119,7 +121,7 @@ class FirstName extends Component {
                   }}
                 />
 
-                <Button className="btn-cancel" onClick={this._onBlur}>
+                <Button className="btn-cancel" onClick={this._onBlur(false)}>
                   Cancel
                 </Button>
               </div>
