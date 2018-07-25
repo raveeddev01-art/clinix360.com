@@ -8,7 +8,6 @@ import TeamStore from "./team_store";
 import PatientsStore from "./patients_store";
 
 class RootPatientStore {
-  isPatient = true;
   get apiBasePath() {
     return "/api/v1/patient";
   }

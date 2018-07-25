@@ -56,12 +56,12 @@ class Message extends PureComponent {
 
   getUser = message => {
     const { usersStore } = this.props;
-    if (window.currentPatient) {
+    if (window.currentPatient || message.patient_id) {
       return message.user;
     }
 
     const userId = message.user && message.user.id;
-    return usersStore.usersById[userId] || message.user;
+    return usersStore.usersById[userId];
   };
 
   setSelected = newState => {

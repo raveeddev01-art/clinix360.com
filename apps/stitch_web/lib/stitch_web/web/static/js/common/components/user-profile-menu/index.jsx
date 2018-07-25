@@ -32,7 +32,7 @@ class UserProfileMenu extends Component {
       return <div />;
     }
 
-    if (window.currentPatient) {
+    if (window.currentPatient || user.mrn) {
       return <span>{children}</span>;
     }
 
