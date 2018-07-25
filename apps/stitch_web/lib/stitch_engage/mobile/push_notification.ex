@@ -107,7 +107,6 @@ defmodule StitchEngage.Mobile.PushNotification do
       %{conversation_notification | patient_device: device}
       |> ConversationNotificationView.conversation_message_notification()
     end)
-    |> IO.inspect()
     |> apns_push(on_response: &handle_apns_push/1, to: :apns_engage)
   end
 
@@ -121,7 +120,7 @@ defmodule StitchEngage.Mobile.PushNotification do
     error = %{response: response, device_token: token, platform: "iOS"}
     Stitch.Mobile.NotificationLogger.response(notification)
     # uncomment atter test
-    # Mobile.remove_patient_device("ios", token)
+    Mobile.remove_patient_device("ios", token)
   end
 
   def handle_apns_push(%{response: response_error, device_token: token} = notification) do

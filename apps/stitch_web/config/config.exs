@@ -37,7 +37,7 @@ config :stitch_web,
   application_scheme: "https://",
   websocket_scheme: "wss://",
   apns_topic: System.get_env("APNS_TOPIC"),
-  apns_engage_topic: System.get_env("APNS_ENGAGE_TOPIC")
+  apns_engage_topic: System.get_env("ENGAGE_APNS_TOPIC")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
