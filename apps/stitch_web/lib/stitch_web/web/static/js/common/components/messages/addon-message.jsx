@@ -20,7 +20,7 @@ class AddonMessage extends Component {
   };
 
   render() {
-    const { message, usersStore } = this.props;
+    const { message, usersStore, messageStore } = this.props;
     // user_id needed for starred messages
     const userId = message.user_id || message.user.id;
     const user = usersStore.usersById[userId];
@@ -66,10 +66,15 @@ class AddonMessage extends Component {
             </UserProfileMenu>
 
             <div className="message-content">
-              <MessageHeader timestamp={message.inserted_at} user={user} />
+              <MessageHeader
+                messageStore={messageStore}
+                timestamp={message.inserted_at}
+                user={user}
+              />
               <MessageContent
                 inSearch={this.props.inSearch}
                 user={user}
+                messageStore={messageStore}
                 message={Object.assign({}, message, { reactions_web: null })}
               />
             </div>
