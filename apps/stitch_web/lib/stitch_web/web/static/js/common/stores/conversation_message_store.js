@@ -94,12 +94,16 @@ class ConversationMessageStore extends BaseMessageStore {
 
   @action
   toggleReaction = (messageId, emoji) => {
-    return put(`${this.apiBasePath}/${this.conversation.id}/toggle_reaction`, {
-      body: {
-        message_id: messageId,
-        emoji_name: emoji
+    return put(
+      `${this.rootStore
+        .apiBasePath}/conversation_messages/${messageId}/toggle_reaction`,
+      {
+        body: {
+          message_id: messageId,
+          emoji_name: emoji
+        }
       }
-    });
+    );
   };
 
   // ===========================
