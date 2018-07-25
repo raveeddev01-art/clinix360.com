@@ -12,6 +12,18 @@ defmodule Stitch.Pigeon do
     )
   end
 
+  def engage_apns_config do
+    Pigeon.APNS.Config.new(
+      name: :apns_engage,
+      mode: "ENGAGE_APNS_MODE" |> System.get_env() |> String.to_atom(),
+      cert: "ENGAGE_APNS_CERT_B64" |> System.get_env() |> Base.decode64!(),
+      key: "ENGAGE_APNS_KEY_B64" |> System.get_env() |> Base.decode64!(),
+      reconnect: false,
+      port: 2197,
+      ping_period: 300_000
+    )
+  end
+
   # Android
   def fcm_config do
     Pigeon.FCM.Config.new(

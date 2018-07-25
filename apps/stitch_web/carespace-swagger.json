@@ -496,6 +496,94 @@
         "description": "Checks if a patient exists given an email. Returns {\"exists\": true} or {\"exists\": false}"
       }
     },
+    "/api/v1/patient/devices/unregister": {
+      "post": {
+        "tags": [
+          "PatientDevice"
+        ],
+        "summary": "",
+        "responses": {},
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": "ios",
+            "type": "string",
+            "required": true,
+            "name": "type",
+            "in": "query",
+            "enum": [
+              "ios",
+              "android"
+            ],
+            "description": "The device type (ios or android)"
+          },
+          {
+            "x-example": "03df25c845d460bcdad7802d2vf6fc1dfde97283bf75cc993eb6dca835ea2e2f",
+            "type": "string",
+            "required": true,
+            "name": "token",
+            "in": "query",
+            "description": "The device token"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.PatientDeviceController.delete",
+        "description": "Remove the registered patient mobile device"
+      }
+    },
+    "/api/v1/patient/devices": {
+      "post": {
+        "tags": [
+          "PatientDevice"
+        ],
+        "summary": "",
+        "responses": {},
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "ios",
+            "type": "string",
+            "required": true,
+            "name": "type",
+            "in": "query",
+            "enum": [
+              "ios",
+              "android"
+            ],
+            "description": "The device type (ios or android)"
+          },
+          {
+            "x-example": "03df25c845d460bcdad7802d2vf6fc1dfde97283bf75cc993eb6dca835ea2e2f",
+            "type": "string",
+            "required": true,
+            "name": "token",
+            "in": "query",
+            "description": "The device token"
+          },
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.PatientDeviceController.create",
+        "description": "Registeres device token."
+      }
+    },
     "/api/v1/patient/conversations/{conversation_id}/messages": {
       "post": {
         "tags": [
