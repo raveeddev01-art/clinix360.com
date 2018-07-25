@@ -48,9 +48,9 @@ class LastName extends Component {
 
     if (lastName === currentLastName) {
       this._onCancel();
+    } else {
+      this._onSave();
     }
-
-    this._onSave();
   };
 
   _onCancel = () => {

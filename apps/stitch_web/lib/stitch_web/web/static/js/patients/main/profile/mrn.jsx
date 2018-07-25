@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -76,36 +75,36 @@ class Mrn extends Component {
               <i className="fa fa-edit" />
             </Button>
           ) : (
-            <FormControl
-              autoFocus
-              name="mrn"
-              type="text"
-              value={mrn}
-              onChange={this._onChangeMrn}
-              onKeyDown={this.onKeyDown}
-              onFocus={e => {
-                const val = e.target.value;
-                e.target.value = "";
-                e.target.value = val;
-              }}
-              onBlur={this._onBlur}
-              style={{
-                minWidth: "40px",
-                width: (mrn.length + 1) * 12 + "px",
-                maxWidth: "100%"
-              }}
-            />
+            <div className="form-container">
+              <FormControl
+                autoFocus
+                name="mrn"
+                type="text"
+                value={mrn}
+                onChange={this._onChangeMrn}
+                onKeyDown={this.onKeyDown}
+                onFocus={e => {
+                  const val = e.target.value;
+                  e.target.value = "";
+                  e.target.value = val;
+                }}
+                onBlur={this._onBlur}
+                style={{
+                  minWidth: "40px",
+                  width: (mrn.length + 1) * 12 + "px",
+                  maxWidth: "100%"
+                }}
+              />
+
+              <Button className="btn-cancel" onClick={this._onBlur}>
+                Cancel
+              </Button>
+            </div>
           )}
         </Col>
       </Row>
     );
   }
 }
-
-Mrn.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
-};
 
 export default Mrn;

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -42,7 +41,7 @@ class Email extends Component {
     const currentEmail = this.props.patientsStore.currentPatient.email;
     const { email } = this.state;
 
-    if (email !== currentEmail) {
+    if (email !== currentEmail && email !== "") {
       this._onSave();
     }
 
@@ -78,36 +77,36 @@ class Email extends Component {
               <i className="fa fa-edit" />
             </Button>
           ) : (
-            <FormControl
-              autoFocus
-              name="email"
-              type="email"
-              value={email}
-              onChange={this._onChangeEmail}
-              onKeyDown={this.onKeyDown}
-              onFocus={e => {
-                const val = e.target.value;
-                e.target.value = "";
-                e.target.value = val;
-              }}
-              onBlur={this._onBlur}
-              style={{
-                minWidth: "40px",
-                width: (email.length + 1) * 12 + "px",
-                maxWidth: "100%"
-              }}
-            />
+            <div className="form-container">
+              <FormControl
+                autoFocus
+                name="email"
+                type="email"
+                value={email}
+                onChange={this._onChangeEmail}
+                onKeyDown={this.onKeyDown}
+                onFocus={e => {
+                  const val = e.target.value;
+                  e.target.value = "";
+                  e.target.value = val;
+                }}
+                onBlur={this._onBlur}
+                style={{
+                  minWidth: "40px",
+                  width: (email.length + 1) * 12 + "px",
+                  maxWidth: "100%"
+                }}
+              />
+
+              <Button className="btn-cancel" onClick={this._onBlur}>
+                Cancel
+              </Button>
+            </div>
           )}
         </Col>
       </Row>
     );
   }
 }
-
-Email.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
-};
 
 export default Email;

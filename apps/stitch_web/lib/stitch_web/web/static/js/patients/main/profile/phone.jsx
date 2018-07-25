@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -42,9 +41,7 @@ class Phone extends Component {
     const currentPhone = this.props.patientsStore.currentPatient.phone;
     const { phone } = this.state;
 
-    console.log(phone);
-
-    if (phone !== currentPhone && phone !== null) {
+    if (phone !== currentPhone && phone !== "") {
       this._onSave();
     }
 
@@ -55,20 +52,12 @@ class Phone extends Component {
 
   _onSave = () => {
     const { phone } = this.state;
-    const { hideAlert, onSuccess, onError, patientsStore } = this.props;
+    const { patientsStore } = this.props;
     const id = this.props.patientsStore.currentPatient.id;
 
-    hideAlert();
-
-    return patientsStore
-      .savePhone(id, phone)
-      .then(() => {
-        onSuccess("Patient phone number has been successfully updated.");
-        this.setState({ isEditing: false });
-      })
-      .catch(err => {
-        onError(err.data.message);
-      });
+    return patientsStore.savePhone(id, phone).then(() => {
+      this.setState({ isEditing: false });
+    });
   };
 
   _onChangePhone = evt => this.setState({ phone: evt.target.value });
@@ -90,36 +79,36 @@ class Phone extends Component {
               <i className="fa fa-edit" />
             </Button>
           ) : (
-            <FormControl
-              autoFocus
-              name="phone"
-              type="text"
-              value={phone}
-              onChange={this._onChangePhone}
-              onKeyDown={this.onKeyDown}
-              onFocus={e => {
-                const val = e.target.value;
-                e.target.value = "";
-                e.target.value = val;
-              }}
-              onBlur={this._onBlur}
-              style={{
-                minWidth: "40px",
-                width: (phone.length + 1) * 9 + "px",
-                maxWidth: "100%"
-              }}
-            />
+            <div className="form-container">
+              <FormControl
+                autoFocus
+                name="phone"
+                type="text"
+                value={phone}
+                onChange={this._onChangePhone}
+                onKeyDown={this.onKeyDown}
+                onFocus={e => {
+                  const val = e.target.value;
+                  e.target.value = "";
+                  e.target.value = val;
+                }}
+                onBlur={this._onBlur}
+                style={{
+                  minWidth: "40px",
+                  width: (phone.length + 1) * 9 + "px",
+                  maxWidth: "100%"
+                }}
+              />
+
+              <Button className="btn-cancel" onClick={this._onBlur}>
+                Cancel
+              </Button>
+            </div>
           )}
         </Col>
       </Row>
     );
   }
 }
-
-Phone.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
-};
 
 export default Phone;

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -18,7 +17,8 @@ class FirstName extends Component {
     this.state = {
       firstName: "",
       isEditing: false,
-      hasError: false
+      hasError: false,
+      errorMessage: ""
     };
   }
 
@@ -29,9 +29,7 @@ class FirstName extends Component {
     }
 
     if (evt.keyCode === 27) {
-      this.setState({
-        isEditing: false
-      });
+      this._onBlur();
     }
   };
 
@@ -46,11 +44,11 @@ class FirstName extends Component {
     const currentFirstName = this.props.patientsStore.currentPatient.first_name;
     const { firstName } = this.state;
 
-    if (firstName === currentFirstName) {
+    if (firstName !== currentFirstName) {
+      this._onSave();
+    } else {
       this._onCancel();
     }
-
-    this._onSave();
   };
 
   _onCancel = () => {
@@ -62,13 +60,24 @@ class FirstName extends Component {
     const { patientsStore } = this.props;
     const id = patientsStore.currentPatient.id;
 
-    if (isValidUnicodeString(firstName)) {
+    if (!firstName) {
+      this.setState({
+        hasError: true,
+        errorMessage: "First name can't be blank"
+      });
+    }
+
+    if (firstName && isValidUnicodeString(firstName)) {
       return patientsStore.saveFirstName(id, firstName).then(() => {
+        this.setState({ hasError: false });
         this.setState({ isEditing: false });
       });
     }
 
-    return this.setState({ hasError: true });
+    return this.setState({
+      hasError: true,
+      errorMessage: "First name contains invalid characters."
+    });
   };
 
   _onChangeFirstName = evt => this.setState({ firstName: evt.target.value });
@@ -110,15 +119,14 @@ class FirstName extends Component {
                   }}
                 />
 
-                <Button className="btn-cancel" onClick={this._onCancel}>
+                <Button className="btn-cancel" onClick={this._onBlur}>
                   Cancel
                 </Button>
               </div>
 
               {hasError && (
                 <HelpBlock>
-                  <i className="fa fa-warning" /> First name contains invalid
-                  characters.
+                  <i className="fa fa-warning" /> {this.state.errorMessage}
                 </HelpBlock>
               )}
             </div>
@@ -128,10 +136,5 @@ class FirstName extends Component {
     );
   }
 }
-
-FirstName.propTypes = {
-  onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
-};
 
 export default FirstName;
