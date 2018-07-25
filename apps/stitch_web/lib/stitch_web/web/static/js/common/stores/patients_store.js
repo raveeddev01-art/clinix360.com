@@ -100,10 +100,11 @@ class PatientsStore {
       // @FIXME window.patient should have consistent format of first_name, last_name as the other patients
       this.patients = [
         {
-          ...window.patient,
-          first_name: window.patient.firstName,
-          last_name: window.patient.lastName,
-          full_name: `${window.patient.firstName} ${window.patient.lastName}`
+          ...window.currentPatient,
+          first_name: window.currentPatient.firstName,
+          last_name: window.currentPatient.lastName,
+          full_name: `${window.currentPatient.firstName} ${window.currentPatient
+            .firstName}`
         }
       ];
     } else if (this.rootStore.teamStore.engageEnabled) {
