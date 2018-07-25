@@ -20,9 +20,9 @@ class Engage extends Component {
     }
   }
 
-  loadConversation(params) {
+  loadConversation(id) {
     const { inboxStore } = this.props;
-    inboxStore.loadConversation(params);
+    inboxStore.loadConversation(id);
   }
 
   render() {

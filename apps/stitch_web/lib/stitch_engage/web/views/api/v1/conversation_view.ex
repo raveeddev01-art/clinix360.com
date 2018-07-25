@@ -54,6 +54,18 @@ defmodule StitchEngage.Web.Api.V1.ConversationView do
     }
   end
 
+  def conversation_search_json(nil), do: nil
+
+  def conversation_search_json(conversation) do
+    %{
+      id: conversation.id,
+      open: conversation.open,
+      subject: conversation.subject,
+      inserted_at: conversation.inserted_at,
+      updated_at: conversation.updated_at
+    }
+  end
+
   def patient_conversation_json_with_latest(conversation) do
     conversation
     |> patient_conversation_json()

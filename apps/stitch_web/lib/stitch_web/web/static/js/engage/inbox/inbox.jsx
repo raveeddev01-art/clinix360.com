@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import cx from "classnames";
 import { withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import VisibilitySensor from "react-visibility-sensor";
@@ -23,6 +24,10 @@ import UserComposeModal from "./modals/user_compose_modal";
 import PatientComposeModal from "./modals/patient_compose_modal";
 import AddPatientModal from "./modals/add_patient_modal";
 
+const preventSubmit = e => {
+  e.preventDefault();
+};
+
 @inject("inboxStore")
 @observer
 class InboxMenu extends Component {
@@ -31,21 +36,18 @@ class InboxMenu extends Component {
     this.props.inboxStore.setCurrentInboxFilter(intialFilter);
   }
 
-  onSearch = event => {
+  onSearchChange = event => {
     event.preventDefault();
+    this.props.inboxStore.searchTermChange(event.target.value);
   };
 
   onBottomVisibilityChange = isVisible => {
     const {
       fullyLoadedForCurrentFilter,
-      isLoadingConversationPage
+      currentlyLoading
     } = this.props.inboxStore;
 
-    if (
-      isVisible &&
-      !fullyLoadedForCurrentFilter &&
-      !isLoadingConversationPage
-    ) {
+    if (isVisible && !fullyLoadedForCurrentFilter && !currentlyLoading) {
       this.props.inboxStore.loadNextConversationPage();
     }
   };
@@ -90,8 +92,12 @@ class InboxMenu extends Component {
     this.props.inboxStore.setCurrentInboxFilter(newFilter);
   };
 
+  clearSearchTerm = () => {
+    this.props.inboxStore.searchTermChange("");
+  };
+
   renderLoading = conversationsLength => {
-    const showLoading = this.props.inboxStore.isLoadingConversationPage;
+    const showLoading = this.props.inboxStore.currentlyLoading;
 
     return (
       <VisibilitySensor
@@ -146,6 +152,10 @@ class InboxMenu extends Component {
   renderProviderOptions() {
     const { inboxStore } = this.props;
 
+    if (this.props.inboxStore.searchTerm) {
+      return <div className="header-separator" />;
+    }
+
     const dropdownTitle =
       inboxStore.currentInboxFilter === "open" ? (
         <span>
@@ -186,9 +196,13 @@ class InboxMenu extends Component {
   }
 
   renderList = (conversations, emptyText) => {
-    const scrollbarClass = this.props.asPatient
-      ? "patient-scrollbar"
-      : "provider-scrollbar";
+    const scrollbarClass = cx("scrollbar", {
+      "with-options-offset":
+        !this.props.asPatient && !this.props.inboxStore.searchTerm
+    });
+
+    const { currentlyLoading } = this.props.inboxStore;
+    const showEmptyText = this.props.loaded && !currentlyLoading;
 
     return (
       <Scrollbar
@@ -198,19 +212,19 @@ class InboxMenu extends Component {
         }}
       >
         <div className="menu-nav m-b-20">
-          {conversations[0] ? (
-            conversations.map((conversation, index) => (
-              <Conversation
-                asPatient={this.props.asPatient}
-                key={`conversation_${index}`}
-                conversation={conversation}
-              />
-            ))
-          ) : (
-            <div className="empty-inbox">
-              <h3>{this.props.loaded && emptyText}</h3>
-            </div>
-          )}
+          {conversations[0]
+            ? conversations.map((conversation, index) => (
+                <Conversation
+                  asPatient={this.props.asPatient}
+                  key={`conversation_${index}`}
+                  conversation={conversation}
+                />
+              ))
+            : showEmptyText && (
+                <div className="empty-inbox">
+                  <h3>{emptyText}</h3>
+                </div>
+              )}
           {this.renderLoading(conversations.length)}
         </div>
       </Scrollbar>
@@ -219,11 +233,25 @@ class InboxMenu extends Component {
 
   renderPatientConversationList() {
     const { inboxStore } = this.props;
+    if (inboxStore.inSearchMode) {
+      return this.renderList(
+        inboxStore.conversationsForTerm,
+        "No Matching Conversations"
+      );
+    }
+
     return this.renderList(inboxStore.sortedConversations, "No Conversations");
   }
 
-  renderProviderConversationLists() {
+  renderProviderConversationLists = () => {
     const { inboxStore } = this.props;
+
+    if (inboxStore.inSearchMode) {
+      return this.renderList(
+        inboxStore.conversationsForTerm,
+        "No Matching Conversations"
+      );
+    }
 
     return (
       <Tab.Content animation={false} unmountOnExit>
@@ -242,7 +270,7 @@ class InboxMenu extends Component {
         </Tab.Pane>
       </Tab.Content>
     );
-  }
+  };
 
   render() {
     return (
@@ -251,9 +279,19 @@ class InboxMenu extends Component {
           <h3>All Conversations</h3>
 
           <div className="flex-box">
-            <Form className="flex-item" onSubmit={this.onSearch}>
+            <Form onSubmit={preventSubmit} className="flex-item">
               <i className="fa fa-search" />
-              <FormControl type="text" placeholder="Search" />
+              <FormControl
+                type="text"
+                placeholder="Search"
+                onChange={this.onSearchChange}
+                value={this.props.inboxStore.searchTerm}
+              />
+              {this.props.inboxStore.searchTerm && (
+                <a tabIndex="0" role="link" onClick={this.clearSearchTerm}>
+                  <i className="fa fa-times-circle-o" />
+                </a>
+              )}
             </Form>
 
             <OverlayTrigger
