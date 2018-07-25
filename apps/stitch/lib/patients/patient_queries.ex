@@ -98,7 +98,7 @@ defmodule Stitch.PatientQueries do
   end
 
   def page_of_patients_for_team(team_id, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 20)
+    limit = Keyword.get(opts, :limit, 30)
     offset = Keyword.get(opts, :skip, 0)
 
     team_id
