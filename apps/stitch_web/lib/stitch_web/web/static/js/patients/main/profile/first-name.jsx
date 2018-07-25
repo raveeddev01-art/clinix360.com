@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import FormControl from "react-bootstrap/lib/FormControl";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
 import { isValidUnicodeString } from "lib/utils";
@@ -16,7 +17,8 @@ class FirstName extends Component {
     super(props);
     this.state = {
       firstName: "",
-      isEditing: false
+      isEditing: false,
+      hasError: false
     };
   }
 
@@ -27,7 +29,9 @@ class FirstName extends Component {
     }
 
     if (evt.keyCode === 27) {
-      this._onBlur();
+      this.setState({
+        isEditing: false
+      });
     }
   };
 
@@ -39,40 +43,38 @@ class FirstName extends Component {
   };
 
   _onBlur = () => {
-    this.setState({
-      isEditing: false
-    });
+    const currentFirstName = this.props.patientsStore.currentPatient.first_name;
+    const { firstName } = this.state;
+
+    if (firstName === currentFirstName) {
+      this._onCancel();
+    }
+
+    this._onSave();
+  };
+
+  _onCancel = () => {
+    this.setState({ isEditing: false, hasError: false });
   };
 
   _onSave = () => {
     const { firstName } = this.state;
-    const { hideAlert, onSuccess, onError, patientsStore } = this.props;
-    const id = this.props.patientsStore.currentPatient.id;
+    const { patientsStore } = this.props;
+    const id = patientsStore.currentPatient.id;
 
-    hideAlert();
-
-    if (!isValidUnicodeString(firstName)) {
-      return Promise.resolve(
-        onError("First name contains invalid characters.")
-      );
+    if (isValidUnicodeString(firstName)) {
+      return patientsStore.saveFirstName(id, firstName).then(() => {
+        this.setState({ isEditing: false });
+      });
     }
 
-    return patientsStore
-      .saveFirstName(id, firstName)
-      .then(() => {
-        onSuccess("Patient name has been successfully updated.");
-        this.setState({ isEditing: false });
-      })
-      .catch(err => {
-        const message = err.data.message.replace("first_name", "First name");
-        onError(message);
-      });
+    return this.setState({ hasError: true });
   };
 
   _onChangeFirstName = evt => this.setState({ firstName: evt.target.value });
 
   render() {
-    const { firstName, isEditing } = this.state;
+    const { firstName, isEditing, hasError } = this.state;
 
     return (
       <Row className="profile-row">
@@ -86,20 +88,40 @@ class FirstName extends Component {
               <i className="fa fa-edit" />
             </Button>
           ) : (
-            <FormControl
-              autoFocus
-              name="first_name"
-              type="text"
-              value={firstName}
-              onChange={this._onChangeFirstName}
-              onKeyDown={this.onKeyDown}
-              onFocus={e => {
-                const val = e.target.value;
-                e.target.value = "";
-                e.target.value = val;
-              }}
-              onBlur={this._onBlur}
-            />
+            <div>
+              <div className="form-container">
+                <FormControl
+                  autoFocus
+                  name="first_name"
+                  type="text"
+                  value={firstName}
+                  onChange={this._onChangeFirstName}
+                  onKeyDown={this.onKeyDown}
+                  onFocus={e => {
+                    const val = e.target.value;
+                    e.target.value = "";
+                    e.target.value = val;
+                  }}
+                  onBlur={this._onBlur}
+                  style={{
+                    minWidth: "40px",
+                    width: (firstName.length + 1) * 12 + "px",
+                    maxWidth: "100%"
+                  }}
+                />
+
+                <Button className="btn-cancel" onClick={this._onCancel}>
+                  Cancel
+                </Button>
+              </div>
+
+              {hasError && (
+                <HelpBlock>
+                  <i className="fa fa-warning" /> First name contains invalid
+                  characters.
+                </HelpBlock>
+              )}
+            </div>
           )}
         </Col>
       </Row>
@@ -108,7 +130,6 @@ class FirstName extends Component {
 }
 
 FirstName.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   hideAlert: PropTypes.func.isRequired
 };

@@ -25,7 +25,9 @@ class Mrn extends Component {
     }
 
     if (evt.keyCode === 27) {
-      this._onBlur();
+      this.setState({
+        isEditing: false
+      });
     }
   };
 
@@ -37,27 +39,24 @@ class Mrn extends Component {
   };
 
   _onBlur = () => {
-    this.setState({
-      isEditing: false
-    });
+    const currentMrn = this.props.patientsStore.currentPatient.mrn;
+    const { mrn } = this.state;
+
+    if (mrn !== currentMrn) {
+      this._onSave();
+    }
+
+    this.setState({ isEditing: false });
   };
 
   _onSave = () => {
     const { mrn } = this.state;
-    const { hideAlert, onSuccess, onError, patientsStore } = this.props;
-    const id = this.props.patientsStore.currentPatient.id;
+    const { patientsStore } = this.props;
+    const id = patientsStore.currentPatient.id;
 
-    hideAlert();
-
-    return patientsStore
-      .saveMrn(id, mrn)
-      .then(() => {
-        onSuccess("Patient MRN has been successfully updated.");
-        this.setState({ isEditing: false });
-      })
-      .catch(err => {
-        onError(err.data.message);
-      });
+    return patientsStore.saveMrn(id, mrn).then(() => {
+      this.setState({ isEditing: false });
+    });
   };
 
   _onChangeMrn = evt => this.setState({ mrn: evt.target.value });
@@ -90,6 +89,11 @@ class Mrn extends Component {
                 e.target.value = val;
               }}
               onBlur={this._onBlur}
+              style={{
+                minWidth: "40px",
+                width: (mrn.length + 1) * 12 + "px",
+                maxWidth: "100%"
+              }}
             />
           )}
         </Col>

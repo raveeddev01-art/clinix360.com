@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import FormControl from "react-bootstrap/lib/FormControl";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
 import { isValidUnicodeString } from "lib/utils";
@@ -16,7 +17,8 @@ class LastName extends Component {
     super(props);
     this.state = {
       lastName: "",
-      isEditing: false
+      isEditing: false,
+      hasError: false
     };
   }
 
@@ -27,7 +29,9 @@ class LastName extends Component {
     }
 
     if (evt.keyCode === 27) {
-      this._onBlur();
+      this.setState({
+        isEditing: false
+      });
     }
   };
 
@@ -39,38 +43,38 @@ class LastName extends Component {
   };
 
   _onBlur = () => {
-    this.setState({
-      isEditing: false
-    });
+    const currentLastName = this.props.patientsStore.currentPatient.last_name;
+    const { lastName } = this.state;
+
+    if (lastName === currentLastName) {
+      this._onCancel();
+    }
+
+    this._onSave();
+  };
+
+  _onCancel = () => {
+    this.setState({ isEditing: false, hasError: false });
   };
 
   _onSave = () => {
     const { lastName } = this.state;
-    const { hideAlert, onSuccess, onError, patientsStore } = this.props;
-    const id = this.props.patientsStore.currentPatient.id;
+    const { patientsStore } = this.props;
+    const id = patientsStore.currentPatient.id;
 
-    hideAlert();
-
-    if (!isValidUnicodeString(lastName)) {
-      return Promise.resolve(onError("Last name contains invalid characters."));
+    if (isValidUnicodeString(lastName)) {
+      return patientsStore.saveLastName(id, lastName).then(() => {
+        this.setState({ isEditing: false });
+      });
     }
 
-    return patientsStore
-      .saveLastName(id, lastName)
-      .then(() => {
-        onSuccess("Patient name has been successfully updated.");
-        this.setState({ isEditing: false });
-      })
-      .catch(err => {
-        const message = err.data.message.replace("last_name", "Last name");
-        onError(message);
-      });
+    return this.setState({ hasError: true });
   };
 
   _onChangeLastName = evt => this.setState({ lastName: evt.target.value });
 
   render() {
-    const { lastName, isEditing } = this.state;
+    const { lastName, isEditing, hasError } = this.state;
 
     return (
       <Row className="profile-row">
@@ -84,20 +88,40 @@ class LastName extends Component {
               <i className="fa fa-edit" />
             </Button>
           ) : (
-            <FormControl
-              autoFocus
-              name="first_name"
-              type="text"
-              value={lastName}
-              onChange={this._onChangeLastName}
-              onKeyDown={this.onKeyDown}
-              onFocus={e => {
-                const val = e.target.value;
-                e.target.value = "";
-                e.target.value = val;
-              }}
-              onBlur={this._onBlur}
-            />
+            <div>
+              <div className="form-container">
+                <FormControl
+                  autoFocus
+                  name="first_name"
+                  type="text"
+                  value={lastName}
+                  onChange={this._onChangeLastName}
+                  onKeyDown={this.onKeyDown}
+                  onFocus={e => {
+                    const val = e.target.value;
+                    e.target.value = "";
+                    e.target.value = val;
+                  }}
+                  onBlur={this._onBlur}
+                  style={{
+                    minWidth: "40px",
+                    width: (lastName.length + 1) * 12 + "px",
+                    maxWidth: "100%"
+                  }}
+                />
+
+                <Button className="btn-cancel" onClick={this._onCancel}>
+                  Cancel
+                </Button>
+              </div>
+
+              {hasError && (
+                <HelpBlock>
+                  <i className="fa fa-warning" /> First name contains invalid
+                  characters.
+                </HelpBlock>
+              )}
+            </div>
           )}
         </Col>
       </Row>

@@ -111,7 +111,9 @@ class Main extends Component {
             this.scrollbar = ref;
           }}
         >
-          <h1>{currentPatient.full_name}</h1>
+          <h1>
+            {currentPatient.first_name} {currentPatient.last_name}
+          </h1>
 
           <h4>Profile</h4>
           <div className="card">

@@ -25,7 +25,9 @@ class Phone extends Component {
     }
 
     if (evt.keyCode === 27) {
-      this._onBlur();
+      this.setState({
+        isEditing: false
+      });
     }
   };
 
@@ -37,6 +39,15 @@ class Phone extends Component {
   };
 
   _onBlur = () => {
+    const currentPhone = this.props.patientsStore.currentPatient.phone;
+    const { phone } = this.state;
+
+    console.log(phone);
+
+    if (phone !== currentPhone && phone !== null) {
+      this._onSave();
+    }
+
     this.setState({
       isEditing: false
     });
@@ -92,6 +103,11 @@ class Phone extends Component {
                 e.target.value = val;
               }}
               onBlur={this._onBlur}
+              style={{
+                minWidth: "40px",
+                width: (phone.length + 1) * 9 + "px",
+                maxWidth: "100%"
+              }}
             />
           )}
         </Col>

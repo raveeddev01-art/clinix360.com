@@ -25,7 +25,9 @@ class Email extends Component {
     }
 
     if (evt.keyCode === 27) {
-      this._onBlur();
+      this.setState({
+        isEditing: false
+      });
     }
   };
 
@@ -37,27 +39,24 @@ class Email extends Component {
   };
 
   _onBlur = () => {
-    this.setState({
-      isEditing: false
-    });
+    const currentEmail = this.props.patientsStore.currentPatient.email;
+    const { email } = this.state;
+
+    if (email !== currentEmail) {
+      this._onSave();
+    }
+
+    this.setState({ isEditing: false });
   };
 
   _onSave = () => {
     const { email } = this.state;
-    const { hideAlert, onSuccess, onError, patientsStore } = this.props;
-    const id = this.props.patientsStore.currentPatient.id;
+    const { patientsStore } = this.props;
+    const id = patientsStore.currentPatient.id;
 
-    hideAlert();
-
-    return patientsStore
-      .saveEmail(id, email)
-      .then(() => {
-        onSuccess("Patient email has been successfully updated.");
-        this.setState({ isEditing: false });
-      })
-      .catch(err => {
-        onError(err.data.message);
-      });
+    return patientsStore.saveEmail(id, email).then(() => {
+      this.setState({ isEditing: false });
+    });
   };
 
   _onChangeEmail = evt => this.setState({ email: evt.target.value });
@@ -92,6 +91,11 @@ class Email extends Component {
                 e.target.value = val;
               }}
               onBlur={this._onBlur}
+              style={{
+                minWidth: "40px",
+                width: (email.length + 1) * 12 + "px",
+                maxWidth: "100%"
+              }}
             />
           )}
         </Col>
