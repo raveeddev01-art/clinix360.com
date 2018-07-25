@@ -1,5 +1,6 @@
 defmodule Stitch.Web.Api.V1.PatientView do
   use Stitch.Web, :view
+  alias Stitch.PatientQueries
 
   def render("index.json", %{patients: patients}) do
     Enum.map(patients, &patient_json/1)
@@ -10,12 +11,18 @@ defmodule Stitch.Web.Api.V1.PatientView do
   end
 
   def render("login.json", %{patient: patient, redirect_url: redirect_url}) do
+    login_json(patient, redirect_url)
+  end
+
+  def login_json(patient, redirect_url \\ nil) do
     patient = Stitch.Repo.preload(patient, :team)
+    unread_conversations_count = PatientQueries.unread_conversations_count(patient.id)
 
     %{
       patient: patient_json(patient),
       redirect_url: redirect_url,
       token: patient.token,
+      unread_conversations_count: unread_conversations_count,
       team: %{
         id: patient.team.id,
         name: patient.team.name,

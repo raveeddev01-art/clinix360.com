@@ -386,6 +386,7 @@ defmodule Stitch.Web.Api.V1.Docs do
                 )
 
                 redirect_url(:string)
+                unread_conversations_count(:integer)
                 token(:string)
                 patient(Schema.ref(:Patient))
               end
