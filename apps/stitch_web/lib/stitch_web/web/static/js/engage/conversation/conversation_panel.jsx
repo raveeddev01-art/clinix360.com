@@ -9,33 +9,20 @@ import MessageList from "./components/message-list";
 @inject("conversationMessageStore")
 @observer
 class ConversationPanel extends Component {
-  renderMessageList() {
-    // Temporarily return just this for the patients
-    if (this.props.asPatient) {
-      return (
-        <div className="messages-container">
-          <div>Messages Go here</div>
-        </div>
-      );
-    }
-
-    return <MessageList />;
-  }
-
   render() {
     const { conversationMessageStore, asPatient } = this.props;
     return (
       <div id="chat-container">
         <Topbar asPatient={asPatient} />
-        <MessageList />
-        {!asPatient && (
-          <div className="flex-footer">
-            <MessageForm
-              messageStore={conversationMessageStore}
-              allowTypingUsers={false}
-            />
-          </div>
-        )}
+        <MessageList asPatient={asPatient} />
+        <div className="flex-footer">
+          <MessageForm
+            asPatient={asPatient}
+            messageStore={conversationMessageStore}
+            allowTypingUsers={false}
+            allowJumpingIndicator={false}
+          />
+        </div>
       </div>
     );
   }

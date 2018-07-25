@@ -32,6 +32,10 @@ class UserProfileMenu extends Component {
       return <div />;
     }
 
+    if (window.currentPatient || user.mrn) {
+      return <span>{children}</span>;
+    }
+
     return (
       <SmartDropdown
         id="user-profile-menu"

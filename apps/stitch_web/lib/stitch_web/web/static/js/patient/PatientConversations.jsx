@@ -10,9 +10,7 @@ import LoadingPanel from "../engage/LoadingPanel";
 @observer
 class PatientConversations extends Component {
   componentWillMount() {
-    this.props.inboxStore.loadEngageAsPatient(() => {
-      $(".html-loading-element").remove();
-    });
+    this.props.inboxStore.loadEngage();
     if (this.props.match.params.id) {
       this.openConversation(this.props.match.params.id);
     }
@@ -26,7 +24,7 @@ class PatientConversations extends Component {
 
   openConversation(id) {
     const { inboxStore } = this.props;
-    inboxStore.loadConversationAsPatient(id);
+    inboxStore.loadConversation(id);
   }
 
   render() {

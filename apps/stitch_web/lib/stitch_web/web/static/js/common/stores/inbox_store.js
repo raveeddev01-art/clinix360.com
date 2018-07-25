@@ -40,6 +40,10 @@ class InboxStore {
     return this.currentInbox.closed_conversations_count;
   }
 
+  get apiBasePath() {
+    return `${this.rootStore.apiBasePath}/inboxes`;
+  }
+
   getConversationById = id =>
     this.conversations.find(conversation => conversation.id === id);
 
@@ -150,21 +154,6 @@ class InboxStore {
   };
 
   @action
-  loadEngageAsPatient = async onLoaded => {
-    try {
-      await this.loadInboxAsPatient();
-      await this.loadConversationsAsPatient(this.currentInbox.id);
-    } catch (e) {
-      // TODO if error occurs here, redirect to error page
-      console.error(e); // eslint-disable-line
-    }
-
-    if (onLoaded) {
-      onLoaded();
-    }
-  };
-
-  @action
   loadEngage = async () => {
     try {
       await this.loadInbox();
@@ -182,15 +171,7 @@ class InboxStore {
   // Loading only default inbox for now
   @action
   loadInbox = () => {
-    return get("/api/v1/inboxes/default").then(response => {
-      this.rootStore.channelStore.joinInboxChannel(response.data.id);
-      this.currentInbox = response.data;
-    });
-  };
-
-  @action
-  loadInboxAsPatient = () => {
-    return get("/api/v1/patient/inboxes/default").then(response => {
+    return get(`${this.apiBasePath}/default`).then(response => {
       this.rootStore.channelStore.joinInboxChannel(response.data.id);
       this.currentInbox = response.data;
     });
@@ -198,26 +179,14 @@ class InboxStore {
 
   @action
   loadConversations = id => {
-    return get(`/api/v1/inboxes/${id}/conversations`).then(response => {
+    return get(`${this.apiBasePath}/${id}/conversations`).then(response => {
       this.conversations = response.data.sort(this.sortByUpdated);
       this.conversationsLoaded = true;
     });
   };
 
-  @action
-  loadConversationsAsPatient = id => {
-    return get(`/api/v1/patient/inboxes/${id}/conversations`).then(response => {
-      this.conversations = response.data;
-      this.conversationsLoaded = true;
-    });
-  };
-
-  loadNextConversationPage = asPatient => {
+  loadNextConversationPage = () => {
     const id = this.currentInbox.id;
-    const urlBase = asPatient
-      ? `/api/v1/patient/inboxes/${id}/conversations`
-      : `/api/v1/inboxes/${id}/conversations`;
-
     const lastConvo = this.sortedConversations[
       this.sortedConversations.length - 1
     ];
@@ -236,7 +205,7 @@ class InboxStore {
 
       this.isLoadingConversationPage = true;
 
-      return get(`${urlBase}?${params}`)
+      get(`${this.apiBasePath}/${id}/conversations?${params}`)
         .then(response => {
           this.addConversations(response.data);
           this.isLoadingConversationPage = false;
@@ -258,7 +227,9 @@ class InboxStore {
   loadConversation = id => {
     const { conversationMessageStore, channelStore } = this.rootStore;
     this.currentConversationId = parseInt(id, 10);
-    return get(`/api/v1/conversations/${id}`).then(response => {
+    return get(
+      `${this.rootStore.apiBasePath}/conversations/${id}`
+    ).then(response => {
       conversationMessageStore.onConversationLoaded(response.data);
       this.messagesLoaded = true;
 
@@ -269,36 +240,13 @@ class InboxStore {
   };
 
   @action
-  loadConversationAsPatient = id => {
-    this.currentConversationId = parseInt(id, 10);
-
-    return get(`/api/v1/patient/conversations/${id}`).then(response => {
-      this.currentConversation = response.data;
-      this.messagesLoaded = true;
-    });
-  };
-
-  @action
   createConversation = params => {
-    return post(`/api/v1/inboxes/${this.currentInboxId}/conversations`, {
+    return post(`${this.apiBasePath}/${this.currentInboxId}/conversations`, {
       body: params
     }).then(response => {
       this.changeCountsAsNeeded(response.data);
       this.addConversations([response.data]);
       return response.data.id;
-    });
-  };
-
-  @action
-  createConversationAsPatient = params => {
-    return post(
-      `/api/v1/patient/inboxes/${this.currentInboxId}/conversations`,
-      {
-        body: params
-      }
-    ).then(response => {
-      this.changeCountsAsNeeded(response.data);
-      this.addConversations([response.data]);
     });
   };
 

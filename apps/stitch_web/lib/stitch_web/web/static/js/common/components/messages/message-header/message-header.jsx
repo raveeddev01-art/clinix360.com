@@ -21,7 +21,7 @@ class MessageHeader extends Component {
           className="name"
           disabledMenu={disabledMenu}
         >
-          {user && this._renderName(user)}
+          {this._renderName(user)}
         </UserProfileMenu>
         <TimestampTooltip timestamp={timestamp} className="time" />
         {children}

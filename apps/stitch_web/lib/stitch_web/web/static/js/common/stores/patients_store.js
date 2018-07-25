@@ -27,6 +27,8 @@ const stringSort = stringAttrName => (patientA, patientB) => {
     patientB[stringAttrName].toLowerCase()
   )
     return 1;
+
+  return 0;
 };
 
 const insertedAtSort = (patientA, patientB) => {
@@ -92,6 +94,7 @@ class PatientsStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+
     if (this.rootStore.teamStore.engageEnabled) {
       this.loadPatients();
     }
@@ -226,7 +229,7 @@ class PatientsStore {
 
   @computed
   get sortedAndFilteredPatients() {
-    return this.patients.filter(this.patientsFiler).sort(this.patientsSorter);
+    return this.patients.filter(this.patientsFilter).sort(this.patientsSorter);
   }
 
   @computed
@@ -256,7 +259,7 @@ class PatientsStore {
   }
 
   @computed
-  get patientsFiler() {
+  get patientsFilter() {
     // function of statusFilter && searchFilter
     return p =>
       statusMatch(p, this.statusFilter) &&

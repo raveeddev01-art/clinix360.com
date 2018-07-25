@@ -5,8 +5,13 @@ import InboxStore from "./inbox_store";
 import NotificationStore from "./notification_store";
 import SocketStore from "./socket_store";
 import TeamStore from "./team_store";
+import PatientsStore from "./patients_store";
 
 class RootPatientStore {
+  get apiBasePath() {
+    return "/api/v1/patient";
+  }
+
   constructor(props) {
     this.appParams = Object.assign({}, props);
     this.createStores();
@@ -24,6 +29,14 @@ class RootPatientStore {
     this.socketStore = new SocketStore(this);
     this.conversationMessageStore = new ConversationMessageStore(this);
     this.inboxStore = new InboxStore(this);
+    this.patientsStore = new PatientsStore(this);
+    this.addonStore = {};
+    this.uploadStore = {};
+    this.billingStore = {};
+    this.groupsStore = {};
+    this.sidemenuStore = {};
+    this.teamFileStore = {};
+    this.usersStore = {};
   }
 
   joinChannels() {

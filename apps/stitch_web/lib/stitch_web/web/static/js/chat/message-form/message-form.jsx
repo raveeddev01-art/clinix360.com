@@ -357,11 +357,17 @@ class MessageForm extends Component {
 
   render() {
     const { searchFilter, openMentionMenu, openEmojiSearch, text } = this.state;
-    const { allowTypingUsers, allowMention, currentGroup } = this.props;
+    const {
+      allowTypingUsers,
+      allowMention,
+      allowJumpingIndicator,
+      messageStore,
+      currentGroup
+    } = this.props;
 
     return (
       <div className="message-form">
-        <JumpingIndicator />
+        {allowJumpingIndicator && <JumpingIndicator />}
 
         {allowMention &&
           openMentionMenu && (
@@ -386,7 +392,7 @@ class MessageForm extends Component {
           </div>
         )}
         {allowTypingUsers && <TypingUsers />}
-        <EditingCommand />
+        <EditingCommand messageStore={messageStore} />
       </div>
     );
   }
@@ -396,12 +402,14 @@ MessageForm.propTypes = {
   messageStore: PropTypes.object.isRequired,
   allowTypingUsers: PropTypes.bool,
   allowMention: PropTypes.bool,
+  allowJumpingIndicator: PropTypes.bool,
   currentGroup: PropTypes.object
 };
 
 MessageForm.defaultProps = {
   allowTypingUsers: true,
   allowMention: true,
+  allowJumpingIndicator: true,
   currentGroup: null
 };
 

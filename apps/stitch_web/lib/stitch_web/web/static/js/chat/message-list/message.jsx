@@ -56,10 +56,11 @@ class Message extends PureComponent {
 
   getUser = message => {
     const { usersStore } = this.props;
-    const userId =
-      (message.user && message.user.id) ||
-      message.provider_id ||
-      message.patient_id;
+    if (window.currentPatient || message.patient_id) {
+      return message.user;
+    }
+
+    const userId = message.user && message.user.id;
     return usersStore.usersById[userId];
   };
 
@@ -106,11 +107,16 @@ class Message extends PureComponent {
 
   renderHeader(message) {
     const { inserted_at: insertedAt } = message;
+    const { asPatient } = this.props;
     const user = this.getUser(message);
 
     return (
       (!message.is_sequential || message.type === "file_comment") && (
-        <MessageHeader user={user} timestamp={insertedAt} />
+        <MessageHeader
+          user={user}
+          timestamp={insertedAt}
+          asPatient={asPatient}
+        />
       )
     );
   }
@@ -221,7 +227,8 @@ Message.propTypes = {
   chatDiv: PropTypes.object,
   messageStore: PropTypes.object.isRequired,
   isConversationMessage: PropTypes.bool,
-  lastOtherUserMessage: PropTypes.object
+  lastOtherUserMessage: PropTypes.object,
+  asPatient: PropTypes.bool
 };
 
 Message.defaultProps = {
@@ -233,7 +240,8 @@ Message.defaultProps = {
   onHide: () => undefined,
   lastOtherUserMessage: null,
   isConversationMessage: false,
-  chatDiv: null
+  chatDiv: null,
+  asPatient: false
 };
 
 export default Message;

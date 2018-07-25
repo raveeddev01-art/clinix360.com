@@ -32,6 +32,10 @@ import InboxStore from "./inbox_store";
 import ConversationMessageStore from "./conversation_message_store";
 
 class RootStore {
+  get apiBasePath() {
+    return "/api/v1";
+  }
+
   constructor(props) {
     this.appParams = Object.assign({}, props);
 
