@@ -46,11 +46,11 @@ class FirstName extends Component {
     e.target.value = val;
   };
 
-  _onBlur = (saveChanges = true) => () => {
+  _onBlur = () => {
     const currentFirstName = this.props.patientsStore.currentPatient.first_name;
     const { firstName } = this.state;
 
-    if (saveChanges && firstName !== currentFirstName) {
+    if (firstName !== currentFirstName) {
       this._onSave();
     } else {
       this._onCancel();
@@ -62,7 +62,7 @@ class FirstName extends Component {
   };
 
   _onSave = () => {
-    const { firstName } = this.state;
+    const { firstName, isEditing } = this.state;
     const { patientsStore } = this.props;
     const id = patientsStore.currentPatient.id;
 
@@ -73,7 +73,7 @@ class FirstName extends Component {
       });
     }
 
-    if (firstName && isValidUnicodeString(firstName)) {
+    if (firstName && isValidUnicodeString(firstName) && isEditing) {
       return patientsStore.saveFirstName(id, firstName).then(() => {
         this.setState({ hasError: false });
         this.setState({ isEditing: false });
@@ -113,7 +113,7 @@ class FirstName extends Component {
                   onChange={this._onChangeFirstName}
                   onKeyDown={this.onKeyDown}
                   onFocus={this._onFocus}
-                  onBlur={this._onBlur()}
+                  onBlur={() => setTimeout(this._onBlur, 200)}
                   style={{
                     minWidth: "40px",
                     width: (firstName.length + 1) * 12 + "px",
@@ -121,7 +121,7 @@ class FirstName extends Component {
                   }}
                 />
 
-                <Button className="btn-cancel" onClick={this._onBlur(false)}>
+                <Button className="btn-cancel" onClick={this._onBlur}>
                   Cancel
                 </Button>
               </div>
