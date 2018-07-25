@@ -63,7 +63,7 @@ class LastName extends Component {
     const id = patientsStore.currentPatient.id;
 
     if (isValidUnicodeString(lastName)) {
-      return patientsStore.saveLastName(id, lastName).then(() => {
+      return patientsStore.saveAttribute("last_name")(id, lastName).then(() => {
         this.setState({ isEditing: false });
       });
     }

@@ -53,7 +53,7 @@ class Mrn extends Component {
     const { patientsStore } = this.props;
     const id = patientsStore.currentPatient.id;
 
-    return patientsStore.saveMrn(id, mrn).then(() => {
+    return patientsStore.saveAttribute("mrn")(id, mrn).then(() => {
       this.setState({ isEditing: false });
     });
   };

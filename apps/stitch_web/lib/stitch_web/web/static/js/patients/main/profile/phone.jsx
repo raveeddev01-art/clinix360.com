@@ -55,7 +55,7 @@ class Phone extends Component {
     const { patientsStore } = this.props;
     const id = this.props.patientsStore.currentPatient.id;
 
-    return patientsStore.savePhone(id, phone).then(() => {
+    return patientsStore.saveAttribute("phone")(id, phone).then(() => {
       this.setState({ isEditing: false });
     });
   };

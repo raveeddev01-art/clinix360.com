@@ -53,7 +53,7 @@ class Email extends Component {
     const { patientsStore } = this.props;
     const id = patientsStore.currentPatient.id;
 
-    return patientsStore.saveEmail(id, email).then(() => {
+    return patientsStore.saveAttribute("email")(id, email).then(() => {
       this.setState({ isEditing: false });
     });
   };

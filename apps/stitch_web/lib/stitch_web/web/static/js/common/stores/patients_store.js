@@ -163,47 +163,11 @@ class PatientsStore {
   };
 
   @action
-  saveFirstName = (id, firstName) => {
+  saveAttribute = attrName => (id, attrValue) => {
     return this.save(id, {
-      first_name: firstName
+      [attrName]: attrValue
     }).then(() => {
-      this.currentPatient.first_name = firstName;
-    });
-  };
-
-  @action
-  saveLastName = (id, lastName) => {
-    return this.save(id, {
-      last_name: lastName
-    }).then(() => {
-      this.currentPatient.last_name = lastName;
-    });
-  };
-
-  @action
-  saveMrn = (id, mrn) => {
-    return this.save(id, {
-      mrn
-    }).then(() => {
-      this.currentPatient.mrn = mrn;
-    });
-  };
-
-  @action
-  saveEmail = (id, email) => {
-    return this.save(id, {
-      email
-    }).then(() => {
-      this.currentPatient.email = email;
-    });
-  };
-
-  @action
-  savePhone = (id, phone) => {
-    return this.save(id, {
-      phone
-    }).then(() => {
-      this.currentPatient.phone = phone;
+      this.currentPatient[attrName] = attrValue;
     });
   };
 
