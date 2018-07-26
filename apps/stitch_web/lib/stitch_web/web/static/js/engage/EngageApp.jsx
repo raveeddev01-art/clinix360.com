@@ -20,7 +20,7 @@ class EngageApp extends Component {
 
   render() {
     const { titleStore, inboxStore } = this.props;
-    const { lastConversation } = inboxStore;
+    const { latestConversation } = inboxStore;
 
     if (!inboxStore.engageLoaded) {
       return <Loading />;
@@ -37,8 +37,11 @@ class EngageApp extends Component {
 
           <Switch>
             <Route exact path="/conversations/:id" component={Engage} />
-            {lastConversation && (
-              <Redirect from="*" to={`/conversations/${lastConversation.id}`} />
+            {latestConversation && (
+              <Redirect
+                from="*"
+                to={`/conversations/${latestConversation.id}`}
+              />
             )}
           </Switch>
         </div>

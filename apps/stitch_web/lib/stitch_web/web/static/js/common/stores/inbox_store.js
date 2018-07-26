@@ -57,8 +57,12 @@ class InboxStore {
   //   COMPUTED
   // ===========
 
-  get lastConversation() {
-    return this.conversations.length > 0 && this.conversations[0];
+  get latestConversation() {
+    if (this.sortedConversations.length > 0) {
+      return this.sortedConversations[0];
+    }
+
+    return undefined;
   }
 
   @computed
