@@ -408,6 +408,10 @@ $dark-border-color: #ccc;
     flex: 1;
   }
 
+  .container-bars {
+    top: 65px !important;
+  }
+
   .topbar {
     display: flex;
     flex: 0 0 65px;

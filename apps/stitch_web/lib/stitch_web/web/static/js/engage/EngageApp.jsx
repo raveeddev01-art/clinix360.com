@@ -27,7 +27,7 @@ class EngageApp extends Component {
     }
 
     return (
-      <UploadZone>
+      <UploadZone isEngage>
         <AppAlert />
         <div className="appContainer">
           <Helmet>

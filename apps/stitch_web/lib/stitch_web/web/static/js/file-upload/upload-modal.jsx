@@ -33,7 +33,7 @@ export default class UploadModal extends Component {
       return;
     }
 
-    uploadStore.uploadFile();
+    uploadStore.uploadFile(`/api/v1/groups/${uploadStore.groupId}/messages`);
     this.toggleModal();
   };
 
@@ -105,19 +105,21 @@ export default class UploadModal extends Component {
                 </Col>
               </Row>
             </FormGroup>
-            <FormGroup bsSize="large">
-              <Row>
-                <Col componentClass={ControlLabel} sm={3}>
-                  Room
-                </Col>
-                <Col sm={9}>
-                  <Groups
-                    value={uploadStore.groupId}
-                    onChange={this.onChangeGroup}
-                  />
-                </Col>
-              </Row>
-            </FormGroup>
+            {uploadStore.from === "connect" && (
+              <FormGroup bsSize="large">
+                <Row>
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Room
+                  </Col>
+                  <Col sm={9}>
+                    <Groups
+                      value={uploadStore.groupId}
+                      onChange={this.onChangeGroup}
+                    />
+                  </Col>
+                </Row>
+              </FormGroup>
+            )}
             <Row>
               <Col sm={12} className="text-right">
                 <Button bsSize="large" type="button" onClick={this.toggleModal}>

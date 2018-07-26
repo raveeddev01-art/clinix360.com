@@ -6,6 +6,7 @@ import NotificationStore from "./notification_store";
 import SocketStore from "./socket_store";
 import TeamStore from "./team_store";
 import PatientsStore from "./patients_store";
+import UploadStore from "./upload_store";
 
 class RootPatientStore {
   get apiBasePath() {
@@ -30,8 +31,8 @@ class RootPatientStore {
     this.conversationMessageStore = new ConversationMessageStore(this);
     this.inboxStore = new InboxStore(this);
     this.patientsStore = new PatientsStore(this);
+    this.uploadStore = new UploadStore(this);
     this.addonStore = {};
-    this.uploadStore = {};
     this.billingStore = {};
     this.groupsStore = {};
     this.sidemenuStore = {};
