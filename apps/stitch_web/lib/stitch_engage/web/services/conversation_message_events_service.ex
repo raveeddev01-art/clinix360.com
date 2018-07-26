@@ -5,7 +5,7 @@ defmodule StitchEngage.Web.ConversationMessageEventsService do
   }
 
   def conversation_message_creation_events(conversation, conversation_message) do
-    receivers_set = receivers(conversation, conversation_message) |> IO.inspect()
+    receivers_set = receivers(conversation, conversation_message)
 
     StitchEngage.Mobile.PushNotification.notifications_for_conversation_message(
       conversation_message,
@@ -36,7 +36,7 @@ defmodule StitchEngage.Web.ConversationMessageEventsService do
   # Note: this is a simplified version for V1.
   # TODO: add activity tracking, queueing, and user notification preferences.
   def receivers(conversation, conversation_message) do
-    patients = ConversationQueries.conversation_patients(conversation)
+    patients = ConversationQueries.patients_for_convsersation(conversation)
 
     patients =
       Enum.filter(
@@ -44,7 +44,7 @@ defmodule StitchEngage.Web.ConversationMessageEventsService do
         &(!(conversation_message.patient && &1.id == conversation_message.patient.id))
       )
 
-    providers = ConversationQueries.conversation_providers(conversation)
+    providers = ConversationQueries.providers_for_conversation(conversation)
 
     providers =
       Enum.filter(

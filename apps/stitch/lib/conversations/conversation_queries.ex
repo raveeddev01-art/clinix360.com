@@ -429,11 +429,11 @@ defmodule Stitch.Engage.ConversationQueries do
     |> Repo.all()
   end
 
-  def conversation_patients(%Conversation{} = conversation) do
+  def patients_for_convsersation(%Conversation{} = conversation) do
     Repo.preload(conversation, :patients).patients
   end
 
-  def conversation_providers(%Conversation{} = conversation) do
+  def providers_for_conversation(%Conversation{} = conversation) do
     Repo.preload(conversation, :providers).providers
   end
 end

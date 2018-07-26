@@ -70,7 +70,7 @@ defmodule StitchEngage.Mobile.ConversationNotificationView do
   end
 
   defp title(notification) do
-    notification.inbox.name
+    "New Message"
   end
 
   defp sanitize_notification_payload(conversation_message) do
