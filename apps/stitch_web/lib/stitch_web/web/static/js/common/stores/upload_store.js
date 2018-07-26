@@ -10,7 +10,9 @@ class UploadStore {
   @observable title = "";
   @observable description = "";
   @observable groupId = null;
+  @observable conversationId = null;
   @observable isUploadModalVisible = false;
+  @observable from = "connect";
   xhrs = {};
   dropzoneRef = null;
   file = null;
@@ -26,12 +28,20 @@ class UploadStore {
   };
 
   @action
-  openUploadModal = (file, fileName) => {
+  openUploadModal = (file, fileName, from = "connect") => {
     this.file = file;
     this.title = fileName || file.name;
     this.description = "";
     this.isUploadModalVisible = true;
-    this.groupId = this.rootStore.groupStore.group.id;
+    this.from = from;
+
+    if (from === "engage") {
+      this.conversationId = this.rootStore.inboxStore.currentConversationId;
+      this.groupId = null;
+    } else {
+      this.conversationId = null;
+      this.groupId = this.rootStore.groupStore.group.id;
+    }
   };
 
   @action
@@ -70,7 +80,7 @@ class UploadStore {
       return Promise.reject();
     }
 
-    return post("/api/v1/upload-signature", {
+    return post(`${this.rootStore.apiBasePath}/upload-signature`, {
       body: {
         filename: key,
         mimetype: type
@@ -148,7 +158,7 @@ class UploadStore {
   };
 
   @action
-  uploadFile = () => {
+  uploadFile = apiUrl => {
     const { file, title, description } = this;
     const filenameSplit = file.name.split(".");
     const ext = filenameSplit.length
@@ -165,7 +175,7 @@ class UploadStore {
     })
       .then(url => {
         this.uploadProgress.set(key, "done");
-        return post(`/api/v1/groups/${this.groupId}/messages`, {
+        return post(apiUrl, {
           body: {
             message: {
               type: "upload",
