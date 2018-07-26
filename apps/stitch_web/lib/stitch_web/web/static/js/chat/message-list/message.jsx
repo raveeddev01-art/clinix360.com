@@ -70,6 +70,7 @@ class Message extends PureComponent {
 
   renderGutter(message) {
     const { inserted_at: insertedAt } = message;
+    const { isConversationMessage } = this.props;
     const user = this.getUser(message);
 
     return (
@@ -90,11 +91,14 @@ class Message extends PureComponent {
             <i className="fa fa-exclamation-triangle" />
           </div>
         )}
-        {!message.is_sequential && (
-          <UserProfileMenu user={user}>
+        {!message.is_sequential &&
+          (isConversationMessage ? (
+            <UserProfileMenu user={user}>
+              <Avatar user={user} />
+            </UserProfileMenu>
+          ) : (
             <Avatar user={user} />
-          </UserProfileMenu>
-        )}
+          ))}
         {message.is_sequential && (
           <TimestampTooltip
             timestamp={insertedAt}
@@ -107,7 +111,7 @@ class Message extends PureComponent {
 
   renderHeader(message) {
     const { inserted_at: insertedAt } = message;
-    const { asPatient } = this.props;
+    const { isConversationMessage } = this.props;
     const user = this.getUser(message);
 
     return (
@@ -115,7 +119,7 @@ class Message extends PureComponent {
         <MessageHeader
           user={user}
           timestamp={insertedAt}
-          asPatient={asPatient}
+          isConversationMessage={isConversationMessage}
         />
       )
     );
@@ -198,7 +202,8 @@ class Message extends PureComponent {
                 </div>
               </div>
 
-              {(isActionsVisible || isSelected) && (
+              {(isActionsVisible || isSelected) &&
+                !isConversationMessage && (
                   <MessageActions
                     user={user}
                     message={message}
@@ -227,8 +232,7 @@ Message.propTypes = {
   chatDiv: PropTypes.object,
   messageStore: PropTypes.object.isRequired,
   isConversationMessage: PropTypes.bool,
-  lastOtherUserMessage: PropTypes.object,
-  asPatient: PropTypes.bool
+  lastOtherUserMessage: PropTypes.object
 };
 
 Message.defaultProps = {
@@ -240,8 +244,7 @@ Message.defaultProps = {
   onHide: () => undefined,
   lastOtherUserMessage: null,
   isConversationMessage: false,
-  chatDiv: null,
-  asPatient: false
+  chatDiv: null
 };
 
 export default Message;
