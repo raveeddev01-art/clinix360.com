@@ -186,7 +186,9 @@ class PatientsStore {
     }).then(() => {
       this.currentPatient[attrName] = attrValue;
     });
-    
+  };
+
+  @action
   loadNextPatientPage = () => {
     const url = "/api/v1/patients";
 
