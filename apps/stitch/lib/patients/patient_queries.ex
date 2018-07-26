@@ -8,7 +8,8 @@ defmodule Stitch.PatientQueries do
   alias Stitch.{
     Repo,
     Patient,
-    Engage.ConversationPatient
+    Engage.ConversationPatient,
+    Paginator
   }
 
   @doc """
@@ -83,11 +84,9 @@ defmodule Stitch.PatientQueries do
   @doc """
   Given a team id (and optional subquery), return a list of patients for a team.
   """
-  @spec patients_for_team_id(Ecto.Query.t(), number | binary) :: list(Patient.t())
-  def patients_for_team_id(query \\ Patient, team_id) do
-    query
-    |> where(team_id: ^team_id)
-    |> Repo.all()
+  @spec for_team_id(Ecto.Query.t(), number | binary) :: list(Patient.t())
+  def for_team_id(query \\ Patient, team_id) do
+    query |> where(team_id: ^team_id)
   end
 
   @spec for_team_and_email(integer, binary) :: Patient.t()
@@ -96,6 +95,16 @@ defmodule Stitch.PatientQueries do
     |> where(team_id: ^team_id)
     |> where(email: ^email)
     |> Repo.one()
+  end
+
+  def page_of_patients_for_team(team_id, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 30)
+    offset = Keyword.get(opts, :skip, 0)
+
+    team_id
+    |> for_team_id()
+    |> order_by([p], asc: p.first_name)
+    |> Paginator.new(limit: limit, skip: offset)
   end
 
   @doc """

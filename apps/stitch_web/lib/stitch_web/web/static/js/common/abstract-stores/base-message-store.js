@@ -270,11 +270,13 @@ export default class BaseMessageStore {
         let sequentialStart = firstMsg;
         return [
           firstMsg,
-          ...messages.map(msg => {
-            if (msg.upload_id && msg.type === "chat") {
-              msg.type = "file_comment";
+          ...messages.map(m => {
+            let { type } = m;
+            if (m.upload_id && type === "chat") {
+              type = "file_comment";
             }
 
+            const msg = { ...m, type };
             const sameUser = msg.user.id === sequentialStart.user.id;
 
             if (
