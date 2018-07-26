@@ -1,5 +1,15 @@
 defmodule StitchEngage.Mobile.PushNotification do
-  alias Stitch.{Accounts.User, Group, GroupUser, Message, Mobile, Repo, Patient}
+  alias Stitch.{
+    Accounts.User,
+    Group,
+    GroupUser,
+    Message,
+    Mobile,
+    Repo,
+    Patient,
+    Engage.ConversationQueries
+  }
+
   alias Pigeon.{APNS, FCM}
   alias StitchEngage.Mobile.ConversationNotificationView
   import Ecto.Query
@@ -7,6 +17,28 @@ defmodule StitchEngage.Mobile.PushNotification do
   use Appsignal.Instrumentation.Decorators
 
   @apns_engage_topic Application.get_env(:stitch_web, :apns_engage_topic)
+
+  def notifications_for_conversation_message(conversation, conversation_message) do
+    patients = ConversationQueries.conversation_patients(conversation)
+
+    patients =
+      Enum.filter(
+        patients,
+        &(!(conversation_message.patient && &1.id == conversation_message.patient.id))
+      )
+
+    notify_patients(patients, conversation_message)
+
+    providers = ConversationQueries.conversation_providers(conversation)
+
+    providers =
+      Enum.filter(
+        providers,
+        &(!(conversation_message.provider && &1.id == conversation_message.provider.id))
+      )
+
+    notify_providers(providers, conversation_message)
+  end
 
   def apns_push(notification, opts \\ []) do
     push_fn = Application.get_env(:stitch_web, :apns_push, &APNS.push/2)
