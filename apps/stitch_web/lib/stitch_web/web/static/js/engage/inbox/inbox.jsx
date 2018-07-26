@@ -90,13 +90,16 @@ class InboxMenu extends Component {
     this.props.inboxStore.setCurrentInboxFilter(newFilter);
   };
 
-  renderLoading = () => {
-    const showSpinner = this.props.inboxStore.isLoadingConversationPage;
+  renderLoading = conversationsLength => {
+    const showLoading = this.props.inboxStore.isLoadingConversationPage;
 
     return (
-      <VisibilitySensor onChange={this.onBottomVisibilityChange}>
+      <VisibilitySensor
+        key={conversationsLength}
+        onChange={this.onBottomVisibilityChange}
+      >
         <div>
-          {showSpinner && (
+          {showLoading && (
             <div className="inbox-loading-conversations">
               {" "}
               Loading Conversations...{" "}
@@ -208,7 +211,7 @@ class InboxMenu extends Component {
               <h3>{this.props.loaded && emptyText}</h3>
             </div>
           )}
-          {this.renderLoading()}
+          {this.renderLoading(conversations.length)}
         </div>
       </Scrollbar>
     );

@@ -5,6 +5,8 @@
  */
 
 import { action, computed, extendObservable, observable } from "mobx";
+import { stringify } from "qs";
+import unionBy from "lodash/unionBy";
 
 // =============
 //   CONSTANTS
@@ -91,6 +93,9 @@ class PatientsStore {
   @observable modalOpen = false;
   @observable modalPatient = null;
   @observable currentModal = null;
+  @observable paginationMeta = {};
+  @observable skipModifier = 0;
+  @observable isLoadingPage = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -120,9 +125,18 @@ class PatientsStore {
 
   @action
   loadPatients = () => {
-    return get(`/api/v1/patients`).then(response => {
-      this.patients = response.data.patients;
-    });
+    this.isLoadingPage = true;
+
+    return get(`/api/v1/patients`)
+      .then(response => {
+        this.isLoadingPage = false;
+        this.paginationMeta = response.data.meta;
+        this.patients = response.data.patients;
+        this.addPatients(response.data.patients);
+      })
+      .catch(() => {
+        this.isLoadingPage = false;
+      });
   };
 
   @action
@@ -148,13 +162,35 @@ class PatientsStore {
   };
 
   @action
-  activatePatient = (id, params) => {
+  activatePatient = id => {
     return put(`/api/v1/patients/${id}/activate`, {});
   };
 
   @action
-  deactivatePatient = (id, params) => {
+  deactivatePatient = id => {
     return put(`/api/v1/patients/${id}/deactivate`, {});
+  };
+
+  @action
+  loadNextPatientPage = () => {
+    const url = "/api/v1/patients";
+
+    if (this.allPatientsLoaded) {
+      return;
+    }
+
+    const params = stringify({ skip: this.paginationSkip });
+    this.isLoadingPage = true;
+
+    get(`${url}?${params}`)
+      .then(response => {
+        this.isLoadingPage = false;
+        this.paginationMeta = response.data.meta;
+        this.addPatients(response.data.patients);
+      })
+      .catch(() => {
+        this.isLoadingPage = false;
+      });
   };
 
   // channel and api res handlers
@@ -170,25 +206,11 @@ class PatientsStore {
 
   @action
   onPatientAdded = patient => {
-    this.patients.push(patient);
+    this.incrementSkipModifier();
+    this.addPatients([patient]);
   };
 
   // filtering and sorting
-
-  @action
-  setPage = newPage => {
-    this.page = newPage;
-  };
-
-  @action
-  incPage = () => {
-    this.page = this.page + 1;
-  };
-
-  @action
-  decPage = () => {
-    this.page = this.page - 1;
-  };
 
   @action
   setOption = (optionName, val) => {
@@ -217,15 +239,33 @@ class PatientsStore {
     this.currentModal = null;
   };
 
-  // @action
-  // openModal = patientId => {
-  //   this.modalOpen = true;
-  //   this.modalPatientId = patientId;
-  // };
+  @action
+  addPatients = newPatients => {
+    this.patients = unionBy(newPatients, this.patients, p => p.id);
+  };
+
+  @action
+  incrementSkipModifier = () => {
+    this.skipModifier = this.skipModifier + 1;
+  };
 
   // ======================
   //   COMPUTED PROPERTIES
   // ======================
+
+  @computed
+  get allPatientsLoaded() {
+    return this.patients.length >= this.paginationMeta.count;
+  }
+
+  @computed
+  get paginationSkip() {
+    // If a patient is added outside the normal pagination flow,
+    // we do not want to factor them into the skip count for the
+    // next pagination call. We increment skipModifier whenever
+    // a patient is added outside the standard flow.
+    return this.patients.length - this.skipModifier;
+  }
 
   @computed
   get sortedAndFilteredPatients() {
