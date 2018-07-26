@@ -111,7 +111,6 @@ defmodule StitchEngage.Mobile.PushNotification do
       %{conversation_notification | provider_device: device}
       |> ConversationNotificationView.conversation_message_notification()
     end)
-    |> IO.inspect()
     |> apns_push(on_response: &handle_apns_push/1)
   end
 
@@ -125,7 +124,6 @@ defmodule StitchEngage.Mobile.PushNotification do
       %{conversation_notification | patient_device: device}
       |> ConversationNotificationView.conversation_message_notification()
     end)
-    |> IO.inspect()
     |> apns_push(on_response: &handle_apns_push/1, to: :apns_engage)
   end
 
@@ -137,7 +135,6 @@ defmodule StitchEngage.Mobile.PushNotification do
       when response in [:bad_device_token, :unregistered] do
     error = %{response: response, device_token: token, platform: "iOS"}
     Stitch.Mobile.NotificationLogger.response(notification)
-    # uncomment after test
     Mobile.remove_patient_device("ios", token)
   end
 

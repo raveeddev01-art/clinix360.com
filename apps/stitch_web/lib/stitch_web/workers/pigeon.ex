@@ -15,9 +15,9 @@ defmodule Stitch.Pigeon do
   def engage_apns_config do
     Pigeon.APNS.Config.new(
       name: :apns_engage,
-      mode: "ENGAGE_APNS_MODE" |> System.get_env() |> String.to_atom(),
-      cert: "ENGAGE_APNS_CERT_PATH" |> System.get_env(),
-      key: "ENGAGE_APNS_KEY_PATH" |> System.get_env(),
+      mode: (System.get_env("ENGAGE_APNS_MODE") || "prod") |> String.to_atom(),
+      cert: System.get_env("ENGAGE_APNS_CERT_PATH") || "",
+      key: System.get_env("ENGAGE_APNS_KEY_PATH") || "",
       reconnect: false,
       port: 2197,
       ping_period: 300_000
