@@ -468,13 +468,13 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       LinkPreviewGenerator.queue(conversation_message)
       update_patient_unread_conversations(conversation)
 
-      StitchEngage.Mobile.PushNotification.notification_for_conversation_message(
+      # Notifications: dispatch notifications, badge updates, and emails here
+      # (see message view for similar code)
+
+      StitchEngage.Web.ConversationMessageEventsService.conversation_message_creation_events(
         conversation,
         conversation_message
       )
-
-      # Notifications: dispatch notifications, badge updates, and emails here
-      # (see message view for similar code)
     end)
   end
 

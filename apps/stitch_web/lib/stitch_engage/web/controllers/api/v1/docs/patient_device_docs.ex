@@ -30,8 +30,6 @@ defmodule Stitch.Web.Api.V1.PatientDeviceDocs do
         end
 
         CommonParams.auth()
-
-        # response(200, "OK", Schema.ref(:PatientDevice))
       end
 
       swagger_path :delete do
@@ -60,8 +58,6 @@ defmodule Stitch.Web.Api.V1.PatientDeviceDocs do
             required: true
           )
         end
-
-        # response(200, "OK", Schema.ref(:PatientDeviceUnregistered))
       end
     end
   end

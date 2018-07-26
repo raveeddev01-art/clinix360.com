@@ -176,4 +176,8 @@ defmodule Stitch.Patient do
     |> put_change(:confirmation_code, confirmation_code)
     |> put_change(:token, token)
   end
+
+  @spec is_active?(Patient.t()) :: boolean
+  def is_active?(%Patient{disabled: false, onboarded: true}), do: true
+  def is_active?(_patient), do: false
 end

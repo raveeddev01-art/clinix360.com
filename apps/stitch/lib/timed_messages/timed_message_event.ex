@@ -4,7 +4,7 @@ defmodule Stitch.TimedMessage.Event do
   """
 
   alias Stitch.TimedMessage.Worker
-  alias Stitch.{Accounts.User, Invitation}
+  alias Stitch.{Accounts.User, Invitation, Patient, Stitch.Engage.ConversationMessage}
 
   @doc """
   Enqueues jobs to message team owner.
@@ -68,6 +68,34 @@ defmodule Stitch.TimedMessage.Event do
         type: "invite_reminder",
         data: %{invitation_id: invitation.id},
         time: in_days(4)
+      }
+    ])
+  end
+
+  @spec new_conversation_message_for_patient(Patient.t(), ConversationMessage.t()) :: :ok
+  def new_conversation_message_for_patient(receiving_patient, conversation_message) do
+    enqueue_messages([
+      %{
+        type: "new_conversation_message_for_patient",
+        data: %{
+          receiving_patient_id: receiving_patient.id,
+          conversation_message_id: conversation_message.id
+        },
+        time: 0
+      }
+    ])
+  end
+
+  @spec new_conversation_message_for_provider(User.t(), ConversationMessage.t()) :: :ok
+  def new_conversation_message_for_provider(receiving_provider, conversation_message) do
+    enqueue_messages([
+      %{
+        type: "new_conversation_message_for_provider",
+        data: %{
+          receiving_provider_id: receiving_provider.id,
+          conversation_message_id: conversation_message.id
+        },
+        time: 0
       }
     ])
   end

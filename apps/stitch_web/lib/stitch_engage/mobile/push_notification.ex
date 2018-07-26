@@ -18,25 +18,11 @@ defmodule StitchEngage.Mobile.PushNotification do
 
   @apns_engage_topic Application.get_env(:stitch_web, :apns_engage_topic)
 
-  def notifications_for_conversation_message(conversation, conversation_message) do
-    patients = ConversationQueries.conversation_patients(conversation)
-
-    patients =
-      Enum.filter(
-        patients,
-        &(!(conversation_message.patient && &1.id == conversation_message.patient.id))
-      )
-
+  def notifications_for_conversation_message(conversation_message, %{
+        patients: patients,
+        providers: providers
+      }) do
     notify_patients(patients, conversation_message)
-
-    providers = ConversationQueries.conversation_providers(conversation)
-
-    providers =
-      Enum.filter(
-        providers,
-        &(!(conversation_message.provider && &1.id == conversation_message.provider.id))
-      )
-
     notify_providers(providers, conversation_message)
   end
 
@@ -139,10 +125,10 @@ defmodule StitchEngage.Mobile.PushNotification do
       %{conversation_notification | patient_device: device}
       |> ConversationNotificationView.conversation_message_notification()
     end)
+    |> IO.inspect()
     |> apns_push(on_response: &handle_apns_push/1, to: :apns_engage)
   end
 
-  # apns push response handlers.
   def handle_apns_push(%{response: :success} = notification) do
     Stitch.Mobile.NotificationLogger.response(notification)
   end
@@ -151,7 +137,7 @@ defmodule StitchEngage.Mobile.PushNotification do
       when response in [:bad_device_token, :unregistered] do
     error = %{response: response, device_token: token, platform: "iOS"}
     Stitch.Mobile.NotificationLogger.response(notification)
-    # uncomment atter test
+    # uncomment after test
     Mobile.remove_patient_device("ios", token)
   end
 

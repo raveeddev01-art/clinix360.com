@@ -150,4 +150,8 @@ defmodule Stitch.Engage.ConversationMessage do
     |> Repo.transaction()
     |> Audit.ConversationMessage.track_delete(user)
   end
+
+  def get_author(conversation_message) do
+    conversation_message.patient || conversation_message.provider
+  end
 end
