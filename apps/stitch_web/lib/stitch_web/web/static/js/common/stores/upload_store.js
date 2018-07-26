@@ -175,7 +175,7 @@ class UploadStore {
     })
       .then(url => {
         this.uploadProgress.set(key, "done");
-        return post(apiUrl, {
+        return post(`${this.rootStore.apiBasePath}${apiUrl}`, {
           body: {
             message: {
               type: "upload",
