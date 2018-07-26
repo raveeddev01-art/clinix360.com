@@ -136,7 +136,7 @@ class EditablePatientAttribute extends Component {
                 <FormControl
                   autoFocus
                   name={attrName}
-                  type="text"
+                  type={attrName === "email" ? "email" : "text"}
                   value={attrVal}
                   onChange={this._onChangePhone}
                   onKeyDown={this.onKeyDown}
