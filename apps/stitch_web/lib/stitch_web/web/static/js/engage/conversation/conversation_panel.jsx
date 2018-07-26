@@ -14,11 +14,12 @@ class ConversationPanel extends Component {
     return (
       <div id="chat-container">
         <Topbar asPatient={asPatient} />
-        <MessageList asPatient={asPatient} />
+        <MessageList />
         <div className="flex-footer">
           <MessageForm
             asPatient={asPatient}
             messageStore={conversationMessageStore}
+            allowMention={false}
             allowTypingUsers={false}
             allowJumpingIndicator={false}
           />

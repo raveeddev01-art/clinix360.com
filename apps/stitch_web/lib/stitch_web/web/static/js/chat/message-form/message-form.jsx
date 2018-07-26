@@ -98,7 +98,7 @@ class MessageForm extends Component {
   };
 
   onKeyUp = evt => {
-    const { messageStore } = this.props;
+    const { messageStore, allowMention } = this.props;
     const { messageInEdit } = messageStore;
     const { openMentionMenu, openEmojiSearch } = this.state;
 
@@ -131,11 +131,13 @@ class MessageForm extends Component {
 
       switch (firstLetter) {
         case "@":
-          this.setState({
-            searchFilter: filter,
-            openMentionMenu: true,
-            openEmojiSearch: false
-          });
+          if (allowMention) {
+            this.setState({
+              searchFilter: filter,
+              openMentionMenu: true,
+              openEmojiSearch: false
+            });
+          }
           break;
 
         case ":":
@@ -306,7 +308,11 @@ class MessageForm extends Component {
   };
 
   renderInput() {
-    const { messageStore: { messageInEdit }, socketStore } = this.props;
+    const {
+      messageStore: { messageInEdit },
+      socketStore,
+      allowMention
+    } = this.props;
     const { isFocused } = this.state;
 
     const text = this.getText();
@@ -346,9 +352,11 @@ class MessageForm extends Component {
           }}
         />
         <div className="message-form-actions">
-          <a className="message-form-action-item" onClick={this.startMention}>
-            <i className="fa fa-at" />
-          </a>
+          {allowMention && (
+            <a className="message-form-action-item" onClick={this.startMention}>
+              <i className="fa fa-at" />
+            </a>
+          )}
           <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>

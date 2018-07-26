@@ -39,6 +39,9 @@ class ConversationMessageStore extends BaseMessageStore {
   // Actions
   // ===========================
 
+  // TODO remove encodeMessage for encoding mentions
+  encodeMessage = text => text;
+
   sendMessage = (text, additionalFields = {}) => {
     // @TODO handle optimistic UI
     const messageText = this.encodeMessage(text);
