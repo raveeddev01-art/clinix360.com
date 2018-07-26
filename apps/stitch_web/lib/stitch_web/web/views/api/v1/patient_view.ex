@@ -42,7 +42,7 @@ defmodule Stitch.Web.Api.V1.PatientView do
     %{
       id: patient.id,
       avatar_thumb: patient.profile_image_thumb_url,
-      avatar: patient.profile_image_thumb_url,
+      avatar: patient.profile_image_url,
       disabled: patient.disabled,
       email: patient.email,
       first_name: patient.first_name,
