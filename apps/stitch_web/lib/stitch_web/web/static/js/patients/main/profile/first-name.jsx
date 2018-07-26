@@ -126,7 +126,7 @@ class FirstName extends Component {
                   onChange={this._onChangeFirstName}
                   onKeyDown={this.onKeyDown}
                   onFocus={this._onFocus}
-                  onBlur={() => setTimeout(this._onBlur, 100)}
+                  onBlur={() => setTimeout(this._onBlur, 200)}
                   style={{
                     minWidth: "40px",
                     width: (firstName.length + 1) * 12 + "px",
