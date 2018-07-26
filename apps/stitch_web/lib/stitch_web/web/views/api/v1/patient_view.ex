@@ -1,9 +1,10 @@
 defmodule Stitch.Web.Api.V1.PatientView do
   use Stitch.Web, :view
-  alias Stitch.PatientQueries
+  alias Stitch.{PatientQueries, Paginator}
 
-  def render("index.json", %{patients: patients}) do
-    Enum.map(patients, &patient_json/1)
+  def render("index.json", %Paginator{data: data, meta: meta}) do
+    patients_json = Enum.map(data, &patient_json/1)
+    %{patients: patients_json, meta: meta}
   end
 
   def render("show.json", %{patient: patient}) do

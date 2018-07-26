@@ -46,6 +46,50 @@
         "description": "As a user, get credentials to upload a file given a name and mimetype.."
       }
     },
+    "/api/v1/patients": {
+      "get": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "limit the amount of returned records"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "skip",
+            "in": "query",
+            "description": "skip the given number of records"
+          }
+        ],
+        "operationId": "Stitch.Web.Api.V1.PatientController.index",
+        "description": "Returns a paginated list of patients for a team"
+      }
+    },
     "/api/v1/patient_conversations/{patient_id}": {
       "get": {
         "tags": [

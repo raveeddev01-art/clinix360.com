@@ -121,7 +121,7 @@ class PatientsStore {
   @action
   loadPatients = () => {
     return get(`/api/v1/patients`).then(response => {
-      this.patients = response.data;
+      this.patients = response.data.patients;
     });
   };
 
