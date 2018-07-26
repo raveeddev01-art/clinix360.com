@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
+import cx from "classnames";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -81,7 +82,6 @@ class EditablePatientAttribute extends Component {
     const id = this.props.patientsStore.currentPatient.id;
 
     if (isRequired && attrVal === "") {
-      console.log("is empty");
       return this.setState({
         hasError: true,
         errorMessage: `${attrDisplayName} can't be blank.`
@@ -111,11 +111,15 @@ class EditablePatientAttribute extends Component {
     });
   };
 
-  _onChangePhone = evt => this.setState({ attrVal: evt.target.value });
+  _onChange = evt => this.setState({ attrVal: evt.target.value });
 
   render() {
     const { attrDisplayName, attrName, buttonText, patientsStore } = this.props;
     const { attrVal, isEditing, hasError, errorMessage } = this.state;
+
+    const inputClass = cx({
+      hasError
+    });
 
     return (
       <Row className="profile-row">
@@ -138,13 +142,14 @@ class EditablePatientAttribute extends Component {
                   name={attrName}
                   type={attrName === "email" ? "email" : "text"}
                   value={attrVal}
-                  onChange={this._onChangePhone}
+                  className={inputClass}
+                  onChange={this._onChange}
                   onKeyDown={this.onKeyDown}
                   onFocus={this._onFocus}
                   onBlur={() => setTimeout(this._onBlur, 150)}
                   style={{
-                    minWidth: "40px",
-                    width: (attrVal.length + 1) * 12 + "px",
+                    minWidth: "60px",
+                    width: (attrVal.length + 2) * 12 + "px",
                     maxWidth: "100%"
                   }}
                 />

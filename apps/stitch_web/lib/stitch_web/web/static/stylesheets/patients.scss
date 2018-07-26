@@ -296,6 +296,10 @@ $patients-header-height: 60px;
           border: 2px solid $brand-primary;
           box-shadow: none;
           padding: 6px 12px;
+
+          &.hasError {
+            border-color: #d04437;
+          }
         }
 
         .help-block {
