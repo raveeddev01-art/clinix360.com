@@ -5,7 +5,12 @@ defmodule StitchEngage.Web.ConversationMessageEventsService do
   }
 
   def conversation_message_creation_events(conversation, conversation_message) do
-    receivers_set = receivers(conversation, conversation_message)
+    # conversation = Stitch.Repo.get(Stitch.Engage.Conversation, conversation.id)
+
+    # conversation =
+    #   Stitch.Repo.preload(conversation, [:providers, :patients], force: true) |> IO.inspect()
+
+    receivers_set = receivers(conversation, conversation_message) |> IO.inspect()
 
     StitchEngage.Mobile.PushNotification.notifications_for_conversation_message(
       conversation_message,
