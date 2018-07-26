@@ -77,6 +77,7 @@ class EditablePatientAttribute extends Component {
       attrDisplayName,
       attrName,
       validateName,
+      validatePhone,
       isRequired
     } = this.props;
     const id = this.props.patientsStore.currentPatient.id;
@@ -96,13 +97,23 @@ class EditablePatientAttribute extends Component {
     }
 
     if (validateName && isValidUnicodeString(attrVal)) {
-      return patientsStore.saveAttribute(attrName)(id, attrVal)
+      return patientsStore.saveAttribute(attrName)(id, attrVal).then(() => {
+        this.setState({ hasError: false, isEditing: false });
+      });
+    }
+
+    if (validatePhone) {
+      return post(`/api/v1/users/validate-phone-number`, {
+        body: { phone_number: attrVal },
+        hideNotify: true
+      })
         .then(() => {
-          this.setState({ hasError: false });
-          this.setState({ isEditing: false });
+          return patientsStore.saveAttribute(attrName)(id, attrVal).then(() => {
+            this.setState({ hasError: false, isEditing: false });
+          });
         })
-        .catch(() => {
-          this.setState({ isEditing: false });
+        .catch(err => {
+          this.setState({ hasError: true, errorMessage: err.data.message });
         });
     }
 
@@ -170,15 +181,17 @@ class EditablePatientAttribute extends Component {
 
 EditablePatientAttribute.defaultProps = {
   validateName: false,
+  validatePhone: false,
   isRequired: false
 };
 
 EditablePatientAttribute.propTypes = {
-  validateName: PropTypes.bool,
-  isRequired: PropTypes.bool,
   attrName: PropTypes.string.isRequired,
   attrDisplayName: PropTypes.string.isRequired,
-  buttonText: PropTypes.string.isRequired
+  buttonText: PropTypes.string.isRequired,
+  validateName: PropTypes.bool,
+  validatePhone: PropTypes.bool,
+  isRequired: PropTypes.bool
 };
 
 export default EditablePatientAttribute;

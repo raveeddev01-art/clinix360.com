@@ -88,6 +88,7 @@ class Main extends Component {
               attrDisplayName="Last Name"
               attrName="last_name"
               buttonText="+ Add last name"
+              validateName
               isRequired
             />
             <EditablePatientAttribute
@@ -105,6 +106,7 @@ class Main extends Component {
               attrDisplayName="Phone"
               attrName="phone"
               buttonText="+ Add phone number"
+              validatePhone
             />
           </div>
 
