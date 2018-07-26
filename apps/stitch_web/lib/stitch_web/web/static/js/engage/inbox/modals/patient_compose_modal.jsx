@@ -9,7 +9,7 @@ import ComposeModal from "./compose_modal";
 @observer
 class PatientComposeModal extends Component {
   createConversation = state => {
-    return this.props.inboxStore.createConversationAsPatient({
+    return this.props.inboxStore.createConversation({
       subject: state.subject,
       text_content: state.message
     });

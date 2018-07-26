@@ -28,7 +28,7 @@ defmodule Stitch.Web.Api.V1.PatientControllerTest do
 
       assert response = json_response(conn, 200)
 
-      response_ids = response |> Enum.map(& &1["id"]) |> Enum.sort()
+      response_ids = response["patients"] |> Enum.map(& &1["id"]) |> Enum.sort()
       patient_ids = patients |> Enum.map(& &1.id) |> Enum.sort()
 
       assert response_ids == patient_ids

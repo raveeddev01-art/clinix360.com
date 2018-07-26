@@ -13,6 +13,26 @@ defmodule Stitch.Web.Api.V1.Docs.CommonParams do
       )
     end
   end
+
+  def pagination(path = %PathObject{}) do
+    parameters path do
+      limit(
+        :query,
+        :integer,
+        "limit the amount of returned records",
+        required: false,
+        example: 10
+      )
+
+      skip(
+        :query,
+        :integer,
+        "skip the given number of records",
+        required: false,
+        example: 10
+      )
+    end
+  end
 end
 
 defmodule Stitch.Web.Api.V1.Docs do
@@ -366,6 +386,7 @@ defmodule Stitch.Web.Api.V1.Docs do
                 )
 
                 redirect_url(:string)
+                unread_conversations_count(:integer)
                 token(:string)
                 patient(Schema.ref(:Patient))
               end

@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
 
-@inject("messageStore")
-@observer
 class EditingCommand extends Component {
   finishEdit = () => {
     const { messageStore } = this.props;

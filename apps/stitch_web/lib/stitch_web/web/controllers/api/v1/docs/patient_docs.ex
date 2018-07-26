@@ -4,6 +4,17 @@ defmodule Stitch.Web.Api.V1.PatientDocs do
 
   defmacro __using__(_) do
     quote do
+      swagger_path :index do
+        get("/api/v1/patients")
+        produces("application/json")
+        description("Returns a paginated list of patients for a team")
+
+        CommonParams.auth()
+        CommonParams.pagination()
+
+        response(200, "OK")
+      end
+
       swagger_path :exists do
         post("/api/v1/patient/exists")
         produces("application/json")

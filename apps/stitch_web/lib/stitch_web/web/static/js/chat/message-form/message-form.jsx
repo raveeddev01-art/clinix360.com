@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
@@ -15,13 +16,7 @@ import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 
-@inject(
-  "messageStore",
-  "socketStore",
-  "uploadStore",
-  "billingStore",
-  "sidemenuStore"
-)
+@inject("socketStore", "uploadStore", "billingStore", "sidemenuStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -29,8 +24,8 @@ class MessageForm extends Component {
 
     this.state = {
       text: "",
-      openMentionMenu: false,
       searchFilter: "",
+      openMentionMenu: false,
       openEmojiSearch: false,
       isFocused: true
     };
@@ -103,7 +98,7 @@ class MessageForm extends Component {
   };
 
   onKeyUp = evt => {
-    const { messageStore } = this.props;
+    const { messageStore, allowMention } = this.props;
     const { messageInEdit } = messageStore;
     const { openMentionMenu, openEmojiSearch } = this.state;
 
@@ -136,11 +131,13 @@ class MessageForm extends Component {
 
       switch (firstLetter) {
         case "@":
-          this.setState({
-            searchFilter: filter,
-            openMentionMenu: true,
-            openEmojiSearch: false
-          });
+          if (allowMention) {
+            this.setState({
+              searchFilter: filter,
+              openMentionMenu: true,
+              openEmojiSearch: false
+            });
+          }
           break;
 
         case ":":
@@ -155,7 +152,7 @@ class MessageForm extends Component {
           break;
       }
 
-      if (evt.keyCode !== 13) {
+      if (evt.keyCode !== 13 && this.props.allowTypingUsers) {
         this.typingStarted();
       }
     }
@@ -311,7 +308,12 @@ class MessageForm extends Component {
   };
 
   renderInput() {
-    const { messageStore: { messageInEdit }, socketStore } = this.props;
+    const {
+      messageStore: { messageInEdit },
+      socketStore,
+      allowMention
+    } = this.props;
+    const { isFocused } = this.state;
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
@@ -320,7 +322,7 @@ class MessageForm extends Component {
     });
 
     const inputWrapperClass = classNames("message-input-wrapper", {
-      isFocused: this.state.isFocused || messageInEdit
+      isFocused: isFocused || messageInEdit
     });
 
     return (
@@ -350,9 +352,11 @@ class MessageForm extends Component {
           }}
         />
         <div className="message-form-actions">
-          <a className="message-form-action-item" onClick={this.startMention}>
-            <i className="fa fa-at" />
-          </a>
+          {allowMention && (
+            <a className="message-form-action-item" onClick={this.startMention}>
+              <i className="fa fa-at" />
+            </a>
+          )}
           <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>
@@ -360,19 +364,28 @@ class MessageForm extends Component {
   }
 
   render() {
-    const { searchFilter, openMentionMenu, openEmojiSearch } = this.state;
+    const { searchFilter, openMentionMenu, openEmojiSearch, text } = this.state;
+    const {
+      allowTypingUsers,
+      allowMention,
+      allowJumpingIndicator,
+      messageStore,
+      currentGroup
+    } = this.props;
 
     return (
       <div className="message-form">
-        <JumpingIndicator />
+        {allowJumpingIndicator && <JumpingIndicator />}
 
-        {openMentionMenu && (
-          <MentionMenu
-            filter={searchFilter}
-            onSelect={this.onSelectMention}
-            onClose={this.onCloseMentionMenu}
-          />
-        )}
+        {allowMention &&
+          openMentionMenu && (
+            <MentionMenu
+              currentGroup={currentGroup}
+              filter={searchFilter}
+              onSelect={this.onSelectMention}
+              onClose={this.onCloseMentionMenu}
+            />
+          )}
 
         {openEmojiSearch && (
           <EmojiSearch filter={searchFilter} onSelect={this.onSelectEmoji} />
@@ -380,18 +393,32 @@ class MessageForm extends Component {
 
         {this.renderInput()}
 
-        {this.state.text &&
-          this.state.text.length < 4000 && <FormattingGuide />}
-        {this.state.text.length > 3999 && (
+        {text && text.length < 4000 && <FormattingGuide />}
+        {text.length > 3999 && (
           <div className="character-limit">
             You have reached the 4000 character limit per message.
           </div>
         )}
-        <TypingUsers />
-        <EditingCommand />
+        {allowTypingUsers && <TypingUsers />}
+        <EditingCommand messageStore={messageStore} />
       </div>
     );
   }
 }
+
+MessageForm.propTypes = {
+  messageStore: PropTypes.object.isRequired,
+  allowTypingUsers: PropTypes.bool,
+  allowMention: PropTypes.bool,
+  allowJumpingIndicator: PropTypes.bool,
+  currentGroup: PropTypes.object
+};
+
+MessageForm.defaultProps = {
+  allowTypingUsers: true,
+  allowMention: true,
+  allowJumpingIndicator: true,
+  currentGroup: null
+};
 
 export default MessageForm;

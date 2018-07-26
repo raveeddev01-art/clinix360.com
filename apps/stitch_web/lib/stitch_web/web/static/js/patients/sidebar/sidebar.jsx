@@ -8,7 +8,9 @@ import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
+import VisibilitySensor from "react-visibility-sensor";
 
+import Scrollbar from "common/components/scrollbar";
 import Patient from "./patient";
 import AddPatientModal from "../../engage/inbox/modals/add_patient_modal";
 
@@ -21,6 +23,14 @@ class Sidebar extends Component {
 
   onPatientModalClick = () => {
     this.showAddPatientModal();
+  };
+
+  onBottomVisibilityChange = isVisible => {
+    const { allPatientsLoaded, isLoadingPage } = this.props.patientsStore;
+
+    if (isVisible && !allPatientsLoaded && !isLoadingPage) {
+      this.props.patientsStore.loadNextPatientPage();
+    }
   };
 
   get currentModal() {
@@ -44,6 +54,24 @@ class Sidebar extends Component {
       <Modal className="inbox-modal" show onHide={this.closeModal}>
         <AddPatientModal closeModal={this.closeModal} />
       </Modal>
+    );
+  };
+
+  renderLoading = () => {
+    const showLoading = this.props.patientsStore.isLoadingPage;
+    const visibilityKey = this.props.patientsStore.patients.length;
+
+    return (
+      <VisibilitySensor
+        key={visibilityKey}
+        onChange={this.onBottomVisibilityChange}
+      >
+        <div>
+          {showLoading && (
+            <div className="loading-patients"> Loading Patients... </div>
+          )}
+        </div>
+      </VisibilitySensor>
     );
   };
 
@@ -72,13 +100,21 @@ class Sidebar extends Component {
           </div>
         </div>
 
-        <div className="flex-content">
-          <ul className="list-unstyled patients-list">
-            {patientsStore.patientsForPage.map((patient, i) => (
-              <Patient key={`patient_${i}`} patient={patient} />
-            ))}
-          </ul>
-        </div>
+        <Scrollbar
+          className="scrollbar"
+          viewRef={ref => {
+            this.scrollbar = ref;
+          }}
+        >
+          <div className="flex-content">
+            <ul className="list-unstyled patients-list">
+              {patientsStore.patientsForPage.map((patient, i) => (
+                <Patient key={`patient_${i}`} patient={patient} />
+              ))}
+              {this.renderLoading()}
+            </ul>
+          </div>
+        </Scrollbar>
 
         {this.isShowing && this.renderModal()}
       </div>

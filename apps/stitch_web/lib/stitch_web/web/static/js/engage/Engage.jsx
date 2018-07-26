@@ -11,18 +11,18 @@ import LoadingPanel from "./LoadingPanel";
 @observer
 class Engage extends Component {
   componentWillMount() {
-    this.openConversation(this.props.match.params.id);
+    this.loadConversation(this.props.match.params.id);
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.match.params.id !== nextProps.match.params.id) {
-      this.openConversation(nextProps.match.params.id);
+      this.loadConversation(nextProps.match.params.id);
     }
   }
 
-  openConversation(params) {
+  loadConversation(params) {
     const { inboxStore } = this.props;
-    inboxStore.openConversation(params);
+    inboxStore.loadConversation(params);
   }
 
   render() {
@@ -34,7 +34,7 @@ class Engage extends Component {
           <title>{`${teamStore.name} | Stitch Engage`}</title>
         </Helmet>
 
-        <InboxMenu />
+        {inboxStore.messagesLoaded && <InboxMenu />}
 
         <div id="main">
           <div className="flex-content">

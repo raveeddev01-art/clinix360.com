@@ -103,6 +103,9 @@
       "type": "object",
       "title": "PatientLogin",
       "properties": {
+        "unread_conversations_count": {
+          "type": "integer"
+        },
         "token": {
           "type": "string"
         },

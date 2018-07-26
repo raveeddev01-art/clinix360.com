@@ -79,4 +79,15 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
 
   def type("file_share"), do: "upload"
   def type(type), do: type
+
+  def render("search.json", %Stitch.Paginator{data: data, meta: meta}) do
+    %{
+      data:
+        Enum.map(data, fn record ->
+          json = conversation_message_json(record)
+          Map.put(json, :highlighted_text_content, record.highlighted_text_content)
+        end),
+      meta: meta
+    }
+  end
 end

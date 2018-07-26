@@ -29,8 +29,13 @@ import IntegrationStore from "./integration_store";
 import NewsStore from "./news_store";
 import PatientsStore from "./patients_store";
 import InboxStore from "./inbox_store";
+import ConversationMessageStore from "./conversation_message_store";
 
 class RootStore {
+  get apiBasePath() {
+    return "/api/v1";
+  }
+
   constructor(props) {
     this.appParams = Object.assign({}, props);
 
@@ -71,6 +76,7 @@ class RootStore {
     this.newsStore = new NewsStore(this);
     this.patientsStore = new PatientsStore(this);
     this.inboxStore = new InboxStore(this);
+    this.conversationMessageStore = new ConversationMessageStore(this);
   }
 
   onStoreInit() {

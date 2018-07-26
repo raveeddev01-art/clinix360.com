@@ -12,17 +12,27 @@ class MessageHeader extends Component {
   };
 
   render() {
-    const { timestamp, user, children, disabledMenu } = this.props;
+    const {
+      timestamp,
+      user,
+      children,
+      disabledMenu,
+      isConversationMessage
+    } = this.props;
 
     return (
       <div className="message-header">
-        <UserProfileMenu
-          user={user}
-          className="name"
-          disabledMenu={disabledMenu}
-        >
-          {user && this._renderName(user)}
-        </UserProfileMenu>
+        {isConversationMessage ? (
+          <span className="name">{user.full_name}</span>
+        ) : (
+          <UserProfileMenu
+            user={user}
+            className="name"
+            disabledMenu={disabledMenu}
+          >
+            {this._renderName(user)}
+          </UserProfileMenu>
+        )}
         <TimestampTooltip timestamp={timestamp} className="time" />
         {children}
       </div>
@@ -37,12 +47,14 @@ MessageHeader.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  disabledMenu: PropTypes.bool
+  disabledMenu: PropTypes.bool,
+  isConversationMessage: PropTypes.bool
 };
 
 MessageHeader.defaultProps = {
   children: null,
-  disabledMenu: false
+  disabledMenu: false,
+  isConversationMessage: false
 };
 
 export default MessageHeader;
