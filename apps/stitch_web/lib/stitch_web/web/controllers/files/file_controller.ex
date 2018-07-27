@@ -11,6 +11,7 @@ defmodule Stitch.Web.Files.FileController do
     Files.FileAuthorization,
     Files.EngageFileAuthorization,
     Patient,
+    PatientQueries,
     Web.UrlService
   }
 
