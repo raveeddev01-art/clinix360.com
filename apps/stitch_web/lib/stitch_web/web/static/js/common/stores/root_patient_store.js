@@ -7,6 +7,7 @@ import SocketStore from "./socket_store";
 import TeamStore from "./team_store";
 import PatientsStore from "./patients_store";
 import UploadStore from "./upload_store";
+import DesktopStore from "./desktop_store";
 
 class RootPatientStore {
   get apiBasePath() {
@@ -32,6 +33,7 @@ class RootPatientStore {
     this.inboxStore = new InboxStore(this);
     this.patientsStore = new PatientsStore(this);
     this.uploadStore = new UploadStore(this);
+    this.desktopStore = new DesktopStore(this);
     this.addonStore = {};
     this.billingStore = {};
     this.groupsStore = {};

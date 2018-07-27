@@ -84,11 +84,11 @@ class MessageContent extends Component {
   };
 
   renderFileLink = () => {
-    const { message } = this.props;
+    const { message, isConversationMessage } = this.props;
     return (
       <div>
         <span className="text-muted">commented on </span>
-        <a onClick={this.onCommentsClick}>
+        <a onClick={isConversationMessage ? null : this.onCommentsClick}>
           <strong>{message.fields && message.fields.filename}</strong>
         </a>
       </div>
@@ -96,7 +96,7 @@ class MessageContent extends Component {
   };
 
   render() {
-    const { inSearch, message, user } = this.props;
+    const { inSearch, message, user, isConversationMessage } = this.props;
     const textContent = inSearch
       ? message.highlighted_text_content || message.text_content
       : message.text_content;
@@ -126,7 +126,11 @@ class MessageContent extends Component {
             message={message}
             user_id={user.id}
             file_id={message.upload_id}
-            onCommentsClick={this.onCommentsClick}
+            isActionsVisible={isConversationMessage ? false : undefined}
+            isOriginalOpenVisible={isConversationMessage ? false : undefined}
+            onCommentsClick={
+              isConversationMessage ? null : this.onCommentsClick
+            }
           />
         )}
         <div className="message-body">
@@ -150,13 +154,15 @@ class MessageContent extends Component {
 }
 
 MessageContent.defaultProps = {
-  inSearch: false
+  inSearch: false,
+  isConversationMessage: false
 };
 
 MessageContent.propTypes = {
   inSearch: PropTypes.bool,
   user: PropTypes.any.isRequired,
   message: PropTypes.any.isRequired,
+  isConversationMessage: PropTypes.bool.isRequired,
   messageStore: PropTypes.object.isRequired
 };
 
