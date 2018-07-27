@@ -56,9 +56,8 @@ class DefaultFileAttachment extends Component {
                 public_url={public_url}
                 message={message}
                 commentCount={commentCount}
-                isActionsVisible={false}
-                isDownloadVisible
-                isOriginalOpenVisible={false}
+                isActionsVisible={isConversationMessage ? false : undefined}
+                isOriginalOpenVisible={isConversationMessage ? false : undefined}
                 onCommentsClick={onCommentsClick}
                 onFileDownload={onFileDownload}
               />
