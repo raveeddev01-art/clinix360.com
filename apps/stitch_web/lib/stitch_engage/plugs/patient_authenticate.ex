@@ -37,7 +37,7 @@ defmodule Stitch.Web.Plug.PatientAuthenticate do
 
   def call(conn, [:browser]) do
     with {:token, token} when not is_nil(token) <-
-           {:token, ControllerHelpers.get_patient_session_token(conn)},
+           {:token, Stitch.Web.SessionService.get_patient_session_token(conn)},
          %Patient{} = patient <- PatientQueries.get_by_token(token),
          {:feature_on, true} <- {:feature_on, FeatureGateway.enabled?(patient.team, "engage")} do
       conn
