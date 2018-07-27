@@ -39,6 +39,7 @@ class RootPatientStore {
     this.groupsStore = {};
     this.sidemenuStore = {};
     this.teamFileStore = {};
+    this.messageStore = {};
     this.usersStore = {};
   }
 
