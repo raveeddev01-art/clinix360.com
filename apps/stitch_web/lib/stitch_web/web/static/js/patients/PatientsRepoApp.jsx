@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
-import { Switcher, AppAlert } from "common/components";
-import Sidebar from "./sidebar";
+import { Switcher, Loading, AppAlert } from "common/components";
 
 import PatientsRepo from "./PatientsRepo";
 
-@inject("titleStore")
+@inject("titleStore", "patientsStore")
 @observer
 class PatientsRepoApp extends Component {
   componentWillMount() {
@@ -17,7 +16,12 @@ class PatientsRepoApp extends Component {
   }
 
   render() {
-    const { titleStore } = this.props;
+    const { titleStore, patientsStore } = this.props;
+    // const { firstPatientId } = patientsStore;
+
+    if (!patientsStore.initialLoadDone) {
+      return <Loading />;
+    }
 
     return (
       <div id="app">
@@ -31,7 +35,7 @@ class PatientsRepoApp extends Component {
 
           <Switch>
             <Route path="/patients/:id" component={PatientsRepo} />
-            <Redirect from="*" to="/patients/1" />
+            <Route path="/patients" component={PatientsRepo} />
           </Switch>
         </div>
       </div>

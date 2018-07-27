@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import { Switch, Redirect } from "react-router-dom";
 
 import Sidebar from "./sidebar/sidebar";
 import Topbar from "./main/topbar";
@@ -10,11 +11,14 @@ import PatientModal from "./PatientModal";
 @observer
 class PatientsRepo extends Component {
   componentWillMount() {
-    this.openPatient(this.props.match.params.id);
+    if (this.props.match.params.id) {
+      this.openPatient(this.props.match.params.id);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.match.params.id !== nextProps.match.params.id) {
+    const newId = this.props.match.params.id !== nextProps.match.params.id;
+    if (newId && nextProps.match.params.id) {
       this.openPatient(nextProps.match.params.id);
     }
   }
@@ -25,6 +29,19 @@ class PatientsRepo extends Component {
   }
 
   render() {
+    const { firstPatientId } = this.props.patientsStore;
+
+    if (!this.props.match.params.id) {
+      console.log("wat");
+      return (
+        // <Switch>
+        <Redirect from="*" to={`/patients/${firstPatientId}`} />
+        // </Switch>
+      );
+    }
+
+    console.log("jdfiewji - ", this.props.match.params.id);
+
     return (
       <div className="engage-wrapper patients-wrapper">
         <Sidebar />

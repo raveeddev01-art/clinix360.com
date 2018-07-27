@@ -96,6 +96,7 @@ class PatientsStore {
   @observable paginationMeta = {};
   @observable skipModifier = 0;
   @observable isLoadingPage = false;
+  @observable initialLoadDone = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -130,6 +131,7 @@ class PatientsStore {
     return get(`/api/v1/patients`)
       .then(response => {
         this.isLoadingPage = false;
+        this.initialLoadDone = true;
         this.paginationMeta = response.data.meta;
         this.patients = response.data.patients;
         this.addPatients(response.data.patients);
@@ -254,6 +256,12 @@ class PatientsStore {
   // ======================
 
   @computed
+  get firstPatientId() {
+    const patient = this.allSortedPatients[0];
+    return patient && patient.id;
+  }
+
+  @computed
   get allPatientsLoaded() {
     return this.patients.length >= this.paginationMeta.count;
   }
@@ -270,6 +278,11 @@ class PatientsStore {
   @computed
   get sortedAndFilteredPatients() {
     return this.patients.filter(this.patientsFilter).sort(this.patientsSorter);
+  }
+
+  @computed
+  get allSortedPatients() {
+    return this.patients.sort(this.patientsSorter);
   }
 
   @computed
