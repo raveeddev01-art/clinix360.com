@@ -73,13 +73,20 @@ class ChannelStore {
     const eventChannel = this.eventPatientChannel(patientId);
 
     eventChannel.on("new_app_version", this.disconnectAndReload);
+
     eventChannel.on(
       "conversation_created",
       inboxStore.onConversationCreateEvent
     );
+
     eventChannel.on(
       "conversation_updated",
       inboxStore.onConversationUpdateEvent
+    );
+
+    eventChannel.on(
+      "conversation_marked_as_read",
+      inboxStore.onMarkAsReadEvent
     );
 
     return joined;
@@ -87,11 +94,12 @@ class ChannelStore {
 
   joinEventChannel(options = {}) {
     const {
-      sidemenuStore,
       groupsStore,
+      inboxStore,
+      invitationStore,
       notificationStore,
       presenceStore,
-      invitationStore,
+      sidemenuStore,
       teamFileStore
     } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
@@ -127,6 +135,16 @@ class ChannelStore {
     this.eventChannel.on("new_app_version", this.disconnectAndReload);
     this.eventChannel.on("logout", presenceStore.onLogout);
 
+    this.eventChannel.on(
+      "conversation_marked_as_unread",
+      inboxStore.onConversationUpdateEvent
+    );
+
+    this.eventChannel.on(
+      "conversation_marked_as_read",
+      inboxStore.onMarkAsReadEvent
+    );
+
     return joined;
   }
 
@@ -144,6 +162,7 @@ class ChannelStore {
       "conversation_created",
       inboxStore.onConversationCreateEvent
     );
+
     inboxChannel.on(
       "conversation_updated",
       inboxStore.onConversationUpdateEvent
@@ -202,6 +221,7 @@ class ChannelStore {
       "reactions_updated",
       conversationMessageStore.onReactionUpdate
     );
+
     return joined;
   }
 

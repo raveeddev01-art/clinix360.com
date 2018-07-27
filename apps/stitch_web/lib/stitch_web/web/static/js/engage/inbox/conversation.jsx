@@ -70,6 +70,7 @@ class Conversation extends Component {
 
         <div className="item__content">
           <div className="heading">
+            {conversation.is_unread && <div className="item__unread_dot" />}
             <div className="user">{conversation.subject}</div>
 
             <div className={dateClass}>
