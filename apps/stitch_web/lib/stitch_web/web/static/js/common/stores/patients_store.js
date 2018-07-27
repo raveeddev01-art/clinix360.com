@@ -172,6 +172,23 @@ class PatientsStore {
   };
 
   @action
+  save = (id, data) => {
+    return put(`/api/v1/patients/${id}`, {
+      body: data,
+      hideNotify: true
+    });
+  };
+
+  @action
+  saveAttribute = attrName => (id, attrValue) => {
+    return this.save(id, {
+      [attrName]: attrValue
+    }).then(() => {
+      this.currentPatient[attrName] = attrValue;
+    });
+  };
+
+  @action
   loadNextPatientPage = () => {
     const url = "/api/v1/patients";
 

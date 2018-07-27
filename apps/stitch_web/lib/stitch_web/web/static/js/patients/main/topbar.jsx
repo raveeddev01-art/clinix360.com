@@ -16,11 +16,13 @@ class Topbar extends Component {
   };
 
   render() {
-    const { patientsStore } = this.props;
+    const { patientsStore: { currentPatient } } = this.props;
     return (
       <div className="topbar">
         <div className="header-text">
-          <h4>{patientsStore.currentPatient.full_name}</h4>
+          <h4>
+            {currentPatient.first_name} {currentPatient.last_name}
+          </h4>
         </div>
 
         <div className="header-nav">

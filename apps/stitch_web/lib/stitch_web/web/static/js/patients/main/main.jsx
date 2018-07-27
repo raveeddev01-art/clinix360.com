@@ -1,16 +1,66 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import moment from "moment";
 
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
+import Modal from "react-bootstrap/lib/Modal";
 
 import Scrollbar from "common/components/scrollbar";
+import ComposeModal from "./modals/compose-modal";
+import NoteModal from "./modals/note-modal";
+
+import EditablePatientAttribute from "./EditablePatientAttribute";
+import TimelineActions from "./TimelineActions";
 
 @inject("patientsStore")
 @observer
 class Main extends Component {
+  onComposeModalClick = () => {
+    this.props.patientsStore.setModal("compose");
+  };
+
+  onNoteModalClick = event => {
+    event.preventDefault();
+    // Hide Note modal until backend is available
+    // this.props.patientsStore.setModal("note");
+  };
+
+  get currentModal() {
+    return this.props.patientsStore.currentModal;
+  }
+
+  get isShowing() {
+    return this.currentModal === "compose" || this.currentModal === "note";
+  }
+
+  closeModal = () => {
+    this.props.patientsStore.closeModal();
+  };
+
+  renderModalBody = () => {
+    const { patientsStore: { currentPatient } } = this.props;
+
+    if (this.currentModal === "note") {
+      return (
+        <NoteModal closeModal={this.closeModal} patient={currentPatient} />
+      );
+    }
+
+    return (
+      <ComposeModal closeModal={this.closeModal} patient={currentPatient} />
+    );
+  };
+
+  renderModal = () => {
+    return (
+      <Modal className="inbox-modal" show onHide={this.closeModal}>
+        {this.renderModalBody()}
+      </Modal>
+    );
+  };
+
   render() {
     const { patientsStore: { currentPatient } } = this.props;
+
     return (
       <div className="info-panel">
         <Scrollbar
@@ -19,44 +69,43 @@ class Main extends Component {
             this.scrollbar = ref;
           }}
         >
-          <h1>{currentPatient.full_name}</h1>
+          <h1>
+            {currentPatient.first_name} {currentPatient.last_name}
+          </h1>
 
           <h4>Profile</h4>
           <div className="card">
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">First Name</div>
-              </Col>
-              <Col sm={9}>{currentPatient.first_name}</Col>
-            </Row>
-
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">Last Name</div>
-              </Col>
-              <Col sm={9}>{currentPatient.last_name}</Col>
-            </Row>
-
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">MRN</div>
-              </Col>
-              <Col sm={9}>{currentPatient.mrn}</Col>
-            </Row>
-
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">Email</div>
-              </Col>
-              <Col sm={9}>{currentPatient.email}</Col>
-            </Row>
-
-            <Row className="profile-row">
-              <Col sm={3}>
-                <div className="text-muted">Phone</div>
-              </Col>
-              <Col sm={9}>{currentPatient.phone}</Col>
-            </Row>
+            <EditablePatientAttribute
+              attrDisplayName="First Name"
+              attrName="first_name"
+              buttonText="+ Add first name"
+              validateName
+              isRequired
+            />
+            <EditablePatientAttribute
+              attrDisplayName="Last Name"
+              attrName="last_name"
+              buttonText="+ Add last name"
+              validateName
+              isRequired
+            />
+            <EditablePatientAttribute
+              attrDisplayName="MRN"
+              attrName="mrn"
+              buttonText="+ Add MRN"
+              isRequired
+            />
+            <EditablePatientAttribute
+              attrDisplayName="Email"
+              attrName="email"
+              buttonText="+ Add email address"
+            />
+            <EditablePatientAttribute
+              attrDisplayName="Phone"
+              attrName="phone"
+              buttonText="+ Add phone number"
+              validatePhone
+            />
           </div>
 
           <h4>Timeline</h4>
@@ -70,18 +119,9 @@ class Main extends Component {
                 </div>
 
                 <div className="description">
-                  <a role="button" className="btn btn-default">
-                    Send Message
-                  </a>
-                  <a role="button" className="btn btn-default">
-                    Add Note
-                  </a>
-                  <a role="button" className="btn btn-default">
-                    Create Task
-                  </a>
-                  <a role="button" className="btn btn-default">
-                    Upload File
-                  </a>
+                  <TimelineActions
+                    onComposeModalClick={this.onComposeModalClick}
+                  />
                 </div>
               </div>
 
@@ -96,7 +136,10 @@ class Main extends Component {
                   </div>
 
                   <div className="content">
-                    <div className="action">Appoint requested</div>
+                    <div className="action-wrapper">
+                      <div className="action">Conversation started</div>
+                    </div>
+
                     <div className="text-muted">Started on May 30, 2018</div>
                   </div>
                 </div>
@@ -113,14 +156,24 @@ class Main extends Component {
                   </div>
 
                   <div className="content">
-                    <div className="action">Account created</div>
-                    <div className="text-muted">Created on May 19, 2018</div>
+                    <div className="action-wrapper">
+                      <div className="action">Account created</div>
+                    </div>
+                    <div className="text-muted">
+                      Created on{" "}
+                      {moment
+                        .utc(currentPatient.inserted_at)
+                        .local()
+                        .format("MMMM D, YYYY")}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </Scrollbar>
+
+        {this.isShowing && this.renderModal()}
       </div>
     );
   }
