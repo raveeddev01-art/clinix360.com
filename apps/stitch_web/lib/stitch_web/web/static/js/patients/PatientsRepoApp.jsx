@@ -4,7 +4,6 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
 import { Switcher, AppAlert } from "common/components";
-import Sidebar from "./sidebar";
 
 import PatientsRepo from "./PatientsRepo";
 
