@@ -62,6 +62,7 @@ defmodule Stitch.Files.EngageUpload do
   # Create EngageUpload
   # Create PatientUpload to connect with patient
   # Create ConversationMessage pointing to EngageUpload (copying fields)
+  #
   def create_and_share_with_patient(
         %User{} = provider,
         %Patient{} = patient,
@@ -69,10 +70,13 @@ defmodule Stitch.Files.EngageUpload do
         sender,
         attrs
       ) do
-    struct = %EngageUpload{provider_id: provider.id}
+    struct = %EngageUpload{provider_id: provider.id, team_id: provider.team_id}
+    fields = attrs["fields"] || %{}
+    {:ok, preview_metadata} = create_preview(fields)
+    fields = Map.merge(fields, preview_metadata)
 
     Multi.new()
-    |> Multi.insert(:engage_upload, new(struct, attrs["fields"]))
+    |> Multi.insert(:engage_upload, new(struct, fields))
     |> Multi.run(:patient_upload, fn %{engage_upload: engage_upload} ->
       PatientUpload.create(patient, engage_upload)
     end)
@@ -80,7 +84,8 @@ defmodule Stitch.Files.EngageUpload do
       params =
         Map.merge(attrs, %{
           "fields" => fields(engage_upload),
-          "type" => "upload"
+          "type" => "upload",
+          "engage_upload_id" => engage_upload.id
         })
 
       {:ok, %{conversation_message: conversation_message}} =
@@ -91,9 +96,9 @@ defmodule Stitch.Files.EngageUpload do
     |> Repo.transaction()
   end
 
-  def create_preview(_attrs, with_preview: false), do: {:ok, %{}}
+  # def create_preview(_attrs, with_preview: false), do: {:ok, %{}}
 
-  def create_preview(fields, _opts) do
+  def create_preview(fields) do
     case Thumb.create(fields) do
       {:ok, preview_metadata} ->
         {:ok, preview_metadata}
@@ -101,8 +106,8 @@ defmodule Stitch.Files.EngageUpload do
       {:error, "Unsupported type"} ->
         {:ok, %{}}
 
-      {:error, error} ->
-        {:ok, error}
+      {:error, _error} ->
+        {:ok, %{}}
     end
   end
 
@@ -111,12 +116,27 @@ defmodule Stitch.Files.EngageUpload do
     engage_upload
     |> Map.take(@attributes)
     |> Map.new(fn {k, v} -> {"#{k}", v} end)
-    |> Map.put("encoded_id", Upload.encode_url_id(engage_upload))
+    |> Map.put("encoded_id", EngageUpload.encode_url_id(engage_upload))
   end
 
   @spec delete(EngageUpload.t()) :: {:ok, EngageUpload.t()} | {:error, Ecto.Changeset.t()}
   def delete(%EngageUpload{} = engage_upload) do
     engage_upload
     |> Repo.delete()
+  end
+
+  @spec encode_url_id(EngageUpload.t()) :: String.t()
+  def encode_url_id(%EngageUpload{} = engage_upload) do
+    "e" <> Base.encode32("#{engage_upload.id}", case: :lower, padding: false)
+  end
+
+  @spec decode_url_id(String.t()) :: {:ok, integer} | :error
+  def decode_url_id("e" <> engage_upload_id) do
+    with {:ok, string_id} <- Base.decode32("#{engage_upload_id}", case: :lower, padding: false),
+         {int_id, _} <- Integer.parse(string_id) do
+      {:ok, int_id}
+    else
+      _ -> :error
+    end
   end
 end

@@ -2,6 +2,7 @@ defmodule Stitch.Files.Upload do
   alias Stitch.{
     Accounts.User,
     Files.Upload,
+    Files.EngageUpload,
     Files.UploadComment,
     Files.GroupUpload,
     Files.Thumb,
@@ -162,8 +163,8 @@ defmodule Stitch.Files.Upload do
     end
   end
 
-  @spec encode_url_id(struct) :: String.t()
-  def encode_url_id(upload) do
+  @spec encode_url_id(Upload.t()) :: String.t()
+  def encode_url_id(%Upload{} = upload) do
     "f" <> Base.encode32("#{upload.id}", case: :lower, padding: false)
   end
 
@@ -177,8 +178,8 @@ defmodule Stitch.Files.Upload do
     end
   end
 
-  @spec has_preview?(Upload.t()) :: boolean
-  def has_preview?(%Upload{} = upload) do
+  @spec has_preview?(Upload.t() | EngageUpload.t()) :: boolean
+  def has_preview?(upload) do
     !!(upload.preview_height && upload.preview_width && upload.preview_url)
   end
 
