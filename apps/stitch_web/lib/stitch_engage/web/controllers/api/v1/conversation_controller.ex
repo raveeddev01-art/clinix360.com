@@ -154,7 +154,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
            {:conversation, Repo.get(Conversation, id)},
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_update?(conversation, user)},
-         {:ok, updated_conversation} <- Conversation.update_open_value(conversation, open_value) do
+         {:ok, %Conversation{} = updated_conversation} <-
+           Conversation.update_open_value(conversation, open_value) do
       updated_conversation = conversation_with_show_data(updated_conversation, user)
 
       InboxChannel.broadcast_conversation_update(updated_conversation)
