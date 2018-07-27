@@ -48,6 +48,7 @@ defmodule Stitch.Engage.ConversationMessage do
   ]
 
   @required_attributes [:text_content]
+  @required_upload_attributes [:type, :fields]
 
   @page_length 50
 
@@ -85,12 +86,11 @@ defmodule Stitch.Engage.ConversationMessage do
   # TODO: Do not cast all attributes.
   # This is temporarily the case as we develop engage.
 
-  def changeset(%ConversationMessage{type: type} = struct, params)
-      when type == "file_share" or type == "upload" do
+  def changeset(%ConversationMessage{} = struct, %{"type" => type} = params)
+      when type == "upload" do
     struct
-    |> base_changeset(params)
-    |> validate_required([:fields, :type])
-    |> validate_inclusion(:type, ["file_share"])
+    |> cast(params, @all_attributes)
+    |> validate_required(@required_upload_attributes)
   end
 
   def changeset(%ConversationMessage{} = struct, params) do
