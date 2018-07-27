@@ -35,8 +35,12 @@ class InboxStore {
   }
 
   sortByUpdated(conversation1, conversation2) {
-    if (conversation1.updated_at < conversation2.updated_at) return 1;
-    if (conversation1.updated_at > conversation2.updated_at) return -1;
+    const conv1Unix = moment(conversation1.updated_at).unix();
+    const conv2Unix = moment(conversation2.updated_at).unix();
+
+    if (conv1Unix < conv2Unix) return 1;
+    if (conv1Unix > conv2Unix) return -1;
+
     return 0;
   }
 
@@ -77,13 +81,17 @@ class InboxStore {
   }
 
   @computed
-  get openedConversations() {
-    return this.conversations.filter(conversations => conversations.open);
+  get sortedOpenConversations() {
+    return this.conversations
+      .filter(conversations => conversations.open)
+      .sort(this.sortByUpdated);
   }
 
   @computed
-  get closedConversations() {
-    return this.conversations.filter(conversations => !conversations.open);
+  get sortedClosedConversations() {
+    return this.conversations
+      .filter(conversations => !conversations.open)
+      .sort(this.sortByUpdated);
   }
 
   @computed
@@ -103,8 +111,8 @@ class InboxStore {
     }
 
     return this.currentInboxFilter === "open"
-      ? this.openedConversations
-      : this.closedConversations;
+      ? this.sortedOpenConversations
+      : this.sortedClosedConversations;
   }
 
   @computed

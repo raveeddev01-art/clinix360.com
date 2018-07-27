@@ -257,14 +257,14 @@ class InboxMenu extends Component {
       <Tab.Content animation={false} unmountOnExit>
         <Tab.Pane eventKey="1.1">
           {this.renderList(
-            inboxStore.openedConversations,
+            inboxStore.sortedOpenConversations,
             "No Open Conversations"
           )}
         </Tab.Pane>
 
         <Tab.Pane eventKey="1.2">
           {this.renderList(
-            inboxStore.closedConversations,
+            inboxStore.sortedClosedConversations,
             "No Closed Conversations"
           )}
         </Tab.Pane>
