@@ -137,10 +137,7 @@ class Main extends Component {
 
                   <div className="content">
                     <div className="action-wrapper">
-                      <div className="action">
-                        This is an extremely long text that should not line
-                        break when resizing
-                      </div>
+                      <div className="action">Conversation started</div>
                     </div>
 
                     <div className="text-muted">Started on May 30, 2018</div>

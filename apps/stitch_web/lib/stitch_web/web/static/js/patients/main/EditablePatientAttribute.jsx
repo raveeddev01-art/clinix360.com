@@ -161,7 +161,7 @@ class EditablePatientAttribute extends Component {
                   onChange={this._onChange}
                   onKeyDown={this.onKeyDown}
                   onFocus={this._onFocus}
-                  // onBlur={() => setTimeout(this._onBlur, 150)}
+                  onBlur={() => setTimeout(this._onBlur, 150)}
                   style={{
                     minWidth: "60px",
                     width: (attrVal.length + 2) * 12 + "px",
