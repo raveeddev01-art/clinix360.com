@@ -110,11 +110,11 @@ defmodule Stitch.Files.Upload do
     |> Repo.update()
   end
 
-  defp put_default_name(%Ecto.Changeset{changes: %{filename: filename}} = changeset)
-       when not is_nil(filename) and filename != "",
-       do: changeset
+  def put_default_name(%Ecto.Changeset{changes: %{filename: filename}} = changeset)
+      when not is_nil(filename) and filename != "",
+      do: changeset
 
-  defp put_default_name(changeset) do
+  def put_default_name(changeset) do
     value = String.downcase(Rand.token(32))
     put_change(changeset, :filename, value)
   end
@@ -162,8 +162,8 @@ defmodule Stitch.Files.Upload do
     end
   end
 
-  @spec encode_url_id(Upload.t()) :: String.t()
-  def encode_url_id(%Upload{} = upload) do
+  @spec encode_url_id(struct) :: String.t()
+  def encode_url_id(upload) do
     "f" <> Base.encode32("#{upload.id}", case: :lower, padding: false)
   end
 
