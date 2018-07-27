@@ -43,12 +43,16 @@ class Topbar extends Component {
       <div className="topbar">
         <div className="header-text">
           {!asPatient && (
-            <h4>{inboxStore.currentConversation.patient.full_name}</h4>
+            <h4>
+              {inboxStore.currentConversation &&
+                inboxStore.currentConversation.patient.full_name}
+            </h4>
           )}
           {/* TODO: add topic as patient */}
           {!asPatient && (
             <div className="subject">
-              {inboxStore.currentConversation.subject}
+              {inboxStore.currentConversation &&
+                inboxStore.currentConversation.subject}
             </div>
           )}
         </div>

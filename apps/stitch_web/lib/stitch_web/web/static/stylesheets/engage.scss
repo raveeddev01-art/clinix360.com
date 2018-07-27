@@ -109,6 +109,14 @@ $dark-border-color: #ccc;
         left: 12px;
       }
 
+      i.fa-times-circle-o {
+        font-size: 18px;
+        position: absolute;
+        left: inherit;
+        top: 1px;
+        right: 6px;
+      }
+
       .form-control {
         border-radius: 4px;
         border: 2px solid $border-color-dark;
@@ -262,12 +270,16 @@ $dark-border-color: #ccc;
       }
     }
 
-    .provider-scrollbar {
+    .scrollbar {
       position: absolute;
       left: 0;
-      top: 50px;
+      top: 0;
       right: 0;
       bottom: 0;
+    }
+
+    .scrollbar.with-options-offset {
+      top: 50px;
     }
 
     .patient-scrollbar {

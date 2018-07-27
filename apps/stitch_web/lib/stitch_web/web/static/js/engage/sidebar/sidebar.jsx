@@ -37,11 +37,7 @@ class Sidebar extends Component {
                     <h5>Inboxes</h5>
                   </div>
 
-                  <NavLink
-                    to={`/conversations/1`}
-                    className="item active"
-                    // activeClassName="active"
-                  >
+                  <NavLink to={`/conversations/`} className="item active">
                     <div className="item-icon">
                       <i className="fa fa-inbox" />
                     </div>

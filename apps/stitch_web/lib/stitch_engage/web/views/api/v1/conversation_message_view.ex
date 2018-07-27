@@ -11,6 +11,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
     UserView
   }
 
+  alias StitchEngage.Web.Api.V1.ConversationView
+
   use Stitch.Web, :view
 
   @endpoint Stitch.Web.Endpoint
@@ -86,6 +88,12 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
         Enum.map(data, fn record ->
           json = conversation_message_json(record)
           Map.put(json, :highlighted_text_content, record.highlighted_text_content)
+
+          Map.put(
+            json,
+            :conversation,
+            ConversationView.conversation_search_json(record.conversation)
+          )
         end),
       meta: meta
     }

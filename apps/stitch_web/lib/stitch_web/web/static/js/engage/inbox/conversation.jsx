@@ -33,6 +33,20 @@ class Conversation extends Component {
     );
   }
 
+  renderText() {
+    const { conversation } = this.props;
+
+    if (conversation.search_message) {
+      return conversation.search_message.text_content;
+    }
+
+    if (conversation.latest_conversation_message) {
+      return conversation.latest_conversation_message.text_content;
+    }
+
+    return conversation.conversation_messages[0].text_content;
+  }
+
   render() {
     const { asPatient, conversation } = this.props;
 
@@ -74,11 +88,7 @@ class Conversation extends Component {
           </div>
 
           <div className="message">
-            <div className="text">
-              {conversation.latest_conversation_message
-                ? conversation.latest_conversation_message.text_content
-                : conversation.conversation_messages[0].text_content}
-            </div>
+            <div className="text">{this.renderText()}</div>
           </div>
         </div>
       </Link>

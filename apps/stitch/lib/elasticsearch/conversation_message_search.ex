@@ -26,7 +26,7 @@ defmodule Stitch.Elasticsearch.ConversationMessageSearch do
     conversation_messages_map =
       ConversationMessage
       |> where([cm], cm.id in ^ordered_conversation_messages_ids)
-      |> preload([:provider, :patient])
+      |> preload([:provider, :patient, :conversation])
       |> select([cm], {cm.id, cm})
       |> Repo.all()
       |> Map.new()
@@ -37,8 +37,7 @@ defmodule Stitch.Elasticsearch.ConversationMessageSearch do
         Map.put(acc, elem["_source"]["conversation_message_id"], elem)
       end)
 
-    for id <- ordered_conversation_messages_ids,
-        conversation_messages_map[id] do
+    for id <- ordered_conversation_messages_ids, conversation_messages_map[id] do
       conversation_message = conversation_messages_map[id]
       highlighted_text_content = get_in(hits_map, [id, "highlight", "text_content"]) || []
       highlighted_text_content = Enum.join(highlighted_text_content, " ")

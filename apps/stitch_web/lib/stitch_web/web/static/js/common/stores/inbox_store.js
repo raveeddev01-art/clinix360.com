@@ -4,10 +4,14 @@
  * This is a mobx store that keeps track of data related to inbox menu and global state.
  */
 
-import { observable, computed, action } from "mobx";
+import { observable, computed, action, extendObservable } from "mobx";
 import { stringify } from "qs";
 import unionBy from "lodash/unionBy";
+import uniqBy from "lodash/uniqBy";
+import debounce from "lodash/debounce";
 import moment from "moment";
+
+const searchDebounceMs = 400;
 
 class InboxStore {
   @observable conversations = [];
@@ -18,9 +22,11 @@ class InboxStore {
   @observable conversationsLoaded = false;
   @observable isLoadingConversationPage = false;
   @observable currentConversationId = null;
-  @observable messagesLoaded = false;
   @observable engageLoaded = false;
   @observable currentModal = null;
+  @observable searchTerm = "";
+  @observable conversationMessagesByTerm = {};
+  @observable loadingTerm = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -51,8 +57,12 @@ class InboxStore {
   //   COMPUTED
   // ===========
 
-  get lastConversation() {
-    return this.conversations[0];
+  get latestConversation() {
+    if (this.sortedConversations.length > 0) {
+      return this.sortedConversations[0];
+    }
+
+    return undefined;
   }
 
   @computed
@@ -106,9 +116,47 @@ class InboxStore {
       : this.currentInbox.closed_conversations_count;
   }
 
+  @computed
+  get inSearchMode() {
+    return !!this.searchTerm;
+  }
+
+  @computed
+  get conversationsForTerm() {
+    if (this.loadingTerm) {
+      // forces conversationsForTerm to watch loading which
+      // is a somewhat hacky workaround to rerender properly
+    }
+
+    const messages = this.conversationMessagesByTerm[this.searchTerm] || [];
+    const conversations = messages.map(m =>
+      Object.assign(m.conversation, { search_message: m })
+    );
+
+    return uniqBy(conversations, "id");
+  }
+
+  @computed
+  get currentlyLoading() {
+    if (this.searchTerm) {
+      // loadingTerm is set & overridden on each new search
+      // keydown and cleared when that search returns
+      return this.loadingTerm === this.searchTerm;
+    }
+
+    return this.isLoadingConversationPage;
+  }
+
   // ===========
   //   ACTIONS
   // ===========
+
+  @action
+  searchTermChange = term => {
+    // immediately set term, but debounce search
+    this.searchTerm = term;
+    this.searchConversationMessages(term);
+  };
 
   @action
   setCurrentInboxFilter = filter => {
@@ -185,6 +233,7 @@ class InboxStore {
     });
   };
 
+  @action
   loadNextConversationPage = () => {
     const id = this.currentInbox.id;
     const lastConvo = this.sortedConversations[
@@ -220,16 +269,18 @@ class InboxStore {
   @action
   openConversation = id => {
     this.messagesLoaded = false;
-    this.loadConversation(id);
+    return this.loadConversation(id);
   };
 
   @action
   loadConversation = id => {
     const { conversationMessageStore, channelStore } = this.rootStore;
     this.currentConversationId = parseInt(id, 10);
+
     return get(
       `${this.rootStore.apiBasePath}/conversations/${id}`
     ).then(response => {
+      this.addConversations([response.data]);
       conversationMessageStore.onConversationLoaded(response.data);
       this.messagesLoaded = true;
 
@@ -249,6 +300,35 @@ class InboxStore {
       return response.data.id;
     });
   };
+
+  @action
+  searchConversationMessages = term => {
+    this.loadingTerm = term;
+    this.debouncedSearch(term);
+  };
+
+  @action
+  debouncedSearch = debounce(term => {
+    const url = `${this.rootStore.apiBasePath}/conversation_messages/search`;
+
+    return post(url, { body: { term } })
+      .then(response => {
+        extendObservable(this.conversationMessagesByTerm, {
+          [term]: response.data.data
+        });
+
+        if (term === this.loadingTerm) {
+          this.loadingTerm = null;
+        }
+
+        return response;
+      })
+      .catch(() => {
+        if (term === this.loadingTerm) {
+          this.loadingTerm = null;
+        }
+      });
+  }, searchDebounceMs);
 
   // ===================
   //   HANDLING EVENTS
