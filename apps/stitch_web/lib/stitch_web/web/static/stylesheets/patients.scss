@@ -267,6 +267,7 @@ $patients-header-height: 60px;
           text-align: left;
           @media (min-width: 945px) {
             max-width: calc(100% - 150px);
+            width: auto;
           }
 
           > div {
@@ -275,11 +276,6 @@ $patients-header-height: 60px;
 
             .form-container {
               width: 100%;
-              @media (min-width: 945px) {
-                position: absolute;
-                top: 0;
-                left: 0;
-              }
             }
           }
         }
