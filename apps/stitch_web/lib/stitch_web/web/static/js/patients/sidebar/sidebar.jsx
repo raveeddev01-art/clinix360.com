@@ -14,13 +14,13 @@ import Scrollbar from "common/components/scrollbar";
 import Patient from "./patient";
 import AddPatientModal from "../../engage/inbox/modals/add_patient_modal";
 
+const suppressSubmit = e => {
+  e.preventDefault();
+};
+
 @inject("patientsStore")
 @observer
 class Sidebar extends Component {
-  onSearch = event => {
-    event.preventDefault();
-  };
-
   onPatientModalClick = () => {
     this.showAddPatientModal();
   };
@@ -40,6 +40,14 @@ class Sidebar extends Component {
   get isShowing() {
     return this.currentModal === "compose" || this.currentModal === "add";
   }
+
+  setFilter = e => {
+    this.props.patientsStore.setSearchFilter(e.target.value);
+  };
+
+  clearFilter = () => {
+    this.props.patientsStore.setSearchFilter("");
+  };
 
   showAddPatientModal = () => {
     this.props.patientsStore.setModal("add");
@@ -77,6 +85,7 @@ class Sidebar extends Component {
 
   render() {
     const { patientsStore } = this.props;
+    const { searchFilter } = patientsStore;
 
     return (
       <div className="inbox-menu">
@@ -84,9 +93,19 @@ class Sidebar extends Component {
           <h3>All Patients</h3>
 
           <div className="flex-box">
-            <Form className="flex-item" onSubmit={this.onSearch}>
+            <Form className="flex-item" onSubmit={suppressSubmit}>
               <i className="fa fa-search" />
-              <FormControl type="text" placeholder="Search" />
+              <FormControl
+                type="text"
+                placeholder="Search"
+                value={searchFilter}
+                onChange={this.setFilter}
+              />
+              {searchFilter && (
+                <a tabIndex="0" role="link" onClick={this.clearFilter}>
+                  <i className="fa fa-times-circle-o" />
+                </a>
+              )}
             </Form>
 
             <OverlayTrigger
