@@ -347,7 +347,7 @@ defmodule Stitch.Group do
       returning: true
     )
     |> Ecto.Multi.delete(:group, group)
-    |> Repo.transaction()
+    |> Repo.transaction(timeout: 60_000)
     |> Audit.Group.track_delete(user)
   end
 
