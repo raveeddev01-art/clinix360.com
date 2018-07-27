@@ -133,16 +133,20 @@ class EditablePatientAttribute extends Component {
     });
 
     return (
-      <Row className="profile-row">
-        <Col sm={3}>
+      <div className="profile-row">
+        <div className="attribute-label">
           <div className="text-muted">{attrDisplayName}</div>
-        </Col>
-        <Col sm={9}>
+        </div>
+        <div className="flex-item">
           {!isEditing ? (
             <Button onClick={this._onToggleEdit}>
-              {patientsStore.currentPatient[attrName] || (
-                <span className="text-muted">{buttonText}</span>
-              )}
+              <span
+                className={
+                  patientsStore.currentPatient[attrName] ? null : "text-muted"
+                }
+              >
+                {patientsStore.currentPatient[attrName] || buttonText}
+              </span>
               <i className="fa fa-edit" />
             </Button>
           ) : (
@@ -173,8 +177,8 @@ class EditablePatientAttribute extends Component {
               {hasError && <HelpBlock>{errorMessage}</HelpBlock>}
             </div>
           )}
-        </Col>
-      </Row>
+        </div>
+      </div>
     );
   }
 }

@@ -256,17 +256,59 @@ $patients-header-height: 60px;
       margin: 0 0 50px;
 
       .profile-row {
+        display: flex;
         margin-bottom: 15px;
+        @media (max-width: 945px) {
+          flex-direction: column;
+        }
 
-        div.text-muted {
-          padding: 7px 0;
+        .flex-item {
+          flex-shrink: 0;
+          text-align: left;
+          @media (min-width: 945px) {
+            max-width: calc(100% - 150px);
+          }
+
+          > div {
+            height: 38px;
+            position: relative;
+
+            .form-container {
+              width: 100%;
+              @media (min-width: 945px) {
+                position: absolute;
+                top: 0;
+                left: 0;
+              }
+            }
+          }
+        }
+
+        .attribute-label {
+          display: flex;
+          flex-shrink: 0;
+          padding-left: 15px;
+          @media (min-width: 945px) {
+            flex-basis: 150px;
+            padding-left: 0;
+          }
         }
 
         .btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
           font-size: 16px;
           background: none;
           border: 2px solid transparent;
           padding: 6px 12px;
+
+          span {
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
 
           i.fa {
             display: none;
@@ -286,6 +328,7 @@ $patients-header-height: 60px;
           }
 
           &-cancel {
+            width: auto;
             color: #a6a6a6;
             font-size: 14px;
             &:hover {
