@@ -10,6 +10,7 @@ import unionBy from "lodash/unionBy";
 import uniqBy from "lodash/uniqBy";
 import debounce from "lodash/debounce";
 import moment from "moment";
+import TimeoutManager from "lib/TimeoutManager";
 
 const searchDebounceMs = 400;
 
@@ -30,11 +31,16 @@ class InboxStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.timeoutManager = new TimeoutManager();
   }
 
   sortByUpdated(conversation1, conversation2) {
-    if (conversation1.updated_at < conversation2.updated_at) return 1;
-    if (conversation1.updated_at > conversation2.updated_at) return -1;
+    const conv1Unix = moment(conversation1.updated_at).unix();
+    const conv2Unix = moment(conversation2.updated_at).unix();
+
+    if (conv1Unix < conv2Unix) return 1;
+    if (conv1Unix > conv2Unix) return -1;
+
     return 0;
   }
 
@@ -75,13 +81,17 @@ class InboxStore {
   }
 
   @computed
-  get openedConversations() {
-    return this.conversations.filter(conversations => conversations.open);
+  get sortedOpenConversations() {
+    return this.conversations
+      .filter(conversations => conversations.open)
+      .sort(this.sortByUpdated);
   }
 
   @computed
-  get closedConversations() {
-    return this.conversations.filter(conversations => !conversations.open);
+  get sortedClosedConversations() {
+    return this.conversations
+      .filter(conversations => !conversations.open)
+      .sort(this.sortByUpdated);
   }
 
   @computed
@@ -101,8 +111,8 @@ class InboxStore {
     }
 
     return this.currentInboxFilter === "open"
-      ? this.openedConversations
-      : this.closedConversations;
+      ? this.sortedOpenConversations
+      : this.sortedClosedConversations;
   }
 
   @computed
@@ -145,6 +155,11 @@ class InboxStore {
     }
 
     return this.isLoadingConversationPage;
+  }
+
+  @computed
+  get currentConversationUnread() {
+    return this.currentConversation.is_unread;
   }
 
   // ===========
@@ -202,6 +217,31 @@ class InboxStore {
   };
 
   @action
+  addConversation = newConv => {
+    // find old one and mutate the new
+    // one's is_unread if needed
+    const oldConv = this.conversations.find(c => c.id === newConv.id);
+
+    if (
+      oldConv.latest_conversation_message &&
+      !this.fromSelf(newConv.latest_conversation_message) &&
+      oldConv.latest_conversation_message.id !==
+        newConv.latest_conversation_message.id
+    ) {
+      newConv.is_unread = true;
+    }
+
+    this.addConversations([newConv]);
+  };
+
+  @action
+  fromSelf(message) {
+    return window.currentPatient
+      ? message.patient_id === currentPatient.id
+      : message.provider_id === currentUser.id;
+  }
+
+  @action
   loadEngage = async () => {
     try {
       await this.loadInbox();
@@ -231,6 +271,14 @@ class InboxStore {
       this.conversations = response.data.sort(this.sortByUpdated);
       this.conversationsLoaded = true;
     });
+  };
+
+  @action
+  postConversationMarkAsRead = id => {
+    return post(
+      `${this.rootStore.apiBasePath}/conversations/${id}/mark_as_read`,
+      {}
+    );
   };
 
   @action
@@ -283,6 +331,7 @@ class InboxStore {
       this.addConversations([response.data]);
       conversationMessageStore.onConversationLoaded(response.data);
       this.messagesLoaded = true;
+      this.onConversationShowing();
 
       channelStore
         .joinConversationChannel({ authenticated_urls: true })
@@ -295,7 +344,7 @@ class InboxStore {
     return post(`${this.apiBasePath}/${this.currentInboxId}/conversations`, {
       body: params
     }).then(response => {
-      this.changeCountsAsNeeded(response.data);
+      this.changeOpenCloseCountsAsNeeded(response.data);
       this.addConversations([response.data]);
       return response.data.id;
     });
@@ -330,20 +379,71 @@ class InboxStore {
       });
   }, searchDebounceMs);
 
+  @action
+  markConversationAsRead = conversationId => {
+    const conversation = this.conversations.find(c => c.id === conversationId);
+    if (conversation) {
+      conversation.is_unread = false;
+    }
+  };
+
   // ===================
   //   HANDLING EVENTS
   // ===================
 
   @action
   onConversationCreateEvent = ({ conversation }) => {
-    this.changeCountsAsNeeded(conversation);
-    this.addConversations([conversation]);
+    this.changeOpenCloseCountsAsNeeded(conversation);
+    this.addConversation(conversation);
   };
 
   @action
   onConversationUpdateEvent = ({ conversation }) => {
-    this.changeCountsAsNeeded(conversation);
-    this.addConversations([conversation]);
+    this.changeOpenCloseCountsAsNeeded(conversation);
+    this.addConversation(conversation);
+  };
+
+  @action
+  onMarkAsReadEvent = ({ conversation_id }) => {
+    this.markConversationAsRead(conversation_id);
+  };
+
+  @action
+  onConversationCreated = conversation => {
+    if (!this.getConversationById(conversation.id)) {
+      this.conversations.push(conversation);
+    }
+  };
+
+  @action
+  onConversationUpdated = conversation => {
+    this.updateConversationData(conversation.id, conversation);
+  };
+
+  @action
+  onConversationShowing = () => {
+    this.timeoutManager.reset();
+    // start a timed mark as read goin on
+    this.timeoutManager.setTimeout(
+      this.timedMarkAsRead(this.currentConversationId),
+      500
+    );
+  };
+
+  @action
+  timedMarkAsRead = givenConversationId => () => {
+    if (this.currentConversationId === givenConversationId) {
+      // make call for current one if needed
+      if (document.hasFocus() && this.currentConversationUnread) {
+        this.postConversationMarkAsRead(givenConversationId);
+      }
+
+      // kick off next one
+      this.timeoutManager.setTimeout(
+        this.timedMarkAsRead(givenConversationId),
+        500
+      );
+    }
   };
 
   // ===================
@@ -351,7 +451,7 @@ class InboxStore {
   // ===================
 
   @action
-  changeCountsAsNeeded(conversation) {
+  changeOpenCloseCountsAsNeeded(conversation) {
     const oldVersion = this.conversations.find(c => c.id === conversation.id);
 
     // Just increment the necessary counts
@@ -421,21 +521,6 @@ class InboxStore {
     if (!isNaN(this.currentInbox[type])) {
       this.currentInbox[type] = this.currentInbox[type] - 1;
     }
-  };
-  // ============================
-  // Event Handlers
-  // ============================
-
-  @action
-  onConversationCreated = conversation => {
-    if (!this.getConversationById(conversation.id)) {
-      this.conversations.push(conversation);
-    }
-  };
-
-  @action
-  onConversationUpdated = conversation => {
-    this.updateConversationData(conversation.id, conversation);
   };
 }
 

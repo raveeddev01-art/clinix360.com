@@ -262,7 +262,7 @@ defmodule Stitch.Engage.ConversationQueries do
   defp make_add_unread_fn(conversation_join_records, user_or_patient) do
     fn conversation ->
       is_unread =
-        case Enum.find(conversation_join_records, &(&1.id == conversation.id)) do
+        case Enum.find(conversation_join_records, &(&1.conversation_id == conversation.id)) do
           nil -> is_unread_without_join_record(conversation, user_or_patient)
           conversation_user -> is_unread_with_join_record(conversation_user)
         end
