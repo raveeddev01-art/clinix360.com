@@ -241,7 +241,7 @@ class InboxStore {
     ];
 
     if (lastConvo) {
-      const updatedBefore = moment(lastConvo.updated_at).unix();
+      const updatedBefore = moment.utc(lastConvo.updated_at).unix();
       let openParam;
       if (this.currentInboxFilter) {
         openParam = this.currentInboxFilter === "open";
