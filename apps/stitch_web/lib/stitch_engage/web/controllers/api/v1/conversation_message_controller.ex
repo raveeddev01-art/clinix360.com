@@ -161,7 +161,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
          # presence_user_ids = UserStatusService.presence_user_ids(user_or_patient.team_id)
 
          {:ok, %{conversation_message: conversation_message}} <-
-           ConversationMessageCreation.create(
+           ConversationMessageCreation.create_with_optional_upload(
              conversation,
              user_or_patient,
              message_params_with_client

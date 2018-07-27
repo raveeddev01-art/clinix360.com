@@ -16,6 +16,31 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     ReadStatus
   }
 
+  def create_with_optional_upload(
+        conversation,
+        %User{} = provider_sender,
+        %{"type" => "upload", "fields" => feilds} = attrs
+      ) do
+    patient =
+      Stitch.Engage.ConversationQueries.patients_for_convsersation(conversation) |> List.first()
+
+    Stitch.Files.EngageUpload.create_and_share_with_patient(
+      provider_sender,
+      patient,
+      conversation,
+      provider_sender,
+      attrs
+    )
+  end
+
+  def create_with_optional_upload(
+        conversation,
+        patient_or_provider_sender,
+        attrs
+      ) do
+    create(conversation, patient_or_provider_sender, attrs)
+  end
+
   @doc """
   Creates a ConversationMessage:
   - creates message
@@ -24,6 +49,7 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
   - kicks off related tasks
   """
   @spec create(Conversation.t(), User.t() | Patient.t(), map) :: {:ok, map} | {:error, term}
+
   def create(
         %Conversation{} = conversation,
         %User{} = provider_sender,
