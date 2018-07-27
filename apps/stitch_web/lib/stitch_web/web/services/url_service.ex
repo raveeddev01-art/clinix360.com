@@ -6,6 +6,7 @@ defmodule Stitch.Web.UrlService do
 
   alias Stitch.{
     Files.Upload,
+    Files.EngageUpload,
     Message,
     Team,
     TeamQueries
@@ -16,7 +17,13 @@ defmodule Stitch.Web.UrlService do
   This can be used when you need to redirect from one subdomain to another.
   Fallback is the root login page.
   """
-  @spec team_login_url(Upload.t() | Message.t() | Team.t()) :: binary
+  @spec team_login_url(Upload.t() | Message.t() | Team.t() | EngageUpload.t()) :: binary
+  def team_login_url(%EngageUpload{team_id: team_id}) do
+    team_id
+    |> TeamQueries.get_by_id()
+    |> team_login_url()
+  end
+
   def team_login_url(%Upload{team_id: team_id}) do
     team_id
     |> TeamQueries.get_by_id()
@@ -61,8 +68,25 @@ defmodule Stitch.Web.UrlService do
     )
   end
 
+  @spec file_download_url(EngageUpload.t() | Upload.t(), map | nil) :: binary
+
+  def file_download_url(upload, query_params \\ %{})
+
+  def file_download_url(%EngageUpload{} = upload, query_params) do
+    struct_url = @endpoint.files_struct_url()
+    encoded_file_id = EngageUpload.encode_url_id(upload)
+
+    SubdomainRoutes.files_file_url(
+      struct_url,
+      :download,
+      encoded_file_id,
+      upload.filename,
+      query_params
+    )
+  end
+
   @spec file_download_url(Upload.t(), map | nil) :: binary
-  def file_download_url(%Upload{} = upload, query_params \\ %{}) do
+  def file_download_url(%Upload{} = upload, query_params) do
     struct_url = @endpoint.files_struct_url()
     encoded_file_id = Upload.encode_url_id(upload)
 

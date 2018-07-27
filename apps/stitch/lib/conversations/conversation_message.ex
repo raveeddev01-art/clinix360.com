@@ -18,7 +18,7 @@ defmodule Stitch.Engage.ConversationMessage do
     Audit,
     Engage.Conversation,
     Engage.ConversationMessage,
-    Files.Upload,
+    Files.EngageUpload,
     Patient,
     ReadStatus,
     Repo
@@ -48,7 +48,7 @@ defmodule Stitch.Engage.ConversationMessage do
   ]
 
   @required_attributes [:text_content]
-  @required_upload_attributes [:type, :fields]
+  @required_upload_attributes [:type, :fields, :engage_upload_id]
 
   @page_length 50
 
@@ -59,7 +59,7 @@ defmodule Stitch.Engage.ConversationMessage do
     # https://hexdocs.pm/ecto/Ecto.Schema.html#belongs_to/3-polymorphic-associations
     belongs_to(:patient, Patient)
     belongs_to(:provider, User)
-    belongs_to(:upload, Upload)
+    belongs_to(:engage_upload, EngageUpload)
 
     field(:text_content, :string)
 
@@ -89,8 +89,7 @@ defmodule Stitch.Engage.ConversationMessage do
   def changeset(%ConversationMessage{} = struct, %{"type" => type} = params)
       when type == "upload" do
     struct
-    |> cast(params, @all_attributes)
-    |> put_change("text_content", "upload")
+    |> cast(params, @all_attributes ++ [:engage_upload_id])
     |> validate_required(@required_upload_attributes)
   end
 
