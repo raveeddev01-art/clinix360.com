@@ -23,6 +23,7 @@ class ImageFileAttachment extends Component {
       size,
       comment_count: commentCount,
       onCommentsClick,
+      isConversationMessage,
       onFileDownload,
       useActions,
       message,
@@ -86,6 +87,7 @@ class ImageFileAttachment extends Component {
                     public_url={public_url}
                     message={message}
                     commentCount={commentCount}
+                    isConversationMessage={isConversationMessage}
                     onCommentsClick={onCommentsClick}
                     onFileDownload={onFileDownload}
                   />
@@ -127,6 +129,7 @@ ImageFileAttachment.propTypes = {
   url: PropTypes.string.isRequired,
   comment_count: PropTypes.number,
   onCommentsClick: PropTypes.func,
+  isConversationMessage: PropTypes.bool.isRequired,
   onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool,
   size: PropTypes.string,
@@ -147,6 +150,7 @@ ImageFileAttachment.defaultProps = {
   encoded_id: "",
   comment_count: 0,
   size: "md",
+  isConversationMessage: false,
   onCommentsClick: undefined,
   message: null
 };
