@@ -2,9 +2,6 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
 
-import Button from "react-bootstrap/lib/Button";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
 import Modal from "react-bootstrap/lib/Modal";
 
 import Scrollbar from "common/components/scrollbar";
@@ -12,6 +9,7 @@ import ComposeModal from "./modals/compose-modal";
 import NoteModal from "./modals/note-modal";
 
 import EditablePatientAttribute from "./EditablePatientAttribute";
+import TimelineActions from "./TimelineActions";
 
 @inject("patientsStore")
 @observer
@@ -121,39 +119,9 @@ class Main extends Component {
                 </div>
 
                 <div className="description">
-                  <Button onClick={this.onComposeModalClick}>
-                    Send Message
-                  </Button>
-
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip id="tooltip-info">Coming Soon!</Tooltip>}
-                    ref={ref => {
-                      this.tooltipOverlay = ref;
-                    }}
-                  >
-                    <Button onClick={this.onNoteModalClick}>Add Note</Button>
-                  </OverlayTrigger>
-
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip id="tooltip-info">Coming Soon!</Tooltip>}
-                    ref={ref => {
-                      this.tooltipOverlay = ref;
-                    }}
-                  >
-                    <Button onClick={this.onNoteModalClick}>Create Task</Button>
-                  </OverlayTrigger>
-
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip id="tooltip-info">Coming Soon!</Tooltip>}
-                    ref={ref => {
-                      this.tooltipOverlay = ref;
-                    }}
-                  >
-                    <Button onClick={this.onNoteModalClick}>Upload File</Button>
-                  </OverlayTrigger>
+                  <TimelineActions
+                    onComposeModalClick={this.onComposeModalClick}
+                  />
                 </div>
               </div>
 
@@ -168,7 +136,13 @@ class Main extends Component {
                   </div>
 
                   <div className="content">
-                    <div className="action">Conversation started</div>
+                    <div className="action-wrapper">
+                      <div className="action">
+                        This is an extremely long text that should not line
+                        break when resizing
+                      </div>
+                    </div>
+
                     <div className="text-muted">Started on May 30, 2018</div>
                   </div>
                 </div>
@@ -185,7 +159,9 @@ class Main extends Component {
                   </div>
 
                   <div className="content">
-                    <div className="action">Account created</div>
+                    <div className="action-wrapper">
+                      <div className="action">Account created</div>
+                    </div>
                     <div className="text-muted">
                       Created on{" "}
                       {moment

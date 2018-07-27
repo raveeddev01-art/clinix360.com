@@ -159,10 +159,6 @@ $patients-header-height: 60px;
 // ==========================================
 
 .patients-wrapper {
-  // .flex-content {
-  //   overflow: auto;
-  // }
-
   .inbox-menu {
     .btn-group {
       button {
@@ -208,6 +204,11 @@ $patients-header-height: 60px;
     }
   }
 
+  .topbar {
+    padding-left: 35px;
+    padding-right: 26px;
+  }
+
   .info-panel {
     flex: 1;
     position: relative;
@@ -229,7 +230,7 @@ $patients-header-height: 60px;
     }
 
     .simplebar-content {
-      padding: 30px 50px;
+      padding: 30px 35px;
     }
 
     h1 {
@@ -376,6 +377,9 @@ $patients-header-height: 60px;
             align-items: center;
             border: 1px solid #dedede;
             border-radius: 3px;
+            @media (min-width: 1078px) {
+              min-width: 450px;
+            }
 
             .icon {
               display: flex;
@@ -388,8 +392,24 @@ $patients-header-height: 60px;
               margin-right: 20px;
             }
 
-            .action {
-              font-weight: 600;
+            .content {
+              width: 100%;
+            }
+
+            .action-wrapper {
+              height: 24px;
+              position: relative;
+
+              .action {
+                font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding-right: 20px;
+                position: absolute;
+                left: 0;
+                right: 0;
+              }
             }
           }
 
@@ -414,6 +434,7 @@ $patients-header-height: 60px;
                 font-size: 16px;
                 font-weight: 600;
                 background: #fff;
+                border-radius: 4px;
                 margin-right: 10px;
 
                 &:hover {
@@ -428,6 +449,30 @@ $patients-header-height: 60px;
 
                 &:hover:focus {
                   border-color: $brand-primary;
+                }
+
+                &:last-of-type {
+                  margin-right: 0;
+                }
+              }
+
+              .btn-group.open .dropdown-toggle {
+                border-color: $border-color;
+                box-shadow: none;
+              }
+
+              .dropdown-menu a {
+                font-size: 16px;
+
+                i.fa {
+                  width: 18px;
+                  color: $brand-primary;
+                  text-align: center;
+                  margin-right: 5px;
+                }
+
+                &:hover i.fa {
+                  color: #fff;
                 }
               }
             }
