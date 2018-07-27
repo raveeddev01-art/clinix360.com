@@ -126,8 +126,7 @@ class MessageContent extends Component {
             message={message}
             user_id={user.id}
             file_id={message.upload_id}
-            isActionsVisible={isConversationMessage ? false : undefined}
-            isOriginalOpenVisible={isConversationMessage ? false : undefined}
+            isConversationMessage={isConversationMessage}
             onCommentsClick={
               isConversationMessage ? null : this.onCommentsClick
             }
