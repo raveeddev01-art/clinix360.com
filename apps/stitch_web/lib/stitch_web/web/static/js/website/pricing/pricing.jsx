@@ -20,7 +20,7 @@ export default class Pricing extends Component {
 
         <Subheader
           title="Free to use, upgrade any time"
-          subtitle="Get started for free with our connected family of products."
+          subtitle="Stitch Connect is free to use with an unlimited number of people."
         />
 
         <div className="pricing-section">
