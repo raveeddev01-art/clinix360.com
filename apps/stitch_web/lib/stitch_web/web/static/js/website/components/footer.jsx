@@ -21,7 +21,7 @@ export default class Footer extends Component {
             <Col sm={10} md={9}>
               <Row>
                 <Col xs={6} sm={3} md={3}>
-                  <h5>Platform</h5>
+                  <h5>Resources</h5>
                   <ul className="list-unstyled">
                     <li>
                       <Link to="/customers">Customers</Link>
@@ -60,7 +60,7 @@ export default class Footer extends Component {
                 </Col>
 
                 <Col xs={6} sm={3} md={3}>
-                  <h5>Resources</h5>
+                  <h5>Platform</h5>
                   <ul className="list-unstyled">
                     <li>
                       <Link to="/connect">Product</Link>
