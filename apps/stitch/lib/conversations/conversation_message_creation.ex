@@ -18,6 +18,23 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
 
   def create_with_optional_upload(
         conversation,
+        %Patient{} = patient_sender,
+        %{"type" => "upload", "fields" => feilds} = attrs
+      ) do
+    provider =
+      Stitch.Engage.ConversationQueries.providers_for_conversation(conversation) |> List.first()
+
+    Stitch.Files.EngageUpload.create_and_share_with_patient(
+      provider,
+      patient_sender,
+      conversation,
+      patient_sender,
+      attrs
+    )
+  end
+
+  def create_with_optional_upload(
+        conversation,
         %User{} = provider_sender,
         %{"type" => "upload", "fields" => feilds} = attrs
       ) do
