@@ -47,7 +47,11 @@ class WebsiteRouter extends Component {
       <div className="website-wrapper">
         <ScrollToTop>
           <Switch>
-            <Route exact path="/" component={Homepage} />
+            <Route
+              exact
+              path="/"
+              component={withTitle(connectTitle, Connect)}
+            />
             <Route exact path="/demo" component={withTitle(demoTitle, Demo)} />
             <Route
               exact

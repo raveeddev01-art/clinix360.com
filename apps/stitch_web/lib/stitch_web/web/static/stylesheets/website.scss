@@ -2207,6 +2207,7 @@
     font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
+    padding-left: 10px;
     margin-top: 20px;
     @media (min-width: $screen-sm) {
       margin-top: 0;
@@ -2223,10 +2224,28 @@
     font-size: 17px;
     line-height: 2.2;
     text-decoration: none;
+    border-radius: 3px;
+    padding: 0 10px;
+
+    &:hover {
+      color: $brand-primary;
+      background: $medium-gray;
+    }
   }
 
   address {
+    color: #333;
     line-height: 2.2;
+    padding-left: 10px;
+
+    a {
+      padding: 0;
+
+      &:hover {
+        color: #333;
+        background: transparent;
+      }
+    }
   }
 
   i.fa {

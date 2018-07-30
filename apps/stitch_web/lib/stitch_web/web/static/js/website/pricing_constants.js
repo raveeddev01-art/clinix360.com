@@ -32,7 +32,7 @@ export const PRICING_TABLE = {
       premium: true
     }
   ],
-  TEAM_MESSAGING: [
+  COMMUNICATION: [
     {
       feature: "Public & Private Rooms",
       basic: true,
@@ -52,151 +52,73 @@ export const PRICING_TABLE = {
       premium: "Unlimited"
     },
     {
-      feature: "Total File Storage",
-      basic: "1GB",
-      standard: "Unlimited",
-      premium: "Unlimited"
-    },
-    {
       feature: "Priority Messaging",
       basic: true,
       standard: true,
       premium: true
     },
     {
-      feature: "Guest Access",
-      basic: false,
-      standard: true,
-      premium: true
-    },
-    {
       feature: "Voice & Video Calls",
-      basic: false,
-      standard: true,
-      premium: true
-    }
-  ],
-  PATIENT_COMMUNICATION: [
-    {
-      feature: "Unlimited Patients",
-      basic: false,
-      standard: true,
-      premium: true
-    },
-    {
-      feature: "In-app Messaging",
-      basic: false,
-      standard: true,
-      premium: true
-    },
-    {
-      feature: "Assignments",
-      basic: false,
-      standard: true,
-      premium: true
-    },
-    {
-      feature: "Search & File Uploads",
-      basic: false,
-      standard: true,
-      premium: true
-    },
-    {
-      feature: "Dedicated URL",
-      basic: false,
-      standard: true,
-      premium: true
-    },
-    {
-      feature: "Family Access",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "Templates & Macros",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "Internal Notes",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "Custom Inboxes",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "Custom Forms",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "Voice & Video Calls",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "White Labeling",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "Custom URL",
       basic: false,
       standard: false,
       premium: true
     }
   ],
-  TASK_MANAGEMENT: [
+  FILE_SHARING: [
     {
-      feature: "Task Creation",
-      basic: false,
+      feature: "Image & Video Uploads",
+      basic: true,
       standard: true,
       premium: true
     },
     {
-      feature: "Task Assignment",
-      basic: false,
-      standard: true,
-      premium: true
-    },
-    {
-      feature: "Threaded Comments",
-      basic: false,
+      feature: "Document Uploads",
+      basic: true,
       standard: true,
       premium: true
     },
     {
       feature: "Total File Storage",
-      basic: false,
-      standard: "1GB",
+      basic: "1GB",
+      standard: "Unlimited",
       premium: "Unlimited"
     },
     {
-      feature: "Due Date Reminders",
-      basic: false,
+      feature: "Threaded File Comments",
+      basic: true,
+      standard: true,
+      premium: true
+    }
+  ],
+  PRODUCTIVITY: [
+    {
+      feature: "Read Receipts",
+      basic: true,
       standard: true,
       premium: true
     },
     {
-      feature: "Guest Access",
-      basic: false,
-      standard: false,
+      feature: "Message Pinning",
+      basic: true,
+      standard: true,
       premium: true
     },
     {
-      feature: "Custom Workflows",
-      basic: false,
-      standard: false,
+      feature: "Message Starring",
+      basic: true,
+      standard: true,
+      premium: true
+    },
+    {
+      feature: "Emoji Reactions",
+      basic: true,
+      standard: true,
+      premium: true
+    },
+    {
+      feature: "Search Modifier",
+      basic: true,
+      standard: true,
       premium: true
     }
   ],
@@ -250,6 +172,12 @@ export const PRICING_TABLE = {
       premium: true
     },
     {
+      feature: "Guest Access",
+      basic: false,
+      standard: true,
+      premium: true
+    },
+    {
       feature: "Dedicated Support",
       basic: false,
       standard: false,
@@ -298,63 +226,45 @@ export const PRICING_TABLE_MOBILE = {
       { feature: "EHR Integrations" },
       { feature: "API Access" }
     ],
-    TEAM_MESSAGING: [
+    COMMUNICATION: [
       { feature: "Public & Private Rooms" },
       { feature: "Group & Direct Messaging" },
       { feature: "1,000 Message Search Access" },
-      { feature: "1GB Total File Storage" }
+      { feature: "Priority Messaging" }
+    ],
+    FILE_SHARING: [
+      { feature: "Image & Video Uploads" },
+      { feature: "Document Uploads" },
+      { feature: "1GB Total File Storage" },
+      { feature: "Threaded File Comments" }
+    ],
+    PRODUCTIVITY: [
+      { feature: "Read Receipts" },
+      { feature: "Message Pinning" },
+      { feature: "Message Starring" },
+      { feature: "Emoji Reactions" },
+      { feature: "Search Modifiers" }
     ],
     ADMINISTRATION: [
       { feature: "Usage Analytics" },
+      { feature: "User Access Logs" },
       { feature: "Member Management" },
       { feature: "Inactivity Lockout Timer" },
-      { feature: "Data Import & Export" },
-      { feature: "User Access Logs" }
+      { feature: "Data Import & Export" }
     ]
   },
   STANDARD: {
-    TEAM_MESSAGING: [
-      { feature: "Guest Access" },
-      { feature: "Voice & Video Calls" },
-      { feature: "Unlimited Search Archives" },
-      { feature: "Unlimited File Storage" }
-    ],
-    PATIENT_COMMUNICATION: [
-      { feature: "Unlimited Patients" },
-      { feature: "In-App Messaging" },
-      { feature: "Assignments" },
-      { feature: "Search & File Uploads" },
-      { feature: "Dedicated URL" }
-    ],
-    TASK_MANAGEMENT: [
-      { feature: "Task Creation" },
-      { feature: "Task Assignment" },
-      { feature: "Threaded Comments" },
-      { feature: "1GB Total File Storage" },
-      { feature: "Due Date Reminders" }
-    ],
+    COMMUNICATION: [{ feature: "Unlimited Search Archives" }],
+    FILE_SHARING: [{ feature: "Unlimited File Storage" }],
     ADMINISTRATION: [
       { feature: "Priority Email Support" },
       { feature: "Phone Support" },
-      { feature: "Custom Data Retention" }
+      { feature: "Custom Data Retention" },
+      { feature: "Guest Access" }
     ]
   },
   PREMIUM: {
-    PATIENT_COMMUNICATION: [
-      { feature: "Family Access" },
-      { feature: "Templates & Macros" },
-      { feature: "Internal Notes" },
-      { feature: "Custom Inboxes" },
-      { feature: "Custom Forms" },
-      { feature: "Video & Voice Calls" },
-      { feature: "White Labeling" },
-      { feature: "Custom URL" }
-    ],
-    TASK_MANAGEMENT: [
-      { feature: "Unlimited File Storage" },
-      { feature: "Guest Access" },
-      { feature: "Custom Workflows" }
-    ],
+    COMMUNICATION: [{ feature: "Voice & Video Calls" }],
     ADMINISTRATION: [
       { feature: "Dedicated Support" },
       { feature: "Advanced Security Controls" },

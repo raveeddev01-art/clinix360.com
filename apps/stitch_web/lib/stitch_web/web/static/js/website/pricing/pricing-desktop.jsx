@@ -97,18 +97,18 @@ export default class PricingDesktop extends Component {
                 </p>
 
                 <Button
-                  href="mailto:support@teamstitch.com?subject=Stitch Premium Access Request"
+                  href={appSettings.hasLogin ? "/signin" : "/getstarted"}
                   bsStyle="primary"
                   bsSize="lg"
                   block
                 >
-                  Coming Soon
+                  Buy Premium
                 </Button>
               </div>
             </div>
 
             <div className="pricing-table__row header">
-              <div className="pricing-table__item">Stitch Platform</div>
+              <div className="pricing-table__item">Platform</div>
             </div>
 
             {PRICING_TABLE.PLATFORM.map((row, index) => (
@@ -122,10 +122,10 @@ export default class PricingDesktop extends Component {
             ))}
 
             <div className="pricing-table__row header">
-              <div className="pricing-table__item">Team Messaging</div>
+              <div className="pricing-table__item">Communication</div>
             </div>
 
-            {PRICING_TABLE.TEAM_MESSAGING.map((row, index) => (
+            {PRICING_TABLE.COMMUNICATION.map((row, index) => (
               <PricingRow
                 key={`row_${index}`}
                 feature={row.feature}
@@ -136,10 +136,10 @@ export default class PricingDesktop extends Component {
             ))}
 
             <div className="pricing-table__row header">
-              <div className="pricing-table__item">Patient Communication</div>
+              <div className="pricing-table__item">File Sharing</div>
             </div>
 
-            {PRICING_TABLE.PATIENT_COMMUNICATION.map((row, index) => (
+            {PRICING_TABLE.FILE_SHARING.map((row, index) => (
               <PricingRow
                 key={`row_${index}`}
                 feature={row.feature}
@@ -150,12 +150,10 @@ export default class PricingDesktop extends Component {
             ))}
 
             <div className="pricing-table__row header">
-              <div className="pricing-table__item">
-                Task Management <Label>Coming Soon!</Label>
-              </div>
+              <div className="pricing-table__item">Productivity</div>
             </div>
 
-            {PRICING_TABLE.TASK_MANAGEMENT.map((row, index) => (
+            {PRICING_TABLE.PRODUCTIVITY.map((row, index) => (
               <PricingRow
                 key={`row_${index}`}
                 feature={row.feature}
@@ -201,12 +199,12 @@ export default class PricingDesktop extends Component {
 
               <div className="pricing-table__item">
                 <Button
-                  href="mailto:support@teamstitch.com?subject=Stitch Premium Access Request"
+                  href={appSettings.hasLogin ? "/signin" : "/getstarted"}
                   bsStyle="primary"
                   bsSize="lg"
                   block
                 >
-                  Coming Soon
+                  Buy Premium
                 </Button>
               </div>
             </div>

@@ -60,7 +60,7 @@ export default class Connect extends Component {
             <div className="flex-box">
               <div className="flex-item">
                 <h4 className="product-heading">
-                  <i className="fa fa-comments" /> Connect
+                  <i className="fa fa-comments" /> Stitch Connect
                 </h4>
 
                 <h1>{header}</h1>
@@ -357,7 +357,7 @@ Connect.propTypes = {
 
 Connect.defaultProps = {
   flipped: false,
-  header: "Send messages, share files and stay in sync",
+  header: "Team messaging for healthcare",
   subHeader:
     "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
   // industryBodyText: "healthcare"
