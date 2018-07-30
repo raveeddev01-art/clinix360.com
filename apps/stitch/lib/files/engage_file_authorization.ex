@@ -14,7 +14,7 @@ defmodule Stitch.Files.EngageFileAuthorization do
         %EngageUpload{team_id: team_id} = engage_upload,
         %Patient{team_id: team_id} = patient
       ) do
-    Stitch.Files.FileQueries.get_patient_upload(patient, engage_upload)
+    !!Stitch.Files.FileQueries.get_patient_upload(patient, engage_upload)
   end
 
   def can_view?(_engage_upload, _user), do: false

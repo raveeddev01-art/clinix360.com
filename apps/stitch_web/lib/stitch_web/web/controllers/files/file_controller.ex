@@ -63,7 +63,11 @@ defmodule Stitch.Web.Files.FileController do
 
   # check if authorized as patient or provider
   def authenticated_engage_upload(conn, file, params) do
-    authenticated_as_provider(conn, file, params) || authenticated_as_patient(conn, file, params)
+    authorized? =
+      authenticated_as_provider(conn, file, params) ||
+        authenticated_as_patient(conn, file, params)
+
+    if authorized?, do: {:authenticated, true}, else: {:authenticated, false, file}
   end
 
   def authenticated_as_provider(conn, engage_upload, params) do
@@ -74,22 +78,24 @@ defmodule Stitch.Web.Files.FileController do
            {:team_user, UserQueries.team_member_by_token(engage_upload.team_id, user_token)},
          {:authenticated, true} <-
            {:authenticated, EngageFileAuthorization.can_view?(engage_upload, current_user)} do
-      {:authenticated, true}
+      true
     else
-      _ -> {:authenticated, false, engage_upload}
+      _ -> false
     end
   end
 
   def authenticated_as_patient(conn, engage_upload, params) do
     with {:user_token, user_token} when is_binary(user_token) <-
-           {:user_token, get_patient_session_token(conn) || params["authenticationToken"]},
+           {:user_token,
+            Stitch.Web.SessionService.get_patient_token_from_team(conn, engage_upload.team_id) ||
+              params["authenticationToken"]},
          {:team_user, %Patient{} = current_user} <-
            {:team_user, PatientQueries.get_active_by_token(user_token)},
          {:authenticated, true} <-
            {:authenticated, EngageFileAuthorization.can_view?(engage_upload, current_user)} do
-      {:authenticated, true}
+      true
     else
-      _ -> {:authenticated, false, engage_upload}
+      e -> false
     end
   end
 
