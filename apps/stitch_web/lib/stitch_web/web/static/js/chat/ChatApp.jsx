@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import ConnectTour from "common/components/joy-ride/connect-tour";
-import { AppAlert, Loading, Switcher } from "common/components";
+import { AppAlert, Loading } from "common/components";
 import RoleChangedModal from "common/modals/role-changed-modal";
 import UploadZone from "file-upload/upload-zone";
 import Sidemenu from "sidemenu/sidemenu";
@@ -53,7 +53,6 @@ class ChatApp extends Component {
           <ConnectTour />
           <AppAlert />
           <div className="appContainer">
-            <Switcher />
             <Sidemenu />
             <Switch>
               <Route path={`/rooms/:slug`} component={Chat} />
