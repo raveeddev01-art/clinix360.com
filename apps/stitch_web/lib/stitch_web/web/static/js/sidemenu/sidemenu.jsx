@@ -68,11 +68,11 @@ class Sidemenu extends Component {
 
   renderMenuItem(url, text, eventKey) {
     return window.electronApp ? (
-      <MenuItem key={eventKey} eventKey={eventKey} href={url} target="_blank">
+      <MenuItem eventKey={eventKey} href={url} target="_blank">
         {text}
       </MenuItem>
     ) : (
-      <LinkContainer key={eventKey} to={url}>
+      <LinkContainer to={url}>
         <MenuItem eventKey={eventKey}>{text}</MenuItem>
       </LinkContainer>
     );
