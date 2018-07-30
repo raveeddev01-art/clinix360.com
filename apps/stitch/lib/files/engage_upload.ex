@@ -26,7 +26,6 @@ defmodule Stitch.Files.EngageUpload do
     belongs_to(:team, Team)
     belongs_to(:provider, User)
 
-    # has_many(:conversations, through: [:conversation_files, :conversations])
     field(:filename, :string)
     field(:url, :string)
     field(:mimetype, :string, default: "application/octet-stream")
@@ -95,8 +94,6 @@ defmodule Stitch.Files.EngageUpload do
     end)
     |> Repo.transaction()
   end
-
-  # def create_preview(_attrs, with_preview: false), do: {:ok, %{}}
 
   def create_preview(fields) do
     case Thumb.create(fields) do
