@@ -2255,6 +2255,34 @@
   }
 }
 
+#top-banner {
+  color: #fff;
+  font-size: 18px;
+  background: $brand-primary;
+  padding: 25px 0;
+  margin-top: 71px;
+  position: relative;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  img {
+    width: 24px;
+    margin-right: 10px;
+  }
+
+  .btn {
+    color: $brand-primary;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: 7px 18px;
+    margin-left: 10px;
+  }
+}
+
 .video-modal {
   .modal-dialog {
     width: 100%;

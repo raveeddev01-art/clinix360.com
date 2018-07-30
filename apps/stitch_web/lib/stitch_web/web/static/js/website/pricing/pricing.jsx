@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import TopBanner from "../components/top-banner";
 import Header from "../components/header";
 import Subheader from "../components/subheader";
 import GetStarted from "../components/get-started";
@@ -16,6 +17,7 @@ export default class Pricing extends Component {
   render() {
     return (
       <div className="pricing-page">
+        <TopBanner />
         <Header />
 
         <Subheader

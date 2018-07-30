@@ -205,29 +205,6 @@ class Header extends Component {
 
           <Navbar collapseOnSelect onSelect={this.mobileNavToggle}>
             <Nav>
-              <NavDropdown title="Products" id="products-dropdown">
-                <LinkContainer to="/connect">
-                  <MenuItem>
-                    <i className="fa fa-comments" />
-                    Connect
-                  </MenuItem>
-                </LinkContainer>
-
-                <LinkContainer to="/engage">
-                  <MenuItem>
-                    <i className="fa fa-bullhorn" />
-                    Engage
-                  </MenuItem>
-                </LinkContainer>
-
-                <LinkContainer to="/manage">
-                  <MenuItem>
-                    <i className="fa fa-tasks" />
-                    Manage
-                  </MenuItem>
-                </LinkContainer>
-              </NavDropdown>
-
               <LinkContainer to="/pricing">
                 <NavItem>Pricing</NavItem>
               </LinkContainer>

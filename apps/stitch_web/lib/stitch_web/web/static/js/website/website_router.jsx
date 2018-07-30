@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter, Route, Switch } from "react-router-dom";
+
 import withTitle from "../util/with_document_title";
 
 import ScrollToTop from "./components/scrollToTop";
@@ -42,6 +43,23 @@ const hipaaTitle = "HIPAA Compliance | Stitch";
 const notFoundTitle = "404 | Page Not Found";
 
 class WebsiteRouter extends Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     showTopBanner: true
+  //   };
+  // }
+
+  // componentWillMount() {
+  //   const visited = localStorage["visited"];
+  //   if (visited) {
+  //     this.setState({ showTopBanner: false });
+  //   } else {
+  //     localStorage["visited"] = true;
+  //     this.setState({ showTopBanner: true });
+  //   }
+  // }
+
   render() {
     return (
       <div className="website-wrapper">
