@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { withRouter, Route, Switch } from "react-router-dom";
-import withTitle from "../util/with_document_title";
 
+import withTitle from "../util/with_document_title";
 import ScrollToTop from "./components/scrollToTop";
+
+import FullPageBanner from "./components/full-page-banner";
 
 import Homepage from "./homepage";
 import Connect from "./products/connect";
@@ -42,22 +44,16 @@ const hipaaTitle = "HIPAA Compliance | Stitch";
 const notFoundTitle = "404 | Page Not Found";
 
 class WebsiteRouter extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     showTopBanner: true
-  //   };
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      showModal: true
+    };
+  }
 
-  // componentWillMount() {
-  //   const visited = localStorage["visited"];
-  //   if (visited) {
-  //     this.setState({ showTopBanner: false });
-  //   } else {
-  //     localStorage["visited"] = true;
-  //     this.setState({ showTopBanner: true });
-  //   }
-  // }
+  handleClose = () => {
+    this.setState({ showModal: false });
+  };
 
   render() {
     return (
@@ -141,6 +137,11 @@ class WebsiteRouter extends Component {
 
             <Route path="*" component={withTitle(notFoundTitle, NotFound)} />
           </Switch>
+
+          <FullPageBanner
+            show={this.state.showModal}
+            onHide={this.handleClose}
+          />
         </ScrollToTop>
       </div>
     );

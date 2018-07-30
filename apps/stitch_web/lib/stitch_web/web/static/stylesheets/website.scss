@@ -2296,6 +2296,82 @@
   }
 }
 
+#full-page-banner {
+  .modal-dialog {
+    width: 100%;
+    max-width: -webkit-fill-available;
+    margin-left: 5vw;
+    margin-right: 5vw;
+  }
+
+  .modal-content {
+    color: #fff;
+    background: $brand-primary;
+    border-radius: 0;
+
+    .modal-body {
+      padding: 45px;
+      @media (min-width: $screen-md) {
+        padding: 80px 100px;
+      }
+
+      .flex-box {
+        display: flex;
+        align-items: center;
+        @media (max-width: $screen-md) {
+          flex-direction: column;
+        }
+
+        .flex-item {
+          flex: 1;
+          @media (max-width: $screen-md) {
+            text-align: center;
+          }
+
+          &:first-of-type {
+            @media (min-width: $screen-md) {
+              padding-right: 95px;
+            }
+          }
+        }
+      }
+
+      h1 {
+        font-size: calc(2rem + (12 * (100vw - 360px) / 624));
+        font-weight: 900;
+        margin: 0 0 40px;
+        @media (min-width: $screen-lg) {
+          font-size: 3.125rem;
+        }
+      }
+
+      p {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 40px;
+      }
+
+      .btn {
+        color: $brand-primary;
+        font-size: 24px;
+        font-weight: 900;
+        background: #fff;
+        border-color: transparent;
+        padding: 15px 25px;
+        margin-bottom: 30px;
+      }
+
+      .subtext {
+        font-size: 16px;
+
+        a {
+          color: #72a9e1;
+        }
+      }
+    }
+  }
+}
+
 .video-modal {
   .modal-dialog {
     width: 100%;
