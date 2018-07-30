@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { withRouter, Route, Switch } from "react-router-dom";
-
 import withTitle from "../util/with_document_title";
 
 import ScrollToTop from "./components/scrollToTop";
