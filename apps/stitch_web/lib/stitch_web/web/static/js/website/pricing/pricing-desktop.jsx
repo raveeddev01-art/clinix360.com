@@ -61,7 +61,7 @@ export default class PricingDesktop extends Component {
 
                 <h2>
                   <span>$</span>
-                  {monthlyPricing ? 59 : 49}
+                  {monthlyPricing ? 6 : 5}
                 </h2>
 
                 <p className="text-muted">
@@ -86,7 +86,7 @@ export default class PricingDesktop extends Component {
 
                 <h2>
                   <span>$</span>
-                  {monthlyPricing ? 119 : 99}
+                  {monthlyPricing ? 12 : 10}
                 </h2>
 
                 <p className="text-muted">
