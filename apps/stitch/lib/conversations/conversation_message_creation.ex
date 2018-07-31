@@ -4,8 +4,8 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
   Similar to MessageCreation module for Connect.
   """
   use Ecto.Schema
-
   alias Ecto.Multi
+  import Ecto.Query
 
   alias Stitch.{
     Repo,
@@ -102,6 +102,7 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     |> Multi.insert(:conversation_message, ConversationMessage.changeset(struct, attrs))
     |> Multi.update_all(:increment_provider_unread_counter, increment_provider_unread_query, [])
     |> Multi.update_all(:increment_patient_unread_counter, increment_patient_unread_query, [])
+    |> Multi.update_all(:opened_conversation, enforce_opened_conversation(conversation), [])
     |> ReadStatus.mark_as_read_on_creation(
       conversation,
       provider_sender,
@@ -132,6 +133,7 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     Multi.new()
     |> Multi.insert(:conversation_message, ConversationMessage.changeset(struct, attrs))
     |> Multi.update_all(:increment_provider_unread_counter, increment_provider_unread_query, [])
+    |> Multi.update_all(:opened_conversation, enforce_opened_conversation(conversation), [])
     |> Repo.transaction()
     |> post_creation()
   end
@@ -145,4 +147,10 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
   end
 
   defp post_creation(transaction_response), do: transaction_response
+
+  def enforce_opened_conversation(conversation) do
+    Conversation
+    |> where(id: ^conversation.id)
+    |> update([c], set: [open: true])
+  end
 end
