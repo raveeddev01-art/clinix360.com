@@ -11,13 +11,10 @@ class FullPageBanner extends Component {
         show={this.props.show}
         onHide={this.props.onHide}
         backdrop="static"
+        backdropClassName="white-backdrop"
         animation={false}
         id="full-page-banner"
       >
-        <a role="button" className="close-modal" onClick={this.props.onHide}>
-          <i className="fa fa-close" />
-        </a>
-
         <Modal.Body>
           <div className="flex-box">
             <div className="flex-item">
@@ -39,7 +36,7 @@ class FullPageBanner extends Component {
               </p>
             </div>
 
-            <div className="flex-item hidden-xs hidden-sm">
+            <div className="flex-item">
               <img
                 src="/images/engage-header.png"
                 alt="Stitch Platform"
