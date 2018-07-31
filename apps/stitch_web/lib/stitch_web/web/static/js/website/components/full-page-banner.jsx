@@ -10,9 +10,14 @@ class FullPageBanner extends Component {
       <Modal
         show={this.props.show}
         onHide={this.props.onHide}
-        backdropStyle={{ background: "#ffffff", opacity: "1" }}
+        backdropClassName="white-backdrop"
+        animation={false}
         id="full-page-banner"
       >
+        <a role="button" className="close-modal" onClick={this.onHide}>
+          <i className="fa fa-close" />
+        </a>
+
         <Modal.Body>
           <div className="flex-box">
             <div className="flex-item">
@@ -27,7 +32,7 @@ class FullPageBanner extends Component {
 
               <p className="subtext">
                 Or,{" "}
-                <a href={`https://${applicationHost}/signin`}>
+                <a role="button" onClick={this.props.onHide}>
                   access Stitch Connect
                 </a>{" "}
                 for team messaging.
