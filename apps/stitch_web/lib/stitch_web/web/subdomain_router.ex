@@ -149,6 +149,9 @@ defmodule Stitch.Web.SubdomainRouter do
     )
 
     post("/conversation_messages/search", ConversationMessageController, :patient_search)
+
+    resources("/devices", PatientDeviceController, only: [:create])
+    post("/devices/unregister", PatientDeviceController, :delete)
   end
 
   scope "/patient", as: :patient do
