@@ -11,7 +11,6 @@ class FullPageBanner extends Component {
         show={this.props.show}
         onHide={this.props.onHide}
         backdrop="static"
-        backdropClassName="white-backdrop"
         animation={false}
         id="full-page-banner"
       >
@@ -40,7 +39,7 @@ class FullPageBanner extends Component {
               </p>
             </div>
 
-            <div className="flex-item">
+            <div className="flex-item hidden-xs hidden-sm">
               <img
                 src="/images/engage-header.png"
                 alt="Stitch Platform"
