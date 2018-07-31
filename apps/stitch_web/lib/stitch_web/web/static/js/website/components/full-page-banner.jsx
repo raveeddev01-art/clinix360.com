@@ -10,13 +10,14 @@ class FullPageBanner extends Component {
       <Modal
         show={this.props.show}
         onHide={this.props.onHide}
+        backdrop="static"
         backdropClassName="white-backdrop"
         animation={false}
         id="full-page-banner"
       >
-        <a role="button" className="close-modal" onClick={this.onHide}>
+        {/* <a role="button" className="close-modal" onClick={this.props.onHide}>
           <i className="fa fa-close" />
-        </a>
+        </a> */}
 
         <Modal.Body>
           <div className="flex-box">

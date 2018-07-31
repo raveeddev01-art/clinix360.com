@@ -674,7 +674,7 @@
             "required": true,
             "name": "message",
             "in": "body",
-            "description": "Message to create. Must include 'text_content' attribute."
+            "description": "Message to create. Must include 'text_content' attribute.\n\nFor uploads, must include `type: \"upload\"` and the `fields` object with `filetype`,\n`mimetype`, `size_in_bytes`, and `url`.\n\n```\nmessage: {\n  text_content: \"Check out this file.\",\n  type: \"upload\",\n  fields: {\n    filename: \"config.json\",\n    mimetype: \"application/json\",\n    size_in_bytes: 1523,\n    url: \"https://s3.amazonaws.com/stitch-content/foo-bar-baz.json\"\n  }\n}\n```\n"
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_create",
@@ -1163,7 +1163,7 @@
             "required": true,
             "name": "message",
             "in": "body",
-            "description": "Message to create. Must include 'text_content' attribute."
+            "description": "Message to create. Must include 'text_content' attribute.\n\nFor uploads, must include `type: \"upload\"` and the `fields` object with `filetype`,\n`mimetype`, `size_in_bytes`, and `url`.\n\n```\nmessage: {\n  text_content: \"Check out this file.\",\n  type: \"upload\",\n  fields: {\n    filename: \"config.json\",\n    mimetype: \"application/json\",\n    size_in_bytes: 1523,\n    url: \"https://s3.amazonaws.com/stitch-content/foo-bar-baz.json\"\n  }\n}\n```\n"
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.create",
