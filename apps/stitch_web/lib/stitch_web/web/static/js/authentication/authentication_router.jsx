@@ -32,13 +32,6 @@ class AuthenticationRouter extends Component {
       <div className={authWrapperClass}>
         <Helmet>
           <title>{titleStore.title}</title>
-
-          <script type="text/javascript">{`
-              window.intercomSettings = {
-                app_id: "jig8cj9z",
-                hide_default_launcher: false
-              };
-          `}</script>
         </Helmet>
         <Switch>
           {/* PROVIDER ROUTES */}
