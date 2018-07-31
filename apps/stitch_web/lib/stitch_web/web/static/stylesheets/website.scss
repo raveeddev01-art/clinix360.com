@@ -2337,12 +2337,12 @@
     border-radius: 0;
     @media (max-width: $screen-md) {
       min-height: 100vh;
-      height: 100vh;
     }
 
     .modal-body {
       display: flex;
-      height: 100vh;
+      align-items: center;
+      min-height: 100vh;
       padding: 12vw 10vw;
       @media (min-width: $screen-md) {
         // height: auto;
@@ -2356,6 +2356,10 @@
           height: 100%;
           flex-direction: column;
         }
+        @media (min-width: 1280px) {
+          max-width: 1140px;
+          margin: 0 auto;
+        }
 
         .flex-item {
           flex: 1;
@@ -2363,7 +2367,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            text-align: center;
           }
 
           &:first-of-type {
