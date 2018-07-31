@@ -2359,6 +2359,9 @@
         border-color: transparent;
         padding: 15px 25px;
         margin-bottom: 30px;
+        @media (max-width: $screen-md) {
+          font-size: 20px;
+        }
       }
 
       .subtext {
