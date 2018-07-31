@@ -4,15 +4,11 @@ defmodule Stitch.Files.EngageUpload do
     Files.EngageUpload,
     Files.PatientUpload,
     Files.Upload,
-    Files.UploadComment,
-    Files.GroupUpload,
     Files.Thumb,
     Engage.ConversationMessage.ConversationMessageCreation,
-    Rand,
     Patient,
     Repo,
-    Team,
-    Group
+    Team
   }
 
   use Ecto.Schema

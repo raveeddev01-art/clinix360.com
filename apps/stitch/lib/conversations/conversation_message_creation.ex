@@ -19,7 +19,7 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
   def create_with_optional_upload(
         conversation,
         %Patient{} = patient_sender,
-        %{"type" => "upload", "fields" => feilds} = attrs
+        %{"type" => "upload", "fields" => _feilds} = attrs
       ) do
     provider =
       Stitch.Engage.ConversationQueries.providers_for_conversation(conversation) |> List.first()
@@ -36,7 +36,7 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
   def create_with_optional_upload(
         conversation,
         %User{} = provider_sender,
-        %{"type" => "upload", "fields" => feilds} = attrs
+        %{"type" => "upload", "fields" => _feilds} = attrs
       ) do
     patient =
       Stitch.Engage.ConversationQueries.patients_for_convsersation(conversation) |> List.first()
