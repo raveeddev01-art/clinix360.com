@@ -126,7 +126,25 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
                 message(:object)
               end
             end,
-            "Message to create. Must include 'text_content' attribute.",
+            """
+            Message to create. Must include 'text_content' attribute.
+
+            For uploads, must include `type: "upload"` and the `fields` object with `filetype`,
+            `mimetype`, `size_in_bytes`, and `url`.
+
+            ```
+            message: {
+              text_content: "Check out this file.",
+              type: "upload",
+              fields: {
+                filename: "config.json",
+                mimetype: "application/json",
+                size_in_bytes: 1523,
+                url: "https://s3.amazonaws.com/stitch-content/foo-bar-baz.json"
+              }
+            }
+            ```
+            """,
             required: true
           )
         end
@@ -207,7 +225,25 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
                 message(:object)
               end
             end,
-            "Message to create. Must include 'text_content' attribute.",
+            """
+            Message to create. Must include 'text_content' attribute.
+
+            For uploads, must include `type: "upload"` and the `fields` object with `filetype`,
+            `mimetype`, `size_in_bytes`, and `url`.
+
+            ```
+            message: {
+              text_content: "Check out this file.",
+              type: "upload",
+              fields: {
+                filename: "config.json",
+                mimetype: "application/json",
+                size_in_bytes: 1523,
+                url: "https://s3.amazonaws.com/stitch-content/foo-bar-baz.json"
+              }
+            }
+            ```
+            """,
             required: true
           )
         end

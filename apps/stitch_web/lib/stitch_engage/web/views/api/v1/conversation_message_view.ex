@@ -2,7 +2,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
   alias Stitch.{
     Accounts.User,
     Patient,
-    Message.Reaction
+    Message.Reaction,
+    Files.EngageUpload
   }
 
   alias Stitch.Web.Api.V1.{
@@ -16,6 +17,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
   use Stitch.Web, :view
 
   @endpoint Stitch.Web.Endpoint
+  import Stitch.Web.SubdomainRouter.Helpers
 
   def render("index.json", %{conversation_messages: conversation_messages}) do
     conversation_messages_json(conversation_messages)
@@ -57,8 +59,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       conversation_id: conversation_message.conversation_id,
       deleted: conversation_message.deleted,
       text_content: conversation_message.text_content,
-      fields:
-        MessagesHelper.render_fields(conversation_message, false, @endpoint.files_struct_url()),
+      fields: render_fields(conversation_message, @endpoint.files_struct_url()),
       type: type(conversation_message.type),
       inserted_at: conversation_message.inserted_at,
       updated_at: conversation_message.updated_at,
@@ -68,10 +69,22 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       patient_reactions_web: conversation_message.patient_reactions,
       link_previews: conversation_message.link_previews,
       request_id: conversation_message.request_id,
-      upload_id: conversation_message.upload_id,
+      upload_id: conversation_message.engage_upload_id,
       patient_read_status: conversation_message.patient_read_status,
       provider_read_status: conversation_message.provider_read_status
     }
+  end
+
+  def render_fields(conversation_message, files_endpoint) do
+    encoded_file_id =
+      EngageUpload.encode_url_id(%EngageUpload{id: conversation_message.engage_upload_id})
+
+    filename =
+      Map.get_lazy(conversation_message.fields, "filename", fn -> Stitch.Rand.token(8) end)
+
+    url = files_file_url(files_endpoint, :download, encoded_file_id, filename)
+    preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
+    Map.merge(conversation_message.fields, %{"url" => url, "preview_url" => preview_url})
   end
 
   def sender_info(nil, nil), do: nil

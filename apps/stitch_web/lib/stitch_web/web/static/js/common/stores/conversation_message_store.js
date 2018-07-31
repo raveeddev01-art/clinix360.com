@@ -9,6 +9,7 @@ import BaseMessageStore from "common/abstract-stores/base-message-store";
 
 class ConversationMessageStore extends BaseMessageStore {
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
+  @observable isLoaded = false;
 
   // ===========================
   // Getters
@@ -118,6 +119,7 @@ class ConversationMessageStore extends BaseMessageStore {
     this.mountedMessages = [];
     this.messageInEdit = null;
     this.isScrollBottom = true;
+    this.isLoaded = false;
   }
 
   isCurrentChannelPayload(payload) {
@@ -144,6 +146,7 @@ class ConversationMessageStore extends BaseMessageStore {
   @action
   onConversationLoaded = conversation => {
     this.messages = conversation.conversation_messages;
+    this.isLoaded = true;
     this.scrollToBottom();
   };
 

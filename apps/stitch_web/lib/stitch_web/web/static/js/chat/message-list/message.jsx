@@ -195,6 +195,7 @@ class Message extends PureComponent {
 
                 <div className="message-content-wrapper">
                   <MessageContent
+                    isConversationMessage={isConversationMessage}
                     messageStore={messageStore}
                     message={message}
                     user={user}

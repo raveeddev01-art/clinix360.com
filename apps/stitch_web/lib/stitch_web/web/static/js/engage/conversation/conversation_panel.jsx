@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
+import UploadProgress from "file-upload/upload-progress";
 import MessageForm from "chat/message-form/message-form";
 import Topbar from "./components/topbar";
 import MessageList from "./components/message-list";
@@ -11,9 +12,14 @@ import MessageList from "./components/message-list";
 class ConversationPanel extends Component {
   render() {
     const { conversationMessageStore, asPatient } = this.props;
+    const className = conversationMessageStore.isLoaded ? "loaded" : "";
+
     return (
-      <div id="chat-container">
+      <div id="chat-container" className={className}>
         <Topbar asPatient={asPatient} />
+        <div className="container-bars">
+          <UploadProgress />
+        </div>
         <MessageList />
         <div className="flex-footer">
           <MessageForm
