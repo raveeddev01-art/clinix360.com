@@ -14,8 +14,8 @@ defmodule Stitch.Pigeon do
 
   def engage_apns_config do
     # workaround becase we can't pass cert as a string
-    cert_content = "ENGAGE_APNS_CERT_B64" |> System.get_env() |> Base.decode64!()
-    key_content = "ENGAGE_APNS_KEY_B64" |> System.get_env() |> Base.decode64!()
+    cert_content = (System.get_env("ENGAGE_APNS_CERT_B64") || "") |> Base.decode64!()
+    key_content = (System.get_env("ENGAGE_APNS_KEY_B64") || "") |> Base.decode64!()
     cert_path = Path.join([Application.app_dir(:stitch, "priv"), "engage_apns.cert"])
     File.write!(cert_path, cert_content)
 
