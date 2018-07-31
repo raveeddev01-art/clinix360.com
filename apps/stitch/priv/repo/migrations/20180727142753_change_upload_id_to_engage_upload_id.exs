@@ -9,6 +9,10 @@ defmodule Stitch.Repo.Migrations.ChangeUploadIdToEngageUploadId do
   end
 
   def down do
+    execute("delete from engage_uploads")
+
+    flush
+
     alter table(:conversation_messages) do
       remove(:engage_upload_id)
       add(:upload_id, references(:engage_uploads, on_delete: :delete_all))
