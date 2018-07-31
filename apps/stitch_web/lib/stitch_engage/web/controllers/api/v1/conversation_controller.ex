@@ -85,7 +85,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       conversation = conversation_with_show_data(conversation, user, [conversation_message])
       patient = conversation.patients |> List.first()
 
-      creation_events(conversation, patient)
+      creation_events(conversation, patient, conversation_message)
 
       render(conn, "show.json", conversation: conversation)
     else
@@ -103,7 +103,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       conversation_message = Repo.preload(conversation_message, [:patient, :provider])
       conversation = conversation_with_show_data(conversation, patient, [conversation_message])
 
-      creation_events(conversation, patient)
+      creation_events(conversation, patient, conversation_message)
 
       render(conn, "patient_show.json", conversation: conversation)
     else
@@ -125,13 +125,20 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     {:error, :unprocessable_entity, "There was a problem creating this conversation."}
   end
 
-  defp creation_events(conversation, patient) do
+  defp creation_events(conversation, patient, conversation_message) do
     Stitch.Task.start(fn ->
       InboxChannel.broadcast_conversation_creation(conversation)
       EventsChannel.broadcast_conversation_creation_to_patient(patient.id, conversation)
 
       unread_conversations_count = PatientQueries.unread_conversations_count(patient.id)
       EventsChannel.broadcast_unread_conversations_count(patient, unread_conversations_count)
+
+      conversation_message = Repo.preload(conversation_message, [:provider, :patient])
+
+      StitchEngage.Web.ConversationMessageEventsService.conversation_message_creation_events(
+        conversation,
+        conversation_message
+      )
     end)
   end
 

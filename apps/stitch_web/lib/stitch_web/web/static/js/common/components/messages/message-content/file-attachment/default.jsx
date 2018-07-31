@@ -16,6 +16,7 @@ class DefaultFileAttachment extends Component {
       encoded_id,
       public_url,
       comment_count: commentCount,
+      isConversationMessage,
       onCommentsClick,
       onFileDownload,
       useActions,
@@ -55,6 +56,8 @@ class DefaultFileAttachment extends Component {
                 public_url={public_url}
                 message={message}
                 commentCount={commentCount}
+                isActionsVisible={isConversationMessage ? false : undefined}
+                isOriginalOpenVisible={isConversationMessage ? false : undefined}
                 onCommentsClick={onCommentsClick}
                 onFileDownload={onFileDownload}
               />
@@ -72,6 +75,7 @@ DefaultFileAttachment.propTypes = {
   url: PropTypes.string.isRequired,
   comment_count: PropTypes.number,
   onCommentsClick: PropTypes.func,
+  isConversationMessage: PropTypes.bool.isRequired,
   onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool,
   user_id: PropTypes.number.isRequired,
@@ -87,6 +91,7 @@ DefaultFileAttachment.defaultProps = {
   useActions: true,
   message: null,
   comment_count: 0,
+  isConversationMessage: false,
   onCommentsClick: undefined
 };
 

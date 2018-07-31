@@ -29,10 +29,14 @@ class UploadZone extends Component {
   };
 
   onDrop = files => {
-    const { uploadStore } = this.props;
+    const { uploadStore, isEngage } = this.props;
 
     if (files.length) {
-      uploadStore.openUploadModal(files[0]);
+      uploadStore.openUploadModal(
+        files[0],
+        undefined,
+        isEngage ? "engage" : "connect"
+      );
     }
 
     this.setState({
@@ -72,11 +76,13 @@ class UploadZone extends Component {
 }
 
 UploadZone.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  isEngage: PropTypes.bool.isRequired
 };
 
 UploadZone.defaultProps = {
-  children: null
+  children: null,
+  isEngage: false
 };
 
 export default UploadZone;

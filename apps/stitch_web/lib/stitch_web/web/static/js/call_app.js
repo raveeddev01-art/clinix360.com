@@ -1,0 +1,15 @@
+import "babel-polyfill";
+
+import "./util/electron";
+import "./util/fetch";
+import "./util/moment";
+import "./util/notify";
+import "./util/polyfills";
+import "./util/socket";
+
+import componentMap from "./util/call_app_component_map";
+import mounter from "./util/mounter";
+
+document.addEventListener("DOMContentLoaded", () => {
+  mounter(componentMap);
+});

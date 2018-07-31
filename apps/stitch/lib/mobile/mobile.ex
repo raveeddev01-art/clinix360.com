@@ -1,15 +1,37 @@
 defmodule Stitch.Mobile do
   import Ecto.Query
-  alias Stitch.{Accounts.User, GroupUser, Mobile.Device, Repo}
+  alias Stitch.{Accounts.User, GroupUser, Mobile.Device, Mobile.PatientDevice, Repo, Patient}
 
   def list_user_devices(user_id) do
     Repo.all(from(d in Device, where: d.user_id == ^user_id))
+  end
+
+  def list_patient_devices(patient_id) do
+    PatientDevice
+    |> where(patient_id: ^patient_id)
+    |> Repo.all()
+    |> Enum.group_by(fn device -> device.type end)
+    |> Map.put_new("ios", [])
+    |> Map.put_new("android", [])
   end
 
   def register_device(%User{id: user_id}, attrs) do
     %Device{user_id: user_id}
     |> Device.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def register_device(%Patient{} = patient, attrs) do
+    %PatientDevice{patient: patient}
+    |> PatientDevice.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def remove_patient_device(type, token) when type in ["ios", "android"] do
+    PatientDevice
+    |> where(type: ^type)
+    |> where(token: ^token)
+    |> Repo.delete_all()
   end
 
   def remove_device(type, token) when type in ["ios", "android"] do

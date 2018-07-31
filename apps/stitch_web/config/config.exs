@@ -36,7 +36,8 @@ config :stitch_web,
   application_host: "#{System.get_env("APP_HOST")}#{if Mix.env() == :dev, do: ":4443"}",
   application_scheme: "https://",
   websocket_scheme: "wss://",
-  apns_topic: System.get_env("APNS_TOPIC")
+  apns_topic: System.get_env("APNS_TOPIC"),
+  apns_engage_topic: System.get_env("ENGAGE_APNS_TOPIC")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
@@ -74,7 +75,8 @@ config :stitch_web, StitchConnect.MessageMailer,
 config :pigeon,
   workers: [
     {Stitch.Pigeon, :apns_config},
-    {Stitch.Pigeon, :fcm_config}
+    {Stitch.Pigeon, :fcm_config},
+    {Stitch.Pigeon, :engage_apns_config}
   ]
 
 config :stitch_web, :phoenix_swagger,

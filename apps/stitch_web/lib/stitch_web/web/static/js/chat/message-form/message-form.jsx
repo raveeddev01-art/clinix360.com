@@ -177,7 +177,7 @@ class MessageForm extends Component {
   };
 
   onPaste = evt => {
-    const { uploadStore } = this.props;
+    const { uploadStore, isEngage } = this.props;
     const items = evt.clipboardData.items;
 
     some(items, item => {
@@ -186,7 +186,11 @@ class MessageForm extends Component {
       // browser only allows reading images. other files will be returned as null
       if (file) {
         const fileName = evt.clipboardData.getData("Text");
-        uploadStore.openUploadModal(file, fileName);
+        uploadStore.openUploadModal(
+          file,
+          fileName,
+          isEngage ? "engage" : "connect"
+        );
         // NOTE: for now, we supports pasting only 1 file. Stacking can be done later.
         evt.preventDefault();
         return true;
@@ -408,6 +412,7 @@ class MessageForm extends Component {
 
 MessageForm.propTypes = {
   messageStore: PropTypes.object.isRequired,
+  isEngage: PropTypes.bool.isRequired,
   allowTypingUsers: PropTypes.bool,
   allowMention: PropTypes.bool,
   allowJumpingIndicator: PropTypes.bool,
@@ -418,6 +423,7 @@ MessageForm.defaultProps = {
   allowTypingUsers: true,
   allowMention: true,
   allowJumpingIndicator: true,
+  isEngage: false,
   currentGroup: null
 };
 

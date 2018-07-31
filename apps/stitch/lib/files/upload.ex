@@ -2,6 +2,7 @@ defmodule Stitch.Files.Upload do
   alias Stitch.{
     Accounts.User,
     Files.Upload,
+    Files.EngageUpload,
     Files.UploadComment,
     Files.GroupUpload,
     Files.Thumb,
@@ -110,11 +111,11 @@ defmodule Stitch.Files.Upload do
     |> Repo.update()
   end
 
-  defp put_default_name(%Ecto.Changeset{changes: %{filename: filename}} = changeset)
-       when not is_nil(filename) and filename != "",
-       do: changeset
+  def put_default_name(%Ecto.Changeset{changes: %{filename: filename}} = changeset)
+      when not is_nil(filename) and filename != "",
+      do: changeset
 
-  defp put_default_name(changeset) do
+  def put_default_name(changeset) do
     value = String.downcase(Rand.token(32))
     put_change(changeset, :filename, value)
   end
@@ -177,8 +178,8 @@ defmodule Stitch.Files.Upload do
     end
   end
 
-  @spec has_preview?(Upload.t()) :: boolean
-  def has_preview?(%Upload{} = upload) do
+  @spec has_preview?(Upload.t() | EngageUpload.t()) :: boolean
+  def has_preview?(upload) do
     !!(upload.preview_height && upload.preview_width && upload.preview_url)
   end
 

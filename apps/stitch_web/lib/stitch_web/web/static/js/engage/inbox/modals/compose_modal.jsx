@@ -94,10 +94,6 @@ class ComposeModal extends Component {
       <Modal.Footer>
         <Row>
           <Col sm={9} smOffset={3}>
-            <Button bsSize="large" className="attachment-btn">
-              <i className="fa fa-paperclip" />
-            </Button>
-
             <div className="pull-right">
               <Button bsSize="large" onClick={closeModal}>
                 Cancel

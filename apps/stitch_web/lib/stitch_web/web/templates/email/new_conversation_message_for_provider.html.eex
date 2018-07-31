@@ -1,0 +1,5 @@
+<h1>New unread message</h1>
+
+<%= @author_full_name %> sent a new conversation message.
+
+(Provider template)

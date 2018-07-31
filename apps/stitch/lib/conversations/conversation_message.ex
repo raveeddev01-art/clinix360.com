@@ -18,7 +18,7 @@ defmodule Stitch.Engage.ConversationMessage do
     Audit,
     Engage.Conversation,
     Engage.ConversationMessage,
-    Files.Upload,
+    Files.EngageUpload,
     Patient,
     ReadStatus,
     Repo
@@ -48,6 +48,7 @@ defmodule Stitch.Engage.ConversationMessage do
   ]
 
   @required_attributes [:text_content]
+  @required_upload_attributes [:type, :fields, :engage_upload_id]
 
   @page_length 50
 
@@ -58,7 +59,7 @@ defmodule Stitch.Engage.ConversationMessage do
     # https://hexdocs.pm/ecto/Ecto.Schema.html#belongs_to/3-polymorphic-associations
     belongs_to(:patient, Patient)
     belongs_to(:provider, User)
-    belongs_to(:upload, Upload)
+    belongs_to(:engage_upload, EngageUpload)
 
     field(:text_content, :string)
 
@@ -85,12 +86,11 @@ defmodule Stitch.Engage.ConversationMessage do
   # TODO: Do not cast all attributes.
   # This is temporarily the case as we develop engage.
 
-  def changeset(%ConversationMessage{type: type} = struct, params)
-      when type == "file_share" or type == "upload" do
+  def changeset(%ConversationMessage{} = struct, %{"type" => type} = params)
+      when type == "upload" do
     struct
-    |> base_changeset(params)
-    |> validate_required([:fields, :type])
-    |> validate_inclusion(:type, ["file_share"])
+    |> cast(params, @all_attributes ++ [:engage_upload_id])
+    |> validate_required(@required_upload_attributes)
   end
 
   def changeset(%ConversationMessage{} = struct, params) do
@@ -149,5 +149,9 @@ defmodule Stitch.Engage.ConversationMessage do
     |> Multi.delete(:conversation_message, conversation_message)
     |> Repo.transaction()
     |> Audit.ConversationMessage.track_delete(user)
+  end
+
+  def get_author(conversation_message) do
+    conversation_message.patient || conversation_message.provider
   end
 end

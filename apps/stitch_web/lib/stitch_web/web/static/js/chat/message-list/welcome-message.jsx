@@ -66,7 +66,7 @@ class WelcomeMessage extends Component {
     const { groupStore } = this.props;
     let userNameText = "";
 
-    if (groupStore.group.users.length === 1) {
+    if (groupStore.isLastMember) {
       return (
         <div className="welcome-message__text">
           This is a private place for you to work, upload personal files, track

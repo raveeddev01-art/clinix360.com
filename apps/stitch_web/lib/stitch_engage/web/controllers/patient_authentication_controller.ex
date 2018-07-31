@@ -8,7 +8,7 @@ defmodule StitchEngage.Web.PatientAuthenticationController do
 
   def login(conn, _params) do
     with {:token, token} when not is_nil(token) <-
-           {:token, Stitch.Web.ControllerHelpers.get_patient_session_token(conn)},
+           {:token, Stitch.Web.SessionService.get_patient_session_token(conn)},
          %Patient{} <- PatientQueries.get_by_token(token) do
       # If the patient is already logged in, redirect to patient homepage.
       redirect(conn, to: "/patient")

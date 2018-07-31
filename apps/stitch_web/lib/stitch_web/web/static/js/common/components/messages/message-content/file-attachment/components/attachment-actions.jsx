@@ -50,6 +50,7 @@ class AttachmentActions extends Component {
       onFileDownload,
       isOriginalOpenVisible,
       isDownloadVisible,
+      isActionsVisible,
       message,
       public_url,
       encoded_id,
@@ -100,60 +101,62 @@ class AttachmentActions extends Component {
           </OverlayTrigger>
         )}
 
-        <SmartDropdown id="file-actions-dropdown">
-          <Dropdown.Toggle useAnchor noCaret>
-            <OverlayTrigger
-              placement="top"
-              delayShow={150}
-              overlay={<Tooltip id="message-actions">More Actions</Tooltip>}
-            >
-              <Button>
-                <i className="fa fa-ellipsis-h" />
-              </Button>
-            </OverlayTrigger>
-          </Dropdown.Toggle>
-          <PortalDropdownMenu bsRole="menu">
-            <MenuItem onClick={this.shareFile}>Share File</MenuItem>
+        {isActionsVisible && (
+          <SmartDropdown id="file-actions-dropdown">
+            <Dropdown.Toggle useAnchor noCaret>
+              <OverlayTrigger
+                placement="top"
+                delayShow={150}
+                overlay={<Tooltip id="message-actions">More Actions</Tooltip>}
+              >
+                <Button>
+                  <i className="fa fa-ellipsis-h" />
+                </Button>
+              </OverlayTrigger>
+            </Dropdown.Toggle>
+            <PortalDropdownMenu bsRole="menu">
+              <MenuItem onClick={this.shareFile}>Share File</MenuItem>
 
-            {message && (
-              <MenuItem onClick={this.togglePin}>
-                {message.pinned ? "Unpin" : "Pin"} message
-              </MenuItem>
-            )}
+              {message && (
+                <MenuItem onClick={this.togglePin}>
+                  {message.pinned ? "Unpin" : "Pin"} message
+                </MenuItem>
+              )}
 
-            <CopyToClipboard text={detailPageUrl} onCopy={this.copy}>
-              <MenuItem>Copy Link</MenuItem>
-            </CopyToClipboard>
+              <CopyToClipboard text={detailPageUrl} onCopy={this.copy}>
+                <MenuItem>Copy Link</MenuItem>
+              </CopyToClipboard>
 
-            {!public_url && (
-              <MenuItem onClick={this.createPublicLink}>
-                Create External Link
-              </MenuItem>
-            )}
+              {!public_url && (
+                <MenuItem onClick={this.createPublicLink}>
+                  Create External Link
+                </MenuItem>
+              )}
 
-            {public_url && (
-              <MenuItem onClick={this.revokePublicLink}>
-                Revoke External Link
-              </MenuItem>
-            )}
+              {public_url && (
+                <MenuItem onClick={this.revokePublicLink}>
+                  Revoke External Link
+                </MenuItem>
+              )}
 
-            {public_url && (
-              <MenuItem target="_blank" href={public_url}>
-                Open Public Link
-              </MenuItem>
-            )}
+              {public_url && (
+                <MenuItem target="_blank" href={public_url}>
+                  Open Public Link
+                </MenuItem>
+              )}
 
-            {isAdminOrOwner(user_id) && <MenuItem divider />}
+              {isAdminOrOwner(user_id) && <MenuItem divider />}
 
-            {onCommentsClick && (
-              <MenuItem onClick={onCommentsClick}>View Details</MenuItem>
-            )}
+              {onCommentsClick && (
+                <MenuItem onClick={onCommentsClick}>View Details</MenuItem>
+              )}
 
-            {isAdminOrOwner(user_id) && (
-              <MenuItem onClick={this.delete}>Delete File</MenuItem>
-            )}
-          </PortalDropdownMenu>
-        </SmartDropdown>
+              {isAdminOrOwner(user_id) && (
+                <MenuItem onClick={this.delete}>Delete File</MenuItem>
+              )}
+            </PortalDropdownMenu>
+          </SmartDropdown>
+        )}
       </div>
     );
   }
@@ -166,6 +169,7 @@ AttachmentActions.propTypes = {
   encoded_id: PropTypes.string,
   file_id: PropTypes.number.isRequired,
   message: PropTypes.object,
+  isActionsVisible: PropTypes.bool.isRequired,
   isOriginalOpenVisible: PropTypes.bool.isRequired,
   isDownloadVisible: PropTypes.bool.isRequired,
   onCommentsClick: PropTypes.func,
@@ -174,6 +178,7 @@ AttachmentActions.propTypes = {
 
 AttachmentActions.defaultProps = {
   encoded_id: "",
+  isActionsVisible: true,
   isOriginalOpenVisible: true,
   isDownloadVisible: true,
   onCommentsClick: null,

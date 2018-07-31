@@ -278,16 +278,20 @@ class MessageActions extends PureComponent {
                 <MenuItem onClick={this.markAsUnread}>Mark as unread</MenuItem>
               )}
 
-            <CopyToClipboard
-              text={
-                message.type === "upload" ? detailPageUrl : message.text_content
-              }
-              onCopy={this.copy}
-            >
-              <MenuItem>
-                Copy {message.type === "upload" ? "Link" : "Message"}
-              </MenuItem>
-            </CopyToClipboard>
+            {message.type !== "call" && (
+              <CopyToClipboard
+                text={
+                  message.type === "upload"
+                    ? detailPageUrl
+                    : message.text_content
+                }
+                onCopy={this.copy}
+              >
+                <MenuItem>
+                  Copy {message.type === "upload" ? "Link" : "Message"}
+                </MenuItem>
+              </CopyToClipboard>
+            )}
 
             {mine &&
               message.type !== "upload" &&

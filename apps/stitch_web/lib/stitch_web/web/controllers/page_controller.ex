@@ -2,8 +2,16 @@ defmodule Stitch.Web.PageController do
   use Stitch.Web, :controller
 
   import Ecto.Query
-  alias Stitch.{Repo, Accounts.User}
-  alias Stitch.Web.{PageService, Api.V1.UserView}
+
+  alias Stitch.{
+    Repo,
+    Accounts.User
+  }
+
+  alias Stitch.Web.{
+    PageService,
+    Api.V1.UserView
+  }
 
   def index(conn, _params) do
     render(conn, "index.html", app_params: PageService.app_params(conn))

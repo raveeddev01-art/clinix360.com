@@ -184,6 +184,18 @@ defmodule Stitch.Web.EventsChannel do
     })
   end
 
+  def broadcast_incoming_call(user_id, caller_id, hash) do
+    @endpoint.broadcast("events:#{user_id}", "incoming_call", %{caller_id: caller_id, hash: hash})
+  end
+
+  def broadcast_declined_call(user_id, caller_id, hash) do
+    @endpoint.broadcast("events:#{user_id}", "declined_call", %{caller_id: caller_id, hash: hash})
+  end
+
+  def broadcast_ended_call(user_id, caller_id, hash) do
+    @endpoint.broadcast("events:#{user_id}", "ended_call", %{caller_id: caller_id, hash: hash})
+  end
+
   def broadcast_logout(%User{} = user, session_id) do
     @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
   end

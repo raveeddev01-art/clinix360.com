@@ -30,6 +30,7 @@ import NewsStore from "./news_store";
 import PatientsStore from "./patients_store";
 import InboxStore from "./inbox_store";
 import ConversationMessageStore from "./conversation_message_store";
+import CallStore from "./call_store";
 
 class RootStore {
   get apiBasePath() {
@@ -77,6 +78,7 @@ class RootStore {
     this.patientsStore = new PatientsStore(this);
     this.inboxStore = new InboxStore(this);
     this.conversationMessageStore = new ConversationMessageStore(this);
+    this.callStore = new CallStore(this);
   }
 
   onStoreInit() {

@@ -59,6 +59,11 @@ defmodule Stitch.Message.MessageCreation do
     end
   end
 
+  def create(group, user, %{"type" => "call", "call_id" => call_id} = attrs, presence) do
+    message = %Message{group: group, user: user, call_id: call_id}
+    do_create(message, attrs, presence)
+  end
+
   def create(group, user, %{"text_content" => _} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{group: group, user: user}

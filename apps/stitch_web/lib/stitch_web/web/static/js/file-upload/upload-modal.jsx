@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-
+import cx from "classnames";
 import Modal from "react-bootstrap/lib/Modal";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
@@ -28,12 +28,24 @@ export default class UploadModal extends Component {
 
   uploadFile = () => {
     const { uploadStore } = this.props;
-    if (!uploadStore.groupId) {
-      notify.show("Please select a room to upload file.", "error");
-      return;
+    if (uploadStore.from === "engage") {
+      if (!uploadStore.conversationId) {
+        notify.show("No engage conversation is selected.", "error");
+        return;
+      }
+
+      uploadStore.uploadFile(
+        `/conversations/${uploadStore.conversationId}/messages`
+      );
+    } else {
+      if (!uploadStore.groupId) {
+        notify.show("Please select a room to upload file.", "error");
+        return;
+      }
+
+      uploadStore.uploadFile(`/groups/${uploadStore.groupId}/messages`);
     }
 
-    uploadStore.uploadFile();
     this.toggleModal();
   };
 
@@ -49,12 +61,12 @@ export default class UploadModal extends Component {
   render() {
     const { uploadStore } = this.props;
     const show = uploadStore.isUploadModalVisible;
+
+    const uploadClassName = cx("sidemenu-modal", "upload-modal", {
+      "engage-upload-modal": uploadStore.from === "engage"
+    });
     return (
-      <Modal
-        className="sidemenu-modal upload-modal"
-        show={show}
-        onHide={this.toggleModal}
-      >
+      <Modal className={uploadClassName} show={show} onHide={this.toggleModal}>
         <Modal.Header>
           <Modal.Title>File</Modal.Title>
           <a role="link" onClick={this.toggleModal}>
@@ -84,40 +96,44 @@ export default class UploadModal extends Component {
                 </Col>
               </Row>
             </FormGroup>
-            <FormGroup bsSize="large">
-              <Row>
-                <Col componentClass={ControlLabel} sm={3}>
-                  Comment
-                  <br />
-                  <small>(optional)</small>
-                </Col>
+            {uploadStore.from !== "engage" && (
+              <FormGroup bsSize="large">
+                <Row>
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Comment
+                    <br />
+                    <small>(optional)</small>
+                  </Col>
 
-                <Col sm={9}>
-                  <FormControl
-                    as="textarea"
-                    name="description"
-                    value={uploadStore.description}
-                    onChange={this.handleChange("description")}
-                  />
-                  <HelpBlock>
-                    Comments will be added following the file upload
-                  </HelpBlock>
-                </Col>
-              </Row>
-            </FormGroup>
-            <FormGroup bsSize="large">
-              <Row>
-                <Col componentClass={ControlLabel} sm={3}>
-                  Room
-                </Col>
-                <Col sm={9}>
-                  <Groups
-                    value={uploadStore.groupId}
-                    onChange={this.onChangeGroup}
-                  />
-                </Col>
-              </Row>
-            </FormGroup>
+                  <Col sm={9}>
+                    <FormControl
+                      as="textarea"
+                      name="description"
+                      value={uploadStore.description}
+                      onChange={this.handleChange("description")}
+                    />
+                    <HelpBlock>
+                      Comments will be added following the file upload
+                    </HelpBlock>
+                  </Col>
+                </Row>
+              </FormGroup>
+            )}
+            {uploadStore.from === "connect" && (
+              <FormGroup bsSize="large">
+                <Row>
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Room
+                  </Col>
+                  <Col sm={9}>
+                    <Groups
+                      value={uploadStore.groupId}
+                      onChange={this.onChangeGroup}
+                    />
+                  </Col>
+                </Row>
+              </FormGroup>
+            )}
             <Row>
               <Col sm={12} className="text-right">
                 <Button bsSize="large" type="button" onClick={this.toggleModal}>
@@ -127,7 +143,7 @@ export default class UploadModal extends Component {
                   bsSize="large"
                   bsStyle="primary"
                   type="submit"
-                  disabled={!uploadStore.groupId || !uploadStore.title}
+                  disabled={!uploadStore.title}
                 >
                   Upload
                 </Button>

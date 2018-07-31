@@ -74,6 +74,12 @@ export APNS_KEY_B64=
 export APNS_MODE=dev
 export FCM_KEY=
 
+export ENGAGE_APNS_TOPIC="com.teamstitch.patient"
+export ENGAGE_APNS_CERT_PATH="cert.pem"
+export ENGAGE_APNS_KEY_PATH="key_unencrypted.pem"
+export ENGAGE_APNS_MODE=prod
+export ENGAGE_FCM_KEY=key
+
 export STRIPE_SECRET_KEY=
 export STRIPE_PUBLISHABLE_KEY=
 
@@ -86,6 +92,9 @@ export SENTRY_PUBLIC_DSN=
 
 export REDIS_URL= # optional
 export ELASTICSEARCH_URL= # optional
+
+export TOKBOX_API_KEY=
+export TOKBOX_SECRET=
 ```
 
 Source the file to add these environment variables to your current shell

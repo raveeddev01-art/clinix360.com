@@ -7,6 +7,7 @@ module.exports = [
   {
     entry: {
       index: "./lib/stitch_web/web/static/js/index.js",
+      call_app: "./lib/stitch_web/web/static/js/call_app.js",
       landing_app: "./lib/stitch_web/web/static/js/landing_app.js",
       patient_app: "./lib/stitch_web/web/static/js/patient_app.js"
     },
@@ -50,6 +51,7 @@ module.exports = [
   {
     entry: {
       app: "./lib/stitch_web/web/static/stylesheets/app.scss",
+      call_app: "./lib/stitch_web/web/static/stylesheets/call_app.scss",
       landing: "./lib/stitch_web/web/static/stylesheets/landing.scss",
       "landing-non-critical":
         "./lib/stitch_web/web/static/stylesheets/landing-non-critical.scss",
@@ -103,6 +105,10 @@ module.exports = [
         },
         {
           from: "./lib/stitch_web/web/static/audios/pop.mp3",
+          to: path.resolve(__dirname, "priv/static/audios")
+        },
+        {
+          from: "./lib/stitch_web/web/static/audios/calling.mp3",
           to: path.resolve(__dirname, "priv/static/audios")
         },
         {

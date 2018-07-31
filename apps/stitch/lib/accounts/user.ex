@@ -327,4 +327,8 @@ defmodule Stitch.Accounts.User do
   end
 
   def notification_sounds, do: @notification_sounds
+
+  @spec is_active?(User.t()) :: boolean
+  def is_active?(%User{disabled: false, onboarded: true}), do: true
+  def is_active?(_user), do: false
 end

@@ -100,7 +100,8 @@ class ChannelStore {
       notificationStore,
       presenceStore,
       sidemenuStore,
-      teamFileStore
+      teamFileStore,
+      callStore
     } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
@@ -130,6 +131,11 @@ class ChannelStore {
       "invitation_revoked",
       invitationStore.onInvitationRevoked
     );
+
+    // Call related
+    this.eventChannel.on("incoming_call", callStore.onIncomingCall);
+    this.eventChannel.on("declined_call", callStore.onDeclinedCall);
+    this.eventChannel.on("ended_call", callStore.onDismissCall);
 
     // App related
     this.eventChannel.on("new_app_version", this.disconnectAndReload);
@@ -251,6 +257,7 @@ class ChannelStore {
     // Message related
     this.groupChannel.on("new_msg", messageStore.onNewMessage);
     this.groupChannel.on("edit_msg", messageStore.onEditMessage);
+    this.groupChannel.on("update_msg", messageStore.onUpdateMessage);
     this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
     this.groupChannel.on("starred_message", messageStore.onStarredMessage);
     this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
