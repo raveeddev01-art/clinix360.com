@@ -27,7 +27,7 @@ class FullPageBanner extends Component {
 
               <Button href="http://stitch.health">See the new Stitch</Button>
 
-              <p className="subtext">
+              <p className="subtext hidden-xs hidden-sm">
                 Or,{" "}
                 <a role="button" onClick={this.props.onHide}>
                   access Stitch Connect
@@ -42,6 +42,14 @@ class FullPageBanner extends Component {
                 alt="Stitch Platform"
                 className="img-responsive"
               />
+
+              <p className="subtext hidden-md hidden-lg">
+                Or,{" "}
+                <a role="button" onClick={this.props.onHide}>
+                  access Stitch Connect
+                </a>{" "}
+                for team messaging.
+              </p>
             </div>
           </div>
         </Modal.Body>
