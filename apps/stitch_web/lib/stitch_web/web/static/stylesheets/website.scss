@@ -2310,22 +2310,7 @@
     width: 100%;
     max-width: -webkit-fill-available;
     margin: 0;
-    // margin-left: 5vw;
-    // margin-right: 5vw;
-    // @media (min-width: 1280px) {
-    //   max-width: 1140px;
-    // }
   }
-
-  // .close-modal {
-  //   color: #fff;
-  //   font-size: 28px;
-  //   position: absolute;
-  //   right: 25px;
-  //   top: 15px;
-  //   z-index: 20;
-  //   cursor: pointer;
-  // }
 
   .modal-dialog {
     height: 100vh;
@@ -2345,7 +2330,6 @@
       min-height: 100vh;
       padding: 12vw 10vw;
       @media (min-width: $screen-md) {
-        // height: auto;
         padding: 80px 100px;
       }
 
