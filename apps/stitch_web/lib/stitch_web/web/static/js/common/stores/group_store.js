@@ -42,6 +42,11 @@ class GroupStore {
     return groupsStore.getGroupName(this.group);
   }
 
+  @computed
+  get isLastMember() {
+    return this.group.users.length === 1;
+  }
+
   // =============
   // Actions
   // =============

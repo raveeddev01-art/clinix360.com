@@ -7,6 +7,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
+import CallMessage from "./call-message";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
 @inject("usersStore", "addonStore")
@@ -97,22 +98,28 @@ class MessageContent extends Component {
 
   render() {
     const { inSearch, message, user, isConversationMessage } = this.props;
-    const textContent = inSearch
-      ? message.highlighted_text_content || message.text_content
-      : message.text_content;
+    let messageContentComponents;
 
-    let messageContentComponents = messageTextToComponents(textContent || "", {
-      inSearch
-    });
+    if (message.type === "call") {
+      messageContentComponents = <CallMessage message={message} />;
+    } else {
+      const textContent = inSearch
+        ? message.highlighted_text_content || message.text_content
+        : message.text_content;
 
-    if (
-      message.text_content &&
-      (message.type === "upload" ||
-        (message.type === "file_comment" && message.is_sequential))
-    ) {
-      messageContentComponents = (
-        <div className="attachment-comment">{messageContentComponents}</div>
-      );
+      messageContentComponents = messageTextToComponents(textContent || "", {
+        inSearch
+      });
+
+      if (
+        message.text_content &&
+        (message.type === "upload" ||
+          (message.type === "file_comment" && message.is_sequential))
+      ) {
+        messageContentComponents = (
+          <div className="attachment-comment">{messageContentComponents}</div>
+        );
+      }
     }
 
     return (

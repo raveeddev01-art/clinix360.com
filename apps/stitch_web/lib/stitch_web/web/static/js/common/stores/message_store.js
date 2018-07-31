@@ -955,6 +955,18 @@ class MessageStore extends BaseMessageStore {
   };
 
   @action
+  onUpdateMessage = updatedMessage => {
+    if (updatedMessage.group_id !== this.group.id) {
+      return;
+    }
+
+    this.updateMessageData(updatedMessage.id, {
+      fields: updatedMessage.fields,
+      text_content: updatedMessage.text_content
+    });
+  };
+
+  @action
   onStarredMessage = message => {
     const { globalStarredMessageStore } = this.rootStore;
 
