@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
@@ -32,6 +32,17 @@ class Topbar extends Component {
                 <i className="fa fa-question-circle" />
               </OverlayTrigger>
             </a>
+          </li>
+          <li>
+            <Link to="/">
+              <OverlayTrigger
+                placement="bottom"
+                container={this}
+                overlay={<Tooltip id="tooltip-info">Stitch Connect</Tooltip>}
+              >
+                <i className="fa fa-comments" />
+              </OverlayTrigger>
+            </Link>
           </li>
           <li>
             <a role="link" onClick={this.props.presenceStore.lock}>

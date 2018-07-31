@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
 import cx from "classnames";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -67,14 +66,10 @@ class Sidemenu extends Component {
   };
 
   renderMenuItem(url, text, eventKey) {
-    return window.electronApp ? (
+    return (
       <MenuItem eventKey={eventKey} href={url} target="_blank">
         {text}
       </MenuItem>
-    ) : (
-      <LinkContainer to={url}>
-        <MenuItem eventKey={eventKey}>{text}</MenuItem>
-      </LinkContainer>
     );
   }
 
