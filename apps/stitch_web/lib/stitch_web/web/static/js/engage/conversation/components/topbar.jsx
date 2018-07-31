@@ -96,12 +96,6 @@ class Topbar extends Component {
                 <i className="fa fa-user m-r-5" /> Add Patient
               </MenuItem>
               <MenuItem
-                id="intercom-link"
-                href="jig8cj9z@inbound.intercom-mail.com"
-              >
-                <i className="fa fa-bullhorn m-r-5" /> Live Support
-              </MenuItem>
-              <MenuItem
                 target="_blank"
                 rel="noopener noreferrer"
                 href="https://help.teamstitch.com"
