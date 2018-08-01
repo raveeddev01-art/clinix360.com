@@ -4,7 +4,7 @@ import cx from "classnames";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
-import { Switcher, AppAlert } from "common/components";
+import { AppAlert } from "common/components";
 import { isAdmin, isMemberOrAdmin } from "lib/utils";
 import RoleChangedModal from "common/modals/role-changed-modal";
 import PlatformTour from "../common/components/joy-ride/platform-tour";
@@ -107,7 +107,6 @@ class AdminApp extends Component {
           <Helmet>
             <title>{titleStore.title}</title>
           </Helmet>
-          <Switcher />
           <Sidebar />
           <div className="admin-content">
             <Topbar />
