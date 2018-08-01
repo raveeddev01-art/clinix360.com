@@ -104,6 +104,11 @@ $admin-sidebar-width: 220px;
 
     .list-group {
       margin-bottom: 32px;
+
+      &.list-group--connect {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
     }
 
     .list-group-item {
