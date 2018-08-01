@@ -12,15 +12,18 @@ class HomeItem extends Component {
       link,
       icon,
       title,
+      newTab,
       description,
       openButtonText,
       openExternal
     } = this.props;
     const iconClass = cx("fa", icon);
 
+    const openNewTab = (openExternal && window.electronApp) || newTab;
+
     return (
       <div className="panel-home-item">
-        {openExternal && window.electronApp ? (
+        {openNewTab ? (
           <Button
             bsStyle="primary"
             className="action-open btn-fancy pull-right"
@@ -55,6 +58,7 @@ HomeItem.propTypes = {
   openButtonText: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,
+  newTab: PropTypes.bool,
   openExternal: PropTypes.bool
 };
 
@@ -64,6 +68,7 @@ HomeItem.defaultProps = {
   openButtonText: "Open",
   link: "/",
   icon: "",
+  newTab: false,
   openExternal: false
 };
 

@@ -71,7 +71,7 @@ $admin-topbar-height-sm: 65px;
       border-bottom: 1px solid $border-color;
 
       h4 {
-        width: calc(100% - 170px);
+        width: calc(100% - 130px);
 
         > span {
           display: block;
@@ -624,4 +624,8 @@ $admin-topbar-height-sm: 65px;
 .import-app-button {
   display: block;
   margin-top: 4px;
+}
+
+.admin-products-wrapper:first-of-type {
+  margin-top: 20px;
 }

@@ -13,7 +13,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactionPicker } from "common/components";
 import { isAdmin, getFullUrl } from "../../lib/utils";
 
-@inject("messageStore", "teamFileStore", "addonStore")
+@inject("teamFileStore", "addonStore")
 class MessageActions extends PureComponent {
   constructor(props) {
     super(props);
@@ -153,8 +153,13 @@ class MessageActions extends PureComponent {
   };
 
   render() {
-    const { messageStore, message } = this.props;
-    const mine = message.user.id === currentUser.id;
+    const {
+      lastOtherUserMessage,
+      message,
+      user,
+      isConversationMessage
+    } = this.props;
+    const mine = user.id === currentUser.id;
     const unsent = message.status === "sending" || message.status === "failed";
     const { dropup, isEmojiPickerOpen } = this.state;
     const starredCX = message.starred ? "" : "-o";
@@ -194,7 +199,8 @@ class MessageActions extends PureComponent {
           </Button>
         </OverlayTrigger>
 
-        {(message.type === "upload" || message.type === "file_comment") && (
+        {!isConversationMessage &&
+          (message.type === "upload" || message.type === "file_comment") && (
             <OverlayTrigger
               placement="top"
               delayShow={150}
@@ -206,47 +212,52 @@ class MessageActions extends PureComponent {
             </OverlayTrigger>
           )}
 
-        {message.type === "upload" && (
+        {!isConversationMessage &&
+          message.type === "upload" && (
+            <OverlayTrigger
+              placement="top"
+              delayShow={150}
+              overlay={<Tooltip id="message-react">Share file</Tooltip>}
+            >
+              <Button onClick={this.shareFile}>
+                <i className="fa fa-share" />
+              </Button>
+            </OverlayTrigger>
+          )}
+
+        {!isConversationMessage && (
           <OverlayTrigger
             placement="top"
             delayShow={150}
-            overlay={<Tooltip id="message-react">Share file</Tooltip>}
+            shouldUpdatePosition
+            overlay={
+              <Tooltip id="message-star">
+                {message.starred ? "Unstar" : "Star"} message
+              </Tooltip>
+            }
           >
-            <Button onClick={this.shareFile}>
-              <i className="fa fa-share" />
+            <Button onClick={this.toggleStar}>
+              <i className={cx("fa", `fa-star${starredCX}`)} />
             </Button>
           </OverlayTrigger>
         )}
 
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          shouldUpdatePosition
-          overlay={
-            <Tooltip id="message-star">
-              {message.starred ? "Unstar" : "Star"} message
-            </Tooltip>
-          }
-        >
-          <Button onClick={this.toggleStar}>
-            <i className={cx("fa", `fa-star${starredCX}`)} />
-          </Button>
-        </OverlayTrigger>
-
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          shouldUpdatePosition
-          overlay={
-            <Tooltip id="message-pin">
-              {message.pinned ? "Unpin" : "Pin"} message
-            </Tooltip>
-          }
-        >
-          <Button onClick={this.togglePin}>
-            <i className="fa fa-thumb-tack fa-rotate-45" />
-          </Button>
-        </OverlayTrigger>
+        {!isConversationMessage && (
+          <OverlayTrigger
+            placement="top"
+            delayShow={150}
+            shouldUpdatePosition
+            overlay={
+              <Tooltip id="message-pin">
+                {message.pinned ? "Unpin" : "Pin"} message
+              </Tooltip>
+            }
+          >
+            <Button onClick={this.togglePin}>
+              <i className="fa fa-thumb-tack fa-rotate-45" />
+            </Button>
+          </OverlayTrigger>
+        )}
 
         <OverlayTrigger
           placement="top"
@@ -261,20 +272,26 @@ class MessageActions extends PureComponent {
             id="actions-dropdown"
             onToggle={this.onToggleContextualMenu}
           >
-            {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
+            {(!mine ||
+              (lastOtherUserMessage &&
+                message.id < lastOtherUserMessage.id)) && (
                 <MenuItem onClick={this.markAsUnread}>Mark as unread</MenuItem>
               )}
 
-            <CopyToClipboard
-              text={
-                message.type === "upload" ? detailPageUrl : message.text_content
-              }
-              onCopy={this.copy}
-            >
-              <MenuItem>
-                Copy {message.type === "upload" ? "Link" : "Message"}
-              </MenuItem>
-            </CopyToClipboard>
+            {message.type !== "call" && (
+              <CopyToClipboard
+                text={
+                  message.type === "upload"
+                    ? detailPageUrl
+                    : message.text_content
+                }
+                onCopy={this.copy}
+              >
+                <MenuItem>
+                  Copy {message.type === "upload" ? "Link" : "Message"}
+                </MenuItem>
+              </CopyToClipboard>
+            )}
 
             {mine &&
               message.type !== "upload" &&
@@ -302,7 +319,16 @@ class MessageActions extends PureComponent {
 
 MessageActions.propTypes = {
   setSelected: PropTypes.func.isRequired,
-  message: PropTypes.object.isRequired
+  message: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  messageStore: PropTypes.object.isRequired,
+  isConversationMessage: PropTypes.bool,
+  lastOtherUserMessage: PropTypes.object
+};
+
+MessageActions.defaultProps = {
+  isConversationMessage: false,
+  lastOtherUserMessage: null
 };
 
 export default MessageActions;

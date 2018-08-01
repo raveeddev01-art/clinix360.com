@@ -23,6 +23,7 @@ class ImageFileAttachment extends Component {
       size,
       comment_count: commentCount,
       onCommentsClick,
+      isConversationMessage,
       onFileDownload,
       useActions,
       message,
@@ -64,9 +65,15 @@ class ImageFileAttachment extends Component {
           useActions && (
             <div className="attachment-title">
               <span>uploaded this image: </span>
-              <a onClick={onCommentsClick}>
-                <strong>{filename}</strong>
-              </a>
+              {isConversationMessage ? (
+                <a target="_blank" href={url} onClick={onFileDownload}>
+                  <strong>{filename}</strong>
+                </a>
+              ) : (
+                <a onClick={onCommentsClick}>
+                  <strong>{filename}</strong>
+                </a>
+              )}
             </div>
           )}
         <div className="attachment-image-holder" style={holderStyle}>
@@ -86,6 +93,10 @@ class ImageFileAttachment extends Component {
                     public_url={public_url}
                     message={message}
                     commentCount={commentCount}
+                    isActionsVisible={isConversationMessage ? false : undefined}
+                    isOriginalOpenVisible={
+                      isConversationMessage ? false : undefined
+                    }
                     onCommentsClick={onCommentsClick}
                     onFileDownload={onFileDownload}
                   />
@@ -127,6 +138,7 @@ ImageFileAttachment.propTypes = {
   url: PropTypes.string.isRequired,
   comment_count: PropTypes.number,
   onCommentsClick: PropTypes.func,
+  isConversationMessage: PropTypes.bool.isRequired,
   onFileDownload: PropTypes.func.isRequired,
   useActions: PropTypes.bool,
   size: PropTypes.string,
@@ -147,6 +159,7 @@ ImageFileAttachment.defaultProps = {
   encoded_id: "",
   comment_count: 0,
   size: "md",
+  isConversationMessage: false,
   onCommentsClick: undefined,
   message: null
 };

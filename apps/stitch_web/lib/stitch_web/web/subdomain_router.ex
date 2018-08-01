@@ -106,6 +106,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
   scope "/api/v1/patient", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through([:api, :patient_api])
+    post("/upload-signature", UploadController, :patient_create)
     put("/info", PatientController, :update_as_patient)
     put("/update_password", PatientController, :update_password)
   end
@@ -146,6 +147,11 @@ defmodule Stitch.Web.SubdomainRouter do
       ConversationMessageController,
       :patient_mark_as_read
     )
+
+    post("/conversation_messages/search", ConversationMessageController, :patient_search)
+
+    resources("/devices", PatientDeviceController, only: [:create])
+    post("/devices/unregister", PatientDeviceController, :delete)
   end
 
   scope "/patient", as: :patient do
@@ -154,8 +160,6 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/logout", StitchEngage.Web.PatientAuthenticationController, :logout)
     get("/logged-out", StitchEngage.Web.PatientAuthenticationController, :logged_out)
-
-    get("/login", StitchEngage.Web.PatientAuthenticationController, :login)
 
     scope "/invitations" do
       get("/error", StitchConnect.Web.InvitationController, :error)
@@ -299,6 +303,8 @@ defmodule Stitch.Web.SubdomainRouter do
       resources("/history", HistoryController, only: [:index])
       resources("/cards", CardController, only: [:index, :create, :update, :delete])
     end
+
+    post("/call/decline/:hash", CallController, :decline)
   end
 
   # Routes which needs admin role
@@ -337,6 +343,9 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/patient/login", AuthenticationController, :submit_patient_login)
     post("/reset_password", AuthenticationController, :reset_password)
     post("/patient/reset_password", AuthenticationController, :patient_reset_password)
+
+    get("/uploads", UploadController, :index)
+    post("/upload-signature", UploadController, :create)
   end
 
   # API routes which need token.
@@ -395,14 +404,20 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/admin/integrations/:slug/edit", PageController, :index)
 
     get("/direct/:username", PageController, :user)
+
+    get("/call/:hash", CallController, :in_call)
+    get("/call/init/:group_id", CallController, :calling)
+
     get("/apps", AuthenticationController, :apps)
     get("/logout", AuthenticationController, :logout)
 
     get("/engage", PageController, :index)
+    get("/conversations", PageController, :index)
     get("/conversations/:id", PageController, :index)
 
     get("/manage", PageController, :index)
     get("/patients", PageController, :index)
+    get("/patients/:id", PageController, :index)
 
     get("/admin/files", PageController, :index)
     get("/admin/files/:id", PageController, :index)
@@ -418,12 +433,16 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/groups", GroupController, :index)
   end
 
+  scope "/api/v1/patient", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through(:patient_auth_api)
+    post("/invitations/accept/:token", InvitationController, :patient_accept)
+  end
+
   # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
     post("/invitations/accept/:token", InvitationController, :accept)
-    post("/patient/invitations/accept/:token", InvitationController, :patient_accept)
     get("/apps", AppController, :index)
     get("/news", NewsController, :index)
   end
@@ -485,9 +504,6 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/groups/:group_id/notification-preference", NotificationPreferenceController, :show)
     put("/groups/:group_id/notification-preference", NotificationPreferenceController, :update)
 
-    get("/uploads", UploadController, :index)
-    post("/upload-signature", UploadController, :create)
-
     resources("/devices", DeviceController, only: [:create, :delete])
     post("/devices/unregister", DeviceController, :delete)
 
@@ -521,6 +537,7 @@ defmodule Stitch.Web.SubdomainRouter do
   # Catch any remaining patient routes
 
   scope "/patient", StitchEngage.Web, as: :patient do
+    pipe_through([:browser, :patient_browser])
     get("/*path", PatientController, :index)
   end
 
@@ -575,7 +592,7 @@ defmodule Stitch.Web.SubdomainRouter do
     # Expected future Engage routes:
     # get("/conversation_messages/:id/download", ConversationMessageController, :download)
     # get("/conversations/:conversation_id/feed_surrounding", ConversationMessageController, :feed_surrounding)
-    # post("/conversation_messages/search", ConversationMessageController, :search)
+    post("/conversation_messages/search", ConversationMessageController, :search)
   end
 
   # ==============

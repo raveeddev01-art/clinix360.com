@@ -4,56 +4,27 @@
  * This store keps track of data that are related with messages in the current group
  */
 
-import { observable, action, computed, when, extendObservable } from "mobx";
+import { observable, action, computed, when } from "mobx";
 import moment from "moment";
 
 import debounce from "lodash/debounce";
-import flow from "lodash/flow";
 import last from "lodash/last";
 import memoize from "lodash/memoize";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import unionBy from "lodash/unionBy";
 
-// lodash-fp imports only used for flow
-import groupBy from "lodash/fp/groupBy";
-import mapValues from "lodash/fp/mapValues";
-import sortBy from "lodash/fp/sortBy";
-
-import { animateScroll, scroller } from "react-scroll";
+import { scroller } from "react-scroll";
 import { Promise } from "es6-promise";
 import shortid from "shortid";
 import {
   START_TYPING_THROTTLE_MS,
-  SEQUENTIAL_SPLIT_SECONDS,
   MAX_MESSAGE_COUNT_PER_BATCH
 } from "lib/constants";
-import REGEX from "lib/regex";
-import TimeoutManager from "lib/TimeoutManager";
+import BaseMessageStore from "common/abstract-stores/base-message-store";
 
-function sortableDateFromMessage(message) {
-  return moment
-    .utc(message.inserted_at)
-    .local()
-    .format(`YYYY-MM-DD`);
-}
-
-function isSentMessage(message) {
-  return (
-    message && message.status !== "sending" && message.status !== "failure"
-  );
-}
-
-class MessageStore {
-  @observable chatDiv = null; // Div element of chat pane
-  messageElements = {}; // Div elements of messages loaded in the chat div
+class MessageStore extends BaseMessageStore {
   @observable messageVisibility = {}; // current visibility status of messages
-
-  @observable mountedMessages = [];
-  @observable messages = []; // messages currently loaded
-
-  @observable messageInEdit = null; // Message currently being edited
-  @observable textInEdit = ""; // Current text of message in edit
 
   @observable jumpMode = false; // indicates if message list is currently at jumping mode
   @observable isJumpLoaded = false; // indicates if surrounded messages are loaded
@@ -84,20 +55,9 @@ class MessageStore {
   loadedGroupId = null; // indicates joined group id. populated after onJoinedGroup is run. It's to prevent onJoinedGroup happen again by rejoining internally in pheonix_socket.js
   @observable syncedTime = false; // sends timestamp only after synced time
 
-  constructor(rootStore) {
-    this.rootStore = rootStore;
-    this.timeoutManager = new TimeoutManager();
-  }
-
   // ////////////// //
   //    GETTERS     //
   // ////////////// //
-
-  getMessageById = (id, enforceSent = false) => {
-    const matchCondition = m =>
-      m.id === id && (!enforceSent || isSentMessage(m));
-    return this.messages.find(matchCondition);
-  };
 
   // Return the message that is immediately after the timestamp given, but not temp message
   getMessageAfterTimestamp = timestamp => {
@@ -202,6 +162,10 @@ class MessageStore {
     );
   }
 
+  isCurrentChannelPayload(payload) {
+    return payload.group_id === this.group.id;
+  }
+
   /**
    * Returns the position of first unread message in chat div
    *
@@ -247,40 +211,7 @@ class MessageStore {
 
   @computed
   get messagesByDate() {
-    return flow(
-      sortBy("inserted_at"),
-      groupBy(sortableDateFromMessage),
-      mapValues(msgGroup => {
-        const [firstMsg, ...messages] = msgGroup;
-        let sequentialStart = firstMsg;
-        return [
-          firstMsg,
-          ...messages.map(msg => {
-            if (msg.upload_id && msg.type === "chat") {
-              msg.type = "file_comment";
-            }
-
-            if (
-              (sequentialStart.upload_id === msg.upload_id &&
-                msg.type === "file_comment") ||
-              (msg.user.id === sequentialStart.user.id &&
-                sequentialStart.type !== "system" &&
-                msg.type !== "upload" &&
-                msg.type !== "file_comment" &&
-                moment(msg.inserted_at).diff(
-                  moment(sequentialStart.inserted_at),
-                  "seconds"
-                ) < SEQUENTIAL_SPLIT_SECONDS)
-            ) {
-              return { ...msg, is_sequential: true };
-            }
-
-            sequentialStart = msg;
-            return msg;
-          })
-        ];
-      })
-    )(this.messages);
+    return this.groupMessagesByDate(this.messages);
   }
 
   @computed
@@ -337,14 +268,6 @@ class MessageStore {
   }
 
   @action
-  updateMessageData = (id, data) => {
-    const message = this.getMessageById(id);
-    if (message) {
-      extendObservable(message, data);
-    }
-  };
-
-  @action
   updateGroupData(data) {
     const { groupsStore } = this.rootStore;
     const allowedKeys = [
@@ -367,38 +290,6 @@ class MessageStore {
     this.groupCursor = cursor;
 
     groupsStore.updateGroupCursor(this.group.id, cursor);
-  }
-
-  // Scroll to the bottom of chat div with animation
-  scrollToBottom(cb = null, duration = 0, delay = 100) {
-    this.timeoutManager.setTimeout(() => {
-      animateScroll.scrollToBottom({
-        containerId: "chat",
-        duration
-      });
-
-      this.timeoutManager.setTimeout(() => {
-        if (typeof cb === "function") {
-          cb();
-        }
-      }, duration || 300);
-    }, delay);
-  }
-
-  // Scroll to specific message in chat div instantly
-  scrollTo(messageId, duration = 1000, cb, offset = -50) {
-    scroller.scrollTo(`message_${messageId}`, {
-      containerId: "chat",
-      smooth: true,
-      duration,
-      offset
-    });
-
-    this.timeoutManager.setTimeout(() => {
-      if (typeof cb === "function") {
-        cb();
-      }
-    }, duration + 1);
   }
 
   @action
@@ -543,23 +434,6 @@ class MessageStore {
     this.messages = this.messageTemp.slice(0);
     this.jumpMode = false;
     this.scrollToBottom();
-  }
-
-  /**
-   * Registers chat div
-   *
-   * @param {DOMElement} div
-   */
-  loadChatDiv(div) {
-    this.chatDiv = div;
-  }
-
-  /**
-   * Unregisters chat div
-   *
-   */
-  unloadChatDiv() {
-    this.chatDiv = null;
   }
 
   @action
@@ -805,64 +679,6 @@ class MessageStore {
     }
   };
 
-  decodeMentions(text = "") {
-    const { usersById } = this.rootStore.usersStore;
-    const messageToFilter = text.split(" ");
-
-    const filteredMessage = messageToFilter.map(part => {
-      // Replace userMentionId with UserMention
-      const match = part.match(REGEX.getUserMentionDecode());
-      if (match) {
-        return part.replace(
-          REGEX.getUserMentionDecode(),
-          `@${usersById[match[1]].username}`
-        );
-      }
-
-      // Replace groupMentionId with GroupMention
-      const groupMatch = part.match(REGEX.getGroupMentionDecode());
-      if (groupMatch) {
-        return part.replace(
-          REGEX.getGroupMentionDecode(),
-          `@${[groupMatch[1]]}`
-        );
-      }
-
-      return part;
-    });
-
-    return filteredMessage.join(" ");
-  }
-
-  @action
-  startEdit(id) {
-    const message = this.getMessageById(id);
-
-    if (message) {
-      this.messageInEdit = message;
-      this.textInEdit = this.decodeMentions(message.text_content);
-    }
-  }
-
-  @action
-  editLastMessage() {
-    const message = this.messages.find(m => m.user_id === currentUser.id);
-
-    if (isSentMessage(message)) {
-      this.messageInEdit = message;
-      this.textInEdit = this.decodeMentions(message.text_content);
-    }
-  }
-
-  @action
-  editText(text) {
-    if (!this.messageInEdit) {
-      return;
-    }
-
-    this.textInEdit = text;
-  }
-
   @action
   finishEdit() {
     if (!this.messageInEdit) {
@@ -887,12 +703,6 @@ class MessageStore {
         text_content: this.encodeMessage(trimmedEditText)
       }
     });
-  }
-
-  @action
-  cancelEdit() {
-    this.messageInEdit = null;
-    this.textInEdit = "";
   }
 
   @action
@@ -925,12 +735,6 @@ class MessageStore {
   startTyping = throttle(() => {
     this.groupChannel.push("is_typing");
   }, START_TYPING_THROTTLE_MS);
-
-  keepScrollAtBottom = () => {
-    if (this.isScrollBottom) {
-      this.scrollToBottom();
-    }
-  };
 
   generateTempMessage = text => {
     // generates unique temporary request ID
@@ -997,26 +801,6 @@ class MessageStore {
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };
 
-  /**
-   * Registers message div when message component is mounted
-   *
-   * @param {Integer} messageId
-   * @param {DOMElement} messageDiv
-   */
-  @action
-  onMessageMounted(messageId, messageDiv) {
-    if (this.mountedMessages.indexOf(messageId) === -1) {
-      this.mountedMessages.push(messageId);
-    }
-
-    this.messageElements[messageId] = { div: messageDiv };
-  }
-
-  @action
-  onMessageUnmounted(messageId) {
-    this.mountedMessages = this.mountedMessages.filter(id => id !== messageId);
-  }
-
   @action
   onScrollTopReached() {
     // no loading of past message if jumping surrounded msgs are not loaded yet
@@ -1055,7 +839,7 @@ class MessageStore {
     }
   }
 
-  onMessageShow(id) {
+  onMessageShow = id => {
     this.messageVisibility[id] = true;
 
     if (!this.groupCursor || this.groupCursor > id) {
@@ -1084,9 +868,9 @@ class MessageStore {
         debouncedMarkAsRead(false);
       }, 1000);
     }
-  }
+  };
 
-  onMessageHide(id) {
+  onMessageHide = id => {
     if (this.messageElements[id]) {
       this.messageVisibility[id] = false;
     }
@@ -1097,7 +881,7 @@ class MessageStore {
         this.updateGroupCursor(this.messages[index - 1].id);
       }
     }
-  }
+  };
 
   @action
   onNewMessage = newMessage => {
@@ -1171,29 +955,15 @@ class MessageStore {
   };
 
   @action
-  onEditMessage = editedMessage => {
-    if (editedMessage.group_id !== this.group.id) {
+  onUpdateMessage = updatedMessage => {
+    if (updatedMessage.group_id !== this.group.id) {
       return;
     }
 
-    this.cancelEdit();
-
-    this.updateMessageData(editedMessage.id, {
-      edited: editedMessage.edited,
-      edited_at: editedMessage.edited_at,
-      text_content: editedMessage.text_content
+    this.updateMessageData(updatedMessage.id, {
+      fields: updatedMessage.fields,
+      text_content: updatedMessage.text_content
     });
-  };
-
-  @action
-  onDeleteMessage = deletedMessage => {
-    const messageIndex = this.messages.findIndex(
-      m => m.id === deletedMessage.id
-    );
-
-    if (messageIndex > -1) {
-      this.messages.splice(messageIndex, 1);
-    }
   };
 
   @action
@@ -1231,90 +1001,6 @@ class MessageStore {
     } else {
       pinnedMessageStore.remove(message.id);
     }
-  };
-
-  @action
-  onLinkPreviewGenerated = payload => {
-    if (payload.group_id !== this.group.id) {
-      return;
-    }
-
-    if (payload.link_previews && payload.link_previews.length) {
-      this.updateMessageData(payload.id, {
-        link_previews: payload.link_previews
-      });
-      this.keepScrollAtBottom();
-    }
-  };
-
-  @action
-  onLinkPreviewDeleted = payload => {
-    const message = this.getMessageById(payload.message_id);
-
-    if (message) {
-      this.updateMessageData(payload.message_id, {
-        link_previews: message.link_previews.filter(
-          p => p.link !== payload.link
-        )
-      });
-      this.keepScrollAtBottom();
-    }
-  };
-
-  /**
-   * Encodes message for backend compatible format
-   * - @emil -> <@U123>
-   * @param {string} messageText
-   * @returns {string} encoded message
-   */
-  encodeMessage = (messageText = "") => {
-    const { usersByUsername } = this.rootStore.usersStore;
-    return messageText.replace(
-      REGEX.getUserMentionEncode(),
-      (match, username) => {
-        const user = usersByUsername[username];
-        if (["everyone", "room", "here"].indexOf(username) > -1) {
-          return `<@G${username}>`;
-        } else if (user) {
-          return `<@U${user.id}>`;
-        }
-
-        return match;
-      }
-    );
-  };
-
-  @action
-  onReactionUpdate = payload => {
-    this.updateMessageData(payload.message_id, {
-      reactions_web: payload.reactions_web
-    });
-  };
-
-  @action
-  onReadStatusUpdate = payload => {
-    if (!payload.messages) return;
-
-    Object.keys(payload.messages).forEach(message_id => {
-      const message = this.getMessageById(parseInt(message_id, 10));
-      if (message) {
-        this.updateMessageData(parseInt(message_id, 10), {
-          read_status: Object.assign(
-            {},
-            message.read_status || {},
-            payload.messages[message_id]
-          )
-        });
-      } else {
-        // cache read status because this event was broadcasted before new_msg due to network slowness
-        this.readStatusCache[message_id] =
-          this.readStatusCache[message_id] || {};
-        Object.assign(
-          this.readStatusCache[message_id],
-          payload.messages[message_id]
-        );
-      }
-    });
   };
 
   @action

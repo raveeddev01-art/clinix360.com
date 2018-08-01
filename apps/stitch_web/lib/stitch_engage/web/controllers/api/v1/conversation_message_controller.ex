@@ -4,6 +4,9 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
   alias Stitch.{
     Repo,
+    Patient,
+    Accounts.User,
+    PatientQueries,
     LinkPreviewGenerator,
     Message.Reaction,
     Message.LinkPreview,
@@ -13,6 +16,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.ConversationMessage.ConversationMessageCreation,
     Engage.ConversationAuthorization,
     Engage.ConversationMessageAuthorization,
+    Elasticsearch.ConversationMessageSearch,
     ReadStatus
   }
 
@@ -57,6 +61,43 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       max_id,
       limit
     )
+  end
+
+  # ==========
+  #   SEARCH
+  # ==========
+
+  def search(conn, params) do
+    do_search(conn, params, conn.assigns.current_user)
+  end
+
+  def patient_search(conn, params) do
+    do_search(conn, params, conn.assigns.patient)
+  end
+
+  def do_search(conn, params, user_or_patient) do
+    types = %{
+      term: :string,
+      skip: :integer,
+      limit: :integer,
+      order: :string,
+      after: :string,
+      before: :string,
+      author_id: :integer,
+      conversation_id: {:array, :integer}
+    }
+
+    search_options = cast_params(types, params)
+    result = ConversationMessageSearch.search_for_params(user_or_patient, search_options)
+    render_search_result(conn, result)
+  end
+
+  def render_search_result(conn, {:ok, result}) do
+    render(conn, "search.json", result)
+  end
+
+  def render_search_result(_conn, _result) do
+    {:error, :unprocessable_entity, "Error peforming the search."}
   end
 
   # ========
@@ -120,7 +161,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
          # presence_user_ids = UserStatusService.presence_user_ids(user_or_patient.team_id)
 
          {:ok, %{conversation_message: conversation_message}} <-
-           ConversationMessageCreation.create(
+           ConversationMessageCreation.create_with_optional_upload(
              conversation,
              user_or_patient,
              message_params_with_client
@@ -129,7 +170,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       notify_user_ids = %{}
 
       conversation_message = Repo.preload(conversation_message, [:provider, :patient])
-      conversation_message_events(conversation_message, conversation, notify_user_ids)
+      message_created_events(conversation_message, conversation, notify_user_ids)
 
       conn
       |> put_status(:created)
@@ -167,6 +208,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
       ConversationChannel.broadcast_message_edited(updated_message_with_assocs)
       LinkPreviewGenerator.queue(updated_message_with_assocs)
+      Stitch.Elasticsearch.ConversationMessageSearch.add_to_index(updated_conversation_message)
 
       render(conn, "show.json", conversation_message: updated_message_with_assocs)
     else
@@ -199,12 +241,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
            {:authorized?,
             ConversationMessageAuthorization.can_delete?(conversation_message, conversation, user)},
          {:ok, _conversation_message} <- ConversationMessage.delete(conversation_message, user) do
-      # Notifications: Change Badge Count Here
-
-      ConversationChannel.broadcast_message_deleted(%{
-        conversation_id: conversation.id,
-        id: id
-      })
+      message_deleted_events(conversation, conversation_message)
 
       send_resp(conn, :no_content, "")
     else
@@ -414,25 +451,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   #   PRIVATE
   # ===========
 
-  defp mark_as_read_events(conversation, user, conversation_messages_json, mark_as_read_json) do
-    Stitch.Task.start(fn ->
-      EventsChannel.broadcast_conversation_marked_as_read(user, mark_as_read_json)
-      ConversationChannel.broadcast_read_status(conversation, conversation_messages_json)
-
-      # Notifications: update user badges on mobile
-    end)
-  end
-
-  defp mark_as_unread_events(conversation, user, conversation_messages_json, mark_as_read_json) do
-    Stitch.Task.start(fn ->
-      EventsChannel.broadcast_conversation_marked_as_unread(user, mark_as_read_json)
-      ConversationChannel.broadcast_read_status(conversation, conversation_messages_json)
-
-      # Notifications: update user badges on mobile
-    end)
-  end
-
-  defp conversation_message_events(conversation_message, conversation, _notify_user_ids) do
+  defp message_created_events(conversation_message, conversation, _notify_user_ids) do
     # Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
 
     # Get the updated_at time before spawning the task
@@ -447,9 +466,78 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
 
       ConversationChannel.broadcast_message_created(conversation_message)
       LinkPreviewGenerator.queue(conversation_message)
+      update_patient_unread_conversations(conversation)
 
-      # Notifications: dispatch notifications, badge updates, and emails here
-      # (see message view for similar code)
+      StitchEngage.Web.ConversationMessageEventsService.conversation_message_creation_events(
+        conversation,
+        conversation_message
+      )
     end)
+  end
+
+  defp message_deleted_events(conversation, conversation_message) do
+    Stitch.Task.start(fn ->
+      # Notifications: Change Badge Count Here
+
+      ConversationChannel.broadcast_message_deleted(%{
+        conversation_id: conversation.id,
+        id: conversation_message.id
+      })
+
+      update_patient_unread_conversations(conversation)
+
+      # Reminder to also remove from index when conversation, patient, provider, or inbox deletion are implemented
+      #   (the deletion of those records trigger the cascading delete of conversation_messages).
+      Stitch.Elasticsearch.ConversationMessageSearch.delete_from_index(conversation_message)
+    end)
+  end
+
+  defp mark_as_read_events(
+         conversation,
+         %User{} = user,
+         conversation_messages_json,
+         mark_as_read_json
+       ) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_conversation_provider_marked_as_read(user, mark_as_read_json)
+      ConversationChannel.broadcast_provider_read_status(conversation, conversation_messages_json)
+
+      # Notifications: update user badges on mobile
+    end)
+  end
+
+  defp mark_as_read_events(
+         conversation,
+         %Patient{} = patient,
+         conversation_messages_json,
+         mark_as_read_json
+       ) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_conversation_patient_marked_as_read(patient, mark_as_read_json)
+      ConversationChannel.broadcast_patient_read_status(conversation, conversation_messages_json)
+      update_patient_unread_conversations(patient)
+
+      # Notifications: update patient badges on mobile
+    end)
+  end
+
+  defp mark_as_unread_events(conversation, user, conversation_messages_json, mark_as_read_json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_conversation_marked_as_unread(user, mark_as_read_json)
+      ConversationChannel.broadcast_provider_read_status(conversation, conversation_messages_json)
+
+      # Notifications: update user badges on mobile
+    end)
+  end
+
+  defp update_patient_unread_conversations(%Conversation{} = conversation) do
+    conversation = Repo.preload(conversation, :patients)
+    patient = conversation.patients |> List.first()
+    update_patient_unread_conversations(patient)
+  end
+
+  defp update_patient_unread_conversations(%Patient{} = patient) do
+    unread_conversations_count = PatientQueries.unread_conversations_count(patient.id)
+    EventsChannel.broadcast_unread_conversations_count(patient, unread_conversations_count)
   end
 end

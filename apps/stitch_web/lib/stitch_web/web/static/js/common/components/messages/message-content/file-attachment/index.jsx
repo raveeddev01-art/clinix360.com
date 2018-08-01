@@ -63,7 +63,7 @@ class FileAttachment extends Component {
 }
 
 FileAttachment.propTypes = {
-  api_url: PropTypes.string.isRequired,
+  api_url: PropTypes.string,
   preview_url: PropTypes.string,
   mimetype: PropTypes.string.isRequired,
   filename: PropTypes.string.isRequired,
@@ -75,6 +75,7 @@ FileAttachment.propTypes = {
 
 FileAttachment.defaultProps = {
   onCommentsClick: undefined,
+  api_url: undefined,
   preview_url: "",
   message: null
 };

@@ -1,6 +1,95 @@
 {
   "swagger": "2.0",
   "paths": {
+    "/api/v1/upload-signature": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/UploadSignature"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "filename",
+            "in": "query",
+            "description": "Name of the file to upload."
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "mimetype",
+            "in": "query",
+            "description": "Mimetype of the file to upload."
+          }
+        ],
+        "operationId": "Stitch.Web.Api.V1.UploadController.create",
+        "description": "As a user, get credentials to upload a file given a name and mimetype.."
+      }
+    },
+    "/api/v1/patients": {
+      "get": {
+        "tags": [
+          "Patient"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "limit the amount of returned records"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "skip",
+            "in": "query",
+            "description": "skip the given number of records"
+          }
+        ],
+        "operationId": "Stitch.Web.Api.V1.PatientController.index",
+        "description": "Returns a paginated list of patients for a team"
+      }
+    },
     "/api/v1/patient_conversations/{patient_id}": {
       "get": {
         "tags": [
@@ -52,6 +141,51 @@
         ],
         "operationId": "StitchEngage.Web.Api.V1.PatientTimelineController.conversations_with_patient",
         "description": "Returns a sorted list of the patient conversations (with latest_conversation_message).\n"
+      }
+    },
+    "/api/v1/patient/upload-signature": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/UploadSignature"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "filename",
+            "in": "query",
+            "description": "Name of the file to upload."
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "mimetype",
+            "in": "query",
+            "description": "Mimetype of the file to upload."
+          }
+        ],
+        "operationId": "Stitch.Web.Api.V1.UploadController.patient_create",
+        "description": "As a patient, get credentials to upload a file given a name and mimetype."
       }
     },
     "/api/v1/patient/reset_password": {
@@ -406,6 +540,94 @@
         "description": "Checks if a patient exists given an email. Returns {\"exists\": true} or {\"exists\": false}"
       }
     },
+    "/api/v1/patient/devices/unregister": {
+      "post": {
+        "tags": [
+          "PatientDevice"
+        ],
+        "summary": "",
+        "responses": {},
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": "ios",
+            "type": "string",
+            "required": true,
+            "name": "type",
+            "in": "query",
+            "enum": [
+              "ios",
+              "android"
+            ],
+            "description": "The device type (ios or android)"
+          },
+          {
+            "x-example": "03df25c845d460bcdad7802d2vf6fc1dfde97283bf75cc993eb6dca835ea2e2f",
+            "type": "string",
+            "required": true,
+            "name": "token",
+            "in": "query",
+            "description": "The device token"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.PatientDeviceController.delete",
+        "description": "Remove the registered patient mobile device"
+      }
+    },
+    "/api/v1/patient/devices": {
+      "post": {
+        "tags": [
+          "PatientDevice"
+        ],
+        "summary": "",
+        "responses": {},
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "ios",
+            "type": "string",
+            "required": true,
+            "name": "type",
+            "in": "query",
+            "enum": [
+              "ios",
+              "android"
+            ],
+            "description": "The device type (ios or android)"
+          },
+          {
+            "x-example": "03df25c845d460bcdad7802d2vf6fc1dfde97283bf75cc993eb6dca835ea2e2f",
+            "type": "string",
+            "required": true,
+            "name": "token",
+            "in": "query",
+            "description": "The device token"
+          },
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.PatientDeviceController.create",
+        "description": "Registeres device token."
+      }
+    },
     "/api/v1/patient/conversations/{conversation_id}/messages": {
       "post": {
         "tags": [
@@ -452,7 +674,7 @@
             "required": true,
             "name": "message",
             "in": "body",
-            "description": "Message to create. Must include 'text_content' attribute."
+            "description": "Message to create. Must include 'text_content' attribute.\n\nFor uploads, must include `type: \"upload\"` and the `fields` object with `filetype`,\n`mimetype`, `size_in_bytes`, and `url`.\n\n```\nmessage: {\n  text_content: \"Check out this file.\",\n  type: \"upload\",\n  fields: {\n    filename: \"config.json\",\n    mimetype: \"application/json\",\n    size_in_bytes: 1523,\n    url: \"https://s3.amazonaws.com/stitch-content/foo-bar-baz.json\"\n  }\n}\n```\n"
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_create",
@@ -712,6 +934,97 @@
         "description": "Show a conversation message for a patient."
       }
     },
+    "/api/v1/patient/conversation_messages/search": {
+      "post": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ConversationMessages"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "limit the amount of returned records"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "skip",
+            "in": "query",
+            "description": "skip the given number of records"
+          },
+          {
+            "x-example": "\"exact term\", -minus, starting with pattern  *",
+            "type": "string",
+            "required": false,
+            "name": "term",
+            "in": "query",
+            "description": "The query string"
+          },
+          {
+            "type": "array",
+            "required": false,
+            "name": "conversation_id",
+            "items": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "Search the given conversations ([1, 2])"
+          },
+          {
+            "x-example": "patient-1",
+            "type": "string",
+            "required": false,
+            "name": "author",
+            "in": "query",
+            "description": "Search messages from the given user (\"patient-{id}\" or \"provider-{id})\""
+          },
+          {
+            "x-example": "recency",
+            "type": "string",
+            "required": false,
+            "name": "order",
+            "in": "query",
+            "description": "Order by relevance or recency (accepts either \"relevance\" or \"recency\"))"
+          },
+          {
+            "type": "array",
+            "required": false,
+            "name": "inbox_id",
+            "items": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "Search the given inboxes ([1, 2])"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.patient_search",
+        "description": "Returns conversation messages matching the given criteria for a patient."
+      }
+    },
     "/api/v1/inboxes/{inbox_id}/conversations": {
       "get": {
         "tags": [
@@ -850,7 +1163,7 @@
             "required": true,
             "name": "message",
             "in": "body",
-            "description": "Message to create. Must include 'text_content' attribute."
+            "description": "Message to create. Must include 'text_content' attribute.\n\nFor uploads, must include `type: \"upload\"` and the `fields` object with `filetype`,\n`mimetype`, `size_in_bytes`, and `url`.\n\n```\nmessage: {\n  text_content: \"Check out this file.\",\n  type: \"upload\",\n  fields: {\n    filename: \"config.json\",\n    mimetype: \"application/json\",\n    size_in_bytes: 1523,\n    url: \"https://s3.amazonaws.com/stitch-content/foo-bar-baz.json\"\n  }\n}\n```\n"
           }
         ],
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.create",
@@ -943,6 +1256,97 @@
         "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.delete",
         "description": "Deletes a conversation message as a provider."
       }
+    },
+    "/api/v1/conversation_messages/search": {
+      "post": {
+        "tags": [
+          "ConversationMessage"
+        ],
+        "summary": "",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ConversationMessages"
+            },
+            "description": "OK"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "x-example": "f9dbVJ3l6yaGYD3Is94nrWaXd40Zxv0M",
+            "type": "string",
+            "required": true,
+            "name": "authenticationToken",
+            "in": "query",
+            "description": "token for user or patient auth"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "description": "limit the amount of returned records"
+          },
+          {
+            "x-example": 10,
+            "type": "integer",
+            "required": false,
+            "name": "skip",
+            "in": "query",
+            "description": "skip the given number of records"
+          },
+          {
+            "x-example": "\"exact term\", -minus, starting with pattern  *",
+            "type": "string",
+            "required": false,
+            "name": "term",
+            "in": "query",
+            "description": "The query string"
+          },
+          {
+            "type": "array",
+            "required": false,
+            "name": "conversation_id",
+            "items": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "Search the given conversations ([1, 2])"
+          },
+          {
+            "x-example": "patient-1",
+            "type": "string",
+            "required": false,
+            "name": "author",
+            "in": "query",
+            "description": "Search messages from the given user (\"patient-{id}\" or \"provider-{id})\""
+          },
+          {
+            "x-example": "recency",
+            "type": "string",
+            "required": false,
+            "name": "order",
+            "in": "query",
+            "description": "Order by relevance or recency (accepts either \"relevance\" or \"recency\"))"
+          },
+          {
+            "type": "array",
+            "required": false,
+            "name": "inbox_id",
+            "items": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "Search the given inboxes ([1, 2])"
+          }
+        ],
+        "operationId": "StitchEngage.Web.Api.V1.ConversationMessageController.search",
+        "description": "Returns conversation messages matching the given criteria."
+      }
     }
   },
   "info": {
@@ -950,6 +1354,21 @@
     "title": "Stitch"
   },
   "definitions": {
+    "UploadSignature": {
+      "type": "object",
+      "title": "UploadSignature",
+      "example": {
+        "success_action_status": "201",
+        "signature": "ShfkFCOUgioUK3iyTpSnf(1YnvE",
+        "policy": "fneiwufjioewffh4h9fgf439qgfqg43qf49qfj4f40f42gt92gfh8in4m0943j",
+        "key": "ArmFractureImage",
+        "action": "https://s3.amazonaws.com/stitch-content/",
+        "acl": "private",
+        "Content-Type": "image/jpeg",
+        "AWSAccessKeyId": "AKIA9KNNBXIRIQI82JN"
+      },
+      "description": "Credentials and information to upload file to S3."
+    },
     "PatientOnboardingCompletion": {
       "type": "object",
       "title": "PatientOnboardingCompletion",
@@ -974,6 +1393,9 @@
       "type": "object",
       "title": "PatientLogin",
       "properties": {
+        "unread_conversations_count": {
+          "type": "integer"
+        },
         "token": {
           "type": "string"
         },

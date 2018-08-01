@@ -7,9 +7,10 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
+import CallMessage from "./call-message";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
-@inject("usersStore", "messageStore", "addonStore")
+@inject("usersStore", "addonStore")
 @observer
 class MessageContent extends Component {
   onToggle = emoji => {
@@ -27,7 +28,9 @@ class MessageContent extends Component {
 
   renderLinkPreviews() {
     const {
-      message: { link_previews: linkPreviews, id, user_id: userId }
+      message: { link_previews: linkPreviews, id },
+      user,
+      messageStore
     } = this.props;
 
     if (linkPreviews && linkPreviews.length) {
@@ -35,8 +38,9 @@ class MessageContent extends Component {
         <LinkPreview
           key={`message_${id}_link_${index}`}
           {...link}
+          deleteLinkPreview={messageStore.deleteLinkPreview}
           messageId={id}
-          senderId={userId}
+          senderId={user.id}
         />
       ));
     }
@@ -81,11 +85,11 @@ class MessageContent extends Component {
   };
 
   renderFileLink = () => {
-    const { message } = this.props;
+    const { message, isConversationMessage } = this.props;
     return (
       <div>
         <span className="text-muted">commented on </span>
-        <a onClick={this.onCommentsClick}>
+        <a onClick={isConversationMessage ? null : this.onCommentsClick}>
           <strong>{message.fields && message.fields.filename}</strong>
         </a>
       </div>
@@ -93,25 +97,29 @@ class MessageContent extends Component {
   };
 
   render() {
-    const { inSearch, message } = this.props;
-    const userId = message.user.id;
-    const user = this.props.usersStore.usersById[userId];
-    const textContent = inSearch
-      ? message.highlighted_text_content || message.text_content
-      : message.text_content;
+    const { inSearch, message, user, isConversationMessage } = this.props;
+    let messageContentComponents;
 
-    let messageContentComponents = messageTextToComponents(textContent || "", {
-      inSearch
-    });
+    if (message.type === "call") {
+      messageContentComponents = <CallMessage message={message} />;
+    } else {
+      const textContent = inSearch
+        ? message.highlighted_text_content || message.text_content
+        : message.text_content;
 
-    if (
-      message.text_content &&
-      (message.type === "upload" ||
-        (message.type === "file_comment" && message.is_sequential))
-    ) {
-      messageContentComponents = (
-        <div className="attachment-comment">{messageContentComponents}</div>
-      );
+      messageContentComponents = messageTextToComponents(textContent || "", {
+        inSearch
+      });
+
+      if (
+        message.text_content &&
+        (message.type === "upload" ||
+          (message.type === "file_comment" && message.is_sequential))
+      ) {
+        messageContentComponents = (
+          <div className="attachment-comment">{messageContentComponents}</div>
+        );
+      }
     }
 
     return (
@@ -123,9 +131,12 @@ class MessageContent extends Component {
           <FileAttachment
             {...message.fields}
             message={message}
-            user_id={message.user_id}
+            user_id={user.id}
             file_id={message.upload_id}
-            onCommentsClick={this.onCommentsClick}
+            isConversationMessage={isConversationMessage}
+            onCommentsClick={
+              isConversationMessage ? null : this.onCommentsClick
+            }
           />
         )}
         <div className="message-body">
@@ -149,12 +160,16 @@ class MessageContent extends Component {
 }
 
 MessageContent.defaultProps = {
-  inSearch: false
+  inSearch: false,
+  isConversationMessage: false
 };
 
 MessageContent.propTypes = {
   inSearch: PropTypes.bool,
-  message: PropTypes.any.isRequired
+  user: PropTypes.any.isRequired,
+  message: PropTypes.any.isRequired,
+  isConversationMessage: PropTypes.bool.isRequired,
+  messageStore: PropTypes.object.isRequired
 };
 
 export default MessageContent;

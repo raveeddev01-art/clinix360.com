@@ -6,6 +6,11 @@ defmodule Stitch.TimedMessage.Worker do
   import Bamboo.Email
   alias Stitch.TimedMessage.Helper
 
+  alias Stitch.{
+    TimedMessage.ConversationMessageForPatient,
+    TimedMessage.ConversationMessageForProvider
+  }
+
   @from_address {"Stitch", "hello@mail.teamstitch.com"}
 
   # === PUBLIC ===
@@ -105,6 +110,18 @@ defmodule Stitch.TimedMessage.Worker do
       load_data: &Helper.get_user_with_team/1,
       send_if: &Helper.is_active_and_has_team/1,
       template_vars: &Helper.with_user_and_team_attrs/2
+    },
+    "new_conversation_message_for_patient" => %{
+      subject: &ConversationMessageForPatient.subject/1,
+      load_data: &ConversationMessageForPatient.load_data/1,
+      send_if: &ConversationMessageForPatient.send_if/1,
+      template_vars: &ConversationMessageForPatient.template_vars/2
+    },
+    "new_conversation_message_for_provider" => %{
+      subject: &ConversationMessageForProvider.subject/1,
+      load_data: &ConversationMessageForProvider.load_data/1,
+      send_if: &ConversationMessageForProvider.send_if/1,
+      template_vars: &ConversationMessageForProvider.template_vars/2
     }
   }
 

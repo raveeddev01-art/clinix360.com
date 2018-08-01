@@ -248,3 +248,6 @@ export const FILE_TYPES = [
   { label: "Text", value: "text" },
   { label: "Archive", value: "archive" }
 ];
+
+// Call related constants
+export const CALL_AUTO_END_AFTER_MS = 30 * 1000;

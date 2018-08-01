@@ -1,5 +1,7 @@
 import { getTimezone } from "../../lib/utils";
 
+const noop = () => {};
+
 /**
  * Channel store
  *
@@ -41,6 +43,10 @@ class ChannelStore {
     }
   }
 
+  disconnectAndReload() {
+    socket.disconnect(() => window.location.reload(true));
+  }
+
   // ///////////// //
   // Event Channel //
   // ///////////// //
@@ -52,14 +58,50 @@ class ChannelStore {
     return this.channels[this.eventChannelTopic];
   }
 
+  eventPatientChannelTopic(patientId) {
+    return `events:patient:${patientId}`;
+  }
+
+  eventPatientChannel(patientId) {
+    return this.channels[this.eventPatientChannelTopic(patientId)];
+  }
+
+  joinEventPatientChannel(patientId, options = {}) {
+    const { inboxStore } = this.rootStore;
+    const topic = this.eventPatientChannelTopic(patientId);
+    const joined = this.join(topic, { ...options });
+    const eventChannel = this.eventPatientChannel(patientId);
+
+    eventChannel.on("new_app_version", this.disconnectAndReload);
+
+    eventChannel.on(
+      "conversation_created",
+      inboxStore.onConversationCreateEvent
+    );
+
+    eventChannel.on(
+      "conversation_updated",
+      inboxStore.onConversationUpdateEvent
+    );
+
+    eventChannel.on(
+      "conversation_marked_as_read",
+      inboxStore.onMarkAsReadEvent
+    );
+
+    return joined;
+  }
+
   joinEventChannel(options = {}) {
     const {
-      sidemenuStore,
       groupsStore,
+      inboxStore,
+      invitationStore,
       notificationStore,
       presenceStore,
-      invitationStore,
-      teamFileStore
+      sidemenuStore,
+      teamFileStore,
+      callStore
     } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
@@ -90,11 +132,101 @@ class ChannelStore {
       invitationStore.onInvitationRevoked
     );
 
+    // Call related
+    this.eventChannel.on("incoming_call", callStore.onIncomingCall);
+    this.eventChannel.on("declined_call", callStore.onDeclinedCall);
+    this.eventChannel.on("ended_call", callStore.onDismissCall);
+
     // App related
-    this.eventChannel.on("new_app_version", () => {
-      socket.disconnect(() => window.location.reload(true));
-    });
+    this.eventChannel.on("new_app_version", this.disconnectAndReload);
     this.eventChannel.on("logout", presenceStore.onLogout);
+
+    this.eventChannel.on(
+      "conversation_marked_as_unread",
+      inboxStore.onConversationUpdateEvent
+    );
+
+    this.eventChannel.on(
+      "conversation_marked_as_read",
+      inboxStore.onMarkAsReadEvent
+    );
+
+    return joined;
+  }
+
+  // ///////////// //
+  // Inbox Channel //
+  // ///////////// //
+
+  joinInboxChannel(inboxId, options = {}) {
+    const { inboxStore } = this.rootStore;
+    const topic = `inbox:${inboxId}`;
+    const joined = this.join(topic, options);
+    const inboxChannel = this.channels[topic];
+
+    inboxChannel.on(
+      "conversation_created",
+      inboxStore.onConversationCreateEvent
+    );
+
+    inboxChannel.on(
+      "conversation_updated",
+      inboxStore.onConversationUpdateEvent
+    );
+
+    return joined;
+  }
+
+  // //////////////////// //
+  // Conversation Channel //
+  // //////////////////// //
+  get conversationChannelTopic() {
+    const { inboxStore } = this.rootStore;
+
+    // avoid socket ping error
+    if (inboxStore.currentConversationId) {
+      return `conversations:${inboxStore.currentConversationId}`;
+    }
+
+    return "";
+  }
+
+  get conversationChannel() {
+    return this.channels[this.conversationChannelTopic];
+  }
+
+  joinConversationChannel(options = {}) {
+    const joined = this.join(this.conversationChannelTopic, options);
+    const { conversationMessageStore } = this.rootStore;
+
+    this.conversationChannel.on(
+      "new_conversation_message",
+      conversationMessageStore.onNewMessage
+    );
+    this.conversationChannel.on(
+      "edited_conversation_message",
+      conversationMessageStore.onEditMessage
+    );
+    this.conversationChannel.on(
+      "deleted_conversation_message",
+      conversationMessageStore.onDeleteMessage
+    );
+    this.conversationChannel.on(
+      "read_status_update",
+      conversationMessageStore.onDeleteMessage
+    );
+    this.conversationChannel.on(
+      "conversation_message_link_previews_generated",
+      conversationMessageStore.onLinkPreviewGenerated
+    );
+    this.conversationChannel.on(
+      "conversation_message_link_preview_deleted",
+      conversationMessageStore.onLinkPreviewDeleted
+    );
+    this.conversationChannel.on(
+      "reactions_updated",
+      conversationMessageStore.onReactionUpdate
+    );
 
     return joined;
   }
@@ -125,6 +257,7 @@ class ChannelStore {
     // Message related
     this.groupChannel.on("new_msg", messageStore.onNewMessage);
     this.groupChannel.on("edit_msg", messageStore.onEditMessage);
+    this.groupChannel.on("update_msg", messageStore.onUpdateMessage);
     this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
     this.groupChannel.on("starred_message", messageStore.onStarredMessage);
     this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
@@ -186,6 +319,30 @@ class ChannelStore {
 
   get teamChannel() {
     return this.channels[this.teamChannelTopic];
+  }
+
+  teamPatientChannelTopic(teamId) {
+    return `team:patient:${teamId}`;
+  }
+
+  teamPatientChannel(teamId) {
+    return this.channels[this.teamPatientChannelTopic(teamId)];
+  }
+
+  joinTeamPatientChannel(teamId, options = {}) {
+    const timezone = this.getTimezoneInfo();
+    const topic = this.teamPatientChannelTopic(teamId);
+
+    const joined = this.join(topic, { ...options, timezone });
+
+    this.teamPatientChannel(teamId).on(
+      "team_renamed",
+      this.rootStore.teamStore.onRenamed
+    );
+
+    this.teamPatientChannel(teamId).on("team_deleted", noop);
+
+    return joined;
   }
 
   joinTeamChannel(options = {}) {

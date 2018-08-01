@@ -5,6 +5,7 @@ defmodule Stitch.Engage.Conversation do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Stitch.{
     Repo,
@@ -30,7 +31,9 @@ defmodule Stitch.Engage.Conversation do
   @page_length 20
 
   schema "conversations" do
+    # Note: open changes should not change the updated_at value
     field(:open, :boolean, default: true)
+
     field(:subject, :string)
 
     belongs_to(:inbox, Inbox)
@@ -143,10 +146,18 @@ defmodule Stitch.Engage.Conversation do
     {:error, :same_open_value}
   end
 
-  def update_open_value(%Conversation{} = conversation, open_value) do
-    conversation
-    |> changeset(%{open: open_value})
-    |> Repo.update()
+  def update_open_value(%Conversation{id: id} = conversation, open_value) do
+    # Do not change updated_at for open/close changes
+    case change_open_without_update_at_change(id, open_value) do
+      {1, _} -> {:ok, Repo.get(Conversation, id)}
+      _ -> :error
+    end
+  end
+
+  defp change_open_without_update_at_change(id, open_value) do
+    Conversation
+    |> where(id: ^id)
+    |> Repo.update_all(set: [open: open_value])
   end
 
   @doc """

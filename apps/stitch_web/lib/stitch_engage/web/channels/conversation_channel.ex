@@ -20,8 +20,13 @@ defmodule StitchEngage.Web.ConversationChannel do
   #   JOINING
   # ===========
 
-  def join("conversation:" <> conversation_id, _params, socket) do
-    user_or_patient = socket.assigns.current_user || socket.assigns.patient
+  def join("conversations:" <> conversation_id, _params, socket) do
+    user_or_patient =
+      if Map.has_key?(socket.assigns, :current_user) do
+        socket.assigns.current_user
+      else
+        socket.assigns.patient
+      end
 
     with {:conversation, %Conversation{} = conversation} <-
            {:conversation, Repo.get(Conversation, conversation_id)},
@@ -75,12 +80,21 @@ defmodule StitchEngage.Web.ConversationChannel do
     })
   end
 
-  def broadcast_read_status(conversation, conversation_messages) do
+  def broadcast_provider_read_status(conversation, conversation_messages) do
     read_status_json =
       Enum.reduce(conversation_messages, %{}, &Map.put(&2, &1.id, &1.provider_read_status))
 
-    @endpoint.broadcast("conversations:#{conversation.id}", "read_status_update", %{
+    @endpoint.broadcast("conversations:#{conversation.id}", "provider_read_status_update", %{
       conversation_messages: read_status_json
+    })
+  end
+
+  def broadcast_patient_read_status(conversation, conversation_messages) do
+    patient_read_status_json =
+      Enum.reduce(conversation_messages, %{}, &Map.put(&2, &1.id, &1.patient_read_status))
+
+    @endpoint.broadcast("conversations:#{conversation.id}", "patient_read_status_update", %{
+      conversation_messages: patient_read_status_json
     })
   end
 

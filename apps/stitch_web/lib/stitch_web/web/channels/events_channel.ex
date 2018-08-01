@@ -6,21 +6,36 @@ defmodule Stitch.Web.EventsChannel do
 
   use Stitch.Web, :channel
   import Ecto.Query
-  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
+
+  alias Stitch.{
+    Repo,
+    Group,
+    GroupUser,
+    TeamQueries,
+    Accounts.User,
+    Patient
+  }
+
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView, NotificationPreferenceView}
   alias StitchEngage.Web.Api.V1.ConversationView
+  alias Stitch.Web.Api.V1.PatientView
 
   @endpoint Stitch.Web.Endpoint
 
   @decorate channel_action()
 
+  # ===================
+  #   CHANNEL JOINING
+  # ===================
+
   def join("events:patient:" <> patient_id, _params, socket) do
     patient_id = String.to_integer(patient_id)
+    join_json = PatientView.login_json(socket.assigns.patient)
 
     if patient_id == socket.assigns.patient.id do
       send(self(), :after_join)
 
-      {:ok, socket}
+      {:ok, join_json, socket}
     else
       {:error, %{message: "Unauthorized"}}
     end
@@ -49,7 +64,7 @@ defmodule Stitch.Web.EventsChannel do
     {:noreply, socket}
   end
 
-  def group_users_for(group_id) do
+  defp group_users_for(group_id) do
     GroupUser
     |> where(group_id: ^group_id)
     |> select([gu], %{
@@ -60,6 +75,10 @@ defmodule Stitch.Web.EventsChannel do
     })
     |> Repo.all()
   end
+
+  # ===================
+  #   USER BROADCASTS
+  # ===================
 
   def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do
     notify_user_ids_set = MapSet.new(notify_user_ids)
@@ -165,6 +184,18 @@ defmodule Stitch.Web.EventsChannel do
     })
   end
 
+  def broadcast_incoming_call(user_id, caller_id, hash) do
+    @endpoint.broadcast("events:#{user_id}", "incoming_call", %{caller_id: caller_id, hash: hash})
+  end
+
+  def broadcast_declined_call(user_id, caller_id, hash) do
+    @endpoint.broadcast("events:#{user_id}", "declined_call", %{caller_id: caller_id, hash: hash})
+  end
+
+  def broadcast_ended_call(user_id, caller_id, hash) do
+    @endpoint.broadcast("events:#{user_id}", "ended_call", %{caller_id: caller_id, hash: hash})
+  end
+
   def broadcast_logout(%User{} = user, session_id) do
     @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
   end
@@ -194,7 +225,7 @@ defmodule Stitch.Web.EventsChannel do
     @endpoint.broadcast("events:#{user.id}", "marked_as_unread", json_response)
   end
 
-  def broadcast_conversation_marked_as_read(user, json_response) do
+  def broadcast_conversation_provider_marked_as_read(user, json_response) do
     @endpoint.broadcast("events:#{user.id}", "conversation_marked_as_read", json_response)
   end
 
@@ -251,6 +282,10 @@ defmodule Stitch.Web.EventsChannel do
     end)
   end
 
+  # ======================
+  #   PATIENT BROADCASTS
+  # ======================
+
   @spec broadcast_conversation_creation_to_patient(integer, Conversation.t()) :: term
   def broadcast_conversation_creation_to_patient(patient_id, conversation) do
     conversation_json = ConversationView.conversation_json_with_latest(conversation)
@@ -268,6 +303,31 @@ defmodule Stitch.Web.EventsChannel do
 
     @endpoint.broadcast("events:patient:#{patient_id}", "conversation_updated", %{
       conversation: conversation_json
+    })
+  end
+
+  @spec broadcast_patient_updated(Patient.t()) :: term
+  def broadcast_patient_updated(patient) do
+    patient_json = PatientView.patient_json(patient)
+
+    @endpoint.broadcast("events:patient:#{patient.id}", "patient_updated", %{
+      patient: patient_json
+    })
+  end
+
+  @spec broadcast_conversation_patient_marked_as_read(Patient.t(), map) :: term
+  def broadcast_conversation_patient_marked_as_read(patient, json_response) do
+    @endpoint.broadcast(
+      "events:patient:#{patient.id}",
+      "conversation_marked_as_read",
+      json_response
+    )
+  end
+
+  @spec broadcast_unread_conversations_count(Patient.t(), integer) :: term
+  def broadcast_unread_conversations_count(patient, count) do
+    @endpoint.broadcast("events:patient:#{patient.id}", "unread_conversations_count", %{
+      count: count
     })
   end
 end

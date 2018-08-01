@@ -78,10 +78,9 @@ export default class YouHome extends Component {
 
         <Panel.Body>
           <div className="admin-products-wrapper">
-            <h4>Products</h4>
             <HomeItem
               icon="fa-comments"
-              title="Connect"
+              title="Stitch Connect"
               description="Team Communication: Send messages, write notes, upload files, and track tasks on any device."
               openButtonText="Launch"
               link="/"

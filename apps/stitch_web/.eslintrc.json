@@ -81,6 +81,10 @@
           "usersStore",
           "newsStore",
           "patientsStore",
+          "currentPatientStore",
+          "inboxStore",
+          "conversationMessageStore",
+          "callStore",
 
           "match",
           "location",
@@ -97,6 +101,7 @@
     "applicationHost": true,
     "applicationScheme": true,
     "currentUser": false,
+    "currentPatient": false,
     "get": true,
     "notify": true,
     "patch": true,

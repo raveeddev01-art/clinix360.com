@@ -128,6 +128,19 @@ defmodule Stitch.Engage.ConversationQueries do
   end
 
   @doc """
+  Given a patient id and inbox id, return the total count of conversations for that patient.
+  """
+  @spec count_for_patient_in_inbox(integer | binary, integer | binary) :: integer
+  def count_for_patient_in_inbox(patient_id, inbox_id) do
+    query =
+      Conversation
+      |> where(inbox_id: ^inbox_id)
+      |> for_patient(patient_id)
+
+    Repo.one(from(c in query, select: count("*")))
+  end
+
+  @doc """
   Given a conversation id and user, load the conversation and any necessary relationships
   """
   @spec for_show(integer | binary, User.t() | Patient.t()) :: Conversation.t() | nil
@@ -249,7 +262,7 @@ defmodule Stitch.Engage.ConversationQueries do
   defp make_add_unread_fn(conversation_join_records, user_or_patient) do
     fn conversation ->
       is_unread =
-        case Enum.find(conversation_join_records, &(&1.id == conversation.id)) do
+        case Enum.find(conversation_join_records, &(&1.conversation_id == conversation.id)) do
           nil -> is_unread_without_join_record(conversation, user_or_patient)
           conversation_user -> is_unread_with_join_record(conversation_user)
         end
@@ -367,8 +380,8 @@ defmodule Stitch.Engage.ConversationQueries do
     end
   end
 
-  defp default_limit_for_type(:conversation), do: 20
-  defp default_limit_for_type(:conversation_message), do: 50
+  defp default_limit_for_type(:conversation), do: Conversation.page_length()
+  defp default_limit_for_type(:conversation_message), do: ConversationMessage.page_length()
 
   defp most_recent(query, count) do
     from(m in query, order_by: [desc: m.updated_at], limit: ^count)
@@ -399,5 +412,28 @@ defmodule Stitch.Engage.ConversationQueries do
     else
       _ -> query
     end
+  end
+
+  @spec visible_patient_conversation_ids(Patient.t(), [pos_integer]) :: [pos_integer]
+  def visible_patient_conversation_ids(%Patient{} = patient, conversation_ids \\ nil) do
+    query =
+      ConversationPatient
+      |> where([cp], cp.patient_id == ^patient.id)
+
+    if conversation_ids,
+      do: query |> where([cp], cp.conversation_id in ^conversation_ids),
+      else: query
+
+    query
+    |> select([cp], cp.conversation_id)
+    |> Repo.all()
+  end
+
+  def patients_for_convsersation(%Conversation{} = conversation) do
+    Repo.preload(conversation, :patients).patients
+  end
+
+  def providers_for_conversation(%Conversation{} = conversation) do
+    Repo.preload(conversation, :providers).providers
   end
 end

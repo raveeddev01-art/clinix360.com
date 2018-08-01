@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -14,7 +15,7 @@ import AddPatientModal from "../../inbox/modals/add_patient_modal";
 class Topbar extends Component {
   onCloseConversation = () => {
     const { inboxStore } = this.props;
-    inboxStore.closeConversation(inboxStore.currentConversation.id);
+    inboxStore.closeConversation(inboxStore.currentConversationId);
   };
 
   onToggle = isOpen => {
@@ -36,15 +37,24 @@ class Topbar extends Component {
   };
 
   render() {
-    const { inboxStore } = this.props;
+    const { asPatient, inboxStore } = this.props;
 
     return (
       <div className="topbar">
         <div className="header-text">
-          <h4>{inboxStore.currentConversation.patient.full_name}</h4>
-          <div className="subject">
-            {inboxStore.currentConversation.subject}
-          </div>
+          {!asPatient && (
+            <h4>
+              {inboxStore.currentConversation &&
+                inboxStore.currentConversation.patient.full_name}
+            </h4>
+          )}
+          {/* TODO: add topic as patient */}
+          {!asPatient && (
+            <div className="subject">
+              {inboxStore.currentConversation &&
+                inboxStore.currentConversation.subject}
+            </div>
+          )}
         </div>
 
         <div className="header-nav">
@@ -86,12 +96,6 @@ class Topbar extends Component {
                 <i className="fa fa-user m-r-5" /> Add Patient
               </MenuItem>
               <MenuItem
-                id="intercom-link"
-                href="jig8cj9z@inbound.intercom-mail.com"
-              >
-                <i className="fa fa-bullhorn m-r-5" /> Live Support
-              </MenuItem>
-              <MenuItem
                 target="_blank"
                 rel="noopener noreferrer"
                 href="https://help.teamstitch.com"
@@ -105,5 +109,13 @@ class Topbar extends Component {
     );
   }
 }
+
+Topbar.propTypes = {
+  asPatient: PropTypes.bool
+};
+
+Topbar.defaultProps = {
+  asPatient: false
+};
 
 export default Topbar;

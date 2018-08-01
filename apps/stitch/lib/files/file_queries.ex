@@ -4,12 +4,15 @@ defmodule Stitch.Files.FileQueries do
   alias Stitch.{
     Repo,
     GroupUser,
+    Files.EngageUpload,
+    Files.PatientUpload,
     Files.Upload,
     Files.UploadComment,
     Files.GroupUpload,
     Files.FileTypes,
     Message,
-    Paginator
+    Paginator,
+    Patient
   }
 
   @spec for_user(User.t(), map | nil) :: [Upload.t()]
@@ -126,5 +129,15 @@ defmodule Stitch.Files.FileQueries do
     Message
     |> where([m], m.upload_comment_id == ^upload_comment.id)
     |> Repo.all()
+  end
+
+  @spec get_engage_file_by_id(pos_integer) :: EngageUpload.t() | nil
+  def get_engage_file_by_id(engage_upload_id) do
+    Repo.get(EngageUpload, engage_upload_id)
+  end
+
+  @spec get_patient_upload(Patient.t(), EngageUpload.t()) :: PatientUpload.t()
+  def get_patient_upload(%Patient{} = patient, %EngageUpload{} = engage_upload) do
+    Repo.get_by(PatientUpload, patient_id: patient.id, engage_upload_id: engage_upload.id)
   end
 end

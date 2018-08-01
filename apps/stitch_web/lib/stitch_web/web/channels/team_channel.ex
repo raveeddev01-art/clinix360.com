@@ -11,11 +11,11 @@ defmodule Stitch.Web.TeamChannel do
 
   @endpoint Stitch.Web.Endpoint
 
-  def join("team:patient:" <> team_id, params, socket) do
+  def join("team:patient:" <> team_id, _params, socket) do
     team_id = String.to_integer(team_id)
 
     if team_id == socket.assigns.team_id do
-      {:ok, assign(socket, :meta, %{})}
+      {:ok, %{}, assign(socket, :meta, %{})}
     else
       {:error, %{message: "Unauthorized"}}
     end
@@ -184,7 +184,9 @@ defmodule Stitch.Web.TeamChannel do
       }}, socket}
   end
 
-  @spec remove_activity(User.t()) :: {:ok, pid} | nil
+  @spec remove_activity(User.t() | nil) :: {:ok, pid} | nil
+  def remove_activity(nil), do: nil
+
   def remove_activity(%User{} = user) do
     with {:ok, message_ids} <- ActivityTracker.remove_activity(user) do
       Stitch.Task.start(fn ->
@@ -196,7 +198,7 @@ defmodule Stitch.Web.TeamChannel do
   end
 
   def terminate(_reason, socket) do
-    remove_activity(socket.assigns.current_user)
+    remove_activity(Map.get(socket.assigns, :current_user))
     {:ok, socket}
   end
 

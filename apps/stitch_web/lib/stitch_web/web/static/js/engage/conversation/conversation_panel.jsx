@@ -1,46 +1,46 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 
-import Scrollbar from "common/components/scrollbar";
-
+import UploadProgress from "file-upload/upload-progress";
+import MessageForm from "chat/message-form/message-form";
 import Topbar from "./components/topbar";
-import Message from "./components/message";
-import MessageForm from "./components/message-form";
+import MessageList from "./components/message-list";
 
-@inject("inboxStore")
+@inject("conversationMessageStore")
 @observer
 class ConversationPanel extends Component {
   render() {
-    const { inboxStore } = this.props;
+    const { conversationMessageStore, asPatient } = this.props;
+    const className = conversationMessageStore.isLoaded ? "loaded" : "";
 
     return (
-      <div className="chat-container">
-        <Topbar />
-
-        <div className="messages-container">
-          <Scrollbar
-            className="scrollbar"
-            viewRef={ref => {
-              this.scrollbar = ref;
-            }}
-          >
-            {inboxStore.currentConversation.conversation_messages.map(
-              conversation => {
-                return (
-                  <Message
-                    key={`msg_key_${conversation.id}`}
-                    conversation={conversation}
-                  />
-                );
-              }
-            )}
-          </Scrollbar>
+      <div id="chat-container" className={className}>
+        <Topbar asPatient={asPatient} />
+        <div className="container-bars">
+          <UploadProgress />
         </div>
-
-        <MessageForm />
+        <MessageList />
+        <div className="flex-footer">
+          <MessageForm
+            asPatient={asPatient}
+            messageStore={conversationMessageStore}
+            allowMention={false}
+            allowTypingUsers={false}
+            allowJumpingIndicator={false}
+          />
+        </div>
       </div>
     );
   }
 }
+
+ConversationPanel.propTypes = {
+  asPatient: PropTypes.bool
+};
+
+ConversationPanel.defaultProps = {
+  asPatient: false
+};
 
 export default ConversationPanel;

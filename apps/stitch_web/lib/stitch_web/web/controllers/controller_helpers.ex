@@ -11,7 +11,6 @@ defmodule Stitch.Web.ControllerHelpers do
     |> put_current_user(user)
     |> put_session(:session_id, Stitch.Rand.token(12))
     |> put_session(:locked, false)
-    |> put_session(:intercom_user_hash, Stitch.Intercom.identity_verification_user_hash(user.id))
     |> configure_session(renew: true)
   end
 
@@ -33,10 +32,6 @@ defmodule Stitch.Web.ControllerHelpers do
 
   def get_session_token(conn) do
     Stitch.Web.SessionService.get_user_session_token(conn)
-  end
-
-  def get_patient_session_token(conn) do
-    Stitch.Web.SessionService.get_patient_session_token(conn)
   end
 
   def create_access_log_record(conn, user) do
@@ -171,4 +166,16 @@ defmodule Stitch.Web.ControllerHelpers do
 
   def get_include_user_ids(%{"includeUserIds" => "false"}), do: false
   def get_include_user_ids(_params), do: true
+
+  @doc """
+  Casts params using Ecto type casting.
+  Ex.
+
+  cast_params(%{author_id: :integer}, %{"author_id": "1"})
+  > %{author_id: 1}
+  """
+  def cast_params(types, params) do
+    changeset = Ecto.Changeset.cast({%{}, types}, params, Map.keys(types))
+    changeset.changes
+  end
 end

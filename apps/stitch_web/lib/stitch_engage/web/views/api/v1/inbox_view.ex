@@ -34,6 +34,7 @@ defmodule StitchEngage.Web.Api.V1.InboxView do
       id: inbox.id,
       name: inbox.name,
       is_default: inbox.is_default,
+      conversations_count: inbox.conversations_count,
       conversations: ConversationView.patient_conversations_json(inbox.conversations_for_patient)
     }
   end

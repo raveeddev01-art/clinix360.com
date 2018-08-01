@@ -44,7 +44,8 @@ defmodule Stitch.Engage.InboxQueries do
 
   def with_show_values(%Inbox{id: inbox_id} = inbox, %Patient{} = patient) do
     additional_attributes = %{
-      conversations_for_patient: ConversationQueries.latest_for_patient(patient, inbox_id)
+      conversations_for_patient: ConversationQueries.latest_for_patient(patient, inbox_id),
+      conversations_count: ConversationQueries.count_for_patient_in_inbox(patient.id, inbox_id)
     }
 
     Map.merge(inbox, additional_attributes)

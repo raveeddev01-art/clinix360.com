@@ -70,6 +70,11 @@ config :exq_ui,
   web_namespace: "jobs",
   server: true
 
-import_config "elasticsearch.exs"
+config :stitch, Tokbox,
+  iss: System.get_env("TOKBOX_PROJECT"),
+  key: System.get_env("TOKBOX_API_KEY"),
+  secret: System.get_env("TOKBOX_SECRET"),
+  ttl: 60 * 5
 
+import_config "elasticsearch.exs"
 import_config "#{Mix.env()}.exs"

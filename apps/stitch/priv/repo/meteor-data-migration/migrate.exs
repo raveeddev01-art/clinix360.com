@@ -46,8 +46,6 @@ defmodule Stitch.MeteorMigration do
           meteor_users = MeteorMigration.User.parse_users_json(parse_meteor_json(users_json))
           {_count, users} = MeteorMigration.User.migrate_users(team.id, meteor_users)
 
-          identify_on_intercom(users)
-
           Logger.info("Migrating rooms")
 
           indexed_users = index_users(users)
@@ -141,12 +139,6 @@ defmodule Stitch.MeteorMigration do
 
     messages = MeteorMigration.Message.run(indexed_rooms, phoenix_users_by_email, meteor_users_by_meteor_id, messages_json)
     Stitch.MeteorMigration.DBStat.team_stat(team_slug)
-  end
-
-  def identify_on_intercom(users) do
-    for user <- users do
-      Stitch.Analytics.identify_and_group(user)
-    end
   end
 
   def index_users(users), do: Enum.reduce(users, %{}, & Map.put(&2, &1.username, &1))

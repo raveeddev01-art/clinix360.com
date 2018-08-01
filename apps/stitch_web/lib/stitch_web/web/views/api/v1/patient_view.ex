@@ -1,8 +1,10 @@
 defmodule Stitch.Web.Api.V1.PatientView do
   use Stitch.Web, :view
+  alias Stitch.{PatientQueries, Paginator}
 
-  def render("index.json", %{patients: patients}) do
-    Enum.map(patients, &patient_json/1)
+  def render("index.json", %Paginator{data: data, meta: meta}) do
+    patients_json = Enum.map(data, &patient_json/1)
+    %{patients: patients_json, meta: meta}
   end
 
   def render("show.json", %{patient: patient}) do
@@ -10,12 +12,18 @@ defmodule Stitch.Web.Api.V1.PatientView do
   end
 
   def render("login.json", %{patient: patient, redirect_url: redirect_url}) do
+    login_json(patient, redirect_url)
+  end
+
+  def login_json(patient, redirect_url \\ nil) do
     patient = Stitch.Repo.preload(patient, :team)
+    unread_conversations_count = PatientQueries.unread_conversations_count(patient.id)
 
     %{
       patient: patient_json(patient),
       redirect_url: redirect_url,
       token: patient.token,
+      unread_conversations_count: unread_conversations_count,
       team: %{
         id: patient.team.id,
         name: patient.team.name,
@@ -34,7 +42,7 @@ defmodule Stitch.Web.Api.V1.PatientView do
     %{
       id: patient.id,
       avatar_thumb: patient.profile_image_thumb_url,
-      avatar: patient.profile_image_thumb_url,
+      avatar: patient.profile_image_url,
       disabled: patient.disabled,
       email: patient.email,
       first_name: patient.first_name,

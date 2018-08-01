@@ -74,18 +74,25 @@ export APNS_KEY_B64=
 export APNS_MODE=dev
 export FCM_KEY=
 
+export ENGAGE_APNS_TOPIC="com.teamstitch.patient"
+export ENGAGE_APNS_CERT_B64=""
+export ENGAGE_APNS_KEY_B64=""
+export ENGAGE_APNS_MODE=prod
+export ENGAGE_FCM_KEY=key
+
 export STRIPE_SECRET_KEY=
 export STRIPE_PUBLISHABLE_KEY=
 
 export TWILIO_ACCOUNT_SID=
 export TWILIO_AUTH_TOKEN=
 
-export INTERCOM_IDENTITY_VERIFICATION_SECRET=
-export INTERCOM_APP_ID=
 export SENTRY_PUBLIC_DSN=
 
 export REDIS_URL= # optional
 export ELASTICSEARCH_URL= # optional
+
+export TOKBOX_API_KEY=
+export TOKBOX_SECRET=
 ```
 
 Source the file to add these environment variables to your current shell

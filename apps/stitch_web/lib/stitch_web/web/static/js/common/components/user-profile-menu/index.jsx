@@ -28,6 +28,14 @@ class UserProfileMenu extends Component {
   render() {
     const { user, className, children, disabledMenu } = this.props;
 
+    if (!user) {
+      return <div />;
+    }
+
+    if (window.currentPatient || user.mrn) {
+      return <span>{children}</span>;
+    }
+
     return (
       <SmartDropdown
         id="user-profile-menu"

@@ -126,7 +126,8 @@ defmodule Stitch.Web.Router do
   scope "/", StitchConnect.Web do
     pipe_through(:no_csrf_browser)
 
-    # Webhook routes.
+    post("/webhook/tokbox", WebhookController, :tokbox)
+
     get("/webhook/drchrono/:webhook_token", WebhookController, :drchrono_get)
     post("/webhook/drchrono/:webhook_token", WebhookController, :drchrono)
   end

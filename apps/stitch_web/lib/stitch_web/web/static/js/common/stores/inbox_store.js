@@ -4,22 +4,43 @@
  * This is a mobx store that keeps track of data related to inbox menu and global state.
  */
 
-import { observable, computed, action } from "mobx";
+import { observable, computed, action, extendObservable } from "mobx";
+import { stringify } from "qs";
+import unionBy from "lodash/unionBy";
+import uniqBy from "lodash/uniqBy";
+import debounce from "lodash/debounce";
+import moment from "moment";
+import TimeoutManager from "lib/TimeoutManager";
+
+const searchDebounceMs = 400;
 
 class InboxStore {
   @observable conversations = [];
   @observable currentInbox = {};
-  @observable currentConversation = {};
+  @observable currentInboxFilter = null; // ["open", "closed", null]
   @observable currentModal = null;
   @observable messagesLoaded = false;
+  @observable conversationsLoaded = false;
+  @observable isLoadingConversationPage = false;
+  @observable currentConversationId = null;
+  @observable engageLoaded = false;
+  @observable currentModal = null;
+  @observable searchTerm = "";
+  @observable conversationMessagesByTerm = {};
+  @observable loadingTerm = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.timeoutManager = new TimeoutManager();
   }
 
   sortByUpdated(conversation1, conversation2) {
-    if (conversation1.updated_at < conversation2.updated_at) return 1;
-    if (conversation1.updated_at > conversation2.updated_at) return -1;
+    const conv1Unix = moment(conversation1.updated_at).unix();
+    const conv2Unix = moment(conversation2.updated_at).unix();
+
+    if (conv1Unix < conv2Unix) return 1;
+    if (conv1Unix > conv2Unix) return -1;
+
     return 0;
   }
 
@@ -31,6 +52,10 @@ class InboxStore {
     return this.currentInbox.closed_conversations_count;
   }
 
+  get apiBasePath() {
+    return `${this.rootStore.apiBasePath}/inboxes`;
+  }
+
   getConversationById = id =>
     this.conversations.find(conversation => conversation.id === id);
 
@@ -38,23 +63,120 @@ class InboxStore {
   //   COMPUTED
   // ===========
 
+  get latestConversation() {
+    if (this.sortedConversations.length > 0) {
+      return this.sortedConversations[0];
+    }
+
+    return undefined;
+  }
+
   @computed
-  get openedConversations() {
+  get sortedConversations() {
+    return this.conversations.sort(this.sortByUpdated);
+  }
+  @computed
+  get currentConversation() {
+    return this.getConversationById(this.currentConversationId);
+  }
+
+  @computed
+  get sortedOpenConversations() {
     return this.conversations
       .filter(conversations => conversations.open)
       .sort(this.sortByUpdated);
   }
 
   @computed
-  get closedConversations() {
+  get sortedClosedConversations() {
     return this.conversations
       .filter(conversations => !conversations.open)
       .sort(this.sortByUpdated);
   }
 
+  @computed
+  get currentInboxId() {
+    return this.currentInbox.id;
+  }
+
+  @computed
+  get fullyLoadedForCurrentFilter() {
+    return this.conversationsForFilter.length >= this.totalForFilter;
+  }
+
+  @computed
+  get conversationsForFilter() {
+    if (!this.currentInboxFilter) {
+      return this.conversations;
+    }
+
+    return this.currentInboxFilter === "open"
+      ? this.sortedOpenConversations
+      : this.sortedClosedConversations;
+  }
+
+  @computed
+  get totalForFilter() {
+    if (!this.currentInboxFilter) {
+      return this.currentInbox.conversations_count;
+    }
+
+    return this.currentInboxFilter === "open"
+      ? this.currentInbox.open_conversations_count
+      : this.currentInbox.closed_conversations_count;
+  }
+
+  @computed
+  get inSearchMode() {
+    return !!this.searchTerm;
+  }
+
+  @computed
+  get conversationsForTerm() {
+    if (this.loadingTerm) {
+      // forces conversationsForTerm to watch loading which
+      // is a somewhat hacky workaround to rerender properly
+    }
+
+    const messages = this.conversationMessagesByTerm[this.searchTerm] || [];
+    const conversations = messages.map(m =>
+      Object.assign(m.conversation, { search_message: m })
+    );
+
+    return uniqBy(conversations, "id");
+  }
+
+  @computed
+  get currentlyLoading() {
+    if (this.searchTerm) {
+      // loadingTerm is set & overridden on each new search
+      // keydown and cleared when that search returns
+      return this.loadingTerm === this.searchTerm;
+    }
+
+    return this.isLoadingConversationPage;
+  }
+
+  @computed
+  get currentConversationUnread() {
+    return this.currentConversation.is_unread;
+  }
+
   // ===========
   //   ACTIONS
   // ===========
+
+  @action
+  searchTermChange = term => {
+    // immediately set term, but debounce search
+    this.searchTerm = term;
+    this.searchConversationMessages(term);
+  };
+
+  @action
+  setCurrentInboxFilter = filter => {
+    this.currentInboxFilter = filter;
+  };
 
   @action
   setModal = modalName => {
@@ -67,20 +189,64 @@ class InboxStore {
   };
 
   @action
+  updateConversationData = (id, data) => {
+    const conversation = this.getConversationById(id);
+
+    if (conversation) {
+      Object.assign(conversation, data);
+    }
+  };
+
+  @action
   closeConversation = id => {
     return put(`/api/v1/conversations/${id}/close`);
   };
 
   @action
-  openConversation = id => {
+  reopenConversation = id => {
     return put(`/api/v1/conversations/${id}/open`);
   };
+
+  @action
+  addConversations = newConversations => {
+    this.conversations = unionBy(
+      newConversations,
+      this.conversations,
+      c => c.id
+    );
+  };
+
+  @action
+  addConversation = newConv => {
+    // find old one and mutate the new
+    // one's is_unread if needed
+    const oldConv = this.conversations.find(c => c.id === newConv.id);
+
+    if (
+      oldConv.latest_conversation_message &&
+      !this.fromSelf(newConv.latest_conversation_message) &&
+      oldConv.latest_conversation_message.id !==
+        newConv.latest_conversation_message.id
+    ) {
+      newConv.is_unread = true;
+    }
+
+    this.addConversations([newConv]);
+  };
+
+  @action
+  fromSelf(message) {
+    return window.currentPatient
+      ? message.patient_id === currentPatient.id
+      : message.provider_id === currentUser.id;
+  }
 
   @action
   loadEngage = async () => {
     try {
       await this.loadInbox();
       await this.loadConversations(this.currentInbox.id);
+      this.engageLoaded = true;
     } catch (e) {
       // TODO if error occurs here, redirect to error page
       console.error(e); // eslint-disable-line
@@ -93,40 +259,268 @@ class InboxStore {
   // Loading only default inbox for now
   @action
   loadInbox = () => {
-    return get("/api/v1/inboxes/default").then(response => {
+    return get(`${this.apiBasePath}/default`).then(response => {
+      this.rootStore.channelStore.joinInboxChannel(response.data.id);
       this.currentInbox = response.data;
     });
   };
 
   @action
   loadConversations = id => {
-    return get(`/api/v1/inboxes/${id}/conversations`).then(response => {
-      this.conversations = response.data;
+    return get(`${this.apiBasePath}/${id}/conversations`).then(response => {
+      this.conversations = response.data.sort(this.sortByUpdated);
+      this.conversationsLoaded = true;
     });
+  };
+
+  @action
+  postConversationMarkAsRead = id => {
+    return post(
+      `${this.rootStore.apiBasePath}/conversations/${id}/mark_as_read`,
+      {}
+    );
+  };
+
+  @action
+  loadNextConversationPage = () => {
+    const id = this.currentInbox.id;
+    const lastConvo = this.sortedConversations[
+      this.sortedConversations.length - 1
+    ];
+
+    if (lastConvo) {
+      const updatedBefore = moment.utc(lastConvo.updated_at).unix();
+      let openParam;
+      if (this.currentInboxFilter) {
+        openParam = this.currentInboxFilter === "open";
+      }
+
+      const params = stringify({
+        updated_before: updatedBefore,
+        open: openParam
+      });
+
+      this.isLoadingConversationPage = true;
+
+      get(`${this.apiBasePath}/${id}/conversations?${params}`)
+        .then(response => {
+          this.addConversations(response.data);
+          this.isLoadingConversationPage = false;
+        })
+        .catch(() => {
+          this.isLoadingConversationPage = false;
+        });
+    }
   };
 
   // Called from the conversations panel component
   @action
   openConversation = id => {
     this.messagesLoaded = false;
-    this.loadConversation(id);
+    return this.loadConversation(id);
   };
 
   @action
   loadConversation = id => {
-    return get(`/api/v1/conversations/${id}`).then(response => {
-      this.currentConversation = response.data;
+    const { conversationMessageStore, channelStore } = this.rootStore;
+    this.currentConversationId = parseInt(id, 10);
+
+    return get(
+      `${this.rootStore.apiBasePath}/conversations/${id}`
+    ).then(response => {
+      this.addConversations([response.data]);
+      conversationMessageStore.onConversationLoaded(response.data);
       this.messagesLoaded = true;
+      this.onConversationShowing();
+
+      channelStore
+        .joinConversationChannel({ authenticated_urls: true })
+        .receive("error", err => notify.show(err.message, "error"));
     });
   };
 
   @action
   createConversation = params => {
-    return post(`/api/v1/inboxes/1/conversations`, {
+    return post(`${this.apiBasePath}/${this.currentInboxId}/conversations`, {
       body: params
     }).then(response => {
-      this.conversations.push(response.data);
+      this.changeOpenCloseCountsAsNeeded(response.data);
+      this.addConversations([response.data]);
+      return response.data.id;
     });
+  };
+
+  @action
+  searchConversationMessages = term => {
+    this.loadingTerm = term;
+    this.debouncedSearch(term);
+  };
+
+  @action
+  debouncedSearch = debounce(term => {
+    const url = `${this.rootStore.apiBasePath}/conversation_messages/search`;
+
+    return post(url, { body: { term } })
+      .then(response => {
+        extendObservable(this.conversationMessagesByTerm, {
+          [term]: response.data.data
+        });
+
+        if (term === this.loadingTerm) {
+          this.loadingTerm = null;
+        }
+
+        return response;
+      })
+      .catch(() => {
+        if (term === this.loadingTerm) {
+          this.loadingTerm = null;
+        }
+      });
+  }, searchDebounceMs);
+
+  @action
+  markConversationAsRead = conversationId => {
+    const conversation = this.conversations.find(c => c.id === conversationId);
+    if (conversation) {
+      conversation.is_unread = false;
+    }
+  };
+
+  // ===================
+  //   HANDLING EVENTS
+  // ===================
+
+  @action
+  onConversationCreateEvent = ({ conversation }) => {
+    this.changeOpenCloseCountsAsNeeded(conversation);
+    this.addConversation(conversation);
+  };
+
+  @action
+  onConversationUpdateEvent = ({ conversation }) => {
+    this.changeOpenCloseCountsAsNeeded(conversation);
+    this.addConversation(conversation);
+  };
+
+  @action
+  onMarkAsReadEvent = ({ conversation_id }) => {
+    this.markConversationAsRead(conversation_id);
+  };
+
+  @action
+  onConversationCreated = conversation => {
+    if (!this.getConversationById(conversation.id)) {
+      this.conversations.push(conversation);
+    }
+  };
+
+  @action
+  onConversationUpdated = conversation => {
+    this.updateConversationData(conversation.id, conversation);
+  };
+
+  @action
+  onConversationShowing = () => {
+    this.timeoutManager.reset();
+    // start a timed mark as read goin on
+    this.timeoutManager.setTimeout(
+      this.timedMarkAsRead(this.currentConversationId),
+      500
+    );
+  };
+
+  @action
+  timedMarkAsRead = givenConversationId => () => {
+    if (this.currentConversationId === givenConversationId) {
+      // make call for current one if needed
+      if (document.hasFocus() && this.currentConversationUnread) {
+        this.postConversationMarkAsRead(givenConversationId);
+      }
+
+      // kick off next one
+      this.timeoutManager.setTimeout(
+        this.timedMarkAsRead(givenConversationId),
+        500
+      );
+    }
+  };
+
+  // ===================
+  //   CHANGING COUNTS
+  // ===================
+
+  @action
+  changeOpenCloseCountsAsNeeded(conversation) {
+    const oldVersion = this.conversations.find(c => c.id === conversation.id);
+
+    // Just increment the necessary counts
+    // Decrementing not needed
+    if (!oldVersion) {
+      this.incTotalCount();
+
+      if (conversation.open) {
+        this.incOpenCount();
+      } else {
+        this.incClosedCount();
+      }
+
+      return;
+    }
+
+    // Do nothing
+    if (oldVersion.open === conversation.open) {
+      return;
+    }
+
+    // Increment and decrement counts
+    // as old and new open values differ
+    if (conversation.open) {
+      this.incOpenCount();
+      this.decClosedCount();
+    } else {
+      this.decOpenCount();
+      this.incClosedCount();
+    }
+  }
+
+  @action
+  incTotalCount = () => {
+    this.incCount("conversations_count");
+  };
+
+  @action
+  incOpenCount = () => {
+    this.incCount("open_conversations_count");
+  };
+
+  @action
+  incClosedCount = () => {
+    this.incCount("closed_conversations_count");
+  };
+
+  @action
+  decOpenCount = () => {
+    this.decCount("open_conversations_count");
+  };
+
+  @action
+  decClosedCount = () => {
+    this.decCount("closed_conversations_count");
+  };
+
+  @action
+  incCount = type => {
+    if (!isNaN(this.currentInbox[type])) {
+      this.currentInbox[type] = this.currentInbox[type] + 1;
+    }
+  };
+
+  @action
+  decCount = type => {
+    if (!isNaN(this.currentInbox[type])) {
+      this.currentInbox[type] = this.currentInbox[type] - 1;
+    }
   };
 }
 

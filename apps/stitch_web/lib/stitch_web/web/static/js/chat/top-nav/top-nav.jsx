@@ -19,10 +19,18 @@ import NavItemHide from "./nav-items/nav-item-hide";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 import SearchInput from "./search-input";
+import BrowserWindow from "../../util/windows";
 
 @inject("addonStore", "groupStore", "groupsStore", "newsStore")
 @observer
 class TopNav extends Component {
+  onInitCall = () => {
+    const { groupStore } = this.props;
+    BrowserWindow.open(`/call/init/${groupStore.group.id}`, {
+      name: "calling"
+    });
+  };
+
   onToggleSettings = isOpen => {
     if (isOpen) {
       this.settingsOverlay.hide();
@@ -74,7 +82,7 @@ class TopNav extends Component {
     const fullMember = isFullMember(currentUser);
     const isRoomCreator = groupStore.group.creator_user_id === currentUser.id;
     const adminOrCreator = isAdmin() || isRoomCreator;
-    const isLastMember = groupStore.group.users.length === 1;
+    const isLastMember = groupStore.isLastMember;
     const publicOrPrivileged = groupStore.group.public || adminOrCreator;
 
     if (groupStore.group.joined) {
@@ -119,6 +127,9 @@ class TopNav extends Component {
   };
 
   render() {
+    const { groupStore } = this.props;
+    const isLastMember = groupStore.isLastMember;
+
     return (
       <div className="flex-header main-header">
         <div className="header-content">
@@ -137,6 +148,15 @@ class TopNav extends Component {
         </div>
 
         <div className="header-nav">
+          {!isLastMember && (
+            <a
+              role="link"
+              className="btn btn-default"
+              onClick={this.onInitCall}
+            >
+              <i className="fa fa-phone" />
+            </a>
+          )}
           <Dropdown
             id="dropdown-room-controls"
             pullRight

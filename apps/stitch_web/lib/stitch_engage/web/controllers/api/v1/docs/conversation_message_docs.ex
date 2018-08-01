@@ -126,12 +126,79 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
                 message(:object)
               end
             end,
-            "Message to create. Must include 'text_content' attribute.",
+            """
+            Message to create. Must include 'text_content' attribute.
+
+            For uploads, must include `type: "upload"` and the `fields` object with `filetype`,
+            `mimetype`, `size_in_bytes`, and `url`.
+
+            ```
+            message: {
+              text_content: "Check out this file.",
+              type: "upload",
+              fields: {
+                filename: "config.json",
+                mimetype: "application/json",
+                size_in_bytes: 1523,
+                url: "https://s3.amazonaws.com/stitch-content/foo-bar-baz.json"
+              }
+            }
+            ```
+            """,
             required: true
           )
         end
 
         response(200, "OK", Schema.ref(:ConversationMessage))
+      end
+
+      swagger_path :search do
+        post("/api/v1/conversation_messages/search")
+        produces("application/json")
+
+        description("Returns conversation messages matching the given criteria.")
+
+        CommonParams.auth()
+        CommonParams.pagination()
+
+        parameters do
+          term(
+            :query,
+            :string,
+            "The query string",
+            example: ~s("exact term", -minus, starting with pattern  *)
+          )
+
+          conversation_id(
+            :query,
+            :array,
+            "Search the given conversations ([1, 2])",
+            items: %{type: :integer}
+          )
+
+          author(
+            :query,
+            :string,
+            "Search messages from the given user (\"patient-{id}\" or \"provider-{id})\"",
+            example: "patient-1"
+          )
+
+          order(
+            :query,
+            :string,
+            "Order by relevance or recency (accepts either \"relevance\" or \"recency\"))",
+            example: "recency"
+          )
+
+          inbox_id(
+            :query,
+            :array,
+            "Search the given inboxes ([1, 2])",
+            items: %{type: :integer}
+          )
+        end
+
+        response(200, "OK", Schema.ref(:ConversationMessages))
       end
 
       swagger_path :patient_create do
@@ -158,7 +225,25 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
                 message(:object)
               end
             end,
-            "Message to create. Must include 'text_content' attribute.",
+            """
+            Message to create. Must include 'text_content' attribute.
+
+            For uploads, must include `type: "upload"` and the `fields` object with `filetype`,
+            `mimetype`, `size_in_bytes`, and `url`.
+
+            ```
+            message: {
+              text_content: "Check out this file.",
+              type: "upload",
+              fields: {
+                filename: "config.json",
+                mimetype: "application/json",
+                size_in_bytes: 1523,
+                url: "https://s3.amazonaws.com/stitch-content/foo-bar-baz.json"
+              }
+            }
+            ```
+            """,
             required: true
           )
         end
@@ -243,6 +328,55 @@ defmodule Stitch.Web.Api.V1.ConversationMessageDocs do
         end
 
         response(200, "ok")
+      end
+
+      swagger_path :patient_search do
+        post("/api/v1/patient/conversation_messages/search")
+        produces("application/json")
+
+        description("Returns conversation messages matching the given criteria for a patient.")
+
+        CommonParams.auth()
+        CommonParams.pagination()
+
+        parameters do
+          term(
+            :query,
+            :string,
+            "The query string",
+            example: ~s("exact term", -minus, starting with pattern  *)
+          )
+
+          conversation_id(
+            :query,
+            :array,
+            "Search the given conversations ([1, 2])",
+            items: %{type: :integer}
+          )
+
+          author(
+            :query,
+            :string,
+            "Search messages from the given user (\"patient-{id}\" or \"provider-{id})\"",
+            example: "patient-1"
+          )
+
+          order(
+            :query,
+            :string,
+            "Order by relevance or recency (accepts either \"relevance\" or \"recency\"))",
+            example: "recency"
+          )
+
+          inbox_id(
+            :query,
+            :array,
+            "Search the given inboxes ([1, 2])",
+            items: %{type: :integer}
+          )
+        end
+
+        response(200, "OK", Schema.ref(:ConversationMessages))
       end
     end
   end

@@ -4,6 +4,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
 
   alias Stitch.{
     Repo,
+    PatientQueries,
     Message.Reaction,
     Engage.Inbox,
     Engage.InboxAuthorization,
@@ -84,8 +85,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       conversation = conversation_with_show_data(conversation, user, [conversation_message])
       patient = conversation.patients |> List.first()
 
-      InboxChannel.broadcast_conversation_creation(conversation)
-      EventsChannel.broadcast_conversation_creation_to_patient(patient.id, conversation)
+      creation_events(conversation, patient, conversation_message)
 
       render(conn, "show.json", conversation: conversation)
     else
@@ -103,8 +103,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
       conversation_message = Repo.preload(conversation_message, [:patient, :provider])
       conversation = conversation_with_show_data(conversation, patient, [conversation_message])
 
-      InboxChannel.broadcast_conversation_creation(conversation)
-      EventsChannel.broadcast_conversation_creation_to_patient(patient.id, conversation)
+      creation_events(conversation, patient, conversation_message)
 
       render(conn, "patient_show.json", conversation: conversation)
     else
@@ -126,6 +125,23 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
     {:error, :unprocessable_entity, "There was a problem creating this conversation."}
   end
 
+  defp creation_events(conversation, patient, conversation_message) do
+    Stitch.Task.start(fn ->
+      InboxChannel.broadcast_conversation_creation(conversation)
+      EventsChannel.broadcast_conversation_creation_to_patient(patient.id, conversation)
+
+      unread_conversations_count = PatientQueries.unread_conversations_count(patient.id)
+      EventsChannel.broadcast_unread_conversations_count(patient, unread_conversations_count)
+
+      conversation_message = Repo.preload(conversation_message, [:provider, :patient])
+
+      StitchEngage.Web.ConversationMessageEventsService.conversation_message_creation_events(
+        conversation,
+        conversation_message
+      )
+    end)
+  end
+
   # ==============
   #   OPEN/CLOSE
   # ==============
@@ -145,7 +161,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
            {:conversation, Repo.get(Conversation, id)},
          {:authorized?, true} <-
            {:authorized?, ConversationAuthorization.can_update?(conversation, user)},
-         {:ok, updated_conversation} <- Conversation.update_open_value(conversation, open_value) do
+         {:ok, %Conversation{} = updated_conversation} <-
+           Conversation.update_open_value(conversation, open_value) do
       updated_conversation = conversation_with_show_data(updated_conversation, user)
 
       InboxChannel.broadcast_conversation_update(updated_conversation)
@@ -176,7 +193,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationController do
        ) do
     conversation =
       conversation
-      |> Repo.preload([:conversation_messages, :patients, :providers])
+      |> Repo.preload([:patients, :providers, conversation_messages: [:patient, :provider]])
       |> ConversationQueries.with_unread(user_or_patient)
 
     conversation_messages =

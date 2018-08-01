@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
 import cx from "classnames";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -66,18 +65,11 @@ class Sidemenu extends Component {
     this.toggleInviteModal();
   };
 
-  renderIntegrationLink() {
-    return window.electronApp ? (
-      <MenuItem eventKey="9" href="/admin/integrations" target="_blank">
-        Integrations
-        <small className="text-muted m-l-5">
-          <i className="fa fa-external-link sm" />
-        </small>
+  renderMenuItem(url, text, eventKey) {
+    return (
+      <MenuItem eventKey={eventKey} href={url} target="_blank">
+        {text}
       </MenuItem>
-    ) : (
-      <LinkContainer to="/admin/integrations">
-        <MenuItem eventKey="9">Integrations</MenuItem>
-      </LinkContainer>
     );
   }
 
@@ -87,23 +79,12 @@ class Sidemenu extends Component {
         <div className="separator text-center">
           <span>Admin</span>
         </div>
-        <LinkContainer to="/admin/team/settings">
-          <MenuItem eventKey="4">Settings</MenuItem>
-        </LinkContainer>
-        <LinkContainer to="/admin/team/security">
-          <MenuItem eventKey="5">Security</MenuItem>
-        </LinkContainer>
-        <LinkContainer to="/admin/analytics">
-          <MenuItem eventKey="6">Analytics</MenuItem>
-        </LinkContainer>
-        <LinkContainer to="/admin/members">
-          <MenuItem eventKey="7">Members</MenuItem>
-        </LinkContainer>
-        {(!window.electronApp || window.electronEnv !== "store") && (
-            <LinkContainer to="/admin/billing">
-              <MenuItem eventKey="8">Billing</MenuItem>
-            </LinkContainer>
-          )}
+        {this.renderMenuItem("/admin/team/settings", "Settings", "4")}
+        {this.renderMenuItem("/admin/team/security", "Security", "5")}
+        {this.renderMenuItem("/admin/analytics", "Analytics", "6")}
+        {this.renderMenuItem("/admin/members", "Members", "7")}
+        {(!window.electronApp || window.electronEnv !== "store") &&
+          this.renderMenuItem("/admin/billing", "Billing", "8")}
       </div>
     );
   }
@@ -168,6 +149,76 @@ class Sidemenu extends Component {
               <span className="user-name__text">{userStore.fullName}</span>
             </div>
           </div>
+          <Dropdown
+            id="dropdown-preferences-menu"
+            pullRight
+            componentClass="div"
+            onToggle={this.onDropdownToggle}
+          >
+            <Dropdown.Toggle noCaret bsStyle="link">
+              <OverlayTrigger
+                ref={ref => {
+                  this.overlayTrigger = ref;
+                }}
+                placement="bottom"
+                overlay={
+                  <Tooltip id="tooltip-preferences">Preferences</Tooltip>
+                }
+              >
+                <i className="fa fa-chevron-down" />
+              </OverlayTrigger>
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="super-colors">
+              <div className="user-header m-b-20">
+                <Avatar
+                  user={{
+                    avatar_thumb: userStore.avatarThumb,
+                    username: userStore.username
+                  }}
+                  size="sm"
+                />
+
+                <div className="content">
+                  <div className="full-name">{userStore.fullName}</div>
+                  <div className="username text-muted">
+                    {userStore.username}
+                  </div>
+                </div>
+              </div>
+
+              <div className="separator text-center">
+                <span>You</span>
+              </div>
+              {this.renderMenuItem("/admin/you/account", "Account", "1")}
+              {this.renderMenuItem("/admin/you/profile", "Profile", "2")}
+              {this.renderMenuItem(
+                "/admin/you/notifications",
+                "Notifications",
+                "3"
+              )}
+
+              {isMemberOrAdmin() &&
+                this.renderMenuItem("/admin/integrations", "Integrations", "9")}
+              {userStore.isAdmin && this.renderAdminOptions()}
+
+              <div className="separator text-center">
+                <span>Stitch</span>
+              </div>
+
+              {userStore.canInvite && (
+                <MenuItem eventKey="9" onClick={this.showInviteModal}>
+                  Invite
+                </MenuItem>
+              )}
+              <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
+                Lock Out
+              </MenuItem>
+              <MenuItem eventKey="11" href="/logout">
+                Sign Out
+              </MenuItem>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
         <div className="flex-content">
           <div className="rooms-menu">
