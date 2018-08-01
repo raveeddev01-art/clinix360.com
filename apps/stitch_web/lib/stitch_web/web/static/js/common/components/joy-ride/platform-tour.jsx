@@ -1,8 +1,10 @@
 import Joyride from "react-joyride";
-import JoyRideToolTip from "./tooltip";
+
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { ACTIONS, EVENTS } from "react-joyride/es/constants";
+
+import JoyRideToolTip from "./tooltip";
 
 @inject(
   "uploadStore",
