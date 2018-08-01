@@ -32,6 +32,7 @@
     <%= render "_user_js_variables.html", conn: @conn %>
     <%= render "_sentry.html", conn: @conn %>
     <script src="<%= static_path(@conn, "/js/landing_app.js") %>"></script>
+    <%= render "_zendesk.html", conn: @conn %>
     <%= render "_segment.html", conn: @conn %>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/landing-non-critical.css") %>">
   </body>
