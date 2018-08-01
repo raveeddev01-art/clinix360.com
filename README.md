@@ -75,8 +75,8 @@ export APNS_MODE=dev
 export FCM_KEY=
 
 export ENGAGE_APNS_TOPIC="com.teamstitch.patient"
-export ENGAGE_APNS_CERT_PATH="cert.pem"
-export ENGAGE_APNS_KEY_PATH="key_unencrypted.pem"
+export ENGAGE_APNS_CERT_B64=""
+export ENGAGE_APNS_KEY_B64=""
 export ENGAGE_APNS_MODE=prod
 export ENGAGE_FCM_KEY=key
 
@@ -86,8 +86,6 @@ export STRIPE_PUBLISHABLE_KEY=
 export TWILIO_ACCOUNT_SID=
 export TWILIO_AUTH_TOKEN=
 
-export INTERCOM_IDENTITY_VERIFICATION_SECRET=
-export INTERCOM_APP_ID=
 export SENTRY_PUBLIC_DSN=
 
 export REDIS_URL= # optional

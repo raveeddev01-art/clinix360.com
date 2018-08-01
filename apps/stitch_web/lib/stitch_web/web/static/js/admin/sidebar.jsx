@@ -137,7 +137,15 @@ class Sidebar extends Component {
               this.scrollbar = ref;
             }}
           >
-            <h5 className="you-heading">You</h5>
+            <ListGroup className="list-group--connect">
+              <ListGroupItem>
+                <Link to="/">
+                  <i className="fa fa-comments" />
+                  <span>Stitch Connect</span>
+                </Link>
+              </ListGroupItem>
+            </ListGroup>
+            <h5>You</h5>
             <ListGroup>
               <ListGroupItem active={this._isSelected("/admin/you/home")}>
                 <Link to="/admin/you/home">

@@ -11,7 +11,6 @@ defmodule Stitch.Web.ControllerHelpers do
     |> put_current_user(user)
     |> put_session(:session_id, Stitch.Rand.token(12))
     |> put_session(:locked, false)
-    |> put_session(:intercom_user_hash, Stitch.Intercom.identity_verification_user_hash(user.id))
     |> configure_session(renew: true)
   end
 

@@ -13,11 +13,17 @@ defmodule Stitch.Pigeon do
   end
 
   def engage_apns_config do
+    # workaround becase we can't pass cert as a string
+    cert_content = (System.get_env("ENGAGE_APNS_CERT_B64") || "") |> Base.decode64!()
+    key_content = (System.get_env("ENGAGE_APNS_KEY_B64") || "") |> Base.decode64!()
+    cert_path = Path.join([Application.app_dir(:stitch, "priv"), "engage_apns.cert"])
+    File.write!(cert_path, cert_content)
+
     Pigeon.APNS.Config.new(
       name: :apns_engage,
       mode: (System.get_env("ENGAGE_APNS_MODE") || "prod") |> String.to_atom(),
-      cert: System.get_env("ENGAGE_APNS_CERT_PATH") || "",
-      key: System.get_env("ENGAGE_APNS_KEY_PATH") || "",
+      cert: cert_path,
+      key: key_content,
       reconnect: false,
       port: 2197,
       ping_period: 300_000
