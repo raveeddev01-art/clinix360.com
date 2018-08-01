@@ -81,8 +81,8 @@ class Sidemenu extends Component {
         </div>
         {this.renderMenuItem("/admin/team/settings", "Settings", "4")}
         {this.renderMenuItem("/admin/team/security", "Security", "5")}
-        {this.renderMenuItem("/admin/team/analytics", "Analytics", "6")}
-        {this.renderMenuItem("/admin/team/members", "Members", "7")}
+        {this.renderMenuItem("/admin/analytics", "Analytics", "6")}
+        {this.renderMenuItem("/admin/members", "Members", "7")}
         {(!window.electronApp || window.electronEnv !== "store") &&
           this.renderMenuItem("/admin/billing", "Billing", "8")}
       </div>
