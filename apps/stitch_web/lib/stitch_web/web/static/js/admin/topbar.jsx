@@ -44,28 +44,6 @@ class Topbar extends Component {
               </OverlayTrigger>
             </Link>
           </li>
-          <li>
-            <a role="link" onClick={this.props.presenceStore.lock}>
-              <OverlayTrigger
-                placement="bottom"
-                container={this}
-                overlay={<Tooltip id="tooltip-info">Lock Out</Tooltip>}
-              >
-                <i className="fa fa-lock" />
-              </OverlayTrigger>
-            </a>
-          </li>
-          <li>
-            <a href="/logout">
-              <OverlayTrigger
-                placement="bottom"
-                container={this}
-                overlay={<Tooltip id="tooltip-info">Sign Out</Tooltip>}
-              >
-                <i className="fa fa-sign-out" />
-              </OverlayTrigger>
-            </a>
-          </li>
         </ul>
       </div>
     );
