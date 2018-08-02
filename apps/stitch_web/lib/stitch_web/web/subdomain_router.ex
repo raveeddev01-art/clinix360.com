@@ -344,7 +344,6 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/reset_password", AuthenticationController, :reset_password)
     post("/patient/reset_password", AuthenticationController, :patient_reset_password)
 
-    get("/uploads", UploadController, :index)
     post("/upload-signature", UploadController, :create)
   end
 
@@ -477,6 +476,7 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/integrations/:id/enable", IntegrationController, :enable)
     post("/integrations/:id/disable", IntegrationController, :disable)
 
+
     scope "/invitations" do
       get("/", InvitationController, :index)
       post("/", InvitationController, :create)
@@ -500,6 +500,8 @@ defmodule Stitch.Web.SubdomainRouter do
     delete("/groups/:id", GroupController, :delete)
     put("/groups/:id/hide", GroupController, :hide)
     put("/groups/:id/unhide", GroupController, :unhide)
+
+    get("/uploads", UploadController, :index)
 
     get("/groups/:group_id/notification-preference", NotificationPreferenceController, :show)
     put("/groups/:group_id/notification-preference", NotificationPreferenceController, :update)
