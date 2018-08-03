@@ -73,6 +73,7 @@ export default class Downloads extends Component {
                               href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
                             >
                               <img
+                                className="mobile-app-img"
                                 src="/images/app-icon.png"
                                 alt="Connect for iOS"
                               />
@@ -103,6 +104,7 @@ export default class Downloads extends Component {
                               href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
                             >
                               <img
+                                className="mobile-app-img"
                                 src="/images/app-icon.png"
                                 alt="Connect for Android"
                               />
