@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import cx from "classnames";
@@ -125,37 +124,6 @@ class Header extends Component {
             <Navbar.Toggle onClick={this.mobileNavToggle} />
           </Navbar.Header>
           <Nav pullRight>
-            <NavDropdown
-              title="Products"
-              id="products-dropdown"
-              onMouseEnter={this.toggleProductsMenu}
-              onMouseLeave={this.toggleProductsMenu}
-              onToggle={noop}
-              open={this.state.productsMenuOpened}
-              noCaret
-            >
-              <LinkContainer to="/connect">
-                <MenuItem>
-                  <i className="fa fa-comments" />
-                  Connect <div className="subtext">Team Messaging</div>
-                </MenuItem>
-              </LinkContainer>
-
-              <LinkContainer to="/engage">
-                <MenuItem>
-                  <i className="fa fa-bullhorn" />
-                  Engage <div className="subtext">Patient Communication</div>
-                </MenuItem>
-              </LinkContainer>
-
-              <LinkContainer to="/manage">
-                <MenuItem>
-                  <i className="fa fa-tasks" />
-                  Manage <div className="subtext">Task Management</div>
-                </MenuItem>
-              </LinkContainer>
-            </NavDropdown>
-
             <LinkContainer to="/pricing">
               <NavItem>Pricing</NavItem>
             </LinkContainer>
@@ -237,29 +205,6 @@ class Header extends Component {
 
           <Navbar collapseOnSelect onSelect={this.mobileNavToggle}>
             <Nav>
-              <NavDropdown title="Products" id="products-dropdown">
-                <LinkContainer to="/connect">
-                  <MenuItem>
-                    <i className="fa fa-comments" />
-                    Connect
-                  </MenuItem>
-                </LinkContainer>
-
-                <LinkContainer to="/engage">
-                  <MenuItem>
-                    <i className="fa fa-bullhorn" />
-                    Engage
-                  </MenuItem>
-                </LinkContainer>
-
-                <LinkContainer to="/manage">
-                  <MenuItem>
-                    <i className="fa fa-tasks" />
-                    Manage
-                  </MenuItem>
-                </LinkContainer>
-              </NavDropdown>
-
               <LinkContainer to="/pricing">
                 <NavItem>Pricing</NavItem>
               </LinkContainer>

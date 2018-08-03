@@ -8,10 +8,11 @@ import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
 
+import TopBanner from "../components/top-banner";
+import Header from "../components/header";
 import CreateTeam from "../components/create-team";
 import Feature from "../components/feature";
 import Footer from "../components/footer";
-import Header from "../components/header";
 import VideoModal from "../components/video-modal";
 
 import browserDetails from "../../lib/browser_details";
@@ -54,13 +55,14 @@ export default class Connect extends Component {
 
     return (
       <div className="product-page">
+        <TopBanner />
         <Header />
         <div className="subheader">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
                 <h4 className="product-heading">
-                  <i className="fa fa-comments" /> Connect
+                  <i className="fa fa-comments" /> Stitch Connect
                 </h4>
 
                 <h1>{header}</h1>
@@ -316,7 +318,7 @@ export default class Connect extends Component {
                       rel="noopener noreferrer"
                       className="btn btn-primary appstore-btn"
                     >
-                      Get Stitch for iOS
+                      Get Stitch Connect for iOS
                     </a>
                   )}
 
@@ -328,7 +330,7 @@ export default class Connect extends Component {
                       rel="noopener noreferrer"
                       className="btn btn-primary appstore-btn"
                     >
-                      Get Stitch for Android
+                      Get Stitch Connect for Android
                     </a>
                   )}
               </div>
@@ -357,7 +359,7 @@ Connect.propTypes = {
 
 Connect.defaultProps = {
   flipped: false,
-  header: "Send messages, share files and stay in sync",
+  header: "Team messaging for healthcare",
   subHeader:
     "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
   // industryBodyText: "healthcare"

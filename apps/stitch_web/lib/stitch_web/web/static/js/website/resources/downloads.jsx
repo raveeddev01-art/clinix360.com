@@ -5,6 +5,7 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Button from "react-bootstrap/lib/Button";
 
+import TopBanner from "../components/top-banner";
 import Header from "../components/header";
 import Subheader from "../components/subheader";
 import GetStarted from "../components/get-started";
@@ -14,11 +15,12 @@ export default class Downloads extends Component {
   render() {
     return (
       <div className="downloads-page">
+        <TopBanner />
         <Header />
 
         <Subheader
           title="Downloads"
-          subtitle="Download the Stitch app for every desktop and mobile platform."
+          subtitle="Download the Stitch Connect app for every desktop and mobile platform."
         />
 
         <div className="downloads-content">

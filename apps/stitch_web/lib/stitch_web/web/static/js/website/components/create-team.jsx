@@ -100,7 +100,7 @@ class CreateTeam extends Component {
               rel="noopener noreferrer"
               className="btn btn-primary appstore-btn"
             >
-              Get Stitch for iOS
+              Get Stitch Connect for iOS
             </a>
           )}
 
@@ -113,7 +113,7 @@ class CreateTeam extends Component {
               rel="noopener noreferrer"
               className="btn btn-primary appstore-btn"
             >
-              Get Stitch for Android
+              Get Stitch Connect for Android
             </a>
           )}
       </div>

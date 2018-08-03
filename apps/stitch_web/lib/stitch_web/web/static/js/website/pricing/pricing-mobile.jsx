@@ -56,7 +56,7 @@ export default class PricingDesktop extends Component {
               </div>
 
               <div className="pricing-table__row header">
-                <div className="pricing-table__item">Stitch Platform</div>
+                <div className="pricing-table__item">Platform</div>
               </div>
 
               {PRICING_TABLE_MOBILE.BASIC.PLATFORM.map((row, index) => (
@@ -64,10 +64,26 @@ export default class PricingDesktop extends Component {
               ))}
 
               <div className="pricing-table__row header">
-                <div className="pricing-table__item">Team Messaging</div>
+                <div className="pricing-table__item">Communication</div>
               </div>
 
-              {PRICING_TABLE_MOBILE.BASIC.TEAM_MESSAGING.map((row, index) => (
+              {PRICING_TABLE_MOBILE.BASIC.COMMUNICATION.map((row, index) => (
+                <PricingRowMobile key={`row_${index}`} feature={row.feature} />
+              ))}
+
+              <div className="pricing-table__row header">
+                <div className="pricing-table__item">File Sharing</div>
+              </div>
+
+              {PRICING_TABLE_MOBILE.BASIC.FILE_SHARING.map((row, index) => (
+                <PricingRowMobile key={`row_${index}`} feature={row.feature} />
+              ))}
+
+              <div className="pricing-table__row header">
+                <div className="pricing-table__item">Productivity</div>
+              </div>
+
+              {PRICING_TABLE_MOBILE.BASIC.PRODUCTIVITY.map((row, index) => (
                 <PricingRowMobile key={`row_${index}`} feature={row.feature} />
               ))}
 
@@ -91,7 +107,7 @@ export default class PricingDesktop extends Component {
 
                   <h2>
                     <span>$</span>
-                    {monthlyPricing ? 59 : 49}
+                    {monthlyPricing ? 6 : 5}
                   </h2>
 
                   <p className="text-muted">
@@ -118,45 +134,20 @@ export default class PricingDesktop extends Component {
               </div>
 
               <div className="pricing-table__row header">
-                <div className="pricing-table__item">Team Messaging</div>
+                <div className="pricing-table__item">Communication</div>
               </div>
 
-              {PRICING_TABLE_MOBILE.STANDARD.TEAM_MESSAGING.map(
-                (row, index) => (
-                  <PricingRowMobile
-                    key={`row_${index}`}
-                    feature={row.feature}
-                  />
-                )
-              )}
+              {PRICING_TABLE_MOBILE.STANDARD.COMMUNICATION.map((row, index) => (
+                <PricingRowMobile key={`row_${index}`} feature={row.feature} />
+              ))}
 
               <div className="pricing-table__row header">
-                <div className="pricing-table__item">Patient Communication</div>
+                <div className="pricing-table__item">File Sharing</div>
               </div>
 
-              {PRICING_TABLE_MOBILE.STANDARD.PATIENT_COMMUNICATION.map(
-                (row, index) => (
-                  <PricingRowMobile
-                    key={`row_${index}`}
-                    feature={row.feature}
-                  />
-                )
-              )}
-
-              <div className="pricing-table__row header">
-                <div className="pricing-table__item">
-                  Task Management <Label>Coming Soon!</Label>
-                </div>
-              </div>
-
-              {PRICING_TABLE_MOBILE.STANDARD.TASK_MANAGEMENT.map(
-                (row, index) => (
-                  <PricingRowMobile
-                    key={`row_${index}`}
-                    feature={row.feature}
-                  />
-                )
-              )}
+              {PRICING_TABLE_MOBILE.STANDARD.FILE_SHARING.map((row, index) => (
+                <PricingRowMobile key={`row_${index}`} feature={row.feature} />
+              ))}
 
               <div className="pricing-table__row header">
                 <div className="pricing-table__item">Administration</div>
@@ -183,7 +174,7 @@ export default class PricingDesktop extends Component {
 
                   <h2>
                     <span>$</span>
-                    {monthlyPricing ? 119 : 99}
+                    {monthlyPricing ? 12 : 10}
                   </h2>
 
                   <p className="text-muted">
@@ -194,13 +185,13 @@ export default class PricingDesktop extends Component {
                   </p>
 
                   <Button
-                    href="mailto:support@teamstitch.com?subject=Stitch Premium Access Request"
+                    href={appSettings.hasLogin ? "/signin" : "/getstarted"}
                     bsStyle="primary"
                     bsSize="lg"
                     block
                     className="m-b-30"
                   >
-                    Coming Soon
+                    Buy Premium
                   </Button>
 
                   <p className="m-b-0">
@@ -210,32 +201,12 @@ export default class PricingDesktop extends Component {
               </div>
 
               <div className="pricing-table__row header">
-                <div className="pricing-table__item">Patient Communication</div>
+                <div className="pricing-table__item">Communication</div>
               </div>
 
-              {PRICING_TABLE_MOBILE.PREMIUM.PATIENT_COMMUNICATION.map(
-                (row, index) => (
-                  <PricingRowMobile
-                    key={`row_${index}`}
-                    feature={row.feature}
-                  />
-                )
-              )}
-
-              <div className="pricing-table__row header">
-                <div className="pricing-table__item">
-                  Task Management <Label>Coming Soon!</Label>
-                </div>
-              </div>
-
-              {PRICING_TABLE_MOBILE.PREMIUM.TASK_MANAGEMENT.map(
-                (row, index) => (
-                  <PricingRowMobile
-                    key={`row_${index}`}
-                    feature={row.feature}
-                  />
-                )
-              )}
+              {PRICING_TABLE_MOBILE.PREMIUM.COMMUNICATION.map((row, index) => (
+                <PricingRowMobile key={`row_${index}`} feature={row.feature} />
+              ))}
 
               <div className="pricing-table__row header">
                 <div className="pricing-table__item">Administration</div>
