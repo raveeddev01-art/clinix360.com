@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import TopBanner from "../components/top-banner";
 import Header from "../components/header";
 import Subheader from "../components/subheader";
 import Footer from "../components/footer";
@@ -15,6 +16,7 @@ export default class Jobs extends Component {
   render() {
     return (
       <div className="jobs-page">
+        <TopBanner />
         <Header />
 
         <Subheader

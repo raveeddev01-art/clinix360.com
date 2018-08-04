@@ -21,27 +21,6 @@ export default class Footer extends Component {
             <Col sm={10} md={9}>
               <Row>
                 <Col xs={6} sm={3} md={3}>
-                  <h5>Platform</h5>
-                  <ul className="list-unstyled">
-                    <li>
-                      <Link to="/connect">Connect</Link>
-                    </li>
-                    <li>
-                      <Link to="/engage">Engage</Link>
-                    </li>
-                    <li>
-                      <Link to="/manage">Manage</Link>
-                    </li>
-                    <li>
-                      <Link to="/downloads">Downloads</Link>
-                    </li>
-                    <li>
-                      <Link to="/pricing">Pricing</Link>
-                    </li>
-                  </ul>
-                </Col>
-
-                <Col xs={6} sm={3} md={3}>
                   <h5>Resources</h5>
                   <ul className="list-unstyled">
                     <li>
@@ -76,6 +55,21 @@ export default class Footer extends Component {
                       >
                         API Docs
                       </a>
+                    </li>
+                  </ul>
+                </Col>
+
+                <Col xs={6} sm={3} md={3}>
+                  <h5>Platform</h5>
+                  <ul className="list-unstyled">
+                    <li>
+                      <Link to="/connect">Product</Link>
+                    </li>
+                    <li>
+                      <Link to="/downloads">Downloads</Link>
+                    </li>
+                    <li>
+                      <Link to="/pricing">Pricing</Link>
                     </li>
                   </ul>
                 </Col>
