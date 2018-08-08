@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { withRouter, Route, Switch } from "react-router-dom";
-import history from "lib/history";
 
 import withTitle from "../util/with_document_title";
 import ScrollToTop from "./components/scrollToTop";
@@ -48,14 +47,13 @@ class WebsiteRouter extends Component {
   constructor(props) {
     super(props);
 
-    const path = history.location.pathname;
-    if (!path === "/jobs") {
-      this.state = { showModal: true };
-    }
-
     this.state = {
-      showModal: false
+      showModal: true
     };
+
+    if (this.props.history.location.pathname === "/jobs") {
+      this.state = { showModal: false };
+    }
   }
 
   handleClose = () => {
