@@ -46,9 +46,14 @@ const notFoundTitle = "404 | Page Not Found";
 class WebsiteRouter extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showModal: true
     };
+
+    if (this.props.history.location.pathname === "/jobs") {
+      this.state = { showModal: false };
+    }
   }
 
   handleClose = () => {

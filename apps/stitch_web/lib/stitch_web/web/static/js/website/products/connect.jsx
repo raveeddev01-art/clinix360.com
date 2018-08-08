@@ -121,7 +121,7 @@ export default class Connect extends Component {
           image="/images/connect-feature-3.png"
         >
           With Stitch, you can apply custom notification preferences to every
-          conversation, so you can stay focused and in the loop. Say goobye to
+          conversation, so you can stay focused and in the loop. Say goodbye to
           cluttered inboxes, noisy pagers and unruly text threads. Best of all,
           Stitch goes wherever you go with native Mac, Windows, iOS and Android
           apps.
