@@ -20,12 +20,14 @@ defmodule Stitch.Elasticsearch.SearchQuery do
 
   defstruct term: nil,
             author: nil,
-            order: nil,
+            search_order: nil,
+            on_date: nil,
             before: nil,
             after: nil,
             current_user: nil,
-            conversation_id: nil,
-            inbox_id: nil,
+            mentioned_user_ids: nil,
+            group_id: nil,
+            user_id: nil,
             team_id: nil,
             limit: nil,
             skip: nil
@@ -33,12 +35,14 @@ defmodule Stitch.Elasticsearch.SearchQuery do
   @type t :: %SearchQuery{
           term: String.t() | nil,
           author: String.t() | nil,
-          order: String.t() | nil,
+          search_order: String.t() | nil,
+          on_date: {DateTime.t(), DateTime.t()} | nil,
           before: DateTime.t() | nil,
           after: DateTime.t() | nil,
           current_user: User.t() | nil,
-          conversation_id: pos_integer | [pos_integer] | nil,
-          inbox_id: pos_integer | [pos_integer] | nil,
+          mentioned_user_ids: [pos_integer] | nil,
+          group_id: pos_integer | [pos_integer] | nil,
+          user_id: pos_integer | [pos_integer] | nil,
           team_id: pos_integer | nil,
           limit: pos_integer | nil,
           skip: pos_integer | nil
@@ -60,7 +64,7 @@ defmodule Stitch.Elasticsearch.SearchQuery do
   """
   @spec new(map) :: SearchQuery.t()
   def new(%{} = search_params) do
-    search_query = %SearchQuery{order: :relevance}
+    search_query = %SearchQuery{search_order: :relevance}
     struct(search_query, search_params)
   end
 
@@ -72,8 +76,10 @@ defmodule Stitch.Elasticsearch.SearchQuery do
     |> sort(search_query)
     |> before_filter(search_query)
     |> after_filter(search_query)
-    |> conversation_filter(search_query)
-    |> inbox_filter(search_query)
+    |> on_date_filter(search_query)
+    |> group_filter(search_query)
+    |> sent_to_filter(search_query)
+    |> sent_from_filter(search_query)
     |> team_filter(search_query)
     |> apply_limit(search_query)
     |> apply_skip(search_query)
@@ -110,14 +116,15 @@ defmodule Stitch.Elasticsearch.SearchQuery do
 
   def team_filter(query, _search_query), do: query
 
-  @spec inbox_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
-  def inbox_filter(query, %SearchQuery{inbox_id: inbox_id})
-      when is_integer(inbox_id) or is_list(inbox_id) do
+  @spec sent_to_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+
+  def sent_to_filter(query, %SearchQuery{mentioned_user_ids: mentioned_user_ids})
+      when is_list(mentioned_user_ids) do
     subquery = %{
       constant_score: %{
         filter: %{
           terms: %{
-            inbox_id: List.wrap(inbox_id)
+            mentioned_user_ids: mentioned_user_ids
           }
         }
       }
@@ -126,17 +133,16 @@ defmodule Stitch.Elasticsearch.SearchQuery do
     add_must_field(query, subquery)
   end
 
-  def inbox_filter(query, _search_query), do: query
+  def sent_to_filter(query, _search_query), do: query
 
-  @spec conversation_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
-
-  def conversation_filter(query, %SearchQuery{conversation_id: conversation_ids})
-      when is_integer(conversation_ids) or is_list(conversation_ids) do
+  @spec sent_from_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def sent_from_filter(query, %SearchQuery{user_id: user_ids})
+      when is_integer(user_ids) or is_list(user_ids) do
     subquery = %{
       constant_score: %{
         filter: %{
           terms: %{
-            conversation_id: List.wrap(conversation_ids)
+            user_id: List.wrap(user_ids)
           }
         }
       }
@@ -145,16 +151,31 @@ defmodule Stitch.Elasticsearch.SearchQuery do
     add_must_field(query, subquery)
   end
 
-  def conversation_filter(query, _search_query), do: query
+  def sent_from_filter(query, _search_query), do: query
+
+  @spec group_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def group_filter(query, %SearchQuery{group_id: group_ids})
+      when is_integer(group_ids) or is_list(group_ids) do
+    subquery = %{
+      constant_score: %{
+        filter: %{
+          terms: %{
+            group_id: List.wrap(group_ids)
+          }
+        }
+      }
+    }
+
+    add_must_field(query, subquery)
+  end
+
+  def group_filter(query, _search_query), do: query
 
   @spec before_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
-  def before_filter(query, %SearchQuery{
-        before: %DateTime{} = before_datetime,
-        current_user: %User{} = current_user
-      }) do
+  def before_filter(query, %SearchQuery{before: %DateTime{} = before_datetime}) do
     subquery = %{
       range: %{
-        inserted_at: %{lte: convert_to_user_timezone(before_datetime, current_user)}
+        inserted_at: %{lte: before_datetime |> DateTime.to_unix()}
       }
     }
 
@@ -164,13 +185,10 @@ defmodule Stitch.Elasticsearch.SearchQuery do
   def before_filter(query, _search_query), do: query
 
   @spec after_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
-  def after_filter(query, %SearchQuery{
-        after: %DateTime{} = after_timestamp,
-        current_user: %User{} = current_user
-      }) do
+  def after_filter(query, %SearchQuery{after: %DateTime{} = after_datetime}) do
     subquery = %{
       range: %{
-        inserted_at: %{lte: convert_to_user_timezone(after_timestamp, current_user)}
+        inserted_at: %{gte: after_datetime |> DateTime.to_unix()}
       }
     }
 
@@ -178,6 +196,24 @@ defmodule Stitch.Elasticsearch.SearchQuery do
   end
 
   def after_filter(query, _search_query), do: query
+
+  @spec on_date_filter(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def on_date_filter(query, %SearchQuery{
+        on_date: {%DateTime{} = start_datetime, %DateTime{} = end_datetime}
+      }) do
+    subquery = %{
+      range: %{
+        inserted_at: %{
+          gte: DateTime.to_unix(start_datetime),
+          lte: DateTime.to_unix(end_datetime)
+        }
+      }
+    }
+
+    add_must_field(query, subquery)
+  end
+
+  def on_date_filter(query, _search_query), do: query
 
   @doc """
   https://www.elastic.co/guide/en/elasticsearch/reference/master/mixing-exact-search-with-stemming.html
@@ -226,7 +262,7 @@ defmodule Stitch.Elasticsearch.SearchQuery do
   end
 
   @spec sort(elasticsearch_query, SearchQuery.t()) :: SearchQuery.t()
-  def sort(query, %SearchQuery{order: "recency"}) do
+  def sort(query, %SearchQuery{search_order: "recency"}) do
     Map.put(query, :sort, %{inserted_at: "desc"})
   end
 

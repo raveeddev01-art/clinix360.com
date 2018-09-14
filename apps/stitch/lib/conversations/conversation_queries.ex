@@ -414,21 +414,6 @@ defmodule Stitch.Engage.ConversationQueries do
     end
   end
 
-  @spec visible_patient_conversation_ids(Patient.t(), [pos_integer]) :: [pos_integer]
-  def visible_patient_conversation_ids(%Patient{} = patient, conversation_ids \\ nil) do
-    query =
-      ConversationPatient
-      |> where([cp], cp.patient_id == ^patient.id)
-
-    if conversation_ids,
-      do: query |> where([cp], cp.conversation_id in ^conversation_ids),
-      else: query
-
-    query
-    |> select([cp], cp.conversation_id)
-    |> Repo.all()
-  end
-
   def patients_for_convsersation(%Conversation{} = conversation) do
     Repo.preload(conversation, :patients).patients
   end
