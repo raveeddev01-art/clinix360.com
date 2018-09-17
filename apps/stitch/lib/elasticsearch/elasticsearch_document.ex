@@ -1,30 +1,17 @@
-defimpl Elasticsearch.Document, for: Stitch.Engage.ConversationMessage do
-  alias Stitch.{
-    Engage.ConversationMessage,
-    Elasticsearch.ConversationMessageSearch
-  }
+defimpl Elasticsearch.Document, for: Stitch.Message do
+  def id(message), do: message.id
 
-  def id(conversation_message), do: conversation_message.id
-
-  def encode(conversation_message) do
+  def encode(message) do
     %{
-      title: conversation_message.text_content |> String.slice(0..20),
-      author: author(conversation_message),
-      text_content: conversation_message.text_content,
-      inserted_at: inserted_at(conversation_message.inserted_at),
-      conversation_id: conversation_message.conversation_id,
-      inbox_id: conversation_message.conversation.inbox_id,
-      team_id: conversation_message.conversation.inbox.team_id,
-      conversation_message_id: conversation_message.id
+      title: message.text_content |> String.slice(0..20),
+      user_id: message.user_id,
+      text_content: message.text_content,
+      inserted_at: inserted_at(message.inserted_at),
+      group_id: message.group_id,
+      team_id: message.group.team_id,
+      message_id: message.id,
+      mentioned_user_ids: message.mentioned_user_ids
     }
-  end
-
-  def author(%ConversationMessage{patient_id: patient_id}) when is_integer(patient_id) do
-    ConversationMessageSearch.search_author_id(:patient, patient_id)
-  end
-
-  def author(%ConversationMessage{provider_id: provider_id}) when is_integer(provider_id) do
-    ConversationMessageSearch.search_author_id(:provider, provider_id)
   end
 
   def inserted_at(datetime) do

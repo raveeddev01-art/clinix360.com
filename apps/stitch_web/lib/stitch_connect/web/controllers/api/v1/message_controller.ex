@@ -75,15 +75,21 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  def search(conn, %{"v" => 2, "term" => term}) do
-    current_user = conn.assigns.current_user
-    messages = Stitch.Messages.Search.search(current_user, term, conn.assigns.query_opts)
-    render(conn, "index.json", messages: messages, user_id: current_user.id)
-  end
+  def search(conn, params) do
+    types = %{
+      term: :string,
+      skip: :integer,
+      limit: :integer,
+      search_order: :string,
+      after: :string,
+      before: :string,
+      author_id: :integer,
+      conversation_id: {:array, :integer}
+    }
 
-  def search(conn, %{"term" => term}) do
+    search_options = cast_params(types, params)
     current_user = conn.assigns.current_user
-    messages = MessageQueries.search(current_user.id, term, conn.assigns.query_opts)
+    messages = Stitch.Elasticsearch.MessageSearch.search_for_params(current_user, search_options)
     render(conn, "index.json", messages: messages, user_id: current_user.id)
   end
 

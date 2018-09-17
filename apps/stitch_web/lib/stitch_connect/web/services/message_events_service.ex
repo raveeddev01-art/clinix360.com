@@ -30,6 +30,7 @@ defmodule StitchConnect.Web.MessageEventsService do
   def message_edit_events(message) do
     LinkPreviewGenerator.queue(message)
     GroupChannel.broadcast_message_edited(message)
+    Stitch.Elasticsearch.MessageSearch.add_to_index(message)
   end
 
   def message_delete_events(message) do
@@ -37,5 +38,6 @@ defmodule StitchConnect.Web.MessageEventsService do
     GroupChannel.broadcast_message_deleted(message)
     EventsChannel.broadcast_group_msg_deleted(message.group, message)
     PushNotifications.push_badge_update(message)
+    Stitch.Elasticsearch.MessageSearch.delete_from_index(message)
   end
 end

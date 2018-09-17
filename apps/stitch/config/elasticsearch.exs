@@ -25,11 +25,11 @@ config :stitch, Stitch.ElasticsearchCluster,
     # This is the base name of the Elasticsearch index. Each index will be
     # built with a timestamp included in the name, like "posts-5902341238".
     # It will then be aliased to "posts" for easy querying.
-    conversation_messages: %{
+    messages: %{
       # This file describes the mappings and settings for your index. It will
       # be posted as-is to Elasticsearch when you create your index, and
       # therefore allows all the settings you could post directly.
-      settings: "apps/stitch/priv/elasticsearch/conversation_messages.json",
+      settings: "apps/stitch/priv/elasticsearch/messages.json",
 
       # This store module must implement the Elasticsearch.Store
       # behaviour. It will be used to fetch data for each source in each
@@ -42,7 +42,7 @@ config :stitch, Stitch.ElasticsearchCluster,
       #
       # Each piece of data that is returned by the store must implement the
       # Elasticsearch.Document protocol.
-      sources: [Stitch.Engage.ConversationMessage],
+      sources: [Stitch.Message],
 
       # When indexing data using the `mix elasticsearch.build` task,
       # control the data ingestion rate by raising or lowering the number

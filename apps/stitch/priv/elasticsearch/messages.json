@@ -31,13 +31,13 @@
           "type": "date"
         },
 
-        "conversation_id": {
-          "type": "keyword"
-        },
-        "inbox_id": {
+        "group_id": {
           "type": "keyword"
         },
         "team_id": {
+          "type": "keyword"
+        },
+        "mentioned_user_ids": {
           "type": "keyword"
         }
       }
