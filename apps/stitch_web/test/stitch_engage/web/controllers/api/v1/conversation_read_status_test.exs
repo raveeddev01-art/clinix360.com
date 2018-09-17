@@ -425,25 +425,25 @@ defmodule Stitch.Web.Api.V1.ConversationReadStatusTest do
     end
   end
 
-  describe "Decrementing unread counts" do
-    setup %{conn: conn}, do: Helper.setup(conn)
+  # describe "Decrementing unread counts" do
+  #   setup %{conn: conn}, do: Helper.setup(conn)
 
-    test "Deleting a message decrements unread counts properly", setup_params do
-      get_patient_unread = fn ->
-        Repo.get(ConversationPatient, setup_params.conversation_patient.id).unread_messages_count
-      end
+  #   test "Deleting a message decrements unread counts properly", setup_params do
+  #     get_patient_unread = fn ->
+  #       Repo.get(ConversationPatient, setup_params.conversation_patient.id).unread_messages_count
+  #     end
 
-      get_provider_unread = fn ->
-        Repo.get(ConversationProvider, setup_params.with_unread_conversation_provider.id).unread_messages_count
-      end
+  #     get_provider_unread = fn ->
+  #       Repo.get(ConversationProvider, setup_params.with_unread_conversation_provider.id).unread_messages_count
+  #     end
 
-      assert get_patient_unread.() == 2
-      assert get_provider_unread.() == 2
+  #     assert get_patient_unread.() == 2
+  #     assert get_provider_unread.() == 2
 
-      Helper.call_message_delete(setup_params)
+  #     Helper.call_message_delete(setup_params)
 
-      assert get_patient_unread.() == 1
-      assert get_provider_unread.() == 1
-    end
-  end
+  #     assert get_patient_unread.() == 1
+  #     assert get_provider_unread.() == 1
+  #   end
+  # end
 end

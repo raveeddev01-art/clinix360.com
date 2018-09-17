@@ -33,6 +33,31 @@ defmodule Stitch.GroupQueries do
     {:ok, Repo.all(query)}
   end
 
+  @spec visible_group_ids(User.t(), [pos_integer] | nil) :: [pos_integer]
+  def visible_group_ids(%User{} = user, group_ids \\ nil) do
+    query =
+      Group
+      |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
+
+    query =
+      if User.guest?(user) do
+        where(query, [g, gu], not is_nil(gu.id))
+      else
+        where(query, [g, gu], g.public or not is_nil(gu.id))
+      end
+
+    query =
+      if group_ids do
+        query |> where([g, gu], g.id in ^group_ids)
+      else
+        query
+      end
+
+    query
+    |> select([g, gu], g.id)
+    |> Repo.all()
+  end
+
   defp load_groups_for_user(query, %User{} = user, include_user_ids? \\ true) do
     query =
       from(

@@ -140,7 +140,6 @@ defmodule Stitch.Engage.ConversationMessage.ConversationMessageCreation do
     # Notifications: send necessary notifications here.
     # Analytics: add something like `track_conversation_message_sent(conversation_message, sender, conversation)`
 
-    Stitch.Elasticsearch.ConversationMessageSearch.add_to_index(conversation_message)
     transaction_response
   end
 
