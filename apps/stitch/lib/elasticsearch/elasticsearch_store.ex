@@ -13,4 +13,10 @@ defmodule Stitch.ElasticsearchStore do
     |> preload(:group)
     |> Repo.all()
   end
+
+  @impl true
+  def transaction(fun) do
+    {:ok, result} = Repo.transaction(fun, timeout: :infinity)
+    result
+  end
 end
