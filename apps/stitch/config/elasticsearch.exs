@@ -52,6 +52,6 @@ config :stitch, Stitch.ElasticsearchCluster,
       # Likewise, wait a given period between posting pages to give
       # Elasticsearch time to catch up.
       # 15 seconds
-      bulk_wait_interval: 15_000
+      bulk_wait_interval: 30_000
     }
   }
