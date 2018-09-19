@@ -47,11 +47,11 @@ config :stitch, Stitch.ElasticsearchCluster,
       # When indexing data using the `mix elasticsearch.build` task,
       # control the data ingestion rate by raising or lowering the number
       # of items to send in each bulk request.
-      bulk_page_size: 5000,
+      bulk_page_size: 500,
 
       # Likewise, wait a given period between posting pages to give
       # Elasticsearch time to catch up.
-      # 15 seconds
-      bulk_wait_interval: 30_000
+      # 5 minutes
+      bulk_wait_interval: 300_000
     }
   }
