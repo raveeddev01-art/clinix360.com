@@ -6,6 +6,7 @@ defmodule Stitch.ElasticsearchStore do
     Repo
   }
 
+  @impl true
   def load(schema, offset, limit) do
     schema
     |> offset(^offset)

@@ -7,7 +7,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Patient,
     Accounts.User,
     PatientQueries,
-    LinkPreviewGenerator,
     Message.Reaction,
     Message.LinkPreview,
     Engage.Conversation,
@@ -16,7 +15,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Engage.ConversationMessage.ConversationMessageCreation,
     Engage.ConversationAuthorization,
     Engage.ConversationMessageAuthorization,
-    Elasticsearch.ConversationMessageSearch,
+    Paginator,
     ReadStatus
   }
 
@@ -75,20 +74,8 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     do_search(conn, params, conn.assigns.patient)
   end
 
-  def do_search(conn, params, user_or_patient) do
-    types = %{
-      term: :string,
-      skip: :integer,
-      limit: :integer,
-      order: :string,
-      after: :string,
-      before: :string,
-      author_id: :integer,
-      conversation_id: {:array, :integer}
-    }
-
-    search_options = cast_params(types, params)
-    result = ConversationMessageSearch.search_for_params(user_or_patient, search_options)
+  def do_search(conn, _params, _user_or_patient) do
+    result = %Paginator{data: [], meta: %{}}
     render_search_result(conn, result)
   end
 
@@ -207,8 +194,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
         ConversationQueries.load_message_info(updated_conversation_message)
 
       ConversationChannel.broadcast_message_edited(updated_message_with_assocs)
-      LinkPreviewGenerator.queue(updated_message_with_assocs)
-      Stitch.Elasticsearch.ConversationMessageSearch.add_to_index(updated_conversation_message)
 
       render(conn, "show.json", conversation_message: updated_message_with_assocs)
     else
@@ -465,7 +450,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       )
 
       ConversationChannel.broadcast_message_created(conversation_message)
-      LinkPreviewGenerator.queue(conversation_message)
       update_patient_unread_conversations(conversation)
 
       StitchEngage.Web.ConversationMessageEventsService.conversation_message_creation_events(
@@ -485,10 +469,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       })
 
       update_patient_unread_conversations(conversation)
-
-      # Reminder to also remove from index when conversation, patient, provider, or inbox deletion are implemented
-      #   (the deletion of those records trigger the cascading delete of conversation_messages).
-      Stitch.Elasticsearch.ConversationMessageSearch.delete_from_index(conversation_message)
     end)
   end
 

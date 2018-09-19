@@ -26,13 +26,6 @@ defmodule Stitch.Web.Application do
           ]
       end
 
-    children =
-      if Application.get_env(:stitch_web, :start_message_link_preview_generator, true) do
-        children ++ [worker(Stitch.LinkPreviewGenerator, [])]
-      else
-        children
-      end
-
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [
