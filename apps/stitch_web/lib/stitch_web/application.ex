@@ -8,22 +8,32 @@ defmodule Stitch.Web.Application do
     children = [
       # Start the endpoint when the application starts
       supervisor(Stitch.Web.Endpoint, []),
-      supervisor(Stitch.Web.Presence, []),
-      worker(StitchConnect.MessageMailer, []),
-      worker(Stitch.PresignedUrlCache, []),
-      worker(StitchConnect.ActivityTrackerWorker, [])
+      supervisor(Stitch.Web.Presence, [])
       # Start your own worker by calling: StitchConnect.Worker.start_link(arg1, arg2, arg3)
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
     ]
 
-    children =
+    background_jobs = [
+      worker(StitchConnect.MessageMailer, []),
+      worker(Stitch.PresignedUrlCache, []),
+      worker(StitchConnect.ActivityTrackerWorker, [])
+    ]
+
+    background_jobs =
       if Application.get_env(:stitch_web, :env) == :test do
-        children
+        background_jobs
       else
-        children ++
+        background_jobs ++
           [
             worker(StitchConnect.MobileBadgeUpdater, [])
           ]
+      end
+
+    children =
+      if System.get_env("DISABLE_BACKGROUND_WORKERS") == "true" do
+        children
+      else
+        children ++ background_jobs
       end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
