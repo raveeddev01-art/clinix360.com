@@ -19,7 +19,9 @@ defmodule Stitch.ElasticsearchStore do
       |> preload(:group)
       |> Repo.all()
 
-    Logger.info("Finishied loading messages for #{inspect(%{offset: offset, limit: limit})}")
+    Logger.info(
+      "Loading #{Enum.count(result)} messages for #{inspect(%{offset: offset, limit: limit})}"
+    )
 
     result
   end
