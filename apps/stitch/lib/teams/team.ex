@@ -20,6 +20,7 @@ defmodule Stitch.Team do
     field(:ehr, :string)
     field(:industry, :string)
     field(:size, :string)
+    field(:onboarded, :boolean, default: false)
     field(:conceal_enabled, :boolean, default: true)
 
     has_many(:users, Stitch.Accounts.User, on_delete: :delete_all)
@@ -48,10 +49,7 @@ defmodule Stitch.Team do
       :slug,
       :security_lockout,
       :seconds_to_lockout,
-      :open_invitations_enabled,
-      :ehr,
-      :industry,
-      :size
+      :open_invitations_enabled
     ])
     |> validate_required([:name, :slug, :security_lockout, :open_invitations_enabled])
     |> validate_number(:seconds_to_lockout, greater_than: 10)
@@ -75,16 +73,27 @@ defmodule Stitch.Team do
     |> validate_format(:zip_code, ~r(^\d{5}(\-\d{4}\)?$))
   end
 
+  def onboaring_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [
+      :ehr,
+      :industry,
+      :size,
+      :onboarded
+    ])
+  end
+
   def complete_onboarding(params) do
     team = Repo.get(Stitch.Team, params["team_id"])
 
     attrs_to_update = %{
+      onboarded: true,
       ehr: params["team_ehr"],
       industry: params["team_industry"],
       size: params["team_size"]
     }
 
-    cs = changeset(team, attrs_to_update)
+    cs = onboaring_changeset(team, attrs_to_update)
 
     case Repo.update(cs) do
       {:ok, team} ->

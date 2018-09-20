@@ -12,8 +12,11 @@ defmodule Stitch.Web.Api.V1.UserController do
     Accounts,
     Billing,
     FeatureGateway,
+    Repo,
+    Accounts.User,
     Group,
     GroupQueries,
+    Team,
     TeamQueries,
     TimedMessage,
     UserQueries
@@ -186,20 +189,24 @@ defmodule Stitch.Web.Api.V1.UserController do
     {id, params} = Map.pop(params, "id")
     params = Map.put(params, "roles", ["admin"])
 
-    case Accounts.update_and_complete_user_onboarding(id, params) do
+    with %Team{onboarded: false} <- Repo.get(Team, params["team_id"]),
+         %User{} = user <- Accounts.update_and_complete_user_onboarding(id, params) do
+      group = GroupQueries.default_group(user)
+      Group.add_user(group, user.id)
+      Group.assign_creator(group, user.id)
+      TimedMessage.Event.new_team_owner(user)
+
+      conn
+      |> login_user(user)
+      |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
+    else
+      %Team{onboarded: true} ->
+        conn
+        |> unprocessable_entity_error(%{message: "This team already has an admin."})
+
       {:error, changeset} ->
         conn
         |> unprocessable_entity_error(%{changeset: changeset})
-
-      user ->
-        group = GroupQueries.default_group(user)
-        Group.add_user(group, user.id)
-        Group.assign_creator(group, user.id)
-        TimedMessage.Event.new_team_owner(user)
-
-        conn
-        |> login_user(user)
-        |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
     end
   end
 
