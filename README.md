@@ -95,6 +95,12 @@ export TOKBOX_API_KEY=
 export TOKBOX_SECRET=
 ```
 
+Optional
+
+```
+export DISABLE_BACKGROUND_WORKERS=false
+```
+
 Source the file to add these environment variables to your current shell
 session.
 

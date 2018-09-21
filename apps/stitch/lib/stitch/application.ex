@@ -8,11 +8,21 @@ defmodule Stitch.Application do
 
     children = [
       supervisor(Stitch.Repo, []),
-      supervisor(Task.Supervisor, [[name: Stitch.Exports.Supervisor]]),
-      supervisor(Stitch.Analytics.Supervisor, []),
-      supervisor(Stitch.Redix.Supervisor, []),
       supervisor(Stitch.ElasticsearchCluster, [])
     ]
+
+    background_jobs = [
+      supervisor(Task.Supervisor, [[name: Stitch.Exports.Supervisor]]),
+      supervisor(Stitch.Analytics.Supervisor, []),
+      supervisor(Stitch.Redix.Supervisor, [])
+    ]
+
+    children =
+      if System.get_env("DISABLE_BACKGROUND_WORKERS") == "true" do
+        children
+      else
+        children ++ background_jobs
+      end
 
     opts = [strategy: :one_for_one, name: Stitch.Supervisor]
     Supervisor.start_link(children, opts)

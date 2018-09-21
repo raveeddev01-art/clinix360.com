@@ -1,4 +1,6 @@
 defmodule Stitch.ElasticsearchStore do
+  require Logger
+
   @behaviour Elasticsearch.Store
   import Ecto.Query
 
@@ -8,16 +10,19 @@ defmodule Stitch.ElasticsearchStore do
 
   @impl true
   def load(schema, offset, limit) do
-    schema
-    |> offset(^offset)
-    |> limit(^limit)
-    |> preload(:group)
-    |> Repo.all()
-  end
+    Logger.info("Loading messages for #{inspect(%{offset: offset, limit: limit})}")
 
-  @impl true
-  def transaction(fun) do
-    {:ok, result} = Repo.transaction(fun, timeout: :infinity)
+    result =
+      schema
+      |> offset(^offset)
+      |> limit(^limit)
+      |> preload(:group)
+      |> Repo.all()
+
+    Logger.info(
+      "Loading #{Enum.count(result)} messages for #{inspect(%{offset: offset, limit: limit})}"
+    )
+
     result
   end
 end
