@@ -129,6 +129,7 @@ defmodule Stitch.Message.MessageCreation do
     MessageAnalytics.track_message_sent(message, message.user, message.group)
     NotificationQueue.async_enqueue_for_users(notify_user_ids.mobile_active, message.id)
     Stitch.Elasticsearch.MessageSearch.add_to_index(message)
+    Stitch.AnalyticsMessageCount.create(message)
     result_map = Map.put(result_map, :notify_user_ids, notify_user_ids)
     {:ok, result_map}
   end
