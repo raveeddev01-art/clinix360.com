@@ -82,6 +82,10 @@ defmodule Stitch.Web.SubdomainRouter do
     plug(Stitch.Web.Plug.PatientAuthenticate, [:auth])
   end
 
+  pipeline :analytics_api do
+    plug(Stitch.Web.Plug.AnalyticsApi, [:api])
+  end
+
   # ================
   #   FILES ROUTES
   # ================
@@ -191,6 +195,12 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/impersonate/stop", ImpersonationController, :stop)
     get("/impersonate/:user_id", ImpersonationController, :impersonate)
+  end
+
+  scope "/", Stitch.Web.Admin, as: :admin, host: "admin." do
+    pipe_through([:analytics_api])
+
+    get("/internal_analytics_data", InternalAnalyticsController, :retention_data)
   end
 
   # =================================
@@ -475,7 +485,6 @@ defmodule Stitch.Web.SubdomainRouter do
     delete("/integrations/:id", IntegrationController, :delete)
     post("/integrations/:id/enable", IntegrationController, :enable)
     post("/integrations/:id/disable", IntegrationController, :disable)
-
 
     scope "/invitations" do
       get("/", InvitationController, :index)

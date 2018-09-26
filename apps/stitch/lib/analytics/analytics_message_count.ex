@@ -4,32 +4,36 @@ defmodule Stitch.AnalyticsMessageCount do
 
   alias Stitch.{
     AnalyticsMessageCount,
-    Repo
+    Repo,
+    Team
   }
 
   @type t :: %__MODULE__{}
 
   @attributes [
     :count,
-    :date
+    :date,
+    :team_id
   ]
 
   schema "analytics_message_counts" do
     field(:count, :integer)
     field(:date, :naive_datetime)
+    belongs_to(:team, Team)
     timestamps(updated_at: false, inserted_at: false)
   end
 
   def new(attrs \\ %{}) do
     %AnalyticsMessageCount{}
     |> cast(attrs, @attributes)
-    |> put_change(:count, 0)
   end
 
   def create(message) do
-    new(%{date: naive_date(message.inserted_at)})
+    message = Repo.preload(message, :user)
+
+    new(%{date: naive_date(message.inserted_at), count: 1, team_id: message.user.team_id})
     |> Repo.insert(
-      conflict_target: [:date],
+      conflict_target: [:date, :team_id],
       on_conflict: [
         inc: [count: 1]
       ]

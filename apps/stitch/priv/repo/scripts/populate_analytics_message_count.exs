@@ -2,8 +2,7 @@ defmodule Stitch.PopulateAnalyticsMessageCount do
   @moduledoc """
   Usage:
 
-  Code.load_file("./apps/stitch/priv/repo/scripts/populate_analytics_message_count.exs")
-  Stitch.PopulateAnalyticsMessageCount.run()
+      mix run apps/stitch/priv/repo/scripts/populate_analytics_message_count.exs
 
   Counters are created in a descending order, therefore, it's safe to run this script
   second time if we want to reset the counters. (We won't count the message twice)
@@ -37,3 +36,5 @@ defmodule Stitch.PopulateAnalyticsMessageCount do
     IO.puts("Finished creating analytics with message counts")
   end
 end
+
+Stitch.PopulateAnalyticsMessageCount.run()
