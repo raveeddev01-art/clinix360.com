@@ -1,5 +1,5 @@
 defmodule Stitch.Analytics.CohortAnalysis do
-  def at_least_one_message(date, team_ids, team_count) do
+  def at_least_one_message(date, team_ids, messages_threshold) do
     months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
 
     query = """
@@ -13,7 +13,7 @@ defmodule Stitch.Analytics.CohortAnalysis do
         GROUP BY (date_trunc('month', a.date), team_id)
       ), fteams as (
         SELECT * FROM wteams w
-        WHERE w.message_count > 0
+        WHERE w.message_count >= $3
       ), gteams as (
         SELECT date_trunc('month', f.date) date, count(team_id) c FROM fteams f
         GROUP BY date
@@ -24,11 +24,14 @@ defmodule Stitch.Analytics.CohortAnalysis do
     res =
       Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
         team_ids,
-        %Postgrex.Interval{months: months + 1}
+        %Postgrex.Interval{months: months + 1},
+        messages_threshold
       ])
   end
 
-  def stat() do
+  def stat(opts) do
+    messages_threshold = opts[:messages_threshold] || 1
+
     query = """
       with wteams as (
         select sum(count) total_count, team_id from analytics_message_counts group by(team_id) order by total_count desc limit 10
@@ -48,7 +51,7 @@ defmodule Stitch.Analytics.CohortAnalysis do
 
     Enum.flat_map(res.rows, fn row ->
       [date, count, team_ids] = row
-      d = at_least_one_message(date, team_ids, nil)
+      d = at_least_one_message(date, team_ids, messages_threshold)
 
       e = %{
         "Sign Up Month" => parse_date(date),
