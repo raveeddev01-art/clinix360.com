@@ -207,6 +207,12 @@ defmodule Stitch.Web.SubdomainRouter do
       InternalAnalyticsController,
       :retention_data_with_team_filter
     )
+
+    get(
+      "/internal_analytics_teams_info",
+      InternalAnalyticsController,
+      :internal_analytics_teams_info
+    )
   end
 
   # =================================
