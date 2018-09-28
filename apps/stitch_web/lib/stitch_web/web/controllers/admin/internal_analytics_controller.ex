@@ -10,7 +10,14 @@ defmodule Stitch.Web.Admin.InternalAnalyticsController do
     Analytics.CohortAnalysisWithFilter
   }
 
-  plug(:parse_query_params when action in [:retention_data, :retention_data_with_team_filter])
+  plug(
+    :parse_query_params
+    when action in [
+           :retention_data,
+           :retention_data_with_team_filter,
+           :internal_analytics_teams_info
+         ]
+  )
 
   def retention_data(conn, params) do
     data = CohortAnalysis.stat(conn.assigns.query_options)
@@ -19,6 +26,11 @@ defmodule Stitch.Web.Admin.InternalAnalyticsController do
 
   def retention_data_with_team_filter(conn, params) do
     data = CohortAnalysisWithFilter.stat(conn.assigns.query_options)
+    conn |> json(data)
+  end
+
+  def internal_analytics_teams_info(conn, params) do
+    data = Stitch.Analytics.CohortAnalysisTeams.teams_info(conn.assigns.query_options)
     conn |> json(data)
   end
 
