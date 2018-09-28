@@ -34,14 +34,20 @@ defmodule Stitch.Analytics.CohortAnalysis do
 
     query = """
       with wteams as (
-        select sum(count) total_count, team_id from analytics_message_counts group by(team_id) order by total_count desc limit 10
-      ),series as (
-        SELECT date_trunc('month', t) date FROM generate_series('now'::timestamp - '14 months'::interval, 'now'::timestamp,  '1 month'::interval) t
+        select sum(count) total_count, team_id
+        from analytics_message_counts
+        group by(team_id)
+        order by total_count desc
+        limit 10
+      ), series as (
+        SELECT date_trunc('month', t) date
+        FROM generate_series('now'::timestamp - '11 months'::interval, 'now'::timestamp,  '1 month'::interval) t
       ), crossj as (
         select * from series cross join wteams
       ), maintable as (
-      select s.date, count(t.id), array_agg(t.id) from series s left outer join teams t on date_trunc('month', t.inserted_at) = s.date
-      group by date
+        select s.date, count(t.id), array_agg(t.id)
+        from series s left outer join teams t on date_trunc('month', t.inserted_at) = s.date
+        group by date
       )
       select * from maintable
       order by date;
