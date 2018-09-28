@@ -201,6 +201,12 @@ defmodule Stitch.Web.SubdomainRouter do
     pipe_through([:analytics_api])
 
     get("/internal_analytics_data", InternalAnalyticsController, :retention_data)
+
+    get(
+      "/internal_analytics_data_with_team_filter",
+      InternalAnalyticsController,
+      :retention_data_with_team_filter
+    )
   end
 
   # =================================

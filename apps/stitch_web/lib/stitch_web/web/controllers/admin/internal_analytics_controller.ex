@@ -2,12 +2,23 @@ defmodule Stitch.Web.Admin.InternalAnalyticsController do
   use Stitch.Web, :controller
   alias Stitch.Web.Endpoint
   alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
-  alias Stitch.{TeamQueries, UserQueries, Analytics.CohortAnalysis}
 
-  plug(:parse_query_params when action in [:retention_data])
+  alias Stitch.{
+    TeamQueries,
+    UserQueries,
+    Analytics.CohortAnalysis,
+    Analytics.CohortAnalysisWithFilter
+  }
+
+  plug(:parse_query_params when action in [:retention_data, :retention_data_with_team_filter])
 
   def retention_data(conn, params) do
     data = CohortAnalysis.stat(conn.assigns.query_options)
+    conn |> json(data)
+  end
+
+  def retention_data_with_team_filter(conn, params) do
+    data = CohortAnalysisWithFilter.stat(conn.assigns.query_options)
     conn |> json(data)
   end
 
