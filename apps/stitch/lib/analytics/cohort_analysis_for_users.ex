@@ -6,14 +6,9 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       with series as (
         SELECT date_trunc('month', t.date) date
         FROM generate_series('now'::timestamp - $2::interval, 'now'::timestamp, '1 month'::interval) t
-      ), analytics_user_counts as (
-        SELECT date_trunc('month', a.inserted_at) date, team_id team_id, count(id) message_count_1
-        FROM users a
-        WHERE team_id = ANY($1)
-        GROUP BY (date_trunc('month', a.inserted_at), team_id)
       ), wteams as (
-        SELECT date_trunc('month', a.date) date, team_id team_id, sum(message_count_1) message_count
-        FROM analytics_user_counts a
+        SELECT date_trunc('month', a.date) date, team_id team_id, sum(count) message_count
+        FROM analytics_message_counts a
         WHERE team_id = ANY($1)
         GROUP BY (date_trunc('month', a.date), team_id)
       ), fteams as (
@@ -22,8 +17,10 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       ), gteams as (
         SELECT date_trunc('month', f.date) date, count(team_id) c FROM fteams f
         GROUP BY date
-      )
-      SELECT * FROM series s LEFT OUTER JOIN gteams a ON s.date = a.date
+        ORDER BY date
+      ), dteams as (
+        select date, c, round(100.0 * c / lag(c) over (order by date), 1) as delta from gteams
+      ) SELECT * FROM series s LEFT OUTER JOIN gteams a ON s.date = a.date
     """
 
     res =
@@ -81,19 +78,19 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       d.rows
       |> Enum.with_index()
       |> Enum.map(fn {row, index} ->
-        [_, _, count2] = row
+        d = List.last(row)
 
-        r =
-          if count2 == nil do
+        d =
+          if d == nil do
             0
           else
-            count2 / count
+            d
           end
 
-        Map.merge(e, %{"period_age" => index, "retention_rate" => r})
+        Map.merge(e, %{"period_age" => index, "retention_rate" => d})
       end)
     end)
-    |> Enum.filter(fn e -> e["retention_rate"] != nil end)
+    # |> Enum.filter(fn e -> e["retention_rate"] != nil end)
     |> Enum.sort_by(fn d -> date_for_sort(d["date_source"]) end)
     |> Poison.encode!()
   end
