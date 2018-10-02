@@ -86,7 +86,7 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
 
         delta =
           if index < 0 do
-            currrent_count * 100.0
+            0
           else
             previous_count = rows |> Enum.at(index - 1) |> List.last()
 
@@ -94,7 +94,8 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
               if currrent_count == nil or currrent_count == 0 do
                 0
               else
-                currrent_count * 100.0
+                # currrent_count * 100.0
+                0
               end
             else
               if currrent_count == nil or currrent_count == 0 do
