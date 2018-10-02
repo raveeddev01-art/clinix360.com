@@ -1,5 +1,5 @@
 defmodule Stitch.Analytics.CohortAnalysisForUsers do
-  def at_least_one_message(date, team_ids, messages_threshold) do
+  def users_count_per_month(date, team_ids) do
     months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
 
     query = """
@@ -7,47 +7,30 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
         SELECT
           date_trunc('month', t.date) date
         FROM generate_series('now'::timestamp - $2::interval, 'now'::timestamp, '1 month'::interval) t
-      ), analytics_user_counts as (
+      ), user_count_per_month as (
         SELECT
           date_trunc('month', a.inserted_at) date,
-          team_id team_id,
           count(id) user_count
         FROM users a
         WHERE team_id = ANY($1)
-        GROUP BY (date_trunc('month', a.inserted_at), team_id)
-      ), wteams as (
+        GROUP BY (date_trunc('month', a.inserted_at))
+      ), result as (
         SELECT
-          date_trunc('month', a.date) date,
-          team_id team_id,
-          sum(a.user_count) total_user_count
-        FROM analytics_user_counts a
-        WHERE team_id = ANY($1)
-        GROUP BY (date_trunc('month', a.date), team_id)
-      ), gteams as (
-        SELECT
-          date_trunc('month', f.date) date,
-          sum(total_user_count) c
-        FROM wteams f
-        GROUP BY date
-        ORDER BY date
-      ), dteams as (
-        SELECT
-          date,
-          c,
-          round(100.0 * c / coalesce(lag(c) over (order by date), 1), 1) as delta
-        FROM gteams
+          s.date date,
+          a.user_count user_count
+        FROM series s
+        LEFT OUTER JOIN user_count_per_month a ON s.date = a.date
+        ORDER BY s.date
       ) SELECT
-        *
-      FROM series s
-      LEFT OUTER JOIN gteams a ON s.date = a.date
+        a.date date,
+        user_count
+      FROM result a
     """
 
-    res =
-      Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
-        team_ids,
-        %Postgrex.Interval{months: months + 1}
-        # messages_threshold
-      ])
+    Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
+      team_ids,
+      %Postgrex.Interval{months: months + 1}
+    ])
   end
 
   def stat(opts) do
@@ -85,33 +68,49 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
     res = Ecto.Adapters.SQL.query!(Stitch.Repo, query, [messages_threshold])
 
     Enum.flat_map(res.rows, fn row ->
-      [date, count, team_ids] = row
-      d = at_least_one_message(date, team_ids, messages_threshold)
+      [date, team_count, team_ids] = row
+      line = users_count_per_month(date, team_ids)
 
       e = %{
         "Sign Up Month" => parse_date(date),
-        "New Teams" => count,
+        "New Teams" => team_count,
         "date_source" => get_datetime(date)
       }
 
-      d.rows
-      |> Enum.with_index()
-      |> Enum.map(fn {row, index} ->
-        d = List.last(row)
+      rows = line.rows
 
-        d =
-          if d == nil do
-            0
+      rows
+      |> Enum.with_index()
+      |> Enum.map(fn {r, index} ->
+        currrent_count = r |> List.last()
+
+        delta =
+          if index < 0 do
+            currrent_count * 100.0
           else
-            d
+            previous_count = rows |> Enum.at(index - 1) |> List.last()
+
+            if previous_count == nil or previous_count == 0 do
+              if currrent_count == nil or currrent_count == 0 do
+                0
+              else
+                currrent_count * 100.0
+              end
+            else
+              if currrent_count == nil or currrent_count == 0 do
+                IO.inspect([currrent_count, previous_count])
+
+                -previous_count * 100.0
+              else
+                currrent_count / previous_count * 100.0
+              end
+            end
           end
 
-        Map.merge(e, %{"period_age" => index, "retention_rate" => d})
+        Map.merge(e, %{"period_age" => index, "retention_rate" => delta})
       end)
+      |> Enum.sort_by(fn d -> date_for_sort(d["date_source"]) end)
     end)
-    # |> Enum.filter(fn e -> e["retention_rate"] != nil end)
-    |> Enum.sort_by(fn d -> date_for_sort(d["date_source"]) end)
-    |> Poison.encode!()
   end
 
   def parse_date(d) do
@@ -128,7 +127,6 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
   end
 
   def date_for_sort(s) do
-    s
-    |> DateTime.to_unix()
+    DateTime.to_unix(s)
   end
 end
