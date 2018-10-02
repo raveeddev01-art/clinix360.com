@@ -55,7 +55,7 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       ),
       series as (
         SELECT date_trunc('month', t) date
-        FROM generate_series('now'::timestamp - '11 months'::interval, 'now'::timestamp,  '1 month'::interval) t
+        FROM generate_series('now'::timestamp - '14 months'::interval, 'now'::timestamp,  '1 month'::interval) t
       ), maintable as (
         select s.date, count(t.id), array_agg(t.id)
         from series s left outer join teams_with_100_messages t on date_trunc('month', t.inserted_at) = s.date
@@ -94,14 +94,13 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
               if currrent_count == nil or currrent_count == 0 do
                 0
               else
-                # currrent_count * 100.0
                 0
               end
             else
               if currrent_count == nil or currrent_count == 0 do
-                -100.0
+                -1.0
               else
-                currrent_count / previous_count * 100.0
+                currrent_count / previous_count
               end
             end
           end
