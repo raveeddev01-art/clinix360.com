@@ -98,9 +98,7 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
               end
             else
               if currrent_count == nil or currrent_count == 0 do
-                IO.inspect([currrent_count, previous_count])
-
-                -previous_count * 100.0
+                -100.0
               else
                 currrent_count / previous_count * 100.0
               end
