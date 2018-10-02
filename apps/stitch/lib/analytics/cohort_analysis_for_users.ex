@@ -4,27 +4,42 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
 
     query = """
       with series as (
-        SELECT date_trunc('month', t.date) date
+        SELECT
+          date_trunc('month', t.date) date
         FROM generate_series('now'::timestamp - $2::interval, 'now'::timestamp, '1 month'::interval) t
       ), analytics_user_counts as (
-        SELECT date_trunc('month', a.inserted_at) date, team_id team_id, count(id) message_count_1
+        SELECT
+          date_trunc('month', a.inserted_at) date,
+          team_id team_id,
+          count(id) user_count
         FROM users a
         WHERE team_id = ANY($1)
         GROUP BY (date_trunc('month', a.inserted_at), team_id)
       ), wteams as (
-        SELECT date_trunc('month', a.date) date, team_id team_id, sum(count) message_count
-        FROM analytics_message_counts a        WHERE team_id = ANY($1)
+        SELECT
+          date_trunc('month', a.date) date,
+          team_id team_id,
+          sum(a.user_count) total_user_count
+        FROM analytics_user_counts a
+        WHERE team_id = ANY($1)
         GROUP BY (date_trunc('month', a.date), team_id)
-      ), fteams as (
-        SELECT * FROM wteams w
-        WHERE w.message_count >= 1
       ), gteams as (
-        SELECT date_trunc('month', f.date) date, sum(message_count) c FROM fteams f
+        SELECT
+          date_trunc('month', f.date) date,
+          sum(total_user_count) c
+        FROM wteams f
         GROUP BY date
         ORDER BY date
       ), dteams as (
-        select date, c, round(100.0 * c / lag(c) over (order by date), 1) as delta from gteams
-      ) SELECT * FROM series s LEFT OUTER JOIN gteams a ON s.date = a.date
+        SELECT
+          date,
+          c,
+          round(100.0 * c / coalesce(lag(c) over (order by date), 1), 1) as delta
+        FROM gteams
+      ) SELECT
+        *
+      FROM series s
+      LEFT OUTER JOIN gteams a ON s.date = a.date
     """
 
     res =
