@@ -7,7 +7,8 @@ defmodule Stitch.Web.Admin.InternalAnalyticsController do
     TeamQueries,
     UserQueries,
     Analytics.CohortAnalysis,
-    Analytics.CohortAnalysisWithFilter
+    Analytics.CohortAnalysisWithFilter,
+    Analytics.CohortAnalysisForUsers
   }
 
   plug(
@@ -15,7 +16,8 @@ defmodule Stitch.Web.Admin.InternalAnalyticsController do
     when action in [
            :retention_data,
            :retention_data_with_team_filter,
-           :internal_analytics_teams_info
+           :internal_analytics_teams_info,
+           :retention_data_for_users
          ]
   )
 
@@ -31,6 +33,11 @@ defmodule Stitch.Web.Admin.InternalAnalyticsController do
 
   def internal_analytics_teams_info(conn, params) do
     data = Stitch.Analytics.CohortAnalysisTeams.teams_info(conn.assigns.query_options)
+    conn |> json(data)
+  end
+
+  def retention_data_for_users(conn, params) do
+    data = Stitch.Analytics.CohortAnalysisForUsers.stat(conn.assigns.query_options)
     conn |> json(data)
   end
 

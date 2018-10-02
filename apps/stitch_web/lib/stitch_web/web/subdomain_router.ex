@@ -209,6 +209,12 @@ defmodule Stitch.Web.SubdomainRouter do
     )
 
     get(
+      "/internal_analytics_data_for_users",
+      InternalAnalyticsController,
+      :retention_data_for_users
+    )
+
+    get(
       "/internal_analytics_teams_info",
       InternalAnalyticsController,
       :internal_analytics_teams_info
