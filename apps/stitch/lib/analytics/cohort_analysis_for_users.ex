@@ -6,10 +6,14 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       with series as (
         SELECT date_trunc('month', t.date) date
         FROM generate_series('now'::timestamp - $2::interval, 'now'::timestamp, '1 month'::interval) t
+      ), analytics_user_counts as (
+        SELECT date_trunc('month', a.inserted_at) date, team_id team_id, count(id) message_count_1
+        FROM users a
+        WHERE team_id = ANY($1)
+        GROUP BY (date_trunc('month', a.inserted_at), team_id)
       ), wteams as (
         SELECT date_trunc('month', a.date) date, team_id team_id, sum(count) message_count
-        FROM analytics_message_counts a
-        WHERE team_id = ANY($1)
+        FROM analytics_message_counts a        WHERE team_id = ANY($1)
         GROUP BY (date_trunc('month', a.date), team_id)
       ), fteams as (
         SELECT * FROM wteams w
