@@ -19,7 +19,7 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
         SELECT * FROM wteams w
         WHERE w.message_count >= 1
       ), gteams as (
-        SELECT date_trunc('month', f.date) date, count(team_id) c FROM fteams f
+        SELECT date_trunc('month', f.date) date, sum(message_count) c FROM fteams f
         GROUP BY date
         ORDER BY date
       ), dteams as (
