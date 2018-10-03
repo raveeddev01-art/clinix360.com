@@ -18,7 +18,7 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       ])
 
     Enum.map(result.rows, fn [row] ->
-      IO.inspect(from_erl(row))
+      from_erl(row)
     end)
   end
 
@@ -52,7 +52,7 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       ),
       series as (
         SELECT date_trunc('month', t) date
-        FROM generate_series('now'::timestamp - '14 months'::interval, 'now'::timestamp,  '1 month'::interval) t
+        FROM generate_series('now'::timestamp - '11 months'::interval, 'now'::timestamp,  '1 month'::interval) t
       ), maintable as (
         SELECT s.date, count(t.id), array_agg(t.id)
         FROM series s
