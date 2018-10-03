@@ -14,29 +14,12 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
 
     result =
       Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
-        %Postgrex.Interval{months: months + 2}
+        %Postgrex.Interval{months: months}
       ])
 
     Enum.map(result.rows, fn [row] ->
       IO.inspect(from_erl(row))
     end)
-  end
-
-  # 14 - 11
-  def users_count_per_month(date, team_ids) do
-    months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
-
-    query = """
-      SELECT
-        date_trunc('month', t.date) date
-      FROM generate_series('now'::timestamp - $2::interval, 'now'::timestamp, '1 month'::interval)
-    """
-
-    Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
-      team_ids,
-      %Postgrex.Interval{months: months + 1},
-      date
-    ])
   end
 
   def cast_int(x) do
