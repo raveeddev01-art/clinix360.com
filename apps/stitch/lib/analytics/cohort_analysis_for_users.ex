@@ -3,6 +3,7 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
 
   alias Stitch.{Repo}
 
+  # 14 - 11
   def users_count_per_month(date, team_ids) do
     months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
 
@@ -13,11 +14,11 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
         FROM generate_series('now'::timestamp - $2::interval, 'now'::timestamp, '1 month'::interval) t
       ), user_count_per_month as (
         SELECT
-          date_trunc('month', a.inserted_at) date,
+          date_trunc('month', u.inserted_at) date,
           count(id) user_count
-        FROM users a
+        FROM users u
         WHERE team_id = ANY($1)
-        GROUP BY (date_trunc('month', a.inserted_at))
+        GROUP BY (date_trunc('month', u.inserted_at))
       ), result as (
         SELECT
           s.date date,
@@ -26,20 +27,22 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
         LEFT OUTER JOIN user_count_per_month a ON s.date = a.date
         ORDER BY s.date
       ), user_count_by_month as (
-        SELECT count(id) c, date_trunc('month', u.inserted_at) date
+        SELECT count(u.id) c, date_trunc('month', u.inserted_at) date
         FROM users u
         WHERE u.team_id = ANY($1)
+          AND date_trunc('month', u.inserted_at) = date_trunc('month', $3::timestamp)
         GROUP BY date_trunc('month', u.inserted_at)
       ) SELECT
         a.date date,
-        user_count::float / u.c::float
+        coalesce(a.user_count::float / u.c::float, 0)
       FROM result a
       LEFT OUTER JOIN user_count_by_month u on a.date = u.date
     """
 
     Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
       team_ids,
-      %Postgrex.Interval{months: months + 1}
+      %Postgrex.Interval{months: months + 1},
+      date
     ])
   end
 
@@ -73,7 +76,7 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
         GROUP BY date
       )
       SELECT * FROM maintable
-      ORDER BY date;
+      ORDER BY date
     """
 
     res = Ecto.Adapters.SQL.query!(Stitch.Repo, query, [messages_threshold])
