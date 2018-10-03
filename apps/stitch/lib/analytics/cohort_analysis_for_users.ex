@@ -3,39 +3,40 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
 
   alias Stitch.{Repo}
 
+  def series(date) do
+    months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
+
+    query = """
+      SELECT
+        date_trunc('month', t.date) date
+      FROM generate_series('now'::timestamp - $1::interval, 'now'::timestamp, '1 month'::interval) t
+    """
+
+    result =
+      Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
+        %Postgrex.Interval{months: months + 1}
+      ])
+
+    Enum.map(result.rows, fn [row] ->
+      IO.inspect(from_erl(row))
+    end)
+  end
+
+  # def user_count(date, team_ids) do
+  #   Stitch.Accounts.User
+  #   |> where([u], u.team_id in ^team_ids)
+  #   |> where([u], fragment())
+  #   |> select([u], count(u.id))
+  # end
+
   # 14 - 11
   def users_count_per_month(date, team_ids) do
     months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
 
     query = """
-      with series as (
-        SELECT
-          date_trunc('month', t.date) date
-        FROM generate_series('now'::timestamp - $2::interval, 'now'::timestamp, '1 month'::interval) t
-      ), user_count_per_month as (
-        SELECT
-          date_trunc('month', u.inserted_at) date,
-          count(id) user_count
-        FROM users u
-        WHERE team_id = ANY($1)
-        GROUP BY (date_trunc('month', u.inserted_at))
-      ), result as (
-        SELECT
-          s.date date,
-          a.user_count user_count
-        FROM series s
-        LEFT OUTER JOIN user_count_per_month a ON s.date = a.date
-        ORDER BY s.date
-      ), user_count_by_month as (
-        SELECT count(u.id) c, date_trunc('month', u.inserted_at) date
-        FROM users u
-        WHERE u.team_id = ANY($1)
-          AND date_trunc('month', u.inserted_at) = date_trunc('month', $3::timestamp)
-        GROUP BY date_trunc('month', u.inserted_at)
-      ) SELECT
-        a.date date,
-        a.user_count::float
-      FROM result a
+      SELECT
+        date_trunc('month', t.date) date
+      FROM generate_series('now'::timestamp - $2::interval, 'now'::timestamp, '1 month'::interval)
     """
 
     Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
@@ -43,6 +44,14 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       %Postgrex.Interval{months: months + 1},
       date
     ])
+  end
+
+  def cast_int(x) do
+    if x == nil or x == 0 do
+      1
+    else
+      x
+    end
   end
 
   def stat(opts) do
@@ -82,28 +91,35 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
 
     Enum.flat_map(res.rows, fn row ->
       [date, team_count, team_ids] = row
-      line = users_count_per_month(date, team_ids)
-      get_user_count = get_user_count(date, team_ids) || 1
 
-      # IO.inspect(["user-count", get_user_count])
-
-      e = %{
-        "Sign Up Month" => parse_date(date),
-        "New Teams" => team_count,
-        "date_source" => get_datetime(date)
-      }
-
-      rows = line.rows
-
-      rows
+      series(date)
       |> Enum.with_index()
-      |> Enum.map(fn {row, index} ->
-        count = row |> List.last()
+      |> Enum.map(fn {sub_date, index} ->
+        user_count = get_user_count(date, team_ids)
+        user_subcount = get_user_subcount(sub_date, team_ids)
 
-        Map.merge(e, %{"period_age" => index, "retention_rate" => count / get_user_count})
+        e = %{
+          "Sign Up Month" => parse_date(date),
+          "New Teams" => team_count,
+          "date_source" => get_datetime(date)
+        }
+
+        Map.merge(e, %{"period_age" => index, "retention_rate" => calc(user_subcount, user_count)})
       end)
       |> Enum.sort_by(fn d -> date_for_sort(d["date_source"]) end)
     end)
+  end
+
+  def calc(x, 0) do
+    0
+  end
+
+  def calc(x, nil) do
+    0
+  end
+
+  def calc(x, y) do
+    x / y
   end
 
   def get_user_count(date, team_ids) do
@@ -112,6 +128,17 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
     |> where(
       [u],
       fragment("date_trunc('month', ?) = date_trunc('month', ?::timestamp)", u.inserted_at, ^date)
+    )
+    |> select([u], count(u.id))
+    |> Stitch.Repo.one()
+  end
+
+  def get_user_subcount(date, team_ids) do
+    Stitch.Accounts.User
+    |> where([u], u.team_id in ^team_ids)
+    |> where(
+      [u],
+      fragment("date_trunc('month', ?::timestamp) < ?", u.inserted_at, ^date)
     )
     |> select([u], count(u.id))
     |> Stitch.Repo.one()
@@ -128,6 +155,14 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
     s
     |> NaiveDateTime.from_erl!()
     |> DateTime.from_naive!("Etc/UTC")
+  end
+
+  def from_erl(s) do
+    {{y, m, d}, _} = s
+    s = {{y, m, d}, {0, 0, 0}}
+
+    s
+    |> NaiveDateTime.from_erl!()
   end
 
   def date_for_sort(s) do
