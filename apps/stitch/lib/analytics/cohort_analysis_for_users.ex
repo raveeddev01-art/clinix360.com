@@ -34,9 +34,8 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
         GROUP BY date_trunc('month', u.inserted_at)
       ) SELECT
         a.date date,
-        coalesce(a.user_count::float / u.c::float, 0)
+        a.user_count::float
       FROM result a
-      LEFT OUTER JOIN user_count_by_month u on a.date = u.date
     """
 
     Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
@@ -84,6 +83,9 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
     Enum.flat_map(res.rows, fn row ->
       [date, team_count, team_ids] = row
       line = users_count_per_month(date, team_ids)
+      get_user_count = get_user_count(date, team_ids) || 1
+
+      # IO.inspect(["user-count", get_user_count])
 
       e = %{
         "Sign Up Month" => parse_date(date),
@@ -97,10 +99,22 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
       |> Enum.with_index()
       |> Enum.map(fn {row, index} ->
         count = row |> List.last()
-        Map.merge(e, %{"period_age" => index, "retention_rate" => count})
+
+        Map.merge(e, %{"period_age" => index, "retention_rate" => count / get_user_count})
       end)
       |> Enum.sort_by(fn d -> date_for_sort(d["date_source"]) end)
     end)
+  end
+
+  def get_user_count(date, team_ids) do
+    Stitch.Accounts.User
+    |> where([u], u.team_id in ^team_ids)
+    |> where(
+      [u],
+      fragment("date_trunc('month', ?) = date_trunc('month', ?::timestamp)", u.inserted_at, ^date)
+    )
+    |> select([u], count(u.id))
+    |> Stitch.Repo.one()
   end
 
   def parse_date(d) do
