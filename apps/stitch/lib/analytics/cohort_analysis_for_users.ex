@@ -1,4 +1,8 @@
 defmodule Stitch.Analytics.CohortAnalysisForUsers do
+  import Ecto.Query
+
+  alias Stitch.{Repo}
+
   def users_count_per_month(date, team_ids) do
     months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
 
@@ -21,10 +25,16 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
         FROM series s
         LEFT OUTER JOIN user_count_per_month a ON s.date = a.date
         ORDER BY s.date
+      ), user_count_by_month as (
+        SELECT count(id) c, date_trunc('month', u.inserted_at) date
+        FROM users u
+        WHERE u.team_id = ANY($1)
+        GROUP BY date_trunc('month', u.inserted_at)
       ) SELECT
         a.date date,
-        user_count
+        user_count::float / u.c::float
       FROM result a
+      LEFT OUTER JOIN user_count_by_month u on a.date = u.date
     """
 
     Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
@@ -57,12 +67,13 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
         SELECT date_trunc('month', t) date
         FROM generate_series('now'::timestamp - '14 months'::interval, 'now'::timestamp,  '1 month'::interval) t
       ), maintable as (
-        select s.date, count(t.id), array_agg(t.id)
-        from series s left outer join teams_with_100_messages t on date_trunc('month', t.inserted_at) = s.date
-        group by date
+        SELECT s.date, count(t.id), array_agg(t.id)
+        FROM series s
+        LEFT OUTER JOIN teams_with_100_messages t ON date_trunc('month', t.inserted_at) = s.date
+        GROUP BY date
       )
-      select * from maintable
-      order by date;
+      SELECT * FROM maintable
+      ORDER BY date;
     """
 
     res = Ecto.Adapters.SQL.query!(Stitch.Repo, query, [messages_threshold])
@@ -81,31 +92,9 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
 
       rows
       |> Enum.with_index()
-      |> Enum.map(fn {r, index} ->
-        currrent_count = r |> List.last()
-
-        delta =
-          if index < 0 do
-            0
-          else
-            previous_count = rows |> Enum.at(index - 1) |> List.last()
-
-            if previous_count == nil or previous_count == 0 do
-              if currrent_count == nil or currrent_count == 0 do
-                0
-              else
-                0
-              end
-            else
-              if currrent_count == nil or currrent_count == 0 do
-                -1.0
-              else
-                currrent_count / previous_count
-              end
-            end
-          end
-
-        Map.merge(e, %{"period_age" => index, "retention_rate" => delta})
+      |> Enum.map(fn {row, index} ->
+        count = row |> List.last()
+        Map.merge(e, %{"period_age" => index, "retention_rate" => count})
       end)
       |> Enum.sort_by(fn d -> date_for_sort(d["date_source"]) end)
     end)
