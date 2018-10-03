@@ -14,20 +14,13 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
 
     result =
       Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
-        %Postgrex.Interval{months: months + 1}
+        %Postgrex.Interval{months: months + 2}
       ])
 
     Enum.map(result.rows, fn [row] ->
       IO.inspect(from_erl(row))
     end)
   end
-
-  # def user_count(date, team_ids) do
-  #   Stitch.Accounts.User
-  #   |> where([u], u.team_id in ^team_ids)
-  #   |> where([u], fragment())
-  #   |> select([u], count(u.id))
-  # end
 
   # 14 - 11
   def users_count_per_month(date, team_ids) do
