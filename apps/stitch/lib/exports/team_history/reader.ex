@@ -84,20 +84,20 @@ defmodule Stitch.Exports.TeamHistory.Reader do
   end
 
   @doc """
-  Returns message data to export for a given team and month.
+  Returns message data to export for a given team and day.
   """
-  @spec get_message_data_for_month(Team.t(), {pos_integer, pos_integer}) :: [map]
-  def get_message_data_for_month(%Team{id: id}, {year, month}) do
-    {:ok, beginning_of_month} = NaiveDateTime.new(year, month, 1, 0, 0, 0)
-    end_of_month = Timex.end_of_month(beginning_of_month)
+  @spec get_message_data_for_day(Team.t(), {pos_integer, pos_integer, pos_integer}) :: [map]
+  def get_message_data_for_day(%Team{id: id}, {year, month, day}) do
+    {:ok, beginning_of_day} = NaiveDateTime.new(year, month, day, 0, 0, 0)
+    end_of_day = Timex.end_of_day(beginning_of_day)
 
     query =
       from(
         g in Group,
         left_join: m in assoc(g, :messages),
         where: g.team_id == ^id,
-        where: m.inserted_at >= ^beginning_of_month,
-        where: m.inserted_at <= ^end_of_month,
+        where: m.inserted_at >= ^beginning_of_day,
+        where: m.inserted_at <= ^end_of_day,
         order_by: [asc: m.inserted_at],
         preload: [messages: m],
         select: map(g, [:id, :name, messages: @message_data_export_fields])
@@ -116,7 +116,9 @@ defmodule Stitch.Exports.TeamHistory.Reader do
   end
 
   defp group_messages_by_date(messages) do
-    Enum.group_by(messages, fn message ->
+    messages
+    |> Stitch.Message.Reaction.apply_reactions(:message)
+    |> Enum.group_by(fn message ->
       Timex.format!(message.inserted_at, "%Y-%m-%d", :strftime)
     end)
   end

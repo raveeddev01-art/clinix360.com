@@ -26,6 +26,15 @@ class ExportStore {
   };
 
   @action
+  updateState = (id, newStatus) => {
+    this.exports.forEach(record => {
+      if (record.id === id) {
+        record.status = newStatus;
+      }
+    });
+  };
+
+  @action
   downloadLink = id => {
     return `/exports/${id}/download`;
   };

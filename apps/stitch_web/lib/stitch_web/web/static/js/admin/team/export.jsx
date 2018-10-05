@@ -45,9 +45,8 @@ export default class TeamExport extends Component {
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
         <p>
-          In the event that you need to delete your Stitch account, or require
-          electronic discovery for legal purposes, Stitch provides full data
-          exports to keep you compliant. Here's what we include in our exports:
+          Stitch provides full data exports to keep you compliant. Here's what
+          we include in our exports:
         </p>
         <ul className="list-unstyled">
           <li>
@@ -69,16 +68,7 @@ export default class TeamExport extends Component {
         </ul>
 
         <p className="m-b-40">
-          Message history will be provided in JSON format. See our support
-          article{" "}
-          <a
-            href="https://help.teamstitch.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>{" "}
-          for more on how to use exports.
+          Message history will be provided in JSON format.
         </p>
 
         <Row className="m-b-20">
