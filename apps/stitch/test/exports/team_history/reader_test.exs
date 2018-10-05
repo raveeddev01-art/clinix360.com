@@ -99,17 +99,17 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
     end
   end
 
-  describe "get_message_data_for_month/2" do
+  describe "get_message_data_for_day/2" do
     test "returns empty list if no messages found" do
       team = insert(:team)
-      message_data = TeamHistory.get_message_data_for_month(team, {2017, 1})
+      message_data = TeamHistory.get_message_data_for_day(team, {2017, 1, 1})
       assert message_data == []
     end
 
     test "returns message data for a given team and month" do
       # year, month, day, hour, minute, second
-      {:ok, target_datetime_1} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
-      {:ok, target_datetime_2} = NaiveDateTime.new(2017, 1, 2, 0, 0, 0)
+      {:ok, target_datetime_1} = NaiveDateTime.new(2017, 1, 1, 2, 0, 0)
+      {:ok, target_datetime_2} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
       team_1 = insert(:team)
       team_2 = insert(:team)
       group_1 = insert(:group, team: team_1)
@@ -127,7 +127,7 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
       message_4 = insert(:message, user: user_1, group: group_2)
       message_5 = insert(:message, user: user_1, group: group_3)
 
-      message_data = TeamHistory.get_message_data_for_month(team_1, {2017, 1})
+      message_data = TeamHistory.get_message_data_for_day(team_1, {2017, 1, 1})
 
       assert Enum.any?(message_data, &(&1.group_id == group_1.id))
       assert Enum.any?(message_data, &(&1.group_id == group_2.id))
@@ -135,11 +135,11 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
 
       export_group_1 = Enum.find(message_data, &(&1.group_id == group_1.id))
       export_group_2 = Enum.find(message_data, &(&1.group_id == group_2.id))
-      export_group_1_datetime_1_messages = Map.get(export_group_1.messages, "2017-01-01")
-      export_group_1_datetime_2_messages = Map.get(export_group_1.messages, "2017-01-02")
-      export_group_2_datetime_1_messages = Map.get(export_group_2.messages, "2017-01-01")
-      assert length(export_group_1_datetime_1_messages) == 1
-      assert length(export_group_1_datetime_2_messages) == 1
+      export_group_1_datetime_1_messages = Map.get(export_group_1.messages, "2017-01-01", [])
+      export_group_1_datetime_2_messages = Map.get(export_group_1.messages, "2017-01-02", [])
+      export_group_2_datetime_1_messages = Map.get(export_group_2.messages, "2017-01-01", [])
+      assert length(export_group_1_datetime_1_messages) == 2
+      assert length(export_group_1_datetime_2_messages) == 0
       assert length(export_group_2_datetime_1_messages) == 1
 
       export_group_1_datetime_1_message_ids =
@@ -155,8 +155,8 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
       refute message_1.id in export_group_1_datetime_2_message_ids
       refute message_1.id in export_group_2_datetime_1_message_ids
 
-      assert message_2.id in export_group_1_datetime_2_message_ids
-      refute message_2.id in export_group_1_datetime_1_message_ids
+      assert message_2.id in export_group_1_datetime_1_message_ids
+      assert message_2.id in export_group_1_datetime_1_message_ids
       refute message_2.id in export_group_2_datetime_1_message_ids
 
       assert message_3.id in export_group_2_datetime_1_message_ids
