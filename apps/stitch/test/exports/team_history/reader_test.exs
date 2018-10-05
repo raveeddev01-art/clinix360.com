@@ -2,7 +2,7 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
   use Stitch.DataCase
   alias Stitch.Exports.TeamHistory.Reader, as: TeamHistory
 
-  describe "get_groups_data/1" do
+  describe "get_groups_data/2" do
     test "returns group data for a given team" do
       team_1 = insert(:team)
       team_2 = insert(:team)
@@ -33,7 +33,7 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
           pinned: false
         )
 
-      group_exports = TeamHistory.get_group_data(team_1)
+      group_exports = TeamHistory.get_group_data(team_1, :timer.minutes(1))
 
       group_ids = Enum.map(group_exports, & &1.id)
       assert length(group_exports) == 2
@@ -64,7 +64,7 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
     end
   end
 
-  describe "get_user_data/1" do
+  describe "get_user_data/2" do
     test "returns user data for a given team" do
       team_1 = insert(:team)
       team_2 = insert(:team)
@@ -75,7 +75,7 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
       _group_user_1 = insert(:group_user, group: group_1, user: user_1)
       _group_user_2 = insert(:group_user, group: group_1, user: user_2)
 
-      user_exports = TeamHistory.get_user_data(team_1)
+      user_exports = TeamHistory.get_user_data(team_1, :timer.minutes(1))
 
       user_export_ids = Enum.map(user_exports, & &1.id)
       assert user_1.id in user_export_ids
@@ -99,10 +99,10 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
     end
   end
 
-  describe "get_message_data_for_day/2" do
+  describe "get_message_data_for_day/3" do
     test "returns empty list if no messages found" do
       team = insert(:team)
-      message_data = TeamHistory.get_message_data_for_day(team, {2017, 1, 1})
+      message_data = TeamHistory.get_message_data_for_day(team, {2017, 1, 1}, :timer.minutes(1))
       assert message_data == []
     end
 
@@ -127,7 +127,7 @@ defmodule Stitch.Exports.TeamHistory.ReaderTest do
       message_4 = insert(:message, user: user_1, group: group_2)
       message_5 = insert(:message, user: user_1, group: group_3)
 
-      message_data = TeamHistory.get_message_data_for_day(team_1, {2017, 1, 1})
+      message_data = TeamHistory.get_message_data_for_day(team_1, {2017, 1, 1}, :timer.minutes(1))
 
       assert Enum.any?(message_data, &(&1.group_id == group_1.id))
       assert Enum.any?(message_data, &(&1.group_id == group_2.id))
