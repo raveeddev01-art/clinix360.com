@@ -110,10 +110,12 @@ defmodule Stitch.Exports do
          {:ok, _} <- S3.upload(zip_path),
          :ok <- File.rm(zip_path) do
       zip_url = S3.fullpath(zip_path)
+      Stitch.Web.EventsChannel.broadcast_export_finished(team, export.id, "COMPLETE")
       update_export(export, %{status: "COMPLETE", zip_url: zip_url})
     else
       error ->
         Logger.error("Failed to complete export for team id #{team.id}: #{error}")
+        Stitch.Web.EventsChannel.broadcast_export_finished(team, export.id, "FAILED")
         update_export(export, %{status: "FAILED"})
     end
   end

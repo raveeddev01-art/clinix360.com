@@ -95,6 +95,7 @@ class ChannelStore {
   joinEventChannel(options = {}) {
     const {
       groupsStore,
+      exportStore,
       inboxStore,
       invitationStore,
       notificationStore,
@@ -150,6 +151,10 @@ class ChannelStore {
       "conversation_marked_as_read",
       inboxStore.onMarkAsReadEvent
     );
+
+    this.eventChannel.on("completed_export", exportRecord => {
+      exportStore.updateState(exportRecord.id, exportRecord.status);
+    });
 
     return joined;
   }
