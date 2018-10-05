@@ -21,8 +21,8 @@ defmodule Stitch.Exports.TeamHistory.Reader do
   @doc """
   Returns group data to export for a given team.
   """
-  @spec get_group_data(Team.t()) :: [map]
-  def get_group_data(%Team{id: id}) do
+  @spec get_group_data(Team.t(), pos_integer) :: [map]
+  def get_group_data(%Team{id: id}, timeout) do
     message_fields = [:id, :user_id, :pinned_by_id, :pinned_at]
 
     query =
@@ -47,7 +47,7 @@ defmodule Stitch.Exports.TeamHistory.Reader do
       )
 
     query
-    |> Repo.all()
+    |> Repo.all(timeout: timeout)
     |> prepare_group_data_for_export()
   end
 
@@ -70,8 +70,8 @@ defmodule Stitch.Exports.TeamHistory.Reader do
   @doc """
   Returns user data to export for a given team.
   """
-  @spec get_user_data(Team.t()) :: [map]
-  def get_user_data(%Team{id: id}) do
+  @spec get_user_data(Team.t(), pos_integer) :: [map]
+  def get_user_data(%Team{id: id}, timeout) do
     query =
       from(
         u in User,
@@ -80,14 +80,15 @@ defmodule Stitch.Exports.TeamHistory.Reader do
         select: map(u, @user_data_export_fields)
       )
 
-    Repo.all(query)
+    Repo.all(query, timeout: timeout)
   end
 
   @doc """
   Returns message data to export for a given team and day.
   """
-  @spec get_message_data_for_day(Team.t(), {pos_integer, pos_integer, pos_integer}) :: [map]
-  def get_message_data_for_day(%Team{id: id}, {year, month, day}) do
+  @spec get_message_data_for_day(Team.t(), {pos_integer, pos_integer, pos_integer}, pos_integer) ::
+          [map]
+  def get_message_data_for_day(%Team{id: id}, {year, month, day}, timeout) do
     {:ok, beginning_of_day} = NaiveDateTime.new(year, month, day, 0, 0, 0)
     end_of_day = Timex.end_of_day(beginning_of_day)
 
@@ -104,7 +105,7 @@ defmodule Stitch.Exports.TeamHistory.Reader do
       )
 
     query
-    |> Repo.all()
+    |> Repo.all(timeout: timeout)
     |> prepare_message_data_for_export()
   end
 
