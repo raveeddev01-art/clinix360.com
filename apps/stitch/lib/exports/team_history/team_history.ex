@@ -171,10 +171,12 @@ defmodule Stitch.Exports.TeamHistory do
     |> (fn paths -> {:ok, Enum.flat_map(paths, & &1)} end).()
   end
 
-  defp write_messages_for_month(directory, team, month) do
-    message_data = Reader.get_message_data_for_month(team, month)
-    # [%{group_id: 1, group_name: "name", messages: %{"2017-02-01" => [...]}}, ...] = message_data
-    write_messages_for_groups(directory, message_data)
+  defp write_messages_for_month(directory, team, {year, month}) do
+    1..Timex.days_in_month(year, month)
+    |> Enum.flat_map(fn day ->
+      message_data = Reader.get_message_data_for_day(team, {year, month, day})
+      write_messages_for_groups(directory, message_data)
+    end)
   end
 
   defp write_messages_for_groups(_, message_data) when message_data == [], do: []
