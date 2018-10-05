@@ -106,7 +106,7 @@ defmodule Stitch.Exports do
   end
 
   defp do_start_export(%Team{} = team, %Export{} = export) do
-    with {:ok, zip_path} <- TeamHistory.generate_zip(team, 60_000),
+    with {:ok, zip_path} <- TeamHistory.generate_zip(team, :timer.hours(5)),
          {:ok, _} <- S3.upload(zip_path),
          :ok <- File.rm(zip_path) do
       zip_url = S3.fullpath(zip_path)

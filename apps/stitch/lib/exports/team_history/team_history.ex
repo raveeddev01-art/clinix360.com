@@ -14,7 +14,7 @@ defmodule Stitch.Exports.TeamHistory do
       {:ok, "/path/to/the/generated.zip"}
 
   """
-  @spec generate_zip(Team.t, timeout) :: {:ok, String.t} | {:error, [term, ...]}
+  @spec generate_zip(Team.t(), timeout) :: {:ok, String.t()} | {:error, [term, ...]}
   def generate_zip(team, timeout \\ 5_000) do
     with_zippable_directory(team, fn parent_path, name ->
       with {:ok, subpaths} <- write_to_zippable_directory(parent_path, name, team, timeout) do
@@ -44,18 +44,31 @@ defmodule Stitch.Exports.TeamHistory do
   @doc """
   Generates a filename for a given team.
   """
-  @spec generate_filename(Team.t) :: String.t
+  @spec generate_filename(Team.t()) :: String.t()
   def generate_filename(%Team{name: name}) do
     timestamp = DateTime.utc_now() |> DateTime.to_iso8601()
     "#{name} Stitch Export #{timestamp}"
   end
 
-  @spec write_to_zippable_directory(String.t, String.t, Team.t, timeout) :: {:ok, [String.t, ...]} | {:error, [term, ...]}
+  @spec write_to_zippable_directory(String.t(), String.t(), Team.t(), timeout) ::
+          {:ok, [String.t(), ...]} | {:error, [term, ...]}
   defp write_to_zippable_directory(parent_path, zippable_directory, team, timeout) do
     directory = Path.join(parent_path, zippable_directory)
-    write_rooms_task    = Task.async(fn -> write_rooms(directory, team) end)
-    write_users_task    = Task.async(fn -> write_users(directory, team) end)
-    write_messages_task = Task.async(fn -> write_messages(directory, team) end)
+
+    write_rooms_task =
+      Task.Supervisor.async_nolink(Stitch.Exports.Supervisor, fn ->
+        write_rooms(directory, team)
+      end)
+
+    write_users_task =
+      Task.Supervisor.async_nolink(Stitch.Exports.Supervisor, fn ->
+        write_users(directory, team)
+      end)
+
+    write_messages_task =
+      Task.Supervisor.async_nolink(Stitch.Exports.Supervisor, fn ->
+        write_messages(directory, team, timeout)
+      end)
 
     [write_rooms_task, write_users_task, write_messages_task]
     |> Task.yield_many(timeout)
@@ -76,12 +89,18 @@ defmodule Stitch.Exports.TeamHistory do
     Enum.reduce(task_results, initial_acc, &process_task_result/2)
   end
 
-  defp process_task_result({task, result}, %{status: status, reasons: acc_reasons, paths: acc_paths}) do
+  defp process_task_result({task, result}, %{
+         status: status,
+         reasons: acc_reasons,
+         paths: acc_paths
+       }) do
     case result do
       {:ok, value} ->
         process_ok_task_result_value(value, status, acc_reasons, acc_paths)
+
       {:exit, reason} ->
         %{status: :error, reasons: [reason | acc_reasons], paths: acc_paths}
+
       nil ->
         shutdown_task(task, status, acc_reasons, acc_paths)
     end
@@ -90,14 +109,22 @@ defmodule Stitch.Exports.TeamHistory do
   defp process_ok_task_result_value({:ok, value_paths}, status, acc_reasons, acc_paths) do
     %{status: status, reasons: acc_reasons, paths: value_paths ++ acc_paths}
   end
+
   defp process_ok_task_result_value({:error, value_reasons}, _status, acc_reasons, acc_paths) do
     %{status: :error, reasons: value_reasons ++ acc_reasons, paths: acc_paths}
   end
 
   defp shutdown_task(task, status, acc_reasons, acc_paths) do
     case Task.shutdown(task, :brutal_kill) do
-      nil -> %{status: :error, reasons: [:timeout | acc_reasons], paths: acc_paths}
-      result -> process_task_result({task, result}, %{status: status, reasons: acc_reasons, paths: acc_paths})
+      nil ->
+        %{status: :error, reasons: [:timeout | acc_reasons], paths: acc_paths}
+
+      result ->
+        process_task_result({task, result}, %{
+          status: status,
+          reasons: acc_reasons,
+          paths: acc_paths
+        })
     end
   end
 
@@ -106,6 +133,7 @@ defmodule Stitch.Exports.TeamHistory do
 
   defp write_rooms(directory, team) do
     path = Path.join(directory, "rooms.json")
+
     with :ok <- write_rooms_to_path(path, team) do
       {:ok, [path]}
     end
@@ -118,6 +146,7 @@ defmodule Stitch.Exports.TeamHistory do
 
   defp write_users(directory, team) do
     path = Path.join(directory, "users.json")
+
     with :ok <- write_users_to_path(path, team) do
       {:ok, [path]}
     end
@@ -128,12 +157,18 @@ defmodule Stitch.Exports.TeamHistory do
     File.write(path, json)
   end
 
-  defp write_messages(directory, team) do
-    team.inserted_at
-    |> list_target_months(NaiveDateTime.utc_now())
-    |> Task.async_stream(&(write_messages_for_month(directory, team, &1)))
+  defp write_messages(directory, team, timeout) do
+    months = list_target_months(team.inserted_at, NaiveDateTime.utc_now())
+
+    Stitch.Exports.Supervisor
+    |> Task.Supervisor.async_stream_nolink(
+      months,
+      &write_messages_for_month(directory, team, &1),
+      max_concurrency: 4,
+      timeout: timeout
+    )
     |> Enum.reduce([], fn {:ok, paths}, acc_paths -> paths ++ acc_paths end)
-    |> (fn paths -> {:ok, Enum.flat_map(paths, &(&1))} end).()
+    |> (fn paths -> {:ok, Enum.flat_map(paths, & &1)} end).()
   end
 
   defp write_messages_for_month(directory, team, month) do
@@ -143,6 +178,7 @@ defmodule Stitch.Exports.TeamHistory do
   end
 
   defp write_messages_for_groups(_, message_data) when message_data == [], do: []
+
   defp write_messages_for_groups(directory, message_data) do
     for group <- message_data do
       write_messages_for_group(directory, group)
@@ -150,9 +186,11 @@ defmodule Stitch.Exports.TeamHistory do
   end
 
   defp write_messages_for_group(directory, group) do
+    # makes sure group directory exists
     directory
     |> Path.join(group.group_name)
-    |> File.mkdir # makes sure group directory exists
+    |> File.mkdir()
+
     # %{"2017-05-03" => [...], ...} = List.first(group.messages)
     for {date, messages} <- group.messages do
       write_messages_for_day(directory, group.group_name, date, messages)
@@ -162,6 +200,7 @@ defmodule Stitch.Exports.TeamHistory do
   defp write_messages_for_day(directory, group_name, date, messages) do
     path = Path.join(directory, "#{group_name}/#{date}.json")
     json = Poison.encode_to_iodata!(messages, pretty: true)
+
     with :ok <- File.write(path, json) do
       path
     end
@@ -178,7 +217,7 @@ defmodule Stitch.Exports.TeamHistory do
       [{2017, 1}, {2017, 2}, {2017, 3}, {2017, 4}]
 
   """
-  @spec list_target_months(NaiveDateTime.t, NaiveDateTime.t) :: [{pos_integer, pos_integer}]
+  @spec list_target_months(NaiveDateTime.t(), NaiveDateTime.t()) :: [{pos_integer, pos_integer}]
   def list_target_months(start_at, end_at) do
     start_at
     |> Timex.beginning_of_month()
@@ -187,14 +226,20 @@ defmodule Stitch.Exports.TeamHistory do
   end
 
   defp add_next_month_until_end_at(months, :the_end), do: months
-  defp add_next_month_until_end_at([{year, month} | _] = months, %{year: end_year, month: end_month} = _end_at)
-  when (year == end_year) and (month == end_month) do
+
+  defp add_next_month_until_end_at(
+         [{year, month} | _] = months,
+         %{year: end_year, month: end_month} = _end_at
+       )
+       when year == end_year and month == end_month do
     add_next_month_until_end_at(months, :the_end)
   end
+
   defp add_next_month_until_end_at([{year, month} | _] = months, end_at) when month == 12 do
-    add_next_month_until_end_at([{(year + 1), 1} | months], end_at)
+    add_next_month_until_end_at([{year + 1, 1} | months], end_at)
   end
+
   defp add_next_month_until_end_at([{year, month} | _] = months, end_at) when month < 12 do
-    add_next_month_until_end_at([{year, (month + 1)} | months], end_at)
+    add_next_month_until_end_at([{year, month + 1} | months], end_at)
   end
 end
