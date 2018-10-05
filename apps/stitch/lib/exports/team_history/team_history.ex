@@ -57,12 +57,12 @@ defmodule Stitch.Exports.TeamHistory do
 
     write_rooms_task =
       Task.Supervisor.async_nolink(Stitch.Exports.Supervisor, fn ->
-        write_rooms(directory, team)
+        write_rooms(directory, team, timeout)
       end)
 
     write_users_task =
       Task.Supervisor.async_nolink(Stitch.Exports.Supervisor, fn ->
-        write_users(directory, team)
+        write_users(directory, team, timeout)
       end)
 
     write_messages_task =
@@ -131,29 +131,29 @@ defmodule Stitch.Exports.TeamHistory do
   defp prepare_final_result(%{status: :ok, paths: paths}), do: {:ok, paths}
   defp prepare_final_result(%{status: :error, reasons: reasons}), do: {:error, reasons}
 
-  defp write_rooms(directory, team) do
+  defp write_rooms(directory, team, timeout) do
     path = Path.join(directory, "rooms.json")
 
-    with :ok <- write_rooms_to_path(path, team) do
+    with :ok <- write_rooms_to_path(path, team, timeout) do
       {:ok, [path]}
     end
   end
 
-  defp write_rooms_to_path(path, team) do
-    json = team |> Reader.get_group_data() |> Poison.encode_to_iodata!(pretty: true)
+  defp write_rooms_to_path(path, team, timeout) do
+    json = team |> Reader.get_group_data(timeout) |> Poison.encode_to_iodata!(pretty: true)
     File.write(path, json)
   end
 
-  defp write_users(directory, team) do
+  defp write_users(directory, team, timeout) do
     path = Path.join(directory, "users.json")
 
-    with :ok <- write_users_to_path(path, team) do
+    with :ok <- write_users_to_path(path, team, timeout) do
       {:ok, [path]}
     end
   end
 
-  defp write_users_to_path(path, team) do
-    json = team |> Reader.get_user_data() |> Poison.encode_to_iodata!(pretty: true)
+  defp write_users_to_path(path, team, timeout) do
+    json = team |> Reader.get_user_data(timeout) |> Poison.encode_to_iodata!(pretty: true)
     File.write(path, json)
   end
 
@@ -163,7 +163,7 @@ defmodule Stitch.Exports.TeamHistory do
     Stitch.Exports.Supervisor
     |> Task.Supervisor.async_stream_nolink(
       months,
-      &write_messages_for_month(directory, team, &1),
+      &write_messages_for_month(directory, team, &1, timeout),
       max_concurrency: 4,
       timeout: timeout
     )
@@ -171,10 +171,10 @@ defmodule Stitch.Exports.TeamHistory do
     |> (fn paths -> {:ok, Enum.flat_map(paths, & &1)} end).()
   end
 
-  defp write_messages_for_month(directory, team, {year, month}) do
+  defp write_messages_for_month(directory, team, {year, month}, timeout) do
     1..Timex.days_in_month(year, month)
     |> Enum.flat_map(fn day ->
-      message_data = Reader.get_message_data_for_day(team, {year, month, day})
+      message_data = Reader.get_message_data_for_day(team, {year, month, day}, timeout)
       write_messages_for_groups(directory, message_data)
     end)
   end
