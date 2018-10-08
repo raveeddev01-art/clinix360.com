@@ -127,13 +127,15 @@ defmodule Stitch.Exports do
   """
   @spec authorized_to_create_export?(Team.t()) :: boolean
   def authorized_to_create_export?(%Team{id: team_id}) do
-    query =
-      from(
-        e in Export,
-        where: e.team_id == ^team_id,
-        where: e.inserted_at > ago(1, "day")
-      )
+    # query =
+    #   from(
+    #     e in Export,
+    #     where: e.team_id == ^team_id,
+    #     where: e.inserted_at > ago(1, "day")
+    #   )
+    # Repo.all(query) == []
 
-    Repo.all(query) == []
+    # temporary disable 24 hrs limit
+    true
   end
 end
