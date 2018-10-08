@@ -76,18 +76,18 @@ defmodule Stitch.Web.Api.V1.ExportControllerTest do
       assert response["message"] =~ "administrator"
     end
 
-    test "with export in the last 24 hrs", %{conn: conn, user: user, team: team} do
-      now = NaiveDateTime.utc_now()
-      ten_hours_ago = NaiveDateTime.add(now, -36_000, :second)
-      insert(:export, team: team, inserted_at: ten_hours_ago)
+    # test "with export in the last 24 hrs", %{conn: conn, user: user, team: team} do
+    #   now = NaiveDateTime.utc_now()
+    #   ten_hours_ago = NaiveDateTime.add(now, -36_000, :second)
+    #   insert(:export, team: team, inserted_at: ten_hours_ago)
 
-      conn =
-        conn
-        |> with_api_user(user)
-        |> post(Routes.api_v1_export_path(conn, :create))
+    #   conn =
+    #     conn
+    #     |> with_api_user(user)
+    #     |> post(Routes.api_v1_export_path(conn, :create))
 
-      assert response = json_response(conn, 429)
-      assert response["message"] =~ "24 hour period"
-    end
+    #   assert response = json_response(conn, 429)
+    #   assert response["message"] =~ "24 hour period"
+    # end
   end
 end
