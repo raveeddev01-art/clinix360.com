@@ -4,8 +4,8 @@ defmodule Stitch.Exports do
   """
   require Logger
   import Ecto.Query
-  alias Stitch.{Repo, Team, AWS.S3}
-  alias Stitch.Exports.{Export, TeamHistory}
+  alias Stitch.{Repo, Team, AWS.S3, Accounts.User}
+  alias Stitch.Exports.{Export, TeamHistory, UserExport}
 
   @exports_enabled Application.get_env(:stitch, Stitch.Exports)[:enabled]
 
@@ -23,6 +23,10 @@ defmodule Stitch.Exports do
     %{team_id: team_id}
     |> Export.new()
     |> Repo.insert()
+  end
+
+  def create_user_export(%Team{} = team, %User{} = user) do
+    UserExport.create(team, user, %{})
   end
 
   @doc """
@@ -46,8 +50,20 @@ defmodule Stitch.Exports do
     Repo.all(query)
   end
 
+  def list_user_exports(%Team{} = team) do
+    UserExport
+    |> where(team_id: ^team.id)
+    |> order_by(asc: :inserted_at)
+    |> preload(:user)
+    |> Repo.all()
+  end
+
   def get_export([id: _, team_id: _] = clauses) do
     Repo.get_by(Export, clauses)
+  end
+
+  def get_user_export([id: _, team_id: _] = clauses) do
+    Repo.get_by(UserExport, clauses)
   end
 
   @doc """
@@ -66,6 +82,11 @@ defmodule Stitch.Exports do
     |> Repo.update()
   end
 
+  def update_export(%UserExport{} = user_export, params) do
+    user_export
+    |> UserExport.update(params)
+  end
+
   @doc """
   Spawns a process (not linked to caller) to complete an export request.
 
@@ -73,7 +94,7 @@ defmodule Stitch.Exports do
 
   """
   @spec schedule_export(Team.t(), Export.t()) :: {:ok, pid} | :ignore
-  def schedule_export(%Team{} = team, %Export{} = export) do
+  def schedule_export(%Team{} = team, export) do
     if @exports_enabled do
       Task.Supervisor.start_child(Stitch.Exports.Supervisor, __MODULE__, :start_export, [
         team,
@@ -95,12 +116,13 @@ defmodule Stitch.Exports do
 
   """
   @spec start_export(Team.t(), Export.t()) :: {:ok, Export.t()} | {:error, term}
-  def start_export(%Team{} = team, %Export{} = export) do
+  def start_export(%Team{} = team, export) do
     try do
       do_start_export(team, export)
     rescue
       e ->
         Logger.error("Failed to complete export for team id #{inspect(team.id)}. #{inspect(e)}")
+        Stitch.Web.EventsChannel.broadcast_export_finished(team, export.id, "FAILED")
         update_export(export, %{status: "FAILED"})
     end
   end
@@ -120,22 +142,65 @@ defmodule Stitch.Exports do
     end
   end
 
+  defp do_start_export(%Team{} = team, %UserExport{} = export) do
+    with user <- Stitch.UserQueries.get_by_id(export.user_id),
+         {:ok, zip_path} <- TeamHistory.generate_zip(team, :timer.hours(5), %{user: user}),
+         {:ok, _} <- S3.upload(zip_path),
+         :ok <- File.rm(zip_path) do
+      zip_url = S3.fullpath(zip_path)
+      Stitch.Web.EventsChannel.broadcast_user_export_finished(team, export.id, "COMPLETE")
+      update_export(export, %{status: "COMPLETE", zip_url: zip_url})
+    else
+      error ->
+        Logger.error("Failed to complete export for team id #{team.id}: #{error}")
+        Stitch.Web.EventsChannel.broadcast_user_export_finished(team, export.id, "FAILED")
+        update_export(export, %{status: "FAILED"})
+    end
+  end
+
   @doc """
-  Returns true if no exports have been created for a given team in the last 24
-  hours, false otherwise.
-
+    Returns true if no exports have been created for a given team in the last 24
+    hours, false otherwise.
   """
-  @spec authorized_to_create_export?(Team.t()) :: boolean
-  def authorized_to_create_export?(%Team{id: team_id}) do
-    # query =
-    #   from(
-    #     e in Export,
-    #     where: e.team_id == ^team_id,
-    #     where: e.inserted_at > ago(1, "day")
-    #   )
-    # Repo.all(query) == []
 
-    # temporary disable 24 hrs limit
-    true
+  @spec authorized_to_create_export?(Team.t()) :: boolean
+  def authorized_to_create_export?(%Team{} = team) do
+    result =
+      Export
+      |> where(team_id: ^team.id)
+      |> where(status: "PROCESSING")
+      |> where([e], e.inserted_at > ago(1, "day"))
+      |> Repo.all()
+
+    result == []
+  end
+
+  def clean_outdated(%Team{} = team) do
+    Export
+    |> where(team_id: ^team.id)
+    |> where(status: "PROCESSING")
+    |> where([e], e.inserted_at <= ago(1, "day"))
+    |> Repo.delete_all()
+  end
+
+  @spec authorized_to_create_user_export?(User.t(), User.t()) :: boolean
+  def authorized_to_create_user_export?(current_user, target_user) do
+    result =
+      Export
+      |> where(team_id: ^target_user.team_id)
+      |> where(status: "PROCESSING")
+      |> where([e], e.inserted_at > ago(1, "day"))
+      |> Repo.all()
+
+    current_user.team_id == target_user.team_id and "admin" in current_user.roles and result == []
+  end
+
+  def clean_outdated_user_exports(%Team{} = team, %User{} = user) do
+    UserExport
+    |> where(team_id: ^team.id)
+    |> where(user_id: ^user.id)
+    |> where(status: "PROCESSING")
+    |> where([e], e.inserted_at <= ago(1, "day"))
+    |> Repo.delete_all()
   end
 end

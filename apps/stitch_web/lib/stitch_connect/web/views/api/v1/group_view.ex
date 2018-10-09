@@ -66,7 +66,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
     }
   end
 
-  defp group_name(%Group{name: "__dm_group__", users: users}, user_id) do
+  def group_name(%Group{name: "__dm_group__", users: users}, user_id) do
     user =
       case users do
         [me] -> me
@@ -76,7 +76,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
     "#{user.first_name} #{user.last_name}"
   end
 
-  defp group_name(%Group{name: "__multi_dm_group__", users: users}, user_id) do
+  def group_name(%Group{name: "__multi_dm_group__", users: users}, user_id) do
     users
     |> Enum.filter(&(&1.id != user_id))
     |> Enum.sort(&(&1.id <= &2.id))
@@ -84,7 +84,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
     |> Enum.join(", ")
   end
 
-  defp group_name(%Group{name: name}, _), do: name
+  def group_name(%Group{name: name}, _), do: name
 
   defp type(%Group{name: "__dm_group__"}), do: :dm
   defp type(%Group{name: "__multi_dm_group__"}), do: :multi_dm

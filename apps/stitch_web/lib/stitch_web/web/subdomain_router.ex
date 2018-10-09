@@ -354,6 +354,8 @@ defmodule Stitch.Web.SubdomainRouter do
     end
 
     # Initiate export by admin
+    resources("/exports/:user_id/user_exports", UserExportController, only: [:create])
+    get("/exports/user_exports", UserExportController, :index)
     resources("/exports", ExportController, only: [:index, :create])
 
     # Admin repotes route
@@ -561,6 +563,7 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/messages/:id/download", MessageController, :download)
 
     get("/exports/:id/download", ExportController, :download)
+    get("/user_exports/:id/download", ExportController, :user_export_download)
   end
 
   # Catch any remaining patient routes

@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.Api.V1.ExportView do
   def render("show.json", %{export: export}), do: %{data: export(export)}
 
   def render("429.json", _) do
-    %{message: "Only one export request allowed per 24 hour period."}
+    %{message: "Only one export can be processed at a time."}
   end
 
   defp export(export) do

@@ -3,6 +3,7 @@ import AdminPanelStore from "./admin_panel_store";
 import BillingStore from "./billing_store";
 import ChannelStore from "./channel_store";
 import ExportStore from "./export_store";
+import MemberExportStore from "./member_export_store";
 import FilesStore from "./files_store";
 import TeamFileStore from "./team_file_store";
 import TeamFilesStore from "./team_files_store";
@@ -51,6 +52,7 @@ class RootStore {
     this.billingStore = new BillingStore(this);
     this.channelStore = new ChannelStore(this);
     this.exportStore = new ExportStore(this);
+    this.memberExportStore = new MemberExportStore(this);
     this.filesStore = new FilesStore(this);
     this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
     this.teamFileStore = new TeamFileStore(this);

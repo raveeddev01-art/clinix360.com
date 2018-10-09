@@ -85,6 +85,7 @@
           "inboxStore",
           "conversationMessageStore",
           "callStore",
+          "memberExportStore",
 
           "match",
           "location",

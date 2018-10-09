@@ -14,10 +14,11 @@ defmodule Stitch.Exports.TeamHistory do
       {:ok, "/path/to/the/generated.zip"}
 
   """
-  @spec generate_zip(Team.t(), timeout) :: {:ok, String.t()} | {:error, [term, ...]}
-  def generate_zip(team, timeout \\ 5_000) do
+  @spec generate_zip(Team.t(), timeout, map | nil) :: {:ok, String.t()} | {:error, [term, ...]}
+  def generate_zip(team, timeout, options \\ %{}) do
     with_zippable_directory(team, fn parent_path, name ->
-      with {:ok, subpaths} <- write_to_zippable_directory(parent_path, name, team, timeout) do
+      with {:ok, subpaths} <-
+             write_to_zippable_directory(parent_path, name, team, timeout, options) do
         filepaths = prepare_filepaths(parent_path, subpaths)
 
         System.tmp_dir!()
@@ -50,9 +51,9 @@ defmodule Stitch.Exports.TeamHistory do
     "#{name} Stitch Export #{timestamp}"
   end
 
-  @spec write_to_zippable_directory(String.t(), String.t(), Team.t(), timeout) ::
+  @spec write_to_zippable_directory(String.t(), String.t(), Team.t(), timeout, map) ::
           {:ok, [String.t(), ...]} | {:error, [term, ...]}
-  defp write_to_zippable_directory(parent_path, zippable_directory, team, timeout) do
+  defp write_to_zippable_directory(parent_path, zippable_directory, team, timeout, options) do
     directory = Path.join(parent_path, zippable_directory)
 
     write_rooms_task =
@@ -66,9 +67,15 @@ defmodule Stitch.Exports.TeamHistory do
       end)
 
     write_messages_task =
-      Task.Supervisor.async_nolink(Stitch.Exports.Supervisor, fn ->
-        write_messages(directory, team, timeout)
-      end)
+      if user = options[:user] do
+        Task.Supervisor.async_nolink(Stitch.Exports.Supervisor, fn ->
+          write_messages(directory, team, user, timeout)
+        end)
+      else
+        Task.Supervisor.async_nolink(Stitch.Exports.Supervisor, fn ->
+          write_messages(directory, team, timeout)
+        end)
+      end
 
     [write_rooms_task, write_users_task, write_messages_task]
     |> Task.yield_many(timeout)
@@ -157,6 +164,28 @@ defmodule Stitch.Exports.TeamHistory do
     File.write(path, json)
   end
 
+  defp write_messages(directory, team, user, timeout) do
+    months = list_target_months(team.inserted_at, NaiveDateTime.utc_now())
+
+    Stitch.Exports.Supervisor
+    |> Task.Supervisor.async_stream_nolink(
+      months,
+      &write_messages_for_month(directory, team, &1, user, timeout),
+      max_concurrency: 4,
+      timeout: timeout
+    )
+    |> Enum.reduce([], fn {:ok, paths}, acc_paths -> paths ++ acc_paths end)
+    |> (fn paths -> {:ok, Enum.flat_map(paths, & &1)} end).()
+  end
+
+  defp write_messages_for_month(directory, team, {year, month}, user, timeout) do
+    1..Timex.days_in_month(year, month)
+    |> Enum.flat_map(fn day ->
+      message_data = Reader.get_message_data_for_day(team, {year, month, day}, user, timeout)
+      write_messages_for_groups(directory, message_data)
+    end)
+  end
+
   defp write_messages(directory, team, timeout) do
     months = list_target_months(team.inserted_at, NaiveDateTime.utc_now())
 
@@ -164,7 +193,7 @@ defmodule Stitch.Exports.TeamHistory do
     |> Task.Supervisor.async_stream_nolink(
       months,
       &write_messages_for_month(directory, team, &1, timeout),
-      max_concurrency: 4,
+      max_concurrency: 2,
       timeout: timeout
     )
     |> Enum.reduce([], fn {:ok, paths}, acc_paths -> paths ++ acc_paths end)
@@ -188,14 +217,16 @@ defmodule Stitch.Exports.TeamHistory do
   end
 
   defp write_messages_for_group(directory, group) do
+    group_name = Stitch.Exports.HistoryHelper.get_group_name(group)
+
     # makes sure group directory exists
     directory
-    |> Path.join(group.group_name)
+    |> Path.join(group_name)
     |> File.mkdir()
 
     # %{"2017-05-03" => [...], ...} = List.first(group.messages)
     for {date, messages} <- group.messages do
-      write_messages_for_day(directory, group.group_name, date, messages)
+      write_messages_for_day(directory, group_name, date, messages)
     end
   end
 

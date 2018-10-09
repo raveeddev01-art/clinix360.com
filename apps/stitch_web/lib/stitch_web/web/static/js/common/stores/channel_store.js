@@ -96,6 +96,7 @@ class ChannelStore {
     const {
       groupsStore,
       exportStore,
+      memberExportStore,
       inboxStore,
       invitationStore,
       notificationStore,
@@ -154,6 +155,9 @@ class ChannelStore {
 
     this.eventChannel.on("completed_export", exportRecord => {
       exportStore.updateState(exportRecord.id, exportRecord.status);
+    });
+    this.eventChannel.on("completed_user_export", exportRecord => {
+      memberExportStore.updateState(exportRecord.id, exportRecord.status);
     });
 
     return joined;

@@ -9,29 +9,11 @@ import MemberOption from "./member_option";
 @inject("usersStore", "presenceStore")
 @observer
 class Members extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      members: props.value || []
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (
-      Array.isArray(nextProps.value) &&
-      nextProps.value.length !== this.props.value.length
-    ) {
-      this.setState({ members: nextProps.value });
-    }
-  }
-
   getOptions = () => {
     const { usersStore: { activatedUsers }, presenceStore } = this.props;
 
     return activatedUsers
-      .filter(
-        user => !user.is_bot && user.id !== currentUser.id && isFullMember(user)
-      )
+      .filter(user => !user.is_bot && isFullMember(user))
       .sort((user1, user2) => {
         // Sort alphabetically by online users first
         if (presenceStore.isOnline(user1.id) > presenceStore.isOnline(user2.id))
@@ -44,26 +26,28 @@ class Members extends Component {
       })
       .map(user => ({
         ...user,
+        name: `${user.first_name} ${user.last_name}`,
         online: presenceStore.isOnline(user.id)
       }));
   };
 
   render() {
-    const { onChange } = this.props;
-    const { members } = this.state;
+    const { onChange, value, className, ...otherProps } = this.props;
 
     return (
       <Select
         multi
-        className="multi-select-large"
+        simpleValue
+        className={className}
         placeholder="Search by name or username"
         onChange={onChange}
-        value={members}
+        value={value}
         valueKey="id"
-        labelKey="full_name"
+        labelKey="name"
         optionComponent={MemberOption}
         options={this.getOptions()}
         promptTextCreator={label => `Add member - ${label}`}
+        {...otherProps}
       />
     );
   }
@@ -71,12 +55,14 @@ class Members extends Component {
 
 Members.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.array.isRequired
+  className: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 Members.defaultProps = {
   onChange: () => {},
-  value: []
+  value: "",
+  className: "multi-select-large"
 };
 
 export default Members;
