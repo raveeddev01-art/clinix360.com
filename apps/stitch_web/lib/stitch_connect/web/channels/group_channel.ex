@@ -76,7 +76,12 @@ defmodule StitchConnect.Web.GroupChannel do
     opts = [limit: params["limit"]]
     authenticated_urls = Map.get(params, "authenticated_urls", false)
 
-    messages = MessageQueries.group_latest_messages(group.id, user, opts)
+    messages =
+      if params["fetch_messages"] == false do
+        []
+      else
+        MessageQueries.group_latest_messages(group.id, user, opts)
+      end
 
     messages_json =
       MessageView.render("index.json", %{

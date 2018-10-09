@@ -22,6 +22,7 @@ import {
   MAX_MESSAGE_COUNT_PER_BATCH
 } from "lib/constants";
 import BaseMessageStore from "common/abstract-stores/base-message-store";
+import MessageCache from "./message_cache";
 
 class MessageStore extends BaseMessageStore {
   @observable messageVisibility = {}; // current visibility status of messages
@@ -54,6 +55,8 @@ class MessageStore extends BaseMessageStore {
   readStatusCache = {}; // cache to store read status for when readstatus broadcast arrives before new_msg
   loadedGroupId = null; // indicates joined group id. populated after onJoinedGroup is run. It's to prevent onJoinedGroup happen again by rejoining internally in pheonix_socket.js
   @observable syncedTime = false; // sends timestamp only after synced time
+
+  messageCache = new MessageCache();
 
   // ////////////// //
   //    GETTERS     //
@@ -243,15 +246,19 @@ class MessageStore extends BaseMessageStore {
   //    METHODS     //
   // ////////////// //
 
-  reset() {
+  reset(options = {}) {
     this.jumpMode = false;
     this.isJumpLoaded = false;
     this.loadedAll = false;
     this.loadedAllRecent = false;
+
     this.loadedInitial = false;
-    this.messages = [];
+    if (options.withMessages) {
+      this.messages = [];
+    }
     this.messageElements = {};
     this.messageInEdit = null;
+
     this.infoModalMessageId = null;
     this.textInEdit = "";
     this.readStatusCache = {};
@@ -312,6 +319,15 @@ class MessageStore extends BaseMessageStore {
       });
     }
   };
+
+  /**
+   * Given the group id, checks whether the message store has cached the group
+   * @param {Integer} groupId
+   * @returns {Boolean}
+   */
+  hasCachedGroup(groupId) {
+    return this.messageCache.hasLoadedGroup(groupId);
+  }
 
   /**
    * Scroll to a specific message in chat div
@@ -664,7 +680,7 @@ class MessageStore extends BaseMessageStore {
     });
   };
 
-  handleInitialLoading = () => {
+  handleInitialLoading = (cached = false) => {
     const cb = () => {
       this.loadedInitialMessages = true;
       this.loadedInitial = true;
@@ -674,6 +690,9 @@ class MessageStore extends BaseMessageStore {
 
     if (this.firstUnreadMessage) {
       this.scrollTo(this.firstUnreadMessage.id, 0, cb);
+    } else if (cached) {
+      // If the group is cached, do not use default timeout, which delays the room switch by 300ms.
+      this.scrollToBottom(cb, 10, 10);
     } else {
       this.scrollToBottom(cb);
     }
@@ -779,17 +798,35 @@ class MessageStore extends BaseMessageStore {
   // ////////////// //
 
   @action
+  onJoinGroupChannelCached = () => {
+    console.log("onJoinGroupChannelCached", this.group.id);
+    this.messages = this.messageCache.getCache(this.group.id);
+    this.loadedGroupId = this.group.id;
+    if (this.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
+      this.loadedAll = true;
+    }
+    when(() => this.mountedAllMessages, () => this.handleInitialLoading(true));
+  };
+
+  @action
   onJoinGroupChannel = data => {
     // sync time as soon as joined to the channel
     this.syncTime();
 
     if (this.group.id === this.loadedGroupId) {
+      //
+      // TODO: invalidate cache
+      //
       // new message has more precedance by putting it as first param.
       this.messages = unionBy(data.messages, this.messages, msg => {
         return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
       });
+      this.messageCache.addBatchToCache(this.group.id, this.messages);
+    } else if (this.messageCache.hasLoadedGroup(this.group.id)) {
+      this.messages = this.messageCache.getCache(this.group.id);
     } else {
       this.messages = data.messages;
+      this.messageCache.addBatchToCache(this.group.id, data.messages);
     }
 
     if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
@@ -886,8 +923,13 @@ class MessageStore extends BaseMessageStore {
   @action
   onNewMessage = newMessage => {
     const { sidemenuStore, groupStore } = this.rootStore;
+    console.log("on new message");
 
+    // TODO: update cache
     if (newMessage.group_id !== this.group.id) {
+      console.log("added to cache in another group");
+      this.messageCache.addNew(newMessage.group_id, newMessage);
+
       return;
     }
 
@@ -915,6 +957,8 @@ class MessageStore extends BaseMessageStore {
     } else {
       // otherwise, add to message list
       this.messages.unshift(newMessage);
+      console.log("added to cache");
+      this.messageCache.addNew(newMessage.group_id, newMessage);
     }
 
     // Update unread messages info of the group.

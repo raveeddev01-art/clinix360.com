@@ -442,8 +442,8 @@ class GroupsStore {
 
     return userIds.length > 2
       ? post(`/api/v1/groups/multi_dm`, {
-        body
-      })
+          body
+        })
       : post(`/api/v1/groups/dm`, { body });
   };
 
@@ -516,30 +516,44 @@ class GroupsStore {
    */
   @action
   onOpenedGroup = () => {
+    const { channelStore, messageStore } = this.rootStore;
+    const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
+
+    // Join group channel
+
+    if (fetchMessages) {
+      console.log("join group channel for the first time");
+      channelStore
+        .joinGroupChannel({
+          authenticated_urls: true,
+          fetch_messages: fetchMessages
+        })
+        .receive("ok", x => fetchMessages && messageStore.onJoinGroupChannel(x))
+        .receive("error", err => notify.show(err.message, "error"));
+      this.resetRelatedStores({ withMessages: !!fetchMessages });
+    } else {
+      this.resetRelatedStores({ withMessages: false });
+      messageStore.onJoinGroupChannelCached();
+    }
+  };
+
+  resetRelatedStores(options) {
     const {
-      channelStore,
       messageStore,
       pinnedMessageStore,
       filesStore,
       groupStore
     } = this.rootStore;
 
-    // Join group channel
-    channelStore
-      .joinGroupChannel({ authenticated_urls: true })
-      .receive("ok", messageStore.onJoinGroupChannel)
-      .receive("error", err => notify.show(err.message, "error"));
-
     // Reset messages
-    messageStore.reset();
-
+    messageStore.reset(options);
     // reset current group
     groupStore.reset();
 
     // Reset pinned messages and files
     pinnedMessageStore.reset();
     filesStore.reset();
-  };
+  }
 
   /**
    * Run the process of when closing the group
