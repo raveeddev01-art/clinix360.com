@@ -3,7 +3,7 @@ defmodule Stitch.Repo.Migrations.AddConfirmationCodeToUsers do
 
   def change do
     alter table(:users) do
-      add :confirmation_code, :string
+      add(:confirmation_code, :string)
     end
   end
 end

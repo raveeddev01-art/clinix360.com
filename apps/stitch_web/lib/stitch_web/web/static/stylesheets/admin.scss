@@ -579,7 +579,8 @@ $admin-topbar-height-sm: 65px;
   font-weight: 900;
 }
 
-.delete-team-modal {
+.delete-team-modal,
+.small-modal {
   .modal-dialog .modal-content .modal-body {
     min-height: 150px;
   }

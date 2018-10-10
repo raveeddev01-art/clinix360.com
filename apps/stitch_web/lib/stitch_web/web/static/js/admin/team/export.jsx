@@ -7,7 +7,7 @@ import { inject, observer } from "mobx-react";
 import SettingPanel from "../components/setting-panel/setting-panel";
 import ExportItem from "./export-item";
 
-const title = "Export Data";
+const title = "Export Data (All Members)";
 const description =
   "Create and download exports of an official record of communications for legal and compliance purposes.";
 
@@ -81,6 +81,7 @@ export default class TeamExport extends Component {
               bsSize="large"
               bsStyle="primary"
               onClick={this._newExport}
+              disabled={exportStore.exporting}
             >
               New Export
             </Button>

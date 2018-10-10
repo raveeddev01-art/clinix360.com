@@ -339,4 +339,13 @@ defmodule Stitch.Web.EventsChannel do
       })
     end)
   end
+
+  def broadcast_user_export_finished(team, export_id, export_status) do
+    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin ->
+      @endpoint.broadcast("events:#{admin.id}", "completed_user_export", %{
+        id: export_id,
+        status: export_status
+      })
+    end)
+  end
 end

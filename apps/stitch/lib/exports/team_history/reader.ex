@@ -38,6 +38,7 @@ defmodule Stitch.Exports.TeamHistory.Reader do
           map(g, [
             :id,
             :name,
+            :slug,
             :is_default,
             :description,
             :public,
@@ -101,7 +102,29 @@ defmodule Stitch.Exports.TeamHistory.Reader do
         where: m.inserted_at <= ^end_of_day,
         order_by: [asc: m.inserted_at],
         preload: [messages: m],
-        select: map(g, [:id, :name, messages: @message_data_export_fields])
+        select: map(g, [:id, :name, :slug, messages: @message_data_export_fields])
+      )
+
+    query
+    |> Repo.all(timeout: timeout)
+    |> prepare_message_data_for_export()
+  end
+
+  def get_message_data_for_day(%Team{id: id}, {year, month, day}, target_user, timeout) do
+    {:ok, beginning_of_day} = NaiveDateTime.new(year, month, day, 0, 0, 0)
+    end_of_day = Timex.end_of_day(beginning_of_day)
+
+    query =
+      from(
+        g in Group,
+        left_join: m in assoc(g, :messages),
+        where: g.team_id == ^id,
+        where: m.user_id == ^target_user.id,
+        where: m.inserted_at >= ^beginning_of_day,
+        where: m.inserted_at <= ^end_of_day,
+        order_by: [asc: m.inserted_at],
+        preload: [messages: m],
+        select: map(g, [:id, :name, :slug, messages: @message_data_export_fields])
       )
 
     query
@@ -112,7 +135,7 @@ defmodule Stitch.Exports.TeamHistory.Reader do
   defp prepare_message_data_for_export(message_data) do
     message_data
     |> update_in([Access.all()], &swap_key(&1, %{from: :id, to: :group_id}))
-    |> update_in([Access.all()], &swap_key(&1, %{from: :name, to: :group_name}))
+    |> update_in([Access.all()], &swap_key(&1, %{from: :slug, to: :group_name}))
     |> update_in([Access.all(), Access.key!(:messages)], &group_messages_by_date/1)
   end
 
