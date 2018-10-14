@@ -110,7 +110,29 @@ class ChannelStore {
 
     // Message related
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
+
+    // New events (ported from group channel)
+    this.eventChannel.on("edit_msg", messageStore.onEditMessage);
     this.eventChannel.on("reactions_updated", messageStore.onReactionUpdate);
+
+    // "edit_msg"
+    // "update_msg"
+    // "delete_msg"
+    // "starred_message"
+    // "pinned_message"
+    // "msg_link_previews_generated"
+    // "msg_link_preview_deleted"
+    // "reactions_updated"
+    // "read_status_update"
+    // "is_typing"
+    // "file_comment_edited"
+    // "file_comment_added"
+    // "file_comment_added"
+    // "file_comment_deleted"
+    // "file_public_link_updated"
+    // "file_details_updated"
+    // "file_details_updated"
+    // "file_deleted"
 
     // Group related
     this.eventChannel.on("created_group", groupsStore.onCreatedGroup);

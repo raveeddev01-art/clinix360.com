@@ -336,11 +336,11 @@ defmodule StitchConnect.Web.GroupChannel do
     }
 
     endpoint_broadcast(group, "reactions_updated", payload)
-    broadcast_in_event_channel(group.id, "reactions_updated", payload)
+    broadcast_in_event_channel(group, "reactions_updated", payload)
   end
 
-  def broadcast_in_event_channel(group_id, event_name, payload) do
-    for group_user <- GroupUser.group_users_for(group_id) do
+  def broadcast_in_event_channel(%Group{} = group, event_name, payload) do
+    for group_user <- GroupUser.group_users_for(group.id) do
       @endpoint.broadcast("events:#{group_user.user_id}", event_name, payload)
     end
   end
@@ -358,6 +358,7 @@ defmodule StitchConnect.Web.GroupChannel do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.render("show.json", %{message: message})
     endpoint_broadcast(group, "edit_msg", message_json)
+    broadcast_in_event_channel(group, "edit_msg", message_json)
   end
 
   def broadcast_message_updated(message) do
