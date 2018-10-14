@@ -535,7 +535,7 @@ class MessageStore extends BaseMessageStore {
         authenticated_urls: true
       }
     }).catch(() => {
-      this.updateMessageData(tempMessage.id, {
+      this.updateMessageData(tempMessage.id, tempMessage.group_id, {
         status: "failed"
       });
     });
@@ -751,9 +751,13 @@ class MessageStore extends BaseMessageStore {
     }
   }
 
-  startTyping = throttle(() => {
-    this.groupChannel.push("is_typing");
-  }, START_TYPING_THROTTLE_MS);
+  startTyping = throttle(
+    () => {
+      this.groupChannel.push("is_typing");
+    },
+    START_TYPING_THROTTLE_MS,
+    { leading: true }
+  );
 
   generateTempMessage = text => {
     // generates unique temporary request ID
@@ -810,21 +814,30 @@ class MessageStore extends BaseMessageStore {
 
   @action
   onJoinGroupChannel = data => {
+    console.log("onJoinedGroup");
+
+    window.messageStore = this;
     // sync time as soon as joined to the channel
     this.syncTime();
 
     if (this.group.id === this.loadedGroupId) {
-      //
-      // TODO: invalidate cache
-      //
-      // new message has more precedance by putting it as first param.
-      this.messages = unionBy(data.messages, this.messages, msg => {
-        return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
-      });
+      console.log("On group on reconnect");
+
+      // Doesn't play nicely with cache; commented out.
+      // // new message has more precedance by putting it as first param.
+      // this.messages = unionBy(data.messages, this.messages, msg => {
+      //   return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
+      // });
+      this.messageCache = new MessageCache();
+      this.messages = data.messages;
       this.messageCache.addBatchToCache(this.group.id, this.messages);
     } else if (this.messageCache.hasLoadedGroup(this.group.id)) {
+      console.log("Open group from cache");
+
       this.messages = this.messageCache.getCache(this.group.id);
     } else {
+      console.log("Default open group");
+
       this.messages = data.messages;
       this.messageCache.addBatchToCache(this.group.id, data.messages);
     }
@@ -938,7 +951,7 @@ class MessageStore extends BaseMessageStore {
       newMessage.user_id === currentUser.id
     ) {
       // update message if it's temporary
-      this.updateMessageData(newMessage.request_id, {
+      this.updateMessageData(newMessage.request_id, newMessage.group_id, {
         ...newMessage,
         read_status: {
           // set read status with cached status
@@ -1004,7 +1017,7 @@ class MessageStore extends BaseMessageStore {
       return;
     }
 
-    this.updateMessageData(updatedMessage.id, {
+    this.updateMessageData(updatedMessage.id, updatedMessage.group_id, {
       fields: updatedMessage.fields,
       text_content: updatedMessage.text_content
     });
@@ -1019,7 +1032,7 @@ class MessageStore extends BaseMessageStore {
       return;
     }
 
-    this.updateMessageData(message.id, {
+    this.updateMessageData(message.id, message.group_id, {
       starred: message.starred
     });
 
@@ -1034,7 +1047,7 @@ class MessageStore extends BaseMessageStore {
   onPinnedMessage = message => {
     const { pinnedMessageStore } = this.rootStore;
 
-    this.updateMessageData(message.id, {
+    this.updateMessageData(message.id, message.group_id, {
       pinned: message.pinned,
       pinned_at: message.pinned_at,
       pinned_by: message.pinned_by
@@ -1053,8 +1066,9 @@ class MessageStore extends BaseMessageStore {
       message => message.upload_id === payload.id && message.type === "upload"
     );
 
+    // TODO: cache
     files.forEach(file => {
-      this.updateMessageData(file.id, { fields: payload });
+      this.updateMessageData(file.id, file.group_id, { fields: payload });
     });
   };
 
@@ -1065,7 +1079,7 @@ class MessageStore extends BaseMessageStore {
     );
 
     files.forEach(file => {
-      this.updateMessageData(file.id, { fields: payload });
+      this.updateMessageData(file.id, file.group_id, { fields: payload });
     });
   };
 
@@ -1078,7 +1092,7 @@ class MessageStore extends BaseMessageStore {
 
     files.forEach(file => {
       const fields = { ...file.fields, public_url: payload.public_url };
-      this.updateMessageData(file.id, { fields });
+      this.updateMessageData(file.id, file.group_id, { fields });
     });
   };
 
@@ -1091,7 +1105,7 @@ class MessageStore extends BaseMessageStore {
 
     files.forEach(file => {
       const fields = { ...file.fields, public_url: payload.public_url };
-      this.updateMessageData(file.id, { fields });
+      this.updateMessageData(file.id, file.group_id, { fields });
     });
   };
 
@@ -1106,6 +1120,7 @@ class MessageStore extends BaseMessageStore {
     files.forEach(file => {
       const messageIndex = this.messages.findIndex(m => m.id === file.id);
 
+      // TODO: update cache
       if (messageIndex > -1) {
         this.messages.splice(messageIndex, 1);
       }

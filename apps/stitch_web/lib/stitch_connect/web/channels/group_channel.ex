@@ -329,10 +329,20 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message], :message)
 
-    endpoint_broadcast(group, "reactions_updated", %{
+    payload = %{
       message_id: message.id,
+      group_id: group.id,
       reactions_web: message.reactions
-    })
+    }
+
+    endpoint_broadcast(group, "reactions_updated", payload)
+    broadcast_in_event_channel(group.id, "reactions_updated", payload)
+  end
+
+  def broadcast_in_event_channel(group_id, event_name, payload) do
+    for group_user <- GroupUser.group_users_for(group_id) do
+      @endpoint.broadcast("events:#{group_user.user_id}", event_name, payload)
+    end
   end
 
   def broadcast_message_starred(message, starred_by_user_id) do
@@ -358,7 +368,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_message_deleted(message) do
     group = Repo.get(Group, message.group_id)
-    endpoint_broadcast(group, "delete_msg", %{id: message.id})
+    endpoint_broadcast(group, "delete_msg", %{id: message.id, group_id: group.id})
   end
 
   def broadcast_message_created(message) do
@@ -403,7 +413,11 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_read_status(group, messages) do
     read_status_json = Enum.reduce(messages, %{}, &Map.put(&2, &1.id, &1.read_status))
-    endpoint_broadcast(group, "read_status_update", %{messages: read_status_json})
+
+    endpoint_broadcast(group, "read_status_update", %{
+      messages: read_status_json,
+      group_id: group.id
+    })
   end
 
   def broadcast_system_message(group, system_message) do
@@ -422,7 +436,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   def broadcast_is_typing(group, user) do
-    endpoint_broadcast(group, "is_typing", %{user_id: user.id})
+    endpoint_broadcast(group, "is_typing", %{user_id: user.id, group_id: group.id})
   end
 
   def broadcast_file_comment_added(upload) do

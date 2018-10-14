@@ -187,6 +187,9 @@ defmodule Stitch.Web.Files.FileController do
   def put_mimetype(conn, %{fields: %{"mimetype" => mimetype}}),
     do: put_resp_header(conn, "Content-Type", mimetype)
 
+  def put_mimetype(conn, %{mimetype: mimetype}),
+    do: put_resp_header(conn, "Content-Type", mimetype)
+
   def put_mimetype(conn, _upload), do: conn
 
   @spec stream_full_file(Conn.t(), Upload.t() | EngageUpload.t()) :: Conn.t()

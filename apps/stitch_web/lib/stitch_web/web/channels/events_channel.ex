@@ -64,18 +64,6 @@ defmodule Stitch.Web.EventsChannel do
     {:noreply, socket}
   end
 
-  defp group_users_for(group_id) do
-    GroupUser
-    |> where(group_id: ^group_id)
-    |> select([gu], %{
-      user_id: gu.user_id,
-      unread_messages_count: gu.unread_messages_count,
-      mentions_count: gu.mentions_count,
-      last_read_at: gu.last_read_at
-    })
-    |> Repo.all()
-  end
-
   # ===================
   #   USER BROADCASTS
   # ===================
@@ -83,7 +71,7 @@ defmodule Stitch.Web.EventsChannel do
   def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do
     notify_user_ids_set = MapSet.new(notify_user_ids)
 
-    for group_user <- group_users_for(group.id) do
+    for group_user <- GroupUser.group_users_for(group.id) do
       json =
         MessageView.message_json(message)
         |> Map.put(:notify, MapSet.member?(notify_user_ids_set, group_user.user_id))
@@ -96,7 +84,7 @@ defmodule Stitch.Web.EventsChannel do
   end
 
   def broadcast_group_msg_deleted(group, message) do
-    for group_user <- group_users_for(group.id) do
+    for group_user <- GroupUser.group_users_for(group.id) do
       json = %{
         id: message.id,
         unread_messages_count: group_user.unread_messages_count,

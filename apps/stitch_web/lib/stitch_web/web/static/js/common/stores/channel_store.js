@@ -96,6 +96,7 @@ class ChannelStore {
     const {
       groupsStore,
       exportStore,
+      messageStore,
       memberExportStore,
       inboxStore,
       invitationStore,
@@ -109,6 +110,7 @@ class ChannelStore {
 
     // Message related
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
+    this.eventChannel.on("reactions_updated", messageStore.onReactionUpdate);
 
     // Group related
     this.eventChannel.on("created_group", groupsStore.onCreatedGroup);
@@ -315,7 +317,7 @@ class ChannelStore {
 
   leaveGroupChannel() {
     // TODO: temp.
-    // this.leave(this.groupChannelTopic);
+    this.leave(this.groupChannelTopic);
   }
 
   // //////////// //

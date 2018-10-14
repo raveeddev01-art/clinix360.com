@@ -521,6 +521,17 @@ class GroupsStore {
 
     // Join group channel
 
+    // channelStore
+    //   .joinGroupChannel({
+    //     authenticated_urls: true,
+    //     fetch_messages: fetchMessages
+    //   })
+    //   .receive("ok", messageStore.onJoinGroupChannel)
+    //   .receive("error", err => notify.show(err.message, "error"));
+    // this.resetRelatedStores({ withMessages: !!fetchMessages });
+
+    // messageStore.onJoinGroupChannelCached();
+
     if (fetchMessages) {
       console.log("join group channel for the first time");
       channelStore
@@ -532,6 +543,13 @@ class GroupsStore {
         .receive("error", err => notify.show(err.message, "error"));
       this.resetRelatedStores({ withMessages: !!fetchMessages });
     } else {
+      channelStore
+        .joinGroupChannel({
+          authenticated_urls: true,
+          fetch_messages: fetchMessages
+        })
+        .receive("ok", x => null)
+        .receive("error", err => notify.show(err.message, "error"));
       this.resetRelatedStores({ withMessages: false });
       messageStore.onJoinGroupChannelCached();
     }
