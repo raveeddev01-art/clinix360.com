@@ -365,11 +365,14 @@ defmodule StitchConnect.Web.GroupChannel do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.render("show.json", %{message: message})
     endpoint_broadcast(group, "update_msg", message_json)
+    broadcast_in_event_channel(group, "update_msg", message_json)
   end
 
   def broadcast_message_deleted(message) do
     group = Repo.get(Group, message.group_id)
-    endpoint_broadcast(group, "delete_msg", %{id: message.id, group_id: group.id})
+    payload = %{id: message.id, group_id: group.id}
+    endpoint_broadcast(group, "delete_msg", payload)
+    broadcast_in_event_channel(group, "delete_msg", payload)
   end
 
   def broadcast_message_created(message) do
@@ -382,6 +385,7 @@ defmodule StitchConnect.Web.GroupChannel do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message)
     endpoint_broadcast(group, "pinned_message", message_json)
+    broadcast_in_event_channel(group, "pinned_message", message_json)
   end
 
   def broadcast_members_update(%User{} = user, removed_groups, added_groups) do

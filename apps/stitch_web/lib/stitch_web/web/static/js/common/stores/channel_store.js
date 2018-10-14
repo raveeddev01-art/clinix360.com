@@ -113,6 +113,9 @@ class ChannelStore {
 
     // New events (ported from group channel)
     this.eventChannel.on("edit_msg", messageStore.onEditMessage);
+    this.eventChannel.on("update_msg", messageStore.onUpdateMessage);
+    this.eventChannel.on("delete_msg", messageStore.onDeleteMessage);
+    this.eventChannel.on("pinned_message", messageStore.onPinnedMessage);
     this.eventChannel.on("reactions_updated", messageStore.onReactionUpdate);
 
     // "edit_msg"
@@ -289,11 +292,11 @@ class ChannelStore {
 
     // Message related
     this.groupChannel.on("new_msg", messageStore.onNewMessage);
-    this.groupChannel.on("edit_msg", messageStore.onEditMessage);
-    this.groupChannel.on("update_msg", messageStore.onUpdateMessage);
-    this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
+    // this.groupChannel.on("edit_msg", messageStore.onEditMessage);
+    // this.groupChannel.on("update_msg", messageStore.onUpdateMessage);
+    // this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
     this.groupChannel.on("starred_message", messageStore.onStarredMessage);
-    this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
+    // this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
     this.groupChannel.on(
       "msg_link_previews_generated",
       messageStore.onLinkPreviewGenerated
@@ -302,7 +305,7 @@ class ChannelStore {
       "msg_link_preview_deleted",
       messageStore.onLinkPreviewDeleted
     );
-    this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
+    // this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
     this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
     this.groupChannel.on("is_typing", groupStore.onStartedTyping);
     this.groupChannel.on(
