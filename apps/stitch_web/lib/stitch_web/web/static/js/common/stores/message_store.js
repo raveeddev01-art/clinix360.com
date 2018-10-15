@@ -925,7 +925,6 @@ class MessageStore extends BaseMessageStore {
   onNewMessage = newMessage => {
     const { sidemenuStore, groupStore } = this.rootStore;
 
-    // TODO: update cache
     if (newMessage.group_id !== this.group.id) {
       this.messageCache.addNew(newMessage.group_id, newMessage);
 
@@ -1051,7 +1050,6 @@ class MessageStore extends BaseMessageStore {
       message => message.upload_id === payload.id && message.type === "upload"
     );
 
-    // TODO: cache
     files.forEach(file => {
       this.updateMessageData(file.id, file.group_id, { fields: payload });
     });
@@ -1105,10 +1103,11 @@ class MessageStore extends BaseMessageStore {
     files.forEach(file => {
       const messageIndex = this.messages.findIndex(m => m.id === file.id);
 
-      // TODO: update cache
       if (messageIndex > -1) {
         this.messages.splice(messageIndex, 1);
       }
+
+      this.messageCache.deleteMessage(file);
     });
   };
 }
