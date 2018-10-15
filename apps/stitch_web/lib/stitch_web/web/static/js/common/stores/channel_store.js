@@ -110,32 +110,51 @@ class ChannelStore {
 
     // Message related
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
-
-    // New events (ported from group channel)
+    this.eventChannel.on("new_msg", messageStore.onNewMessage);
     this.eventChannel.on("edit_msg", messageStore.onEditMessage);
     this.eventChannel.on("update_msg", messageStore.onUpdateMessage);
     this.eventChannel.on("delete_msg", messageStore.onDeleteMessage);
+    this.eventChannel.on("starred_message", messageStore.onStarredMessage);
     this.eventChannel.on("pinned_message", messageStore.onPinnedMessage);
+    this.eventChannel.on(
+      "msg_link_previews_generated",
+      messageStore.onLinkPreviewGenerated
+    );
+    this.eventChannel.on(
+      "msg_link_preview_deleted",
+      messageStore.onLinkPreviewDeleted
+    );
     this.eventChannel.on("reactions_updated", messageStore.onReactionUpdate);
-
-    // "edit_msg"
-    // "update_msg"
-    // "delete_msg"
-    // "starred_message"
-    // "pinned_message"
-    // "msg_link_previews_generated"
-    // "msg_link_preview_deleted"
-    // "reactions_updated"
-    // "read_status_update"
-    // "is_typing"
-    // "file_comment_edited"
-    // "file_comment_added"
-    // "file_comment_added"
-    // "file_comment_deleted"
-    // "file_public_link_updated"
-    // "file_details_updated"
-    // "file_details_updated"
-    // "file_deleted"
+    this.eventChannel.on("read_status_update", messageStore.onReadStatusUpdate);
+    this.eventChannel.on(
+      "file_comment_edited",
+      teamFileStore.onFileCommentEdited
+    );
+    this.eventChannel.on("file_comment_added", messageStore.onFileCommentAdded);
+    this.eventChannel.on(
+      "file_comment_added",
+      teamFileStore.onFileCommentAdded
+    );
+    this.eventChannel.on(
+      "file_comment_deleted",
+      teamFileStore.onFileCommentDeleted
+    );
+    this.eventChannel.on(
+      "file_public_link_updated",
+      messageStore.onPublicLinkUpdate
+    );
+    this.eventChannel.on(
+      "file_details_updated",
+      messageStore.onFileDetailsUpdate
+    );
+    this.eventChannel.on(
+      "file_details_updated",
+      teamFileStore.onFileDetailsUpdate
+    );
+    this.eventChannel.on("file_deleted", (...args) => {
+      messageStore.onFileDeleted(...args);
+      teamFileStore.onFileDeleted(...args);
+    });
 
     // Group related
     this.eventChannel.on("created_group", groupsStore.onCreatedGroup);
@@ -292,51 +311,8 @@ class ChannelStore {
 
     // Message related
     this.groupChannel.on("new_msg", messageStore.onNewMessage);
-    // this.groupChannel.on("edit_msg", messageStore.onEditMessage);
-    // this.groupChannel.on("update_msg", messageStore.onUpdateMessage);
-    // this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
-    this.groupChannel.on("starred_message", messageStore.onStarredMessage);
-    // this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
-    this.groupChannel.on(
-      "msg_link_previews_generated",
-      messageStore.onLinkPreviewGenerated
-    );
-    this.groupChannel.on(
-      "msg_link_preview_deleted",
-      messageStore.onLinkPreviewDeleted
-    );
-    // this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
-    this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
     this.groupChannel.on("is_typing", groupStore.onStartedTyping);
-    this.groupChannel.on(
-      "file_comment_edited",
-      teamFileStore.onFileCommentEdited
-    );
-    this.groupChannel.on("file_comment_added", messageStore.onFileCommentAdded);
-    this.groupChannel.on(
-      "file_comment_added",
-      teamFileStore.onFileCommentAdded
-    );
-    this.groupChannel.on(
-      "file_comment_deleted",
-      teamFileStore.onFileCommentDeleted
-    );
-    this.groupChannel.on(
-      "file_public_link_updated",
-      messageStore.onPublicLinkUpdate
-    );
-    this.groupChannel.on(
-      "file_details_updated",
-      messageStore.onFileDetailsUpdate
-    );
-    this.groupChannel.on(
-      "file_details_updated",
-      teamFileStore.onFileDetailsUpdate
-    );
-    this.groupChannel.on("file_deleted", (...args) => {
-      messageStore.onFileDeleted(...args);
-      teamFileStore.onFileDeleted(...args);
-    });
+
     return joined;
   }
 
