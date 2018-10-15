@@ -76,7 +76,12 @@ defmodule StitchConnect.Web.GroupChannel do
     opts = [limit: params["limit"]]
     authenticated_urls = Map.get(params, "authenticated_urls", false)
 
-    messages = MessageQueries.group_latest_messages(group.id, user, opts)
+    messages =
+      if params["fetch_messages"] == false do
+        []
+      else
+        MessageQueries.group_latest_messages(group.id, user, opts)
+      end
 
     messages_json =
       MessageView.render("index.json", %{
@@ -324,36 +329,49 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message], :message)
 
-    endpoint_broadcast(group, "reactions_updated", %{
+    payload = %{
       message_id: message.id,
+      group_id: group.id,
       reactions_web: message.reactions
-    })
+    }
+
+    broadcast_in_event_channel(group, "reactions_updated", payload)
+    endpoint_broadcast(group, "reactions_updated", payload)
   end
 
   def broadcast_message_starred(message, starred_by_user_id) do
     group = Repo.get(Group, message.group_id)
 
     message_json =
-      MessageView.render("starred.json", %{message: message, user_id: starred_by_user_id})
+      MessageView.render("starred.json", %{
+        message: message,
+        user_id: starred_by_user_id,
+        group_id: group.id
+      })
 
+    broadcast_in_event_channel(group, "starred_message", message_json)
     endpoint_broadcast(group, "starred_message", message_json)
   end
 
   def broadcast_message_edited(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(group, "edit_msg", message_json)
     endpoint_broadcast(group, "edit_msg", message_json)
   end
 
   def broadcast_message_updated(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(group, "update_msg", message_json)
     endpoint_broadcast(group, "update_msg", message_json)
   end
 
   def broadcast_message_deleted(message) do
     group = Repo.get(Group, message.group_id)
-    endpoint_broadcast(group, "delete_msg", %{id: message.id})
+    payload = %{id: message.id, group_id: group.id}
+    broadcast_in_event_channel(group, "delete_msg", payload)
+    endpoint_broadcast(group, "delete_msg", payload)
   end
 
   def broadcast_message_created(message) do
@@ -365,6 +383,7 @@ defmodule StitchConnect.Web.GroupChannel do
   def broadcast_message_pinned(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message)
+    broadcast_in_event_channel(group, "pinned_message", message_json)
     endpoint_broadcast(group, "pinned_message", message_json)
   end
 
@@ -398,7 +417,9 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_read_status(group, messages) do
     read_status_json = Enum.reduce(messages, %{}, &Map.put(&2, &1.id, &1.read_status))
-    endpoint_broadcast(group, "read_status_update", %{messages: read_status_json})
+    payload = %{messages: read_status_json, group_id: group.id}
+    broadcast_in_event_channel(group, "read_status_update", payload)
+    endpoint_broadcast(group, "read_status_update", payload)
   end
 
   def broadcast_system_message(group, system_message) do
@@ -409,19 +430,24 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_msg_link_previews_generated(group, message) do
     message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(group, "msg_link_previews_generated", message_json)
     endpoint_broadcast(group, "msg_link_previews_generated", message_json)
   end
 
   def broadcast_msg_link_preview_deleted(group, message_id, link) do
-    endpoint_broadcast(group, "msg_link_preview_deleted", %{message_id: message_id, link: link})
+    payload = %{message_id: message_id, group_id: group.id, link: link}
+    broadcast_in_event_channel(group, "msg_link_preview_deleted", payload)
+    endpoint_broadcast(group, "msg_link_preview_deleted", payload)
   end
 
   def broadcast_is_typing(group, user) do
-    endpoint_broadcast(group, "is_typing", %{user_id: user.id})
+    endpoint_broadcast(group, "is_typing", %{user_id: user.id, group_id: group.id})
   end
 
   def broadcast_file_comment_added(upload) do
     file_json = FileView.render("show_with_comments.json", %{file: upload})
+
+    broadcast_in_event_channel(upload.shared_in, "file_comment_added", file_json)
 
     Enum.each(upload.shared_in, fn group_id ->
       @endpoint.broadcast("groups:id:#{group_id}", "file_comment_added", file_json)
@@ -431,6 +457,8 @@ defmodule StitchConnect.Web.GroupChannel do
   def broadcast_file_comment_edited(upload) do
     file_json = FileView.render("show_with_comments.json", %{file: upload})
 
+    broadcast_in_event_channel(upload.shared_in, "file_comment_edited", file_json)
+
     Enum.each(upload.shared_in, fn group_id ->
       @endpoint.broadcast("groups:id:#{group_id}", "file_comment_edited", file_json)
     end)
@@ -439,9 +467,23 @@ defmodule StitchConnect.Web.GroupChannel do
   def broadcast_file_comment_deleted(upload) do
     file_json = FileView.render("show_with_comments.json", %{file: upload})
 
+    broadcast_in_event_channel(upload.shared_in, "file_comment_deleted", file_json)
+
     Enum.each(upload.shared_in, fn group_id ->
       @endpoint.broadcast("groups:id:#{group_id}", "file_comment_deleted", file_json)
     end)
+  end
+
+  def broadcast_in_event_channel(%Group{} = group, event_name, payload) do
+    for group_user <- GroupUser.group_users_for(group.id) do
+      @endpoint.broadcast("events:#{group_user.user_id}", event_name, payload)
+    end
+  end
+
+  def broadcast_in_event_channel(group_ids, event_name, payload) when is_list(group_ids) do
+    for group_user <- GroupUser.group_users_for(group_ids) do
+      @endpoint.broadcast("events:#{group_user.user_id}", event_name, payload)
+    end
   end
 
   def broadcast_file_public_link_updated(upload) do
@@ -450,16 +492,22 @@ defmodule StitchConnect.Web.GroupChannel do
         do: UrlService.public_download_page(upload, upload.public_token),
         else: nil
 
+    json = %{
+      upload_id: upload.id,
+      public_url: url
+    }
+
+    broadcast_in_event_channel(upload.shared_in, "file_public_link_updated", json)
+
     Enum.each(upload.shared_in, fn group_id ->
-      @endpoint.broadcast("groups:id:#{group_id}", "file_public_link_updated", %{
-        upload_id: upload.id,
-        public_url: url
-      })
+      @endpoint.broadcast("groups:id:#{group_id}", "file_public_link_updated", json)
     end)
   end
 
   def broadcast_file_details_update(upload) do
     file_json = FileView.render("show_with_comments.json", %{file: upload})
+
+    broadcast_in_event_channel(upload.shared_in, "file_details_updated", file_json)
 
     Enum.each(upload.shared_in, fn group_id ->
       @endpoint.broadcast("groups:id:#{group_id}", "file_details_updated", file_json)
@@ -467,6 +515,8 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   def broadcast_file_deleted(upload) do
+    broadcast_in_event_channel(upload.shared_in, "file_deleted", %{upload_id: upload.id})
+
     Enum.each(upload.shared_in, fn group_id ->
       @endpoint.broadcast("groups:id:#{group_id}", "file_deleted", %{upload_id: upload.id})
     end)
