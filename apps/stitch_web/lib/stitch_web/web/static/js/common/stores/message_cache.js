@@ -45,9 +45,10 @@ class MessageCache {
       updatedAttributes = messageAttributes;
     }
 
-    Object.keys(updatedAttributes).forEach(key => {
-      groupMessages[messageIndex][key] = updatedAttributes[key];
-    });
+    groupMessages[messageIndex] = {
+      ...groupMessages[messageIndex],
+      ...updatedAttributes
+    };
 
     return this.cache;
   }
