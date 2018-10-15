@@ -519,27 +519,16 @@ class GroupsStore {
     const { channelStore, messageStore } = this.rootStore;
     const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
 
-    // Join group channel
-
-    // channelStore
-    //   .joinGroupChannel({
-    //     authenticated_urls: true,
-    //     fetch_messages: fetchMessages
-    //   })
-    //   .receive("ok", messageStore.onJoinGroupChannel)
-    //   .receive("error", err => notify.show(err.message, "error"));
-    // this.resetRelatedStores({ withMessages: !!fetchMessages });
-
-    // messageStore.onJoinGroupChannelCached();
-
     if (fetchMessages) {
-      console.log("join group channel for the first time");
       channelStore
         .joinGroupChannel({
           authenticated_urls: true,
           fetch_messages: fetchMessages
         })
-        .receive("ok", x => fetchMessages && messageStore.onJoinGroupChannel(x))
+        .receive(
+          "ok",
+          data => fetchMessages && messageStore.onJoinGroupChannel(data)
+        )
         .receive("error", err => notify.show(err.message, "error"));
       this.resetRelatedStores({ withMessages: !!fetchMessages });
     } else {
@@ -548,7 +537,7 @@ class GroupsStore {
           authenticated_urls: true,
           fetch_messages: fetchMessages
         })
-        .receive("ok", x => null)
+        .receive("ok", () => null)
         .receive("error", err => notify.show(err.message, "error"));
       this.resetRelatedStores({ withMessages: false });
       messageStore.onJoinGroupChannelCached();

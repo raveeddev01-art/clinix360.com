@@ -61,10 +61,8 @@ class GroupStore {
 
   @action
   onStartedTyping = args => {
-    let { user_id: userId, group_id: groupId } = args;
-    console.log(args);
+    const { user_id: userId, group_id: groupId } = args;
     if (userId === currentUser.id || groupId !== this.group.id) {
-      console.log("early return");
       return;
     }
 

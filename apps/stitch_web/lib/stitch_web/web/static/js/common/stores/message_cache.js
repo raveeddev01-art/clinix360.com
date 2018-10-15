@@ -14,25 +14,14 @@ class MessageCache {
   }
 
   addBatchToCache(groupId, messages) {
-    console.log(
-      "MessageCache: cached messages for group",
-      groupId,
-      messages.length
-    );
     this.cache[groupId] = messages;
   }
 
   addOneToCache(groupId, message) {
-    console.log("MessageCache: cached one message for group", groupId);
     this.cache[groupId].push(message);
   }
 
   getCache(groupId) {
-    console.log(
-      "MessageCache: fetched cache for group",
-      groupId,
-      this.cache[groupId].length
-    );
     return this.cache[groupId];
   }
 
@@ -44,11 +33,9 @@ class MessageCache {
    * updateCachedMessage({id: messageId, group_id: groupId}, {custom_attr: 42})
    */
   updateCachedMessage(groupId, messageId, messageAttributes) {
-    console.log("MessageCache: update", groupId, messageId, messageAttributes);
     const groupMessages = this.cache[groupId];
 
     if (!groupMessages) {
-      console.warn(`Group ${groupId} is not cached`);
       return null;
     }
 
@@ -80,8 +67,6 @@ class MessageCache {
   addNew(newMessage) {
     const groupId = newMessage.group_id;
     if (this.cache[groupId]) {
-      console.log("MessageCache: added new message for group", groupId);
-      // this.cache[groupId] = [];
       this.cache[groupId].unshift(newMessage);
     }
   }
@@ -90,14 +75,12 @@ class MessageCache {
     const groupMessages = this.cache[groupId];
 
     if (!groupMessages) {
-      console.warn(`Group ${groupId} is not cached`);
       return null;
     }
 
     const messageIndex = groupMessages.findIndex(m => m.id === messageId);
 
     if (messageIndex === -1) {
-      console.warn(`Message ${messageId} is not cached`);
       return null;
     }
 

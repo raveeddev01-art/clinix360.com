@@ -803,7 +803,6 @@ class MessageStore extends BaseMessageStore {
 
   @action
   onJoinGroupChannelCached = () => {
-    console.log("onJoinGroupChannelCached", this.group.id);
     this.messages = this.messageCache.getCache(this.group.id);
     this.loadedGroupId = this.group.id;
     if (this.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
@@ -814,15 +813,11 @@ class MessageStore extends BaseMessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    console.log("onJoinedGroup");
-
     window.messageStore = this;
     // sync time as soon as joined to the channel
     this.syncTime();
 
     if (this.group.id === this.loadedGroupId) {
-      console.log("On group on reconnect");
-
       // Doesn't play nicely with cache; commented out.
       // // new message has more precedance by putting it as first param.
       // this.messages = unionBy(data.messages, this.messages, msg => {
@@ -832,12 +827,8 @@ class MessageStore extends BaseMessageStore {
       this.messages = data.messages;
       this.messageCache.addBatchToCache(this.group.id, this.messages);
     } else if (this.messageCache.hasLoadedGroup(this.group.id)) {
-      console.log("Open group from cache");
-
       this.messages = this.messageCache.getCache(this.group.id);
     } else {
-      console.log("Default open group");
-
       this.messages = data.messages;
       this.messageCache.addBatchToCache(this.group.id, data.messages);
     }
@@ -936,11 +927,9 @@ class MessageStore extends BaseMessageStore {
   @action
   onNewMessage = newMessage => {
     const { sidemenuStore, groupStore } = this.rootStore;
-    console.log("on new message");
 
     // TODO: update cache
     if (newMessage.group_id !== this.group.id) {
-      console.log("added to cache in another group");
       this.messageCache.addNew(newMessage.group_id, newMessage);
 
       return;
@@ -970,7 +959,6 @@ class MessageStore extends BaseMessageStore {
     } else {
       // otherwise, add to message list
       this.messages.unshift(newMessage);
-      console.log("added to cache");
       this.messageCache.addNew(newMessage.group_id, newMessage);
     }
 
