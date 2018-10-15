@@ -25,12 +25,8 @@ class MessageCache {
     return this.cache[groupId];
   }
 
-  /* Takes message with `id` and `group_id` attributes and an optional
-   * `customAttributes` object.
-   * if `customAttributes` is not provided, replaces the message.
-   * Returns `null` if message cannot be found based on `group_id` and `id`.
-   *
-   * updateCachedMessage({id: messageId, group_id: groupId}, {custom_attr: 42})
+  /*
+   * updateCachedMessage(messageId, groupId, {custom_attr: 42})
    */
   updateCachedMessage(groupId, messageId, messageAttributes) {
     const groupMessages = this.cache[groupId];
