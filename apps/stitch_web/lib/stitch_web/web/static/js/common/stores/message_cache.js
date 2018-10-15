@@ -17,10 +17,6 @@ class MessageCache {
     this.cache[groupId] = messages;
   }
 
-  addOneToCache(groupId, message) {
-    this.cache[groupId].push(message);
-  }
-
   getCache(groupId) {
     return this.cache[groupId];
   }
