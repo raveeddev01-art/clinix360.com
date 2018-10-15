@@ -32,12 +32,11 @@ class Members extends Component {
   };
 
   render() {
-    const { onChange, value, className, ...otherProps } = this.props;
+    const { onChange, value, isMulti, className, ...otherProps } = this.props;
 
     return (
       <Select
-        multi
-        simpleValue
+        multi={isMulti}
         className={className}
         placeholder="Search by name or username"
         onChange={onChange}
@@ -56,11 +55,18 @@ class Members extends Component {
 Members.propTypes = {
   onChange: PropTypes.func.isRequired,
   className: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  isMulti: PropTypes.bool,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.number),
+    PropTypes.arrayOf(PropTypes.string)
+  ])
 };
 
 Members.defaultProps = {
   onChange: () => {},
+  isMulti: true,
   value: "",
   className: "multi-select-large"
 };
