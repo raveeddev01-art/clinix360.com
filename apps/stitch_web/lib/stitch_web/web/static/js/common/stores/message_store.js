@@ -813,18 +813,15 @@ class MessageStore extends BaseMessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    window.messageStore = this;
     // sync time as soon as joined to the channel
     this.syncTime();
 
     if (this.group.id === this.loadedGroupId) {
-      // Doesn't play nicely with cache; commented out.
       // // new message has more precedance by putting it as first param.
-      // this.messages = unionBy(data.messages, this.messages, msg => {
-      //   return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
-      // });
       this.messageCache = new MessageCache();
-      this.messages = data.messages;
+      this.messages = unionBy(data.messages, this.messages, msg => {
+        return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
+      });
       this.messageCache.addBatchToCache(this.group.id, this.messages);
     } else if (this.messageCache.hasLoadedGroup(this.group.id)) {
       this.messages = this.messageCache.getCache(this.group.id);

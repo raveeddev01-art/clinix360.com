@@ -317,7 +317,6 @@ class ChannelStore {
   }
 
   leaveGroupChannel() {
-    // TODO: temp.
     this.leave(this.groupChannelTopic);
   }
 
