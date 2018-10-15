@@ -206,6 +206,7 @@ class CreateRoomModal extends Component {
 
             <Col sm={9}>
               <Members
+                isMulti
                 onChange={this.updateMembers}
                 value={this.state.members}
               />

@@ -60,23 +60,24 @@ class GroupStore {
   };
 
   @action
-  onStartedTyping = ({ user_id: userID }) => {
-    if (userID === currentUser.id) {
+  onStartedTyping = args => {
+    const { user_id: userId, group_id: groupId } = args;
+    if (userId === currentUser.id || groupId !== this.group.id) {
       return;
     }
 
     // insert typing user into list if he is not in the list yet
-    if (!this.typingUsers.includes(userID)) {
-      this.typingUsers.push(userID);
+    if (!this.typingUsers.includes(userId)) {
+      this.typingUsers.push(userId);
     }
 
     // clear timeout and restart
-    if (this.typingTimeouts[userID]) {
-      clearTimeout(this.typingTimeouts[userID]);
+    if (this.typingTimeouts[userId]) {
+      clearTimeout(this.typingTimeouts[userId]);
     }
 
-    this.typingTimeouts[userID] = setTimeout(
-      () => this.stoppedTyping(userID),
+    this.typingTimeouts[userId] = setTimeout(
+      () => this.stoppedTyping(userId),
       TYPING_TIMEOUT_MS
     );
   };

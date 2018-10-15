@@ -18,7 +18,7 @@ class MemberExportModal extends Component {
 
   onChange = field => value => {
     this.setState({
-      [field]: value
+      [field]: value.id
     });
   };
 
@@ -46,7 +46,7 @@ class MemberExportModal extends Component {
         <Modal.Body>
           <Form horizontal onSubmit={e => e.preventDefault()}>
             <Members
-              multi={false}
+              isMulti={false}
               onChange={this.onChange("userId")}
               value={this.state.userId}
             />

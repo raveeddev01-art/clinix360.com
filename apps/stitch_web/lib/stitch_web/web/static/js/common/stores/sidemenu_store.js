@@ -391,7 +391,9 @@ class SidemenuStore {
 
   @action
   onNewMessage = message => {
-    const { groupStore, groupsStore } = this.rootStore;
+    const { groupStore, groupsStore, messageStore } = this.rootStore;
+
+    messageStore.messageCache.addNew(message);
 
     // If the message is system message or for the current group, ignore
     if (

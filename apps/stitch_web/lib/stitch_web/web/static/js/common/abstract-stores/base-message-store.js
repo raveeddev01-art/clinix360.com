@@ -6,6 +6,7 @@ import flow from "lodash/flow";
 import groupBy from "lodash/fp/groupBy";
 import mapValues from "lodash/fp/mapValues";
 import sortBy from "lodash/fp/sortBy";
+import isFunction from "lodash/fp/isFunction";
 
 import REGEX from "lib/regex";
 import { SEQUENTIAL_SPLIT_SECONDS } from "lib/constants";
@@ -38,11 +39,23 @@ export default class BaseMessageStore {
   };
 
   @action
-  updateMessageData = (id, data) => {
-    const message = this.getMessageById(id);
+  updateMessageData = (messageId, groupId, messageAttributes) => {
+    const message = this.getMessageById(messageId);
+    let updatedAttributes;
     if (message) {
-      extendObservable(message, data);
+      if (isFunction(messageAttributes)) {
+        updatedAttributes = messageAttributes(message);
+      } else {
+        updatedAttributes = messageAttributes;
+      }
+      extendObservable(message, updatedAttributes);
     }
+
+    this.messageCache.updateCachedMessage(
+      groupId,
+      messageId,
+      messageAttributes
+    );
   };
 
   isCurrentChannelPayload() {
@@ -172,13 +185,11 @@ export default class BaseMessageStore {
 
   @action
   onEditMessage = editedMessage => {
-    if (!this.isCurrentChannelPayload(editedMessage)) {
-      return;
+    if (this.isCurrentChannelPayload(editedMessage)) {
+      this.cancelEdit();
     }
 
-    this.cancelEdit();
-
-    this.updateMessageData(editedMessage.id, {
+    this.updateMessageData(editedMessage.id, editedMessage.group_id, {
       edited: editedMessage.edited,
       edited_at: editedMessage.edited_at,
       text_content: editedMessage.text_content
@@ -194,19 +205,19 @@ export default class BaseMessageStore {
     if (messageIndex > -1) {
       this.messages.splice(messageIndex, 1);
     }
+    this.messageCache.deleteMessage(deletedMessage.group_id, deletedMessage.id);
   };
 
   @action
   onLinkPreviewGenerated = payload => {
-    if (!this.isCurrentChannelPayload(payload)) {
-      return;
-    }
-
     if (payload.link_previews && payload.link_previews.length) {
-      this.updateMessageData(payload.id, {
+      this.updateMessageData(payload.id, payload.group_id, {
         link_previews: payload.link_previews
       });
-      this.keepScrollAtBottom();
+
+      if (this.isCurrentChannelPayload(payload)) {
+        this.keepScrollAtBottom();
+      }
     }
   };
 
@@ -215,7 +226,7 @@ export default class BaseMessageStore {
     const message = this.getMessageById(payload.message_id);
 
     if (message) {
-      this.updateMessageData(payload.message_id, {
+      this.updateMessageData(payload.message_id, payload.group_id, {
         link_previews: message.link_previews.filter(
           p => p.link !== payload.link
         )
@@ -226,7 +237,7 @@ export default class BaseMessageStore {
 
   @action
   onReactionUpdate = payload => {
-    this.updateMessageData(payload.message_id, {
+    this.updateMessageData(payload.message_id, payload.group_id, {
       reactions_web: payload.reactions_web
     });
   };
@@ -235,23 +246,28 @@ export default class BaseMessageStore {
   onReadStatusUpdate = payload => {
     if (!payload.messages) return;
 
-    Object.keys(payload.messages).forEach(message_id => {
-      const message = this.getMessageById(parseInt(message_id, 10));
-      if (message) {
-        this.updateMessageData(parseInt(message_id, 10), {
-          read_status: Object.assign(
-            {},
-            message.read_status || {},
-            payload.messages[message_id]
-          )
-        });
-      } else {
+    Object.keys(payload.messages).forEach(messageId => {
+      const message = this.getMessageById(parseInt(messageId, 10));
+      this.updateMessageData(
+        parseInt(messageId, 10),
+        payload.group_id,
+        messageToUpdate => {
+          return {
+            read_status: Object.assign(
+              {},
+              messageToUpdate.read_status || {},
+              payload.messages[messageId]
+            )
+          };
+        }
+      );
+
+      if (!message) {
         // cache read status because this event was broadcasted before new_msg due to network slowness
-        this.readStatusCache[message_id] =
-          this.readStatusCache[message_id] || {};
+        this.readStatusCache[messageId] = this.readStatusCache[messageId] || {};
         Object.assign(
-          this.readStatusCache[message_id],
-          payload.messages[message_id]
+          this.readStatusCache[messageId],
+          payload.messages[messageId]
         );
       }
     });
