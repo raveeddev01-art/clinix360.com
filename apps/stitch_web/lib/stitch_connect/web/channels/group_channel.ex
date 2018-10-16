@@ -7,6 +7,10 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
 
+  alias StitchConnect.Web.{
+    MessageEventsService
+  }
+
   alias Stitch.{
     Repo,
     Group,
@@ -230,7 +234,7 @@ defmodule StitchConnect.Web.GroupChannel do
     case message && Message.update(message, params) do
       {:ok, message} ->
         message = MessageQueries.load_info(message)
-        broadcast_message_edited(message)
+        MessageEventsService.message_edit_events(message)
         json = MessageView.render("show.json", %{message: message})
         {:reply, {:ok, json}, socket}
 
