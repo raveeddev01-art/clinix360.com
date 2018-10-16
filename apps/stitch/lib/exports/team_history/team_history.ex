@@ -171,7 +171,7 @@ defmodule Stitch.Exports.TeamHistory do
     |> Task.Supervisor.async_stream_nolink(
       months,
       &write_messages_for_month(directory, team, &1, user, timeout),
-      max_concurrency: 4,
+      max_concurrency: 2,
       timeout: timeout
     )
     |> Enum.reduce([], fn {:ok, paths}, acc_paths -> paths ++ acc_paths end)
