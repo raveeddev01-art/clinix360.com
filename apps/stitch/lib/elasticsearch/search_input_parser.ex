@@ -2,8 +2,13 @@ defmodule Stitch.SearchInputParser do
   def parse(%{term: term} = params, current_user) do
     result = parameterize(term)
 
+    parsed_term =
+      result.search_terms
+      |> Enum.reverse()
+      |> Enum.join(" ")
+
     params
-    |> Map.put(:term, Enum.join(result.search_terms, " "))
+    |> Map.put(:term, parsed_term)
     |> apply_room_filters(result.room_terms)
     |> apply_mentioned_user_ids_filters(result.messages_to_terms)
     |> apply_from_user_filters(result.messages_from_terms)
