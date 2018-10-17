@@ -20,7 +20,8 @@ class DefaultFileAttachment extends Component {
       onCommentsClick,
       onFileDownload,
       useActions,
-      message
+      message,
+      children
     } = this.props;
     const filetype = getFileType(mimetype);
 
@@ -44,6 +45,7 @@ class DefaultFileAttachment extends Component {
             <div className="attachment-detail">
               {prettyFileSize(size)} {filetype.title}
             </div>
+            {children}
           </div>
 
           {useActions &&
@@ -57,7 +59,9 @@ class DefaultFileAttachment extends Component {
                 message={message}
                 commentCount={commentCount}
                 isActionsVisible={isConversationMessage ? false : undefined}
-                isOriginalOpenVisible={isConversationMessage ? false : undefined}
+                isOriginalOpenVisible={
+                  isConversationMessage ? false : undefined
+                }
                 onCommentsClick={onCommentsClick}
                 onFileDownload={onFileDownload}
               />
@@ -82,7 +86,8 @@ DefaultFileAttachment.propTypes = {
   encoded_id: PropTypes.string,
   public_url: PropTypes.string,
   file_id: PropTypes.number.isRequired,
-  message: PropTypes.object
+  message: PropTypes.object,
+  children: PropTypes.node
 };
 
 DefaultFileAttachment.defaultProps = {
@@ -92,7 +97,8 @@ DefaultFileAttachment.defaultProps = {
   message: null,
   comment_count: 0,
   isConversationMessage: false,
-  onCommentsClick: undefined
+  onCommentsClick: undefined,
+  children: null
 };
 
 export default DefaultFileAttachment;

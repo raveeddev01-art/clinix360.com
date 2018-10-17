@@ -54,7 +54,8 @@ class AttachmentActions extends Component {
       message,
       public_url,
       encoded_id,
-      user_id
+      user_id,
+      tooltipPlacement
     } = this.props;
 
     const detailPageUrl =
@@ -67,7 +68,7 @@ class AttachmentActions extends Component {
       >
         {onCommentsClick && (
           <OverlayTrigger
-            placement="top"
+            placement={tooltipPlacement}
             delayShow={150}
             overlay={<Tooltip id="file-comments">Add Comment</Tooltip>}
           >
@@ -79,7 +80,7 @@ class AttachmentActions extends Component {
 
         {isDownloadVisible && (
           <OverlayTrigger
-            placement="top"
+            placement={tooltipPlacement}
             delayShow={150}
             overlay={<Tooltip id="download-file">Download</Tooltip>}
           >
@@ -91,7 +92,7 @@ class AttachmentActions extends Component {
 
         {isOriginalOpenVisible && (
           <OverlayTrigger
-            placement="top"
+            placement={tooltipPlacement}
             delayShow={150}
             overlay={<Tooltip id="detail-page">Open Original</Tooltip>}
           >
@@ -105,7 +106,7 @@ class AttachmentActions extends Component {
           <SmartDropdown id="file-actions-dropdown">
             <Dropdown.Toggle useAnchor noCaret>
               <OverlayTrigger
-                placement="top"
+                placement={tooltipPlacement}
                 delayShow={150}
                 overlay={<Tooltip id="message-actions">More Actions</Tooltip>}
               >
@@ -173,7 +174,8 @@ AttachmentActions.propTypes = {
   isOriginalOpenVisible: PropTypes.bool.isRequired,
   isDownloadVisible: PropTypes.bool.isRequired,
   onCommentsClick: PropTypes.func,
-  onFileDownload: PropTypes.func.isRequired
+  onFileDownload: PropTypes.func.isRequired,
+  tooltipPlacement: PropTypes.string.isRequired
 };
 
 AttachmentActions.defaultProps = {
@@ -183,7 +185,8 @@ AttachmentActions.defaultProps = {
   isDownloadVisible: true,
   onCommentsClick: null,
   public_url: null,
-  message: null
+  message: null,
+  tooltipPlacement: "top"
 };
 
 export default AttachmentActions;

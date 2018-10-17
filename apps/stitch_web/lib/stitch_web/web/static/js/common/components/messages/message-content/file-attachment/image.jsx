@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import Modal from "react-bootstrap/lib/Modal";
 import AttachmentActions from "./components/attachment-actions";
+import FileViewer from "./file-viewer";
 
 class ImageFileAttachment extends Component {
   constructor(props) {
@@ -112,19 +112,12 @@ class ImageFileAttachment extends Component {
           )}
         </div>
 
-        <Modal
+        <FileViewer
+          {...this.props}
+          type="Image"
           show={showModal}
-          dialogClassName="image-viewer"
-          onHide={this.onToggleModal}
-        >
-          <Modal.Body onClick={this.onToggleModal}>
-            <img
-              src={url}
-              className="modal-attachment-image img-responsive"
-              alt={filename}
-            />
-          </Modal.Body>
-        </Modal>
+          onHideModal={this.onToggleModal}
+        />
       </div>
     );
   }
