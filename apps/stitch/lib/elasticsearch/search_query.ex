@@ -219,6 +219,8 @@ defmodule Stitch.Elasticsearch.SearchQuery do
   https://www.elastic.co/guide/en/elasticsearch/reference/master/mixing-exact-search-with-stemming.html
   """
   @spec mixed_exact_with_stemming(elasticsearch_query, SearchQuery.t()) :: elasticsearch_query
+  def mixed_exact_with_stemming(query, %SearchQuery{term: ""}), do: query
+
   def mixed_exact_with_stemming(query, %SearchQuery{term: term}) when is_binary(term) do
     subquery = %{
       simple_query_string: %{
