@@ -167,15 +167,14 @@ defmodule Stitch.Web.Files.FileController do
     end
   end
 
-  @spec put_cache_header(Conn.t(), Upload.t()) :: {:fresh, Conn.t()} | {:stale, Conn.t()}
-  def put_cache_header(conn, %Upload{} = file) do
-    etag = generate_etag(file.filename)
+  def put_cache_header(conn, filename, upload, is_preview) do
+    etag = generate_etag(filename)
 
     conn =
       conn
       |> put_resp_header("ETag", etag)
-      |> put_mimetype(file)
-      |> put_resp_header("Last-Modified", generate_last_modified(file))
+      |> put_mimetype(upload, is_preview)
+      |> put_resp_header("Last-Modified", generate_last_modified(upload))
 
     if etag in get_req_header(conn, "if-none-match") do
       {:fresh, conn}
@@ -184,29 +183,31 @@ defmodule Stitch.Web.Files.FileController do
     end
   end
 
-  def put_mimetype(conn, %{fields: %{"mimetype" => mimetype}}),
+  def put_mimetype(conn, _upload, true), do: put_resp_header(conn, "Content-Type", "image/pdf")
+
+  def put_mimetype(conn, %{fields: %{"mimetype" => mimetype}}, _is_preview),
     do: put_resp_header(conn, "Content-Type", mimetype)
 
-  def put_mimetype(conn, %{mimetype: mimetype}),
+  def put_mimetype(conn, %{mimetype: mimetype}, _is_preview),
     do: put_resp_header(conn, "Content-Type", mimetype)
 
-  def put_mimetype(conn, _upload), do: conn
+  def put_mimetype(conn, _upload, _is_preview), do: conn
 
   @spec stream_full_file(Conn.t(), Upload.t() | EngageUpload.t()) :: Conn.t()
   def stream_preview(conn, upload) do
-    stream_file(conn, upload, upload.preview_url)
+    stream_file(conn, upload, upload.preview_url, true)
   end
 
   @spec stream_full_file(Conn.t(), Upload.t() | EngageUpload.t()) :: Conn.t()
   def stream_full_file(conn, upload) do
-    stream_file(conn, upload, upload.url)
+    stream_file(conn, upload, upload.url, false)
   end
 
-  @spec stream_file(Conn.t(), Upload.t(), String.t()) :: Conn.t()
-  def stream_file(conn, upload, url) do
+  @spec stream_file(Conn.t(), Upload.t(), String.t(), boolean) :: Conn.t()
+  def stream_file(conn, upload, url, is_preview) do
     filename = Path.basename(url)
 
-    case put_cache_header(conn, filename, upload) do
+    case put_cache_header(conn, filename, upload, is_preview) do
       {:stale, conn} ->
         conn
         |> put_resp_header("Content-Length", "#{upload.size_in_bytes || 0}")
@@ -242,21 +243,5 @@ defmodule Stitch.Web.Files.FileController do
     |> PhoenixETag.schema_last_modified()
     |> NaiveDateTime.to_erl()
     |> :phoenix_etag_date.rfc1123()
-  end
-
-  def put_cache_header(conn, filename, upload) do
-    etag = generate_etag(filename)
-
-    conn =
-      conn
-      |> put_resp_header("ETag", etag)
-      |> put_mimetype(upload)
-      |> put_resp_header("Last-Modified", generate_last_modified(upload))
-
-    if etag in get_req_header(conn, "if-none-match") do
-      {:fresh, conn}
-    else
-      {:stale, conn}
-    end
   end
 end
