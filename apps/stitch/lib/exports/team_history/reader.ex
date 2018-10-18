@@ -7,7 +7,8 @@ defmodule Stitch.Exports.TeamHistory.Reader do
   import Ecto.Query
   alias Stitch.Accounts.User
   alias Stitch.{Team, Group, Message}
-  alias Stitch.ReadReplicaRepo, as: Repo
+
+  @read_repo Application.get_env(:stitch, :read_repo)
 
   @user_data_export_fields ~w(
     id email inserted_at updated_at team_id roles username first_name last_name
@@ -49,7 +50,7 @@ defmodule Stitch.Exports.TeamHistory.Reader do
       )
 
     query
-    |> Repo.all(timeout: timeout)
+    |> @read_repo.all(timeout: timeout)
     |> prepare_group_data_for_export()
   end
 
@@ -82,7 +83,7 @@ defmodule Stitch.Exports.TeamHistory.Reader do
         select: map(u, @user_data_export_fields)
       )
 
-    Repo.all(query, timeout: timeout)
+    @read_repo.all(query, timeout: timeout)
   end
 
   @doc """
@@ -107,7 +108,7 @@ defmodule Stitch.Exports.TeamHistory.Reader do
       )
 
     query
-    |> Repo.all(timeout: timeout)
+    |> @read_repo.all(timeout: timeout)
     |> prepare_message_data_for_export()
   end
 
@@ -129,7 +130,7 @@ defmodule Stitch.Exports.TeamHistory.Reader do
       )
 
     query
-    |> Repo.all(timeout: timeout)
+    |> @read_repo.all(timeout: timeout)
     |> prepare_message_data_for_export()
   end
 
