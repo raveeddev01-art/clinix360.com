@@ -73,7 +73,7 @@ defmodule Stitch.Web.EventsChannel do
 
     for group_user <- GroupUser.group_users_for(group.id) do
       json =
-        MessageView.message_json(message)
+        MessageView.message_json(message, true)
         |> Map.put(:notify, MapSet.member?(notify_user_ids_set, group_user.user_id))
         |> Map.put(:unread_messages_count, group_user.unread_messages_count)
         |> Map.put(:mentions_count, group_user.mentions_count)
