@@ -12,11 +12,19 @@ config :stitch, Stitch.Repo,
   pool_timeout: :timer.minutes(5),
   timeout: :timer.minutes(5)
 
-config :stitch, Stitch.Mailer,
-  adapter: Bamboo.TestAdapter
+config :stitch, Stitch.ReadReplicaRepo,
+  adapter: Ecto.Adapters.Postgres,
+  password: System.get_env("STITCH_POSTGRES_PASSWORD"),
+  database: "stitch_test",
+  hostname: "localhost",
+  port: String.to_integer(System.get_env("PSQL_PORT") || "5432"),
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_timeout: :timer.minutes(5),
+  timeout: :timer.minutes(5)
 
-config :stitch, Stitch.Exports,
-  enabled: false
+config :stitch, Stitch.Mailer, adapter: Bamboo.TestAdapter
+
+config :stitch, Stitch.Exports, enabled: false
 
 config :stitch,
   stripe_client: Stitch.Stripe.TestClient,
@@ -36,10 +44,8 @@ config :stitch, :aws_user_upload, %{
   host: "s3.amazonaws.com"
 }
 
-config :stitch, Stitch.Analytics.Sync.RecurringSync,
-  enabled: false
+config :stitch, Stitch.Analytics.Sync.RecurringSync, enabled: false
 
 config :stitch, async_tasks?: false
 
-config :stitch, Stitch.Analytics.DailyReports.Scheduler,
-  enabled: false
+config :stitch, Stitch.Analytics.DailyReports.Scheduler, enabled: false

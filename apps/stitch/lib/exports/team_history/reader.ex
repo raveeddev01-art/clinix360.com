@@ -6,7 +6,8 @@ defmodule Stitch.Exports.TeamHistory.Reader do
   use Timex
   import Ecto.Query
   alias Stitch.Accounts.User
-  alias Stitch.{Repo, Team, Group, Message}
+  alias Stitch.{Team, Group, Message}
+  alias Stitch.ReadReplicaRepo, as: Repo
 
   @user_data_export_fields ~w(
     id email inserted_at updated_at team_id roles username first_name last_name

@@ -6,6 +6,12 @@ config :stitch, Stitch.Repo,
   database: System.get_env("STITCH_CONNECT_POSTGRES_DATABASE") || "stitch_dev",
   loggers: [Appsignal.Ecto, Ecto.LogEntry]
 
+config :stitch, Stitch.ReadReplicaRepo,
+  adapter: Ecto.Adapters.Postgres,
+  password: System.get_env("STITCH_POSTGRES_PASSWORD"),
+  database: System.get_env("STITCH_CONNECT_POSTGRES_DATABASE") || "stitch_dev",
+  loggers: [Appsignal.Ecto, Ecto.LogEntry]
+
 config :stitch, Stitch.Mailer,
   adapter: Bamboo.MandrillAdapter,
   api_key: System.get_env("MANDRILL_API_KEY")
