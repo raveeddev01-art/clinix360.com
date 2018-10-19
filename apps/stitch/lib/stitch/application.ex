@@ -7,6 +7,7 @@ defmodule Stitch.Application do
     import Supervisor.Spec, warn: false
 
     children = [
+      supervisor(Stitch.ReadReplicaRepo, []),
       supervisor(Stitch.Repo, []),
       supervisor(Stitch.ElasticsearchCluster, [])
     ]

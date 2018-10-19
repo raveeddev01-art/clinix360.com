@@ -2,6 +2,8 @@ use Mix.Config
 
 config :stitch, ecto_repos: [Stitch.Repo]
 
+config :stitch, :read_repo, Stitch.ReadReplicaRepo
+
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET_KEY")
 
 config :stitch,

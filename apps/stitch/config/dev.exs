@@ -1,10 +1,14 @@
 use Mix.Config
 
-config :stitch, Stitch.Repo,
+repo_opts = [
   adapter: Ecto.Adapters.Postgres,
   password: System.get_env("STITCH_POSTGRES_PASSWORD"),
   database: System.get_env("STITCH_CONNECT_POSTGRES_DATABASE") || "stitch_dev",
   loggers: [Appsignal.Ecto, Ecto.LogEntry]
+]
+
+config :stitch, Stitch.Repo, repo_opts
+config :stitch, Stitch.ReadReplicaRepo, repo_opts
 
 config :stitch, Stitch.Mailer,
   adapter: Bamboo.MandrillAdapter,

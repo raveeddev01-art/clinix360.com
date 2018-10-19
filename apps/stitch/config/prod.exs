@@ -7,6 +7,13 @@ config :stitch, Stitch.Repo,
   ssl: true,
   loggers: [Appsignal.Ecto, Ecto.LogEntry]
 
+config :stitch, Stitch.ReadReplicaRepo,
+  adapter: Ecto.Adapters.Postgres,
+  url: System.get_env("REPLICA_1_DATABASE_URL"),
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+  ssl: true,
+  loggers: [Appsignal.Ecto, Ecto.LogEntry]
+
 config :stitch, Stitch.Mailer,
   adapter: Bamboo.MandrillAdapter,
   api_key: System.get_env("MANDRILL_API_KEY")
