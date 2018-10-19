@@ -72,7 +72,7 @@ class FileViewer extends Component {
             </div>
           </div>
           <div className="file-viewer__body">
-            <Viewer url={url} />
+            {Viewer && <Viewer url={url} />}
           </div>
         </Modal.Body>
       </Modal>

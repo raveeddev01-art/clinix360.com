@@ -1187,15 +1187,46 @@
   background: #fff;
   display: flex;
   position: relative;
+  cursor: pointer;
+
+  &--view {
+    cursor: zoom-in;
+  }
+
+  &--noaction {
+    cursor: default;
+
+    .attachment-icon__hover {
+      display: none !important;
+    }
+  }
 
   .attachment-icon {
     width: 40px;
+    height: 40px;
     color: $brand-primary;
     text-align: center;
     margin-right: 8px;
+    position: relative;
 
-    i.fa {
-      font-size: 2.5em;
+    .fa {
+      font-size: 2.5em !important;
+    }
+
+    &__hover.fa {
+      display: none;
+      font-size: 10px !important;
+      margin: 0 !important;
+      position: absolute;
+      bottom: -2px;
+      right: 0;
+      background-color: #fff;
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+      line-height: 15px;
+      text-align: center;
+      vertical-align: middle;
     }
   }
 
@@ -1212,28 +1243,19 @@
 
   .attachment-detail {
     font-size: 13px;
+
+    &__hover {
+      display: none;
+    }
   }
 
-  .pdf-thumb {
+  .attachment-thumb {
     margin-top: 10px;
     margin-left: -50px;
     background-color: #fff;
     border: 1px solid #e2e2e2;
     max-height: 200px;
     height: 200px;
-    overflow-y: hidden;
-
-    &--zoom {
-      cursor: zoom-in;
-    }
-
-    &--original {
-      cursor: pointer;
-    }
-  }
-
-  .react-pdf__Page {
-    max-height: 200px;
     overflow-y: hidden;
   }
 
@@ -1243,6 +1265,18 @@
 
     .attachment-actions {
       opacity: 1;
+    }
+
+    .attachment-detail__normal {
+      display: none;
+    }
+
+    .attachment-detail__hover {
+      display: inline;
+    }
+
+    .attachment-icon__hover {
+      display: inline-block;
     }
   }
 }

@@ -1,18 +1,67 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject } from "mobx-react";
 import getFileType from "lib/file-types";
-import { prettyFileSize } from "lib/utils";
+import { getFullUrl, prettyFileSize } from "lib/utils";
+import { FILE_VIEW_SIZE_LIMIT } from "lib/constants";
 import AttachmentActions from "./components/attachment-actions";
+import FileViewer from "./file-viewer";
 
+@inject("desktopStore")
 class DefaultFileAttachment extends Component {
-  render() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showModal: false
+    };
+  }
+
+  onAttachmentClick = () => {
     const {
+      desktopStore,
+      onFileDownload,
+      encoded_id,
+      useActions,
+      url
+    } = this.props;
+
+    if (this.hasViewer() && this.isAllowedForPreview()) {
+      this.setState({ showModal: !this.state.showModal });
+    } else if (this.hasViewer() && useActions && !desktopStore.isElectron) {
+      const detailPageUrl = getFullUrl(`/admin/files/${encoded_id}`);
+      window.open(detailPageUrl);
+    } else if (useActions && desktopStore.isElectron) {
+      onFileDownload();
+    } else if (useActions) {
+      window.open(url);
+    }
+  };
+
+  onHideModal = () => this.setState({ showModal: false });
+
+  hasViewer = () => {
+    const { mimetype } = this.props;
+    const fileType = getFileType(mimetype);
+    return ["PDF Document"].includes(fileType.title);
+  };
+
+  isAllowedForPreview = () => {
+    const { mimetype } = this.props;
+    const fileType = getFileType(mimetype);
+    return this.props.size_in_bytes < FILE_VIEW_SIZE_LIMIT[fileType.title];
+  };
+
+  render() {
+    const { showModal } = this.state;
+    const {
+      desktopStore,
       filename,
       mimetype,
       size_in_bytes: size,
       url,
       file_id,
       user_id,
+      preview_url,
       encoded_id,
       public_url,
       comment_count: commentCount,
@@ -20,32 +69,52 @@ class DefaultFileAttachment extends Component {
       onCommentsClick,
       onFileDownload,
       useActions,
-      message,
-      children
+      message
     } = this.props;
     const filetype = getFileType(mimetype);
+    let hoverIcon = "";
+    let hoverText = filetype.title;
+    let mainCN = "attachment-block attachment-block--noaction";
+
+    if (this.hasViewer() && this.isAllowedForPreview()) {
+      hoverText = "- Click to view";
+      hoverIcon = "search";
+      mainCN = "attachment-block attachment-block--view";
+    } else if (this.hasViewer() && useActions && !desktopStore.isElectron) {
+      hoverText = "- Click to open original";
+      hoverIcon = "external-link";
+      mainCN = "attachment-block";
+    } else if (useActions) {
+      hoverText = "- Click to download";
+      hoverIcon = "arrow-down";
+      mainCN = "attachment-block";
+    }
 
     return (
       <div>
         {useActions && <span className="text-muted">uploaded this file: </span>}
-        <div className="attachment-block">
+        <div className={mainCN} onClick={this.onAttachmentClick}>
           <div className="attachment-icon">
             <i className={filetype.icon} />
+            <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
           </div>
           <div className="attachment-description">
             <div className="attachment-title">
-              {onCommentsClick ? (
-                <a onClick={onCommentsClick}>
-                  <strong>{filename}</strong>
-                </a>
-              ) : (
-                <strong>{filename}</strong>
-              )}
+              <strong>{filename}</strong>
             </div>
             <div className="attachment-detail">
-              {prettyFileSize(size)} {filetype.title}
+              {prettyFileSize(size)}&nbsp;
+              <span className="attachment-detail__normal">
+                {filetype.title}
+              </span>
+              <span className="attachment-detail__hover">{hoverText}</span>
             </div>
-            {children}
+
+            {this.hasViewer() && (
+              <div className="attachment-thumb">
+                <img src={preview_url} className="img-responsive" alt="thumb" />
+              </div>
+            )}
           </div>
 
           {useActions &&
@@ -67,6 +136,16 @@ class DefaultFileAttachment extends Component {
               />
             )}
         </div>
+
+        {this.hasViewer() &&
+          this.isAllowedForPreview() && (
+            <FileViewer
+              {...this.props}
+              type={filetype.title}
+              show={showModal}
+              onHideModal={this.onHideModal}
+            />
+          )}
       </div>
     );
   }
@@ -77,6 +156,7 @@ DefaultFileAttachment.propTypes = {
   mimetype: PropTypes.string.isRequired,
   size_in_bytes: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired,
+  preview_url: PropTypes.string,
   comment_count: PropTypes.number,
   onCommentsClick: PropTypes.func,
   isConversationMessage: PropTypes.bool.isRequired,
@@ -86,19 +166,18 @@ DefaultFileAttachment.propTypes = {
   encoded_id: PropTypes.string,
   public_url: PropTypes.string,
   file_id: PropTypes.number.isRequired,
-  message: PropTypes.object,
-  children: PropTypes.node
+  message: PropTypes.object
 };
 
 DefaultFileAttachment.defaultProps = {
   encoded_id: "",
   public_url: "",
+  preview_url: "",
   useActions: true,
   message: null,
   comment_count: 0,
   isConversationMessage: false,
-  onCommentsClick: undefined,
-  children: null
+  onCommentsClick: undefined
 };
 
 export default DefaultFileAttachment;

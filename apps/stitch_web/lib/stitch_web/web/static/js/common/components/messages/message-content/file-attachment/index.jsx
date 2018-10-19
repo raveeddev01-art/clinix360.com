@@ -3,13 +3,11 @@ import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import getFileType from "lib/file-types";
 import DefaultFileAttachment from "./default";
-import PdfFileAttachment from "./pdf";
 import ImageFileAttachment from "./image";
 
 const FileAttachmentRenderer = {
   File: DefaultFileAttachment,
-  Image: ImageFileAttachment,
-  "PDF Document": PdfFileAttachment
+  Image: ImageFileAttachment
 };
 
 @inject("desktopStore")
