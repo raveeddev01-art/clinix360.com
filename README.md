@@ -26,6 +26,8 @@ Install external dependencies
 
 - `chromedriver` (https://sites.google.com/a/chromium.org/chromedriver/) Needed to run automated tests. (`brew install chromedriver`)
 
+- `ghostscript` (https://www.ghostscript.com/) Needed for PDF thumb generation (`brew install ghostscript`)
+
 - `redis` (`brew install redis`)
 
 - ElasticSearch (`brew install elasticsearch`)
