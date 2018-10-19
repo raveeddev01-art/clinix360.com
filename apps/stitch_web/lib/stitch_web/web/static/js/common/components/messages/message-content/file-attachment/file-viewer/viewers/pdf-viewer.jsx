@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { LoadingIcon } from "common/components";
 import { Document, Page } from "react-pdf/dist/entry.noworker";
 
 class PdfViewer extends Component {
@@ -34,6 +35,7 @@ class PdfViewer extends Component {
         file={file}
         renderAnnotations={false}
         renderTextLayer={false}
+        loading={<LoadingIcon size={3} />}
         onLoadSuccess={this.onDocumentLoad}
       >
         {pages}

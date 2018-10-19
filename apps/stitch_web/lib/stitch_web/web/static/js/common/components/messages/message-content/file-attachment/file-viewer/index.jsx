@@ -64,6 +64,7 @@ class FileViewer extends Component {
                 onFileDownload={onFileDownload}
                 tooltipPlacement="bottom"
               />
+              <div className="file-viewer__header-separator" />
               <i
                 className="file-viewer__header-close fa fa-close"
                 onClick={onHideModal}

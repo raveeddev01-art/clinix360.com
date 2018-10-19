@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
+import { FILE_VIEW_SIZE_LIMIT } from "lib/constants";
+import { getFullUrl } from "lib/utils";
 import AttachmentActions from "./components/attachment-actions";
 import FileViewer from "./file-viewer";
 
@@ -13,7 +15,18 @@ class ImageFileAttachment extends Component {
   }
 
   onToggleModal = () => {
-    this.setState({ showModal: !this.state.showModal });
+    const { encoded_id, useActions } = this.props;
+    if (this.isAllowedForPreview()) {
+      this.setState({ showModal: !this.state.showModal });
+    } else if (useActions) {
+      const detailPageUrl =
+        encoded_id && getFullUrl(`/admin/files/${encoded_id}`);
+      window.open(detailPageUrl);
+    }
+  };
+
+  isAllowedForPreview = () => {
+    return this.props.size_in_bytes < FILE_VIEW_SIZE_LIMIT.IMAGE;
   };
 
   render() {
@@ -58,6 +71,11 @@ class ImageFileAttachment extends Component {
     const blockCN = cx("attachment-image-block", {
       "attachment-image-block--sm": size === "sm"
     });
+    const holderCN = cx("attachment-image-holder", {
+      "attachment-image-holder--zoom": this.isAllowedForPreview(),
+      "attachment-image-holder--original":
+        !this.isAllowedForPreview() && useActions
+    });
 
     return (
       <div className={blockCN}>
@@ -76,7 +94,7 @@ class ImageFileAttachment extends Component {
               )}
             </div>
           )}
-        <div className="attachment-image-holder" style={holderStyle}>
+        <div className={holderCN} style={holderStyle}>
           {placeholderStyle ? (
             <div
               className="attachment-preview-placeholder"
@@ -112,12 +130,14 @@ class ImageFileAttachment extends Component {
           )}
         </div>
 
-        <FileViewer
-          {...this.props}
-          type="Image"
-          show={showModal}
-          onHideModal={this.onToggleModal}
-        />
+        {this.isAllowedForPreview() && (
+          <FileViewer
+            {...this.props}
+            type="Image"
+            show={showModal}
+            onHideModal={this.onToggleModal}
+          />
+        )}
       </div>
     );
   }
@@ -127,6 +147,7 @@ ImageFileAttachment.propTypes = {
   preview_height: PropTypes.number,
   preview_width: PropTypes.number,
   preview_url: PropTypes.string,
+  size_in_bytes: PropTypes.number.isRequired,
   filename: PropTypes.string,
   url: PropTypes.string.isRequired,
   comment_count: PropTypes.number,

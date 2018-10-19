@@ -54,9 +54,18 @@
       font-weight: bold;
     }
 
-    &-close {
-      cursor: pointer;
+    &-separator {
+      width: 1px;
+      height: 20px;
       margin-left: 20px;
+      margin-right: 15px;
+      background-color: #ccc;
+    }
+
+    &-close {
+      color: #003366;
+      cursor: pointer;
+      font-size: 18px;
     }
 
     &-date {
@@ -96,6 +105,17 @@
 
     .react-pdf__Page + .react-pdf__Page {
       margin-top: 20px;
+    }
+
+    .react-pdf__message--loading {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .fa-spin {
+        color: #003366;
+      }
     }
   }
 }

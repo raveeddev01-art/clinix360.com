@@ -1215,13 +1215,21 @@
   }
 
   .pdf-thumb {
-    cursor: zoom-in;
-  }
-
-  .react-pdf__Document {
     margin-top: 10px;
     margin-left: -50px;
+    background-color: #fff;
     border: 1px solid #e2e2e2;
+    max-height: 200px;
+    height: 200px;
+    overflow-y: hidden;
+
+    &--zoom {
+      cursor: zoom-in;
+    }
+
+    &--original {
+      cursor: pointer;
+    }
   }
 
   .react-pdf__Page {
@@ -1262,7 +1270,6 @@
 
     img {
       max-height: 360px;
-      cursor: zoom-in;
     }
 
     &:hover {
@@ -1270,14 +1277,27 @@
         opacity: 1;
       }
     }
-  }
 
-  .attachment-preview-placeholder {
-    cursor: zoom-in;
-    position: relative;
-    max-width: 100%;
-    background-repeat: no-repeat;
-    background-size: contain;
+    .attachment-preview-placeholder {
+      position: relative;
+      max-width: 100%;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    &--zoom {
+      .attachment-preview-placeholder,
+      img {
+        cursor: zoom-in;
+      }
+    }
+
+    &--original {
+      .attachment-preview-placeholder,
+      img {
+        cursor: pointer;
+      }
+    }
   }
 }
 
