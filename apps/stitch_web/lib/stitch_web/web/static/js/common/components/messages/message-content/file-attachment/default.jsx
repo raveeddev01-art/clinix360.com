@@ -111,9 +111,10 @@ class DefaultFileAttachment extends Component {
             </div>
 
             {this.hasViewer() && (
-              <div className="attachment-thumb">
-                <img src={preview_url} className="img-responsive" alt="thumb" />
-              </div>
+              <div
+                className="attachment-thumb"
+                style={{ backgroundImage: `url(${preview_url})` }}
+              />
             )}
           </div>
 

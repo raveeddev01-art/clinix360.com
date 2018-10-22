@@ -1220,7 +1220,7 @@
       position: absolute;
       bottom: -2px;
       right: 0;
-      background-color: #fff;
+      background-color: #f9f9f9;
       width: 15px;
       height: 15px;
       border-radius: 3px;
@@ -1257,6 +1257,9 @@
     max-height: 200px;
     height: 200px;
     overflow-y: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
   }
 
   &:hover {
