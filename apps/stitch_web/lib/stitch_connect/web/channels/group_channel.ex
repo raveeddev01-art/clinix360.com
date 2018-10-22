@@ -380,7 +380,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_message_created(message) do
     group = Repo.get(Group, message.group_id)
-    message_json = MessageView.render("show.json", %{message: message})
+    message_json = MessageView.message_json(message, true)
     endpoint_broadcast(group, "new_msg", message_json)
   end
 

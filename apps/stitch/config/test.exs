@@ -2,7 +2,7 @@ use Mix.Config
 
 config :bcrypt_elixir, :log_rounds, 4
 
-config :stitch, Stitch.Repo,
+repo_opts = [
   adapter: Ecto.Adapters.Postgres,
   password: System.get_env("STITCH_POSTGRES_PASSWORD"),
   database: "stitch_test",
@@ -11,12 +11,16 @@ config :stitch, Stitch.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_timeout: :timer.minutes(5),
   timeout: :timer.minutes(5)
+]
 
-config :stitch, Stitch.Mailer,
-  adapter: Bamboo.TestAdapter
+config :stitch, Stitch.Repo, repo_opts
+config :stitch, Stitch.ReadReplicaRepo, repo_opts
 
-config :stitch, Stitch.Exports,
-  enabled: false
+config :stitch, :read_repo, Stitch.Repo
+
+config :stitch, Stitch.Mailer, adapter: Bamboo.TestAdapter
+
+config :stitch, Stitch.Exports, enabled: false
 
 config :stitch,
   stripe_client: Stitch.Stripe.TestClient,
@@ -36,10 +40,8 @@ config :stitch, :aws_user_upload, %{
   host: "s3.amazonaws.com"
 }
 
-config :stitch, Stitch.Analytics.Sync.RecurringSync,
-  enabled: false
+config :stitch, Stitch.Analytics.Sync.RecurringSync, enabled: false
 
 config :stitch, async_tasks?: false
 
-config :stitch, Stitch.Analytics.DailyReports.Scheduler,
-  enabled: false
+config :stitch, Stitch.Analytics.DailyReports.Scheduler, enabled: false

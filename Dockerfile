@@ -26,6 +26,7 @@ RUN mix local.hex --force
 RUN mix local.rebar --force
 
 # Install project app dependencies.
+RUN apt-get update && apt-get install -y ghostscript
 RUN apt-get install -y imagemagick xvfb libfontconfig wkhtmltopdf
 
 # This precompiles your deps before adding your code, which lets you take advantage of Docker

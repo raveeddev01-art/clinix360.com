@@ -1,4 +1,5 @@
 import isFunction from "lodash/fp/isFunction";
+import uniqBy from "lodash/uniqBy";
 
 class MessageCache {
   //
@@ -18,7 +19,11 @@ class MessageCache {
   }
 
   getCache(groupId) {
-    return this.cache[groupId];
+    const cachedGroupMessages = this.cache[groupId];
+    if (!cachedGroupMessages) {
+      return [];
+    }
+    return uniqBy(cachedGroupMessages, m => m.request_id || m.id);
   }
 
   /*

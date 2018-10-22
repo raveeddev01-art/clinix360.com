@@ -1187,15 +1187,46 @@
   background: #fff;
   display: flex;
   position: relative;
+  cursor: pointer;
+
+  &--view {
+    cursor: zoom-in;
+  }
+
+  &--noaction {
+    cursor: default;
+
+    .attachment-icon__hover {
+      display: none !important;
+    }
+  }
 
   .attachment-icon {
     width: 40px;
+    height: 40px;
     color: $brand-primary;
     text-align: center;
     margin-right: 8px;
+    position: relative;
 
-    i.fa {
-      font-size: 2.5em;
+    .fa {
+      font-size: 2.5em !important;
+    }
+
+    &__hover.fa {
+      display: none;
+      font-size: 10px !important;
+      margin: 0 !important;
+      position: absolute;
+      bottom: -2px;
+      right: 0;
+      background-color: #f9f9f9;
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+      line-height: 15px;
+      text-align: center;
+      vertical-align: middle;
     }
   }
 
@@ -1212,6 +1243,23 @@
 
   .attachment-detail {
     font-size: 13px;
+
+    &__hover {
+      display: none;
+    }
+  }
+
+  .attachment-thumb {
+    margin-top: 10px;
+    margin-left: -50px;
+    background-color: #fff;
+    border: 1px solid #e2e2e2;
+    max-height: 200px;
+    height: 200px;
+    overflow-y: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
   }
 
   &:hover {
@@ -1220,6 +1268,18 @@
 
     .attachment-actions {
       opacity: 1;
+    }
+
+    .attachment-detail__normal {
+      display: none;
+    }
+
+    .attachment-detail__hover {
+      display: inline;
+    }
+
+    .attachment-icon__hover {
+      display: inline-block;
     }
   }
 }
@@ -1247,7 +1307,6 @@
 
     img {
       max-height: 360px;
-      cursor: zoom-in;
     }
 
     &:hover {
@@ -1255,36 +1314,28 @@
         opacity: 1;
       }
     }
+
+    .attachment-preview-placeholder {
+      position: relative;
+      max-width: 100%;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    &--zoom {
+      .attachment-preview-placeholder,
+      img {
+        cursor: zoom-in;
+      }
+    }
+
+    &--original {
+      .attachment-preview-placeholder,
+      img {
+        cursor: pointer;
+      }
+    }
   }
-
-  .attachment-preview-placeholder {
-    cursor: zoom-in;
-    position: relative;
-    max-width: 100%;
-    background-repeat: no-repeat;
-    background-size: contain;
-  }
-}
-
-.image-viewer.modal-dialog {
-  width: auto;
-  max-width: 80%;
-
-  .modal-content {
-    width: auto;
-    padding: 25px;
-  }
-
-  .modal-body {
-    max-height: 80vh;
-    padding: 0;
-  }
-}
-
-.modal-attachment-image {
-  max-height: inherit;
-  display: block;
-  cursor: zoom-out;
 }
 
 i.file-data-separator {
