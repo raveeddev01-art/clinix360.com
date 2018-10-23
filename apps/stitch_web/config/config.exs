@@ -43,19 +43,7 @@ config :stitch_web,
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
 
-# Guardian configuration. (TODO: Move to parent)
-config :guardian, Guardian,
-  allowed_algos: ["HS512"],
-  verify_module: Guardian.JWT,
-  issuer: "StitchConnect",
-  ttl: {30, :days},
-  allowed_drift: 2000,
-  # optional
-  verify_issuer: true,
-  secret_key: "daUyE9JOpu2Wqj4XGJ8Z7Gj/BHtQi+jWyRDtk31HWtdYu4FTUE7aimyONoeGIIBQ",
-  serializer: Stitch.Web.GuardianSerializer
-
-config :phoenix, :filter_parameters, ["password", "pin"]
+config :phoenix, :filter_parameters, ["password", "pin", "authenticationToken"]
 
 config :stitch_web, StitchConnect.MessageMailer,
   jobs: [

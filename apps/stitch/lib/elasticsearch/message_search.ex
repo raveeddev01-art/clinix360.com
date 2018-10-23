@@ -9,8 +9,6 @@ defmodule Stitch.Elasticsearch.MessageSearch do
     Elasticsearch.SearchQuery,
     Message,
     GroupQueries,
-    Message.Reaction,
-    Paginator,
     Repo
   }
 

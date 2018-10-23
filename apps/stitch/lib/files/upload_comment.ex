@@ -6,7 +6,6 @@ defmodule Stitch.Files.UploadComment do
     Files.UploadComment,
     Files.FileService,
     GroupQueries,
-    Message,
     Message.MessageCreation,
     Repo
   }
@@ -93,20 +92,6 @@ defmodule Stitch.Files.UploadComment do
 
   @spec get(pos_integer) :: UploadComment.t() | nil
   def get(id), do: Repo.get(UploadComment, id)
-
-  defp increment_comment_counter({:ok, upload_comment} = result) do
-    Upload.increment_comment_counter(upload_comment.upload_id)
-    result
-  end
-
-  defp increment_comment_counter(result), do: result
-
-  defp decrement_comment_counter({:ok, upload_comment} = result) do
-    Upload.decrement_comment_counter(upload_comment.upload_id)
-    result
-  end
-
-  defp decrement_comment_counter(result), do: result
 
   defp insert_file_comment_messages(upload_comment, upload, user, presence, attrs, opts) do
     groups = GroupQueries.groups_for_file_comment(upload, user)
