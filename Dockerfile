@@ -1,4 +1,4 @@
-FROM elixir:1.6.4
+FROM elixir:1.7.3
 
 RUN mix archive.install \
   --force \

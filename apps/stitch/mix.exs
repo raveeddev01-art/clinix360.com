@@ -38,31 +38,32 @@ defmodule Stitch.Mixfile do
 
   defp deps do
     [
-      {:ecto, "~> 2.2"},
-      {:postgrex, "~> 0.13.3"},
-      {:redix, "~> 0.7.0"},
+      {:ecto, "~> 2.2.11"},
+      {:postgrex, "~> 0.13.5"},
+      {:redix, "~> 0.7.1"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
-      {:ex_aws, "~> 2.0"},
-      {:ex_aws_s3, "~> 2.0"},
+      {:ex_aws, "~> 2.1.0"},
+      {:ex_aws_s3, "~> 2.0.1"},
       {:sweet_xml, "~> 0.6"},
       {:ex_machina, "~> 2.1", only: :test},
       {:faker, "~> 0.10", only: :test},
       {:slugger, "~> 0.3"},
       {:bamboo, "~> 0.8"},
-      {:timex, "~> 3.3"},
+      {:timex, "~> 3.4.1"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:stripity_stripe, "~> 2.0"},
-      {:appsignal, "~> 1.5"},
+      {:appsignal, "~> 1.8.0"},
       {:mogrify, "~> 0.5.6"},
       {:floki, "~> 0.20.3"},
       {:exmoji, github: "mroth/exmoji"},
       {:pdf_generator, " ~> 0.3.7"},
       {:ua_inspector, "~> 0.17"},
-      {:murmur, "~> 1.0"},
-      {:exq, "~> 0.11.0"},
+      {:murmur, "~> 1.0.1"},
+      {:exq, "~> 0.12.2"},
       {:exq_ui, "~> 0.9.0"},
-      {:elasticsearch, "~> 0.4.1"}
+      {:plug_cowboy, "~> 1.0"},
+      {:elasticsearch, "~> 0.6.0"}
     ]
   end
 

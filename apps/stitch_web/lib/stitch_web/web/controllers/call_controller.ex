@@ -1,8 +1,6 @@
 defmodule Stitch.Web.CallController do
   use Stitch.Web, :controller
 
-  import Ecto.Query
-
   alias Stitch.{
     Repo,
     Call,
@@ -14,7 +12,6 @@ defmodule Stitch.Web.CallController do
   }
 
   alias StitchConnect.Web.{
-    GroupChannel,
     UserStatusService,
     MessageEventsService
   }

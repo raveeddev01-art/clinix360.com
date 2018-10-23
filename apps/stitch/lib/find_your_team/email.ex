@@ -13,7 +13,7 @@ defmodule Stitch.FindYourTeam.Email do
   of their teams.
   """
 
-  @spec email(Token.t, binary) :: Bamboo.Email.t
+  @spec email(Token.t(), binary) :: Bamboo.Email.t()
   def email(%Token{} = token, endpoint_base_url) do
     new_email()
     |> template("Find Your Team")
@@ -22,10 +22,10 @@ defmodule Stitch.FindYourTeam.Email do
     |> subject("Find Your Team")
     |> put_param("global_merge_vars", [
       %{
-        "name": "findYourTeam",
-        "content": "#{endpoint_base_url}/find-your-team/#{token.token}"
-      },
+        name: "findYourTeam",
+        content: "#{endpoint_base_url}/find-your-team/#{token.token}"
+      }
     ])
-    |> Stitch.Mailer.deliver_later
+    |> Stitch.Mailer.deliver_later()
   end
 end

@@ -1,7 +1,7 @@
 defmodule Stitch.Web.Api.V1.UploadController do
   use Stitch.Web, :controller
   use Stitch.Web.Api.V1.UploadDocs
-  alias Stitch.{Repo, Group, MessageQueries, AWS.S3}
+  alias Stitch.AWS.S3
 
   def create(conn, params = %{"filename" => _filename, "mimetype" => _mimetype}) do
     do_create(conn, params)
