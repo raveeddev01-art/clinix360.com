@@ -38,8 +38,8 @@ defmodule Stitch.Mixfile do
 
   defp deps do
     [
-      {:ecto, "~> 2.2"},
-      {:postgrex, "~> 0.13.3"},
+      {:ecto, "~> 2.2.11"},
+      {:postgrex, "~> 0.13.5"},
       {:redix, "~> 0.7.0"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
