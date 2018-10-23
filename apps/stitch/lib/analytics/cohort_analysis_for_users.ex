@@ -1,8 +1,6 @@
 defmodule Stitch.Analytics.CohortAnalysisForUsers do
   import Ecto.Query
 
-  alias Stitch.{Repo}
-
   def series(date) do
     months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
 
@@ -86,11 +84,11 @@ defmodule Stitch.Analytics.CohortAnalysisForUsers do
     end)
   end
 
-  def calc(x, 0) do
+  def calc(_x, 0) do
     0
   end
 
-  def calc(x, nil) do
+  def calc(_x, nil) do
     0
   end
 
