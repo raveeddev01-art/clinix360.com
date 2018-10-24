@@ -1,11 +1,9 @@
 import GroupStore from "./group_store";
 import GroupsStore from "./groups_store";
-import MessageStore from "./message_store";
 import SidemenuStore from "./sidemenu_store";
 import PresenceStore from "./presence_store";
 import SocketStore from "./socket_store";
 import TeamStore from "./team_store";
-import TeamFileStore from "./team_file_store";
 import TitleStore from "./title_store";
 import UserStore from "./user_store";
 import UsersStore from "./users_store";
@@ -23,8 +21,6 @@ class RootCallAppStore {
   createStores() {
     this.groupStore = new GroupStore(this);
     this.groupsStore = new GroupsStore(this);
-    this.messageStore = new MessageStore(this);
-    this.teamFileStore = new TeamFileStore(this);
     this.sidemenuStore = new SidemenuStore(this, this.appParams);
     this.presenceStore = new PresenceStore(this, this.appParams);
     this.socketStore = new SocketStore(this);

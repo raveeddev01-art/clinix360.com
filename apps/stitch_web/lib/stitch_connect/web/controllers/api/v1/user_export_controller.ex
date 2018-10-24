@@ -21,7 +21,7 @@ defmodule StitchConnect.Web.Api.V1.UserExportController do
       user_export = %{user_export | user: target_user}
       render(conn, "show.json", export: user_export)
     else
-      _error ->
+      error ->
         conn
         |> put_status(:too_many_requests)
         |> render("429.json")
