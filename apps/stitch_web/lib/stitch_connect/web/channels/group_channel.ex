@@ -200,7 +200,9 @@ defmodule StitchConnect.Web.GroupChannel do
     %{group: group, current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
 
-    message_params_with_client = Message.Params.with_client_attrs("channel", params)
+    message_params_with_client =
+      Message.Params.with_client_attrs("channel", params) |> IO.inspect()
+
     do_new_msg(socket, group, user, message_params_with_client)
   end
 
@@ -325,7 +327,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-  def handle_in(_unsupported_event, _params, socket) do
+  def handle_in(_supported_event, _params, socket) do
     {:noreply, socket}
   end
 

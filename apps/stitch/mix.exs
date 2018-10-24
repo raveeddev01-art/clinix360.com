@@ -50,7 +50,7 @@ defmodule Stitch.Mixfile do
       {:faker, "~> 0.10", only: :test},
       {:slugger, "~> 0.3"},
       {:bamboo, "~> 0.8"},
-      {:timex, "~> 3.4.1"},
+      {:timex, "~> 3.3"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:stripity_stripe, "~> 2.0"},
       {:appsignal, "~> 1.8.0"},
@@ -62,7 +62,6 @@ defmodule Stitch.Mixfile do
       {:murmur, "~> 1.0.1"},
       {:exq, "~> 0.12.2"},
       {:exq_ui, "~> 0.9.0"},
-      {:plug_cowboy, "~> 1.0"},
       {:elasticsearch, "~> 0.6.0"}
     ]
   end
