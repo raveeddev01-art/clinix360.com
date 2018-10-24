@@ -325,7 +325,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-  def handle_in(_unsupported_event, _params, socket) do
+  def handle_in(_supported_event, _params, socket) do
     {:noreply, socket}
   end
 

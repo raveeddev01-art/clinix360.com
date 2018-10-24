@@ -7,6 +7,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
   }
 
   alias Stitch.Web.Api.V1.{
+    MessagesHelper,
     PatientView,
     UserView
   }
@@ -35,23 +36,6 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
       conversation_id: conversation_user.conversation_id,
       last_read_at: conversation_user.last_read_at,
       unread_messages_count: conversation_user.unread_messages_count
-    }
-  end
-
-  def render("search.json", %Stitch.Paginator{data: data, meta: meta}) do
-    %{
-      data:
-        Enum.map(data, fn record ->
-          json = conversation_message_json(record)
-          Map.put(json, :highlighted_text_content, record.highlighted_text_content)
-
-          Map.put(
-            json,
-            :conversation,
-            ConversationView.conversation_search_json(record.conversation)
-          )
-        end),
-      meta: meta
     }
   end
 
@@ -110,4 +94,21 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageView do
 
   def type("file_share"), do: "upload"
   def type(type), do: type
+
+  def render("search.json", %Stitch.Paginator{data: data, meta: meta}) do
+    %{
+      data:
+        Enum.map(data, fn record ->
+          json = conversation_message_json(record)
+          Map.put(json, :highlighted_text_content, record.highlighted_text_content)
+
+          Map.put(
+            json,
+            :conversation,
+            ConversationView.conversation_search_json(record.conversation)
+          )
+        end),
+      meta: meta
+    }
+  end
 end

@@ -1,4 +1,4 @@
 <div>
   <h4>Pages</h4>
-  <%= Stitch.Paginator.page_links(assigns) %>
+  <%= Paginator.page_links(assigns) %>
 </div>

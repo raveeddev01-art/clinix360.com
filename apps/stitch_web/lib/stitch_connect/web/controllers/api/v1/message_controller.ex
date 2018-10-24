@@ -25,6 +25,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     MessageAuthorization,
     MessageAction,
     MessageQueries,
+    Message.Upload,
     ReadStatus,
     Web.EventsChannel,
     Web.FileService
@@ -286,6 +287,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def delete(conn, %{"id" => message_id}) do
     current_user = conn.assigns.current_user
+    team = conn.assigns.team
 
     with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
          {:group, {:ok, group}} <-
@@ -320,7 +322,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     case GroupAuthorization.can_view?(group, user) do
       true ->
         case StarringService.toggle_star(message, user) do
-          {result, {:ok, _changest}} ->
+          {result, {:ok, changest}} ->
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
             StarringEventsService.star_events(message, user, result)
