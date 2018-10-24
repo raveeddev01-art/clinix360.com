@@ -2,15 +2,12 @@ defmodule Stitch.Files.PatientUpload do
   alias Stitch.{
     Files.EngageUpload,
     Files.PatientUpload,
-    Group,
     Repo,
-    Patient,
-    Files.GroupUpload
+    Patient
   }
 
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
 
   @type t :: %__MODULE__{}
 
