@@ -16,7 +16,7 @@ class DefaultFileAttachment extends Component {
     };
   }
 
-  onAttachmentClick = e => {
+  onAttachmentClick = () => {
     const {
       desktopStore,
       onFileDownload,
@@ -31,7 +31,7 @@ class DefaultFileAttachment extends Component {
       const detailPageUrl = getFullUrl(`/admin/files/${encoded_id}`);
       window.open(detailPageUrl);
     } else if (useActions && desktopStore.isElectron) {
-      onFileDownload(e);
+      onFileDownload();
     } else if (useActions) {
       window.open(url);
     }

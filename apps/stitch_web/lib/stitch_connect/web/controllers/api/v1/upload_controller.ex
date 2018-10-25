@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UploadController do
   use Stitch.Web, :controller
-  alias Stitch.{Repo, Group, MessageQueries}
+  alias Stitch.{Repo, Group, MessageQueries, AWS.S3}
 
   def index(conn, %{"group_id" => group_id} = params) do
     skip = Map.get(params, "skip", 0)

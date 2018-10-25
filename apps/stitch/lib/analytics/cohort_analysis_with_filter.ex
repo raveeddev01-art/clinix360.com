@@ -1,5 +1,5 @@
 defmodule Stitch.Analytics.CohortAnalysisWithFilter do
-  def at_least_one_message(date, team_ids, _messages_threshold) do
+  def at_least_one_message(date, team_ids, messages_threshold) do
     months = Timex.diff(NaiveDateTime.utc_now(), date, :months)
 
     query = """
@@ -21,10 +21,12 @@ defmodule Stitch.Analytics.CohortAnalysisWithFilter do
       SELECT * FROM series s LEFT OUTER JOIN gteams a ON s.date = a.date
     """
 
-    Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
-      team_ids,
-      %Postgrex.Interval{months: months + 1}
-    ])
+    res =
+      Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
+        team_ids,
+        %Postgrex.Interval{months: months + 1}
+        # messages_threshold
+      ])
   end
 
   def stat(opts) do
