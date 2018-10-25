@@ -146,7 +146,7 @@ defmodule Stitch.Engage.Conversation do
     {:error, :same_open_value}
   end
 
-  def update_open_value(%Conversation{id: id} = _conversation, open_value) do
+  def update_open_value(%Conversation{id: id} = conversation, open_value) do
     # Do not change updated_at for open/close changes
     case change_open_without_update_at_change(id, open_value) do
       {1, _} -> {:ok, Repo.get(Conversation, id)}

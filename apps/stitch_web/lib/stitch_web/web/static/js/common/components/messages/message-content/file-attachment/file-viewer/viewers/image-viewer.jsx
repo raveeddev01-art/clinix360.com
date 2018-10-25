@@ -4,11 +4,8 @@ import PropTypes from "prop-types";
 class ImageViewer extends Component {
   render() {
     const { url } = this.props;
-    return (
-      <div className="file-viewer__body-img">
-        <img src={url} className="img-responsive" alt="file-viewer" />
-      </div>
-    );
+
+    return <img src={url} className="img-responsive" alt="file-viewer" />;
   }
 }
 

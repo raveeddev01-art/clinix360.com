@@ -11,8 +11,8 @@ defmodule Tokbox do
   @endpoint "https://api.opentok.com"
 
   @role_publisher "publisher"
-  # @role_subscriber "subscriber"
-  # @role_moderator "moderator"
+  @role_subscriber "subscriber"
+  @role_moderator "moderator"
 
   @token_prefix "T1=="
 
@@ -77,23 +77,23 @@ defmodule Tokbox do
     jwt
   end
 
-  # defp process_url(url) do
-  #   @endpoint <> url
-  # end
+  defp process_url(url) do
+    @endpoint <> url
+  end
 
-  # @spec process_request_headers(map() | Keyword.t()) :: [{binary, term}]
-  # defp process_request_headers(headers) when is_map(headers) do
-  #   process_request_headers(Enum.into(headers, []))
-  # end
+  @spec process_request_headers(map() | Keyword.t()) :: [{binary, term}]
+  defp process_request_headers(headers) when is_map(headers) do
+    process_request_headers(Enum.into(headers, []))
+  end
 
-  # defp process_request_headers(headers) do
-  #   auth_headers = [
-  #     {"X-OPENTOK-AUTH", get_jwt()},
-  #     {"Accept", "application/json"}
-  #   ]
+  defp process_request_headers(headers) do
+    auth_headers = [
+      {"X-OPENTOK-AUTH", get_jwt()},
+      {"Accept", "application/json"}
+    ]
 
-  #   auth_headers ++ headers
-  # end
+    auth_headers ++ headers
+  end
 
   @spec opentok_process_response(%HTTPoison.Response{}) :: opentok_response
   defp opentok_process_response({_, response}) do

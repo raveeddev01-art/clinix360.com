@@ -24,7 +24,7 @@ defmodule StitchUmbrella.Mixfile do
   defp deps do
     [
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:appsignal, "~> 1.8.0"}
+      {:appsignal, "~> 1.5"}
     ]
   end
 end

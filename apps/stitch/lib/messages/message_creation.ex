@@ -22,6 +22,11 @@ defmodule Stitch.Message.MessageCreation do
   @spec create(Group.t(), User.t(), map, map, Upload.t(), UploadComment.t(), map | nil) ::
           {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
 
+  @spec create(Group.t(), User.t(), map, map | nil) ::
+          {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
+
+  def create(group, user, attrs, presence \\ %{})
+
   def create(
         group,
         user,
@@ -41,11 +46,6 @@ defmodule Stitch.Message.MessageCreation do
         {:error, :message, changeset, nil}
     end
   end
-
-  @spec create(Group.t(), User.t(), map, map | nil) ::
-          {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
-
-  def create(group, user, attrs, presence \\ %{})
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do

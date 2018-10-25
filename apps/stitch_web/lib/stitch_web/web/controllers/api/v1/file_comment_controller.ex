@@ -45,7 +45,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
       {:authorized, false} ->
         {:error, :not_found}
 
-      {:upload_comment, {:error, _action, changeset, _}} ->
+      {:upload_comment, {:error, action, changeset, _}} ->
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
   end

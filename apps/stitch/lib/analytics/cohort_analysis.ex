@@ -21,11 +21,12 @@ defmodule Stitch.Analytics.CohortAnalysis do
       SELECT * FROM series s LEFT OUTER JOIN gteams a ON s.date = a.date
     """
 
-    Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
-      team_ids,
-      %Postgrex.Interval{months: months + 1},
-      messages_threshold
-    ])
+    res =
+      Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
+        team_ids,
+        %Postgrex.Interval{months: months + 1},
+        messages_threshold
+      ])
   end
 
   def stat(opts) do
