@@ -11,6 +11,7 @@ defmodule Stitch.Web.Plug.PatientAuthenticate do
   alias Stitch.{
     Patient,
     PatientQueries,
+    Web.ControllerHelpers,
     FeatureGateway
   }
 

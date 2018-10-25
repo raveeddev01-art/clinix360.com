@@ -38,14 +38,15 @@ defmodule Stitch.Web.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.4"},
+      {:phoenix, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.1", only: :dev},
       {:phoenix_ecto, "~> 3.0"},
       {:phoenix_etag, "~> 0.1"},
       {:gettext, "~> 0.13"},
-      {:cowboy, "~> 1.1.2"},
+      {:cowboy, "~> 1.1"},
+      {:guardian, "~> 0.14"},
       {:poison, "~> 3.1"},
       {:corsica, "~> 1.0"},
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
@@ -53,8 +54,8 @@ defmodule Stitch.Web.Mixfile do
       {:quantum, ">= 2.2.7"},
       {:sweet_xml, "~> 0.6.5"},
       {:stitch, in_umbrella: true},
-      {:appsignal, "~> 1.8.0"},
-      {:jose, "~> 1.8.4"},
+      {:appsignal, "~> 1.5"},
+      {:wallaby, "~> 0.19.2", only: :test},
       # For mobile push notifications.
       {:pigeon, "~> 1.1.6"},
       # Used by Pigeon for push notifications.

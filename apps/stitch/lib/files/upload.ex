@@ -243,6 +243,8 @@ defmodule Stitch.Files.Upload do
   end
 
   def update_comment_counter(upload_id, by) do
+    changeset = where(Upload, id: ^upload_id)
+
     Ecto.Multi.new()
     |> multi_update_comment_counter(upload_id, by)
     |> Repo.transaction()

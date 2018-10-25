@@ -92,20 +92,6 @@
     justify-content: center;
     overflow-y: hidden;
 
-    &-img {
-      height: 100%;
-      overflow: hidden;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-
-      & > img {
-        margin: 0 auto;
-        max-height: 100%;
-      }
-    }
-
     .react-pdf__Document {
       box-sizing: border-box;
       padding: 20px;

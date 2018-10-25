@@ -1,5 +1,5 @@
 defmodule StitchEngage.Mobile.ConversationNotificationView do
-  alias Pigeon.{APNS}
+  alias Pigeon.{APNS, FCM}
 
   alias Stitch.{
     Accounts.User,
@@ -69,7 +69,7 @@ defmodule StitchEngage.Mobile.ConversationNotificationView do
     "#{author.first_name} #{author.last_name} sent a new conversation message."
   end
 
-  defp title(_notification) do
+  defp title(notification) do
     "New Message"
   end
 
