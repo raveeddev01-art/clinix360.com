@@ -33,18 +33,4 @@ defmodule Stitch.Web.ChannelSandbox do
   end
 
   def enable_channel_sandbox(socket), do: socket
-
-  @doc """
-  Configures a socket to configure sandbox information for channels to consume.
-  """
-  if Application.get_env(:stitch_web, :sql_sandbox) do
-    def configure_channel_sandbox(%{"userAgent" => user_agent}, socket) do
-      sandbox_metadata = Wallaby.Metadata.extract(user_agent)
-      %{repo: repo, owner: owner} = sandbox_metadata
-      Ecto.Adapters.SQL.Sandbox.allow(repo, owner, self())
-      Phoenix.Socket.assign(socket, :sandbox_metadata, sandbox_metadata)
-    end
-  end
-
-  def configure_channel_sandbox(_, socket), do: socket
 end
