@@ -1,6 +1,5 @@
 defimpl Elasticsearch.Document, for: Stitch.Message do
   def id(message), do: message.id
-  def routing(_), do: false
 
   def encode(message) do
     %{
