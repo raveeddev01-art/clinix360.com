@@ -112,15 +112,15 @@ class Login extends Component {
         </div>
 
         <div>
-          <b>Don't have an account with this carespace?</b>
+          <b>Don't have an account with this Carespace?</b>
           <br />
-          Contact the carespace administrator for an invitation.
+          Contact the Carespace administrator for an invitation.
         </div>
 
         <div>
           Just getting started?{" "}
           <a href={`https://${applicationHost}/signup/email`}>
-            Create a new carespace.
+            Create a new Carespace.
           </a>
         </div>
       </div>

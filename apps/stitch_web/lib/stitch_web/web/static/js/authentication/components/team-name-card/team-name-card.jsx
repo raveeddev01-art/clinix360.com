@@ -31,8 +31,8 @@ class CarespaceNameCard extends Component {
   renderDesc() {
     return (
       <span>
-        Name your carespace after the group that will be using Stitch together
-        (you can change this later).
+        Name your Carespace after your practice, organization or group (you can
+        change this later).
       </span>
     );
   }
@@ -43,7 +43,7 @@ class CarespaceNameCard extends Component {
     return (
       <OnboardPage
         {...this.props}
-        title="What is your carespace name?"
+        title="What is your Carespace name?"
         onNext={this._onNext}
         description={this.renderDesc()}
         disableNext={!value}

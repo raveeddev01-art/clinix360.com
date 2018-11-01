@@ -138,8 +138,8 @@ class InvitesCard extends Component {
           title="Send Invitations"
           description={
             <span>
-              Your Stitch carespace is all set. Get started by bringing in your
-              team members to explore Stitch with you.
+              Your Carespace is all set. Get started by bringing in your team
+              members to explore Stitch Connect with you.
             </span>
           }
           footer={this.renderFooter()}

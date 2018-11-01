@@ -9,7 +9,7 @@ defmodule Stitch.Web.Messages.LandingPagesTest do
     # Create two messages in this group with complex sentences.
     user_1_session
     |> visit("http://localhost:4001")
-    |> assert_has(element("h1", "Team messaging for healthcare"))
+    |> assert_has(element("h1", "Collaboration hub for healthcare"))
     |> assert_has(element(".btn-trial a", "Get Started"))
   end
 end

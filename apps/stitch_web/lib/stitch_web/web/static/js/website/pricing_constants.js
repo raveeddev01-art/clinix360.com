@@ -79,9 +79,9 @@ export const PRICING_TABLE = {
     },
     {
       feature: "Total File Storage",
-      basic: "1GB",
-      standard: "Unlimited",
-      premium: "Unlimited"
+      basic: "1GB/User",
+      standard: "5GB/User",
+      premium: "10GB/User"
     },
     {
       feature: "Threaded File Comments",
@@ -255,7 +255,7 @@ export const PRICING_TABLE_MOBILE = {
   },
   STANDARD: {
     COMMUNICATION: [{ feature: "Unlimited Search Archives" }],
-    FILE_SHARING: [{ feature: "Unlimited File Storage" }],
+    FILE_SHARING: [{ feature: "5GB/User" }],
     ADMINISTRATION: [
       { feature: "Priority Email Support" },
       { feature: "Phone Support" },
@@ -265,6 +265,7 @@ export const PRICING_TABLE_MOBILE = {
   },
   PREMIUM: {
     COMMUNICATION: [{ feature: "Voice & Video Calls" }],
+    FILE_SHARING: [{ feature: "10GB/User" }],
     ADMINISTRATION: [
       { feature: "Dedicated Support" },
       { feature: "Advanced Security Controls" },
@@ -274,4 +275,22 @@ export const PRICING_TABLE_MOBILE = {
       { feature: "Custom Integrations" }
     ]
   }
+};
+
+export const PRICING_TABLE_ENTERPRISE = {
+  COMPLIANCE: [
+    { feature: "Custom BAA, Terms of Service and Master Agreement" },
+    { feature: "Full eDiscovery capabilities and assistance" },
+    { feature: "Custom retention policies for messages and files" }
+  ],
+  FEATURES: [
+    { feature: "Granular feature toggling for a controlled experience" },
+    { feature: "Custom API endpoints for deep integrations" },
+    { feature: "1 TB (1,000 GB) file storage per user" }
+  ],
+  SUPPORT: [
+    { feature: "Personalized onboarding and training sessions" },
+    { feature: "Designated account and customer success team" },
+    { feature: "24/7 support with 6-hour first response time" }
+  ]
 };

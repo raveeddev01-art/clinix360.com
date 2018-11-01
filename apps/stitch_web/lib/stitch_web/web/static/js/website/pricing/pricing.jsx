@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 
+import Tab from "react-bootstrap/lib/Tab";
+import Nav from "react-bootstrap/lib/Nav";
+import NavItem from "react-bootstrap/lib/NavItem";
+
 import TopBanner from "../components/top-banner";
 import Header from "../components/header";
 import Subheader from "../components/subheader";
@@ -8,6 +12,7 @@ import Footer from "../components/footer";
 
 import PricingMobile from "./pricing-mobile";
 import PricingDesktop from "./pricing-desktop";
+import PricingEnterprise from "./pricing-enterprise";
 
 export default class Pricing extends Component {
   componentDidMount() {
@@ -27,19 +32,40 @@ export default class Pricing extends Component {
 
         <div className="pricing-section">
           <div className="container">
-            <div className="hidden-md hidden-lg">
-              <PricingMobile />
-            </div>
+            <Tab.Container id="pricing-tabs" defaultActiveKey="first">
+              <div>
+                <Nav bsStyle="tabs">
+                  <NavItem eventKey="first">
+                    <span className="hidden-xs hidden-sm">Stitch for</span>{" "}
+                    Practices
+                  </NavItem>
+                  <NavItem eventKey="second">
+                    <span className="hidden-xs hidden-sm">Stitch for</span>{" "}
+                    Enterprise
+                  </NavItem>
+                </Nav>
 
-            <div className="hidden-xs hidden-sm">
-              <PricingDesktop />
-            </div>
+                <Tab.Content animation unmountOnExit>
+                  <Tab.Pane eventKey="first">
+                    <h3 className="pricing-table-heading text-center">
+                      <strong>Stitch for Practices</strong> is a collaboration
+                      space for small or medium sized healthcare businesses.
+                    </h3>
+                    <div className="hidden-md hidden-lg">
+                      <PricingMobile />
+                    </div>
 
-            <h4 className="text-center m-b-0 enterprise-text">
-              Need to deploy Stitch across a large organization?{" "}
-              <a href="mailto:support@teamstitch.com">Contact us</a> for
-              Enterprise pricing.
-            </h4>
+                    <div className="hidden-xs hidden-sm">
+                      <PricingDesktop />
+                    </div>
+                  </Tab.Pane>
+
+                  <Tab.Pane eventKey="second">
+                    <PricingEnterprise />
+                  </Tab.Pane>
+                </Tab.Content>
+              </div>
+            </Tab.Container>
           </div>
         </div>
 

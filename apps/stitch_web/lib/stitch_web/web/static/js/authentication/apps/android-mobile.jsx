@@ -7,7 +7,7 @@ export default class AndroidMobile extends Component {
         <h5>
           <div className="card-description">
             Download the <strong>Android Mobile App</strong> to get the best
-            experience using Stitch.
+            experience using Stitch Connect.
           </div>
         </h5>
 

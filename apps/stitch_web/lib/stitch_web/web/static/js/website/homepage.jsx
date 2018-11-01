@@ -53,7 +53,7 @@ export default class Homepage extends Component {
                   onClick={this.videoModal}
                 >
                   <span className="play-btn">
-                    <i className="fa fa-play" />
+                    <i className="far fa-play" />
                   </span>
                   <span>Watch the video</span>
                 </a>

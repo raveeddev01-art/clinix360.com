@@ -618,7 +618,7 @@
           font-size: 18px;
           font-weight: 700;
 
-          i.fa {
+          i {
             margin-right: 5px;
           }
         }
@@ -977,6 +977,75 @@
       }
     }
 
+    #pricing-tabs {
+      .nav-tabs {
+        border: 0;
+
+        li {
+          &:first-of-type a {
+            border-radius: 4px 0 0 0;
+          }
+
+          &:last-of-type a {
+            border-radius: 0 4px 0 0;
+          }
+
+          a {
+            color: #747474;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            background: $body-bg;
+            border: 0;
+            border-top: 7px solid #b8bdc8;
+            margin: 0;
+          }
+
+          &.active > a {
+            color: $brand-primary;
+            background: #fff;
+            border-color: $brand-primary;
+          }
+        }
+      }
+
+      .tab-content {
+        background: #fff;
+        border-radius: 0 0 4px 4px;
+        @media (max-width: $screen-md) {
+          box-shadow: none;
+
+          .panel {
+            box-shadow: none;
+          }
+        }
+      }
+
+      .pricing-table-heading {
+        max-width: 620px;
+        color: #333;
+        font-weight: normal;
+        padding: 60px 0;
+        margin: 0 auto;
+        @media (max-width: $screen-md) {
+          font-size: 20px;
+          padding: 60px 40px;
+        }
+      }
+
+      .enterprise-contact-us {
+        max-width: 250px;
+        @media (max-width: $screen-md) {
+          margin: 0 auto 50px;
+        }
+
+        .btn {
+          font-size: 18px;
+          padding: 16px 20px;
+        }
+      }
+    }
+
     .pricing-section {
       background: $medium-gray;
       padding: 60px 0;
@@ -1015,7 +1084,10 @@
           }
 
           &.tiers .pricing-table__item {
-            padding: 40px 30px;
+            padding: 0 30px 40px;
+            @media (max-width: $screen-md) {
+              padding-top: 10px;
+            }
 
             &:first-of-type {
               display: flex;
@@ -1029,7 +1101,9 @@
           }
 
           &:last-of-type {
-            border-bottom: 0;
+            @media (min-width: $screen-md) {
+              border-bottom: 0;
+            }
           }
         }
 
@@ -1069,7 +1143,7 @@
             }
           }
 
-          i.fa {
+          i {
             color: $brand-primary;
             font-size: 20px;
             position: relative;
@@ -1086,6 +1160,9 @@
 
           &:first-of-type {
             text-align: left;
+            @media (max-width: 450px) {
+              border-right: none;
+            }
           }
 
           &:last-of-type {
@@ -1101,6 +1178,13 @@
               display: none;
             }
           }
+
+          &.enterprise-item i {
+            margin-right: 5px;
+            @media (min-width: $screen-md) {
+              margin-right: 20px;
+            }
+          }
         }
 
         .tiers .pricing-table__item {
@@ -1110,6 +1194,20 @@
         .header .pricing-table__item {
           flex: 1;
           padding: 18px 30px;
+        }
+
+        &.enterprise-table {
+          @media (max-width: $screen-md) {
+            padding: 0 20px;
+          }
+        }
+
+        .header .pricing-table__item {
+          border-right: 0;
+        }
+
+        .header:first-child .pricing-table__item {
+          border-top: 1px solid #ebebeb;
         }
       }
 
@@ -1266,7 +1364,7 @@
             font-size: 18px;
             margin-bottom: 10px;
 
-            i.fa {
+            i {
               color: $brand-primary;
               margin-right: 8px;
             }
@@ -1938,7 +2036,7 @@
       padding: 12px 15px;
       outline: none;
 
-      i.fa {
+      i {
         margin-right: 6px;
       }
 
@@ -2009,7 +2107,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
 
-        i.fa {
+        i {
           width: 20px;
           text-align: center;
         }
@@ -2073,6 +2171,18 @@
         color: $brand-primary;
         background: #fff;
       }
+    }
+  }
+
+  #yourcarespaces-dropdown {
+    border: 1px solid $brand-primary;
+    border-radius: 3px;
+    padding: 10px 15px;
+    margin-left: 10px;
+
+    &:hover {
+      color: #fff;
+      background: $brand-primary;
     }
   }
 }
@@ -2153,7 +2263,7 @@
         li > a {
           padding: 14px 0;
 
-          i.fa {
+          i {
             margin-right: 10px;
           }
         }
@@ -2263,21 +2373,28 @@
 
 #top-banner {
   color: #fff;
-  font-size: 18px;
+  font-size: 17px;
   background: $brand-primary;
   padding: 25px 0;
   margin-top: 71px;
   position: relative;
+  @media (max-width: $screen-md) {
+    text-align: center;
+  }
+
+  &.empty-banner {
+    padding: 0;
+  }
 
   .container {
     display: flex;
     align-items: center;
     justify-content: center;
-    @media (max-width: $screen-sm) {
+    @media (max-width: $screen-md) {
       flex-direction: column;
+      padding: 0 17vw;
 
       > span {
-        flex: 1;
         margin-bottom: 15px;
       }
 
@@ -2286,6 +2403,10 @@
         width: 100%;
       }
     }
+
+    span {
+      flex: 1;
+    }
   }
 
   img {
@@ -2293,12 +2414,21 @@
     margin-right: 10px;
   }
 
-  .btn {
-    color: $brand-primary;
-    font-size: 14px;
-    text-transform: uppercase;
-    padding: 7px 18px;
+  a {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: underline;
     margin-left: 10px;
+  }
+
+  .close-btn {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    position: absolute;
+    right: 25px;
+    top: calc(50% - 12px);
   }
 }
 

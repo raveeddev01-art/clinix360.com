@@ -82,12 +82,12 @@ class GetStartedCard extends Component {
           title="Get Started"
           description={
             <span>
-              A Stitch carespace is a group of people using Stitch together for
-              team communication, patient communication, patient management, and
-              more.
+              A Stitch Connect Carespace is a place for healthcare teams to
+              collaborate in real-time through messaging, file sharing, video
+              calling and more.
               <br />
               <br />
-              Are you looking to join an existing carespace or create a new one?
+              Are you looking to join an existing Carespace or create a new one?
             </span>
           }
           headerCTA="signin"
@@ -102,7 +102,7 @@ class GetStartedCard extends Component {
                   Create a New Carespace
                 </Link>
                 <div className="get-started-card-link-description">
-                  Set up your carespace on Stitch
+                  Set up your Carespace on Stitch
                 </div>
               </div>
             )}
@@ -115,7 +115,7 @@ class GetStartedCard extends Component {
                 Find Your Carespace
               </Link>
               <div className="get-started-card-link-description">
-                Join or sign in to an existing carespace
+                Join or sign in to an existing Carespace
               </div>
             </div>
           </div>

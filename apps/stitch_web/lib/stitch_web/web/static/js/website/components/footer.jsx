@@ -71,6 +71,9 @@ export default class Footer extends Component {
                     <li>
                       <Link to="/pricing">Pricing</Link>
                     </li>
+                    <li>
+                      <a href="#connect-book-demo">Demo</a>
+                    </li>
                   </ul>
                 </Col>
 

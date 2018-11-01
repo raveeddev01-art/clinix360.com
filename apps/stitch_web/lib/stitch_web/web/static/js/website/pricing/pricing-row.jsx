@@ -10,15 +10,15 @@ class PricingRow extends Component {
         <div className="pricing-table__item">{feature}</div>
 
         <div className="pricing-table__item">
-          {basic === true ? <i className="fa fa-check-circle" /> : basic}
+          {basic ? <i className="far fa-check-circle" /> : basic}
         </div>
 
         <div className="pricing-table__item">
-          {standard === true ? <i className="fa fa-check-circle" /> : standard}
+          {standard ? <i className="far fa-check-circle" /> : standard}
         </div>
 
         <div className="pricing-table__item">
-          {premium === true ? <i className="fa fa-check-circle" /> : premium}
+          {premium ? <i className="far fa-check-circle" /> : premium}
         </div>
       </div>
     );

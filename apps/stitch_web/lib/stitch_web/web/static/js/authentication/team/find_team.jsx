@@ -56,7 +56,7 @@ class FindTeam extends Component {
         description={
           <span>
             We’ll send you an email to confirm your address and find existing
-            carespaces you’ve joined or can join.
+            Carespaces you’ve joined or can join.
           </span>
         }
         onNext={this._onSubmit}
@@ -73,7 +73,7 @@ class FindTeam extends Component {
           />
         </FormGroup>
         <div className="team-picker-find-team-helper">
-          Know your carespace URL?{" "}
+          Know your Carespace URL?{" "}
           <Link to={singinUrl}>
             <strong>Sign In</strong>
           </Link>

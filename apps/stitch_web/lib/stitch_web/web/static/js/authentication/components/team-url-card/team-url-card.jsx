@@ -87,11 +87,11 @@ class CarespaceUrlCard extends Component {
       <div>
         <OnboardPage
           {...this.props}
-          title="What URL do you want for your Stitch carespace?"
+          title="Choose a URL for your Stitch Connect Carespace"
           description={
             <span>
-              This is the address you and your carespace will use to sign in to
-              Stitch.
+              This is the URL you and your team members will use to sign in to
+              Stitch Connect.
             </span>
           }
           onNext={this.onNext}

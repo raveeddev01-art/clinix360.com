@@ -4,8 +4,6 @@ import { withRouter, Route, Switch } from "react-router-dom";
 import withTitle from "../util/with_document_title";
 import ScrollToTop from "./components/scrollToTop";
 
-import FullPageBanner from "./components/full-page-banner";
-
 import Homepage from "./homepage";
 import Connect from "./products/connect";
 import Engage from "./products/engage";
@@ -31,35 +29,19 @@ import Industry from "./industries/industry";
 
 // PAGE TITLES
 // if changed, sync with backend (home_controller)
-const defaultTitle = "Care Coordination | Stitch";
-const demoTitle = "Request a Demo | Stitch";
-const connectTitle = "Connect | Stitch";
-const engageTitle = "Engage | Stitch";
-const manageTitle = "Manage | Stitch";
-const pricingTitle = "Pricing | Stitch";
-const downloadsTitle = "Downloads | Stitch";
-const jobsTitle = "Jobs | Stitch";
-const customersTitle = "Customers | Stitch";
-const hipaaTitle = "HIPAA Compliance | Stitch";
+const defaultTitle = "Care Coordination | Stitch Connect";
+const demoTitle = "Request a Demo | Stitch Connect";
+const connectTitle = "Care Coordination | Stitch Connect";
+const engageTitle = "Engage | Stitch Connect";
+const manageTitle = "Manage | Stitch Connect";
+const pricingTitle = "Pricing | Stitch Connect";
+const downloadsTitle = "Downloads | Stitch Connect";
+const jobsTitle = "Jobs | Stitch Connect";
+const customersTitle = "Customers | Stitch Connect";
+const hipaaTitle = "HIPAA Compliance | Stitch Connect";
 const notFoundTitle = "404 | Page Not Found";
 
 class WebsiteRouter extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showModal: true
-    };
-
-    if (this.props.history.location.pathname === "/jobs") {
-      this.state = { showModal: false };
-    }
-  }
-
-  handleClose = () => {
-    this.setState({ showModal: false });
-  };
-
   render() {
     return (
       <div className="website-wrapper">
@@ -142,11 +124,6 @@ class WebsiteRouter extends Component {
 
             <Route path="*" component={withTitle(notFoundTitle, NotFound)} />
           </Switch>
-
-          <FullPageBanner
-            show={this.state.showModal}
-            onHide={this.handleClose}
-          />
         </ScrollToTop>
       </div>
     );
