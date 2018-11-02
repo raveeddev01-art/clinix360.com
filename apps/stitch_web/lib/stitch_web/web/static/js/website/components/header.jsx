@@ -128,6 +128,8 @@ class Header extends Component {
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
+            <NavItem href="#connect-book-demo">Demo</NavItem>
+
             <NavDropdown
               title="Resources"
               id="resources-dropdown"
@@ -139,13 +141,13 @@ class Header extends Component {
             >
               <LinkContainer to="/downloads">
                 <MenuItem>
-                  <i className="fa fa-cloud-download" /> Downloads
+                  <i className="far fa-cloud-download" /> Downloads
                 </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/customers">
                 <MenuItem>
-                  <i className="fa fa-users" /> Customers
+                  <i className="far fa-users" /> Customers
                 </MenuItem>
               </LinkContainer>
 
@@ -154,11 +156,11 @@ class Header extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa fa-life-ring" /> Help Center
+                <i className="far fa-life-ring" /> Help Center
               </MenuItem>
 
               <MenuItem href={`https://${applicationHost}/jobs`}>
-                <i className="fa fa-wrench" /> Jobs
+                <i className="far fa-wrench" /> Jobs
               </MenuItem>
 
               <MenuItem
@@ -166,7 +168,7 @@ class Header extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa fa-book" /> Blog
+                <i className="far fa-book" /> Blog
               </MenuItem>
 
               <MenuItem
@@ -174,7 +176,7 @@ class Header extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa fa-code" /> API Docs
+                <i className="far fa-code" /> API Docs
               </MenuItem>
             </NavDropdown>
 
@@ -198,7 +200,7 @@ class Header extends Component {
               </Link>
 
               <a className="close-menu" onClick={this.mobileNavToggle}>
-                <i className="fa fa-close" />
+                <i className="far fa-close" />
               </a>
             </div>
           </div>
@@ -209,10 +211,12 @@ class Header extends Component {
                 <NavItem>Pricing</NavItem>
               </LinkContainer>
 
+              <NavItem href="#connect-book-demo">Demo</NavItem>
+
               <NavDropdown title="Resources" id="resources-dropdown">
                 <LinkContainer to="/downloads">
                   <MenuItem>
-                    <i className="fa fa-cloud-download" /> Downloads
+                    <i className="far fa-cloud-download" /> Downloads
                   </MenuItem>
                 </LinkContainer>
 
@@ -221,16 +225,16 @@ class Header extends Component {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fa fa-life-ring" /> Help Center
+                  <i className="far fa-life-ring" /> Help Center
                 </MenuItem>
 
                 <MenuItem href={`https://${applicationHost}/jobs`}>
-                  <i className="fa fa-wrench" /> Jobs
+                  <i className="far fa-wrench" /> Jobs
                 </MenuItem>
 
                 <LinkContainer to="/customers">
                   <MenuItem>
-                    <i className="fa fa-users" /> Customers
+                    <i className="far fa-users" /> Customers
                   </MenuItem>
                 </LinkContainer>
 
@@ -239,7 +243,7 @@ class Header extends Component {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fa fa-book" /> Blog
+                  <i className="far fa-book" /> Blog
                 </MenuItem>
               </NavDropdown>
 

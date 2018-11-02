@@ -7,7 +7,7 @@ export default class MacDesktop extends Component {
         <h5>
           <div className="card-description">
             Download the <strong>Mac Desktop App</strong> to get the best
-            experience using Stitch.
+            experience using Stitch Connect.
           </div>
         </h5>
 

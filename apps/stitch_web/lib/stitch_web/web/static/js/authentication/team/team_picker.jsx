@@ -81,11 +81,11 @@ class TeamPicker extends Component {
 
     return (
       <AuthenticationPage
-        title="Sign in to your carespace"
+        title="Sign in to Stitch Connect"
         headerCTA="create"
         description={
           <span>
-            Enter your carespace's <b> Stitch URL </b>
+            Enter your Carespace's <b> Stitch URL </b>
           </span>
         }
       >
@@ -124,9 +124,9 @@ class TeamPicker extends Component {
         </Form>
 
         <div className="team-picker-find-team-helper">
-          Don't know your carespace's URL?{" "}
+          Don't know your Carespace's URL?{" "}
           <Link to={this.findTeamLink}>
-            <strong>Find your carespace</strong>
+            <strong>Find your Carespace</strong>
           </Link>
         </div>
       </AuthenticationPage>

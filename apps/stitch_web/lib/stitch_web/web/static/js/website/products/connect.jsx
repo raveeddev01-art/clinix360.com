@@ -146,14 +146,14 @@ export default class Connect extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-bar-chart" /> Analytics
+                    <i className="far fa-chart-bar" /> Analytics
                   </h4>
                   <p className="m-b-15">
                     View engagement statistics to understand the how, when and
                     who of your team’s Stitch usage.
                   </p>
 
-                  <a href="https://help.teamstitch.com/team-administration/usage-analytics">
+                  <a href="https://help.teamstitch.com/hc/en-us/articles/360010902353">
                     Learn more about Analytics
                   </a>
                 </div>
@@ -162,14 +162,14 @@ export default class Connect extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-cogs" /> Security
+                    <i className="far fa-cogs" /> Security
                   </h4>
                   <p className="m-b-15">
                     Control all the details, like our inactivity lockout
                     interval, password requirements and user invite ability.
                   </p>
 
-                  <a href="https://help.teamstitch.com/security-and-compliance">
+                  <a href="https://help.teamstitch.com/hc/en-us/categories/360000720214-Security-and-Compliance">
                     Learn more about Security
                   </a>
                 </div>
@@ -178,14 +178,14 @@ export default class Connect extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-bell" /> Custom Alerts
+                    <i className="far fa-bell" /> Custom Alerts
                   </h4>
                   <p className="m-b-15">
                     Use our group-level alert settings to adjust custom
                     notification settings for each chat room. Never miss a beat.
                   </p>
 
-                  <a href="https://help.teamstitch.com/stitch-connect/receiving-notifications/about-notifications">
+                  <a href="https://help.teamstitch.com/hc/en-us/articles/360007604194-About-notifications">
                     Learn more about Notifications
                   </a>
                 </div>
@@ -194,14 +194,14 @@ export default class Connect extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-check-circle" /> Read Receipts
+                    <i className="far fa-check-circle" /> Read Receipts
                   </h4>
                   <p className="m-b-15">
                     Improve team accountability and reliability with
                     easy-to-access read receipts for every message.
                   </p>
 
-                  <a href="https://help.teamstitch.com/stitch-connect/sending-messages/message-info">
+                  <a href="https://help.teamstitch.com/hc/en-us/articles/235554867-Message-info">
                     Learn more about Read Receipts
                   </a>
                 </div>
@@ -210,14 +210,14 @@ export default class Connect extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-users" /> Administration
+                    <i className="far fa-users" /> Administration
                   </h4>
                   <p className="m-b-15">
                     Adjust user rights, deactivate stale members, view access
                     logs and create data exports with the click of a button.
                   </p>
 
-                  <a href="https://help.teamstitch.com/team-administration">
+                  <a href="https://help.teamstitch.com/hc/en-us/categories/360000723973-Carespace-Administration">
                     Learn more about Administration
                   </a>
                 </div>
@@ -226,14 +226,14 @@ export default class Connect extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="fa fa-refresh" /> EHR Integrations
+                    <i className="far fa-refresh" /> EHR Integrations
                   </h4>
                   <p className="m-b-15">
                     Tie Stitch into your existing toolset with a seamless EHR
                     integration. Get alerts for key updates right in Stitch.
                   </p>
 
-                  <a href="https://help.teamstitch.com/integrations/integrations">
+                  <a href="https://help.teamstitch.com/hc/en-us/articles/360007574334-EHR-Integrations">
                     Learn more about Integrations
                   </a>
                 </div>
@@ -359,7 +359,7 @@ Connect.propTypes = {
 
 Connect.defaultProps = {
   flipped: false,
-  header: "Team messaging for healthcare",
+  header: "Collaboration hub for healthcare",
   subHeader:
     "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
   // industryBodyText: "healthcare"

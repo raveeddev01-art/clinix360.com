@@ -7,7 +7,7 @@ export default class WindowsDesktop extends Component {
         <h5>
           <div className="card-description">
             Download the <strong>Linux desktop app</strong> to get the best
-            experience using Stitch.
+            experience using Stitch Connect.
           </div>
         </h5>
 
