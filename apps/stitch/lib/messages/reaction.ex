@@ -13,7 +13,7 @@ defmodule Stitch.Message.Reaction do
 
   @type t :: %__MODULE__{}
 
-  @castable_assocs [:user_id, :message_id, :conversation_message_id, :patient_id, :emoji_name]
+  @castable_assocs [:user_id, :message_id, :emoji_name]
 
   schema "reactions" do
     belongs_to(:user, User)
@@ -31,69 +31,53 @@ defmodule Stitch.Message.Reaction do
     |> validate_required([:emoji_name])
   end
 
-  @spec toggle_reaction(ConversationMessage.t() | Message.t(), User.t(), binary) ::
-          {:ok, term} | {:error, term}
-  def toggle_reaction(cm = %ConversationMessage{}, %User{} = user, emoji_name) do
-    params = %{
-      user_id: user.id,
-      conversation_message_id: cm.id,
-      emoji_name: emoji_name
-    }
-
-    toggle_by_params(params)
+  def add_reactions(reaction, user_id, emoji_name) when is_integer(user_id) do
+    add_reactions(reaction, Integer.to_string(user_id), emoji_name)
   end
 
-  def toggle_reaction(cm = %ConversationMessage{}, %Patient{} = patient, emoji_name) do
-    params = %{
-      patient_id: patient.id,
-      conversation_message_id: cm.id,
-      emoji_name: emoji_name
-    }
-
-    toggle_by_params(params)
+  def add_reactions(reaction, user_id, emoji_name) do
+    Map.update(reaction, user_id, [emoji_name], fn user_reactions ->
+      if Enum.member?(user_reactions, emoji_name) do
+        user_reactions -- [emoji_name]
+      else
+        [emoji_name | user_reactions] |> Enum.uniq()
+      end
+    end)
   end
 
   def toggle_reaction(message = %Message{}, %User{} = user, emoji_name) do
-    params = %{
-      user_id: user.id,
-      message_id: message.id,
-      emoji_name: emoji_name
-    }
+    new_reactions = add_reactions(message.reactions, user.id, emoji_name)
 
-    toggle_by_params(params)
+    {1, [update_message]} =
+      Message
+      |> where(id: ^message.id)
+      |> update([m], set: [reactions: fragment("? || ?", m.reactions, ^new_reactions)])
+      |> Repo.update_all([], returning: true)
+
+    {:ok, update_message}
   end
 
   @spec apply_reactions(list, atom) :: list()
   def apply_reactions(messages, :message) do
-    message_ids = messages |> Enum.map(& &1.id)
-    query = from(r in Message.Reaction, where: r.message_id in ^message_ids)
-    reactions = Repo.all(query) |> Enum.group_by(& &1.message_id)
-
     messages
-    |> Enum.map(fn message ->
-      message_reactions = reactions[message.id] || []
-      grouped_reactions = message_reactions |> group_by_user()
-      Map.put(message, :reactions, grouped_reactions)
+    |> Enum.map(fn
+      %{reactions: message_reactions} = message ->
+        grouped_reactions = group_reactions(message_reactions)
+        Map.put(message, :reactions, grouped_reactions)
+
+      message ->
+        message
     end)
   end
 
-  def apply_reactions(conversation_messages, :conversation_message) do
-    conversation_message_ids = conversation_messages |> Enum.map(& &1.id)
-
-    query =
-      from(r in Message.Reaction, where: r.conversation_message_id in ^conversation_message_ids)
-
-    reactions = Repo.all(query) |> Enum.group_by(& &1.conversation_message_id)
-
-    conversation_messages
-    |> Enum.map(fn conversation_message ->
-      reactions_for_message = reactions[conversation_message.id] || []
-      provider_reactions = reactions_for_message |> group_by_user()
-      patient_reactions = reactions_for_message |> group_by_patient()
-
-      conversation_message
-      |> Map.put(:provider_reactions, provider_reactions)
-      |> Map.put(:patient_reactions, patient_reactions)
+  # reverses relation `id => [reations]` to `reaction => [ids]`
+  def group_reactions(reactions) do
+    Enum.reduce(reactions, %{}, fn {user_id, reactions}, acc ->
+      Enum.reduce(reactions, acc, fn emoji, acc ->
+        Map.update(acc, emoji, [user_id], fn user_ids ->
+          [user_id | user_ids] |> Enum.uniq()
+        end)
+      end)
     end)
   end
 
@@ -105,23 +89,9 @@ defmodule Stitch.Message.Reaction do
     list |> group_by_column(:user_id)
   end
 
-  defp group_by_patient(list) do
-    list |> group_by_column(:patient_id)
-  end
-
   defp group_by_column(list, column_name) do
     list
     |> Enum.filter(&(!!Map.get(&1, column_name)))
     |> Enum.group_by(& &1.emoji_name, &Map.get(&1, column_name))
-  end
-
-  defp toggle_by_params(params) do
-    case Repo.get_by(Message.Reaction, params) do
-      nil ->
-        Repo.insert(Message.Reaction.changeset(%Message.Reaction{}, params))
-
-      reaction ->
-        Repo.delete(reaction)
-    end
   end
 end

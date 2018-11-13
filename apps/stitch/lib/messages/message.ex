@@ -45,6 +45,7 @@ defmodule Stitch.Message do
     field(:client_name, :string, default: "unknown")
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
+    field(:reactions, :map, default: %{})
     # Remove on the next release
     field(:requires_fallback_comment, :boolean, default: true)
 
