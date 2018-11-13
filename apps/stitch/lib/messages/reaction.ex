@@ -65,15 +65,16 @@ defmodule Stitch.Message.Reaction do
 
   @spec apply_reactions(list, atom) :: list()
   def apply_reactions(messages, :message) do
-    message_ids = messages |> Enum.map(& &1.id)
-    query = from(r in Message.Reaction, where: r.message_id in ^message_ids)
-    reactions = Repo.all(query) |> Enum.group_by(& &1.message_id)
+    # message_ids = messages |> Enum.map(& &1.id)
+    # query = from(r in Message.Reaction, where: r.message_id in ^message_ids)
+    # reactions = Repo.all(query) |> Enum.group_by(& &1.message_id)
 
     messages
     |> Enum.map(fn message ->
-      message_reactions = reactions[message.id] || []
-      grouped_reactions = message_reactions |> group_by_user()
-      Map.put(message, :reactions, grouped_reactions)
+      #   message_reactions = reactions[message.id] || []
+      #   grouped_reactions = message_reactions |> group_by_user()
+      #   Map.put(message, :reactions, grouped_reactions)
+      Map.put(message, :reactions, %{})
     end)
   end
 
