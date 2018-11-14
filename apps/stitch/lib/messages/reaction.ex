@@ -80,18 +80,4 @@ defmodule Stitch.Message.Reaction do
       end)
     end)
   end
-
-  # ===========
-  #   PRIVATE
-  # ===========
-
-  defp group_by_user(list) do
-    list |> group_by_column(:user_id)
-  end
-
-  defp group_by_column(list, column_name) do
-    list
-    |> Enum.filter(&(!!Map.get(&1, column_name)))
-    |> Enum.group_by(& &1.emoji_name, &Map.get(&1, column_name))
-  end
 end
