@@ -14,6 +14,9 @@ class Reactions extends Component {
     const hasYou = userIds.indexOf(currentUser.id) > -1;
     const userList = userIds.filter(id => id !== currentUser.id).map(id => {
       const u = users[id];
+      if (!u) {
+        return ``;
+      }
       return `${u.first_name} ${u.last_name}`;
     });
 

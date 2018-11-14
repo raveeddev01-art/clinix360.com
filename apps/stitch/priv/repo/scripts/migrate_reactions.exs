@@ -25,16 +25,37 @@ defmodule Stitch.MigrateReactions do
           Reaction
           |> where(message_id: ^message.id)
           |> Repo.all()
-          |> Enum.group_by(& &1.user_id, & &1.emoji_name)
 
-        message
-        |> change(reactions: reactions)
-        |> Repo.update()
+        if Enum.any?(reactions) do
+          existing_user_ids =
+            reactions
+            |> Enum.map(& &1.user_id)
+            |> ensure_existing_user_ids()
+
+          group_reactions =
+            reactions
+            |> Enum.group_by(& &1.user_id, & &1.emoji_name)
+            |> Enum.filter(fn {user_id, _} ->
+              Enum.member?(existing_user_ids, user_id)
+            end)
+            |> Map.new()
+
+          message
+          |> change(reactions: group_reactions)
+          |> Repo.update()
+        end
 
       _ ->
         nil
     end)
     |> Stream.run()
+  end
+
+  def ensure_existing_user_ids(user_ids) do
+    Stitch.Accounts.User
+    |> where([u], u.id in ^user_ids)
+    |> select([u], u.id)
+    |> Repo.all()
   end
 end
 
