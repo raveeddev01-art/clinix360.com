@@ -30,6 +30,6 @@ defmodule StitchConnect.Web.MessageController.ToggleReactionTest do
     assert_broadcast("reactions_updated", %{message_id: message_id, reactions_web: reactions_web})
     assert message.id == message_id
     assert [user_id] = reactions_web[":cat:"]
-    assert user_id == user.id
+    assert user_id == user.id |> Integer.to_string()
   end
 end

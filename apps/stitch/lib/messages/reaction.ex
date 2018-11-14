@@ -13,7 +13,7 @@ defmodule Stitch.Message.Reaction do
 
   @type t :: %__MODULE__{}
 
-  @castable_assocs [:user_id, :message_id, :emoji_name]
+  @castable_assocs [:user_id, :message_id, :conversation_message_id, :patient_id, :emoji_name]
 
   schema "reactions" do
     belongs_to(:user, User)
@@ -57,6 +57,8 @@ defmodule Stitch.Message.Reaction do
     {:ok, update_message}
   end
 
+  def toggle_reaction(message, _user, _emoji_name), do: {:ok, message}
+
   @spec apply_reactions(list, atom) :: list()
   def apply_reactions(messages, :message) do
     messages
@@ -69,6 +71,8 @@ defmodule Stitch.Message.Reaction do
         message
     end)
   end
+
+  def apply_reactions(messages, _), do: messages
 
   # reverses relation `id => [reations]` to `reaction => [ids]`
   def group_reactions(reactions) do
