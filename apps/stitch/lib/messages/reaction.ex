@@ -31,11 +31,11 @@ defmodule Stitch.Message.Reaction do
     |> validate_required([:emoji_name])
   end
 
-  def add_reactions(reaction, user_id, emoji_name) when is_integer(user_id) do
-    add_reactions(reaction, Integer.to_string(user_id), emoji_name)
+  defp toggle_reaction_for_user(reaction, user_id, emoji_name) when is_integer(user_id) do
+    toggle_reaction_for_user(reaction, Integer.to_string(user_id), emoji_name)
   end
 
-  def add_reactions(reaction, user_id, emoji_name) do
+  defp toggle_reaction_for_user(reaction, user_id, emoji_name) do
     Map.update(reaction, user_id, [emoji_name], fn user_reactions ->
       if Enum.member?(user_reactions, emoji_name) do
         user_reactions -- [emoji_name]
@@ -43,10 +43,11 @@ defmodule Stitch.Message.Reaction do
         [emoji_name | user_reactions] |> Enum.uniq()
       end
     end)
+    |> Map.take([user_id])
   end
 
   def toggle_reaction(message = %Message{}, %User{} = user, emoji_name) do
-    new_reactions = add_reactions(message.reactions, user.id, emoji_name)
+    new_reactions = toggle_reaction_for_user(message.reactions, user.id, emoji_name)
 
     {1, [update_message]} =
       Message
