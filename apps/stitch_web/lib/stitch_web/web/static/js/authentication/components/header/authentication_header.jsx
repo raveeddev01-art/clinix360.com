@@ -58,19 +58,6 @@ class AuthenticationHeader extends Component {
       ];
     }
 
-    if (this.props.type === "create") {
-      return [
-        <Navbar.Text key="nav-text">
-          Looking to set up a new Carespace?
-        </Navbar.Text>,
-        <Nav key="nav-cta">
-          <NavItem onClick={this.goToCreate} className="btn-trial">
-            Create a new Carespace
-          </NavItem>
-        </Nav>
-      ];
-    }
-
     return [
       <Navbar.Text key="nav-text">
         Looking to join an existing Carespace?
