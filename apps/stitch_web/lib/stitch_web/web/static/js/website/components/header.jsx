@@ -128,8 +128,6 @@ class Header extends Component {
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
-            <NavItem href="#connect-book-demo">Demo</NavItem>
-
             <NavDropdown
               title="Resources"
               id="resources-dropdown"
@@ -204,8 +202,6 @@ class Header extends Component {
               <LinkContainer to="/pricing">
                 <NavItem>Pricing</NavItem>
               </LinkContainer>
-
-              <NavItem href="#connect-book-demo">Demo</NavItem>
 
               <NavDropdown title="Resources" id="resources-dropdown">
                 <LinkContainer to="/downloads">
