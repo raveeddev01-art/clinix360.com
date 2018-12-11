@@ -50,10 +50,6 @@ export default class PricingDesktop extends Component {
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>
                 </p>
-
-                <Button href="/getstarted" bsStyle="primary" bsSize="lg" block>
-                  Try Free
-                </Button>
               </div>
 
               <div className="pricing-table__item">
@@ -70,15 +66,6 @@ export default class PricingDesktop extends Component {
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>
                 </p>
-
-                <Button
-                  href={appSettings.hasLogin ? "/signin" : "/getstarted"}
-                  bsStyle="primary"
-                  bsSize="lg"
-                  block
-                >
-                  Buy Standard
-                </Button>
               </div>
 
               <div className="pricing-table__item">
@@ -95,15 +82,6 @@ export default class PricingDesktop extends Component {
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>
                 </p>
-
-                <Button
-                  href={appSettings.hasLogin ? "/signin" : "/getstarted"}
-                  bsStyle="primary"
-                  bsSize="lg"
-                  block
-                >
-                  Buy Premium
-                </Button>
               </div>
             </div>
 
@@ -176,38 +154,6 @@ export default class PricingDesktop extends Component {
                 premium={row.premium}
               />
             ))}
-
-            <div className="pricing-table__row">
-              <div className="pricing-table__item" />
-
-              <div className="pricing-table__item">
-                <Button href="/getstarted" bsStyle="primary" bsSize="lg" block>
-                  Try Free
-                </Button>
-              </div>
-
-              <div className="pricing-table__item">
-                <Button
-                  href={appSettings.hasLogin ? "/signin" : "/getstarted"}
-                  bsStyle="primary"
-                  bsSize="lg"
-                  block
-                >
-                  Buy Standard
-                </Button>
-              </div>
-
-              <div className="pricing-table__item">
-                <Button
-                  href={appSettings.hasLogin ? "/signin" : "/getstarted"}
-                  bsStyle="primary"
-                  bsSize="lg"
-                  block
-                >
-                  Buy Premium
-                </Button>
-              </div>
-            </div>
           </div>
         </Panel.Body>
       </Panel>

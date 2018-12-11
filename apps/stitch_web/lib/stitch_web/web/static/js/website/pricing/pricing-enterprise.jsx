@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import Button from "react-bootstrap/lib/Button";
 
 import PricingRowEnterprise from "./pricing-row-enterprise";
 
@@ -28,10 +27,6 @@ class PricingEnterprise extends Component {
                     src="/images/logo-blue.svg"
                     alt="Stitch"
                   />
-
-                  <Button bsStyle="primary" block href="#connect-book-demo">
-                    Contact Us
-                  </Button>
                 </div>
               </Col>
 
