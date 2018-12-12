@@ -1,20 +1,22 @@
 defmodule Stitch.FeatureGateway.Connect do
   alias Stitch.Repo
   alias Stitch.Team
-  alias Stitch.FeatureGateway
 
-  def allowed?(:guests, team) do
-    team = Repo.preload(team, :subscription)
-
-    if "connect.guests" in FeatureGateway.available_features(team) do
-      true
-    else
-      if team.subscription.tier == "FREE" do
-        {:error, {:insufficient_tier, ["STANDARD", "PREMIUM"]}}
-      else
-        {:error, :subscription_expired}
-      end
-    end
+  def allowed?(:guests, _team) do
+    # team = Repo.preload(team, :subscription)
+    #
+    # if "connect.guests" in FeatureGateway.available_features(team) do
+    #   true
+    # else
+    #   if team.subscription.tier == "FREE" do
+    #     {:error, {:insufficient_tier, ["STANDARD", "PREMIUM"]}}
+    #   else
+    #     {:error, :subscription_expired}
+    #   end
+    # end
+    #
+    # Note: allowing guests on all tiers
+    true
   end
 
   @doc """
@@ -31,7 +33,9 @@ defmodule Stitch.FeatureGateway.Connect do
   end
 
   defp guests(features, team) do
-    if team.subscription && team.subscription.tier in ["STANDARD", "PREMIUM"] do
+    # Note: allowing guests on all tiers
+    #
+    if team.subscription && team.subscription.tier in ["FREE", "STANDARD", "PREMIUM"] do
       ["connect.guests" | features]
     else
       features

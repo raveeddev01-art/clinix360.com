@@ -137,16 +137,15 @@ class MemberItem extends Component {
           <Collapse in={this.state.open}>
             <div>
               <ButtonToolbar className="actions-toolbar">
-                {user.roles.indexOf("admin") === -1 &&
-                  !this.isFreeTier && (
-                    <Button
-                      bsSize="small"
-                      className="m-r-10"
-                      onClick={this._startEditing}
-                    >
-                      Manage Member Type
-                    </Button>
-                  )}
+                {user.roles.indexOf("admin") === -1 && (
+                  <Button
+                    bsSize="small"
+                    className="m-r-10"
+                    onClick={this._startEditing}
+                  >
+                    Manage Member Type
+                  </Button>
+                )}
                 {!user.disabled &&
                   isFullMember(user) &&
                   (user.roles.indexOf("admin") > -1 ? (
