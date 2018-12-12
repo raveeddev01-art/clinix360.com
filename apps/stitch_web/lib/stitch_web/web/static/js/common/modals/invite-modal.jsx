@@ -302,8 +302,11 @@ class InviteModal extends Component {
   }
 
   guestInviteEnabled() {
-    const { billingStore: { subscription: { tier } } } = this.props;
-    return tier === "STANDARD" || tier === "PREMIUM";
+    // const { billingStore: { subscription: { tier } } } = this.props;
+    // return tier === "STANDARD" || tier === "PREMIUM";
+    //
+    // Note: guests are enabled on all tiers
+    return true;
   }
 
   render() {

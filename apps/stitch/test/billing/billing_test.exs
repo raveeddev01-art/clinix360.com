@@ -53,10 +53,11 @@ defmodule Stitch.Billing.BillingTest do
       assert {:error, result} = Billing.modify_subscription(subscription, %{})
       assert elem(result.errors[:tier], 0) =~ "blank"
 
-      assert {:error, result} = Billing.modify_subscription(
-        subscription,
-        %{"tier" => "bad", "renewal_frequency" => "bad"}
-      )
+      assert {:error, result} =
+               Billing.modify_subscription(
+                 subscription,
+                 %{"tier" => "bad", "renewal_frequency" => "bad"}
+               )
 
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
@@ -64,10 +65,11 @@ defmodule Stitch.Billing.BillingTest do
       subscription = insert(:subscription)
       insert(:card, team: subscription.team)
 
-      assert {:error, result} = Billing.modify_subscription(
-        subscription,
-        %{"tier" => "bad", "renewal_frequency" => "bad"}
-      )
+      assert {:error, result} =
+               Billing.modify_subscription(
+                 subscription,
+                 %{"tier" => "bad", "renewal_frequency" => "bad"}
+               )
 
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
@@ -119,7 +121,7 @@ defmodule Stitch.Billing.BillingTest do
 
       users = Repo.all(query)
 
-      assert length(users) == 1
+      assert length(users) == 3
     end
   end
 
