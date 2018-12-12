@@ -156,8 +156,9 @@ defmodule StitchConnect.Web.InvitationControllerTest do
         |> with_api_user(user)
         |> post(api_v1_invitation_path(conn, :invite_single_room_guest), params)
 
-      assert response = json_response(conn, 403)
-      assert response["message"] =~ "requires a higher subscription tier"
+      assert response = json_response(conn, 201)
+      # assert response = json_response(conn, 403)
+      # assert response["message"] =~ "requires a higher subscription tier"
     end
   end
 
@@ -245,8 +246,9 @@ defmodule StitchConnect.Web.InvitationControllerTest do
         |> with_api_user(user)
         |> post(api_v1_invitation_path(conn, :invite_single_room_guests), params)
 
-      assert response = json_response(conn, 403)
-      assert response["message"] =~ "requires a higher subscription tier"
+      assert response = json_response(conn, 201)
+      # assert response = json_response(conn, 403)
+      # assert response["message"] =~ "requires a higher subscription tier"
     end
   end
 
@@ -339,8 +341,9 @@ defmodule StitchConnect.Web.InvitationControllerTest do
         |> with_api_user(user)
         |> post(api_v1_invitation_path(conn, :invite_multi_room_guest), params)
 
-      assert response = json_response(conn, 403)
-      assert response["message"] =~ "requires a higher subscription tier"
+      assert response = json_response(conn, 201)
+      # assert response = json_response(conn, 403)
+      # assert response["message"] =~ "requires a higher subscription tier"
     end
   end
 
@@ -448,8 +451,9 @@ defmodule StitchConnect.Web.InvitationControllerTest do
         |> with_api_user(user)
         |> post(api_v1_invitation_path(conn, :invite_multi_room_guests), params)
 
-      assert response = json_response(conn, 403)
-      assert response["message"] =~ "requires a higher subscription tier"
+      assert response = json_response(conn, 201)
+      # assert response = json_response(conn, 403)
+      # assert response["message"] =~ "requires a higher subscription tier"
     end
   end
 
