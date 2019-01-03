@@ -22,7 +22,7 @@ defmodule Stitch.Exports.TeamHistory do
         filepaths = prepare_filepaths(parent_path, subpaths)
 
         System.tmp_dir!()
-        |> Path.join("#{Ecto.UUID.generate()}.zip")
+        |> Path.join("EXPORT_#{team.id}_#{Ecto.UUID.generate()}.zip")
         |> String.to_charlist()
         |> :zip.create(filepaths, cwd: String.to_charlist(parent_path))
       end
