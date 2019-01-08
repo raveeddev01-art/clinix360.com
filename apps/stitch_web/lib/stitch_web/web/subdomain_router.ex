@@ -357,6 +357,7 @@ defmodule Stitch.Web.SubdomainRouter do
     resources("/exports/:user_id/user_exports", UserExportController, only: [:create])
     get("/exports/user_exports", UserExportController, :index)
     resources("/exports", ExportController, only: [:index, :create])
+    get("/exports/full_backup", UserExportController, :full_backup)
 
     # Admin repotes route
     resources("/reports", ReportController, only: [:create])
