@@ -141,7 +141,7 @@ class Sidebar extends Component {
               <ListGroupItem>
                 <Link to="/">
                   <i className="fa fa-comments" />
-                  <span>Stitch Connect</span>
+                  <span>Stitch</span>
                 </Link>
               </ListGroupItem>
             </ListGroup>
@@ -186,7 +186,7 @@ class Sidebar extends Component {
               {isMemberOrAdmin() && this._nonGuestOptions()}
 
               <ListGroupItem>
-                <Link to="https://help.teamstitch.com" target="_blank">
+                <Link to="https://help.stitch.health" target="_blank">
                   <i className="fa fa-question-circle" />Help{" "}
                   <i className="fa fa-external-link sm" />
                 </Link>

@@ -11,15 +11,15 @@ class CallApp extends Component {
     const { groupsStore, sidemenuStore, callStore } = this.props;
     const { currentGroup } = groupsStore;
     const { connected } = callStore;
-    let title = "Stitch Connect";
+    let title = "Stitch";
 
     if (currentGroup) {
-      title = `${groupsStore.getGroupName(currentGroup)} | Stitch Connect`;
+      title = `${groupsStore.getGroupName(currentGroup)} | Stitch`;
 
       if (currentGroup.type === "regular") {
         title = `${groupsStore.getGroupName(
           currentGroup
-        )} | ${sidemenuStore.teamName} | Stitch Connect`;
+        )} | ${sidemenuStore.teamName} | Stitch`;
       }
     }
 

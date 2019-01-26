@@ -150,15 +150,11 @@ class Header extends Component {
               </LinkContainer>
 
               <MenuItem
-                href="https://help.teamstitch.com"
+                href="https://help.stitch.health"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <i className="far fa-life-ring" /> Help Center
-              </MenuItem>
-
-              <MenuItem href={`https://${applicationHost}/jobs`}>
-                <i className="far fa-wrench" /> Jobs
               </MenuItem>
 
               <MenuItem
@@ -167,14 +163,6 @@ class Header extends Component {
                 rel="noopener noreferrer"
               >
                 <i className="far fa-book" /> Blog
-              </MenuItem>
-
-              <MenuItem
-                href="https://stitch.readme.io/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="far fa-code" /> API Docs
               </MenuItem>
             </NavDropdown>
 
@@ -211,7 +199,7 @@ class Header extends Component {
                 </LinkContainer>
 
                 <MenuItem
-                  href="https://help.teamstitch.com"
+                  href="https://help.stitch.health"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

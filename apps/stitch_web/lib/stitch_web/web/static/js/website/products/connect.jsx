@@ -6,11 +6,8 @@ import cx from "classnames";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
-import Button from "react-bootstrap/lib/Button";
 
-import TopBanner from "../components/top-banner";
 import Header from "../components/header";
-import CreateTeam from "../components/create-team";
 import Feature from "../components/feature";
 import Footer from "../components/footer";
 import VideoModal from "../components/video-modal";
@@ -55,29 +52,14 @@ export default class Connect extends Component {
 
     return (
       <div className="product-page">
-        <TopBanner />
         <Header />
         <div className="subheader">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <h4 className="product-heading">
-                  <i className="fa fa-comments" /> Stitch Connect
-                </h4>
-
                 <h1>{header}</h1>
 
                 <h3 className="m-b-30">{subHeader}</h3>
-
-                <a
-                  className="play-video-link hidden-xs hidden-sm"
-                  onClick={this.videoModal}
-                >
-                  <span className="play-btn">
-                    <i className="fa fa-play" />
-                  </span>
-                  <span>See how it works</span>
-                </a>
               </div>
 
               <div className="flex-item">
@@ -151,7 +133,7 @@ export default class Connect extends Component {
                     who of your team’s Stitch usage.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/articles/360010902353">
+                  <a href="https://help.stitch.health/hc/en-us/articles/360010902353">
                     Learn more about Analytics
                   </a>
                 </div>
@@ -167,7 +149,7 @@ export default class Connect extends Component {
                     interval, password requirements and user invite ability.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/categories/360000720214-Security-and-Compliance">
+                  <a href="https://help.stitch.health/hc/en-us/categories/360000720214-Security-and-Compliance">
                     Learn more about Security
                   </a>
                 </div>
@@ -183,7 +165,7 @@ export default class Connect extends Component {
                     notification settings for each chat room. Never miss a beat.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/articles/360007604194-About-notifications">
+                  <a href="https://help.stitch.health/hc/en-us/articles/360007604194-About-notifications">
                     Learn more about Notifications
                   </a>
                 </div>
@@ -199,7 +181,7 @@ export default class Connect extends Component {
                     easy-to-access read receipts for every message.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/articles/235554867-Message-info">
+                  <a href="https://help.stitch.health/hc/en-us/articles/235554867-Message-info">
                     Learn more about Read Receipts
                   </a>
                 </div>
@@ -215,7 +197,7 @@ export default class Connect extends Component {
                     logs and create data exports with the click of a button.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/categories/360000723973-Carespace-Administration">
+                  <a href="https://help.stitch.health/hc/en-us/categories/360000723973-Carespace-Administration">
                     Learn more about Administration
                   </a>
                 </div>
@@ -231,7 +213,7 @@ export default class Connect extends Component {
                     integration. Get alerts for key updates right in Stitch.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/articles/360007574334-EHR-Integrations">
+                  <a href="https://help.stitch.health/hc/en-us/articles/360007574334-EHR-Integrations">
                     Learn more about Integrations
                   </a>
                 </div>
@@ -324,6 +306,6 @@ Connect.defaultProps = {
   flipped: false,
   header: "Collaboration hub for healthcare",
   subHeader:
-    "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
+    "Message your team, from any device. Stitch is HIPAA compliant and free to use with an unlimited number of people."
   // industryBodyText: "healthcare"
 };

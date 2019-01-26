@@ -81,7 +81,7 @@ class TeamPicker extends Component {
 
     return (
       <AuthenticationPage
-        title="Sign in to Stitch Connect"
+        title="Sign in to Stitch"
         headerCTA="create"
         description={
           <span>
@@ -104,7 +104,7 @@ class TeamPicker extends Component {
               placeholder="your-carespace-url"
               maxLength={80}
             />
-            <span className="domain">.teamstitch.com</span>
+            <span className="domain">.stitch.health</span>
           </FormGroup>
           {showAlert && <InputErrorBlock>{this.errorText}</InputErrorBlock>}
 

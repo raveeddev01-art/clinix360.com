@@ -20,7 +20,7 @@ class Topbar extends Component {
         <ul className="nav navbar-nav">
           <li>
             <a
-              href="https://help.teamstitch.com"
+              href="https://help.stitch.health"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -38,7 +38,7 @@ class Topbar extends Component {
               <OverlayTrigger
                 placement="bottom"
                 container={this}
-                overlay={<Tooltip id="tooltip-info">Stitch Connect</Tooltip>}
+                overlay={<Tooltip id="tooltip-info">Stitch</Tooltip>}
               >
                 <i className="fa fa-comments" />
               </OverlayTrigger>

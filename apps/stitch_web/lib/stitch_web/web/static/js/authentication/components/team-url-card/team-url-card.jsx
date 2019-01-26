@@ -87,11 +87,11 @@ class CarespaceUrlCard extends Component {
       <div>
         <OnboardPage
           {...this.props}
-          title="Choose a URL for your Stitch Connect Carespace"
+          title="Choose a URL for your Stitch Carespace"
           description={
             <span>
               This is the URL you and your team members will use to sign in to
-              Stitch Connect.
+              Stitch.
             </span>
           }
           onNext={this.onNext}
@@ -112,7 +112,7 @@ class CarespaceUrlCard extends Component {
                 onChange={this.onChange}
                 maxLength={80}
               />
-              <span className="domain">.teamstitch.com</span>
+              <span className="domain">.stitch.health</span>
             </div>
             {error && <InputErrorBlock> {error} </InputErrorBlock>}
           </FormGroup>

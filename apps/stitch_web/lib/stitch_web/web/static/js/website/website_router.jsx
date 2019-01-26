@@ -29,16 +29,16 @@ import Industry from "./industries/industry";
 
 // PAGE TITLES
 // if changed, sync with backend (home_controller)
-const defaultTitle = "Care Coordination | Stitch Connect";
-const demoTitle = "Request a Demo | Stitch Connect";
-const connectTitle = "Care Coordination | Stitch Connect";
-const engageTitle = "Engage | Stitch Connect";
-const manageTitle = "Manage | Stitch Connect";
-const pricingTitle = "Pricing | Stitch Connect";
-const downloadsTitle = "Downloads | Stitch Connect";
-const jobsTitle = "Jobs | Stitch Connect";
-const customersTitle = "Customers | Stitch Connect";
-const hipaaTitle = "HIPAA Compliance | Stitch Connect";
+const defaultTitle = "Care Coordination | Stitch";
+const demoTitle = "Request a Demo | Stitch";
+const connectTitle = "Care Coordination | Stitch";
+const engageTitle = "Engage | Stitch";
+const manageTitle = "Manage | Stitch";
+const pricingTitle = "Pricing | Stitch";
+const downloadsTitle = "Downloads | Stitch";
+const jobsTitle = "Jobs | Stitch";
+const customersTitle = "Customers | Stitch";
+const hipaaTitle = "HIPAA Compliance | Stitch";
 const notFoundTitle = "404 | Page Not Found";
 
 class WebsiteRouter extends Component {

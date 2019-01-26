@@ -50,7 +50,7 @@ class DesktopNotification extends Component {
     return (
       <SettingPanel
         title="Desktop and Mobile Notifications"
-        description="These settings apply to all rooms and conversations in Stitch Connect, but are overriden by room specific settings below."
+        description="These settings apply to all rooms and conversations in Stitch, but are overriden by room specific settings below."
         onSave={this.onSave}
         onEdit={this.onToggleEdit}
       >
