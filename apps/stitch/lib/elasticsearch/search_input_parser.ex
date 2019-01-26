@@ -58,7 +58,11 @@ defmodule Stitch.SearchInputParser do
       term_with_ids
       |> Enum.map(fn room_string ->
         result = room_string |> String.split(":") |> List.last()
-        if result, do: String.to_integer(result), else: nil
+
+        case Integer.parse(result) do
+          {number, ""} -> number
+          _ -> nil
+        end
       end)
       |> Enum.filter(&(&1 != nil))
 
