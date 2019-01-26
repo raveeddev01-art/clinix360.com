@@ -17,21 +17,6 @@ export default class GetStartedCTA extends Component {
       "flex-item": !appSettings.hasLogin
     });
 
-    return (
-      <div className={getStartedClass}>
-        <div className="container">
-          <div className={boxClass}>
-            <div className="flex-item">
-              <h3>Get started for free</h3>
-              <h4>Unlimited users, unlimited time.</h4>
-            </div>
-
-            <div className={itemClass}>
-              <CreateTeam />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <div />;
   }
 }

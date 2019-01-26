@@ -69,8 +69,6 @@ export default class Connect extends Component {
 
                 <h3 className="m-b-30">{subHeader}</h3>
 
-                <CreateTeam />
-
                 <a
                   className="play-video-link hidden-xs hidden-sm"
                   onClick={this.videoModal}
@@ -298,41 +296,6 @@ export default class Connect extends Component {
                     </p>
                   </Panel.Body>
                 </Panel>
-              </div>
-
-              <div className="text-center">
-                {!mobile && (
-                  <Button
-                    bsStyle="primary"
-                    href="https://teamstitch.com/signup/email"
-                  >
-                    Get Started
-                  </Button>
-                )}
-
-                {mobile &&
-                  os === "iOS" && (
-                    <a
-                      href="http://stitch.app.link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-primary appstore-btn"
-                    >
-                      Get Stitch Connect for iOS
-                    </a>
-                  )}
-
-                {mobile &&
-                  os === "Android" && (
-                    <a
-                      href="http://stitch.app.link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-primary appstore-btn"
-                    >
-                      Get Stitch Connect for Android
-                    </a>
-                  )}
               </div>
             </div>
           </div>

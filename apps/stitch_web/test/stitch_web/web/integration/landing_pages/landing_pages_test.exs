@@ -10,6 +10,5 @@ defmodule Stitch.Web.Messages.LandingPagesTest do
     user_1_session
     |> visit("http://localhost:4001")
     |> assert_has(element("h1", "Collaboration hub for healthcare"))
-    |> assert_has(element(".btn-trial a", "Get Started"))
   end
 end

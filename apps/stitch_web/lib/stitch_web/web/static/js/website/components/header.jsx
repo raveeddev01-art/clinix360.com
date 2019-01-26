@@ -128,8 +128,6 @@ class Header extends Component {
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
-            <NavItem href="#connect-book-demo">Demo</NavItem>
-
             <NavDropdown
               title="Resources"
               id="resources-dropdown"
@@ -182,13 +180,7 @@ class Header extends Component {
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
-            {hasLogins ? (
-              this.renderYourCarespaces(appSettings.teams, false)
-            ) : (
-              <NavItem onClick={this.goToGetStarted} className="btn-trial">
-                Get Started
-              </NavItem>
-            )}
+            {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
           </Nav>
         </Navbar>
 
@@ -210,8 +202,6 @@ class Header extends Component {
               <LinkContainer to="/pricing">
                 <NavItem>Pricing</NavItem>
               </LinkContainer>
-
-              <NavItem href="#connect-book-demo">Demo</NavItem>
 
               <NavDropdown title="Resources" id="resources-dropdown">
                 <LinkContainer to="/downloads">
@@ -250,17 +240,8 @@ class Header extends Component {
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
               {!mobile &&
-                (hasLogins ? (
-                  this.renderYourCarespaces(appSettings.teams, true)
-                ) : (
-                  <NavItem
-                    onClick={this.goToGetStarted}
-                    className="btn-trial"
-                    id="get-started-btn"
-                  >
-                    Get Started
-                  </NavItem>
-                ))}
+                (hasLogins &&
+                  this.renderYourCarespaces(appSettings.teams, true))}
 
               {mobile &&
                 hasLogins &&
