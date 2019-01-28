@@ -86,7 +86,7 @@ defmodule Stitch.Web do
         check_origin: [
           "//*.teamstitch-staging.com",
           "//*.teamstitchapp.com",
-          "//*.teamstitch.com",
+          "//*.stitch.health",
           "//*.#{Application.fetch_env!(:stitch_web, :application_host)}"
         ]
       )

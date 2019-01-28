@@ -43,7 +43,7 @@ class PinCard extends Component {
           title="Set your PIN"
           description={
             <span>
-              Set a 4 digit PIN for lockout access into Stitch Connect.
+              Set a 4 digit PIN for lockout access into Stitch.
             </span>
           }
           onNext={this.onNext}

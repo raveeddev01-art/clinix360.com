@@ -38,11 +38,11 @@ class ConnectTour extends Component {
       {
         placement: "center",
         disableBeacon: true,
-        title: "Welcome to Stitch Connect",
+        title: "Welcome to Stitch",
         target: ".message-form-action-item",
         content: (
           <p>
-            Message your team, from any device. Stitch Connect is HIPAA
+            Message your team, from any device. Stitch is HIPAA
             compliant and free to use with an unlimited number of people.
           </p>
         )
@@ -54,7 +54,7 @@ class ConnectTour extends Component {
         target: ".create-room-button",
         content: (
           <p>
-            Conversations in Stitch Connect take place in <b>rooms</b>. Create
+            Conversations in Stitch take place in <b>rooms</b>. Create
             rooms for common topics of discussion.
           </p>
         )

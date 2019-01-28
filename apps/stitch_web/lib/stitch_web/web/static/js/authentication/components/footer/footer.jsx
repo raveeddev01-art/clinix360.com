@@ -43,7 +43,7 @@ export default class Footer extends Component {
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://help.teamstitch.com"
+                    href="https://help.stitch.health"
                   >
                     Help Center
                   </a>
@@ -90,8 +90,8 @@ export default class Footer extends Component {
                 156 2nd Street<br />
                 San Francisco, CA 94105<br />
                 <a href="tel:+16502823388">+1 (650) 282-3388</a>
-                <a href="mailto:support@teamstitch.com">
-                  support@teamstitch.com
+                <a href="mailto:support@stitch.health">
+                  support@stitch.health
                 </a>
               </address>
             </Col>

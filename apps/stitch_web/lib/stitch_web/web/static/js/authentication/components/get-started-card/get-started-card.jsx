@@ -82,7 +82,7 @@ class GetStartedCard extends Component {
           title="Get Started"
           description={
             <span>
-              A Stitch Connect Carespace is a place for healthcare teams to
+              A Stitch Carespace is a place for healthcare teams to
               collaborate in real-time through messaging, file sharing, video
               calling and more.
               <br />

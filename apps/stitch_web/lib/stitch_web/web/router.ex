@@ -146,13 +146,15 @@ defmodule Stitch.Web.Router do
   get(
     "/download-mac",
     Redirect,
-    external: "https://fz0pxcjnx9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-mac"
+    external:
+      "https://tyyomgzkjh.execute-api.us-east-1.amazonaws.com/prod/latest-stitch-desktop-mac"
   )
 
   get(
     "/download-win",
     Redirect,
-    external: "https://1lyrransd9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-win"
+    external:
+      "https://tyyomgzkjh.execute-api.us-east-1.amazonaws.com/prod/latest-stitch-desktop-win"
   )
 
   # ==============

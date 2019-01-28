@@ -9,7 +9,7 @@ defmodule Stitch.Web.AuthenticationController do
   @login_description "Sign in to your Stitch team by entering your carespace’s Stitch URL. Don't know your carespace URL? Enter your email address and we’ll send you a list of your carespaces."
 
   @signup_title "Create a Team | Stitch"
-  @signup_description "Create your Stitch team for free. Get started with our apps for internal team messaging, patient communication and task management."
+  @signup_description "Create your Stitch team for free. Get started with our collaboration hub for healthcare teams."
 
   def index(conn = %{request_path: path}, _params) do
     login_params = Stitch.Web.PageService.get_logins_json(conn)

@@ -39,7 +39,7 @@ class PasswordCard extends Component {
         <OnboardPage
           {...this.props}
           title="Set your password"
-          description="Select a password for signing into Stitch Connect."
+          description="Select a password for signing into Stitch."
           onNext={this._onNext}
           disableNext={formInvalid}
         >
