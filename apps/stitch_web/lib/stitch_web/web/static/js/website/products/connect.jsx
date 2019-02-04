@@ -6,6 +6,7 @@ import cx from "classnames";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
+import Button from "react-bootstrap/lib/Button";
 
 import Header from "../components/header";
 import Feature from "../components/feature";
@@ -60,6 +61,8 @@ export default class Connect extends Component {
                 <h1>{header}</h1>
 
                 <h3 className="m-b-30">{subHeader}</h3>
+
+                <Button bsStyle="primary" href="mailto:feedback@stitch.health?subject=Stitch: Request Information">Request Information</Button>
               </div>
 
               <div className="flex-item">
@@ -304,7 +307,7 @@ Connect.propTypes = {
 
 Connect.defaultProps = {
   flipped: false,
-  header: "Collaboration hub for healthcare",
+  header: "Healthcare Messaging",
   subHeader:
     "Message your team, from any device. Stitch is HIPAA compliant and free to use with an unlimited number of people."
   // industryBodyText: "healthcare"
