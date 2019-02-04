@@ -1383,7 +1383,7 @@
         },
         "email": {
           "type": "string",
-          "example": "jeff@teamstitch.com",
+          "example": "jeff@stitch.health",
           "description": "Email of the patient"
         }
       },

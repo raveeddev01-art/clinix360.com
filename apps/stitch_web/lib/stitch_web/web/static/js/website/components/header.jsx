@@ -169,6 +169,8 @@ class Header extends Component {
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
             {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
+
+            {!hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@stitch.health?subject=Stitch: Request Information">Request Information</NavItem>}
           </Nav>
         </Navbar>
 
@@ -234,6 +236,8 @@ class Header extends Component {
               {mobile &&
                 hasLogins &&
                 this.renderYourCarespaces(appSettings.teams, true)}
+
+              {mobile && !hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@stitch.health?subject=Stitch: Request Information">Request Information</NavItem>}
 
               {mobile &&
                 os === "iOS" && (
