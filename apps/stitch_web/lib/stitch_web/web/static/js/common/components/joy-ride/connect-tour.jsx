@@ -1,7 +1,6 @@
-import Joyride from "react-joyride";
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { ACTIONS, EVENTS } from "react-joyride/es/constants";
+import Joyride, { ACTIONS, EVENTS } from "react-joyride/es";
 
 import JoyRideToolTip from "./tooltip";
 

@@ -12,30 +12,15 @@ defmodule Stitch.Invitation.Email do
   """
   def team_invitation(inviter_name, invitation) do
     new_email()
-    |> template("Invitation (Phoenix)")
-    |> to(invitation.user.email)
+    |> text_body("""
+    Invitation (Phoenix)
+    inviterName: #{inviter_name}
+    inviterOrg: #{invitation.team.name}
+    receiverEmail: #{invitation.user.email}
+    joinTeamUrl: https://#{invitation.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{invitation.invite_token}
+    """)
+    |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || invitation.user.email)
     |> from({"Stitch", "support@teamstitch.com"})
     |> subject("Join Your Team")
-    |> put_param("global_merge_vars", [
-      %{
-        name: "inviterName",
-        content: inviter_name
-      },
-      %{
-        name: "inviterOrg",
-        content: invitation.team.name
-      },
-      %{
-        name: "receiverEmail",
-        content: invitation.user.email
-      },
-      %{
-        name: "joinTeamUrl",
-        content:
-          "https://#{invitation.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{
-            invitation.invite_token
-          }"
-      }
-    ])
   end
 end
