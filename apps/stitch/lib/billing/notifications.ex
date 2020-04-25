@@ -6,7 +6,6 @@ defmodule Stitch.Billing.Notifications do
   import Bamboo.MandrillHelper
   alias Stitch.Accounts.User
   alias Stitch.Team
-  alias Stitch.Mailer
 
   @doc """
   Sends an email for a successful payment.

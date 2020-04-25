@@ -14,10 +14,6 @@ config :stitch, Stitch.ReadReplicaRepo,
   ssl: true,
   loggers: [Appsignal.Ecto, Ecto.LogEntry]
 
-config :stitch, Stitch.Mailer,
-  adapter: Bamboo.MandrillAdapter,
-  api_key: System.get_env("MANDRILL_API_KEY")
-
 config :stitch, Stitch.NewMailer,
   adapter: Bamboo.MailgunAdapter,
   api_key: System.get_env("MAILGUN_KEY"),

@@ -18,7 +18,7 @@ config :stitch, Stitch.ReadReplicaRepo, repo_opts
 
 config :stitch, :read_repo, Stitch.Repo
 
-config :stitch, Stitch.Mailer, adapter: Bamboo.TestAdapter
+config :stitch, Stitch.NewMailer, adapter: Bamboo.TestAdapter
 
 config :stitch, Stitch.Exports, enabled: false
 
