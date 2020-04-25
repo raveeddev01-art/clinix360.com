@@ -186,7 +186,7 @@ defmodule Stitch.TimedMessage.Helper do
     email
     |> assign(:user_email, user.email)
     |> assign(:team_name, user.team.name)
-    |> assign(:team_login_url, "#{user.team.slug}.#{System.get_env("APP_HOST")}")
+    |> assign(:team_login_url, "#{user.team.slug}.#{System.get_env("STITCH_CONNECT_APP_HOST")}")
   end
 
   def with_invitation_attrs(email, params = %{"user" => user, "invitation" => invitation}) do
@@ -194,7 +194,7 @@ defmodule Stitch.TimedMessage.Helper do
     |> with_user_and_team_attrs(params)
     |> assign(
       :invitation_accept_url,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{
+      "#{user.team.slug}.#{System.get_env("STITCH_CONNECT_APP_HOST")}/invitations/accept/#{
         invitation.invite_token
       }"
     )
@@ -210,7 +210,7 @@ defmodule Stitch.TimedMessage.Helper do
     |> with_user_and_team_attrs(params)
     |> assign(
       :notifications_link,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}/admin/you/notifications"
+      "#{user.team.slug}.#{System.get_env("STITCH_CONNECT_APP_HOST")}/admin/you/notifications"
     )
   end
 
@@ -219,7 +219,7 @@ defmodule Stitch.TimedMessage.Helper do
     |> with_user_and_team_attrs(params)
     |> assign(
       :complete_profile_link,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}/admin/you/profile"
+      "#{user.team.slug}.#{System.get_env("STITCH_CONNECT_APP_HOST")}/admin/you/profile"
     )
   end
 
@@ -228,7 +228,7 @@ defmodule Stitch.TimedMessage.Helper do
     |> with_user_and_team_attrs(params)
     |> assign(
       :invite_others_link,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}/admin/members"
+      "#{user.team.slug}.#{System.get_env("STITCH_CONNECT_APP_HOST")}/admin/members"
     )
   end
 
@@ -237,7 +237,7 @@ defmodule Stitch.TimedMessage.Helper do
     |> with_user_and_team_attrs(params)
     |> assign(
       :invite_others_link,
-      "#{user.team.slug}.#{System.get_env("APP_HOST")}"
+      "#{user.team.slug}.#{System.get_env("STITCH_CONNECT_APP_HOST")}"
     )
   end
 end

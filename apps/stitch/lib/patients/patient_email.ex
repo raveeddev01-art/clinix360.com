@@ -71,6 +71,6 @@ defmodule Stitch.PatientEmail do
   end
 
   defp make_join_link(slug, token) do
-    "https://#{slug}.#{System.get_env("APP_HOST")}/patient/invitations/accept/#{token}"
+    "https://#{slug}.#{System.get_env("STITCH_CONNECT_APP_HOST")}/patient/invitations/accept/#{token}"
   end
 end

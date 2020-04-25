@@ -64,14 +64,14 @@ defmodule Stitch.Web.Endpoint do
     # Setting domain to nil is necessary for integration tests to pass. Maybe
     # a bug in Wallaby?
     #
-    # Setting domain to the APP_HOST env variable with a leading dot lets us
+    # Setting domain to the STITCH_CONNECT_APP_HOST env variable with a leading dot lets us
     # share cookies between domain and subdomains for auto-login after
     # on-boarding.
     domain:
       if(
         Application.fetch_env!(:stitch_web, :env) == :test,
         do: nil,
-        else: ".#{System.get_env("APP_HOST")}"
+        else: ".#{System.get_env("STITCH_CONNECT_APP_HOST")}"
       )
   )
 

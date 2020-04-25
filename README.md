@@ -55,7 +55,7 @@ variables.
 Ask the team for the environment values you need to set here:
 
 ```sh
-export APP_HOST=localhost.app
+export STITCH_CONNECT_APP_HOST=localhost.app
 
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
