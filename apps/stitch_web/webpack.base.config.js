@@ -1,6 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = [
@@ -23,7 +23,7 @@ module.exports = [
       ]
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
@@ -59,20 +59,17 @@ module.exports = [
     },
     output: {
       path: path.resolve(__dirname, "priv/static/css"),
-      filename: "[name].css"
+      // filename: "[name].css"
     },
     resolve: {
       modules: ["node_modules"]
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.(scss|css)$/,
           exclude: /node_modules/,
-          use: ExtractTextPlugin.extract({
-            fallback: "style-loader",
-            use: ["css-loader", "sass-loader"]
-          })
+          use: [MiniCssExtractPlugin.loader, 'css-loader', "sass-loader"],
         },
         {
           test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
@@ -81,7 +78,11 @@ module.exports = [
       ]
     },
     plugins: [
-      new ExtractTextPlugin("[name].css"),
+      new MiniCssExtractPlugin({
+        filename: '[name].css',
+        chunkFilename: '[id].[hash].css',
+        sourceMapFilename: '[name].[hash].map',
+      }),
       new CopyWebpackPlugin([
         {
           from: "./lib/stitch_web/web/static/favicon.ico",
