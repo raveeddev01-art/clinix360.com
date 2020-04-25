@@ -8,7 +8,7 @@ defmodule Stitch.Accounts.Email do
   alias Stitch.Accounts.{User, Role}
 
   @guest_roles Role.guests()
-  @from_address {"Stitch", "support@teamstitch.com"}
+  @from_address {"Stitch", "support@#{System.get_env("MAILGUN_DOMAIN")}"}
 
   @doc """
   Sends confirmation code email to the user.
@@ -92,7 +92,7 @@ defmodule Stitch.Accounts.Email do
     new_email()
     |> template("Security Password Reset (Phoenix)")
     |> to(user.email)
-    |> from({"Stitch", "support@teamstitch.com"})
+    |> from({"Stitch", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
     |> subject("ACTION REQUIRED: Please reset your Stitch password")
     |> put_param("global_merge_vars", [
       %{

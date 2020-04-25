@@ -14,7 +14,7 @@ defmodule Stitch.PatientEmail do
   use Bamboo.Phoenix, view: Stitch.EmailView
   import Bamboo.Email
 
-  @from_address {"Stitch", "hello@mail.teamstitch.com"}
+  @from_address {"Stitch", "hello@#{System.get_env("MAILGUN_DOMAIN")}"}
 
   def send_reset_password(patient, reset_link) do
     setup_auth_email(patient.email, "Stitch Health Password Reset")

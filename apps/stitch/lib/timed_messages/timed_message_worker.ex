@@ -11,7 +11,7 @@ defmodule Stitch.TimedMessage.Worker do
     TimedMessage.ConversationMessageForProvider
   }
 
-  @from_address {"Stitch", "hello@mail.teamstitch.com"}
+  @from_address {"Stitch", "hello@#{System.get_env("MAILGUN_DOMAIN")}"}
 
   # === PUBLIC ===
 

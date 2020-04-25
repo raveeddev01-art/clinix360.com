@@ -14,7 +14,7 @@ defmodule Stitch.Billing.Notifications do
     new_email()
     |> template("Payment Monthly Invoice (Connect)")
     |> to(email_address)
-    |> from({"Stitch", "support@teamstitch.com"})
+    |> from({"Stitch", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
     |> subject("Stitch Payment Received")
     |> put_param("global_merge_vars", [
       %{
@@ -36,7 +36,7 @@ defmodule Stitch.Billing.Notifications do
     new_email()
     |> template("Payment Subscription Failed (Connect)")
     |> to(user.email)
-    |> from({"Stitch", "support@teamstitch.com"})
+    |> from({"Stitch", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
     |> subject("Stitch Payment Failed")
     |> put_param("global_merge_vars", [
       %{

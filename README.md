@@ -59,13 +59,14 @@ export APP_HOST=localhost.app
 
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
-export S3_BUCKET_NAME=
+
 export S3_REGION=us-east-1
+export S3_CONTENT_BUCKET_NAME="stitch-content"
 
 export S3_AVATAR_BUCKET_NAME="stitch-avatars"
 export AVATAR_ORIGIN="https://avatars.teamstitch.com"
 
-export S3_PUBLIC_BUCKET_NAME="stitch-content-public"
+export S3_PUBLIC_BUCKET_NAME="stitch-public"
 export PUBLIC_CDN_ORIGIN="https://public.teamstitch.com"
 
 export APNS_TOPIC=
@@ -93,6 +94,8 @@ export ELASTICSEARCH_URL= # optional
 
 export TOKBOX_API_KEY=
 export TOKBOX_SECRET=
+
+export STITCH_CONNECT_POSTGRES_DATABASE=stitch_connect_dev
 ```
 
 Optional

@@ -27,7 +27,7 @@ config :stitch, :aws_user_upload, %{
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
   secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
   region: System.get_env("S3_REGION"),
-  bucket: System.get_env("S3_BUCKET_NAME"),
+  bucket: System.get_env("S3_CONTENT_BUCKET_NAME"),
   scheme: "https://",
   host: "s3.amazonaws.com",
   # in bytes, 1 GB

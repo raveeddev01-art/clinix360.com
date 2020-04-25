@@ -20,7 +20,7 @@ defmodule Stitch.Invitation.Email do
     joinTeamUrl: https://#{invitation.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{invitation.invite_token}
     """)
     |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || invitation.user.email)
-    |> from({"Stitch", "support@teamstitch.com"})
+    |> from({"Stitch", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
     |> subject("Join Your Team")
   end
 end
