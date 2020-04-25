@@ -1,6 +1,7 @@
 import React from "react";
 import { Emoji } from "emoji-mart";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
+import data from 'emoji-mart/data/all.json';
 import REGEX from "lib/regex";
 import Linkify from "linkifyjs/react";
 import UserMentionById from "../../common/components/messages/message-content/user-mention-by-id";
@@ -111,7 +112,7 @@ const standardTagRules = tag => (string, opts) => {
 };
 
 const hasEmoji = content => {
-  const emoji = getEmoji(content);
+  const emoji = getEmoji(content, undefined, undefined, data);
   return emoji && emoji.name;
 };
 
