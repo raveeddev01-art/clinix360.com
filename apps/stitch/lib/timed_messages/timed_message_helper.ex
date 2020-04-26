@@ -202,7 +202,7 @@ defmodule Stitch.TimedMessage.Helper do
 
   def with_download_app_link(email, _params) do
     email
-    |> assign(:download_app_link, "https://teamstitch.com/downloads")
+    |> assign(:download_app_link, "https://dvlcloud.com/downloads")
   end
 
   def with_notifications_link(email, params = %{"user" => user}) do

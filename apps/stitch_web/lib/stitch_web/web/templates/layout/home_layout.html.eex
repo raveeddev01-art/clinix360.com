@@ -3,7 +3,7 @@
   <head>
     <%= render "_tag_manager_head.html" %>
     <%= render "_shared_head.html" %>
-    <link href="https://stitch.health" rel="canonical">
+    <link href="https://dvlcloud.com" rel="canonical">
     <title><%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %></title>
     <meta name="description" content="<%= if assigns[:description], do: @description, else: "Stitch is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
 

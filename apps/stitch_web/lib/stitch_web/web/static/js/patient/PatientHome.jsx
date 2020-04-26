@@ -46,7 +46,7 @@ class PatientHome extends Component {
                   title="Help"
                   description="Articles and guides on how to use Stitch."
                   openButtonText="Open"
-                  link="https://help.stitch.health"
+                  link="https://help.dvlcloud.com"
                   newTab
                 />
               </div>

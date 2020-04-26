@@ -93,7 +93,7 @@
         },
         "email": {
           "type": "string",
-          "example": "jeff@stitch.health",
+          "example": "jeff@dvlcloud.com",
           "description": "Email of the patient"
         }
       },

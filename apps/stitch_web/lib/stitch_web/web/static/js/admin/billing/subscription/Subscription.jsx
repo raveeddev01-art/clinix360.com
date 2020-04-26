@@ -142,7 +142,7 @@ class Subscription extends Component {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://stitch.health/pricing"
+          href="https://dvlcloud.com/pricing"
         >
           here
         </a>.{" "}
@@ -150,7 +150,7 @@ class Subscription extends Component {
           planRemainingDays > 0 && (
             <span>
               Click{" "}
-              <a href="mailto:support@stitch.health?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch subscription for the following reasons:">
+              <a href="mailto:support@dvlcloud.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch subscription for the following reasons:">
                 here
               </a>{" "}
               to cancel your subscription.

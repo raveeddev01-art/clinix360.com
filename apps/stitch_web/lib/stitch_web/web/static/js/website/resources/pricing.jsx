@@ -61,7 +61,7 @@ export default class Pricing extends Component {
 
             <h4 className="text-center m-b-0">
               Need to deploy Connect across a large organization?{" "}
-              <a href="mailto:support@stitch.health">Contact us</a> for
+              <a href="mailto:support@dvlcloud.com">Contact us</a> for
               Enterprise pricing.
             </h4>
           </div>
@@ -89,7 +89,7 @@ export default class Pricing extends Component {
 
             <h4 className="text-center m-b-0">
               Need to deploy Engage across a large organization?{" "}
-              <a href="mailto:support@stitch.health">Contact us</a> for
+              <a href="mailto:support@dvlcloud.com">Contact us</a> for
               Enterprise pricing.
             </h4>
           </div>
@@ -117,7 +117,7 @@ export default class Pricing extends Component {
 
             <h4 className="text-center m-b-0">
               Need to deploy Manage across a large organization?{" "}
-              <a href="mailto:support@stitch.health">Contact us</a> for
+              <a href="mailto:support@dvlcloud.com">Contact us</a> for
               Enterprise pricing.
             </h4>
           </div>

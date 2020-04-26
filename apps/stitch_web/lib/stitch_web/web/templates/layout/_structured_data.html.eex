@@ -5,8 +5,8 @@
   {
     "@context": "http://schema.org",
     "@type": "Organization",
-    "url": "https://stitch.health/",
-    "logo": "https://stitch.health/images/rounded-logo.png",
+    "url": "https://dvlcloud.com/",
+    "logo": "https://dvlcloud.com/images/rounded-logo.png",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "San Francisco, CA",
@@ -31,6 +31,6 @@
     ],
     "name": "Stitch Health",
     "telephone": "+1-650-282-3388",
-    "email": "support@stitch.health"
+    "email": "support@dvlcloud.com"
   }
 </script>

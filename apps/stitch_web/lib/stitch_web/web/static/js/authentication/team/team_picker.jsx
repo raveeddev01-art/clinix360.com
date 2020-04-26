@@ -104,7 +104,7 @@ class TeamPicker extends Component {
               placeholder="your-carespace-url"
               maxLength={80}
             />
-            <span className="domain">.stitch.health</span>
+            <span className="domain">.dvlcloud.com</span>
           </FormGroup>
           {showAlert && <InputErrorBlock>{this.errorText}</InputErrorBlock>}
 

@@ -62,7 +62,7 @@ class DeleteTeamPanel extends Component {
           If you delete your carespace, all users will be unable to log into
           Stitch. Please be sure to export any data before proceeding. If you
           have any questions, please send us an email at&nbsp;
-          <a href="mailto:support@stitch.health">support@stitch.health</a>
+          <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>
         </HelpBlock>
 
         <Modal

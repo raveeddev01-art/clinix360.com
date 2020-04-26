@@ -18,7 +18,7 @@ const SystemError = ({ reloadDestination }) => (
       <p>
         Looks like Stitch ran into an issue. Please reload by clicking below. If
         you continue to experience issues, please email us at{" "}
-        <a href="mailto:support@stitch.health">support@stitch.health</a> and
+        <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a> and
         our support team will help you get back on track right away.
       </p>
 

@@ -1,30 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+<?xml version="1.0" encoding="UTF-8"?>
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
    xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
    xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
-    <loc>https://stitch.health/</loc>
+    <loc>https://dvlcloud.com/</loc>
     <lastmod>2018-05-22T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
 
     <image:image>
-      <image:loc>https://stitch.health/images/homepage-platform.png</image:loc>
+      <image:loc>https://dvlcloud.com/images/homepage-platform.png</image:loc>
       <image:caption>Stitch Platform</image:caption>
     </image:image>
 
     <image:image>
-      <image:loc>https://stitch.health/images/connect-homepage-test.png</image:loc>
+      <image:loc>https://dvlcloud.com/images/connect-homepage-test.png</image:loc>
       <image:caption>Stitch</image:caption>
     </image:image>
 
     <image:image>
-      <image:loc>https://stitch.health/images/connect-homepage-test.png</image:loc>
+      <image:loc>https://dvlcloud.com/images/connect-homepage-test.png</image:loc>
       <image:caption>Stitch Engage</image:caption>
     </image:image>
 
     <image:image>
-      <image:loc>https://stitch.health/images/manage-homepage.png</image:loc>
+      <image:loc>https://dvlcloud.com/images/manage-homepage.png</image:loc>
       <image:caption>Stitch Manage</image:caption>
     </image:image>
 
@@ -47,49 +47,49 @@
   </url>
 
   <url>
-    <loc>https://stitch.health/connect</loc>
+    <loc>https://dvlcloud.com/connect</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/engage</loc>
+    <loc>https://dvlcloud.com/engage</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/manage</loc>
+    <loc>https://dvlcloud.com/manage</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/industries/dentistry</loc>
+    <loc>https://dvlcloud.com/industries/dentistry</loc>
     <lastmod>2018-03-21T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/industries/primary-care</loc>
+    <loc>https://dvlcloud.com/industries/primary-care</loc>
     <lastmod>2018-03-21T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/industries/optometry</loc>
+    <loc>https://dvlcloud.com/industries/optometry</loc>
     <lastmod>2018-03-21T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/downloads</loc>
+    <loc>https://dvlcloud.com/downloads</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -97,91 +97,91 @@
 
 
   <url>
-    <loc>https://stitch.health/pricing</loc>
+    <loc>https://dvlcloud.com/pricing</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/demo</loc>
+    <loc>https://dvlcloud.com/demo</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/hipaa</loc>
+    <loc>https://dvlcloud.com/hipaa</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/privacy-policy</loc>
+    <loc>https://dvlcloud.com/privacy-policy</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/terms-of-service</loc>
+    <loc>https://dvlcloud.com/terms-of-service</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/baa</loc>
+    <loc>https://dvlcloud.com/baa</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/jobs</loc>
+    <loc>https://dvlcloud.com/jobs</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/signup/email</loc>
+    <loc>https://dvlcloud.com/signup/email</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/customers</loc>
+    <loc>https://dvlcloud.com/customers</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/customers/dermatology-skin-surgery-institute</loc>
+    <loc>https://dvlcloud.com/customers/dermatology-skin-surgery-institute</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/customers/princeton-brain-spine</loc>
+    <loc>https://dvlcloud.com/customers/princeton-brain-spine</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/customers/UCSF-citywide</loc>
+    <loc>https://dvlcloud.com/customers/UCSF-citywide</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://stitch.health/customers/orchard-medical-associates</loc>
+    <loc>https://dvlcloud.com/customers/orchard-medical-associates</loc>
     <lastmod>2018-03-15T05:01:27+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

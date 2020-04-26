@@ -1,7 +1,7 @@
 # Stitch Umbrella
 
 This is the main umbrella application for
-[Stitch](https://teamstitch.com/).
+[Stitch](https://dvlcloud.com/).
 
 It contains two Elixir applications:
 
@@ -64,10 +64,10 @@ export S3_REGION=us-east-1
 export S3_CONTENT_BUCKET_NAME="stitch-content"
 
 export S3_AVATAR_BUCKET_NAME="stitch-avatars"
-export AVATAR_ORIGIN="https://avatars.teamstitch.com"
+export AVATAR_ORIGIN="https://avatars.dvlcloud.com"
 
 export S3_PUBLIC_BUCKET_NAME="stitch-public"
-export PUBLIC_CDN_ORIGIN="https://public.teamstitch.com"
+export PUBLIC_CDN_ORIGIN="https://public.dvlcloud.com"
 
 export APNS_TOPIC=
 export APNS_CERT_B64=

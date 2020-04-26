@@ -69,7 +69,7 @@ defmodule Stitch.Web.Api.V1.Docs do
 
               properties do
                 id(:integer, "Unique identifier")
-                email(:string, "Email of the patient", example: "jeff@stitch.health")
+                email(:string, "Email of the patient", example: "jeff@dvlcloud.com")
                 onboarded(:boolean, "Whether the patient is onboarded.")
               end
             end,

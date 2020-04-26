@@ -40,14 +40,14 @@ export default class TeamHipaa extends Component {
         <p>
           For an explanation of our BAA, see{" "}
           <a
-            href="https://help.stitch.health/connect/security/business-associate-agreement-baa"
+            href="https://help.dvlcloud.com/connect/security/business-associate-agreement-baa"
             target="_blank"
             rel="noopener noreferrer"
           >
             here
           </a>. For details on our HIPAA compliance, see{" "}
           <a
-            href="https://help.stitch.health/connect/security/hipaa-compliance"
+            href="https://help.dvlcloud.com/connect/security/hipaa-compliance"
             target="_blank"
             rel="noopener noreferrer"
           >

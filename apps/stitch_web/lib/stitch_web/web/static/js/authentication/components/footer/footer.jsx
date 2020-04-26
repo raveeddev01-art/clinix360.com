@@ -43,7 +43,7 @@ export default class Footer extends Component {
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://help.stitch.health"
+                    href="https://help.dvlcloud.com"
                   >
                     Help Center
                   </a>
@@ -90,8 +90,8 @@ export default class Footer extends Component {
                 156 2nd Street<br />
                 San Francisco, CA 94105<br />
                 <a href="tel:+16502823388">+1 (650) 282-3388</a>
-                <a href="mailto:support@stitch.health">
-                  support@stitch.health
+                <a href="mailto:support@dvlcloud.com">
+                  support@dvlcloud.com
                 </a>
               </address>
             </Col>

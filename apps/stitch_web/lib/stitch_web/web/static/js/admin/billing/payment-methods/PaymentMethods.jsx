@@ -40,7 +40,7 @@ class PaymentMethods extends Component {
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href="https://help.stitch.health/team-administration/subscribing-and-billing"
+              href="https://help.dvlcloud.com/team-administration/subscribing-and-billing"
             >
               here
             </a>

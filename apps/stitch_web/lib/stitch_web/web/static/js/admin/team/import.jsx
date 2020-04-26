@@ -11,7 +11,7 @@ const description =
 
 export default class TeamImport extends Component {
   _mailToFor = app => {
-    return `mailto:support@stitch.health?subject=Import Data from ${app}&body=We would like to import data from ${app} to Stitch.`;
+    return `mailto:support@dvlcloud.com?subject=Import Data from ${app}&body=We would like to import data from ${app} to Stitch.`;
   };
 
   render() {

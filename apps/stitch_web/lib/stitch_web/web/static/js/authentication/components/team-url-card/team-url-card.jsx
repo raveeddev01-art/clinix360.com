@@ -112,7 +112,7 @@ class CarespaceUrlCard extends Component {
                 onChange={this.onChange}
                 maxLength={80}
               />
-              <span className="domain">.stitch.health</span>
+              <span className="domain">.dvlcloud.com</span>
             </div>
             {error && <InputErrorBlock> {error} </InputErrorBlock>}
           </FormGroup>

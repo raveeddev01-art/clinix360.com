@@ -150,7 +150,7 @@ class Header extends Component {
               </LinkContainer>
 
               <MenuItem
-                href="https://help.stitch.health"
+                href="https://help.dvlcloud.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -170,7 +170,7 @@ class Header extends Component {
 
             {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
 
-            {!hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@stitch.health?subject=Stitch: Request Information">Request Information</NavItem>}
+            {!hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@dvlcloud.com?subject=Stitch: Request Information">Request Information</NavItem>}
           </Nav>
         </Navbar>
 
@@ -201,7 +201,7 @@ class Header extends Component {
                 </LinkContainer>
 
                 <MenuItem
-                  href="https://help.stitch.health"
+                  href="https://help.dvlcloud.com"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -237,7 +237,7 @@ class Header extends Component {
                 hasLogins &&
                 this.renderYourCarespaces(appSettings.teams, true)}
 
-              {mobile && !hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@stitch.health?subject=Stitch: Request Information">Request Information</NavItem>}
+              {mobile && !hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@dvlcloud.com?subject=Stitch: Request Information">Request Information</NavItem>}
 
               {mobile &&
                 os === "iOS" && (

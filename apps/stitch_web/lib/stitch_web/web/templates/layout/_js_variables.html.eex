@@ -12,7 +12,7 @@ app_settings = Poison.encode!(%{
   teams: teams,
   patientTeams: patient_teams,
   notification_sounds: Stitch.Accounts.User.notification_sounds(),
-  cdn_origin: Application.fetch_env!(:stitch, :public_cdn)[:origin] # https://public.stitch.health
+  cdn_origin: Application.fetch_env!(:stitch, :public_cdn)[:origin] # https://public.dvlcloud.com
 })
 %>
 

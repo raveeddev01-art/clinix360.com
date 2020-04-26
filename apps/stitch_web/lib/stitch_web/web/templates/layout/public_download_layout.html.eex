@@ -12,7 +12,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://stitch.health" rel="canonical">
+    <link href="https://dvlcloud.com" rel="canonical">
     <meta name="author" content="">
     <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token %>">
 

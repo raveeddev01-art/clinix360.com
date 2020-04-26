@@ -337,7 +337,7 @@ export default class PrivacyPolicy extends Component {
               this information for the sole purpose of sending this one-time
               email and tracking the success of our referral program. Your
               colleague may contact us at{" "}
-              <a href="mailto:support@stitch.health">support@stitch.health</a>
+              <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>
               to request that we remove this information from our database.
             </p>
           </div>
@@ -359,8 +359,8 @@ export default class PrivacyPolicy extends Component {
               all such information, then your account may become deactivated. If
               you would like us to delete your account in our system, please
               contact us at{" "}
-              <a href="mailto:support@stitch.health">
-                support@stitch.health
+              <a href="mailto:support@dvlcloud.com">
+                support@dvlcloud.com
               </a>{" "}
               with a request that we delete your Personal Information from our
               database. We will use commercially reasonable efforts to honor
@@ -437,8 +437,8 @@ export default class PrivacyPolicy extends Component {
               children under 13. If a parent or guardian becomes aware that his
               or her child has provided us with Personal Information without
               their consent, he or she should contact us at{" "}
-              <a href="mailto:support@stitch.health">
-                support@stitch.health
+              <a href="mailto:support@dvlcloud.com">
+                support@dvlcloud.com
               </a>. If we become aware that a child under 13 has provided us
               with Personal Information, we will delete such information from
               our files.
@@ -461,7 +461,7 @@ export default class PrivacyPolicy extends Component {
               San Francisco, CA 94105<br />
               <a href="tel:+16502823388">+1 (650) 282-3388</a>
               <br />
-              <a href="mailto:support@stitch.health">support@stitch.health</a>
+              <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>
             </address>
           </div>
         </div>

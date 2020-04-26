@@ -62,7 +62,7 @@ export default class Connect extends Component {
 
                 <h3 className="m-b-30">{subHeader}</h3>
 
-                <Button bsStyle="primary" href="mailto:feedback@stitch.health?subject=Stitch: Request Information">Request Information</Button>
+                <Button bsStyle="primary" href="mailto:feedback@dvlcloud.com?subject=Stitch: Request Information">Request Information</Button>
               </div>
 
               <div className="flex-item">
@@ -136,7 +136,7 @@ export default class Connect extends Component {
                     who of your team’s Stitch usage.
                   </p>
 
-                  <a href="https://help.stitch.health/hc/en-us/articles/360010902353">
+                  <a href="https://help.dvlcloud.com/hc/en-us/articles/360010902353">
                     Learn more about Analytics
                   </a>
                 </div>
@@ -152,7 +152,7 @@ export default class Connect extends Component {
                     interval, password requirements and user invite ability.
                   </p>
 
-                  <a href="https://help.stitch.health/hc/en-us/categories/360000720214-Security-and-Compliance">
+                  <a href="https://help.dvlcloud.com/hc/en-us/categories/360000720214-Security-and-Compliance">
                     Learn more about Security
                   </a>
                 </div>
@@ -168,7 +168,7 @@ export default class Connect extends Component {
                     notification settings for each chat room. Never miss a beat.
                   </p>
 
-                  <a href="https://help.stitch.health/hc/en-us/articles/360007604194-About-notifications">
+                  <a href="https://help.dvlcloud.com/hc/en-us/articles/360007604194-About-notifications">
                     Learn more about Notifications
                   </a>
                 </div>
@@ -184,7 +184,7 @@ export default class Connect extends Component {
                     easy-to-access read receipts for every message.
                   </p>
 
-                  <a href="https://help.stitch.health/hc/en-us/articles/235554867-Message-info">
+                  <a href="https://help.dvlcloud.com/hc/en-us/articles/235554867-Message-info">
                     Learn more about Read Receipts
                   </a>
                 </div>
@@ -200,7 +200,7 @@ export default class Connect extends Component {
                     logs and create data exports with the click of a button.
                   </p>
 
-                  <a href="https://help.stitch.health/hc/en-us/categories/360000723973-Carespace-Administration">
+                  <a href="https://help.dvlcloud.com/hc/en-us/categories/360000723973-Carespace-Administration">
                     Learn more about Administration
                   </a>
                 </div>
@@ -216,7 +216,7 @@ export default class Connect extends Component {
                     integration. Get alerts for key updates right in Stitch.
                   </p>
 
-                  <a href="https://help.stitch.health/hc/en-us/articles/360007574334-EHR-Integrations">
+                  <a href="https://help.dvlcloud.com/hc/en-us/articles/360007574334-EHR-Integrations">
                     Learn more about Integrations
                   </a>
                 </div>

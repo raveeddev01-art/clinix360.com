@@ -20,7 +20,7 @@ class Topbar extends Component {
         <ul className="nav navbar-nav">
           <li>
             <a
-              href="https://help.stitch.health"
+              href="https://help.dvlcloud.com"
               rel="noopener noreferrer"
               target="_blank"
             >

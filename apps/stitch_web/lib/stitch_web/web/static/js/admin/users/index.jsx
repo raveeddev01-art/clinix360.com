@@ -111,7 +111,7 @@ class TeamSettings extends Component {
             For more information on how account enabling and disabling works,
             see our support article&nbsp;
             <a
-              href="https://help.stitch.health/connect/admin/user-management"
+              href="https://help.dvlcloud.com/connect/admin/user-management"
               target="_blank"
               rel="noopener noreferrer"
             >

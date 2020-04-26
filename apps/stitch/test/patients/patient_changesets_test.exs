@@ -7,7 +7,7 @@ defmodule Stitch.Patient.ChangesetsTest do
       valid_params = %{
         first_name: "Nicolas",
         last_name: "Oudinot",
-        email: "nico@teamstitch.com",
+        email: "nico@dvlcloud.com",
         mrn: "23u0249801"
       }
 

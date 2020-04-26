@@ -1,4 +1,4 @@
-User-agent: * 
-Disallow: 
+User-agent: *
+Disallow:
 
-Sitemap: https://www.stitch.health/sitemap.xml
+Sitemap: https://www.dvlcloud.com/sitemap.xml

@@ -21,7 +21,7 @@
 
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
 
-                            <div style="text-align: left;"><a href="http://stitch.health" target="_blank"><img align="center" height="50" src="https://gallery.mailchimp.com/5fbbcf9bc8ed5ff1328134d1e/images/6918962f-cbf4-485d-9e45-e9688303cd7c.png" style="width: 50px; height: 50px; margin: 0px 0px 15px;" width="50"></a></div>
+                            <div style="text-align: left;"><a href="http://dvlcloud.com" target="_blank"><img align="center" height="50" src="https://gallery.mailchimp.com/5fbbcf9bc8ed5ff1328134d1e/images/6918962f-cbf4-485d-9e45-e9688303cd7c.png" style="width: 50px; height: 50px; margin: 0px 0px 15px;" width="50"></a></div>
 
                         </td>
                     </tr>
@@ -152,7 +152,7 @@ Email:&nbsp;</span><font color="#000000"><a href="<%=@user_email%>" target="_bla
 
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
 
-                            <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">Check out our <a href="https://help.stitch.health/" target="_blank">help guides</a> to learn more now about setting up your account, sending out invites, sending messages, uploading files, and more.</font></span><br>
+                            <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">Check out our <a href="https://help.dvlcloud.com/" target="_blank">help guides</a> to learn more now about setting up your account, sending out invites, sending messages, uploading files, and more.</font></span><br>
 <br>
 <span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">This is the first of a few important emails to help you get started with Stitch!</font></span></span>
                         </td>
@@ -204,7 +204,7 @@ Email:&nbsp;</span><font color="#000000"><a href="<%=@user_email%>" target="_bla
 
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
 
-                            <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">If you need anything, we're here for you. Simply <a href="mailto:support@stitch.health" target="_blank">c</a><span style="color:#000000"><a href="mailto:support@stitch.health" target="_blank">ontact us</a> with feedback or a support request. We love to hear from you :)</span><br>
+                            <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">If you need anything, we're here for you. Simply <a href="mailto:support@dvlcloud.com" target="_blank">c</a><span style="color:#000000"><a href="mailto:support@dvlcloud.com" target="_blank">ontact us</a> with feedback or a support request. We love to hear from you :)</span><br>
 <br>
 See you inside!<br>
 <span style="color:#000000">— Team Stitch&nbsp;</span></span></span><br>
@@ -252,7 +252,7 @@ See you inside!<br>
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: Verdana, Geneva, sans-serif; line-height: 200%;">
 
                             <div style="text-align: center;"><br>
-<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://stitch.health" target="_blank">Stitch Technologies, Inc.</a><br>
+<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://dvlcloud.com" target="_blank">Stitch Technologies, Inc.</a><br>
 156 2nd Street, 2nd Floor&nbsp;• San Francisco, CA 94105</span></span></div>
 
                         </td>

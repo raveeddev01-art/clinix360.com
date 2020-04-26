@@ -98,7 +98,7 @@ export default class Demo extends Component {
                   <FormControl
                     name="email"
                     required
-                    placeholder="hello@stitch.health"
+                    placeholder="hello@dvlcloud.com"
                     type="email"
                     value={this.state.email}
                     onChange={this.handleChange}
