@@ -21,6 +21,7 @@ config :stitch_web, Stitch.Web.Endpoint,
   watchers: [
     node: [
       "node_modules/webpack/bin/webpack.js",
+      "--mode=development",
       "--watch-stdin",
       "--progress",
       "--color",

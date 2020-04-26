@@ -34,20 +34,12 @@ defmodule Stitch.Accounts.Email do
   @spec reset_password_email(User.t(), binary) :: Bamboo.Email.t()
   def reset_password_email(user, reset_url) do
     new_email()
-    |> template("Password Reset (Connect)")
     |> to(user.email)
     |> from(@from_address)
     |> subject("Reset Your Password")
-    |> put_param("global_merge_vars", [
-      %{
-        name: "resetPasswordUrl",
-        content: reset_url
-      },
-      %{
-        name: "receiverFirstName",
-        content: user.first_name
-      }
-    ])
+    |> text_body("Hello #{user.first_name}
+    Hit to reset your password: #{reset_url}
+    ")
     |> Stitch.NewMailer.deliver_now()
   end
 
@@ -90,20 +82,12 @@ defmodule Stitch.Accounts.Email do
   @spec temporary_password_reset(Stitch.Accounts.User.t(), binary) :: {:ok}
   def temporary_password_reset(user, reset_url) do
     new_email()
-    |> template("Security Password Reset (Phoenix)")
     |> to(user.email)
     |> from({"Stitch", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
     |> subject("ACTION REQUIRED: Please reset your Stitch password")
-    |> put_param("global_merge_vars", [
-      %{
-        name: "resetPasswordUrl",
-        content: reset_url
-      },
-      %{
-        name: "receiverFirstName",
-        content: user.first_name
-      }
-    ])
+    |> text_body("Hello #{user.first_name}
+    Please hit the link to chnage password #{reset_url}
+    ")
     |> Stitch.NewMailer.deliver_now()
   end
 
