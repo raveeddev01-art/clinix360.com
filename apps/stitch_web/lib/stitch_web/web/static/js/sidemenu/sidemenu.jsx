@@ -28,7 +28,7 @@ class Sidemenu extends Component {
     sidemenuStore.unloadSidemenuDiv();
   }
 
-  onDropdownToggle = isDropdownOpen => {
+  onDropdownToggle = (isDropdownOpen) => {
     if (isDropdownOpen) {
       this.overlayTrigger.hide();
     }
@@ -42,7 +42,7 @@ class Sidemenu extends Component {
           (roomItem.type === "dm" || roomItem.type === "multi_dm") &&
           (roomItem.unread_messages_count || roomItem.mentions_count),
         "edge-badge--unreads":
-          roomItem.type === "regular" && !roomItem.mentions_count
+          roomItem.type === "regular" && !roomItem.mentions_count,
       },
       direction
     );
@@ -60,7 +60,7 @@ class Sidemenu extends Component {
     }
   };
 
-  showInviteModal = evt => {
+  showInviteModal = (evt) => {
     evt.preventDefault();
     this.toggleInviteModal();
   };
@@ -106,7 +106,8 @@ class Sidemenu extends Component {
         role="link"
         onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
       >
-        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
+        <span>{text}</span>&nbsp;&nbsp;
+        <i className="fa fa-arrow-up" />
       </div>
     );
   }
@@ -128,14 +129,15 @@ class Sidemenu extends Component {
         role="link"
         onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
       >
-        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
+        <span>{text}</span>&nbsp;&nbsp;
+        <i className="fa fa-arrow-down" />
       </div>
     );
   }
 
   render() {
     const { sidemenuStore, userStore, groupsStore } = this.props;
-    const filterJoined = rooms => rooms.filter(room => room.joined);
+    const filterJoined = (rooms) => rooms.filter((room) => room.joined);
 
     return (
       <div id="sidemenu">
@@ -157,7 +159,7 @@ class Sidemenu extends Component {
           >
             <Dropdown.Toggle noCaret bsStyle="link">
               <OverlayTrigger
-                ref={ref => {
+                ref={(ref) => {
                   this.overlayTrigger = ref;
                 }}
                 placement="bottom"
@@ -174,7 +176,7 @@ class Sidemenu extends Component {
                 <Avatar
                   user={{
                     avatar_thumb: userStore.avatarThumb,
-                    username: userStore.username
+                    username: userStore.username,
                   }}
                   size="sm"
                 />
@@ -203,7 +205,7 @@ class Sidemenu extends Component {
               {userStore.isAdmin && this.renderAdminOptions()}
 
               <div className="separator text-center">
-                <span>Stitch</span>
+                <span>Clinix360</span>
               </div>
 
               {userStore.canInvite && (
@@ -224,7 +226,7 @@ class Sidemenu extends Component {
           <div className="rooms-menu">
             <Scrollbar
               className="scrollbar"
-              viewRef={ref => {
+              viewRef={(ref) => {
                 this.scrollbar = ref;
               }}
             >

@@ -20,23 +20,23 @@ class Subscription extends Component {
       checkout: false,
       plan: {
         frequency: 1,
-        tier: ""
-      }
+        tier: "",
+      },
     };
   }
 
-  onSelectFrequency = frequency => {
+  onSelectFrequency = (frequency) => {
     const { plan } = this.state;
 
     this.setState({
       plan: {
         ...plan,
-        frequency
-      }
+        frequency,
+      },
     });
   };
 
-  onSelectTier = tier => {
+  onSelectTier = (tier) => {
     const { plan } = this.state;
 
     this.setState({ plan: { ...plan, tier } });
@@ -68,10 +68,10 @@ class Subscription extends Component {
     this.subscribe();
   };
 
-  onCardSubmitError = error => {
+  onCardSubmitError = (error) => {
     alertModal({
       title: "Error in creating a stripe Token",
-      message: error.message
+      message: error.message,
     });
   };
 
@@ -79,23 +79,23 @@ class Subscription extends Component {
     const { billingStore } = this.props;
     const { plan } = this.state;
 
-    billingStore.subscribe(plan).then(subscription => {
+    billingStore.subscribe(plan).then((subscription) => {
       const text = `Your carespace is now changed to ${capitalize(
         subscription.tier
       )} tier`;
 
       alertModal({
-        title: "Thanks for using Stitch!",
+        title: "Thanks for using Clinix360!",
         message: (
           <p>
             We successfully saved your card info. <br /> <b>{text}</b>
           </p>
-        )
+        ),
       });
 
       this.setState({
         checkout: false,
-        changePlan: false
+        changePlan: false,
       });
     });
   }
@@ -111,7 +111,11 @@ class Subscription extends Component {
   }
 
   renderStatus() {
-    const { billingStore: { subscription: { tier } } } = this.props;
+    const {
+      billingStore: {
+        subscription: { tier },
+      },
+    } = this.props;
     const { changePlan } = this.state;
 
     if (changePlan) {
@@ -132,8 +136,8 @@ class Subscription extends Component {
   renderFooter() {
     const {
       billingStore: {
-        subscription: { tier, plan_remaining_days: planRemainingDays }
-      }
+        subscription: { tier, plan_remaining_days: planRemainingDays },
+      },
     } = this.props;
 
     return (
@@ -145,17 +149,17 @@ class Subscription extends Component {
           href="https://dvlcloud.com/pricing"
         >
           here
-        </a>.{" "}
-        {tier !== "FREE" &&
-          planRemainingDays > 0 && (
-            <span>
-              Click{" "}
-              <a href="mailto:support@dvlcloud.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch subscription for the following reasons:">
-                here
-              </a>{" "}
-              to cancel your subscription.
-            </span>
-          )}
+        </a>
+        .{" "}
+        {tier !== "FREE" && planRemainingDays > 0 && (
+          <span>
+            Click{" "}
+            <a href="mailto:support@dvlcloud.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Clinix360 subscription for the following reasons:">
+              here
+            </a>{" "}
+            to cancel your subscription.
+          </span>
+        )}
       </p>
     );
   }
@@ -165,9 +169,9 @@ class Subscription extends Component {
       billingStore: {
         subscription: {
           valid_until: validUntil,
-          estimated_invoice_amount: estimatedInvoiceAmount
-        }
-      }
+          estimated_invoice_amount: estimatedInvoiceAmount,
+        },
+      },
     } = this.props;
 
     const invoiceAmount = (estimatedInvoiceAmount / 100).toFixed(2);
@@ -179,7 +183,11 @@ class Subscription extends Component {
   }
 
   renderSubscribedPlan() {
-    const { billingStore: { subscription: { tier } } } = this.props;
+    const {
+      billingStore: {
+        subscription: { tier },
+      },
+    } = this.props;
     const belowTier = capitalize(getBelowTier(tier));
     const planItems = getPlanForTier(tier).items;
 
@@ -187,25 +195,26 @@ class Subscription extends Component {
       <div className="subscribed">
         <p>
           {this.renderRenewInfo()}
-          <b>{capitalize(tier)}</b> includes{belowTier && (
+          <b>{capitalize(tier)}</b> includes
+          {belowTier && (
             <span>
               {" "}
               everything in <b>{belowTier}</b>, and
             </span>
-          )}:
+          )}
+          :
         </p>
 
-        {planItems &&
-          planItems.length > 0 && (
-            <ul className="list-unstyled">
-              {planItems.map((item, index) => (
-                <li key={`item_${index}`}>
-                  <i className="fa fa-check-circle-o" />
-                  {item.content} {item.beta && <i>(Beta)</i>}
-                </li>
-              ))}
-            </ul>
-          )}
+        {planItems && planItems.length > 0 && (
+          <ul className="list-unstyled">
+            {planItems.map((item, index) => (
+              <li key={`item_${index}`}>
+                <i className="fa fa-check-circle-o" />
+                {item.content} {item.beta && <i>(Beta)</i>}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="clearfix">
           <button
@@ -221,7 +230,11 @@ class Subscription extends Component {
   }
 
   renderSelectPlan() {
-    const { billingStore: { subscription: { tier } } } = this.props;
+    const {
+      billingStore: {
+        subscription: { tier },
+      },
+    } = this.props;
     const { plan } = this.state;
     const tiers = getSelectableTiers(tier);
 
@@ -238,7 +251,11 @@ class Subscription extends Component {
   }
 
   renderSubscription() {
-    const { billingStore: { subscription: { tier } } } = this.props;
+    const {
+      billingStore: {
+        subscription: { tier },
+      },
+    } = this.props;
     const { changePlan } = this.state;
 
     return (
@@ -268,7 +285,9 @@ class Subscription extends Component {
   }
 
   render() {
-    const { billingStore: { loading } } = this.props;
+    const {
+      billingStore: { loading },
+    } = this.props;
     const { checkout } = this.state;
 
     return this.props.billingStore.dataLoaded ? (

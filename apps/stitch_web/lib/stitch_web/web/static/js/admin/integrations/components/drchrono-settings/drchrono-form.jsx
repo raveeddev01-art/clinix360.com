@@ -43,7 +43,7 @@ class DrChronoForm extends Component {
       patientMedicationModify:
         integration.settings.patientMedicationModify || false,
       clientId: integration.credentials.clientId,
-      clientSecret: integration.credentials.clientSecret
+      clientSecret: integration.credentials.clientSecret,
     };
   }
 
@@ -52,14 +52,14 @@ class DrChronoForm extends Component {
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
   }
 
-  onChange = event => {
+  onChange = (event) => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
     this.setState(
       {
-        [name]: value
+        [name]: value,
       },
       () => {
         this._updateConfig();
@@ -76,21 +76,20 @@ class DrChronoForm extends Component {
       id: this.props.integration.id,
       groupId: parseInt(this.state.groupId, 10),
       credentials,
-      settings: omit(this.state, ["groupId", "id", "clientId", "clientSecret"])
+      settings: omit(this.state, ["groupId", "id", "clientId", "clientSecret"]),
     };
 
     this.props.integrationStore.updateIntegration(params);
   };
 
-  _handleFormSubmit = event => {
+  _handleFormSubmit = (event) => {
     event.preventDefault();
     this._updateConfig();
     history.push("/admin/integrations/drchrono");
   };
 
   _redirectUri = () => {
-    return `${applicationScheme}${applicationHost}/_oauth/drchrono/${this.state
-      .webhookToken}`;
+    return `${applicationScheme}${applicationHost}/_oauth/drchrono/${this.state.webhookToken}`;
   };
 
   _renderAuthenticateButton = () => {
@@ -107,8 +106,9 @@ class DrChronoForm extends Component {
       <Button
         style={{ marginTop: "20px" }}
         bsStyle="primary"
-        href={`https://drchrono.com/o/authorize?redirect_uri=${this._redirectUri()}&client_id=${this
-          .state.clientId}&response_type=code`}
+        href={`https://drchrono.com/o/authorize?redirect_uri=${this._redirectUri()}&client_id=${
+          this.state.clientId
+        }&response_type=code`}
       >
         Authenticate
       </Button>
@@ -156,7 +156,7 @@ class DrChronoForm extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Notifications</h4>
             <p>
-              Which drchrono notification would you like to appear in Stitch?
+              Which drchrono notification would you like to appear in Clinix360?
             </p>
           </Col>
 
@@ -270,7 +270,7 @@ class DrChronoForm extends Component {
               componentClass="select"
               defaultValue={this.state.groupId}
             >
-              {this.props.groupsStore.regularGroups.map(group => (
+              {this.props.groupsStore.regularGroups.map((group) => (
                 <option key={`option-group-${group.id}`} value={group.id}>
                   {this.props.groupsStore.getGroupName(group)}
                 </option>

@@ -7,7 +7,7 @@ export default class AndroidMobile extends Component {
         <h5>
           <div className="card-description">
             Download the <strong>Android Mobile App</strong> to get the best
-            experience using Stitch.
+            experience using Clinix360.
           </div>
         </h5>
 
@@ -18,7 +18,7 @@ export default class AndroidMobile extends Component {
           <img
             src="/images/playstore.png"
             className="img-responsive"
-            alt="Download Stitch on Play store"
+            alt="Download Clinix360 on Play store"
           />
         </a>
       </div>

@@ -10,8 +10,8 @@ export default class NavItemRemoveRoom extends Component {
     confirmModal({
       title: "Remove Room",
       message:
-        "Are you sure you want to delete the room? All of the room's messages will be removed from Stitch immediately. This cannot be undone.",
-      okLabel: "Remove"
+        "Are you sure you want to delete the room? All of the room's messages will be removed from Clinix360 immediately. This cannot be undone.",
+      okLabel: "Remove",
     })
       .then(() => {
         const { groupsStore } = this.props;

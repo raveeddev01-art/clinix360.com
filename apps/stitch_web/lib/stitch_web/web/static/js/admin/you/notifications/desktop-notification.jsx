@@ -13,7 +13,7 @@ class DesktopNotification extends Component {
     super(props);
 
     this.state = {
-      pref: ""
+      pref: "",
     };
   }
 
@@ -21,11 +21,11 @@ class DesktopNotification extends Component {
     const { notificationStore } = this.props;
 
     this.setState({
-      pref: notificationStore.desktopPref
+      pref: notificationStore.desktopPref,
     });
   };
 
-  onChange = pref => () => {
+  onChange = (pref) => () => {
     this.setState({ pref });
   };
 
@@ -39,7 +39,7 @@ class DesktopNotification extends Component {
       .then(() => {
         onSuccess("Desktop notification preference has been updated.");
       })
-      .catch(err => {
+      .catch((err) => {
         onError(err.data.message);
       });
   };
@@ -50,12 +50,12 @@ class DesktopNotification extends Component {
     return (
       <SettingPanel
         title="Desktop and Mobile Notifications"
-        description="These settings apply to all rooms and conversations in Stitch, but are overriden by room specific settings below."
+        description="These settings apply to all rooms and conversations in Clinix360, but are overriden by room specific settings below."
         onSave={this.onSave}
         onEdit={this.onToggleEdit}
       >
         <div className="radio-group notifications">
-          {NOTIFICATION_PREFERENCES.map(p => (
+          {NOTIFICATION_PREFERENCES.map((p) => (
             <Radio
               key={p.value}
               name="desktop-pref"
@@ -77,7 +77,7 @@ class DesktopNotification extends Component {
 DesktopNotification.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
+  hideAlert: PropTypes.func.isRequired,
 };
 
 export default DesktopNotification;

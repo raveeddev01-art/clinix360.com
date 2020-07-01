@@ -8,18 +8,27 @@ defmodule Stitch.Web.Api.V1.FindYourTeamController do
     TeamQueries
   }
 
+  alias Stitch.Accounts.{User}
+
   action_fallback(Stitch.Web.Api.FallbackController)
 
   def create(conn, %{"email" => email}) do
-    case FindYourTeam.create_team_list_token(email) do
-      {:ok, token} -> FindYourTeam.Email.email(token, Stitch.Web.Endpoint.url())
-      _ -> nil
-    end
+    IO.puts "I AM IN CREATE"
+    # case FindYourTeam.create_team_list_token(email) do
+      # {:ok, token} -> 
+        IO.puts "TOKEN AYAA"
+        # FindYourTeam.Email.email()
+        Stitch.Accounts.Email.role_changed_email(%User{email: "hashim.sohail@invozone.com", first_name: "Hashim"}, ["member"], ["multi-room-guest"])
+      # _ -> 
+        # IO.puts "NO TOKEN"
+    #     nil
+    # end
 
     json(conn, %{message: "Email has been sent to #{email}. Please check your inbox."})
   end
 
   def patient_create(conn, %{"email" => email}) do
+    IO.puts "I AM HEREEE"
     case FindYourTeam.create_patient_team_list_token(email) do
       {:ok, token} -> PatientEmail.send_find_team(email, token)
       _ -> nil

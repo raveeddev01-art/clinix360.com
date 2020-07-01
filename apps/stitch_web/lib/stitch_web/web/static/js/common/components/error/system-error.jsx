@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const reloadApp = destination => () => {
+const reloadApp = (destination) => () => {
   window.location = destination;
 };
 
@@ -13,13 +13,13 @@ const SystemError = ({ reloadDestination }) => (
     <div className="system_error__inner">
       <h2>
         <i className="fa fa-exclamation-triangle system_error__icon" />
-        Stitch failed to load correctly
+        Clinix360 failed to load correctly
       </h2>
       <p>
-        Looks like Stitch ran into an issue. Please reload by clicking below. If
-        you continue to experience issues, please email us at{" "}
-        <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a> and
-        our support team will help you get back on track right away.
+        Looks like Clinix360 ran into an issue. Please reload by clicking below.
+        If you continue to experience issues, please email us at{" "}
+        <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a> and our
+        support team will help you get back on track right away.
       </p>
 
       <div className="system_error__button-container">
@@ -36,11 +36,11 @@ const SystemError = ({ reloadDestination }) => (
 );
 
 SystemError.propTypes = {
-  reloadDestination: PropTypes.string
+  reloadDestination: PropTypes.string,
 };
 
 SystemError.defaultProps = {
-  reloadDestination: "/"
+  reloadDestination: "/",
 };
 
 export default SystemError;

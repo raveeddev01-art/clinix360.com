@@ -6,7 +6,8 @@ class ManagePreview extends Component {
   renderTagline() {
     return (
       <p>
-        Your tasks in one place. <br />Your team on the same page.
+        Your tasks in one place. <br />
+        Your team on the same page.
       </p>
     );
   }
@@ -15,7 +16,7 @@ class ManagePreview extends Component {
     return (
       <p>
         Create tasks, assign them to team members and know when they’re
-        completed. Stitch Manage is the easiest way to keep all your patient
+        completed. Clinix360 Manage is the easiest way to keep all your patient
         tasks organized. Never miss a beat delivering seamless, on-time care to
         your patients.
       </p>

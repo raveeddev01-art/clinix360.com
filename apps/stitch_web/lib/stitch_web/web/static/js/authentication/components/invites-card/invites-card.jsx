@@ -10,7 +10,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import {
   AuthenticationPage,
   LoadingButton,
-  InputErrorBlock
+  InputErrorBlock,
 } from "common/components";
 import { mobile } from "../../../lib/browser_details";
 
@@ -21,11 +21,11 @@ class InvitesCard extends Component {
       invites: ["", "", ""],
       validationResults: {},
       showError: false,
-      loading: false
+      loading: false,
     };
   }
 
-  onKeyPress = e => {
+  onKeyPress = (e) => {
     const hitEnter = e.charCode === 13 || e.keyCode === 13;
 
     if (hitEnter) {
@@ -33,7 +33,7 @@ class InvitesCard extends Component {
     }
   };
 
-  onNext = event => {
+  onNext = (event) => {
     event.preventDefault();
 
     const { invites } = this.state;
@@ -41,9 +41,9 @@ class InvitesCard extends Component {
 
     post("/api/v1/users/validate-emails", {
       body: { emails: this.state.invites },
-      hideNotify: true
+      hideNotify: true,
     })
-      .then(response => {
+      .then((response) => {
         const validationResults = {};
         response.data.forEach((e, index) => {
           const email = invites[index];
@@ -55,47 +55,47 @@ class InvitesCard extends Component {
         if (isEmpty(validationResults)) {
           this.props.onNext({
             sendInvites: true,
-            invites: this.state.invites
+            invites: this.state.invites,
           });
         } else {
           this.setState({
             loading: false,
-            validationResults
+            validationResults,
           });
         }
       })
       .catch(() => {
         this.setState({
           showError: true,
-          loading: false
+          loading: false,
         });
       });
   };
 
-  onSkip = event => {
+  onSkip = (event) => {
     event.preventDefault();
 
     this.setState({
-      loading: true
+      loading: true,
     });
 
     this.props.onNext({
       sendInvites: false,
-      invites: this.state.invites
+      invites: this.state.invites,
     });
   };
 
-  onChange = index => evt => {
+  onChange = (index) => (evt) => {
     const invites = [...this.state.invites];
     invites[index] = evt.target.value;
     this.setState({
-      invites
+      invites,
     });
   };
 
   onAddEmail = () => {
     this.setState({
-      invites: [...this.state.invites, ""]
+      invites: [...this.state.invites, ""],
     });
   };
 
@@ -139,7 +139,7 @@ class InvitesCard extends Component {
           description={
             <span>
               Your Carespace is all set. Get started by bringing in your team
-              members to explore Stitch with you.
+              members to explore Clinix360 with you.
             </span>
           }
           footer={this.renderFooter()}
@@ -194,11 +194,11 @@ class InvitesCard extends Component {
 }
 
 InvitesCard.propTypes = {
-  onNext: PropTypes.func.isRequired
+  onNext: PropTypes.func.isRequired,
 };
 
 InvitesCard.defaultProps = {
-  onNext: () => {}
+  onNext: () => {},
 };
 
 export default InvitesCard;

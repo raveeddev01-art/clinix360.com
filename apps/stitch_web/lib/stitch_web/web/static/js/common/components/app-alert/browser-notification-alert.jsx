@@ -7,7 +7,7 @@ export default class BrowserNotificationAlert extends Component {
     super(...args);
     this.state = {
       browserPermission: Notification.permission,
-      close: false
+      close: false,
     };
   }
 
@@ -18,7 +18,7 @@ export default class BrowserNotificationAlert extends Component {
   enableNotification = () => {
     const { browserPermission } = this.state;
     if (browserPermission !== "denied") {
-      Notification.requestPermission(permission => {
+      Notification.requestPermission((permission) => {
         if (permission === "granted") {
           this.props.sidemenuStore.showNotificationCard(
             "Success",
@@ -42,7 +42,8 @@ export default class BrowserNotificationAlert extends Component {
           We recommend you&nbsp;
           <a role="link" onClick={this.enableNotification}>
             enable desktop notifications
-          </a>&nbsp;for Stitch.
+          </a>
+          &nbsp;for Clinix360.
         </span>
         <i
           role="link"

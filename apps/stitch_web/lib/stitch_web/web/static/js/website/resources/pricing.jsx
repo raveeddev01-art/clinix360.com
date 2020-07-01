@@ -18,8 +18,8 @@ export default class Pricing extends Component {
   }
 
   onToggle() {
-    this.setState(prevState => ({
-      pricingToggle: !prevState.pricingToggle
+    this.setState((prevState) => ({
+      pricingToggle: !prevState.pricingToggle,
     }));
   }
 
@@ -30,7 +30,7 @@ export default class Pricing extends Component {
 
         <Subheader
           title="Free to use, upgrade any time"
-          subtitle="Stitch is free to use with an unlimited number of people."
+          subtitle="Clinix360 is free to use with an unlimited number of people."
         />
 
         <div className="stitch-products">

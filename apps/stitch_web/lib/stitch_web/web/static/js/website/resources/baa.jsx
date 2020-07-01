@@ -21,7 +21,7 @@ export default class Baa extends Component {
 
             <p>
               This Business Associate Agreement Addendum (this “Agreement”) by
-              and between you (the “Covered Entity”) and Stitch Technologies,
+              and between you (the “Covered Entity”) and Clinix360 Technologies,
               Inc. (“us”, “we”, the “Business Associate”) is, together with the{" "}
               <a href="/terms-of-service">Terms of Service</a> as amended by
               this Agreement, (a) is intended by the parties as a final,
@@ -72,8 +72,8 @@ export default class Baa extends Component {
 
             <p>
               The following terms used in this Agreement shall have the same
-              meaning as those terms in the HIPAA Rules: <strong>Breach</strong>,{" "}
-              <strong>Data Aggregation</strong>,{" "}
+              meaning as those terms in the HIPAA Rules: <strong>Breach</strong>
+              , <strong>Data Aggregation</strong>,{" "}
               <strong>Designated Record Set</strong>,{" "}
               <strong>Disclosure</strong>,{" "}
               <strong>Health Care Operations</strong>,{" "}
@@ -81,8 +81,7 @@ export default class Baa extends Component {
               <strong>Notice of Privacy Practices</strong>,{" "}
               <strong>Protected Health Information</strong>,{" "}
               <strong>Required By Law</strong>, <strong>Secretary</strong>,{" "}
-              <strong>Security Incident</strong>,
-              <strong>Subcontractor</strong>,{" "}
+              <strong>Security Incident</strong>,<strong>Subcontractor</strong>,{" "}
               <strong>Unsecured Protected Health Information</strong> and{" "}
               <strong>Use</strong>.
             </p>
@@ -264,7 +263,8 @@ export default class Baa extends Component {
               <li>
                 <strong>
                   Obligations of Business Associate Upon Termination
-                </strong>.
+                </strong>
+                .
                 <p>
                   Upon termination of this Agreement for any reason, with
                   respect to protected health information received from you, or

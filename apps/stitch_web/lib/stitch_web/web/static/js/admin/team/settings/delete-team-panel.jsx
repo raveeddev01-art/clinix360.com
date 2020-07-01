@@ -24,7 +24,7 @@ class DeleteTeamPanel extends Component {
     this.state = {
       showModal: false,
       error: "",
-      teamName: ""
+      teamName: "",
     };
   }
 
@@ -35,7 +35,7 @@ class DeleteTeamPanel extends Component {
     return Promise.resolve();
   };
 
-  _onChangeTeamName = evt => {
+  _onChangeTeamName = (evt) => {
     this.setState({ teamName: evt.target.value });
   };
 
@@ -60,7 +60,7 @@ class DeleteTeamPanel extends Component {
       >
         <HelpBlock>
           If you delete your carespace, all users will be unable to log into
-          Stitch. Please be sure to export any data before proceeding. If you
+          Clinix360. Please be sure to export any data before proceeding. If you
           have any questions, please send us an email at&nbsp;
           <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>
         </HelpBlock>

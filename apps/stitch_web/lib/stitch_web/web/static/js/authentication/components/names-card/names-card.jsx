@@ -45,7 +45,7 @@ class NamesCards extends Component {
       lastNameError: "",
       usernameError: "",
       generalError: "",
-      loading: false
+      loading: false,
     };
   }
 
@@ -53,7 +53,7 @@ class NamesCards extends Component {
     window.scrollTo(0, 0);
   }
 
-  onKeyPress = e => {
+  onKeyPress = (e) => {
     const hitEnter = e.charCode === 13 || e.keyCode === 13;
 
     if (hitEnter) {
@@ -61,7 +61,7 @@ class NamesCards extends Component {
     }
   };
 
-  onChange = field => evt => {
+  onChange = (field) => (evt) => {
     const val =
       field === "username"
         ? formatUsername(evt.target.value)
@@ -92,27 +92,27 @@ class NamesCards extends Component {
     }
 
     get(`/api/v1/users/validate-username?username=${username}`, {
-      hideNotify: true
+      hideNotify: true,
     })
-      .then(resp => {
+      .then((resp) => {
         this.setState({ loading: false });
         if (resp.data) {
           this.props.onNext({
             firstname: firstName,
             lastname: lastName,
-            username
+            username,
           });
         } else {
           this.setState({
             generalError: generalErrorText,
-            loading: false
+            loading: false,
           });
         }
       })
       .catch(() => {
         this.setState({
           generalError: generalErrorText,
-          loading: false
+          loading: false,
         });
       });
   };
@@ -122,7 +122,7 @@ class NamesCards extends Component {
       usernameError: "",
       firstNameError: "",
       lastNameError: "",
-      generalError: ""
+      generalError: "",
     });
   };
 
@@ -131,28 +131,28 @@ class NamesCards extends Component {
 
     if (!firstName) {
       this.setState({
-        firstNameError: "You must provide a first name"
+        firstNameError: "You must provide a first name",
       });
       return true;
     }
 
     if (!isValidUnicodeString(firstName)) {
       this.setState({
-        firstNameError: "First name contains invalid characters."
+        firstNameError: "First name contains invalid characters.",
       });
       return true;
     }
 
     if (!lastName) {
       this.setState({
-        lastNameError: "You must provide a last name"
+        lastNameError: "You must provide a last name",
       });
       return true;
     }
 
     if (!isValidUnicodeString(lastName)) {
       this.setState({
-        lastNameError: "Last name contains invalid characters."
+        lastNameError: "Last name contains invalid characters.",
       });
 
       return true;
@@ -166,7 +166,7 @@ class NamesCards extends Component {
 
     if (!username) {
       this.setState({
-        usernameError: "You must provide a username"
+        usernameError: "You must provide a username",
       });
       return true;
     }
@@ -174,7 +174,7 @@ class NamesCards extends Component {
     if (!isValidUsername(username)) {
       this.setState({
         usernameError:
-          "The username should be lowercase and only use alphanumeric characters."
+          "The username should be lowercase and only use alphanumeric characters.",
       });
       return true;
     }
@@ -198,8 +198,8 @@ class NamesCards extends Component {
             onKeyPress={this.onKeyPress}
           />
           {(usernameError || generalError) && (
-              <InputErrorBlock>{usernameError || generalError}</InputErrorBlock>
-            )}
+            <InputErrorBlock>{usernameError || generalError}</InputErrorBlock>
+          )}
         </FormGroup>
         <HelpBlock className="onboarding-hint m-b-20">
           Usernames must be lowercase and contian only letters, numbers,
@@ -216,13 +216,13 @@ class NamesCards extends Component {
       username,
       firstNameError,
       lastNameError,
-      loading
+      loading,
     } = this.state;
     const { asPatient } = this.props;
 
     const description = asPatient
       ? ""
-      : "Your name will appear alongside your messages, files, tasks, and more in Stitch.";
+      : "Your name will appear alongside your messages, files, tasks, and more in Clinix360.";
 
     const disableNext = !firstName || !lastName || (!asPatient && !username);
     const nextCb = asPatient ? this.onPatientNext : this.onNext;
@@ -280,12 +280,12 @@ class NamesCards extends Component {
 }
 
 NamesCards.defaultProps = {
-  asPatient: false
+  asPatient: false,
 };
 
 NamesCards.propTypes = {
   asPatient: PropTypes.bool,
-  onNext: PropTypes.func.isRequired
+  onNext: PropTypes.func.isRequired,
 };
 
 export default NamesCards;

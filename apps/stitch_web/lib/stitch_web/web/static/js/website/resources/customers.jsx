@@ -19,7 +19,7 @@ export default class Customers extends Component {
         <div className="customers-page">
           <Subheader
             title="Trusted by the best teams"
-            subtitle="Healthcare organizations big and small have made Stitch their home base for work."
+            subtitle="Healthcare organizations big and small have made Clinix360 their home base for work."
           />
 
           <section className="luminance-section">
@@ -36,7 +36,7 @@ export default class Customers extends Component {
                         with detox, which includes 24-hour care, stabilization,
                         and medical attention. After detox, clients move to the
                         next phase of recovery: a 30, 60, or 90-day inpatient
-                        recovery program. Luminance adopted Stitch to help
+                        recovery program. Luminance adopted Clinix360 to help
                         improve critical communications and keep clients in the
                         recovery program.
                       </p>
@@ -63,9 +63,9 @@ export default class Customers extends Component {
 
           <section className="customer-studies">
             <div className="container">
-              <h2>Care teams of all kinds run on Stitch</h2>
+              <h2>Care teams of all kinds run on Clinix360</h2>
               <h3>
-                From primary care practices to nationwide pharmacies, Stitch
+                From primary care practices to nationwide pharmacies, Clinix360
                 keeps healthcare teams moving forward.
               </h3>
 
@@ -78,8 +78,8 @@ export default class Customers extends Component {
                       <p className="m-b-30">
                         Princeton Brain & Spine is one of America's leading
                         neurosurgical practices. As a multi-site practice, PB&S
-                        sought out Stitch to improve the collaboration between
-                        providers in different locations.
+                        sought out Clinix360 to improve the collaboration
+                        between providers in different locations.
                       </p>
 
                       <LinkContainer to="/customers/princeton-brain-spine">
@@ -101,8 +101,9 @@ export default class Customers extends Component {
                       <p className="m-b-30">
                         DSSI provides state-of-the-art procedures for skin
                         cancer removal, microscopic tissue analysis, and
-                        advanced reconstructive techniques. DSSI used Stitch to
-                        sync providers and staff during patient consultations.
+                        advanced reconstructive techniques. DSSI used Clinix360
+                        to sync providers and staff during patient
+                        consultations.
                       </p>
 
                       <LinkContainer to="/customers/dermatology-skin-surgery-institute">
@@ -125,7 +126,7 @@ export default class Customers extends Component {
                         Citywide Case Management is a division of UCSF's
                         Department of Psychiatry, providing comprehensive
                         services to 200 severely mentally ill adults. Citywide
-                        sought Stitch to manage field communication during
+                        sought Clinix360 to manage field communication during
                         client work.
                       </p>
 
@@ -146,8 +147,8 @@ export default class Customers extends Component {
                       <p className="m-b-30">
                         Orchard Medical Associates is a primary care practice
                         focused on expert medical care and attentive disease
-                        prevention. Orchard Medical integrated Stitch to improve
-                        the flow of patient care throughout the office.
+                        prevention. Orchard Medical integrated Clinix360 to
+                        improve the flow of patient care throughout the office.
                       </p>
 
                       <LinkContainer to="/customers/orchard-medical-associates">

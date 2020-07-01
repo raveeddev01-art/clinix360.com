@@ -11,7 +11,7 @@ class SelectTeam extends Component {
     super(props);
     this.state = {
       tokenFound: true,
-      teams: []
+      teams: [],
     };
   }
 
@@ -23,11 +23,11 @@ class SelectTeam extends Component {
 
     window
       .remove(removeUrl)
-      .then(response => this.setState({ teams: response.data.teams }))
+      .then((response) => this.setState({ teams: response.data.teams }))
       .catch(() => this.setState({ tokenFound: false }));
   }
 
-  renderTeamLink = team => {
+  renderTeamLink = (team) => {
     const loginUrl = this.props.asPatient
       ? `https://${team.slug}.${applicationHost}/patient/find-your-team/${team.login_token}/login`
       : `https://${team.slug}.${applicationHost}/find-your-team/${team.login_token}/login`;
@@ -52,7 +52,7 @@ class SelectTeam extends Component {
       <AuthenticationPage
         title="Your Carespaces"
         headerCTA="no-cta"
-        description="You are a member of of these Stitch carespaces:"
+        description="You are a member of of these  carespaces:"
       >
         <div className="select-team-list m-b-40">
           {this.state.teams.map(this.renderTeamLink)}
@@ -68,11 +68,11 @@ class SelectTeam extends Component {
 }
 
 SelectTeam.defaultProps = {
-  asPatient: false
+  asPatient: false,
 };
 
 SelectTeam.propTypes = {
-  asPatient: PropTypes.bool
+  asPatient: PropTypes.bool,
 };
 
 export default SelectTeam;

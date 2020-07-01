@@ -7,7 +7,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Profile Image";
 const description =
-  "Upload a profile image. This will be displayed when users view your information in Stitch.";
+  "Upload a profile image. This will be displayed when users view your information in Clinix360.";
 
 @inject("userStore", "uploadStore", "teamStore")
 @observer
@@ -17,18 +17,18 @@ class ProfileImagePanel extends Component {
     this.state = {
       profileImgUrl: "",
       isCropped: false,
-      isUploading: false
+      isUploading: false,
     };
   }
 
-  onCrop = profileImgUrl => {
+  onCrop = (profileImgUrl) => {
     this.setState({ profileImgUrl, isCropped: true });
     this.onSave();
   };
 
   onToggleEdit = () => {
     this.setState({
-      profileImgUrl: this.props.userStore.avatar
+      profileImgUrl: this.props.userStore.avatar,
     });
   };
 
@@ -40,16 +40,18 @@ class ProfileImagePanel extends Component {
       onSuccess,
       userStore,
       teamStore,
-      uploadStore
+      uploadStore,
     } = this.props;
     hideAlert();
 
     if (isCropped) {
-      const fileName = `${teamStore.id}_${userStore.id}_${new Date().getTime()}.png`;
+      const fileName = `${teamStore.id}_${
+        userStore.id
+      }_${new Date().getTime()}.png`;
       this.setState({ isUploading: true });
       return uploadStore
         .uploadAWS(image, "image/png", fileName)
-        .then(profileImgUrl => {
+        .then((profileImgUrl) => {
           return userStore.saveProfileImg(profileImgUrl);
         })
         .then(() => {
@@ -57,7 +59,7 @@ class ProfileImagePanel extends Component {
           this.setState({
             isUploading: false,
             profileImgUrl: userStore.avatar,
-            isCropped: false
+            isCropped: false,
           });
         })
         .catch(() => {
@@ -74,7 +76,7 @@ class ProfileImagePanel extends Component {
     confirmModal({
       title: "Delete Profile Image",
       message: "Are you sure you want to delete your profile image?",
-      okLabel: "Delete"
+      okLabel: "Delete",
     }).then(() => {
       this.setState({ isUploading: true });
       userStore
@@ -84,13 +86,13 @@ class ProfileImagePanel extends Component {
           this.setState({
             isUploading: false,
             profileImgUrl: userStore.avatar,
-            isCropped: false
+            isCropped: false,
           });
         })
         .catch(() => {
           onError("There was problem deleting your profile image.");
           this.setState({
-            isUploading: false
+            isUploading: false,
           });
         });
     });
@@ -126,7 +128,7 @@ class ProfileImagePanel extends Component {
 ProfileImagePanel.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
+  hideAlert: PropTypes.func.isRequired,
 };
 
 export default ProfileImagePanel;

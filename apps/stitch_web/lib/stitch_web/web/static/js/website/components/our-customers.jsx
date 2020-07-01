@@ -8,7 +8,7 @@ class OurCustomers extends Component {
   renderCustomers() {
     return CUSTOMERS.map((c, index) => {
       const className = cx("col-lg-5ths col-md-3 col-xs-4", {
-        "visible-lg no-border": index % 5 === 4
+        "visible-lg no-border": index % 5 === 4,
       });
       return (
         <div className={className} key={`customer_${index}`}>
@@ -29,7 +29,7 @@ class OurCustomers extends Component {
             <div>
               <h2>Trusted by the best teams</h2>
               <h3>
-                Healthcare organizations big and small have made Stitch their
+                Healthcare organizations big and small have made Clinix360 their
                 home base for work.
               </h3>
 
@@ -47,11 +47,11 @@ class OurCustomers extends Component {
 }
 
 OurCustomers.defaultProps = {
-  withoutText: false
+  withoutText: false,
 };
 
 OurCustomers.propTypes = {
-  withoutText: PropTypes.bool
+  withoutText: PropTypes.bool,
 };
 
 export default OurCustomers;

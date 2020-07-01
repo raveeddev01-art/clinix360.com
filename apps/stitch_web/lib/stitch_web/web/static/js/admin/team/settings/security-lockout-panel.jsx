@@ -14,7 +14,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Security Lockout";
 const description =
-  "Stitch will automatically lockout after a specified period of inactivity. You can unlock it with your PIN or password.";
+  "Clinix360 will automatically lockout after a specified period of inactivity. You can unlock it with your PIN or password.";
 
 @inject("teamStore")
 @observer
@@ -25,17 +25,17 @@ class SecurityLockoutPanel extends Component {
       securityLockoutEnabled: false,
       hours: 0,
       minutes: 0,
-      error: ""
+      error: "",
     };
   }
 
-  onChangeEnabled = evt => {
+  onChangeEnabled = (evt) => {
     this.setState({
-      securityLockoutEnabled: evt.target.checked
+      securityLockoutEnabled: evt.target.checked,
     });
   };
 
-  onChangeNumber = field => evt => {
+  onChangeNumber = (field) => (evt) => {
     const { onError } = this.props;
     const value = evt.target.value;
     if (value < 0) {
@@ -58,7 +58,7 @@ class SecurityLockoutPanel extends Component {
     this.setState({
       securityLockoutEnabled,
       hours,
-      minutes
+      minutes,
     });
   };
 
@@ -68,7 +68,11 @@ class SecurityLockoutPanel extends Component {
     const minutesToLockout = hours * 60 + minutes;
 
     if (minutesToLockout < LOCKOUT_MINIMUM) {
-      onError(`Lock out time should not be smaller than ${LOCKOUT_MINIMUM} minute${LOCKOUT_MINIMUM > 1 ? 's' : ''}`);
+      onError(
+        `Lock out time should not be smaller than ${LOCKOUT_MINIMUM} minute${
+          LOCKOUT_MINIMUM > 1 ? "s" : ""
+        }`
+      );
       return Promise.resolve();
     }
 
@@ -81,7 +85,7 @@ class SecurityLockoutPanel extends Component {
       .then(() => {
         onSuccess("Security lockout setting has been updated.");
       })
-      .catch(err => {
+      .catch((err) => {
         onError(err.data.message);
       });
   };
@@ -142,7 +146,7 @@ class SecurityLockoutPanel extends Component {
 SecurityLockoutPanel.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
+  hideAlert: PropTypes.func.isRequired,
 };
 
 export default SecurityLockoutPanel;

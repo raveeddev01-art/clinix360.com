@@ -18,8 +18,8 @@ export default class PrivacyPolicy extends Component {
             <h2>Introduction</h2>
 
             <p>
-              Welcome to Stitch! Your privacy is important to us. Stitch
-              Technologies, Inc. (“Stitch”) provides this Privacy Policy to
+              Welcome to Clinix360! Your privacy is important to us. Clinix360
+              Technologies, Inc. (“Clinix360”) provides this Privacy Policy to
               inform you of our policies and procedures regarding the
               collection, use and disclosure of personal information we receive
               from users of&nbsp;(the “Site”) and our application for web,
@@ -110,7 +110,7 @@ export default class PrivacyPolicy extends Component {
               non-identifying information (for example, your viewing
               preferences). We may combine your Personal Information with
               Non-Identifying Information and aggregate it with information
-              collected from other Stitch Users (defined below) to attempt to
+              collected from other Clinix360 Users (defined below) to attempt to
               provide you with a better experience, to improve the quality and
               value of the Service and to analyze and understand how our Site,
               App and Service are used. We may also use the combined information
@@ -120,13 +120,13 @@ export default class PrivacyPolicy extends Component {
             </p>
 
             <p>
-              We also use your Personal Information to contact you with Stitch
-              newsletters, marketing or promotional materials and other
-              information that may be of interest to you. If you decide at any
-              time that you no longer wish to receive such communications from
-              us, please follow the unsubscribe instructions provided in any of
-              the communications or update your “user preferences” information
-              (See{" "}
+              We also use your Personal Information to contact you with
+              Clinix360 newsletters, marketing or promotional materials and
+              other information that may be of interest to you. If you decide at
+              any time that you no longer wish to receive such communications
+              from us, please follow the unsubscribe instructions provided in
+              any of the communications or update your “user preferences”
+              information (See{" "}
               <a href="#changing-or-deleting-your-information">
                 Changing or Deleting Your Information
               </a>{" "}
@@ -134,10 +134,10 @@ export default class PrivacyPolicy extends Component {
             </p>
 
             <p>
-              The Services may include certain communications from Stitch, such
-              as administrative messages; these communications are considered
-              part of Stitch membership and you will not be able to opt out of
-              receiving them.
+              The Services may include certain communications from Clinix360,
+              such as administrative messages; these communications are
+              considered part of Clinix360 membership and you will not be able
+              to opt out of receiving them.
             </p>
           </div>
 
@@ -146,22 +146,22 @@ export default class PrivacyPolicy extends Component {
 
             <p>
               When you visit the Service, whether as a Registered User or a
-              non-registered user just browsing (any of these, a “Stitch User”),
-              our servers automatically record information that your browser
-              sends whenever you visit a website (“Log Data”). This Log Data may
-              include information such as your computer’s Internet Protocol
-              (“IP”) address, browser type or the webpage you were visiting
-              before you came to our Service, pages of our Service that you
-              visit, the time spent on those pages, information you search for
-              on our Site and App, access times and dates and other statistics.
-              From users of the App, we also collect Log Data such as agent
-              version, platform, SDK version, API key for the App, App version,
-              mobile device model, manufacturer and version, access times and
-              dates, time zones and network status. We use this information to
-              monitor and analyze use of the Site and the App and for the
-              technical administration of the Site and the App, in order to
-              increase our Service’s functionality and user-friendliness, and to
-              better tailor our Service to our visitors’ needs. For example,
+              non-registered user just browsing (any of these, a “Clinix360
+              User”), our servers automatically record information that your
+              browser sends whenever you visit a website (“Log Data”). This Log
+              Data may include information such as your computer’s Internet
+              Protocol (“IP”) address, browser type or the webpage you were
+              visiting before you came to our Service, pages of our Service that
+              you visit, the time spent on those pages, information you search
+              for on our Site and App, access times and dates and other
+              statistics. From users of the App, we also collect Log Data such
+              as agent version, platform, SDK version, API key for the App, App
+              version, mobile device model, manufacturer and version, access
+              times and dates, time zones and network status. We use this
+              information to monitor and analyze use of the Site and the App and
+              for the technical administration of the Site and the App, in order
+              to increase our Service’s functionality and user-friendliness, and
+              to better tailor our Service to our visitors’ needs. For example,
               some of this information is collected so that when you visit the
               Site again, it will recognize you and serve advertisements and
               other information appropriate to your interests. We also use this
@@ -181,7 +181,7 @@ export default class PrivacyPolicy extends Component {
               information for future logins to the Service. Second, we utilize
               session ID cookies to enable certain features of the Service, to
               better understand how you interact with the Service and to monitor
-              aggregate usage by Stitch users and web traffic routing on the
+              aggregate usage by Clinix360 users and web traffic routing on the
               Service. Unlike persistent cookies, session cookies are deleted
               from your computer when you log off from the Site, App and Service
               and then close your browser. You can instruct your browser, by
@@ -197,7 +197,7 @@ export default class PrivacyPolicy extends Component {
 
             <p>
               Identity theft and the practice currently known as “phishing” are
-              of great concern to Stitch. Safeguarding information to help
+              of great concern to Clinix360. Safeguarding information to help
               protect you from identity theft is a top priority. We do not and
               will not, at any time, request your credit card information, your
               account login information, or social security or national
@@ -216,19 +216,19 @@ export default class PrivacyPolicy extends Component {
                 <span>
                   When you register through the Site or App and submit your
                   Personal Information, you are applying to become a member of a
-                  group of Registered Users who have registered with Stitch as
-                  working at and/or as being affiliated with your Indicated
-                  Entity (each a “Stitch Group”). If one or more Registered
-                  Users acts as an administrator for your Stitch Group, those
+                  group of Registered Users who have registered with Clinix360
+                  as working at and/or as being affiliated with your Indicated
+                  Entity (each a “Clinix360 Group”). If one or more Registered
+                  Users acts as an administrator for your Clinix360 Group, those
                   Registered User administrators will see your first and last
                   name, your Indicated Entity, your role and department to
                   enable such Registered User administrators to assess whether
-                  to accept you as a member of such Stitch Group. If you are not
-                  accepted as a member of such Stitch Group, we will not share
-                  your Personal Information with any other Registered Users.
-                  Once you have been accepted into your Stitch Group, the
-                  Registered Users part of your Stitch Group will see your first
-                  and last name, your Indicated Entity, your role and
+                  to accept you as a member of such Clinix360 Group. If you are
+                  not accepted as a member of such Clinix360 Group, we will not
+                  share your Personal Information with any other Registered
+                  Users. Once you have been accepted into your Clinix360 Group,
+                  the Registered Users part of your Clinix360 Group will see
+                  your first and last name, your Indicated Entity, your role and
                   department. Such Registered Users will also be able to see the
                   status and availability of updates that you may choose to post
                   via the Services from time to time. You can choose what other
@@ -241,7 +241,7 @@ export default class PrivacyPolicy extends Component {
                   preferences you set in your account. You must provide truthful
                   and accurate information about yourself but any information
                   you choose to provide should reflect how much you want other
-                  Stitch users to know about you. We recommend that you guard
+                  Clinix360 users to know about you. We recommend that you guard
                   carefully any sensitive information.
                 </span>
               </li>
@@ -276,14 +276,14 @@ export default class PrivacyPolicy extends Component {
               <li>
                 Compliance with Laws and Law Enforcement:{" "}
                 <span>
-                  Stitch cooperates with government and law enforcement
+                  Clinix360 cooperates with government and law enforcement
                   officials and private parties to enforce and comply with the
                   law. We will disclose any information about you to government
                   or law enforcement officials or private parties as we, in our
                   sole discretion, believe necessary or appropriate to respond
                   to claims and legal process (including but not limited to
-                  subpoenas), to protect the property and rights of Stitch or a
-                  third party, to protect the safety of the public or any
+                  subpoenas), to protect the property and rights of Clinix360 or
+                  a third party, to protect the safety of the public or any
                   person, or to prevent or stop activity we may consider to be,
                   or to pose a risk of being, illegal, unethical or legally
                   actionable activity.
@@ -293,7 +293,7 @@ export default class PrivacyPolicy extends Component {
               <li>
                 Business Transfers:{" "}
                 <span>
-                  Stitch may sell, transfer or otherwise share some or all of
+                  Clinix360 may sell, transfer or otherwise share some or all of
                   its assets, including your Personal Information, in connection
                   with a merger, acquisition, reorganization or sale of assets
                   or in the event of bankruptcy.
@@ -303,40 +303,41 @@ export default class PrivacyPolicy extends Component {
           </div>
 
           <div className="copy-section">
-            <h2>Communicating Via a Stitch Account</h2>
+            <h2>Communicating Via a Clinix360 Account</h2>
 
             <p>
               As part of the Service, Registered Users may communicate with
               other Registered Users through use of the Service. Any messages
-              you create as a Registered User will be sent from Stitch on your
-              behalf to one or more Registered Users specified by you. Messages
-              received and sent by a Registered User can be viewed by the
-              Registered User in their account either on the Site or the App.
+              you create as a Registered User will be sent from Clinix360 on
+              your behalf to one or more Registered Users specified by you.
+              Messages received and sent by a Registered User can be viewed by
+              the Registered User in their account either on the Site or the
+              App.
             </p>
 
             <p>
               If a Registered User designates a communication that such
               Registered User is sending via the Service as being a “high
-              priority” or important communication, Stitch may send the intended
-              recipients of such communication an email and/or text message (if
-              the intended recipient has provided their mobile phone number to
-              Stitch) to notify the intended recipients that such communication
-              has been received via the Service. You consent to Stitch notifying
-              you by email and/or text message (if you have provided your mobile
-              phone number to Stitch) that certain communications have been
-              received by you via the Service. If you choose to use our referral
-              services to tell a colleague about our Services, we will ask you
-              for your colleague’s name and email address. You can do this by
-              entering the email addresses manually or by choosing the contact
-              details from the address book on your mobile device, tablet
-              computer or similar device. We will automatically send your
-              colleague a one-time email inviting him or her to visit the
-              Services. If your colleague does not wish to receive such
-              communications from us, your colleague can follow the opt-out
-              instructions provided in any of the communications. We may store
-              this information for the sole purpose of sending this one-time
-              email and tracking the success of our referral program. Your
-              colleague may contact us at{" "}
+              priority” or important communication, Clinix360 may send the
+              intended recipients of such communication an email and/or text
+              message (if the intended recipient has provided their mobile phone
+              number to Clinix360) to notify the intended recipients that such
+              communication has been received via the Service. You consent to
+              Clinix360 notifying you by email and/or text message (if you have
+              provided your mobile phone number to Clinix360) that certain
+              communications have been received by you via the Service. If you
+              choose to use our referral services to tell a colleague about our
+              Services, we will ask you for your colleague’s name and email
+              address. You can do this by entering the email addresses manually
+              or by choosing the contact details from the address book on your
+              mobile device, tablet computer or similar device. We will
+              automatically send your colleague a one-time email inviting him or
+              her to visit the Services. If your colleague does not wish to
+              receive such communications from us, your colleague can follow the
+              opt-out instructions provided in any of the communications. We may
+              store this information for the sole purpose of sending this
+              one-time email and tracking the success of our referral program.
+              Your colleague may contact us at{" "}
               <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>
               to request that we remove this information from our database.
             </p>
@@ -346,11 +347,11 @@ export default class PrivacyPolicy extends Component {
             <h2>Changing or Deleting Your Information</h2>
 
             <p>
-              Stitch will retain an archived copy of the contents of
+              Clinix360 will retain an archived copy of the contents of
               communications that have been sent using the Service, the
               identities of the sender(s) and the recipient(s) of such
-              communications and any other information which Stitch is required
-              to retain by law or legitimate business purpose.
+              communications and any other information which Clinix360 is
+              required to retain by law or legitimate business purpose.
             </p>
 
             <p>
@@ -359,9 +360,7 @@ export default class PrivacyPolicy extends Component {
               all such information, then your account may become deactivated. If
               you would like us to delete your account in our system, please
               contact us at{" "}
-              <a href="mailto:support@dvlcloud.com">
-                support@dvlcloud.com
-              </a>{" "}
+              <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>{" "}
               with a request that we delete your Personal Information from our
               database. We will use commercially reasonable efforts to honor
               your request. As indicated above however, we will retain an
@@ -374,8 +373,8 @@ export default class PrivacyPolicy extends Component {
             <h2>Security</h2>
 
             <p>
-              Stitch is very concerned with safeguarding your information. The
-              security of your personal information is important to us. But
+              Clinix360 is very concerned with safeguarding your information.
+              The security of your personal information is important to us. But
               remember that no method of transmission over the Internet, or
               method of electronic storage, is 100% secure.
             </p>
@@ -402,7 +401,7 @@ export default class PrivacyPolicy extends Component {
               other governmental jurisdiction where the privacy laws may not be
               as protective as those in your jurisdiction. If you are located
               outside the United States and choose to provide information to us,
-              Stitch transfers Personal Information to the United States and
+              Clinix360 transfers Personal Information to the United States and
               processes it there. Your consent to this Privacy Policy followed
               by your submission of such information represents your agreement
               to that transfer.
@@ -437,28 +436,29 @@ export default class PrivacyPolicy extends Component {
               children under 13. If a parent or guardian becomes aware that his
               or her child has provided us with Personal Information without
               their consent, he or she should contact us at{" "}
-              <a href="mailto:support@dvlcloud.com">
-                support@dvlcloud.com
-              </a>. If we become aware that a child under 13 has provided us
-              with Personal Information, we will delete such information from
-              our files.
+              <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>. If
+              we become aware that a child under 13 has provided us with
+              Personal Information, we will delete such information from our
+              files.
             </p>
           </div>
 
           <div className="copy-section">
-            <h2>Contacting Stitch</h2>
+            <h2>Contacting Clinix360</h2>
 
             <p>
               If you have any questions about this Policy or any App Store
-              Sourced App, please contact Stitch at
+              Sourced App, please contact Clinix360 at
             </p>
             <p />
 
             <address className="m-b-30">
-              Stitch Health
+              Clinix360 Health
               <br />
-              156 2nd Street<br />
-              San Francisco, CA 94105<br />
+              156 2nd Street
+              <br />
+              San Francisco, CA 94105
+              <br />
               <a href="tel:+16502823388">+1 (650) 282-3388</a>
               <br />
               <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>

@@ -17,7 +17,7 @@ class EmailNotification extends Component {
     super(props);
 
     this.state = {
-      pref: ""
+      pref: "",
     };
   }
 
@@ -30,7 +30,7 @@ class EmailNotification extends Component {
       .then(() => {
         onSuccess("Email notification preference has been updated.");
       })
-      .catch(err => {
+      .catch((err) => {
         onError(err.data.message);
       });
   };
@@ -39,11 +39,11 @@ class EmailNotification extends Component {
     const { notificationStore } = this.props;
 
     this.setState({
-      pref: notificationStore.emailPref
+      pref: notificationStore.emailPref,
     });
   };
 
-  onChange = evt => {
+  onChange = (evt) => {
     this.setState({ pref: evt.target.value });
   };
 
@@ -58,9 +58,9 @@ class EmailNotification extends Component {
         onEdit={this.onToggleEdit}
       >
         <HelpBlock className="m-b-20">
-          Stitch can send an email about new, unread messages you receive while
-          you’re offline. You can set the frequency below. You won’t be notified
-          twice about the same message.
+          Clinix360 can send an email about new, unread messages you receive
+          while you’re offline. You can set the frequency below. You won’t be
+          notified twice about the same message.
         </HelpBlock>
         <Form horizontal>
           <FormGroup controlId="emailNotifications">
@@ -90,7 +90,7 @@ class EmailNotification extends Component {
 EmailNotification.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
+  hideAlert: PropTypes.func.isRequired,
 };
 
 export default EmailNotification;

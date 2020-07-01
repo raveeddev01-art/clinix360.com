@@ -18,7 +18,7 @@ class EmailCard extends Component {
       email: "",
       formValid: false,
       loading: false,
-      errorMessage: ""
+      errorMessage: "",
     };
   }
 
@@ -26,32 +26,32 @@ class EmailCard extends Component {
     this.setState({ loading: true });
     post("/api/v1/users", {
       body: { email: this.state.email },
-      hideNotify: true
+      hideNotify: true,
     })
-      .then(response => {
+      .then((response) => {
         this.props.registrationStore.setCookie(
           response.data.id,
           this.state.email
         );
         return post("/api/v1/users/send-confirmation-code", {
-          body: { id: response.data.id }
+          body: { id: response.data.id },
         }).then(() => {
           this.props.history.push("/signup/confirmation-code");
           this.setState({ loading: false });
         });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({
           loading: false,
-          errorMessage: err.data ? err.data.message : err.message
+          errorMessage: err.data ? err.data.message : err.message,
         });
       });
   };
 
-  onChange = evt => {
+  onChange = (evt) => {
     this.setState({
       email: evt.target.value,
-      formValid: isEmail(evt.target.value)
+      formValid: isEmail(evt.target.value),
     });
   };
 
@@ -64,7 +64,7 @@ class EmailCard extends Component {
           description={
             <span>
               Enter your email address to start creating your Carespace on
-              Stitch.
+              Clinix360.
             </span>
           }
           onNext={this.onNext}

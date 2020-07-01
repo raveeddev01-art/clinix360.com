@@ -35,7 +35,7 @@ class AuthenticationHeader extends Component {
 
     return (
       <a href={dest} className="brand">
-        <img src="/images/stitch-brand.svg" alt="Stitch" />
+        <img src="/images/clinix.png" alt="Clinix360" />
       </a>
     );
   }
@@ -54,7 +54,7 @@ class AuthenticationHeader extends Component {
           <NavItem onClick={this.goToSignIn} className="btn-trial">
             Sign In
           </NavItem>
-        </Nav>
+        </Nav>,
       ];
     }
 
@@ -66,7 +66,7 @@ class AuthenticationHeader extends Component {
         <NavItem onClick={this.goToFindTeam} className="btn-trial">
           Find Your Carespace
         </NavItem>
-      </Nav>
+      </Nav>,
     ];
   }
 
@@ -88,7 +88,7 @@ class AuthenticationHeader extends Component {
 }
 
 AuthenticationHeader.propTypes = {
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
 };
 
 export default AuthenticationHeader;

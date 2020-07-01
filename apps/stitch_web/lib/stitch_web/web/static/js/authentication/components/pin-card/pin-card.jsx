@@ -9,7 +9,7 @@ class PinCard extends Component {
     super(...args);
     this.state = {
       pin: "",
-      formValid: false
+      formValid: false,
     };
   }
 
@@ -17,14 +17,14 @@ class PinCard extends Component {
     this.setState({ formValid: false, pin: "" });
   };
 
-  onValid = pin => {
+  onValid = (pin) => {
     this.setState({
       pin,
-      formValid: pin.length === 4
+      formValid: pin.length === 4,
     });
   };
 
-  onKeyPress = e => {
+  onKeyPress = (e) => {
     const hitEnter = e.charCode === 13 || e.keyCode === 13;
 
     if (hitEnter && this.state.formValid) {
@@ -42,9 +42,7 @@ class PinCard extends Component {
           {...otherProps}
           title="Set your PIN"
           description={
-            <span>
-              Set a 4 digit PIN for lockout access into Stitch.
-            </span>
+            <span>Set a 4 digit PIN for lockout access into Clinix360.</span>
           }
           onNext={this.onNext}
           loading={saving}
@@ -69,7 +67,7 @@ class PinCard extends Component {
 
 PinCard.propTypes = {
   onNext: PropTypes.func.isRequired,
-  saving: PropTypes.bool.isRequired
+  saving: PropTypes.bool.isRequired,
 };
 
 export default PinCard;

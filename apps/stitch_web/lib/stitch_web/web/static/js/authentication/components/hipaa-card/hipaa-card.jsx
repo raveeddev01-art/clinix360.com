@@ -9,13 +9,13 @@ class HipaaCard extends Component {
     super(props);
 
     this.state = {
-      hipaaAgreed: false
+      hipaaAgreed: false,
     };
   }
 
-  onChange = event => {
+  onChange = (event) => {
     this.setState({
-      hipaaAgreed: event.target.checked
+      hipaaAgreed: event.target.checked,
     });
   };
 
@@ -46,13 +46,15 @@ class HipaaCard extends Component {
           </Checkbox>
 
           <HelpBlock className="onboarding-hint m-b-20">
-            By proceeding to use Stitch, you agree to our&nbsp;
+            By proceeding to use Clinix360, you agree to our&nbsp;
             <a href="/terms-of-service" target="_blank">
               Terms of Service
-            </a>&nbsp;and&nbsp;
+            </a>
+            &nbsp;and&nbsp;
             <a href="/privacy-policy" target="_blank">
               Privacy Policy
-            </a>.
+            </a>
+            .
           </HelpBlock>
         </OnboardPage>
       </div>
@@ -62,12 +64,12 @@ class HipaaCard extends Component {
 
 HipaaCard.propTypes = {
   onNext: PropTypes.func.isRequired,
-  saving: PropTypes.bool.isRequired
+  saving: PropTypes.bool.isRequired,
 };
 
 HipaaCard.defaultProps = {
   onNext: () => {},
-  saving: false
+  saving: false,
 };
 
 export default HipaaCard;

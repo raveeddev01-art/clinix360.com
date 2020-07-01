@@ -49,7 +49,7 @@ defmodule Stitch.Mixfile do
       {:ex_machina, "~> 2.4.0", only: :test},
       {:faker, "~> 0.13.0", only: :test},
       {:slugger, "~> 0.3"},
-      {:bamboo, "~> 1.3.0"},
+      {:bamboo, "~> 1.3.0", override: true},
       {:timex, "~> 3.6.1"},
       {:ex_doc, "~> 0.21.3", only: :dev, runtime: false},
       {:stripity_stripe, "~> 2.8"},

@@ -8,7 +8,9 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 @observer
 class Topbar extends Component {
   render() {
-    const { adminPanelStore: { heading, icon } } = this.props;
+    const {
+      adminPanelStore: { heading, icon },
+    } = this.props;
 
     return (
       <div className="flex-header admin-topbar">
@@ -38,7 +40,7 @@ class Topbar extends Component {
               <OverlayTrigger
                 placement="bottom"
                 container={this}
-                overlay={<Tooltip id="tooltip-info">Stitch</Tooltip>}
+                overlay={<Tooltip id="tooltip-info">Clinix360</Tooltip>}
               >
                 <i className="fa fa-comments" />
               </OverlayTrigger>

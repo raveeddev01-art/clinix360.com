@@ -11,15 +11,15 @@ class CallApp extends Component {
     const { groupsStore, sidemenuStore, callStore } = this.props;
     const { currentGroup } = groupsStore;
     const { connected } = callStore;
-    let title = "Stitch";
+    let title = "Clinix360";
 
     if (currentGroup) {
-      title = `${groupsStore.getGroupName(currentGroup)} | Stitch`;
+      title = `${groupsStore.getGroupName(currentGroup)} | Clinix360`;
 
       if (currentGroup.type === "regular") {
-        title = `${groupsStore.getGroupName(
-          currentGroup
-        )} | ${sidemenuStore.teamName} | Stitch`;
+        title = `${groupsStore.getGroupName(currentGroup)} | ${
+          sidemenuStore.teamName
+        } | Clinix360`;
       }
     }
 

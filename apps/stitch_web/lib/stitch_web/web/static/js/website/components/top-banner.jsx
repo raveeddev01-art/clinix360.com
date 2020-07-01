@@ -6,7 +6,7 @@ class TopBanner extends Component {
     super(props);
 
     this.state = {
-      showBanner: true
+      showBanner: true,
     };
   }
 
@@ -25,7 +25,7 @@ class TopBanner extends Component {
               Acquire, engage and retain patients with our integrated EHR,
               practice management and patient engagement solution.
             </span>
-            <a href="http://dvlcloud.com">See Stitch Manage</a>
+            <a href="http://dvlcloud.com">See Clinix360 Manage</a>
           </div>
 
           <button className="close-btn" onClick={this.handleClose}>

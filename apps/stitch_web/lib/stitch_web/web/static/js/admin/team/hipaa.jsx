@@ -13,7 +13,7 @@ export default class TeamHipaa extends Component {
           <i className="fa fa-check-circle" />
           <p className="m-b-0">
             Your carespace is <strong>HIPAA compliant</strong>. You can safely
-            share patient information in Stitch.
+            share patient information in Clinix360.
           </p>
         </Well>
 
@@ -45,14 +45,16 @@ export default class TeamHipaa extends Component {
             rel="noopener noreferrer"
           >
             here
-          </a>. For details on our HIPAA compliance, see{" "}
+          </a>
+          . For details on our HIPAA compliance, see{" "}
           <a
             href="https://help.dvlcloud.com/connect/security/hipaa-compliance"
             target="_blank"
             rel="noopener noreferrer"
           >
             here
-          </a>.
+          </a>
+          .
         </p>
       </SettingPanel>
     );

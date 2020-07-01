@@ -31,7 +31,7 @@ class Switcher extends Component {
     const {
       totalUnreadMessagesCount: unreadsCount,
       totalMentionsCount: mentionsCount,
-      defaultGroup
+      defaultGroup,
     } = this.props.groupsStore;
     const { engageEnabled } = this.props.teamStore;
 
@@ -54,7 +54,7 @@ class Switcher extends Component {
               <img
                 className="switcher__top-home"
                 src="/images/logo-white.svg"
-                alt="Stitch"
+                alt="Clinix360"
               />
             </OverlayTrigger>
           </NavLink>
@@ -95,12 +95,11 @@ class Switcher extends Component {
                   </span>
                 )}
 
-                {unreadsCount > 0 &&
-                  !mentionsCount && (
-                    <span className="switcher__badge unreads">
-                      <i className="fa fa-circle" />
-                    </span>
-                  )}
+                {unreadsCount > 0 && !mentionsCount && (
+                  <span className="switcher__badge unreads">
+                    <i className="fa fa-circle" />
+                  </span>
+                )}
               </span>
             </OverlayTrigger>
           </NavLink>

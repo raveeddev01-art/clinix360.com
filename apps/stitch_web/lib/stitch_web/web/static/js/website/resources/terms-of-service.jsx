@@ -18,16 +18,16 @@ export default class TermsOfService extends Component {
             <h2>Terms and Conditions</h2>
 
             <p>
-              Stitch Technologies, Inc. (“Stitch” or “we”) provides services for
-              healthcare professionals (the “Services”) through our website,
-              accessible at www.dvlcloud.com (the “Site”), and as applications
-              for web browsers, mobile devices, tablet computers and similar
-              devices (the “Apps”). Please read carefully the following terms
-              and conditions (“Terms”) and our{" "}
+              Clinix360 Technologies, Inc. (“Clinix360” or “we”) provides
+              services for healthcare professionals (the “Services”) through our
+              website, accessible at www.dvlcloud.com (the “Site”), and as
+              applications for web browsers, mobile devices, tablet computers
+              and similar devices (the “Apps”). Please read carefully the
+              following terms and conditions (“Terms”) and our{" "}
               <Link to="/privacy-policy">Privacy Policy</Link>. These Terms
               govern your access to and use of the Site, Services, Apps and
               Collective Content (defined below), and constitute a binding legal
-              agreement between you and Stitch.
+              agreement between you and Clinix360.
             </p>
 
             <p>
@@ -61,15 +61,15 @@ export default class TermsOfService extends Component {
 
             <p>
               “Content” means text, graphics, images, software (excluding the
-              Apps), audio, video, information or other materials. “Stitch
-              Content” means Content that Stitch makes available through the
+              Apps), audio, video, information or other materials. “Clinix360
+              Content” means Content that Clinix360 makes available through the
               Site, Services or Apps, including any Content licensed from a
               third party, but excluding Registered User Content.
             </p>
 
             <p>
-              “Registered User” means a person that completes Stitch’s account
-              registration process, as described under the “Account
+              “Registered User” means a person that completes Clinix360’s
+              account registration process, as described under the “Account
               Registration” section below.
             </p>
 
@@ -91,7 +91,7 @@ export default class TermsOfService extends Component {
             </p>
 
             <p>
-              “Collective Content” means, collectively, Stitch Content and
+              “Collective Content” means, collectively, Clinix360 Content and
               Registered User Content.
             </p>
           </div>
@@ -100,7 +100,7 @@ export default class TermsOfService extends Component {
             <h2>Modification</h2>
 
             <p>
-              Stitch reserves the right, at its sole discretion, to modify,
+              Clinix360 reserves the right, at its sole discretion, to modify,
               discontinue or terminate the Site, Services or Apps or to modify
               these Terms, at any time and without prior notice. If we modify
               these Terms we will post the modification via the Site or Apps or
@@ -135,15 +135,15 @@ export default class TermsOfService extends Component {
               healthcare professional; (iii) you are at least 18 years of age;
               and (iv) you will maintain and promptly update the Registration
               Data to keep it true, accurate, current and complete. You
-              authorize Stitch to confirm the truthfulness and accuracy of the
-              Registration Data. If you provide any information that is untrue,
-              inaccurate, not current or incomplete, or if Stitch has reasonable
-              grounds to suspect that such information is untrue, inaccurate,
-              not current or incomplete, Stitch has the right to suspend or
-              terminate your Account and refuse any and all current or future
-              use of the Services. You also authorize Stitch to access your
-              contact list and/or address book on your device in order to
-              provide and use the Services.
+              authorize Clinix360 to confirm the truthfulness and accuracy of
+              the Registration Data. If you provide any information that is
+              untrue, inaccurate, not current or incomplete, or if Clinix360 has
+              reasonable grounds to suspect that such information is untrue,
+              inaccurate, not current or incomplete, Clinix360 has the right to
+              suspend or terminate your Account and refuse any and all current
+              or future use of the Services. You also authorize Clinix360 to
+              access your contact list and/or address book on your device in
+              order to provide and use the Services.
             </p>
 
             <p>
@@ -161,10 +161,10 @@ export default class TermsOfService extends Component {
 
             <p>
               You understand and agree that the Services may include certain
-              communications from Stitch, such as service announcements and
+              communications from Clinix360, such as service announcements and
               administrative messages, and that these communications are
-              considered part of Stitch membership and you will not be able to
-              opt out of receiving them.
+              considered part of Clinix360 membership and you will not be able
+              to opt out of receiving them.
             </p>
           </div>
 
@@ -184,22 +184,20 @@ export default class TermsOfService extends Component {
               another person to use your Credentials to access the Services, (3)
               any and all damages or losses that may be incurred or suffered as
               a result of any activities that occur under your Credentials. You
-              agree to immediately notify Stitch in writing by email to{" "}
-              <a href="mailto:support@dvlcloud.com">
-                support@dvlcloud.com
-              </a>{" "}
-              of any unauthorized use of your Credentials or any other breach of
-              security. Stitch is not and shall not be liable for any harm
+              agree to immediately notify Clinix360 in writing by email to{" "}
+              <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a> of
+              any unauthorized use of your Credentials or any other breach of
+              security. Clinix360 is not and shall not be liable for any harm
               arising from or relating to the theft of your Credentials, your
               disclosure of your Credentials, or the use of your Credentials by
               another person or entity. Any attempt to obtain unauthorized
               access or to exceed authorized access to the Site, Services, Apps
               or Collective Content shall be considered a trespass and computer
-              fraud and abuse, punishable under state and federal laws. Stitch
-              hereby notifies you that any or all communications with this Site
-              can and will be monitored, captured, recorded, and transmitted to
-              the authorities as deemed necessary by Stitch in its sole
-              discretion and without further notice.
+              fraud and abuse, punishable under state and federal laws.
+              Clinix360 hereby notifies you that any or all communications with
+              this Site can and will be monitored, captured, recorded, and
+              transmitted to the authorities as deemed necessary by Clinix360 in
+              its sole discretion and without further notice.
             </p>
           </div>
 
@@ -221,9 +219,9 @@ export default class TermsOfService extends Component {
             <h2>Privacy</h2>
 
             <p>
-              See Stitch’s <Link to="/privacy-policy">Privacy Policy</Link> for
-              information and notices concerning Stitch’s collection and use of
-              your personal information.
+              See Clinix360’s <Link to="/privacy-policy">Privacy Policy</Link>{" "}
+              for information and notices concerning Clinix360’s collection and
+              use of your personal information.
             </p>
           </div>
 
@@ -231,7 +229,7 @@ export default class TermsOfService extends Component {
             <h2>Ownership</h2>
 
             <p>
-              You provide Stitch access to Your Content so we can provide the
+              You provide Clinix360 access to Your Content so we can provide the
               desired Services and Apps. We don’t claim any ownership of Your
               Content. These Terms do not grant us any rights to your stuff or
               intellectual property except for the limited rights that are
@@ -243,29 +241,29 @@ export default class TermsOfService extends Component {
             </p>
 
             <p>
-              The Site, Services, Apps and Stitch Content are protected by
+              The Site, Services, Apps and Clinix360 Content are protected by
               copyright, trademark, and other laws of the United States and
               foreign countries. You acknowledge and agree that the Site,
-              Services, Apps and Stitch Content, including all associated
-              intellectual property rights, are the exclusive property of Stitch
-              and its licensors. You will not remove, alter or obscure any
-              copyright, trademark, service mark or other proprietary rights
+              Services, Apps and Clinix360 Content, including all associated
+              intellectual property rights, are the exclusive property of
+              Clinix360 and its licensors. You will not remove, alter or obscure
+              any copyright, trademark, service mark or other proprietary rights
               notices incorporated in or accompanying the Site, Services, Apps
-              or Stitch Content.
+              or Clinix360 Content.
             </p>
           </div>
 
           <div className="copy-section">
             <h2>
-              Licenses Granted by Stitch to Stitch Content and Registered User
-              Content
+              Licenses Granted by Clinix360 to Clinix360 Content and Registered
+              User Content
             </h2>
 
             <p>
               Subject to your compliance with the terms and conditions of these
-              Terms, Stitch grants you a limited, non-exclusive,
+              Terms, Clinix360 grants you a limited, non-exclusive,
               non-transferable license: (i) to view, download and print any
-              Stitch Content solely for your personal and non-commercial
+              Clinix360 Content solely for your personal and non-commercial
               purposes; and (ii) to view any Registered User Content to which
               you are permitted access solely for your personal and
               non-commercial purposes. You have no right to sublicense the
@@ -279,7 +277,7 @@ export default class TermsOfService extends Component {
               the Site, Services, Apps or Collective Content, except as
               expressly permitted in these Terms. No licenses or rights are
               granted to you by implication or otherwise under any intellectual
-              property rights owned or controlled by Stitch or its licensors,
+              property rights owned or controlled by Clinix360 or its licensors,
               except for the licenses and rights expressly granted in these
               Terms.
             </p>
@@ -290,8 +288,8 @@ export default class TermsOfService extends Component {
 
             <p>
               Subject to your compliance with these Terms and any additional
-              license agreement between you and Stitch, Stitch grants you a
-              limited non-exclusive, non-transferable license to download and
+              license agreement between you and Clinix360, Clinix360 grants you
+              a limited non-exclusive, non-transferable license to download and
               install a copy of the App on up to five (5) mobile devices and
               computers that you own or control and to run such copies of the
               App solely for your own personal use.
@@ -305,10 +303,9 @@ export default class TermsOfService extends Component {
               We welcome and encourage you to provide feedback, comments and
               suggestions for improvements to the Site, Services or Apps
               (“Feedback”). You may submit Feedback by emailing us at
-              <a href="mailto:support@dvlcloud.com">
-                support@dvlcloud.com
-              </a>. You acknowledge and agree that if you submit any Feedback to
-              us, you hereby grant to us a non-exclusive, worldwide, perpetual,
+              <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>.
+              You acknowledge and agree that if you submit any Feedback to us,
+              you hereby grant to us a non-exclusive, worldwide, perpetual,
               irrevocable, fully-paid, royalty-free, sub-licensable and
               transferable license under any and all intellectual property
               rights that you own or control to use, copy, modify, create
@@ -362,10 +359,10 @@ export default class TermsOfService extends Component {
               are the sole and exclusive owner of all Your Content that you make
               available through the Site, Services or Apps or you have all
               rights, licenses, consents and releases that are necessary to
-              grant to Stitch the rights in Your Content, as contemplated under
-              these Terms; and (ii) neither Your Content nor your posting,
+              grant to Clinix360 the rights in Your Content, as contemplated
+              under these Terms; and (ii) neither Your Content nor your posting,
               uploading, publication, submission or transmittal of Your Content
-              or Stitch’s use of Your Content (or any portion thereof) on,
+              or Clinix360’s use of Your Content (or any portion thereof) on,
               through or by means of the Site, Services or Apps will infringe,
               misappropriate or violate a third party’s patent, copyright,
               trademark, trade secret, moral rights or other intellectual
@@ -414,30 +411,31 @@ export default class TermsOfService extends Component {
 
               <li>
                 Use, display, mirror or frame the Site or Apps, or any
-                individual element within the Site, Services or Apps, Stitch’s
-                name, any Stitch trademark, logo or other proprietary
-                information, or the layout and design of any page or form
-                contained on a page, without Stitch’s express written consent;
+                individual element within the Site, Services or Apps,
+                Clinix360’s name, any Clinix360 trademark, logo or other
+                proprietary information, or the layout and design of any page or
+                form contained on a page, without Clinix360’s express written
+                consent;
               </li>
 
               <li>
                 Access, tamper with, or use non-public areas of the Site or
-                Apps, Stitch’s computer systems, or the technical delivery
-                systems of Stitch’s providers;
+                Apps, Clinix360’s computer systems, or the technical delivery
+                systems of Clinix360’s providers;
               </li>
 
               <li>
-                Attempt to probe, scan, or test the vulnerability of any Stitch
-                system or network or breach any security or authentication
-                measures;
+                Attempt to probe, scan, or test the vulnerability of any
+                Clinix360 system or network or breach any security or
+                authentication measures;
               </li>
 
               <li>
                 Avoid, bypass, remove, deactivate, impair, descramble or
                 otherwise circumvent any technological measure implemented by
-                Stitch or any of Stitch’s providers or any other third party
-                (including another user) to protect the Site, Services, Apps or
-                Collective Content;
+                Clinix360 or any of Clinix360’s providers or any other third
+                party (including another user) to protect the Site, Services,
+                Apps or Collective Content;
               </li>
 
               <li>
@@ -446,7 +444,7 @@ export default class TermsOfService extends Component {
                 Services or Apps through the use of any engine, software, tool,
                 agent, device or mechanism (including spiders, robots, crawlers,
                 data mining tools or the like) other than the software and/or
-                search agents provided by Stitch or other generally available
+                search agents provided by Clinix360 or other generally available
                 third party web browsers;
               </li>
 
@@ -458,8 +456,8 @@ export default class TermsOfService extends Component {
 
               <li>
                 Use any meta tags or other hidden text or metadata utilizing a
-                Stitch trademark, logo URL or product name without Stitch’s
-                express written consent;
+                Clinix360 trademark, logo URL or product name without
+                Clinix360’s express written consent;
               </li>
 
               <li>
@@ -508,21 +506,21 @@ export default class TermsOfService extends Component {
             </ul>
 
             <p>
-              Stitch will have the right to investigate and prosecute violations
-              of any of the above to the fullest extent of the law. Stitch may
-              involve and cooperate with law enforcement authorities in
-              prosecuting users who violate these Terms. You acknowledge that
-              Stitch has no obligation to monitor your access to or use of the
-              Site, Services, Apps or Collective Content or to review or edit
-              any Collective Content, but has the right to do so for the purpose
-              of operating the Site, Services and Apps, to ensure your
-              compliance with these Terms, or to comply with applicable law or
-              the order or requirement of a court, administrative agency or
-              other governmental body. Stitch reserves the right, at any time
-              and without prior notice, to remove or disable access to any
-              Collective Content that Stitch, at its sole discretion, considers
-              to be in violation of these Terms or otherwise harmful to the
-              Site, Services or Apps.
+              Clinix360 will have the right to investigate and prosecute
+              violations of any of the above to the fullest extent of the law.
+              Clinix360 may involve and cooperate with law enforcement
+              authorities in prosecuting users who violate these Terms. You
+              acknowledge that Clinix360 has no obligation to monitor your
+              access to or use of the Site, Services, Apps or Collective Content
+              or to review or edit any Collective Content, but has the right to
+              do so for the purpose of operating the Site, Services and Apps, to
+              ensure your compliance with these Terms, or to comply with
+              applicable law or the order or requirement of a court,
+              administrative agency or other governmental body. Clinix360
+              reserves the right, at any time and without prior notice, to
+              remove or disable access to any Collective Content that Clinix360,
+              at its sole discretion, considers to be in violation of these
+              Terms or otherwise harmful to the Site, Services or Apps.
             </p>
           </div>
 
@@ -530,8 +528,8 @@ export default class TermsOfService extends Component {
             <h2>Copyright Policy</h2>
 
             <p>
-              Stitch respects copyright law and expects its users to do the
-              same. It is Stitch’s policy to terminate in appropriate
+              Clinix360 respects copyright law and expects its users to do the
+              same. It is Clinix360’s policy to terminate in appropriate
               circumstances Registered Users or other account holders who
               repeatedly infringe or are believed to be repeatedly infringing
               the rights of copyright holders.
@@ -543,13 +541,13 @@ export default class TermsOfService extends Component {
 
             <p>
               The Site, Services or Apps may contain links to third-party
-              websites or resources. You acknowledge and agree that Stitch is
+              websites or resources. You acknowledge and agree that Clinix360 is
               not responsible or liable for: (i) the availability or accuracy of
               such websites or resources; or (ii) the Content, products, or
               services on or available from such websites or resources. Links to
-              such websites or resources do not imply any endorsement by Stitch
-              of such websites or resources or the content, products, or
-              services available from such websites or resources. You
+              such websites or resources do not imply any endorsement by
+              Clinix360 of such websites or resources or the content, products,
+              or services available from such websites or resources. You
               acknowledge sole responsibility for and assume all risk arising
               from your use of any such websites or resources or the Content,
               products, or services on or available from such websites or
@@ -561,17 +559,15 @@ export default class TermsOfService extends Component {
             <h2>Termination and Account Cancellation</h2>
 
             <p>
-              If you breach any of these Terms, Stitch will have the right to
+              If you breach any of these Terms, Clinix360 will have the right to
               suspend or disable your Account or terminate these Terms, at its
-              sole discretion and without prior notice to you. Stitch reserves
-              the right to revoke your access to and use of the Site, Services,
-              Apps and Collective Content at any time, with or without cause. In
-              the event Stitch terminates these Terms for your breach, you will
-              remain liable for all amounts due hereunder. You may cancel your
-              Account at any time by sending an email to{" "}
-              <a href="mailto:support@dvlcloud.com">
-                support@dvlcloud.com
-              </a>.
+              sole discretion and without prior notice to you. Clinix360
+              reserves the right to revoke your access to and use of the Site,
+              Services, Apps and Collective Content at any time, with or without
+              cause. In the event Clinix360 terminates these Terms for your
+              breach, you will remain liable for all amounts due hereunder. You
+              may cancel your Account at any time by sending an email to{" "}
+              <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>.
             </p>
           </div>
 
@@ -581,13 +577,13 @@ export default class TermsOfService extends Component {
             <p>
               THE SITE, SERVICES, APPS AND COLLECTIVE CONTENT ARE PROVIDED “AS
               IS”, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED.
-              WITHOUT LIMITING THE FOREGOING, STITCH EXPLICITLY DISCLAIMS ANY
+              WITHOUT LIMITING THE FOREGOING, Clinix360 EXPLICITLY DISCLAIMS ANY
               WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
               QUIET ENJOYMENT OR NON-INFRINGEMENT, AND ANY WARRANTIES ARISING
-              OUT OF COURSE OF DEALING OR USAGE OF TRADE. STITCH MAKES NO
+              OUT OF COURSE OF DEALING OR USAGE OF TRADE. Clinix360 MAKES NO
               WARRANTY THAT THE SITE, SERVICES, APPS OR COLLECTIVE CONTENT WILL
               MEET YOUR REQUIREMENTS OR BE AVAILABLE ON AN UNINTERRUPTED,
-              SECURE, OR ERROR-FREE BASIS. STITCH MAKES NO WARRANTY REGARDING
+              SECURE, OR ERROR-FREE BASIS. Clinix360 MAKES NO WARRANTY REGARDING
               THE QUALITY OF ANY PRODUCTS, SERVICES OR COLLECTIVE CONTENT
               PURCHASED OR OBTAINED THROUGH THE SITE, SERVICES OR APPS OR THE
               ACCURACY, TIMELINESS, TRUTHFULNESS, COMPLETENESS OR RELIABILITY OF
@@ -596,8 +592,8 @@ export default class TermsOfService extends Component {
 
             <p>
               NO ADVICE OR INFORMATION, WHETHER ORAL OR WRITTEN, OBTAINED FROM
-              STITCH OR THROUGH THE SITE, SERVICES, APPS OR COLLECTIVE CONTENT,
-              WILL CREATE ANY WARRANTY NOT EXPRESSLY MADE HEREIN.
+              Clinix360 OR THROUGH THE SITE, SERVICES, APPS OR COLLECTIVE
+              CONTENT, WILL CREATE ANY WARRANTY NOT EXPRESSLY MADE HEREIN.
             </p>
 
             <p>
@@ -605,11 +601,11 @@ export default class TermsOfService extends Component {
               INTERACTIONS WITH OTHER USERS OF THE SITE, SERVICES AND APPS AND
               WITH OTHER PERSONS WITH WHOM YOU COMMUNICATE OR INTERACT AS A
               RESULT OF YOUR USE OF THE SITE, SERVICES OR APPS. YOU UNDERSTAND
-              THAT STITCH DOES NOT SCREEN OR INQUIRE INTO THE BACKGROUND OF ANY
-              USERS OF THE SITE, SERVICES OR APPS, NOR DOES STITCH MAKE ANY
-              ATTEMPT TO VERIFY THE STATEMENTS OF USERS OF THE SITE, SERVICES OR
-              APPS. STITCH MAKES NO REPRESENTATIONS OR WARRANTIES AS TO THE
-              CONDUCT OF USERS OF THE SITE, SERVICES OR APPS OR THEIR
+              THAT Clinix360 DOES NOT SCREEN OR INQUIRE INTO THE BACKGROUND OF
+              ANY USERS OF THE SITE, SERVICES OR APPS, NOR DOES Clinix360 MAKE
+              ANY ATTEMPT TO VERIFY THE STATEMENTS OF USERS OF THE SITE,
+              SERVICES OR APPS. Clinix360 MAKES NO REPRESENTATIONS OR WARRANTIES
+              AS TO THE CONDUCT OF USERS OF THE SITE, SERVICES OR APPS OR THEIR
               COMPATIBILITY WITH ANY CURRENT OR FUTURE USERS OF THE SITE,
               SERVICES OR APPS. YOU AGREE TO TAKE REASONABLE PRECAUTIONS IN ALL
               COMMUNICATIONS AND INTERACTIONS WITH OTHER USERS OF THE SITE,
@@ -623,7 +619,7 @@ export default class TermsOfService extends Component {
             <h2>Indemnity</h2>
 
             <p>
-              You agree to defend, indemnify, and hold Stitch, its officers,
+              You agree to defend, indemnify, and hold Clinix360, its officers,
               directors, employees and agents, harmless from and against any
               claims, liabilities, damages, losses, and expenses, including,
               without limitation, reasonable legal and accounting fees, arising
@@ -640,7 +636,7 @@ export default class TermsOfService extends Component {
               YOU ACKNOWLEDGE AND AGREE THAT, TO THE MAXIMUM EXTENT PERMITTED BY
               LAW, THE ENTIRE RISK ARISING OUT OF YOUR ACCESS TO AND USE OF THE
               SITE, SERVICES, APPS AND COLLECTIVE CONTENT REMAINS WITH YOU.
-              NEITHER STITCH NOR ANY OTHER PERSON OR ENTITY INVOLVED IN
+              NEITHER Clinix360 NOR ANY OTHER PERSON OR ENTITY INVOLVED IN
               CREATING, PRODUCING, OR DELIVERING THE SITE, SERVICES, APPS OR
               COLLECTIVE CONTENT WILL BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
               EXEMPLARY OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, LOSS
@@ -654,9 +650,9 @@ export default class TermsOfService extends Component {
               PERSONS WITH WHOM YOU COMMUNICATE OR INTERACT AS A RESULT OF YOUR
               USE OF THE SITE, SERVICES OR APPS WHETHER BASED ON WARRANTY,
               CONTRACT, TORT (INCLUDING NEGLIGENCE), PRODUCT LIABILITY OR ANY
-              OTHER LEGAL THEORY, AND WHETHER OR NOT STITCH HAS BEEN INFORMED OF
-              THE POSSIBILITY OF SUCH DAMAGE, EVEN IF A LIMITED REMEDY SET FORTH
-              HEREIN IS FOUND TO HAVE FAILED OF ITS ESSENTIAL PURPOSE.
+              OTHER LEGAL THEORY, AND WHETHER OR NOT Clinix360 HAS BEEN INFORMED
+              OF THE POSSIBILITY OF SUCH DAMAGE, EVEN IF A LIMITED REMEDY SET
+              FORTH HEREIN IS FOUND TO HAVE FAILED OF ITS ESSENTIAL PURPOSE.
             </p>
 
             <p>
@@ -664,7 +660,7 @@ export default class TermsOfService extends Component {
               CONNECTION WITH THESE TERMS OR FROM THE USE OF OR INABILITY TO USE
               THE SITE, SERVICES, APPS OR COLLECTIVE CONTENT EXCEED ONE HUNDRED
               DOLLARS ($100). THE LIMITATIONS OF DAMAGES SET FORTH ABOVE ARE
-              FUNDAMENTAL ELEMENTS OF THE BASIS OF THE BARGAIN BETWEEN STITCH
+              FUNDAMENTAL ELEMENTS OF THE BASIS OF THE BARGAIN BETWEEN Clinix360
               AND YOU.
             </p>
           </div>
@@ -674,11 +670,11 @@ export default class TermsOfService extends Component {
 
             <p>
               All trademarks, service marks, logos, trade names and any other
-              proprietary designations of Stitch used herein are trademarks or
-              registered trademarks of Stitch. Any other trademarks, service
-              marks, logos, trade names and any other proprietary designations
-              are the trademarks or registered trademarks of their respective
-              parties.
+              proprietary designations of Clinix360 used herein are trademarks
+              or registered trademarks of Clinix360. Any other trademarks,
+              service marks, logos, trade names and any other proprietary
+              designations are the trademarks or registered trademarks of their
+              respective parties.
             </p>
           </div>
 
@@ -715,10 +711,10 @@ export default class TermsOfService extends Component {
 
             <p>
               These Terms constitute the entire and exclusive understanding and
-              agreement between Stitch and you regarding the Site, Services,
+              agreement between Clinix360 and you regarding the Site, Services,
               Apps and Collective Content, and these Terms supersede and replace
               any and all prior oral or written understandings or agreements
-              between Stitch and you regarding the Site, Services, Apps and
+              between Clinix360 and you regarding the Site, Services, Apps and
               Collective Content.
             </p>
           </div>
@@ -728,12 +724,12 @@ export default class TermsOfService extends Component {
 
             <p>
               You may not assign or transfer these Terms, by operation of law or
-              otherwise, without Stitch’s prior written consent. Any attempt by
-              you to assign or transfer these Terms, without such consent, will
-              be null and of no effect. Stitch may assign or transfer these
-              Terms, at its sole discretion, without restriction. Subject to the
-              foregoing, these Terms will bind and inure to the benefit of the
-              parties, their successors and permitted assigns.
+              otherwise, without Clinix360’s prior written consent. Any attempt
+              by you to assign or transfer these Terms, without such consent,
+              will be null and of no effect. Clinix360 may assign or transfer
+              these Terms, at its sole discretion, without restriction. Subject
+              to the foregoing, these Terms will bind and inure to the benefit
+              of the parties, their successors and permitted assigns.
             </p>
           </div>
 
@@ -743,7 +739,7 @@ export default class TermsOfService extends Component {
             <p>
               Any notices or other communications permitted or required
               hereunder, including those regarding modifications to these Terms,
-              will be in writing and given: (i) by Stitch via email (in each
+              will be in writing and given: (i) by Clinix360 via email (in each
               case, to the address that you provide); or (ii) by posting to the
               Site; or (iii) via the Apps. For notices made by e-mail, the date
               of receipt will be deemed the date on which such notice is
@@ -755,7 +751,7 @@ export default class TermsOfService extends Component {
             <h2>Dispute Resolution</h2>
 
             <p className="m-b-30">
-              You and Stitch agree that any dispute, claim or controversy
+              You and Clinix360 agree that any dispute, claim or controversy
               arising out of or relating to these Terms or the breach,
               termination, enforcement, interpretation or validity thereof or
               the use of the Site, Services or Apps (collectively, “Disputes”)
@@ -771,10 +767,10 @@ export default class TermsOfService extends Component {
               state and federal courts located in the Northern District of
               California and each of the parties hereto waives any objection to
               jurisdiction and venue in such courts. You acknowledge and agree
-              that you and Stitch are each waiving the right to a trial by jury
-              or to participate as a plaintiff or className member in any
+              that you and Clinix360 are each waiving the right to a trial by
+              jury or to participate as a plaintiff or className member in any
               purported className action or representative proceeding. Further,
-              unless both you and Stitch otherwise agree in writing, the
+              unless both you and Clinix360 otherwise agree in writing, the
               arbitrator may not consolidate more than one person's claims, and
               may not otherwise preside over any form of any className or
               representative proceeding. If this specific paragraph is held
@@ -814,27 +810,28 @@ export default class TermsOfService extends Component {
                 and a separate form for California residents at{" "}
                 <a href="http://www.adr.org/aaa/ShowPDF?doc=ADRSTG_015822">
                   http://www.adr.org/aaa/ShowPDF?doc=ADRSTG_015822
-                </a>.) The arbitrator will be either a retired judge or an
-                attorney licensed to practice law and will be selected by the
-                parties from the AAA’s roster of arbitrators. If the parties are
-                unable to agree upon an arbitrator within seven (7) days of
-                delivery of the Demand for Arbitration, then the AAA will
-                appoint the arbitrator in accordance with the AAA Rules.
+                </a>
+                .) The arbitrator will be either a retired judge or an attorney
+                licensed to practice law and will be selected by the parties
+                from the AAA’s roster of arbitrators. If the parties are unable
+                to agree upon an arbitrator within seven (7) days of delivery of
+                the Demand for Arbitration, then the AAA will appoint the
+                arbitrator in accordance with the AAA Rules.
               </dd>
 
               <dt>Arbitration Location and Procedure</dt>
               <dd>
-                Unless you and Stitch otherwise agree, the arbitration will be
-                conducted in the county where you reside. If your claim does not
-                exceed $10,000, then the arbitration will be conducted solely on
-                the basis of the documents that you and Stitch submit to the
-                arbitrator, unless you request a hearing or the arbitrator
-                determines that a hearing is necessary. If your claim exceeds
-                $10,000, your right to a hearing will be determined by the AAA
-                Rules. Subject to the AAA Rules, the arbitrator will have the
-                discretion to direct a reasonable exchange of information by the
-                parties, consistent with the expedited nature of the
-                arbitration.
+                Unless you and Clinix360 otherwise agree, the arbitration will
+                be conducted in the county where you reside. If your claim does
+                not exceed $10,000, then the arbitration will be conducted
+                solely on the basis of the documents that you and Clinix360
+                submit to the arbitrator, unless you request a hearing or the
+                arbitrator determines that a hearing is necessary. If your claim
+                exceeds $10,000, your right to a hearing will be determined by
+                the AAA Rules. Subject to the AAA Rules, the arbitrator will
+                have the discretion to direct a reasonable exchange of
+                information by the parties, consistent with the expedited nature
+                of the arbitration.
               </dd>
 
               <dt>Arbitrator’s Decision</dt>
@@ -852,7 +849,7 @@ export default class TermsOfService extends Component {
                 provide relief warranted by the claimant’s individual claim. If
                 you prevail in arbitration you will be entitled to an award of
                 attorneys’ fees and expenses, to the extent provided under
-                applicable law. Stitch will not seek, and hereby waives all
+                applicable law. Clinix360 will not seek, and hereby waives all
                 rights it may have under applicable law to recover, attorneys’
                 fees and expenses if it prevails in arbitration.
               </dd>
@@ -862,9 +859,9 @@ export default class TermsOfService extends Component {
                 Your responsibility to pay any AAA filing, administrative and
                 arbitrator fees will be solely as set forth in the AAA Rules.
                 However, if your claim for damages does not exceed $75,000,
-                Stitch will pay all such fees unless the arbitrator finds that
-                either the substance of your claim or the relief sought in your
-                Demand for Arbitration was frivolous or was brought for an
+                Clinix360 will pay all such fees unless the arbitrator finds
+                that either the substance of your claim or the relief sought in
+                your Demand for Arbitration was frivolous or was brought for an
                 improper purpose (as measured by the standards set forth in
                 Federal Rule of Civil Procedure 11(b)).
               </dd>
@@ -872,30 +869,30 @@ export default class TermsOfService extends Component {
               <dt>Changes</dt>
               <dd>
                 Notwithstanding the provisions of the “Modification” section
-                above, if Stitch changes this “Dispute Resolution” section after
-                the date you first accepted these Terms (or accepted any
+                above, if Clinix360 changes this “Dispute Resolution” section
+                after the date you first accepted these Terms (or accepted any
                 subsequent changes to these Terms), you may reject any such
                 change by sending us written notice (including by email to{" "}
-                <a href="mailto:support@dvlcloud.com">
-                  support@dvlcloud.com
-                </a>) within 30 days of the date such change became effective,
-                as indicated in the “Last Updated Date” above or in the date of
-                Stitch’s email to you notifying you of such change. By rejecting
-                any change, you are agreeing that you will arbitrate any Dispute
-                between you and Stitch in accordance with the provisions of this
-                “Dispute Resolution” section as of the date you first accepted
-                these Terms (or accepted any subsequent changes to these Terms).
+                <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>)
+                within 30 days of the date such change became effective, as
+                indicated in the “Last Updated Date” above or in the date of
+                Clinix360’s email to you notifying you of such change. By
+                rejecting any change, you are agreeing that you will arbitrate
+                any Dispute between you and Clinix360 in accordance with the
+                provisions of this “Dispute Resolution” section as of the date
+                you first accepted these Terms (or accepted any subsequent
+                changes to these Terms).
               </dd>
 
               <dt>General</dt>
               <dd>
-                The failure of Stitch to enforce any right or provision of these
-                Terms will not constitute a waiver of future enforcement of that
-                right or provision. The waiver of any such right or provision
-                will be effective only if in writing and signed by a duly
-                authorized representative of Stitch. Except as expressly set
-                forth in these Terms, the exercise by either party of any of its
-                remedies under these Terms will be without prejudice to its
+                The failure of Clinix360 to enforce any right or provision of
+                these Terms will not constitute a waiver of future enforcement
+                of that right or provision. The waiver of any such right or
+                provision will be effective only if in writing and signed by a
+                duly authorized representative of Clinix360. Except as expressly
+                set forth in these Terms, the exercise by either party of any of
+                its remedies under these Terms will be without prejudice to its
                 other remedies under these Terms or otherwise. If for any reason
                 a court of competent jurisdiction finds any provision of these
                 Terms invalid or unenforceable, that provision will be enforced
@@ -906,19 +903,21 @@ export default class TermsOfService extends Component {
           </div>
 
           <div className="copy-section">
-            <h2>Contacting Stitch</h2>
+            <h2>Contacting Clinix360</h2>
 
             <p>
               If you have any questions about this Policy or any App Store
-              Sourced App, please contact Stitch at
+              Sourced App, please contact Clinix360 at
             </p>
             <p />
 
             <address className="m-b-30">
-              <strong>Stitch Health</strong>
+              <strong>Clinix360 Health</strong>
               <br />
-              156 2nd Street<br />
-              San Francisco, CA<br />
+              156 2nd Street
+              <br />
+              San Francisco, CA
+              <br />
               <a href="tel:+16502823388">(650) 282-3388</a>
               <br />
               <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>

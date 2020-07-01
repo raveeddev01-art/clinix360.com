@@ -22,11 +22,11 @@ export default class Engage extends Component {
 
     this.state = {
       modal: "",
-      setupVisible: false
+      setupVisible: false,
     };
   }
 
-  onVisibleChange = isVisible => {
+  onVisibleChange = (isVisible) => {
     if (isVisible) {
       this.setState({ setupVisible: true });
     }
@@ -34,13 +34,13 @@ export default class Engage extends Component {
 
   videoModal = () => {
     this.setState({
-      modal: "video"
+      modal: "video",
     });
   };
 
   closeModal = () => {
     this.setState({
-      modal: ""
+      modal: "",
     });
   };
 
@@ -48,7 +48,7 @@ export default class Engage extends Component {
     const { flipped } = this.props;
 
     const setupClass = cx("get-started-new", {
-      visible: this.state.setupVisible
+      visible: this.state.setupVisible,
     });
 
     return (
@@ -66,9 +66,9 @@ export default class Engage extends Component {
                 <h1>Communicate securely with patients</h1>
 
                 <h3 className="m-b-30">
-                  Stitch Engage is a simple system for talking to your patients.
-                  From messages and forms to files and tasks, Stitch lets you
-                  engage with patients on every level.
+                  Clinix360 Engage is a simple system for talking to your
+                  patients. From messages and forms to files and tasks,
+                  Clinix360 lets you engage with patients on every level.
                 </h3>
 
                 <CreateTeam typeformLink={typeformLink} />
@@ -77,7 +77,7 @@ export default class Engage extends Component {
               <div className="flex-item">
                 <img
                   src="/images/engage-header.png"
-                  alt="Stitch Platform"
+                  alt="Clinix360 Platform"
                   className="img-responsive"
                 />
               </div>
@@ -91,9 +91,9 @@ export default class Engage extends Component {
           image="/images/engage-feature-1-alt.png"
         >
           Keep patients connected to your practice through regular
-          communication. From followups to appointment reminders, Stitch Engage
-          helps you build deep patient relationships. Give your patients a great
-          experience, both inside and outside the clinic walls.
+          communication. From followups to appointment reminders, Clinix360
+          Engage helps you build deep patient relationships. Give your patients
+          a great experience, both inside and outside the clinic walls.
         </Feature>
 
         <Feature
@@ -103,7 +103,7 @@ export default class Engage extends Component {
           imageClassName="engage-feature-image-2"
         >
           No more siloed conversations in individual mailboxes. Team members in
-          Stitch Engage can jump into and out of patient conversations as
+          Clinix360 Engage can jump into and out of patient conversations as
           necessary, consolidating various patient communication streams into a
           single place for improved coordination and transparency.
         </Feature>
@@ -116,8 +116,8 @@ export default class Engage extends Component {
           Send messages and share data of any kind — prescriptions, lab results
           and more. Upload almost any type of file — JPEG, PNG, PDF, MP3. Create
           and collect custom response forms. No more faxing or mailing your
-          patients files. Just easily send them through Stitch Engage to deliver
-          your patients a seamless experience.
+          patients files. Just easily send them through Clinix360 Engage to
+          deliver your patients a seamless experience.
         </Feature>
 
         <Feature
@@ -127,8 +127,8 @@ export default class Engage extends Component {
         >
           Experience Engage as a complete telemedicine platform for delivering
           care to your patients. Schedule video calls and conduct them from
-          directly within Stitch. Give patients great care wherever they want,
-          in the office or in the home.
+          directly within Clinix360. Give patients great care wherever they
+          want, in the office or in the home.
         </Feature>
 
         <div className="additional-features">
@@ -143,7 +143,7 @@ export default class Engage extends Component {
                   </h4>
                   <p className="m-b-15">
                     Never use paper again. Create custom forms you can send and
-                    collect via Stitch, from intake to waiver.
+                    collect via Clinix360, from intake to waiver.
                   </p>
                 </div>
               </Col>
@@ -202,7 +202,7 @@ export default class Engage extends Component {
                     <i className="fa fa-file-text" /> Content
                   </h4>
                   <p className="m-b-15">
-                    Stitch offers patient educational content for every
+                    Clinix360 offers patient educational content for every
                     specialty, so you can keep patients engaged after visits.
                   </p>
                 </div>
@@ -229,8 +229,8 @@ export default class Engage extends Component {
                     <h4 className="m-b-20">Create an account</h4>
 
                     <p>
-                      Stitch is 100% free to start. Pick a team name and a
-                      custom URL you can use to access Stitch easily.
+                      Clinix360 is 100% free to start. Pick a team name and a
+                      custom URL you can use to access Clinix360 easily.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -240,8 +240,8 @@ export default class Engage extends Component {
                     <div className="number m-b-30">2</div>
                     <h4 className="m-b-20">Invite your team</h4>
                     <p>
-                      Stitch works best when your entire team is inside. Use
-                      Stitch with an unlimited number of users.
+                      Clinix360 works best when your entire team is inside. Use
+                      Clinix360 with an unlimited number of users.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -287,9 +287,9 @@ export default class Engage extends Component {
 }
 
 Engage.propTypes = {
-  flipped: PropTypes.bool
+  flipped: PropTypes.bool,
 };
 
 Engage.defaultProps = {
-  flipped: false
+  flipped: false,
 };

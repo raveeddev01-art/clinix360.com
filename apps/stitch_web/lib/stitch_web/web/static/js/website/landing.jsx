@@ -11,7 +11,7 @@ export default class Landing extends Component {
   renderCustomers() {
     return CUSTOMERS.map((c, index) => {
       const className = cx("col-lg-5ths col-md-3 col-xs-4", {
-        "visible-lg": index % 5 === 4
+        "visible-lg": index % 5 === 4,
       });
       return (
         <div className={className} key={`customer_${index}`}>
@@ -31,7 +31,7 @@ export default class Landing extends Component {
                 <a href="/" className="brand">
                   <img
                     src="apps/stitch_web/lib/stitch_web/web/static/js/authentication/team/select_team.jsx"
-                    alt="Stitch"
+                    alt="Clinix360"
                   />
                 </a>
               </Col>
@@ -86,7 +86,7 @@ export default class Landing extends Component {
         <div id="footer">
           <div className="container">
             <Row>
-              <Col sm={4}>Stitch Technologies, Inc</Col>
+              <Col sm={4}>Clinix360 Technologies, Inc</Col>
               <Col sm={8}>
                 <ul className="list-inline m-b-0 text-right">
                   <li>

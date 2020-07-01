@@ -14,9 +14,9 @@ class DrChronoSetupInstructions extends Component {
             <h4 className="integrations-panel__heading">Step 1</h4>
             <p>
               Now go to the section titled 'Webhook'. Set a name for your
-              webhook. We recommend 'Stitch'. Then, copy and paste 'Your
+              webhook. We recommend 'Clinix360'. Then, copy and paste 'Your
               Callback URL' (on the right) into drchrono. Set your webhook
-              secret token to ‘stitch’.
+              secret token to ‘Clinix360’.
             </p>
           </Col>
           <Col sm={7}>
@@ -60,11 +60,11 @@ class DrChronoSetupInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 3</h4>
             <p>
-              Finally, in Stitch, select which notifications you want to display
-              and confirm your room. Then click 'Save Integration' in Stitch to
-              complete. Note that when you are done, drcrhrono will continue to
-              list the app as in 'Restricted Mode', which is expected for the
-              integration.
+              Finally, in Clinix360, select which notifications you want to
+              display and confirm your room. Then click 'Save Integration' in
+              Clinix360 to complete. Note that when you are done, drcrhrono will
+              continue to list the app as in 'Restricted Mode', which is
+              expected for the integration.
             </p>
           </Col>
           <Col sm={7}>

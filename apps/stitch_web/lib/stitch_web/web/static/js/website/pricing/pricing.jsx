@@ -25,7 +25,7 @@ export default class Pricing extends Component {
 
         <Subheader
           title="Free to use, upgrade any time"
-          subtitle="Stitch is free to use with an unlimited number of people."
+          subtitle="Clinix360 is free to use with an unlimited number of people."
         />
 
         <div className="pricing-section">
@@ -34,11 +34,11 @@ export default class Pricing extends Component {
               <div>
                 <Nav bsStyle="tabs">
                   <NavItem eventKey="first">
-                    <span className="hidden-xs hidden-sm">Stitch for</span>{" "}
+                    <span className="hidden-xs hidden-sm">Clinix360 for</span>{" "}
                     Practices
                   </NavItem>
                   <NavItem eventKey="second">
-                    <span className="hidden-xs hidden-sm">Stitch for</span>{" "}
+                    <span className="hidden-xs hidden-sm">Clinix360 for</span>{" "}
                     Enterprise
                   </NavItem>
                 </Nav>
@@ -46,8 +46,9 @@ export default class Pricing extends Component {
                 <Tab.Content animation unmountOnExit>
                   <Tab.Pane eventKey="first">
                     <h3 className="pricing-table-heading text-center">
-                      <strong>Stitch for Practices</strong> is a collaboration
-                      space for small or medium sized healthcare businesses.
+                      <strong>Clinix360 for Practices</strong> is a
+                      collaboration space for small or medium sized healthcare
+                      businesses.
                     </h3>
                     <div className="hidden-md hidden-lg">
                       <PricingMobile />

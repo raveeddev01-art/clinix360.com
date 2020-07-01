@@ -23,7 +23,7 @@ class LockedApp extends Component {
     this.setState({ hasError: false });
   };
 
-  onValid = pin => {
+  onValid = (pin) => {
     this.setState({ pin }, () => {
       if (pin.length === 4) {
         this.attemptUnlock();
@@ -31,7 +31,7 @@ class LockedApp extends Component {
     });
   };
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault();
     this.attemptUnlock();
   };
@@ -57,7 +57,7 @@ class LockedApp extends Component {
 
   render() {
     const authWrapperClass = cx("authentication-page", {
-      "on-electron": window.electronApp
+      "on-electron": window.electronApp,
     });
     const { hasError, isSaving } = this.state;
 
@@ -67,7 +67,7 @@ class LockedApp extends Component {
           <AuthenticationPage
             headerCTA="no-cta"
             title="Locked Out"
-            description="Enter your PIN to resume using Stitch."
+            description="Enter your PIN to resume using Clinix360."
           >
             <div className="locked-out">
               <Form onSubmit={this.handleSubmit}>

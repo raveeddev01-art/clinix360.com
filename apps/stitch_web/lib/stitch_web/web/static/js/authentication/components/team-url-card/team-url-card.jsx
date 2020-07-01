@@ -22,13 +22,13 @@ class CarespaceUrlCard extends Component {
     this.state = {
       teamUrl: "",
       error: "",
-      loading: false
+      loading: false,
     };
   }
 
-  onChange = evt => {
+  onChange = (evt) => {
     this.setState({
-      teamUrl: formatUrl(evt.target.value)
+      teamUrl: formatUrl(evt.target.value),
     });
   };
 
@@ -43,23 +43,23 @@ class CarespaceUrlCard extends Component {
 
     post("/api/v1/teams/url-available", {
       body: { url: this.state.teamUrl },
-      hideNotify: true
+      hideNotify: true,
     })
-      .then(response => {
+      .then((response) => {
         this.setState({ loading: false });
         if (response.data.available) {
           this.props.onNext(this.state.teamUrl);
         } else {
           this.setState({
             error: uniquenessErrorText,
-            loading: false
+            loading: false,
           });
         }
       })
       .catch(() => {
         this.setState({
           error: uniquenessErrorText,
-          loading: false
+          loading: false,
         });
       });
   };
@@ -87,11 +87,11 @@ class CarespaceUrlCard extends Component {
       <div>
         <OnboardPage
           {...this.props}
-          title="Choose a URL for your Stitch Carespace"
+          title="Choose a URL for your Clinix360 Carespace"
           description={
             <span>
               This is the URL you and your team members will use to sign in to
-              Stitch.
+              Clinix360.
             </span>
           }
           onNext={this.onNext}
@@ -126,7 +126,7 @@ class CarespaceUrlCard extends Component {
 }
 
 CarespaceUrlCard.propTypes = {
-  onNext: PropTypes.func.isRequired
+  onNext: PropTypes.func.isRequired,
 };
 
 export default CarespaceUrlCard;

@@ -21,7 +21,7 @@ export default class Demo extends Component {
       email: "",
       phoneNumber: "",
       companyName: "",
-      formSubmitted: false
+      formSubmitted: false,
     };
   }
 
@@ -29,22 +29,22 @@ export default class Demo extends Component {
     scroll.scrollToTop();
   }
 
-  handleChange = event => {
+  handleChange = (event) => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   };
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault();
     const { fullName, email, phoneNumber, companyName } = this.state;
 
     post("/api/v1/request-demo", {
-      body: { fullName, email, phoneNumber, companyName }
+      body: { fullName, email, phoneNumber, companyName },
     }).then(() => {
       this.setState({ formSubmitted: true });
       scroll.scrollToTop();
@@ -58,11 +58,12 @@ export default class Demo extends Component {
           <h1>Request a Demo</h1>
           <h3 className="m-b-40">
             Enable your team to seamlessly work together.{" "}
-            <br className="hidden-xs" />Learn how Stitch works today.
+            <br className="hidden-xs" />
+            Learn how Clinix360 works today.
           </h3>
           <img
             src="/images/homepage-platform.png"
-            alt="Stitch Platform"
+            alt="Clinix360 Platform"
             className="img-responsive hidden-xs hidden-sm"
           />
         </div>
@@ -126,7 +127,7 @@ export default class Demo extends Component {
                   <FormControl
                     name="companyName"
                     required
-                    placeholder="Stitch Health"
+                    placeholder="Clinix360 Health"
                     type="text"
                     value={this.state.companyName}
                     onChange={this.handleChange}
@@ -148,7 +149,7 @@ export default class Demo extends Component {
           We received your request and will reach out momentarily.{" "}
           <br className="hidden-xs" />
           In the meantime, see how our customers are improving patient care on
-          Stitch.
+          Clinix360.
         </h3>
 
         <LinkContainer to="/customers">

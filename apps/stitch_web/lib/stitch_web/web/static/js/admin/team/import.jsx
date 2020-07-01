@@ -7,11 +7,11 @@ import SettingPanel from "../components/setting-panel/setting-panel";
 
 const title = "Import Data";
 const description =
-  "Import data from other services or Stitch teams. Click 'Request Access' and we'll follow up with next steps.";
+  "Import data from other services or Clinix360 teams. Click 'Request Access' and we'll follow up with next steps.";
 
 export default class TeamImport extends Component {
-  _mailToFor = app => {
-    return `mailto:support@dvlcloud.com?subject=Import Data from ${app}&body=We would like to import data from ${app} to Stitch.`;
+  _mailToFor = (app) => {
+    return `mailto:support@dvlcloud.com?subject=Import Data from ${app}&body=We would like to import data from ${app} to Clinix360.`;
   };
 
   render() {
@@ -20,10 +20,10 @@ export default class TeamImport extends Component {
         <br />
         <Row className="m-b-20">
           <Col md={10} className="import-app-option">
-            <img src="/images/logo-blue.svg" alt="stitch logo" />
+            <img src="/images/logo-blue.svg" alt="Clinix360 logo" />
             <div>
               <h4>
-                <strong>Stitch</strong>
+                <strong>Clinix360</strong>
               </h4>
               <p>Import your message history and files.</p>
             </div>
@@ -31,7 +31,7 @@ export default class TeamImport extends Component {
           <Col md={2}>
             <Button
               className="import-app-button"
-              href={this._mailToFor("Stitch")}
+              href={this._mailToFor("Clinix360")}
               block
               bsStyle="primary"
             >

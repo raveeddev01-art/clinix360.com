@@ -12,7 +12,7 @@ class PricingEnterprise extends Component {
     return (
       <div className="m-b-40">
         <h3 className="pricing-table-heading text-center">
-          <strong>Stitch for Enterprise</strong> scales the power of team
+          <strong>Clinix360 for Enterprise</strong> scales the power of team
           collaboration to the nation’s largest hospitals, health systems and
           healthcare organizations.
         </h3>
@@ -25,7 +25,7 @@ class PricingEnterprise extends Component {
                   <img
                     className="stitch-logo m-b-50"
                     src="/images/logo-blue.svg"
-                    alt="Stitch"
+                    alt="Clinix360"
                   />
                 </div>
               </Col>

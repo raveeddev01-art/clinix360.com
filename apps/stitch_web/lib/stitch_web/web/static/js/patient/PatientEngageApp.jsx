@@ -21,7 +21,7 @@ class PatientEngageApp extends Component {
               className={cx("appContainer", "engage-wrapper", "admin-wrapper")}
             >
               <Helmet>
-                <title>Stitch Engage</title>
+                <title>Clinix360 Engage</title>
               </Helmet>
               <PatientSidebar />
               <Switch>

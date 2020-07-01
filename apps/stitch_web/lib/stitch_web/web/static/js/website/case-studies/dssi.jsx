@@ -47,8 +47,8 @@ export default class CaseDSSI extends Component {
           <div className="container">
             <div className="case-study-content">
               <h3>
-                DSSI uses Stitch to offer a world-class patient experience and
-                boost clinical efficiency
+                DSSI uses Clinix360 to offer a world-class patient experience
+                and boost clinical efficiency
               </h3>
 
               <hr />
@@ -105,36 +105,36 @@ export default class CaseDSSI extends Component {
 
               <p className="m-b-40">
                 Given its focus on an outstanding customer experience, DSSI
-                looked to Stitch to unblock providers during consultation and
+                looked to Clinix360 to unblock providers during consultation and
                 allow them to rapidly handle urgent clinical tasks without
                 interrupting the patient experience.
               </p>
 
               <h4 className="m-b-30">
-                Using Stitch to deliver a better patient experience
+                Using Clinix360 to deliver a better patient experience
               </h4>
 
               <p className="m-b-40">
-                DSSI rolled out Stitch across the organization for real-time
+                DSSI rolled out Clinix360 across the organization for real-time
                 communication. As a result, support staff can now instantly
                 communicate with providers to resolve urgent clinical issues
                 without interrupting patient consultations. “I definitely think
-                Stitch has helped improve our patient care. Being able to access
-                providers so quickly and ask quick questions is helpful,”
+                Clinix360 has helped improve our patient care. Being able to
+                access providers so quickly and ask quick questions is helpful,”
                 explains Hendricksen. “For example, even though the patient may
                 have been in the room with the doctor for 20-30 minutes, they’ll
                 come up to the front desk and have additional clinical
-                questions. So with Stitch we’re able to still have access to the
-                provider immediately, while the patient is right in front of us,
-                and take care of their issues efficiently.”
+                questions. So with Clinix360 we’re able to still have access to
+                the provider immediately, while the patient is right in front of
+                us, and take care of their issues efficiently.”
               </p>
 
               <div className="quote dssi-quote text-center">
                 <i className="fa fa-quote-left fa-3x m-b-10" />
                 <h5 className="m-b-20">
-                  The interface on Stitch is very intuitive. It wasn’t something
-                  that we had to dedicate any training to because people already
-                  knew how to use it out of the box.
+                  The interface on Clinix360 is very intuitive. It wasn’t
+                  something that we had to dedicate any training to because
+                  people already knew how to use it out of the box.
                 </h5>
 
                 <div className="name">
@@ -145,10 +145,10 @@ export default class CaseDSSI extends Component {
 
               <p className="m-b-40">
                 Spencer gives an additional example of how DSSI has been able to
-                improve the quality of patient care by using Stitch. “We’re able
-                to use Stitch while we’re in the room with patients to give
-                price estimates in real-time. We’ll be in an exam room and a
-                patient will want to know how much a service will cost. We can
+                improve the quality of patient care by using Clinix360. “We’re
+                able to use Clinix360 while we’re in the room with patients to
+                give price estimates in real-time. We’ll be in an exam room and
+                a patient will want to know how much a service will cost. We can
                 quickly send that to the front desk, they’ll see it, and we’ll
                 get an estimate back in less than a minute. So this can help
                 improve patient care because they can make a decision right then
@@ -169,7 +169,7 @@ export default class CaseDSSI extends Component {
               </div>
 
               <p className="m-b-40">
-                By funneling all communication through Stitch, DSSI also
+                By funneling all communication through Clinix360, DSSI also
                 experienced a new benefit: conversation archival. Spencer
                 explains that ”sometimes you’ll have patients say that you did
                 something, so the archival ability is nice to have from a
@@ -192,9 +192,9 @@ export default class CaseDSSI extends Component {
               </h4>
 
               <p className="m-b-40">
-                After deploying Stitch across the organization, DSSI saw marked
-                improvements in their ability to deliver the highest possible
-                quality of care:
+                After deploying Clinix360 across the organization, DSSI saw
+                marked improvements in their ability to deliver the highest
+                possible quality of care:
               </p>
 
               <div className="infographic dssi-infographic text-center">
@@ -206,11 +206,11 @@ export default class CaseDSSI extends Component {
               </div>
 
               <p className="m-b-40">
-                DSSI has already communicated over 14,000 messages on Stitch.
+                DSSI has already communicated over 14,000 messages on Clinix360.
                 It’s become the central tool for clinical coordination at the
                 institute, and helped DSSI further deepen its strength in
-                patient-centered care. As DSSI continues to grow, Stitch aims to
-                be a core tool the institute can rely on for delivering the
+                patient-centered care. As DSSI continues to grow, Clinix360 aims
+                to be a core tool the institute can rely on for delivering the
                 highest quality patient care possible.
               </p>
             </div>

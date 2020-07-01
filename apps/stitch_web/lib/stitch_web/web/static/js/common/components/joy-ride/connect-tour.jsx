@@ -28,7 +28,7 @@ class ConnectTour extends Component {
       callback: this.callback,
       disableOverlayClose: true,
       tooltipComponent: JoyRideToolTip,
-      run: props.userStore.connectTourStatus === "pending"
+      run: props.userStore.connectTourStatus === "pending",
     };
   }
 
@@ -37,14 +37,14 @@ class ConnectTour extends Component {
       {
         placement: "center",
         disableBeacon: true,
-        title: "Welcome to Stitch",
+        title: "Welcome to Clinix360",
         target: ".message-form-action-item",
         content: (
           <p>
-            Message your team, from any device. Stitch is HIPAA
-            compliant and free to use with an unlimited number of people.
+            Message your team, from any device. Clinix360 is HIPAA compliant and
+            free to use with an unlimited number of people.
           </p>
-        )
+        ),
       },
       {
         placement: "right",
@@ -53,10 +53,10 @@ class ConnectTour extends Component {
         target: ".create-room-button",
         content: (
           <p>
-            Conversations in Stitch take place in <b>rooms</b>. Create
-            rooms for common topics of discussion.
+            Conversations in Clinix360 take place in <b>rooms</b>. Create rooms
+            for common topics of discussion.
           </p>
-        )
+        ),
       },
       {
         placement: "top",
@@ -68,7 +68,7 @@ class ConnectTour extends Component {
             Send messages by typing into the message input box and pressing{" "}
             <b>Enter</b>.
           </p>
-        )
+        ),
       },
       {
         placement: "top",
@@ -80,8 +80,8 @@ class ConnectTour extends Component {
             You can upload all types of files, including documents,
             presentations, videos, images, and more.
           </p>
-        )
-      }
+        ),
+      },
     ];
 
     if (this.props.userStore.canInvite) {
@@ -92,17 +92,17 @@ class ConnectTour extends Component {
         target: ".invite-link",
         content: (
           <p>
-            Invite your team members into Stitch, so you can bring all your
+            Invite your team members into Clinix360, so you can bring all your
             communication into one place.
           </p>
-        )
+        ),
       });
     }
 
     return steps;
   };
 
-  callback = data => {
+  callback = (data) => {
     const { callback } = this.props;
     const { action, index, type } = data;
 

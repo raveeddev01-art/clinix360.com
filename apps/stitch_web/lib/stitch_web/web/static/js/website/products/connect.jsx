@@ -21,11 +21,11 @@ export default class Connect extends Component {
 
     this.state = {
       modal: "",
-      setupVisible: false
+      setupVisible: false,
     };
   }
 
-  onVisibleChange = isVisible => {
+  onVisibleChange = (isVisible) => {
     if (isVisible) {
       this.setState({ setupVisible: true });
     }
@@ -33,13 +33,13 @@ export default class Connect extends Component {
 
   videoModal = () => {
     this.setState({
-      modal: "video"
+      modal: "video",
     });
   };
 
   closeModal = () => {
     this.setState({
-      modal: ""
+      modal: "",
     });
   };
 
@@ -48,7 +48,7 @@ export default class Connect extends Component {
     const { mobile, os } = browserDetails;
 
     const setupClass = cx("get-started-new", {
-      visible: this.state.setupVisible
+      visible: this.state.setupVisible,
     });
 
     return (
@@ -62,13 +62,18 @@ export default class Connect extends Component {
 
                 <h3 className="m-b-30">{subHeader}</h3>
 
-                <Button bsStyle="primary" href="mailto:feedback@dvlcloud.com?subject=Stitch: Request Information">Request Information</Button>
+                <Button
+                  bsStyle="primary"
+                  href="mailto:feedback@dvlcloud.com?subject=Clinix360: Request Information"
+                >
+                  Request Information
+                </Button>
               </div>
 
               <div className="flex-item">
                 <img
                   src="/images/connect-header.png"
-                  alt="Stitch Platform"
+                  alt="Clinix360 Platform"
                   className="img-responsive"
                 />
               </div>
@@ -92,7 +97,7 @@ export default class Connect extends Component {
           heading="Share information across your entire team"
           image="/images/connect-feature-2.png"
         >
-          Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
+          Easily upload files of any type into Clinix360 — JPEG, PNG, PDF, MP3,
           Word, Excel, PowerPoint, and more. Make them instantly available to
           your team members, and drop the headache of tedious email attachments.
           Start sharing patient charts, labs, images, intake forms and more.
@@ -103,11 +108,11 @@ export default class Connect extends Component {
           heading="Choose notifications that matter to you"
           image="/images/connect-feature-3.png"
         >
-          With Stitch, you can apply custom notification preferences to every
+          With Clinix360, you can apply custom notification preferences to every
           conversation, so you can stay focused and in the loop. Say goodbye to
           cluttered inboxes, noisy pagers and unruly text threads. Best of all,
-          Stitch goes wherever you go with native Mac, Windows, iOS and Android
-          apps.
+          Clinix360 goes wherever you go with native Mac, Windows, iOS and
+          Android apps.
         </Feature>
 
         <Feature
@@ -115,7 +120,7 @@ export default class Connect extends Component {
           heading="Instantly find answers when you need them"
           image="/images/connect-feature-4.png"
         >
-          Stitch turns historical conversations into the ultimate source of
+          Clinix360 turns historical conversations into the ultimate source of
           answers: it’s built from the ground up for deep search. Every message,
           every file, every comment is carefully archived and made searchable.
           Team knowledge at your fingertips, whenever you need it.
@@ -133,7 +138,7 @@ export default class Connect extends Component {
                   </h4>
                   <p className="m-b-15">
                     View engagement statistics to understand the how, when and
-                    who of your team’s Stitch usage.
+                    who of your team’s Clinix360 usage.
                   </p>
 
                   <a href="https://help.dvlcloud.com/hc/en-us/articles/360010902353">
@@ -212,8 +217,8 @@ export default class Connect extends Component {
                     <i className="far fa-refresh" /> EHR Integrations
                   </h4>
                   <p className="m-b-15">
-                    Tie Stitch into your existing toolset with a seamless EHR
-                    integration. Get alerts for key updates right in Stitch.
+                    Tie Clinix360 into your existing toolset with a seamless EHR
+                    integration. Get alerts for key updates right in Clinix360.
                   </p>
 
                   <a href="https://help.dvlcloud.com/hc/en-us/articles/360007574334-EHR-Integrations">
@@ -243,8 +248,8 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Create an account</h4>
 
                     <p>
-                      Stitch is 100% free to start. Pick a team name and a
-                      custom URL you can use to access Stitch easily.
+                      Clinix360 is 100% free to start. Pick a team name and a
+                      custom URL you can use to access Clinix360 easily.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -254,8 +259,8 @@ export default class Connect extends Component {
                     <div className="number m-b-30">2</div>
                     <h4 className="m-b-20">Invite your team</h4>
                     <p>
-                      Stitch works best when your entire team is inside. Use
-                      Stitch with an unlimited number of users.
+                      Clinix360 works best when your entire team is inside. Use
+                      Clinix360 with an unlimited number of users.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -266,7 +271,8 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Add chat rooms</h4>
                     <p>
                       Pick a few major topics that your team talks about
-                      frequently, and create your Stitch rooms to get started.
+                      frequently, and create your Clinix360 rooms to get
+                      started.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -301,7 +307,7 @@ export default class Connect extends Component {
 Connect.propTypes = {
   flipped: PropTypes.bool,
   header: PropTypes.string,
-  subHeader: PropTypes.string
+  subHeader: PropTypes.string,
   // industryBodyText: PropTypes.string
 };
 
@@ -309,6 +315,6 @@ Connect.defaultProps = {
   flipped: false,
   header: "Healthcare Messaging",
   subHeader:
-    "Message your team, from any device. Stitch is HIPAA compliant and free to use with an unlimited number of people."
+    "Message your team, from any device. Clinix360 is HIPAA compliant and free to use with an unlimited number of people.",
   // industryBodyText: "healthcare"
 };

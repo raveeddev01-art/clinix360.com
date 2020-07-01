@@ -30,7 +30,7 @@ class PlatformTour extends Component {
       callback: this.callback,
       disableOverlayClose: true,
       tooltipComponent: JoyRideToolTip,
-      run: props.userStore.platformTourStatus === "pending"
+      run: props.userStore.platformTourStatus === "pending",
     };
   }
 
@@ -39,15 +39,15 @@ class PlatformTour extends Component {
       {
         placement: "center",
         disableBeacon: true,
-        title: "Welcome to Stitch",
+        title: "Welcome to Clinix360",
         target: ".admin-content-wrapper",
         content: (
           <p>
-            Stitch is a care coordination platform for healthcare teams.
+            Clinix360 is a care coordination platform for healthcare teams.
             Communicate, write notes, track tasks and upload files on any
             device.
           </p>
-        )
+        ),
       },
       {
         placement: "top",
@@ -59,7 +59,7 @@ class PlatformTour extends Component {
             Choose which products you want to launch and get started with our
             apps: Connect, Engage, and Manage.
           </p>
-        )
+        ),
       },
       {
         placement: "top",
@@ -71,7 +71,7 @@ class PlatformTour extends Component {
             Manage and view your account, profile, notification settings, and
             more.
           </p>
-        )
+        ),
       },
       {
         placement: "top",
@@ -83,21 +83,21 @@ class PlatformTour extends Component {
             Manage and view your Carespace settings, security, membership, and
             more.
           </p>
-        )
+        ),
       },
       {
         placement: "right",
         disableBeacon: true,
-        title: "Stitch Controls",
+        title: "Clinix360 Controls",
         target: ".switcher__bottom",
-        content: <p>Sign out or lock the app.</p>
-      }
+        content: <p>Sign out or lock the app.</p>,
+      },
     ];
 
     return steps;
   };
 
-  callback = data => {
+  callback = (data) => {
     const { callback } = this.props;
     const { action, index, type } = data;
 

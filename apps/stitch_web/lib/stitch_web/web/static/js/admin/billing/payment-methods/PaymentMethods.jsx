@@ -15,28 +15,31 @@ class PaymentMethods extends Component {
   onCardSubmitSuccess = () => {
     alertModal({
       title: "Success",
-      message: "Credit card has been successfully added and set as default one!"
+      message:
+        "Credit card has been successfully added and set as default one!",
     });
   };
 
-  onCardSubmitError = error => {
+  onCardSubmitError = (error) => {
     alertModal({
       title: "Error in adding a card",
-      message: error.message
+      message: error.message,
     });
   };
 
   render() {
-    const { billingStore: { loading } } = this.props;
+    const {
+      billingStore: { loading },
+    } = this.props;
 
     return (
       <div className="payment-tab">
         <div className="tab-section saved-cards">
           <h4>Saved Cards</h4>
           <p>
-            Manage your saved cards for Stitch payments. If you have an active
-            Stitch subscription, you'll need to make sure you have at least one
-            card on file. You can read more about payments{" "}
+            Manage your saved cards for Clinix360 payments. If you have an
+            active Clinix360 subscription, you'll need to make sure you have at
+            least one card on file. You can read more about payments{" "}
             <a
               target="_blank"
               rel="noopener noreferrer"

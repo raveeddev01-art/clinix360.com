@@ -15,8 +15,8 @@ export default class PricingDesktop extends Component {
   }
 
   handleClick = () => {
-    this.setState(prevState => ({
-      monthlyPricing: !prevState.monthlyPricing
+    this.setState((prevState) => ({
+      monthlyPricing: !prevState.monthlyPricing,
     }));
   };
 
@@ -31,7 +31,7 @@ export default class PricingDesktop extends Component {
               <div className="pricing-table__item">
                 <img
                   src="/images/logo-blue.svg"
-                  alt="Stitch"
+                  alt="Clinix360"
                   className="img img-responsive"
                 />
               </div>
@@ -40,12 +40,12 @@ export default class PricingDesktop extends Component {
                 <h4>Basic</h4>
 
                 <h2>
-                  <span>$</span>
-                  0
+                  <span>$</span>0
                 </h2>
 
                 <p className="text-muted">
-                  per user per month <br />billed{" "}
+                  per user per month <br />
+                  billed{" "}
                   <a role="button" onClick={this.handleClick}>
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>
@@ -61,7 +61,8 @@ export default class PricingDesktop extends Component {
                 </h2>
 
                 <p className="text-muted">
-                  per user per month <br />billed{" "}
+                  per user per month <br />
+                  billed{" "}
                   <a role="button" onClick={this.handleClick}>
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>
@@ -77,7 +78,8 @@ export default class PricingDesktop extends Component {
                 </h2>
 
                 <p className="text-muted">
-                  per user per month <br />billed{" "}
+                  per user per month <br />
+                  billed{" "}
                   <a role="button" onClick={this.handleClick}>
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>

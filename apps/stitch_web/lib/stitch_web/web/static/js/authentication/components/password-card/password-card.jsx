@@ -12,17 +12,17 @@ class PasswordCard extends Component {
     super(...args);
     this.state = {
       password: "",
-      formInvalid: true
+      formInvalid: true,
     };
   }
 
-  _onChange = evt => {
+  _onChange = (evt) => {
     this.setState({
-      password: evt.target.value
+      password: evt.target.value,
     });
   };
 
-  _onChangeValid = formInvalid => {
+  _onChangeValid = (formInvalid) => {
     this.setState({ formInvalid });
   };
 
@@ -39,7 +39,7 @@ class PasswordCard extends Component {
         <OnboardPage
           {...this.props}
           title="Set your password"
-          description="Select a password for signing into Stitch."
+          description="Select a password for signing into Clinix360."
           onNext={this._onNext}
           disableNext={formInvalid}
         >
@@ -68,11 +68,11 @@ class PasswordCard extends Component {
 }
 
 PasswordCard.propTypes = {
-  onNext: PropTypes.func.isRequired
+  onNext: PropTypes.func.isRequired,
 };
 
 PasswordCard.defaultProps = {
-  onNext: () => {}
+  onNext: () => {},
 };
 
 export default PasswordCard;

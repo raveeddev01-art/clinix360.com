@@ -12,9 +12,9 @@ export default class Footer extends Component {
           <Row>
             <Col sm={2} md={3}>
               <img
-                className="stitch-logo"
+                className="clinix360-logo"
                 src="/images/logo-blue.svg"
-                alt="Stitch"
+                alt="Clinix360"
               />
             </Col>
 
@@ -39,11 +39,7 @@ export default class Footer extends Component {
                       <Link to="/hipaa">HIPAA</Link>
                     </li>
                     <li>
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="https://medium.com/stitch-health"
-                      >
+                      <a target="_blank" rel="noopener noreferrer" href="">
                         Blog
                       </a>
                     </li>
@@ -83,10 +79,12 @@ export default class Footer extends Component {
                 <Col xs={6} sm={3} xsPull={6} smPull={0}>
                   <h5>Contact</h5>
                   <address>
-                    Stitch Health
+                    Clinix360 Health
                     <br />
-                    156 2nd Street<br />
-                    San Francisco, CA<br />
+                    156 2nd Street
+                    <br />
+                    San Francisco, CA
+                    <br />
                   </address>
                 </Col>
               </Row>

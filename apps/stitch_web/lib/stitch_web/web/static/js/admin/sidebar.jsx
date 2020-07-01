@@ -15,7 +15,7 @@ class Sidebar extends Component {
     super(props);
 
     this.state = {
-      showInviteModal: false
+      showInviteModal: false,
     };
   }
 
@@ -60,13 +60,13 @@ class Sidebar extends Component {
             </Link>
           </ListGroupItem>
           {(!window.electronApp || window.electronEnv !== "store") && (
-              <ListGroupItem active={this._isSelected("/admin/billing")}>
-                <Link to="/admin/billing">
-                  <i className="fa fa-credit-card" />
-                  <span>Billing</span>
-                </Link>
-              </ListGroupItem>
-            )}
+            <ListGroupItem active={this._isSelected("/admin/billing")}>
+              <Link to="/admin/billing">
+                <i className="fa fa-credit-card" />
+                <span>Billing</span>
+              </Link>
+            </ListGroupItem>
+          )}
         </ListGroup>
       </div>
     );
@@ -105,11 +105,11 @@ class Sidebar extends Component {
 
   toggleInviteModal = () => {
     this.setState({
-      showInviteModal: !this.state.showInviteModal
+      showInviteModal: !this.state.showInviteModal,
     });
   };
 
-  showInviteModal = evt => {
+  showInviteModal = (evt) => {
     evt.preventDefault();
     this.toggleInviteModal();
   };
@@ -133,7 +133,7 @@ class Sidebar extends Component {
         <div className="flex-container">
           <Scrollbar
             className="scrollbar"
-            viewRef={ref => {
+            viewRef={(ref) => {
               this.scrollbar = ref;
             }}
           >
@@ -141,7 +141,7 @@ class Sidebar extends Component {
               <ListGroupItem>
                 <Link to="/">
                   <i className="fa fa-comments" />
-                  <span>Stitch</span>
+                  <span>Clinix360</span>
                 </Link>
               </ListGroupItem>
             </ListGroup>
@@ -187,15 +187,15 @@ class Sidebar extends Component {
 
               <ListGroupItem>
                 <Link to="https://help.dvlcloud.com" target="_blank">
-                  <i className="fa fa-question-circle" />Help{" "}
-                  <i className="fa fa-external-link sm" />
+                  <i className="fa fa-question-circle" />
+                  Help <i className="fa fa-external-link sm" />
                 </Link>
               </ListGroupItem>
             </ListGroup>
 
             {isAdmin() && this._adminTeamsOptions()}
 
-            <h5>Stitch</h5>
+            <h5>Clinix360</h5>
             <ListGroup>
               {userStore.canInvite && (
                 <ListGroupItem href="#" onClick={this.showInviteModal}>

@@ -22,7 +22,7 @@ export default class TeamExport extends Component {
 
   _renderExports = () => {
     const { exportStore } = this.props;
-    return exportStore.exports.map(exportItem => {
+    return exportStore.exports.map((exportItem) => {
       return (
         <ExportItem
           key={`export_${exportItem.id}`}
@@ -45,8 +45,8 @@ export default class TeamExport extends Component {
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
         <p>
-          Stitch provides full data exports to keep you compliant. Here's what
-          we include in our exports:
+          Clinix360 provides full data exports to keep you compliant. Here's
+          what we include in our exports:
         </p>
         <ul className="list-unstyled">
           <li>

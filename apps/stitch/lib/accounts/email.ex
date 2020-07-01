@@ -3,12 +3,12 @@ defmodule Stitch.Accounts.Email do
   Handles email for all user account actions.
   """
 
+  use Bamboo.Phoenix, view: Stitch.EmailView
   import Bamboo.Email
-  import Bamboo.MandrillHelper
   alias Stitch.Accounts.{User, Role}
 
   @guest_roles Role.guests()
-  @from_address {"Stitch", "support@#{System.get_env("MAILGUN_DOMAIN")}"}
+  @from_address {"Stitch", "hello@#{System.get_env("MAILGUN_DOMAIN")}"}
 
   @doc """
   Sends confirmation code email to the user.
@@ -21,7 +21,7 @@ defmodule Stitch.Accounts.Email do
       |> List.to_string()
 
     new_email()
-    |> text_body("Sign-Up 1: Authenticate Provider Code (Connect)")
+    |> text_body("Your confirmation code is #{code_string}")
     |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || user.email)
     |> from(@from_address)
     |> subject("Stitch confirmation code: #{code_string}")
@@ -45,24 +45,13 @@ defmodule Stitch.Accounts.Email do
 
   def role_changed_email(%User{email: to_address, first_name: first_name}, [old_role], [new_role]) do
     new_email()
-    |> template("Payment Role Change (Phoenix)")
     |> to(to_address)
     |> from(@from_address)
     |> subject(role_change_subject(old_role, new_role))
-    |> put_param("global_merge_vars", [
-      %{
-        name: "receiverFirstName",
-        content: first_name
-      },
-      %{
-        name: "previousRole",
-        content: Role.display_name(old_role)
-      },
-      %{
-        name: "newRole",
-        content: Role.display_name(new_role)
-      }
-    ])
+    |> assign(:first_name, first_name)
+    |> assign(:old_role, Role.display_name(old_role))
+    |> assign(:new_role, "#{Role.display_name(new_role)} <a>Hello Brother</a>")
+    |> render("email/role_change.html")
     |> Stitch.NewMailer.deliver_now()
   end
 
@@ -94,13 +83,13 @@ defmodule Stitch.Accounts.Email do
   def unread_messages_email([], _team), do: nil
 
   def unread_messages_email(recipients, %Stitch.Team{name: team_name}) do
-    new_email()
-    |> template("Message Waiting - Offline Email (Connect)")
-    |> to(Enum.map(recipients, & &1.email))
-    |> from(@from_address)
-    |> subject("[Stitch Connect] Notifications from #{team_name} *|userTime|*")
-    |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
-    |> Stitch.NewMailer.deliver_now()
+    # new_email()
+    # |> template("Message Waiting - Offline Email (Connect)")
+    # |> to(Enum.map(recipients, & &1.email))
+    # |> from(@from_address)
+    # |> subject("[Stitch Connect] Notifications from #{team_name} *|userTime|*")
+    # |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
+    # |> Stitch.NewMailer.deliver_now()
   end
 
   defp unread_messages_for_recipient(%{

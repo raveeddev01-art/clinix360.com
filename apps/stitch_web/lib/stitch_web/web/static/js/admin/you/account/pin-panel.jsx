@@ -7,7 +7,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "PIN";
 const description =
-  "Set your PIN. This will be used to resume Stitch after inactivity lockouts.";
+  "Set your PIN. This will be used to resume Clinix360 after inactivity lockouts.";
 
 @inject("userStore")
 @observer
@@ -16,7 +16,7 @@ class PinPanel extends Component {
     super(props);
     this.state = {
       pin: "",
-      formValid: false
+      formValid: false,
     };
   }
 
@@ -24,16 +24,16 @@ class PinPanel extends Component {
     this.setState({ formValid: false });
   };
 
-  onValid = pin => {
+  onValid = (pin) => {
     this.setState({
       pin,
-      formValid: pin.length === 4
+      formValid: pin.length === 4,
     });
   };
 
   onToggleEdit = () => {
     this.setState({
-      pin: ""
+      pin: "",
     });
   };
 
@@ -46,10 +46,10 @@ class PinPanel extends Component {
       .then(() => {
         onSuccess("Your PIN has been successfully updated.");
         this.setState({
-          pin: ""
+          pin: "",
         });
       })
-      .catch(err => {
+      .catch((err) => {
         onError(err.data.message);
       });
   };
@@ -76,7 +76,7 @@ class PinPanel extends Component {
 PinPanel.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
-  hideAlert: PropTypes.func.isRequired
+  hideAlert: PropTypes.func.isRequired,
 };
 
 export default PinPanel;

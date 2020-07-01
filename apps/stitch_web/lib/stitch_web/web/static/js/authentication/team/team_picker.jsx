@@ -15,7 +15,7 @@ class TeamPicker extends Component {
     super(...args);
     this.state = {
       teamUrl: "",
-      showAlert: false
+      showAlert: false,
     };
   }
 
@@ -23,12 +23,12 @@ class TeamPicker extends Component {
     this.props.titleStore.setPageName("Sign In");
   }
 
-  onChange = event => {
+  onChange = (event) => {
     const teamUrl = event.target.value;
     this.setState({ teamUrl });
   };
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     const { teamUrl } = this.state;
     let successLocation = `https://${teamUrl}.${applicationHost}`;
     if (this.props.asPatient) {
@@ -37,12 +37,12 @@ class TeamPicker extends Component {
 
     event.preventDefault();
     Promise.all([this.checkBlacklist(teamUrl), this.checkAvailability(teamUrl)])
-      .then(resp => {
+      .then((resp) => {
         if (resp[0].data.available && !resp[1].data.available) {
           window.location = successLocation;
         } else {
           this.setState({
-            showAlert: true
+            showAlert: true,
           });
         }
       })
@@ -64,15 +64,15 @@ class TeamPicker extends Component {
     );
   }
 
-  checkBlacklist = url => {
+  checkBlacklist = (url) => {
     return post("/api/v1/teams/slug-exists", {
-      body: { url }
+      body: { url },
     });
   };
 
-  checkAvailability = name => {
+  checkAvailability = (name) => {
     return post("/api/v1/teams/url-available", {
-      body: { url: name }
+      body: { url: name },
     });
   };
 
@@ -81,11 +81,11 @@ class TeamPicker extends Component {
 
     return (
       <AuthenticationPage
-        title="Sign in to Stitch"
+        title="Sign in to Clinix360"
         headerCTA="create"
         description={
           <span>
-            Enter your Carespace's <b> Stitch URL </b>
+            Enter your Carespace's <b> Clinix360 URL </b>
           </span>
         }
       >
@@ -135,11 +135,11 @@ class TeamPicker extends Component {
 }
 
 TeamPicker.defaultProps = {
-  asPatient: false
+  asPatient: false,
 };
 
 TeamPicker.propTypes = {
-  asPatient: PropTypes.bool
+  asPatient: PropTypes.bool,
 };
 
 export default TeamPicker;

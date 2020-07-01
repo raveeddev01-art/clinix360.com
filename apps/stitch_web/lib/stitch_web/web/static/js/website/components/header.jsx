@@ -21,7 +21,7 @@ class Header extends Component {
       mobileNavOpened: false,
       productsMenuOpened: false,
       resourcesMenuOpened: false,
-      mobileProductsMenu: false
+      mobileProductsMenu: false,
     };
   }
 
@@ -35,25 +35,25 @@ class Header extends Component {
 
   toggleProductsMenu = () => {
     this.setState({
-      productsMenuOpened: !this.state.productsMenuOpened
+      productsMenuOpened: !this.state.productsMenuOpened,
     });
   };
 
   toggleResourcesMenu = () => {
     this.setState({
-      resourcesMenuOpened: !this.state.resourcesMenuOpened
+      resourcesMenuOpened: !this.state.resourcesMenuOpened,
     });
   };
 
   toggleCarespacesMenu = () => {
     this.setState({
-      carespacesMenuOpened: !this.state.carespacesMenuOpened
+      carespacesMenuOpened: !this.state.carespacesMenuOpened,
     });
   };
 
   mobileNavToggle = () => {
     this.setState({
-      mobileNavOpened: !this.state.mobileNavOpened
+      mobileNavOpened: !this.state.mobileNavOpened,
     });
 
     const html = document.getElementsByTagName("html")[0];
@@ -73,7 +73,7 @@ class Header extends Component {
           onMouseEnter: this.toggleCarespacesMenu,
           onMouseLeave: this.toggleCarespacesMenu,
           onToggle: noop,
-          noCaret: true
+          noCaret: true,
         };
 
     return (
@@ -82,7 +82,7 @@ class Header extends Component {
         id="yourcarespaces-dropdown"
         {...navProps}
       >
-        {teams.map(team => (
+        {teams.map((team) => (
           <MenuItem
             href={`https://${team.slug}.${applicationHost}/`}
             key={team.slug}
@@ -99,11 +99,11 @@ class Header extends Component {
 
     const mobileNavClasses = cx("navbar navbar-default", {
       "is-open": this.state.mobileNavOpened === true,
-      "is-hidden": this.state.mobileNavOpened === false
+      "is-hidden": this.state.mobileNavOpened === false,
     });
 
     const blueNav = cx({
-      blueNav: this.props.blueNav
+      blueNav: this.props.blueNav,
     });
 
     const hasLogins = appSettings.hasLogin;
@@ -115,9 +115,9 @@ class Header extends Component {
             <Navbar.Brand>
               <Link to="/" className="brand">
                 {this.props.blueNav ? (
-                  <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
+                  <img src="/images/clinix.png" alt="Clinix360" />
                 ) : (
-                  <img src="/images/stitch-brand.svg" alt="Stitch" />
+                  <img src="/images/clinix.png" alt="Clinix360" />
                 )}
               </Link>
             </Navbar.Brand>
@@ -170,7 +170,14 @@ class Header extends Component {
 
             {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
 
-            {!hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@dvlcloud.com?subject=Stitch: Request Information">Request Information</NavItem>}
+            {!hasLogins && (
+              <NavItem
+                className="btn-request-info"
+                href="mailto:feedback@dvlcloud.com?subject=Clinix360: Request Information"
+              >
+                Request Information
+              </NavItem>
+            )}
           </Nav>
         </Navbar>
 
@@ -178,7 +185,7 @@ class Header extends Component {
           <div className="header">
             <div className="container">
               <Link className="brand" to="/">
-                <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
+                <img src="/images/clinix.png" alt="Clinix360" />
               </Link>
 
               <a className="close-menu" onClick={this.mobileNavToggle}>
@@ -230,38 +237,43 @@ class Header extends Component {
               <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
               {!mobile &&
-                (hasLogins &&
-                  this.renderYourCarespaces(appSettings.teams, true))}
+                hasLogins &&
+                this.renderYourCarespaces(appSettings.teams, true)}
 
               {mobile &&
                 hasLogins &&
                 this.renderYourCarespaces(appSettings.teams, true)}
 
-              {mobile && !hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@dvlcloud.com?subject=Stitch: Request Information">Request Information</NavItem>}
+              {mobile && !hasLogins && (
+                <NavItem
+                  className="btn-request-info"
+                  href="mailto:feedback@dvlcloud.com?subject=Clinix360: Request Information"
+                >
+                  Request Information
+                </NavItem>
+              )}
 
-              {mobile &&
-                os === "iOS" && (
-                  <NavItem
-                    href="http://stitch.app.link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="appstore-btn"
-                  >
-                    Get Stitch for iOS
-                  </NavItem>
-                )}
+              {mobile && os === "iOS" && (
+                <NavItem
+                  href="http://stitch.app.link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="appstore-btn"
+                >
+                  Get Clinix360 for iOS
+                </NavItem>
+              )}
 
-              {mobile &&
-                os === "Android" && (
-                  <NavItem
-                    href="http://stitch.app.link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="appstore-btn"
-                  >
-                    Get Stitch for Android
-                  </NavItem>
-                )}
+              {mobile && os === "Android" && (
+                <NavItem
+                  href="http://stitch.app.link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="appstore-btn"
+                >
+                  Get Clinix360 for Android
+                </NavItem>
+              )}
             </Nav>
           </Navbar>
         </nav>

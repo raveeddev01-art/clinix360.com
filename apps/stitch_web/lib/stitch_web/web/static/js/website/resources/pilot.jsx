@@ -23,7 +23,7 @@ export default class Pilot extends Component {
           <div className="pilot-section">
             <div className="container">
               <h3 className="m-b-30">
-                Major healthcare organizations succeed with Stitch
+                Major healthcare organizations succeed with Clinix360
               </h3>
 
               <Row>
@@ -32,7 +32,7 @@ export default class Pilot extends Component {
                   <h4>Scalability</h4>
                   <p>
                     Everyone claims it but few can do it. Scalability is in the
-                    Stitch DNA: we’re powered by Erlang & Elixir, the core
+                    Clinix360 DNA: we’re powered by Erlang & Elixir, the core
                     technology used in two-thirds of the world’s most fault
                     tolerant telecommunications systems. Our battle-tested
                     approach scales for teams of 100,000+ users.
@@ -54,7 +54,8 @@ export default class Pilot extends Component {
                       rel="noopener noreferrer"
                     >
                       here
-                    </a>.
+                    </a>
+                    .
                   </p>
                 </Col>
 
@@ -63,7 +64,7 @@ export default class Pilot extends Component {
                   <h4>Control</h4>
                   <p>
                     Complex healthcare organizations require powerful and
-                    efficient administrative oversight. Stitch provides an
+                    efficient administrative oversight. Clinix360 provides an
                     enterprise-grade admin panel for user provisioning,
                     permissions controls, group management, data retention
                     policies and detailed analytics reports.
@@ -82,7 +83,7 @@ export default class Pilot extends Component {
                 enterprises. Approval, procurement and adoption on an
                 organization-wide scale can be accelerated by a strong pilot
                 performance. Stitch’s Pilot Program is a defined, streamlined
-                process for introducing Stitch to your enterprise.
+                process for introducing Clinix360 to your enterprise.
               </p>
 
               <Row>
@@ -99,7 +100,7 @@ export default class Pilot extends Component {
                   <p>
                     Define the success criteria. We’ll work with your
                     organization to understand the key objectives in
-                    implementing Stitch and delineate goals for ROI.
+                    implementing Clinix360 and delineate goals for ROI.
                   </p>
                 </Col>
 
@@ -114,7 +115,7 @@ export default class Pilot extends Component {
 
                   <h4 className="text-uppercase m-b-20">Deploy</h4>
                   <p>
-                    Select a target department or team to pilot Stitch for a
+                    Select a target department or team to pilot Clinix360 for a
                     defined time period. We’ll assist with on-site deployment
                     and 24/7 support during the pilot.
                   </p>
@@ -132,8 +133,8 @@ export default class Pilot extends Component {
                   <h4 className="text-uppercase m-b-20">Access</h4>
                   <p>
                     Use our advanced analytics tools to view detailed usage and
-                    ROI reports. Understand exactly where and how Stitch makes
-                    an impact in your organization.
+                    ROI reports. Understand exactly where and how Clinix360
+                    makes an impact in your organization.
                   </p>
                 </Col>
               </Row>
@@ -142,7 +143,7 @@ export default class Pilot extends Component {
 
           <div className="pilot-section">
             <div className="container">
-              <h3 className="m-b-30">Why organizations pilot Stitch</h3>
+              <h3 className="m-b-30">Why organizations pilot Clinix360</h3>
 
               <Row>
                 <Col sm={4}>
@@ -175,7 +176,7 @@ export default class Pilot extends Component {
                     <hr />
                     <p>
                       Know you’ll win before you fight the battle. Gain
-                      confidence by watching Stitch succeed at your own
+                      confidence by watching Clinix360 succeed at your own
                       organization.
                     </p>
                   </Panel>
