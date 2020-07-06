@@ -174,8 +174,8 @@ export default class CasePBSC extends Component {
               </div>
 
               <p className="m-b-40">
-                By using Stitch’s deep search function, team members were also
-                able to more easily find the critical information needed to
+                By using Clinix360’s deep search function, team members were
+                also able to more easily find the critical information needed to
                 provide the correct care. As a result, a significant portion of
                 team members reported reductions in the likelihood of a clinical
                 error occurring as a result of communication issues:

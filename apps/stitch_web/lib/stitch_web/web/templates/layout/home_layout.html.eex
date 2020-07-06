@@ -4,18 +4,18 @@
     <%= render "_tag_manager_head.html" %>
     <%= render "_shared_head.html" %>
     <link href="https://dvlcloud.com" rel="canonical">
-    <title><%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %></title>
+    <title><%= if assigns[:title], do: @title, else: "Care Coordination | Clinix360" %></title>
     <meta name="description" content="<%= if assigns[:description], do: @description, else: "Clinix360 is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Clinix360" />
-    <meta property="og:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %>" />
+    <meta property="og:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | Clinix360" %>" />
     <meta property="og:description" content="<%= if assigns[:description], do: @description, else: "Clinix360 is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
     <meta property="og:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@stitchhq" />
-    <meta name="twitter:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %>" />
+    <meta name="twitter:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | Clinix360" %>" />
     <meta name="twitter:description" content="<%= if assigns[:description], do: @description, else: "Clinix360 is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
     <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
 
