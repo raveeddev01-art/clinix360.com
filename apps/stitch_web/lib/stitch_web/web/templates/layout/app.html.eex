@@ -3,7 +3,7 @@
   <head>
     <%= render "_tag_manager_head.html" %>
     <%= render "_shared_head.html" %>
-    <title><%= if assigns[:title], do: @title, else: "Stitch" %></title>
+    <title><%= if assigns[:title], do: @title, else: "Clinix360" %></title>
     <meta name="description" content="<%= if assigns[:description], do: @description, else: "" %>" />
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <script src="https://js.stripe.com/v3/"></script>

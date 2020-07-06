@@ -17,7 +17,7 @@ defmodule Stitch.FindYourTeam.Email do
   def email(%Token{} = token, endpoint_base_url) do
     new_email()
     |> to(token.email)
-    |> from({"Stitch", "support@dvlcloud.com"})
+    |> from({"Clinix360", "support@dvlcloud.com"})
     |> subject("Find Your Team")
     |> text_body("Hit your temam here: #{endpoint_base_url}/find-your-team/#{token.token}")
     |> Stitch.NewMailer.deliver_now()
