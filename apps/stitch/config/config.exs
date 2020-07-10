@@ -36,7 +36,7 @@ config :stitch, :aws_user_upload, %{
 
 config :stitch, :avatar, %{
   bucket: System.get_env("S3_AVATAR_BUCKET_NAME"),
-  origin: System.get_env("AVATAR_ORIGIN")
+  origin: System.get_env("AVATAR_CDN_ORIGIN")
 }
 
 config :stitch, :user_upload_settings, %{
