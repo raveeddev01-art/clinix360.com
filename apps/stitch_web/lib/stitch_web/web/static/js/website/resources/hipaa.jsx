@@ -165,7 +165,9 @@ export default class Hipaa extends Component {
           </div>
 
           <div className="copy-section">
-            <h2>Can I see more information on Stitch’s technical security?</h2>
+            <h2>
+              Can I see more information on Clinix360’s technical security?
+            </h2>
 
             <p>
               Absolutely. Here’s a dedicated risk assessment prepared for our

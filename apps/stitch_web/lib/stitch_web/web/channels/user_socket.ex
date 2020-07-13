@@ -38,6 +38,7 @@ defmodule Stitch.Web.UserSocket do
             |> assign(:connection_id, Stitch.Rand.token(8))
             |> assign(:application_version, params["applicationVersion"])
 
+          IO.inspect socket
           {:ok, socket}
       end
     end)
