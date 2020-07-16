@@ -22,7 +22,7 @@ class LoggedOut extends Component {
         description={
           <span>
             You are signed out of{" "}
-            <b>{this.props.registrationStore.teamSlug}.dvlcloud.com</b>.
+            <b>{this.props.registrationStore.teamSlug}.klinic360.com</b>.
           </span>
         }
       >
@@ -38,11 +38,11 @@ class LoggedOut extends Component {
 }
 
 LoggedOut.defaultProps = {
-  asPatient: false
+  asPatient: false,
 };
 
 LoggedOut.propTypes = {
-  asPatient: PropTypes.bool
+  asPatient: PropTypes.bool,
 };
 
 export default LoggedOut;

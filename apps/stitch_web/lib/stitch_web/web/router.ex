@@ -174,7 +174,7 @@ defmodule Stitch.Web.Router do
     %{
       info: %{
         version: "1.0",
-        title: "Stitch"
+        title: "Clinix360"
       }
     }
   end

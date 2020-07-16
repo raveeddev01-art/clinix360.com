@@ -104,7 +104,7 @@ class TeamPicker extends Component {
               placeholder="your-carespace-url"
               maxLength={80}
             />
-            <span className="domain">.dvlcloud.com</span>
+            <span className="domain">.klinic360.com</span>
           </FormGroup>
           {showAlert && <InputErrorBlock>{this.errorText}</InputErrorBlock>}
 

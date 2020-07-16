@@ -70,6 +70,31 @@ defmodule Stitch.AWS.S3 do
 
   def presign(_object, _opts), do: :error
 
+  def presigned_url_avatar(object, opts \\ [expires_in: @expires_in])
+
+  def presigned_url_avatar(object, opts) when is_binary(object) do
+    case presign_avatar(object, opts) do
+      {:ok, presigned_url} -> presigned_url
+      _ -> nil
+    end
+  end
+
+  def presigned_url_avatar(_object, _opts), do: :error
+
+  def presign_avatar(object, opts \\ [expires_in: @expires_in])
+
+  def presign_avatar(object, opts) when is_binary(object) do
+    path = Path.basename(object)
+    opts = Keyword.put(opts, :virtual_host, false)
+
+    case ExAws.S3.presigned_url(@s3, :get, @avatar.bucket, path, opts) do
+      {:ok, presigned_url} -> {:ok, presigned_url}
+      error -> error
+    end
+  end
+
+  def presign_avatar(_object, _opts), do: :error
+
   def expires_in, do: @expires_in
 
   def stream(acc, filename, f) do

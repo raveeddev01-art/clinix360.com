@@ -112,7 +112,7 @@ class CarespaceUrlCard extends Component {
                 onChange={this.onChange}
                 maxLength={80}
               />
-              <span className="domain">.dvlcloud.com</span>
+              <span className="domain">.klinic360.com</span>
             </div>
             {error && <InputErrorBlock> {error} </InputErrorBlock>}
           </FormGroup>

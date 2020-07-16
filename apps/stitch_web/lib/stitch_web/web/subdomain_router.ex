@@ -645,7 +645,7 @@ defmodule Stitch.Web.SubdomainRouter do
     %{
       info: %{
         version: "1.0",
-        title: "Stitch"
+        title: "Clinix360"
       }
     }
   end
