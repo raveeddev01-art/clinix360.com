@@ -14,7 +14,7 @@ class AvatarImage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      useFallback: false
+      useFallback: false,
     };
   }
 
@@ -29,8 +29,11 @@ class AvatarImage extends Component {
     }
   }
 
-  onImageError = () => {
-    const { user: { id }, usersStore } = this.props;
+  onImageError = (error) => {
+    const {
+      user: { id },
+      usersStore,
+    } = this.props;
 
     // don't rerequest if we're already using the fallback
     if (!this.state.useFallback) {
@@ -52,7 +55,7 @@ class AvatarImage extends Component {
 
     return cx(className, {
       "bordered-grey":
-        !this.isCurrentUser && (user.grey_avatar || this.useFallback)
+        !this.isCurrentUser && (user.grey_avatar || this.useFallback),
     });
   }
 
@@ -74,9 +77,14 @@ class AvatarImage extends Component {
   }
 
   render() {
-    const { user: { username } } = this.props;
+    const {
+      user: { username },
+    } = this.props;
     const userAvatar = this.userAvatar(this.props);
-    const avatarUrl = this.useFallback ? this.fallbackAvatar : userAvatar;
+    const avatarUrl =
+      this.useFallback || !userAvatar || userAvatar === "error"
+        ? this.fallbackAvatar
+        : userAvatar;
 
     return (
       <img
@@ -95,9 +103,9 @@ AvatarImage.propTypes = {
     avatar_thumb: PropTypes.string,
     avatar: PropTypes.string,
     id: PropTypes.number,
-    username: PropTypes.string
+    username: PropTypes.string,
   }).isRequired,
-  useThumb: PropTypes.bool.isRequired
+  useThumb: PropTypes.bool.isRequired,
 };
 
 export default AvatarImage;
