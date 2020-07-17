@@ -23,7 +23,7 @@ defmodule StitchEngage.Web.PatientAuthenticationController do
 
         conn
         |> assign(:title, "Patient Login")
-        |> assign(:description, "Log in to Stitch Health")
+        |> assign(:description, "Log in to Clinix360")
         |> render(Stitch.Web.AuthenticationView, "login.html", login_params: login_params)
     end
   end
