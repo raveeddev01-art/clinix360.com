@@ -13,19 +13,19 @@ const otCoreOptions = {
   credentials: {
     apiKey: "",
     sessionId: "",
-    token: ""
+    token: "",
   },
   // A container can either be a query selector or an HTML Element
   streamContainers(pubSub, type, data, stream) {
     return {
       publisher: {
         camera: "#cameraPublisherContainer",
-        screen: "#screenPublisherContainer"
+        screen: "#screenPublisherContainer",
       },
       subscriber: {
         camera: "#cameraSubscriberContainer",
-        screen: "#screenSubscriberContainer"
-      }
+        screen: "#screenSubscriberContainer",
+      },
     }[pubSub][type];
   },
   controlsContainer: "#controls",
@@ -39,9 +39,9 @@ const otCoreOptions = {
         nameDisplayMode: "on",
         buttonDisplayMode: "off",
         audioLevelDisplayMode: "off",
-        videoDisabledDisplayMode: "off"
-      }
-    }
+        videoDisabledDisplayMode: "off",
+      },
+    },
   },
   screenSharing: {
     extensionID: "plocfffmbcclpdifaikiikgplfnepkpo",
@@ -54,25 +54,25 @@ const otCoreOptions = {
       height: "100%",
       showControls: false,
       style: {
-        buttonDisplayMode: "off"
+        buttonDisplayMode: "off",
       },
       videoSource: "window",
-      fitMode: "contain" // Using default
-    }
+      fitMode: "contain", // Using default
+    },
   },
   annotation: {
     absoluteParent: {
       publisher: ".ots-video-container",
-      subscriber: ".ots-video-container"
-    }
-  }
+      subscriber: ".ots-video-container",
+    },
+  },
 };
 
 /**
  * Build classes for container elements based on state
  * @param {Object} state
  */
-const containerClasses = state => {
+const containerClasses = (state) => {
   const { active, meta, localAudioEnabled, localVideoEnabled } = state;
   const sharingScreen = meta ? !!meta.publisher.screen : false;
   const viewingSharedScreen = meta ? meta.subscriber.screen : false;
@@ -84,20 +84,20 @@ const containerClasses = state => {
     controlClass: classNames("ots-control-container", { hidden: !active }),
     localAudioClass: classNames("ots-video-control circle audio", {
       hidden: !active,
-      muted: !localAudioEnabled
+      muted: !localAudioEnabled,
     }),
     localVideoClass: classNames("ots-video-control circle video", {
       hidden: !active,
-      muted: !localVideoEnabled
+      muted: !localVideoEnabled,
     }),
     localCallClass: classNames("ots-video-control circle end-call", {
-      hidden: !active
+      hidden: !active,
     }),
     cameraPublisherClass: classNames("video-container small", {
-      hidden: !active
+      hidden: !active,
     }),
     screenPublisherClass: classNames("video-container", {
-      hidden: !active || !sharingScreen
+      hidden: !active || !sharingScreen,
     }),
     cameraSubscriberClass: classNames(
       "video-container",
@@ -107,14 +107,15 @@ const containerClasses = state => {
       { small: screenshareActive }
     ),
     screenSubscriberClass: classNames("video-container", {
-      hidden: !viewingSharedScreen || !active
+      hidden: !viewingSharedScreen || !active,
     }),
     groupWaitingTextClass: classNames("group-waiting-text", {
-      hidden: activeCameraSubscribers > 0 || viewingSharedScreen
+      hidden: activeCameraSubscribers > 0 || viewingSharedScreen,
     }),
     dmWaitingTextClass: classNames("dm-waiting-text", {
-      hidden: activeCameraSubscribers > 0 || viewingSharedScreen
-    })
+      hidden: activeCameraSubscribers > 0 || viewingSharedScreen,
+    }),
+    activeCameraSubscribers,
   };
 };
 
@@ -129,23 +130,31 @@ class Tokbox extends Component {
       subscribers: null,
       meta: {
         publisher: { camera: 0, screen: 0, total: 0 },
-        subscriber: { camera: 0, screen: 0, total: 0 }
+        subscriber: { camera: 0, screen: 0, total: 0 },
       },
       localAudioEnabled: true,
       localVideoEnabled: false,
       showTimer: false,
       currentTime: "00:00",
-      connectionCount: 0
+      connectionCount: 0,
     };
 
-    this.timer = moment("2000-01-01")
-      .startOf("day")
-      .seconds(0);
+    this.timer = moment("2000-01-01").startOf("day").seconds(0);
 
     this.startCall = this.startCall.bind(this);
     this.endCall = this.endCall.bind(this);
     this.toggleLocalAudio = this.toggleLocalAudio.bind(this);
     this.toggleLocalVideo = this.toggleLocalVideo.bind(this);
+
+    this.ringing = new Audio("/audios/calling.mp3");
+    this.playIncomingCall = this.playIncomingCall.bind(this);
+    this.ringing.addEventListener("ended", this.playIncomingCall);
+    this.ringing.play();
+  }
+
+  playIncomingCall() {
+    this.ringing.currentTime = 0;
+    this.ringing.play();
   }
 
   componentDidMount() {
@@ -161,7 +170,11 @@ class Tokbox extends Component {
     this.handleAutoEnd();
   }
 
-  getUserAvatar({ stream: { connection: { data } } }) {
+  getUserAvatar({
+    stream: {
+      connection: { data },
+    },
+  }) {
     try {
       const { usersStore } = this.props;
       const { user_id } = JSON.parse(data);
@@ -230,10 +243,10 @@ class Tokbox extends Component {
       "subscribeToScreen",
       "unsubscribeFromScreen",
       "startScreenShare",
-      "endScreenShare"
+      "endScreenShare",
     ];
 
-    events.forEach(event =>
+    events.forEach((event) =>
       this.otCore.on(event, ({ publishers, subscribers, meta }) => {
         this.setState({ publishers, subscribers, meta });
       })
@@ -258,14 +271,14 @@ class Tokbox extends Component {
         name: this.props.userStore.fullName,
         style: {
           ...style,
-          backgroundImageURI: this.props.userStore.avatar
-        }
+          backgroundImageURI: this.props.userStore.avatar,
+        },
       })
       .then(({ publishers, subscribers, meta }) => {
         this.props.callStore.setConnected();
         this.setState({ publishers, subscribers, meta, active: true });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   endCall() {
@@ -332,13 +345,18 @@ class Tokbox extends Component {
       cameraSubscriberClass,
       screenSubscriberClass,
       groupWaitingTextClass,
-      dmWaitingTextClass
+      dmWaitingTextClass,
+      activeCameraSubscribers,
     } = containerClasses(this.state);
+
+    if (activeCameraSubscribers > 0) {
+      this.ringing.pause();
+    }
 
     const { callStore, groupsStore } = this.props;
     const group = groupsStore.getGroupById(callStore.groupId);
     const otherUser = (group || { users: [] }).users.filter(
-      u => u.id !== currentUser.id
+      (u) => u.id !== currentUser.id
     )[0];
 
     return (
@@ -357,27 +375,25 @@ class Tokbox extends Component {
             id="screenSubscriberContainer"
             className={screenSubscriberClass}
           />
-          {group &&
-            group.type !== "dm" && (
-              <div className={groupWaitingTextClass}>
-                <span className="p1">
-                  You've started and shared a call
-                  {group.type === "regular" ? " in " : " with "}
-                  {group ? group.name : "the group"}
-                </span>
-                <span className="p2">
-                  Waiting for team members to join the call...
-                </span>
-              </div>
-            )}
+          {group && group.type !== "dm" && (
+            <div className={groupWaitingTextClass}>
+              <span className="p1">
+                You've started and shared a call
+                {group.type === "regular" ? " in " : " with "}
+                {group ? group.name : "the group"}
+              </span>
+              <span className="p2">
+                Waiting for team members to join the call...
+              </span>
+            </div>
+          )}
 
-          {otherUser &&
-            group.type === "dm" && (
-              <div className={dmWaitingTextClass}>
-                <Avatar user={otherUser} />
-                <span className="p2">Calling {otherUser.full_name} ...</span>
-              </div>
-            )}
+          {otherUser && group.type === "dm" && (
+            <div className={dmWaitingTextClass}>
+              <Avatar user={otherUser} />
+              <span className="p2">Calling {otherUser.full_name} ...</span>
+            </div>
+          )}
         </div>
         <div id="controls" className={controlClass}>
           <div className={localAudioClass} onClick={this.toggleLocalAudio} />

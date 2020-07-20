@@ -157,11 +157,7 @@ class Header extends Component {
                 <i className="far fa-life-ring" /> Help Center
               </MenuItem>
 
-              <MenuItem
-                href="https://medium.com/stitch-health"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <MenuItem href="" target="_blank" rel="noopener noreferrer">
                 <i className="far fa-book" /> Blog
               </MenuItem>
             </NavDropdown>
@@ -225,11 +221,7 @@ class Header extends Component {
                   </MenuItem>
                 </LinkContainer>
 
-                <MenuItem
-                  href="https://medium.com/stitch-health"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <MenuItem href="" target="_blank" rel="noopener noreferrer">
                   <i className="far fa-book" /> Blog
                 </MenuItem>
               </NavDropdown>
