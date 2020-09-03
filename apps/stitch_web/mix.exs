@@ -9,7 +9,7 @@ defmodule Stitch.Web.Mixfile do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.6",
+      elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext, :phoenix_swagger] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -38,15 +38,15 @@ defmodule Stitch.Web.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.0"},
-      {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_html, "~> 2.10"},
+      {:phoenix, "~> 1.5"},
+      {:phoenix_pubsub, "~> 2.0"},
+      {:phoenix_html, "~> 2.13"},
       {:phoenix_live_reload, "~> 1.1", only: :dev},
       {:phoenix_ecto, "~> 3.0"},
       {:phoenix_etag, "~> 0.1"},
       {:gettext, "~> 0.13"},
       {:cowboy, "~> 1.1"},
-      {:guardian, "~> 0.14"},
+      {:guardian, "~> 1.2"},
       {:poison, "~> 3.1"},
       {:corsica, "~> 1.0"},
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},

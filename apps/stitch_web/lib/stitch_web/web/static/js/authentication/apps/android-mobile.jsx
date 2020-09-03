@@ -11,10 +11,7 @@ export default class AndroidMobile extends Component {
           </div>
         </h5>
 
-        <a
-          href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
-          className="btn m-b-40"
-        >
+        <a href="" className="btn m-b-40">
           <img
             src="/images/playstore.png"
             className="img-responsive"

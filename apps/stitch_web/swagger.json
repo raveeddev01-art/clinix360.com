@@ -1,67 +1,9 @@
 {
   "swagger": "2.0",
-  "paths": {
-    "/api/v1/patient/find-your-team/{token}": {
-      "delete": {
-        "tags": [
-          "FindYourTeam"
-        ],
-        "summary": "",
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/FindTeamLogin"
-            },
-            "description": "OK"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "type": "string",
-            "required": true,
-            "name": "token",
-            "in": "path",
-            "description": "Find your team token - found in the email."
-          }
-        ],
-        "operationId": "Stitch.Web.Api.V1.FindYourTeamController.patient_delete",
-        "description": "Given a valid find team token, returns a valid login token and list of teams."
-      }
-    },
-    "/api/v1/patient/find-your-team": {
-      "post": {
-        "tags": [
-          "FindYourTeam"
-        ],
-        "summary": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "type": "string",
-            "required": false,
-            "name": "email",
-            "in": "query",
-            "description": "Patient's email."
-          }
-        ],
-        "operationId": "Stitch.Web.Api.V1.FindYourTeamController.patient_create",
-        "description": "Sends a find your team email to a patient."
-      }
-    }
-  },
+  "paths": {},
   "info": {
     "version": "1.0",
-    "title": "Stitch"
+    "title": "Clinix360"
   },
   "definitions": {
     "UploadSignature": {

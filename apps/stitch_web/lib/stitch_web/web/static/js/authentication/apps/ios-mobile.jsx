@@ -11,10 +11,7 @@ export default class IOSMobile extends Component {
           </div>
         </h5>
 
-        <a
-          href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
-          className="btn m-b-40"
-        >
+        <a href="" className="btn m-b-40">
           <img
             src="/images/appstore.png"
             className="img-responsive"
