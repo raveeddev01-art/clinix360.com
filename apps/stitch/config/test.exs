@@ -8,7 +8,7 @@ repo_opts = [
   hostname: System.get_env("STITCH_CONNECT_POSTGRES_HOSTNAME") || "localhost",
   username: System.get_env("STITCH_CONNECT_POSTGRES_USERNAME") || "postgres",
   password: System.get_env("STITCH_CONNECT_POSTGRES_PASSWORD") || "postgres",
-  database: System.get_env("STITCH_CONNECT_POSTGRES_DATABASE") || "stitch_connect_test",
+  database: "stitch_connect_test",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_timeout: :timer.minutes(5),
   timeout: :timer.minutes(5)

@@ -19,7 +19,7 @@ defmodule Stitch.Billing.Notifications do
     |> assign(:first_name, first_name)
     |> assign(:team_name, team_name)
     |> render("email/payment_received.html")
-    |> NewMailer.deliver_now()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   @doc """
@@ -27,14 +27,14 @@ defmodule Stitch.Billing.Notifications do
   """
   def send_failed_payment(%User{} = user, %Team{} = team, plan_name, days_until_retry) do
     new_email()
-    |> render("email/payment_failed.html")
     |> to(user.email)
     |> from({"Clinix360", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
     |> subject("Clinix360 Payment Failed")
     |> assign(:first_name, user.first_name)
     |> assign(:team_name, team.name)
     |> assign(:plan_name, plan_name)
-    |> assign(:days_until_retry, days_until_retry)
-    |> NewMailer.deliver_now()
+    |> assign(:retry_days, days_until_retry)
+    |> render("email/payment_failed.html")
+    |> Stitch.NewMailer.deliver_now()
   end
 end

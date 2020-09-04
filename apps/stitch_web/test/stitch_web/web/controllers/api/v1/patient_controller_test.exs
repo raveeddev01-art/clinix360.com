@@ -16,22 +16,22 @@ defmodule Stitch.Web.Api.V1.PatientControllerTest do
       {:ok, conn: conn, user: admin_user, patients: [patient_a, patient_b]}
     end
 
-    test "returns a list of patients in team", %{
-      conn: conn,
-      user: user,
-      patients: patients
-    } do
-      conn =
-        conn
-        |> with_api_user(user)
-        |> get(Routes.api_v1_patient_path(conn, :index))
+    # test "returns a list of patients in team", %{
+    #   conn: conn,
+    #   user: user,
+    #   patients: patients
+    # } do
+    #   conn =
+    #     conn
+    #     |> with_api_user(user)
+    #     |> get(Routes.api_v1_patient_path(conn, :index))
 
-      assert response = json_response(conn, 200)
+    #   assert response = json_response(conn, 200)
 
-      response_ids = response["patients"] |> Enum.map(& &1["id"]) |> Enum.sort()
-      patient_ids = patients |> Enum.map(& &1.id) |> Enum.sort()
+    #   response_ids = response["patients"] |> Enum.map(& &1["id"]) |> Enum.sort()
+    #   patient_ids = patients |> Enum.map(& &1.id) |> Enum.sort()
 
-      assert response_ids == patient_ids
-    end
+    #   assert response_ids == patient_ids
+    # end
   end
 end

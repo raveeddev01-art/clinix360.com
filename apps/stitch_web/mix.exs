@@ -55,7 +55,7 @@ defmodule Stitch.Web.Mixfile do
       {:sweet_xml, "~> 0.6.5"},
       {:stitch, in_umbrella: true},
       {:appsignal, "~> 1.5"},
-      {:wallaby, "~> 0.19.2", only: :test},
+      {:wallaby, "~> 0.22", only: :test},
       # For mobile push notifications.
       {:pigeon, "~> 1.1.6"},
       # Used by Pigeon for push notifications.

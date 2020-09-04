@@ -9,7 +9,7 @@ config :stitch_web, Stitch.Web.Endpoint,
 
 config :wallaby,
   screenshot_on_failure: true,
-  driver: Wallaby.Experimental.Chrome,
+  driver: Wallaby.Chrome,
   chrome: [headless: true],
   base_url: "http://localhost:4001",
   js_logger: false
