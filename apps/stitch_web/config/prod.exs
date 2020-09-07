@@ -20,6 +20,7 @@ config :stitch_web, Stitch.Web.Endpoint,
     compress: true
   ],
   url: [scheme: "https", host: System.get_env("STITCH_CONNECT_APP_HOST"), port: 443],
+  check_origin: false,
   # force_ssl: [
   #   rewrite_on: [:x_forwarded_proto],
   #   # Adds Strict-Transport-Security. Note, Aptible also does that but we don't want to
