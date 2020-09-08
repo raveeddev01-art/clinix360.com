@@ -80,7 +80,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
   end
 
   def render_search_result(conn, {:ok, result}) do
-    render(conn, "search.json", result)
+    render(conn, "search.json", result: result)
   end
 
   def render_search_result(_conn, _result) do

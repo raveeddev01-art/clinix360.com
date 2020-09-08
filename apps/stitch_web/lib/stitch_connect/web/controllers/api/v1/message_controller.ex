@@ -104,7 +104,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       feed_surrounding =
         MessageQueries.surrounding(message, group, current_user, conn.assigns.query_opts)
 
-      render(conn, "feed_surrounding.json", feed_surrounding)
+      render(conn, "feed_surrounding.json", feed_surrounding: feed_surrounding)
     else
       {:group, _} ->
         {:error, :not_found, "The room you are looking for does not exist."}

@@ -19,11 +19,11 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     message_json(message, authenticated_urls, @endpoint.files_struct_url())
   end
 
-  def render("feed_surrounding.json", %{
+  def render("feed_surrounding.json", %{feed_surrounding: %{
         more_before: more_before,
         more_after: more_after,
         messages: messages
-      }) do
+      }}) do
     %{
       more_before: more_before,
       more_after: more_after,

@@ -10,6 +10,6 @@ defmodule StitchConnect.Web.Api.V1.StarredItemController do
     pagination_opts = parse_pagination_params(params, [:limit, :skip])
     paginated_result = StarrableItemQueries.user_starred_items(current_user.id, pagination_opts)
 
-    render(conn, "index.json", paginated_result)
+    render(conn, "index.json", paginated_result: paginated_result)
   end
 end

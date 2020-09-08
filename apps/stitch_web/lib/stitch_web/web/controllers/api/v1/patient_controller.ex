@@ -20,7 +20,7 @@ defmodule Stitch.Web.Api.V1.PatientController do
     pagination_opts = parse_pagination_params(params, [:limit, :skip])
     paginated_result = PatientQueries.page_of_patients_for_team(team_id, pagination_opts)
 
-    render(conn, "index.json", paginated_result)
+    render(conn, "index.json", paginated_result: paginated_result)
   end
 
   def show(conn, %{"id" => id}) do
