@@ -39,11 +39,11 @@ class PlatformTour extends Component {
       {
         placement: "center",
         disableBeacon: true,
-        title: "Welcome to Clinix360",
+        title: "Welcome to InvoCom",
         target: ".admin-content-wrapper",
         content: (
           <p>
-            Clinix360 is a care coordination platform for healthcare teams.
+            InvoCom is a care coordination platform for healthcare teams.
             Communicate, write notes, track tasks and upload files on any
             device.
           </p>
@@ -88,7 +88,7 @@ class PlatformTour extends Component {
       {
         placement: "right",
         disableBeacon: true,
-        title: "Clinix360 Controls",
+        title: "InvoCom Controls",
         target: ".switcher__bottom",
         content: <p>Sign out or lock the app.</p>,
       },

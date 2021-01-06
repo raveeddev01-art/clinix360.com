@@ -42,7 +42,7 @@ class PinCard extends Component {
           {...otherProps}
           title="Set your PIN"
           description={
-            <span>Set a 4 digit PIN for lockout access into Clinix360.</span>
+            <span>Set a 4 digit PIN for lockout access into InvoCom.</span>
           }
           onNext={this.onNext}
           loading={saving}

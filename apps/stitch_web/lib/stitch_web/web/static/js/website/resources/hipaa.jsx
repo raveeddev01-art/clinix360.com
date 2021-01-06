@@ -12,7 +12,7 @@ export default class Hipaa extends Component {
 
         <Subheader
           title="HIPAA Compliance"
-          subtitle="Take a look at how we’ve made Clinix360 HIPAA compliant right out of the box."
+          subtitle="Take a look at how we’ve made InvoCom HIPAA compliant right out of the box."
         />
 
         <div className="container">
@@ -31,7 +31,7 @@ export default class Hipaa extends Component {
           </div>
 
           <div className="copy-section">
-            <h2>Why is Clinix360 HIPAA compliant?</h2>
+            <h2>Why is InvoCom HIPAA compliant?</h2>
 
             <p>
               In September of 2013, the{" "}
@@ -41,7 +41,7 @@ export default class Hipaa extends Component {
               . It expanded the applicability of HIPAA from the traditional
               entities like hospitals and insurers to anyone who stores, manages
               or transmits PHI. These entities are now called Business
-              Associates So, companies like Clinix360.
+              Associates So, companies like InvoCom.
             </p>
           </div>
 
@@ -58,23 +58,23 @@ export default class Hipaa extends Component {
                 The fines for HIPAA violations
               </a>{" "}
               can be pretty severe, up to $50,000 for a single incident. That’s
-              why we’ve built Clinix360. We want to provide a world-class
+              why we’ve built InvoCom. We want to provide a world-class
               communication experience where you don’t have to worry about
               security and can focus on what you do best: care for patients.
             </p>
           </div>
 
           <div className="copy-section">
-            <h2>How does Clinix360 achieve HIPAA compliance?</h2>
+            <h2>How does InvoCom achieve HIPAA compliance?</h2>
 
             <p className="m-b-20">
-              We take security very seriously at Clinix360. We know you’re
+              We take security very seriously at InvoCom. We know you’re
               relying on us to protect your patient data, so we use only the
               highest levels of security and strictest practices to secure your
               PHI. To help us do this, we use{" "}
               <a href="https://www.aptible.com">Aptible</a>, a world-class HIPAA
               compliance deployment and management platform. Specifically, there
-              are 4 HIPAA Rules that Clinix360 complies with to achieve the
+              are 4 HIPAA Rules that InvoCom complies with to achieve the
               highest level of HIPAA compliance:
             </p>
 
@@ -84,7 +84,7 @@ export default class Hipaa extends Component {
                 <span>
                   This breaks down to three layers: physical, technical and
                   administrative. Physical safeguards pertain to who can access
-                  PHI and how that access is controlled. Clinix360 is hosted
+                  PHI and how that access is controlled. InvoCom is hosted
                   with{" "}
                   <a
                     target="_blank"
@@ -166,14 +166,14 @@ export default class Hipaa extends Component {
 
           <div className="copy-section">
             <h2>
-              Can I see more information on Clinix360’s technical security?
+              Can I see more information on InvoCom’s technical security?
             </h2>
 
             <p>
               Absolutely. Here’s a dedicated risk assessment prepared for our
               specific technology:{" "}
               <a href="https://www.dropbox.com/s/9oe9qgr1vduvfmc/Stitch%20Risk%20Assessment%20v3.0.pdf?dl=1">
-                Clinix360 Risk Assessment
+                InvoCom Risk Assessment
               </a>
               .
             </p>
@@ -185,7 +185,7 @@ export default class Hipaa extends Component {
             <p className="m-b-20">
               A Business Associate is a vendor or subcontractor who has access
               to PHI transmitted or stored by a covered entity. So, if you’re a
-              medical clinic and you send patient data through Clinix360, you’re
+              medical clinic and you send patient data through InvoCom, you’re
               a Covered Entity and we’re a Business Associate.
             </p>
 

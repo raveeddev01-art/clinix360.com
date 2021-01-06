@@ -46,7 +46,7 @@ class HipaaCard extends Component {
           </Checkbox>
 
           <HelpBlock className="onboarding-hint m-b-20">
-            By proceeding to use Clinix360, you agree to our&nbsp;
+            By proceeding to use InvoCom, you agree to our&nbsp;
             <a href="/terms-of-service" target="_blank">
               Terms of Service
             </a>

@@ -13,10 +13,10 @@ const SystemError = ({ reloadDestination }) => (
     <div className="system_error__inner">
       <h2>
         <i className="fa fa-exclamation-triangle system_error__icon" />
-        Clinix360 failed to load correctly
+        InvoCom failed to load correctly
       </h2>
       <p>
-        Looks like Clinix360 ran into an issue. Please reload by clicking below.
+        Looks like InvoCom ran into an issue. Please reload by clicking below.
         If you continue to experience issues, please email us at{" "}
         <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a> and our
         support team will help you get back on track right away.

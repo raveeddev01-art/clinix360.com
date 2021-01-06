@@ -31,7 +31,7 @@ export default class PricingDesktop extends Component {
               <div className="pricing-table__item">
                 <img
                   src="/images/logo-blue.svg"
-                  alt="Clinix360"
+                  alt="InvoCom"
                   className="img img-responsive"
                 />
               </div>

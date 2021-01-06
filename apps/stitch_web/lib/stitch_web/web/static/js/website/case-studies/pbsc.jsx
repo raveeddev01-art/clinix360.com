@@ -47,7 +47,7 @@ export default class CasePBSC extends Component {
           <div className="container">
             <div className="case-study-content">
               <h3>
-                Princeton Brain & Spine uses Clinix360 to coordinate care across
+                Princeton Brain & Spine uses InvoCom to coordinate care across
                 multiple locations and improve the patient experience
               </h3>
 
@@ -81,7 +81,7 @@ export default class CasePBSC extends Component {
                 technologies, and growing in healthcare with technology. They’re
                 really open to new ideas and trying new tools.” When Princeton
                 Brain & Spine hit a communication challenge as it scaled, the
-                organization turned to Clinix360 as a new innovation to
+                organization turned to InvoCom as a new innovation to
                 evaluate.
               </p>
 
@@ -91,7 +91,7 @@ export default class CasePBSC extends Component {
 
               <p className="m-b-30">
                 As a multi-site practice coordinating patient care, Princeton
-                Brain & Spine sought out Clinix360 to improve the collaboration
+                Brain & Spine sought out InvoCom to improve the collaboration
                 between providers in different locations. “Part of the
                 operations challenge of our practice is that our physicians are
                 going in and out of rooms with a virtual scribe. So the scribe
@@ -106,7 +106,7 @@ export default class CasePBSC extends Component {
               <p className="m-b-30">
                 Even within a location, there were signs that communication
                 needed to be improved. Daniel Somma, Clinical Assistant and
-                Medical Scribe, explains that “before we had Clinix360, we would
+                Medical Scribe, explains that “before we had InvoCom, we would
                 just call each other. It was very tough for the scribes to
                 multitask. We didn’t have phones in the exam rooms, so if we
                 found out that a patient had an extra report that we needed to
@@ -116,18 +116,18 @@ export default class CasePBSC extends Component {
 
               <p className="m-b-40">
                 To solve the problem of inter- and intra-office communication,
-                Princeton Brain & Spine turned to Clinix360.
+                Princeton Brain & Spine turned to InvoCom.
               </p>
 
               <h4 className="m-b-30">
-                A smooth transition to running on Clinix360
+                A smooth transition to running on InvoCom
               </h4>
 
               <p className="m-b-40">
                 Adopting a new technology can be met with inertia — especially
                 so with a tool that touches every member of the team. But by
                 using internal product champions, Princeton Brain & Spine easily
-                navigated the transition to Clinix360. “It was a very easy
+                navigated the transition to InvoCom. “It was a very easy
                 transition. Everyone was really happy with it, even the
                 physicians. It didn’t just do what we were hoping it would do,
                 which was to connect the physicians, scribes and the front
@@ -150,7 +150,7 @@ export default class CasePBSC extends Component {
 
               <p className="m-b-40">
                 By bringing the full team on board, Princeton Brain & Spine was
-                able to connect every part of the patient journey via Clinix360:
+                able to connect every part of the patient journey via InvoCom:
                 check-in, consultation, billing, scheduling and follow-up. With
                 the entire team able to coordinate on each individual patient,
                 Princeton Brain & Spine saw reductions in their patient wait
@@ -159,7 +159,7 @@ export default class CasePBSC extends Component {
 
               <div className="infographic text-center">
                 <h5 className="m-b-30">
-                  How much has Clinix360 helped{" "}
+                  How much has InvoCom helped{" "}
                   <span>
                     reduce <br />
                     patient wait times
@@ -174,7 +174,7 @@ export default class CasePBSC extends Component {
               </div>
 
               <p className="m-b-40">
-                By using Clinix360’s deep search function, team members were
+                By using InvoCom’s deep search function, team members were
                 also able to more easily find the critical information needed to
                 provide the correct care. As a result, a significant portion of
                 team members reported reductions in the likelihood of a clinical
@@ -208,15 +208,15 @@ export default class CasePBSC extends Component {
 
               <p className="m-b-40">
                 Princeton Brain & Spine has already sent over 50,000 messages on
-                Clinix360. The platform now filters nearly all communication at
+                InvoCom. The platform now filters nearly all communication at
                 the practice: patient flow, script ordering, billing logistics
                 and clinical clarifications. Ultimately, the effect has been an
                 increase in the quality of patient care and the efficiency of
                 the organization. “We can communicate immediately with someone
                 to get an answer, or to tell them that something needs to be
                 done quickly. This has been really helpful. So I definitely
-                think Clinix360 has reduced clinical errors,” believes Somma. “I
-                would absolutely recommend Clinix360 to other practices,” adds
+                think InvoCom has reduced clinical errors,” believes Somma. “I
+                would absolutely recommend InvoCom to other practices,” adds
                 Caliendo.
               </p>
             </div>

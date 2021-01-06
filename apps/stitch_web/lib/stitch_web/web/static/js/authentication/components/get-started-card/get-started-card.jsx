@@ -35,7 +35,7 @@ const YourTeams = ({ asPatient, teams }) => {
   return (
     <div>
       <h1>Your Carespaces</h1>
-      <p>{`You are a ${userType} these Clinix360 carespaces:`}</p>
+      <p>{`You are a ${userType} these InvoCom carespaces:`}</p>
       <div className="select-team-list m-b-40">
         {teams.map((team) => (
           <TeamLink asPatient={asPatient} key={team.slug} {...team} />
@@ -82,7 +82,7 @@ class GetStartedCard extends Component {
           title="Get Started"
           description={
             <span>
-              A Clinix360 Carespace is a place for healthcare teams to
+              A InvoCom Carespace is a place for healthcare teams to
               collaborate in real-time through messaging, file sharing, video
               calling and more.
               <br />
@@ -102,7 +102,7 @@ class GetStartedCard extends Component {
                   Create a New Carespace
                 </Link>
                 <div className="get-started-card-link-description">
-                  Set up your Carespace on Clinix360
+                  Set up your Carespace on InvoCom
                 </div>
               </div>
             )}

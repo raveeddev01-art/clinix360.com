@@ -40,7 +40,7 @@ class Topbar extends Component {
               <OverlayTrigger
                 placement="bottom"
                 container={this}
-                overlay={<Tooltip id="tooltip-info">Clinix360</Tooltip>}
+                overlay={<Tooltip id="tooltip-info">InvoCom</Tooltip>}
               >
                 <i className="fa fa-comments" />
               </OverlayTrigger>

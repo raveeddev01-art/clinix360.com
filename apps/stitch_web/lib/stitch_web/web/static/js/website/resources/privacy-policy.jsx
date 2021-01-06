@@ -18,8 +18,8 @@ export default class PrivacyPolicy extends Component {
             <h2>Introduction</h2>
 
             <p>
-              Welcome to Clinix360! Your privacy is important to us. Clinix360
-              Technologies, Inc. (“Clinix360”) provides this Privacy Policy to
+              Welcome to InvoCom! Your privacy is important to us. InvoCom
+              Technologies, Inc. (“InvoCom”) provides this Privacy Policy to
               inform you of our policies and procedures regarding the
               collection, use and disclosure of personal information we receive
               from users of&nbsp;(the “Site”) and our application for web,
@@ -110,7 +110,7 @@ export default class PrivacyPolicy extends Component {
               non-identifying information (for example, your viewing
               preferences). We may combine your Personal Information with
               Non-Identifying Information and aggregate it with information
-              collected from other Clinix360 Users (defined below) to attempt to
+              collected from other InvoCom Users (defined below) to attempt to
               provide you with a better experience, to improve the quality and
               value of the Service and to analyze and understand how our Site,
               App and Service are used. We may also use the combined information
@@ -121,7 +121,7 @@ export default class PrivacyPolicy extends Component {
 
             <p>
               We also use your Personal Information to contact you with
-              Clinix360 newsletters, marketing or promotional materials and
+              InvoCom newsletters, marketing or promotional materials and
               other information that may be of interest to you. If you decide at
               any time that you no longer wish to receive such communications
               from us, please follow the unsubscribe instructions provided in
@@ -134,9 +134,9 @@ export default class PrivacyPolicy extends Component {
             </p>
 
             <p>
-              The Services may include certain communications from Clinix360,
+              The Services may include certain communications from InvoCom,
               such as administrative messages; these communications are
-              considered part of Clinix360 membership and you will not be able
+              considered part of InvoCom membership and you will not be able
               to opt out of receiving them.
             </p>
           </div>
@@ -146,7 +146,7 @@ export default class PrivacyPolicy extends Component {
 
             <p>
               When you visit the Service, whether as a Registered User or a
-              non-registered user just browsing (any of these, a “Clinix360
+              non-registered user just browsing (any of these, a “InvoCom
               User”), our servers automatically record information that your
               browser sends whenever you visit a website (“Log Data”). This Log
               Data may include information such as your computer’s Internet
@@ -181,7 +181,7 @@ export default class PrivacyPolicy extends Component {
               information for future logins to the Service. Second, we utilize
               session ID cookies to enable certain features of the Service, to
               better understand how you interact with the Service and to monitor
-              aggregate usage by Clinix360 users and web traffic routing on the
+              aggregate usage by InvoCom users and web traffic routing on the
               Service. Unlike persistent cookies, session cookies are deleted
               from your computer when you log off from the Site, App and Service
               and then close your browser. You can instruct your browser, by
@@ -197,7 +197,7 @@ export default class PrivacyPolicy extends Component {
 
             <p>
               Identity theft and the practice currently known as “phishing” are
-              of great concern to Clinix360. Safeguarding information to help
+              of great concern to InvoCom. Safeguarding information to help
               protect you from identity theft is a top priority. We do not and
               will not, at any time, request your credit card information, your
               account login information, or social security or national
@@ -216,18 +216,18 @@ export default class PrivacyPolicy extends Component {
                 <span>
                   When you register through the Site or App and submit your
                   Personal Information, you are applying to become a member of a
-                  group of Registered Users who have registered with Clinix360
+                  group of Registered Users who have registered with InvoCom
                   as working at and/or as being affiliated with your Indicated
-                  Entity (each a “Clinix360 Group”). If one or more Registered
-                  Users acts as an administrator for your Clinix360 Group, those
+                  Entity (each a “InvoCom Group”). If one or more Registered
+                  Users acts as an administrator for your InvoCom Group, those
                   Registered User administrators will see your first and last
                   name, your Indicated Entity, your role and department to
                   enable such Registered User administrators to assess whether
-                  to accept you as a member of such Clinix360 Group. If you are
-                  not accepted as a member of such Clinix360 Group, we will not
+                  to accept you as a member of such InvoCom Group. If you are
+                  not accepted as a member of such InvoCom Group, we will not
                   share your Personal Information with any other Registered
-                  Users. Once you have been accepted into your Clinix360 Group,
-                  the Registered Users part of your Clinix360 Group will see
+                  Users. Once you have been accepted into your InvoCom Group,
+                  the Registered Users part of your InvoCom Group will see
                   your first and last name, your Indicated Entity, your role and
                   department. Such Registered Users will also be able to see the
                   status and availability of updates that you may choose to post
@@ -241,7 +241,7 @@ export default class PrivacyPolicy extends Component {
                   preferences you set in your account. You must provide truthful
                   and accurate information about yourself but any information
                   you choose to provide should reflect how much you want other
-                  Clinix360 users to know about you. We recommend that you guard
+                  InvoCom users to know about you. We recommend that you guard
                   carefully any sensitive information.
                 </span>
               </li>
@@ -276,13 +276,13 @@ export default class PrivacyPolicy extends Component {
               <li>
                 Compliance with Laws and Law Enforcement:{" "}
                 <span>
-                  Clinix360 cooperates with government and law enforcement
+                  InvoCom cooperates with government and law enforcement
                   officials and private parties to enforce and comply with the
                   law. We will disclose any information about you to government
                   or law enforcement officials or private parties as we, in our
                   sole discretion, believe necessary or appropriate to respond
                   to claims and legal process (including but not limited to
-                  subpoenas), to protect the property and rights of Clinix360 or
+                  subpoenas), to protect the property and rights of InvoCom or
                   a third party, to protect the safety of the public or any
                   person, or to prevent or stop activity we may consider to be,
                   or to pose a risk of being, illegal, unethical or legally
@@ -293,7 +293,7 @@ export default class PrivacyPolicy extends Component {
               <li>
                 Business Transfers:{" "}
                 <span>
-                  Clinix360 may sell, transfer or otherwise share some or all of
+                  InvoCom may sell, transfer or otherwise share some or all of
                   its assets, including your Personal Information, in connection
                   with a merger, acquisition, reorganization or sale of assets
                   or in the event of bankruptcy.
@@ -303,12 +303,12 @@ export default class PrivacyPolicy extends Component {
           </div>
 
           <div className="copy-section">
-            <h2>Communicating Via a Clinix360 Account</h2>
+            <h2>Communicating Via a InvoCom Account</h2>
 
             <p>
               As part of the Service, Registered Users may communicate with
               other Registered Users through use of the Service. Any messages
-              you create as a Registered User will be sent from Clinix360 on
+              you create as a Registered User will be sent from InvoCom on
               your behalf to one or more Registered Users specified by you.
               Messages received and sent by a Registered User can be viewed by
               the Registered User in their account either on the Site or the
@@ -318,13 +318,13 @@ export default class PrivacyPolicy extends Component {
             <p>
               If a Registered User designates a communication that such
               Registered User is sending via the Service as being a “high
-              priority” or important communication, Clinix360 may send the
+              priority” or important communication, InvoCom may send the
               intended recipients of such communication an email and/or text
               message (if the intended recipient has provided their mobile phone
-              number to Clinix360) to notify the intended recipients that such
+              number to InvoCom) to notify the intended recipients that such
               communication has been received via the Service. You consent to
-              Clinix360 notifying you by email and/or text message (if you have
-              provided your mobile phone number to Clinix360) that certain
+              InvoCom notifying you by email and/or text message (if you have
+              provided your mobile phone number to InvoCom) that certain
               communications have been received by you via the Service. If you
               choose to use our referral services to tell a colleague about our
               Services, we will ask you for your colleague’s name and email
@@ -347,10 +347,10 @@ export default class PrivacyPolicy extends Component {
             <h2>Changing or Deleting Your Information</h2>
 
             <p>
-              Clinix360 will retain an archived copy of the contents of
+              InvoCom will retain an archived copy of the contents of
               communications that have been sent using the Service, the
               identities of the sender(s) and the recipient(s) of such
-              communications and any other information which Clinix360 is
+              communications and any other information which InvoCom is
               required to retain by law or legitimate business purpose.
             </p>
 
@@ -373,7 +373,7 @@ export default class PrivacyPolicy extends Component {
             <h2>Security</h2>
 
             <p>
-              Clinix360 is very concerned with safeguarding your information.
+              InvoCom is very concerned with safeguarding your information.
               The security of your personal information is important to us. But
               remember that no method of transmission over the Internet, or
               method of electronic storage, is 100% secure.
@@ -401,7 +401,7 @@ export default class PrivacyPolicy extends Component {
               other governmental jurisdiction where the privacy laws may not be
               as protective as those in your jurisdiction. If you are located
               outside the United States and choose to provide information to us,
-              Clinix360 transfers Personal Information to the United States and
+              InvoCom transfers Personal Information to the United States and
               processes it there. Your consent to this Privacy Policy followed
               by your submission of such information represents your agreement
               to that transfer.
@@ -444,16 +444,16 @@ export default class PrivacyPolicy extends Component {
           </div>
 
           <div className="copy-section">
-            <h2>Contacting Clinix360</h2>
+            <h2>Contacting InvoCom</h2>
 
             <p>
               If you have any questions about this Policy or any App Store
-              Sourced App, please contact Clinix360 at
+              Sourced App, please contact InvoCom at
             </p>
             <p />
 
             <address className="m-b-30">
-              Clinix360 Health
+              InvoCom Health
               <br />
               156 2nd Street
               <br />

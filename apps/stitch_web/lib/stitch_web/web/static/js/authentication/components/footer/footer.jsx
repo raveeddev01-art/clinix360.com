@@ -81,7 +81,7 @@ export default class Footer extends Component {
             <Col xs={6} md={3}>
               <h5>Contact</h5>
               <address>
-                <strong>Clinix360 Technologies, Inc.</strong>
+                <strong>InvoCom Technologies, Inc.</strong>
                 <br />
                 156 2nd Street
                 <br />

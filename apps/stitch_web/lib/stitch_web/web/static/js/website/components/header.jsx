@@ -115,9 +115,9 @@ class Header extends Component {
             <Navbar.Brand>
               <Link to="/" className="brand">
                 {this.props.blueNav ? (
-                  <img src="/images/clinix.png" alt="Clinix360" />
+                  <img src="/images/invocom.png" alt="InvoCom" />
                 ) : (
-                  <img src="/images/clinix.png" alt="Clinix360" />
+                  <img src="/images/invocom.png" alt="InvoCom" />
                 )}
               </Link>
             </Navbar.Brand>
@@ -169,7 +169,7 @@ class Header extends Component {
             {!hasLogins && (
               <NavItem
                 className="btn-request-info"
-                href="mailto:feedback@dvlcloud.com?subject=Clinix360: Request Information"
+                href="mailto:feedback@dvlcloud.com?subject=InvoCom: Request Information"
               >
                 Request Information
               </NavItem>
@@ -181,7 +181,7 @@ class Header extends Component {
           <div className="header">
             <div className="container">
               <Link className="brand" to="/">
-                <img src="/images/clinix.png" alt="Clinix360" />
+                <img src="/images/invocom.png" alt="InvoCom" />
               </Link>
 
               <a className="close-menu" onClick={this.mobileNavToggle}>
@@ -239,7 +239,7 @@ class Header extends Component {
               {mobile && !hasLogins && (
                 <NavItem
                   className="btn-request-info"
-                  href="mailto:feedback@dvlcloud.com?subject=Clinix360: Request Information"
+                  href="mailto:feedback@dvlcloud.com?subject=InvoCom: Request Information"
                 >
                   Request Information
                 </NavItem>
@@ -252,7 +252,7 @@ class Header extends Component {
                   rel="noopener noreferrer"
                   className="appstore-btn"
                 >
-                  Get Clinix360 for iOS
+                  Get InvoCom for iOS
                 </NavItem>
               )}
 
@@ -263,7 +263,7 @@ class Header extends Component {
                   rel="noopener noreferrer"
                   className="appstore-btn"
                 >
-                  Get Clinix360 for Android
+                  Get InvoCom for Android
                 </NavItem>
               )}
             </Nav>

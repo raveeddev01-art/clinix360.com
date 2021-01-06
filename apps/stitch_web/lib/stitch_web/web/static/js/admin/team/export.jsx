@@ -45,7 +45,7 @@ export default class TeamExport extends Component {
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
         <p>
-          Clinix360 provides full data exports to keep you compliant. Here's
+          InvoCom provides full data exports to keep you compliant. Here's
           what we include in our exports:
         </p>
         <ul className="list-unstyled">

@@ -37,11 +37,11 @@ class ConnectTour extends Component {
       {
         placement: "center",
         disableBeacon: true,
-        title: "Welcome to Clinix360",
+        title: "Welcome to InvoCom",
         target: ".message-form-action-item",
         content: (
           <p>
-            Message your team, from any device. Clinix360 is HIPAA compliant and
+            Message your team, from any device. InvoCom is HIPAA compliant and
             free to use with an unlimited number of people.
           </p>
         ),
@@ -53,7 +53,7 @@ class ConnectTour extends Component {
         target: ".create-room-button",
         content: (
           <p>
-            Conversations in Clinix360 take place in <b>rooms</b>. Create rooms
+            Conversations in InvoCom take place in <b>rooms</b>. Create rooms
             for common topics of discussion.
           </p>
         ),
@@ -92,7 +92,7 @@ class ConnectTour extends Component {
         target: ".invite-link",
         content: (
           <p>
-            Invite your team members into Clinix360, so you can bring all your
+            Invite your team members into InvoCom, so you can bring all your
             communication into one place.
           </p>
         ),

@@ -156,7 +156,7 @@ class DrChronoForm extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Notifications</h4>
             <p>
-              Which drchrono notification would you like to appear in Clinix360?
+              Which drchrono notification would you like to appear in InvoCom?
             </p>
           </Col>
 

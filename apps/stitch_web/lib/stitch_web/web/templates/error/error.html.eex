@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Clinix360 | Error</title>
+    <title>InvoCom | Error</title>
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 
@@ -17,10 +17,10 @@
       <div class="system_error__inner">
         <h2>
           <i class="fa fa-exclamation-triangle system_error__icon"></i>
-          Clinix360 failed to load correctly
+          InvoCom failed to load correctly
         </h2>
         <p>
-          Looks like Clinix360 ran into an issue. Please reload by clicking below.
+          Looks like InvoCom ran into an issue. Please reload by clicking below.
           If you continue to experience issues, please email us at
           <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>
           and our support team will help you get back on track right away.

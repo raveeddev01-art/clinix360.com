@@ -18,7 +18,7 @@ export default class Downloads extends Component {
 
         <Subheader
           title="Downloads"
-          subtitle="Download the Clinix360 app for every desktop and mobile platform."
+          subtitle="Download the InvoCom app for every desktop and mobile platform."
         />
 
         <div className="downloads-content">

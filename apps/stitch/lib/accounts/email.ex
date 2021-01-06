@@ -8,7 +8,7 @@ defmodule Stitch.Accounts.Email do
   alias Stitch.Accounts.{User, Role}
 
   @guest_roles Role.guests()
-  @from_address {"Clinix360", "hello@#{System.get_env("MAILGUN_DOMAIN")}"}
+  @from_address {"InvoCom", "hello@#{System.get_env("MAILGUN_DOMAIN")}"}
 
   @doc """
   Sends confirmation code email to the user.
@@ -24,7 +24,7 @@ defmodule Stitch.Accounts.Email do
     |> text_body("Your confirmation code is #{code_string}")
     |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || user.email)
     |> from(@from_address)
-    |> subject("Clinix360 confirmation code: #{code_string}")
+    |> subject("InvoCom confirmation code: #{code_string}")
     |> Stitch.NewMailer.deliver_now()
   end
 
@@ -72,8 +72,8 @@ defmodule Stitch.Accounts.Email do
   def temporary_password_reset(user, reset_url) do
     new_email()
     |> to(user.email)
-    |> from({"Clinix360", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
-    |> subject("ACTION REQUIRED: Please reset your Clinix360 password")
+    |> from({"InvoCom", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
+    |> subject("ACTION REQUIRED: Please reset your InvoCom password")
     |> text_body("Hello #{user.first_name}
     Please hit the link to chnage password #{reset_url}
     ")

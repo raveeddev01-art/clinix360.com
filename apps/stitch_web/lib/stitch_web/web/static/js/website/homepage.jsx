@@ -41,7 +41,7 @@ export default class Homepage extends Component {
                 <h1>Deliver a great patient experience</h1>
 
                 <h3 className="m-b-30">
-                  Clinix360 is an app for healthcare teams to send internal
+                  InvoCom is an app for healthcare teams to send internal
                   messages, communicate with patients and track daily tasks —
                   fully HIPAA compliant and free to use.
                 </h3>
@@ -62,7 +62,7 @@ export default class Homepage extends Component {
               <div className="flex-item">
                 <img
                   src="/images/homepage-header.png"
-                  alt="Clinix360 Platform"
+                  alt="InvoCom Platform"
                   className="img-responsive"
                 />
               </div>

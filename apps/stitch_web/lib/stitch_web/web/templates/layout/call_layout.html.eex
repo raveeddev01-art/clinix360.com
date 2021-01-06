@@ -3,7 +3,7 @@
   <head>
     <%= render "_tag_manager_head.html" %>
     <%= render "_shared_head.html" %>
-    <title><%= if assigns[:title], do: @title, else: "Clinix360" %></title>
+    <title><%= if assigns[:title], do: @title, else: "InvoCom" %></title>
     <meta name="description" content="<%= if assigns[:description], do: @description, else: "" %>" />
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/call_app.css") %>">
     <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>

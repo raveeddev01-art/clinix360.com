@@ -90,7 +90,7 @@
       <div class="container">
         <b><%= @today %></b>
         <p>
-          Thanks for using Clinix360! We hope you enjoyed your experience with us this month. Below, please find a summary of charges
+          Thanks for using InvoCom! We hope you enjoyed your experience with us this month. Below, please find a summary of charges
           for
           <b><%= @team_name %></b>
         </p>

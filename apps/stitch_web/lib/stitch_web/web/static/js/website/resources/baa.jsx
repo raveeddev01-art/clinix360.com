@@ -21,7 +21,7 @@ export default class Baa extends Component {
 
             <p>
               This Business Associate Agreement Addendum (this “Agreement”) by
-              and between you (the “Covered Entity”) and Clinix360 Technologies,
+              and between you (the “Covered Entity”) and InvoCom Technologies,
               Inc. (“us”, “we”, the “Business Associate”) is, together with the{" "}
               <a href="/terms-of-service">Terms of Service</a> as amended by
               this Agreement, (a) is intended by the parties as a final,

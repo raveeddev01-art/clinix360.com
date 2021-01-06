@@ -29,16 +29,16 @@ import Industry from "./industries/industry";
 
 // PAGE TITLES
 // if changed, sync with backend (home_controller)
-const defaultTitle = "Care Coordination | Clinix360";
-const demoTitle = "Request a Demo | Clinix360";
-const connectTitle = "Care Coordination | Clinix360";
-const engageTitle = "Engage | Clinix360";
-const manageTitle = "Manage | Clinix360";
-const pricingTitle = "Pricing | Clinix360";
-const downloadsTitle = "Downloads | Clinix360";
-const jobsTitle = "Jobs | Clinix360";
-const customersTitle = "Customers | Clinix360";
-const hipaaTitle = "HIPAA Compliance | Clinix360";
+const defaultTitle = "Care Coordination | InvoCom";
+const demoTitle = "Request a Demo | InvoCom";
+const connectTitle = "Care Coordination | InvoCom";
+const engageTitle = "Engage | InvoCom";
+const manageTitle = "Manage | InvoCom";
+const pricingTitle = "Pricing | InvoCom";
+const downloadsTitle = "Downloads | InvoCom";
+const jobsTitle = "Jobs | InvoCom";
+const customersTitle = "Customers | InvoCom";
+const hipaaTitle = "HIPAA Compliance | InvoCom";
 const notFoundTitle = "404 | Page Not Found";
 
 class WebsiteRouter extends Component {

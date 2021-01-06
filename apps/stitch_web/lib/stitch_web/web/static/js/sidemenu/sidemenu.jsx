@@ -205,7 +205,7 @@ class Sidemenu extends Component {
               {userStore.isAdmin && this.renderAdminOptions()}
 
               <div className="separator text-center">
-                <span>Clinix360</span>
+                <span>InvoCom</span>
               </div>
 
               {userStore.canInvite && (

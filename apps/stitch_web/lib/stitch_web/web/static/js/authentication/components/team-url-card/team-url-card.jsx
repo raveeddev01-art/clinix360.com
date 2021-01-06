@@ -87,11 +87,11 @@ class CarespaceUrlCard extends Component {
       <div>
         <OnboardPage
           {...this.props}
-          title="Choose a URL for your Clinix360 Carespace"
+          title="Choose a URL for your InvoCom Carespace"
           description={
             <span>
               This is the URL you and your team members will use to sign in to
-              Clinix360.
+              InvoCom.
             </span>
           }
           onNext={this.onNext}
@@ -112,7 +112,7 @@ class CarespaceUrlCard extends Component {
                 onChange={this.onChange}
                 maxLength={80}
               />
-              <span className="domain">.klinic360.com</span>
+              <span className="domain">.invocom.io</span>
             </div>
             {error && <InputErrorBlock> {error} </InputErrorBlock>}
           </FormGroup>

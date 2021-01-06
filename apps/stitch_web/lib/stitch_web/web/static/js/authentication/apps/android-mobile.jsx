@@ -7,7 +7,7 @@ export default class AndroidMobile extends Component {
         <h5>
           <div className="card-description">
             Download the <strong>Android Mobile App</strong> to get the best
-            experience using Clinix360.
+            experience using InvoCom.
           </div>
         </h5>
 
@@ -15,7 +15,7 @@ export default class AndroidMobile extends Component {
           <img
             src="/images/playstore.png"
             className="img-responsive"
-            alt="Download Clinix360 on Play store"
+            alt="Download InvoCom on Play store"
           />
         </a>
       </div>

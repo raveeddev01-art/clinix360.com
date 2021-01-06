@@ -43,7 +43,7 @@ export default class BrowserNotificationAlert extends Component {
           <a role="link" onClick={this.enableNotification}>
             enable desktop notifications
           </a>
-          &nbsp;for Clinix360.
+          &nbsp;for InvoCom.
         </span>
         <i
           role="link"

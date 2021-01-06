@@ -59,11 +59,11 @@ export default class Demo extends Component {
           <h3 className="m-b-40">
             Enable your team to seamlessly work together.{" "}
             <br className="hidden-xs" />
-            Learn how Clinix360 works today.
+            Learn how InvoCom works today.
           </h3>
           <img
             src="/images/homepage-platform.png"
-            alt="Clinix360 Platform"
+            alt="InvoCom Platform"
             className="img-responsive hidden-xs hidden-sm"
           />
         </div>
@@ -127,7 +127,7 @@ export default class Demo extends Component {
                   <FormControl
                     name="companyName"
                     required
-                    placeholder="Clinix360 Health"
+                    placeholder="InvoCom Health"
                     type="text"
                     value={this.state.companyName}
                     onChange={this.handleChange}
@@ -149,7 +149,7 @@ export default class Demo extends Component {
           We received your request and will reach out momentarily.{" "}
           <br className="hidden-xs" />
           In the meantime, see how our customers are improving patient care on
-          Clinix360.
+          InvoCom.
         </h3>
 
         <LinkContainer to="/customers">

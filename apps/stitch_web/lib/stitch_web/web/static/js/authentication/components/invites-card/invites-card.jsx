@@ -139,7 +139,7 @@ class InvitesCard extends Component {
           description={
             <span>
               Your Carespace is all set. Get started by bringing in your team
-              members to explore Clinix360 with you.
+              members to explore InvoCom with you.
             </span>
           }
           footer={this.renderFooter()}

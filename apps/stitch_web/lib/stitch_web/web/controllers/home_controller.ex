@@ -12,31 +12,31 @@ defmodule Stitch.Web.HomeController do
   end
 
   # If you change a title, sync it with frontend (website_router)
-  @connect_title "Connect | Clinix360"
-  @connect_description "Clinix360 is a team messaging app for healthcare teams. Bring your team together with rooms and direct messages on any device."
+  @connect_title "Connect | InvoCom"
+  @connect_description "InvoCom is a team messaging app for healthcare teams. Bring your team together with rooms and direct messages on any device."
 
-  @customers_title "Customers | Clinix360"
+  @customers_title "Customers | InvoCom"
   @customers_description "Trusted by the best healthcare teams, big and small. See how customers have improved care coordination on our platform."
 
-  @demo_title "Request a Demo | Clinix360"
-  @demo_description "Request a Demo of Clinix360 today. Clinix360 is free to use with an unlimited number of people."
+  @demo_title "Request a Demo | InvoCom"
+  @demo_description "Request a Demo of InvoCom today. InvoCom is free to use with an unlimited number of people."
 
-  @downloads_title "Downloads | Clinix360"
-  @downloads_description "Download Clinix360 for free for mobile devices or desktop. Stay in the loop with our apps for iPhone, Android, Mac and Windows."
+  @downloads_title "Downloads | InvoCom"
+  @downloads_description "Download InvoCom for free for mobile devices or desktop. Stay in the loop with our apps for iPhone, Android, Mac and Windows."
 
-  @engage_title "Engage | Clinix360"
-  @engage_description "Clinix360 Engage is a patient communication app for healthcare teams. From messages and forms to files and tasks, engage your patients on every level."
+  @engage_title "Engage | InvoCom"
+  @engage_description "InvoCom Engage is a patient communication app for healthcare teams. From messages and forms to files and tasks, engage your patients on every level."
 
-  @hipaa_title "HIPAA Compliance | Clinix360"
-  @hipaa_description "Clinix360 is fully HIPAA compliant. Relax knowing we’ve got you covered. Directly name patients and share files in our secure carespace."
+  @hipaa_title "HIPAA Compliance | InvoCom"
+  @hipaa_description "InvoCom is fully HIPAA compliant. Relax knowing we’ve got you covered. Directly name patients and share files in our secure carespace."
 
-  @jobs_title "Jobs | Clinix360"
+  @jobs_title "Jobs | InvoCom"
   @jobs_description "We’re hiring! If you’re passionate about making an impact in healthcare by building great technology, then we want to meet you."
 
-  @manage_title "Manage | Clinix360"
-  @manage_description "Clinix360 Manage is a task management app for healthcare teams. Instantly know what your team is doing and ensure every patient task goes from start to done."
+  @manage_title "Manage | InvoCom"
+  @manage_description "InvoCom Manage is a task management app for healthcare teams. Instantly know what your team is doing and ensure every patient task goes from start to done."
 
-  @pricing_title "Pricing | Clinix360"
+  @pricing_title "Pricing | InvoCom"
   @pricing_description "Free to start, with upgradeable plans available. Our products work together in a single place. Start with one or many."
 
   defp title_for_path("/connect" <> _rest), do: @connect_title

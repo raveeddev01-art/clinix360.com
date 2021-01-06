@@ -22,7 +22,7 @@ class LoggedOut extends Component {
         description={
           <span>
             You are signed out of{" "}
-            <b>{this.props.registrationStore.teamSlug}.klinic360.com</b>.
+            <b>{this.props.registrationStore.teamSlug}.invocom.io</b>.
           </span>
         }
       >

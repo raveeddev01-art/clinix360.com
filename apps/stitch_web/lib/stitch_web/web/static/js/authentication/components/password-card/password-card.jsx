@@ -39,7 +39,7 @@ class PasswordCard extends Component {
         <OnboardPage
           {...this.props}
           title="Set your password"
-          description="Select a password for signing into Clinix360."
+          description="Select a password for signing into InvoCom."
           onNext={this._onNext}
           disableNext={formInvalid}
         >

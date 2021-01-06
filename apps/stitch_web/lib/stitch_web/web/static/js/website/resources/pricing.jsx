@@ -30,7 +30,7 @@ export default class Pricing extends Component {
 
         <Subheader
           title="Free to use, upgrade any time"
-          subtitle="Clinix360 is free to use with an unlimited number of people."
+          subtitle="InvoCom is free to use with an unlimited number of people."
         />
 
         <div className="stitch-products">

@@ -7,7 +7,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "PIN";
 const description =
-  "Set your PIN. This will be used to resume Clinix360 after inactivity lockouts.";
+  "Set your PIN. This will be used to resume InvoCom after inactivity lockouts.";
 
 @inject("userStore")
 @observer

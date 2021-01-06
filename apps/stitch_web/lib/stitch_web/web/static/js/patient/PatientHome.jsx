@@ -44,7 +44,7 @@ class PatientHome extends Component {
                 <HomeItem
                   icon="fa-question"
                   title="Help"
-                  description="Articles and guides on how to use Clinix360."
+                  description="Articles and guides on how to use InvoCom."
                   openButtonText="Open"
                   link="https://help.dvlcloud.com"
                   newTab

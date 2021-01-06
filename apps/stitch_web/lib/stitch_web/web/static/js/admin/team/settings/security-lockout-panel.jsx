@@ -14,7 +14,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Security Lockout";
 const description =
-  "Clinix360 will automatically lockout after a specified period of inactivity. You can unlock it with your PIN or password.";
+  "InvoCom will automatically lockout after a specified period of inactivity. You can unlock it with your PIN or password.";
 
 @inject("teamStore")
 @observer

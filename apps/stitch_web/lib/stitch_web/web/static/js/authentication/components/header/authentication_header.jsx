@@ -35,7 +35,7 @@ class AuthenticationHeader extends Component {
 
     return (
       <a href={dest} className="brand">
-        <img src="/images/clinix.png" alt="Clinix360" />
+        <img src="/images/invocom.png" alt="InvoCom" />
       </a>
     );
   }

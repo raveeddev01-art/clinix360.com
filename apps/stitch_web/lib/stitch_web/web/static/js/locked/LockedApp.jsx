@@ -67,7 +67,7 @@ class LockedApp extends Component {
           <AuthenticationPage
             headerCTA="no-cta"
             title="Locked Out"
-            description="Enter your PIN to resume using Clinix360."
+            description="Enter your PIN to resume using InvoCom."
           >
             <div className="locked-out">
               <Form onSubmit={this.handleSubmit}>

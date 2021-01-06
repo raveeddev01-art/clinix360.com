@@ -5,11 +5,11 @@ defmodule Stitch.Web.AuthenticationController do
   alias Stitch.Accounts.{PasswordResetToken}
 
   # If you change a title, sync it with frontend (website_router)
-  @login_title "Sign In | Clinix360"
-  @login_description "Sign in to your Clinix360 team by entering your carespace’s Clinix360 URL. Don't know your carespace URL? Enter your email address and we’ll send you a list of your carespaces."
+  @login_title "Sign In | InvoCom"
+  @login_description "Sign in to your InvoCom team by entering your carespace’s InvoCom URL. Don't know your carespace URL? Enter your email address and we’ll send you a list of your carespaces."
 
-  @signup_title "Create a Team | Clinix360"
-  @signup_description "Create your Clinix360 team for free. Get started with our collaboration hub for healthcare teams."
+  @signup_title "Create a Team | InvoCom"
+  @signup_description "Create your InvoCom team for free. Get started with our collaboration hub for healthcare teams."
 
   def index(conn = %{request_path: path}, _params) do
     login_params = Stitch.Web.PageService.get_logins_json(conn)

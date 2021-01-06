@@ -7,7 +7,7 @@ export default class WindowsDesktop extends Component {
         <h5>
           <div className="card-description">
             Download the <strong>Windows Desktop App</strong> to get the best
-            experience using Clinix360.
+            experience using InvoCom.
           </div>
         </h5>
 

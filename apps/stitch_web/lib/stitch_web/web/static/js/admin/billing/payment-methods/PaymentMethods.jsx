@@ -37,8 +37,8 @@ class PaymentMethods extends Component {
         <div className="tab-section saved-cards">
           <h4>Saved Cards</h4>
           <p>
-            Manage your saved cards for Clinix360 payments. If you have an
-            active Clinix360 subscription, you'll need to make sure you have at
+            Manage your saved cards for InvoCom payments. If you have an
+            active InvoCom subscription, you'll need to make sure you have at
             least one card on file. You can read more about payments{" "}
             <a
               target="_blank"

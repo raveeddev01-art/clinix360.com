@@ -13,7 +13,7 @@ export default class TeamHipaa extends Component {
           <i className="fa fa-check-circle" />
           <p className="m-b-0">
             Your carespace is <strong>HIPAA compliant</strong>. You can safely
-            share patient information in Clinix360.
+            share patient information in InvoCom.
           </p>
         </Well>
 

@@ -31,7 +31,7 @@ export default class Landing extends Component {
                 <a href="/" className="brand">
                   <img
                     src="apps/stitch_web/lib/stitch_web/web/static/js/authentication/team/select_team.jsx"
-                    alt="Clinix360"
+                    alt="InvoCom"
                   />
                 </a>
               </Col>
@@ -86,7 +86,7 @@ export default class Landing extends Component {
         <div id="footer">
           <div className="container">
             <Row>
-              <Col sm={4}>Clinix360 Technologies, Inc</Col>
+              <Col sm={4}>InvoCom Technologies, Inc</Col>
               <Col sm={8}>
                 <ul className="list-inline m-b-0 text-right">
                   <li>

@@ -14,7 +14,7 @@ export default class Footer extends Component {
               <img
                 className="clinix360-logo"
                 src="/images/logo-blue.svg"
-                alt="Clinix360"
+                alt="InvoCom"
               />
             </Col>
 
@@ -79,7 +79,7 @@ export default class Footer extends Component {
                 <Col xs={6} sm={3} xsPull={6} smPull={0}>
                   <h5>Contact</h5>
                   <address>
-                    Clinix360 Health
+                    InvoCom Health
                     <br />
                     156 2nd Street
                     <br />

@@ -85,7 +85,7 @@ class Subscription extends Component {
       )} tier`;
 
       alertModal({
-        title: "Thanks for using Clinix360!",
+        title: "Thanks for using InvoCom!",
         message: (
           <p>
             We successfully saved your card info. <br /> <b>{text}</b>
@@ -154,7 +154,7 @@ class Subscription extends Component {
         {tier !== "FREE" && planRemainingDays > 0 && (
           <span>
             Click{" "}
-            <a href="mailto:support@dvlcloud.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Clinix360 subscription for the following reasons:">
+            <a href="mailto:support@dvlcloud.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our InvoCom subscription for the following reasons:">
               here
             </a>{" "}
             to cancel your subscription.

@@ -64,7 +64,7 @@ export default class Connect extends Component {
 
                 <Button
                   bsStyle="primary"
-                  href="mailto:feedback@dvlcloud.com?subject=Clinix360: Request Information"
+                  href="mailto:feedback@dvlcloud.com?subject=InvoCom: Request Information"
                 >
                   Request Information
                 </Button>
@@ -73,7 +73,7 @@ export default class Connect extends Component {
               <div className="flex-item">
                 <img
                   src="/images/connect-header.png"
-                  alt="Clinix360 Platform"
+                  alt="InvoCom Platform"
                   className="img-responsive"
                 />
               </div>
@@ -97,7 +97,7 @@ export default class Connect extends Component {
           heading="Share information across your entire team"
           image="/images/connect-feature-2.png"
         >
-          Easily upload files of any type into Clinix360 — JPEG, PNG, PDF, MP3,
+          Easily upload files of any type into InvoCom — JPEG, PNG, PDF, MP3,
           Word, Excel, PowerPoint, and more. Make them instantly available to
           your team members, and drop the headache of tedious email attachments.
           Start sharing patient charts, labs, images, intake forms and more.
@@ -108,10 +108,10 @@ export default class Connect extends Component {
           heading="Choose notifications that matter to you"
           image="/images/connect-feature-3.png"
         >
-          With Clinix360, you can apply custom notification preferences to every
+          With InvoCom, you can apply custom notification preferences to every
           conversation, so you can stay focused and in the loop. Say goodbye to
           cluttered inboxes, noisy pagers and unruly text threads. Best of all,
-          Clinix360 goes wherever you go with native Mac, Windows, iOS and
+          InvoCom goes wherever you go with native Mac, Windows, iOS and
           Android apps.
         </Feature>
 
@@ -120,7 +120,7 @@ export default class Connect extends Component {
           heading="Instantly find answers when you need them"
           image="/images/connect-feature-4.png"
         >
-          Clinix360 turns historical conversations into the ultimate source of
+          InvoCom turns historical conversations into the ultimate source of
           answers: it’s built from the ground up for deep search. Every message,
           every file, every comment is carefully archived and made searchable.
           Team knowledge at your fingertips, whenever you need it.
@@ -138,7 +138,7 @@ export default class Connect extends Component {
                   </h4>
                   <p className="m-b-15">
                     View engagement statistics to understand the how, when and
-                    who of your team’s Clinix360 usage.
+                    who of your team’s InvoCom usage.
                   </p>
 
                   <a href="https://help.dvlcloud.com/hc/en-us/articles/360010902353">
@@ -217,8 +217,8 @@ export default class Connect extends Component {
                     <i className="far fa-refresh" /> EHR Integrations
                   </h4>
                   <p className="m-b-15">
-                    Tie Clinix360 into your existing toolset with a seamless EHR
-                    integration. Get alerts for key updates right in Clinix360.
+                    Tie InvoCom into your existing toolset with a seamless EHR
+                    integration. Get alerts for key updates right in InvoCom.
                   </p>
 
                   <a href="https://help.dvlcloud.com/hc/en-us/articles/360007574334-EHR-Integrations">
@@ -248,8 +248,8 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Create an account</h4>
 
                     <p>
-                      Clinix360 is 100% free to start. Pick a team name and a
-                      custom URL you can use to access Clinix360 easily.
+                      InvoCom is 100% free to start. Pick a team name and a
+                      custom URL you can use to access InvoCom easily.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -259,8 +259,8 @@ export default class Connect extends Component {
                     <div className="number m-b-30">2</div>
                     <h4 className="m-b-20">Invite your team</h4>
                     <p>
-                      Clinix360 works best when your entire team is inside. Use
-                      Clinix360 with an unlimited number of users.
+                      InvoCom works best when your entire team is inside. Use
+                      InvoCom with an unlimited number of users.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -271,7 +271,7 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Add chat rooms</h4>
                     <p>
                       Pick a few major topics that your team talks about
-                      frequently, and create your Clinix360 rooms to get
+                      frequently, and create your InvoCom rooms to get
                       started.
                     </p>
                   </Panel.Body>
@@ -315,6 +315,6 @@ Connect.defaultProps = {
   flipped: false,
   header: "Healthcare Messaging",
   subHeader:
-    "Message your team, from any device. Clinix360 is HIPAA compliant and free to use with an unlimited number of people.",
+    "Message your team, from any device. InvoCom is HIPAA compliant and free to use with an unlimited number of people.",
   // industryBodyText: "healthcare"
 };

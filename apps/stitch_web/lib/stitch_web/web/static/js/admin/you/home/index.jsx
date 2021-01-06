@@ -16,7 +16,7 @@ export default class YouHome extends Component {
       <HomeItem
         icon="fa-database"
         title="Integrations"
-        description="Install applications that send notifications and events into Clinix360 rooms."
+        description="Install applications that send notifications and events into InvoCom rooms."
         openButtonText="Open"
         link="/admin/integrations"
         openExternal
@@ -60,7 +60,7 @@ export default class YouHome extends Component {
           <HomeItem
             icon="fa-credit-card"
             title="Billing"
-            description="Subscribe to Clinix360 plans across different products, edit your team payment details, and access invoice history."
+            description="Subscribe to InvoCom plans across different products, edit your team payment details, and access invoice history."
             openButtonText="Open"
             link="/admin/billing"
           />
@@ -80,7 +80,7 @@ export default class YouHome extends Component {
           <div className="admin-products-wrapper">
             <HomeItem
               icon="fa-comments"
-              title="Clinix360"
+              title="InvoCom"
               description="Team Communication: Send messages, write notes, upload files, and track tasks on any device."
               openButtonText="Launch"
               link="/"

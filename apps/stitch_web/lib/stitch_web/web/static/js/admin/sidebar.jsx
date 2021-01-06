@@ -141,7 +141,7 @@ class Sidebar extends Component {
               <ListGroupItem>
                 <Link to="/">
                   <i className="fa fa-comments" />
-                  <span>Clinix360</span>
+                  <span>InvoCom</span>
                 </Link>
               </ListGroupItem>
             </ListGroup>
@@ -195,7 +195,7 @@ class Sidebar extends Component {
 
             {isAdmin() && this._adminTeamsOptions()}
 
-            <h5>Clinix360</h5>
+            <h5>InvoCom</h5>
             <ListGroup>
               {userStore.canInvite && (
                 <ListGroupItem href="#" onClick={this.showInviteModal}>

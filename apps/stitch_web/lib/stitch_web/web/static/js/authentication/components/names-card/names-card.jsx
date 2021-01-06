@@ -222,7 +222,7 @@ class NamesCards extends Component {
 
     const description = asPatient
       ? ""
-      : "Your name will appear alongside your messages, files, tasks, and more in Clinix360.";
+      : "Your name will appear alongside your messages, files, tasks, and more in InvoCom.";
 
     const disableNext = !firstName || !lastName || (!asPatient && !username);
     const nextCb = asPatient ? this.onPatientNext : this.onNext;

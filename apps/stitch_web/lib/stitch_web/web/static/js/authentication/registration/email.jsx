@@ -64,7 +64,7 @@ class EmailCard extends Component {
           description={
             <span>
               Enter your email address to start creating your Carespace on
-              Clinix360.
+              InvoCom.
             </span>
           }
           onNext={this.onNext}

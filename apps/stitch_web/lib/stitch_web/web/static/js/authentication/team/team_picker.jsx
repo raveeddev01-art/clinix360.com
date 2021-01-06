@@ -81,11 +81,11 @@ class TeamPicker extends Component {
 
     return (
       <AuthenticationPage
-        title="Sign in to Clinix360"
+        title="Sign in to InvoCom"
         headerCTA="create"
         description={
           <span>
-            Enter your Carespace's <b> Clinix360 URL </b>
+            Enter your Carespace's <b> InvoCom URL </b>
           </span>
         }
       >
@@ -104,7 +104,7 @@ class TeamPicker extends Component {
               placeholder="your-carespace-url"
               maxLength={80}
             />
-            <span className="domain">.klinic360.com</span>
+            <span className="domain">.invocom.io</span>
           </FormGroup>
           {showAlert && <InputErrorBlock>{this.errorText}</InputErrorBlock>}
 

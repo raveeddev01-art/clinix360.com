@@ -14,17 +14,17 @@ defmodule Stitch.PatientEmail do
   use Bamboo.Phoenix, view: Stitch.EmailView
   import Bamboo.Email
 
-  @from_address {"Clinix360", "hello@#{System.get_env("MAILGUN_DOMAIN")}"}
+  @from_address {"InvoCom", "hello@#{System.get_env("MAILGUN_DOMAIN")}"}
 
   def send_reset_password(patient, reset_link) do
-    setup_auth_email(patient.email, "Clinix360 Health Password Reset")
+    setup_auth_email(patient.email, "InvoCom Health Password Reset")
     |> assign(:reset_link, reset_link)
     |> render("email/patient_reset_password.html")
     |> Stitch.NewMailer.deliver_now()
   end
 
   def send_find_team(email, token) do
-    setup_auth_email(email, "Find Your Clinix360 Carespace")
+    setup_auth_email(email, "Find Your InvoCom Carespace")
     |> assign(:url, "#{Stitch.Web.Endpoint.url()}/patient/find-your-team/#{token.token}")
     |> render("email/patient_find_team.html")
     |> Stitch.NewMailer.deliver_now()
@@ -57,7 +57,7 @@ defmodule Stitch.PatientEmail do
   end
 
   defp setup_invite_email(invitation, patient) do
-    subject_line = "#{invitation.team.name} has messaged you on Clinix360"
+    subject_line = "#{invitation.team.name} has messaged you on InvoCom"
     join_link = make_join_link(invitation.team.slug, invitation.invite_token)
 
     new_email()

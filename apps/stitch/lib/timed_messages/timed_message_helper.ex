@@ -107,7 +107,7 @@ defmodule Stitch.TimedMessage.Helper do
   """
   @spec welcome_subject(map) :: String.t()
   def welcome_subject(%{"user" => user}) do
-    "#{user.team.name} on Clinix360: New Account Information"
+    "#{user.team.name} on InvoCom: New Account Information"
   end
 
   # ================

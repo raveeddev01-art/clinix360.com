@@ -7,7 +7,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Profile Image";
 const description =
-  "Upload a profile image. This will be displayed when users view your information in Clinix360.";
+  "Upload a profile image. This will be displayed when users view your information in InvoCom.";
 
 @inject("userStore", "uploadStore", "teamStore")
 @observer

@@ -10,7 +10,7 @@ class TitleStore {
 
   @computed
   get title() {
-    const parts = [this.pageName, this.teamName, "Clinix360"];
+    const parts = [this.pageName, this.teamName, "InvoCom"];
     return parts.filter(p => p).join(" | ");
   }
 

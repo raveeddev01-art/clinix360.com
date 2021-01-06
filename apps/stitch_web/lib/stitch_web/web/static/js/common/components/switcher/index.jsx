@@ -54,7 +54,7 @@ class Switcher extends Component {
               <img
                 className="switcher__top-home"
                 src="/images/logo-white.svg"
-                alt="Clinix360"
+                alt="InvoCom"
               />
             </OverlayTrigger>
           </NavLink>
