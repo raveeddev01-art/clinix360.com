@@ -27,3 +27,8 @@ build:
   stage: build
   script:
     - docker build -t invocom .
+    - docker login registry.gitlab.com -u invocom -p $password
+    - docker build -t registry.gitlab.com/teamstitch/stitch-connect-elixir:latest .
+    - docker push registry.gitlab.com/teamstitch/stitch-connect-elixir:latest
+
+
