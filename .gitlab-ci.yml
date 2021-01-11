@@ -22,6 +22,43 @@ services:
 
 before_script:
   - docker info
+  - export STITCH_CONNECT_APP_HOST=docker.invocom.io
+  - export STITCH_CONNECT_APP_PORT=4001
+  - export STITCH_CONNECT_SSL_KEY_PATH="/etc/letsencrypt/live/docker.invocom.io/privkey.pem"
+  - export STITCH_CONNECT_SSL_CERT_PATH="/etc/letsencrypt/live/docker.invocom.io/fullchain.pem"
+  - export SECRET_KEY_BASE="rp9jtclD/mgOBBlbo+mFKHVZ0UKNdC6DoofvmAy0Z/gSmgPy0/73DhzLrDalDf/G"
+  - export STITCH_CONNECT_POSTGRES_PORT=5432
+  - export STITCH_CONNECT_POSTGRES_HOSTNAME=invocomdb
+  - export STITCH_CONNECT_POSTGRES_USERNAME=asim
+  - export STITCH_CONNECT_POSTGRES_PASSWORD=arU6mYx8C3tZKzrdbHGn
+  - export STITCH_CONNECT_POSTGRES_DATABASE=invcomdb
+  - export MAILGUN_KEY=954ccaf9bd520a0f0f4a38812c5fdcb7-9dfbeecd-6dd9fc2c
+  - export MAILGUN_SECRET=pubkey-adf3141e154fc8062760bd77792d44a7
+  - export MAILGUN_DOMAIN=m.invozone.dev
+  - export DISABLE_BACKGROUND_WORKERS=false
+  - export AWS_ACCESS_KEY_ID=AKIAZJ4GRIEGEEZ6DJXO
+  - export AWS_SECRET_ACCESS_KEY=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
+  - export S3_REGION=us-east-1
+  - export S3_AVATAR_BUCKET_NAME=demo-stitch-avatars
+  - export S3_CONTENT_BUCKET_NAME=demo-stitch-content
+  - export S3_PUBLIC_BUCKET_NAME=demo-stitch-public
+  - export AVATAR_CDN_ORIGIN=https://s3.amazonaws.com/demo-stitch-avatars
+  - export PUBLIC_CDN_ORIGIN=https://demo-stitch-public.s3-website-us-east-1.amazonaws.com
+  - export APNS_MODE=dev
+  - export APNS_TOPIC=com.teamstitch.stitch-connect
+  - export APNS_CERT_B64=QmFnIEF0dHJpYnV0ZXMKICAgIGZyaWVuZGx5TmFtZTogQXBwbGUgRGV2ZWxvcG1lbnQgSU9TIFB1c2ggU2VydmljZXM6IGNvbS50ZWFtc3RpdGNoLnN0aXRjaC1jb25uZWN0CiAgICBsb2NhbEtleUlEOiBEMCBDMiA4RSBGRiA1MCAxMyBC$
+  - export APNS_KEY_B64=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBc1JqYWFkbXJMNzVHTVEvTGlwaXZJYzdKYW1ieUNXZ3l3dDRCQzA5SU1PWFRaeGNyCkhseElVbVM4dzRKRjFDMUtRRGwrT3JXNUJNSU04eG1aNFlLeS93e$
+  - export FCM_KEY=AAAAsn8fGFc:APA91bG1ZIoOsU3itSlee2zIVdyCgmoyiNW6DfNuYhV4cbK7utxZTxurjbErO6hso9ln4qPXxFgPu13CXSIWtOfyQVOF4Vjv_-5yH09xJmNPYosed6_nR2aRuU_GRNJikZbpCG0j9jRX
+  - export STRIPE_SECRET_KEY=sk_test_crMpixyoLxkjslaO6pZBfn9J
+  - export STRIPE_PUBLISHABLE_KEY=pk_test_odV8K4fxC0Cad3JaQ2e1xBD2
+  - export SEGMENT_WRITE_KEY=NfagXNieBfnJlr1UAEuCT6K6aW5wmNpP
+  - export SEGMENT_JAVASCRIPT_WRITE_KEY=gTggMn1Qrsd7lsVradokYglCtI8c9A85
+  - export TWILIO_ACCOUNT_SID=AC350b94865a001c6495c89395b1e04599
+  - export TWILIO_AUTH_TOKEN=da72e43b7fbd7fad2363c1afda803fbc
+  - export INTERCOM_APP_ID=mc9svh36
+  - export INTERCOM_IDENTITY_VERIFICATION_SECRET=I0eqMdoXTRN9GIlk6sMHhRHyZVZZl58sbwUIePBn
+  - export TOKBOX_API_KEY=46836834
+  - export TOKBOX_SECRET=28a9e7ef67c286921b3b63088fb53a883602512d
 
 build:
   stage: build
