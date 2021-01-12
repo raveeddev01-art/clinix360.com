@@ -1,8 +1,9 @@
-FROM elixir:1.6.4
+FROM elixir:1.10.4
 
-RUN mix archive.install \
---force \
-https://github.com/phoenixframework/archives/raw/master/phx_new.ez
+RUN mix local.hex --force
+RUN mix local.rebar --force
+
+RUN mix archive.install hex phx_new
 
 WORKDIR /app
 
@@ -59,15 +60,12 @@ ENV TOKBOX_SECRET=$TOKBOX_SECRET
 
 RUN apt-get update && apt-get install -y --no-install-recommends locales
 RUN echo en_US.UTF-8 UTF-8 > /etc/locale.gen && locale-gen && \
-update-locale LANG=en_US.UTF-8
+    update-locale LANG=en_US.UTF-8
 
 # Install Node, NPM, YARN
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g yarn
-
-RUN mix local.hex --force
-RUN mix local.rebar --force
 
 # Install project app dependencies.
 RUN apt-get update && apt-get install -y ghostscript
@@ -83,19 +81,17 @@ RUN mix deps.get
 RUN rm -rf _build/prod
 RUN mix compile
 
-ADD apps/stitch_web/package.json apps/stitch_web/package.json
-ADD apps/stitch_web/yarn.lock apps/stitch_web/yarn.lock
-RUN cd apps/stitch_web && yarn
-
-# This actually adds the app
 ADD . .
 WORKDIR /app/apps/stitch_web
-
-RUN npm run deploy
+RUN yarn
+RUN yarn deploy
 
 # Obviates the need for a Procfile
+
+WORKDIR /app
+
+ENV PORT 4001
+EXPOSE 4001
 CMD ["mix", "phx.server"]
 
 # The default Elixir config looks up the port in the $PORT environment variable, so that works for us.
-ENV PORT 443
-EXPOSE 443
