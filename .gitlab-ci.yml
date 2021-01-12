@@ -63,10 +63,6 @@ before_script:
 build:
   stage: build
   script:
-    - echo "We are using AWS Region "$S3_REGION""
-    - docker build -t invocom .
-    - docker login registry.gitlab.com -u invocom -p $password
-    - docker build -t registry.gitlab.com/teamstitch/stitch-connect-elixir:latest .
-    - docker push registry.gitlab.com/teamstitch/stitch-connect-elixir:latest
+    - echo "We are using AWS Region $S3_REGION"
 
 
