@@ -54,7 +54,7 @@ class CarespaceNameCard extends Component {
             required
             autoFocus={!mobile}
             type="text"
-            placeholder="Ex. Care Clinic."
+            placeholder="Ex. Company XYZ."
             value={value}
             onChange={this._onChange}
             maxLength={80}
