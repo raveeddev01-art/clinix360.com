@@ -7,7 +7,7 @@ defmodule Stitch.Exports.TeamHistoryTest do
       name = "Group 1"
       team = %Stitch.Team{name: name}
       filename = TeamHistory.generate_filename(team)
-      assert Regex.match?(~r/^#{name} Stitch Export \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.?\d*Z$/, filename)
+      assert Regex.match?(~r/^#{name} Invocom Export \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.?\d*Z$/, filename)
     end
   end
 

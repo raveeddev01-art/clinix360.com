@@ -48,7 +48,7 @@ defmodule Stitch.Exports.TeamHistory do
   @spec generate_filename(Team.t()) :: String.t()
   def generate_filename(%Team{name: name}) do
     timestamp = DateTime.utc_now() |> DateTime.to_iso8601()
-    "#{name} Stitch Export #{timestamp}"
+    "#{name} Invocom Export #{timestamp}"
   end
 
   @spec write_to_zippable_directory(String.t(), String.t(), Team.t(), timeout, map) ::
