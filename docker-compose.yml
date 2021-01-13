@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  redis:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
+
+  phoenix:
+    build:
+      context: .
+    links:
+      - redis
+    environment:
+      - REDIS_URL=redis://cache
+    env_file:
+      - docker.env
+    ports:
+      - "4001:4001"
+    restart: always
+    depends_on:
+      - db
+    entrypoint: ["./entrypoint.sh"]
+
+  db:
+    image: postgres:10.12-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:

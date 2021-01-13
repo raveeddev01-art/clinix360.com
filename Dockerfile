@@ -1,97 +1,61 @@
-FROM elixir:1.10.4
+# ./Dockerfile
 
-RUN mix local.hex --force
-RUN mix local.rebar --force
+# Extend from the official Elixir image
+FROM elixir:1.10.4-alpine
+# FROM elixir:1.10.4
 
-RUN mix archive.install hex phx_new
+# Install required libraries on Alpine
+# note: build-base required to run mix “make” for
+# one of my dependecies (appsignal)
+RUN apk update && apk upgrade && \
+  apk add git && \
+  apk add postgresql-client && \
+  apk add nodejs npm && \
+  apk add ghostscript && \
+  apk add fontconfig && \
+  apk add imagemagick && \
+  apk add xvfb && \
+  apk add wkhtmltopdf && \
+  apk add build-base && \
+  rm -rf /var/cache/apk/*
 
-WORKDIR /app
+RUN npm install -g yarn
 
-# Even our staging app runs with MIX_ENV = prod on Enclave. I recommend
-# this because otherwise you'll be showing error stacktraces, etc.
-ENV MIX_ENV prod
+# Set environment to production
+ENV MIX_ENV dev
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-ENV STITCH_CONNECT_APP_HOST=$STITCH_CONNECT_APP_HOST
-ENV STITCH_CONNECT_APP_PORT=$STITCH_CONNECT_APP_PORT
-ENV STITCH_CONNECT_SSL_KEY_PATH=$STITCH_CONNECT_SSL_KEY_PATH
-ENV STITCH_CONNECT_SSL_CERT_PATH=$STITCH_CONNECT_SSL_CERT_PATH
-ENV SECRET_KEY_BASE=$SECRET_KEY_BASE
-ENV STITCH_CONNECT_POSTGRES_PORT=$STITCH_CONNECT_POSTGRES_PORT
-ENV STITCH_CONNECT_POSTGRES_HOSTNAME=$STITCH_CONNECT_POSTGRES_HOSTNAME
-ENV STITCH_CONNECT_POSTGRES_USERNAME=STITCH_CONNECT_POSTGRES_USERNAME
-ENV STITCH_CONNECT_POSTGRES_PASSWORD=$STITCH_CONNECT_POSTGRES_PASSWORD
-ENV STITCH_CONNECT_POSTGRES_DATABASE=$STITCH_CONNECT_POSTGRES_DATABASE
-ENV MAILGUN_KEY=$MAILGUN_KEY
-ENV MAILGUN_SECRET=$MAILGUN_SECRET
-ENV MAILGUN_DOMAIN=$MAILGUN_DOMAIN
-ENV DISABLE_BACKGROUND_WORKERS=$DISABLE_BACKGROUND_WORKERS
-ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-ENV S3_REGION=$S3_REGION
-ENV S3_AVATAR_BUCKET_NAME=$S3_AVATAR_BUCKET_NAME
-ENV S3_CONTENT_BUCKET_NAME=$S3_CONTENT_BUCKET_NAME
-ENV S3_PUBLIC_BUCKET_NAME=$S3_PUBLIC_BUCKET_NAME
-ENV AVATAR_CDN_ORIGIN=$AVATAR_CDN_ORIGIN
-ENV PUBLIC_CDN_ORIGIN=$PUBLIC_CDN_ORIGIN
-ENV APNS_MODE=$APNS_MODE
-ENV APNS_TOPIC=$APNS_TOPIC
-ENV APNS_CERT_B64=$APNS_CERT_B64
-ENV APNS_KEY_B64=$APNS_KEY_B64
-ENV FCM_KEY=$FCM_KEY
-ENV STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY
-ENV STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY
-ENV SEGMENT_WRITE_KEY=$SEGMENT_WRITE_KEY
-ENV SEGMENT_JAVASCRIPT_WRITE_KEY=$SEGMENT_JAVASCRIPT_WRITE_KEY
-ENV TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID
-ENV TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN
-ENV INTERCOM_APP_ID=$INTERCOM_APP_ID
-ENV INTERCOM_IDENTITY_VERIFICATION_SECRET=$INTERCOM_IDENTITY_VERIFICATION_SECRET
-ENV TOKBOX_API_KEY=$TOKBOX_API_KEY
-ENV TOKBOX_SECRET=$TOKBOX_SECRET
+# Install hex package manager and rebar
+# By using --force, we don’t need to type “Y” to confirm the installation
+RUN mix do local.hex --force, local.rebar --force
 
-
-
-
-
-
-RUN apt-get update && apt-get install -y --no-install-recommends locales
-RUN echo en_US.UTF-8 UTF-8 > /etc/locale.gen && locale-gen && \
-    update-locale LANG=en_US.UTF-8
-
-# Install Node, NPM, YARN
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get install -y nodejs
-RUN npm install -g yarn
-
-# Install project app dependencies.
-RUN apt-get update && apt-get install -y ghostscript
-RUN apt-get install -y imagemagick xvfb libfontconfig wkhtmltopdf
-
-# This precompiles your deps before adding your code, which lets you take advantage of Docker
-# caching while you iterate on your app.
+# Cache elixir dependecies and lock file
 ADD mix.exs mix.exs
 ADD mix.lock mix.lock
 ADD apps/stitch_web/mix.exs apps/stitch_web/mix.exs
 ADD apps/stitch/mix.exs apps/stitch/mix.exs
-RUN mix deps.get
-RUN rm -rf _build/prod
-RUN mix compile
 
+# Install and compile production dependecies
+RUN HEX_HTTP_CONCURRENCY=1 HEX_HTTP_TIMEOUT=120 mix do deps.get --only prod
+RUN mix deps.compile
+
+# Cache and install node packages and dependencies
+ADD apps/stitch_web/package.json apps/stitch_web/
+RUN cd apps/stitch_web && \
+    yarn install
+
+# Copy all application files
 ADD . .
-WORKDIR /app/apps/stitch_web
-RUN yarn
-RUN yarn deploy
 
-# Obviates the need for a Procfile
+# Run frontend build, compile, and digest assets
+RUN cd apps/stitch_web/ && \
+    yarn deploy && \
+    cd - && \
+    mix do compile, phx.digest
 
-WORKDIR /app
-
-ENV PORT 4001
-EXPOSE 4001
-CMD ["mix", "phx.server"]
-
-# The default Elixir config looks up the port in the $PORT environment variable, so that works for us.
+# Run entrypoint.sh script
+RUN chmod +x entrypoint.sh
+# CMD ["/entrypoint.sh"]
