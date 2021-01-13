@@ -1,17 +1,17 @@
 version: "3.7"
 
 services:
-  elastic_search: 
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
-    container_name: elastic_search
-    ports: 
-      - "9200:9200"
-
   redis:
     image: redis
     container_name: cache
     ports: 
       - "6379:6379"
+
+  elastic_search: 
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: elastic_search
+    ports: 
+      - "9200:9200"
 
   phoenix:
     build:
