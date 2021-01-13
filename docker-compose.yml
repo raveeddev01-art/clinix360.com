@@ -1,6 +1,12 @@
 version: "3.7"
 
 services:
+  elastic_search: 
+    image: elasticsearch
+    containter_name: elastic_search
+    expose: 
+      - 9200
+
   redis:
     image: redis
     container_name: cache
@@ -14,6 +20,7 @@ services:
       - redis
     environment:
       - REDIS_URL=redis://cache
+      - ELASTICSEARCH_URL=http://elastic_search:9200
     env_file:
       - docker.env
     ports:
