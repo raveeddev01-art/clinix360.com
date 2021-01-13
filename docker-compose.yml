@@ -4,14 +4,14 @@ services:
   elastic_search: 
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: elastic_search
-    expose: 
-      - 9200
+    ports: 
+      - "9200:9200"
 
   redis:
     image: redis
     container_name: cache
-    expose:
-      - 6379
+    ports: 
+      - "6379:6379"
 
   phoenix:
     build:
