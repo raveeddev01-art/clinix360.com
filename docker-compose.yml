@@ -16,9 +16,6 @@ services:
   phoenix:
     build:
       context: .
-    links:
-      - redis
-      - elastic_search
     env_file:
       - docker.env
     ports:
@@ -26,6 +23,8 @@ services:
     restart: always
     depends_on:
       - db
+      - redis
+      - elastic_search
     entrypoint: ["./entrypoint.sh"]
 
   db:
