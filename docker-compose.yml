@@ -19,9 +19,6 @@ services:
     links:
       - redis
       - elastic_search
-    environment:
-      - ELASTICSEARCH_URL=http://elastic_search:9200
-      - REDIS_URL=redis://cache
     env_file:
       - docker.env
     ports:
