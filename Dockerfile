@@ -22,7 +22,7 @@ RUN apk update && apk upgrade && \
 RUN npm install -g yarn
 
 # Set environment to production
-ENV MIX_ENV dev
+ENV MIX_ENV prod
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
