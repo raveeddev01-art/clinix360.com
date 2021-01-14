@@ -43,18 +43,18 @@ RUN HEX_HTTP_CONCURRENCY=1 HEX_HTTP_TIMEOUT=120 mix do deps.get --only prod
 RUN mix deps.compile
 
 # Cache and install node packages and dependencies
-# ADD apps/stitch_web/package.json apps/stitch_web/
-# RUN cd apps/stitch_web && \
-#     yarn install
+ADD apps/stitch_web/package.json apps/stitch_web/
+RUN cd apps/stitch_web && \
+    yarn install
 
 # Copy all application files
 ADD . .
 
 # Run frontend build, compile, and digest assets
-# RUN cd apps/stitch_web/ && \
-#     yarn deploy && \
-#     cd - && \
-#     mix do compile, phx.digest
+RUN cd apps/stitch_web/ && \
+    yarn deploy && \
+    cd - && \
+    mix do compile, phx.digest
 
 # Run entrypoint.sh script
 RUN chmod +x entrypoint.sh
