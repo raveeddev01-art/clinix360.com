@@ -2549,3 +2549,39 @@
     }
   }
 }
+
+.contactus-page {
+  min-height: 100vh;
+  background-color: #f9f9f9;
+
+  .contactus-card {
+    width: 100%;
+    max-width: 1230px;
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    h1,
+    h2 {
+      color: #036;
+      font-weight: bold;
+    }
+  }
+
+  .contactus-spacer {
+    height: 110px;
+  }
+
+  .contactus-body {
+    width: 100%;
+    max-width: 550px;
+    min-width: 200px;
+    padding: 70px;
+    background-color: white;
+    border: solid 1px #d8d8d8;
+    border-radius: 5px;
+  }
+}

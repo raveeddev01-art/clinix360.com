@@ -64,6 +64,8 @@ defmodule Stitch.Web.Router do
     post("/teams/slug-exists", TeamController, :slug_exists)
     post("/teams/name", TeamController, :name_from_slug)
 
+    post("/contact-us", ContactController, :contact)
+
     post("/find-your-team", FindYourTeamController, :create)
     delete("/find-your-team/:token", FindYourTeamController, :delete)
   end
@@ -88,6 +90,7 @@ defmodule Stitch.Web.Router do
     get("/jobs", HomeController, :index)
     get("/customers", HomeController, :index)
     get("/blog", HomeController, :index)
+    get("/contact-us", HomeController, :index)
     get("/customers/luminance-recovery", HomeController, :index)
     get("/customers/princeton-brain-spine", HomeController, :index)
     get("/customers/dermatology-skin-surgery-institute", HomeController, :index)

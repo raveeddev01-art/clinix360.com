@@ -5,6 +5,7 @@ import withTitle from "../util/with_document_title";
 import ScrollToTop from "./components/scrollToTop";
 
 import Homepage from "./homepage";
+import ContactUs from "./contact_us";
 import Connect from "./products/connect";
 import Engage from "./products/engage";
 import Manage from "./products/manage";
@@ -32,6 +33,7 @@ import Industry from "./industries/industry";
 const defaultTitle = "Care Coordination | InvoCom";
 const demoTitle = "Request a Demo | InvoCom";
 const connectTitle = "Care Coordination | InvoCom";
+const contactTitle = "Help | InvoCom";
 const engageTitle = "Engage | InvoCom";
 const manageTitle = "Manage | InvoCom";
 const pricingTitle = "Pricing | InvoCom";
@@ -57,6 +59,11 @@ class WebsiteRouter extends Component {
               exact
               path="/connect"
               component={withTitle(connectTitle, Connect)}
+            />
+            <Route
+              exact
+              path="/contact-us"
+              component={withTitle(contactTitle, ContactUs)}
             />
             <Route
               exact
