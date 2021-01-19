@@ -30,6 +30,7 @@ $fa-font-path: "~font-awesome/fonts";
     z-index: 100;
     width: 100%;
     top: 5px;
+    margin-top: 1.5rem;
   }
 
   .hidden {
@@ -792,8 +793,4 @@ $fa-font-path: "~font-awesome/fonts";
   .ots-archiving-modal .btn.ok {
     background-color: #4a90e2;
   }
-}
-
-.OT_name .OT_edge-bar-item .OT_mode-on { 
-  margin-top: 1 rem !important;
 }
