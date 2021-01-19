@@ -14,7 +14,7 @@ export const NOTIFICATION_PREFERENCES = [
     value: "nothing",
     title: "Nothing",
     description:
-      "You will not receive notifications from Stitch. You will continue to see badges within Stitch."
+      "You will not receive notifications from Invocom. You will continue to see badges within Invocom."
   }
 ];
 
