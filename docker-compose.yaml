@@ -1,0 +1,64 @@
+version: "3.7"
+
+services:
+  
+  redis:
+    image: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - invocom
+    restart: unless-stopped
+    container_name: redis
+    volumes:
+      - redis:/data
+
+  elastic_search:
+    image: bitnami/elasticsearch:latest
+    networks:
+      - invocom
+    restart: unless-stopped
+    container_name: elastic_search
+    volumes:
+      - elasticsearch:/bitnami/elasticsearch/data
+    
+  invocomapp:
+    image: registry.gitlab.com/teamstitch/stitch-connect-elixir:latest
+    env_file:
+      - docker.env
+    environment:
+      - ELASTICSEARCH_URL=http://elastic_search:9200
+      - REDIS_URL=redis://redis:6379
+    expose:
+    - "4001"
+    networks:
+      - invocom
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+      - elastic_search
+    entrypoint: ["./entrypoint.sh"]
+
+  postgres:
+    image: postgres:10.12-alpine
+    networks:
+      - invocom
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: invocomdb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+    container_name: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:
+  elasticsearch:
+  redis:
+networks:
+  invocom:
+   external: true
+
