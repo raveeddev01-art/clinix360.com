@@ -51,16 +51,21 @@ config :stitch, :public_cdn, %{
 
 config :porcelain, :goon_warn_if_missing, false
 
+redis_url =  System.get_env("REDIS_URL") ||
+raise """
+environment variable REDIS_URL is missing.
+"""
+
 config :stitch, :redix, %{
   pool_size: 5,
-  url: System.get_env("REDIS_URL")
+  url: redis_url
 }
 
 config :ua_inspector,
   database_path: System.get_env("UA_INSPECTOR_DB_PATH") || "./apps/stitch/priv/ua_inspector"
 
 config :exq,
-  url: System.get_env("REDIS_URL"),
+  url: redis_url,
   namespace: "exq",
   queues: [{"timed_messages", 10}],
   poll_timeout: 50,

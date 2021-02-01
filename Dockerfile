@@ -54,7 +54,10 @@ ADD . .
 RUN cd apps/stitch_web/ && \
     yarn deploy && \
     cd - && \
-    mix do compile, phx.digest
+    source docker.env && \
+    mix do phx.digest
+
+WORKDIR /
 
 # Run entrypoint.sh script
 RUN chmod +x entrypoint.sh

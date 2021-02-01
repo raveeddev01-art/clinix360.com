@@ -6,6 +6,7 @@
 # Don't forget to give this file execution rights via `chmod +x entrypoint.sh`
 # which I've added to the Dockerfile but you could do this manually instead.
 
+source docker.env
 
 # Wait until Postgres is ready before running the next step.
 while ! pg_isready -q -h $STITCH_CONNECT_POSTGRES_HOSTNAME -p $STITCH_CONNECT_POSTGRES_PORT -U $STITCH_CONNECT_POSTGRES_USERNAME
