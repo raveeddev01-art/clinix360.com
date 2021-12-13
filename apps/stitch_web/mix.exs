@@ -45,7 +45,6 @@ defmodule Stitch.Web.Mixfile do
       {:phoenix_ecto, "~> 3.0"},
       {:phoenix_etag, "~> 0.1"},
       {:gettext, "~> 0.13"},
-      {:cowboy, "~> 1.1"},
       {:guardian, "~> 0.14"},
       {:poison, "~> 3.1"},
       {:corsica, "~> 1.0"},
@@ -64,8 +63,8 @@ defmodule Stitch.Web.Mixfile do
       {:ip2country, "~> 1.1"},
       {:remote_ip, "~> 0.1.4"},
       {:phoenix_swagger, "~> 0.8"},
-      {:quantum, "~> 3.4"}
-    ]
+      {:quantum, "~> 3.4"},
+      {:plug_cowboy, "~> 1.0", override: true}    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

@@ -1,15 +1,9 @@
 defmodule Stitch.Web.Admin.InternalAnalyticsController do
   use Stitch.Web, :controller
-  alias Stitch.Web.Endpoint
-  alias Stitch.Web.SubdomainRouter.Helpers, as: Routes
 
   alias Stitch.{
-    TeamQueries,
-    UserQueries,
     Analytics.CohortAnalysis,
-    Analytics.CohortAnalysisWithFilter,
-    Analytics.CohortAnalysisForUsers
-  }
+    Analytics.CohortAnalysisWithFilter  }
 
   plug(
     :parse_query_params
