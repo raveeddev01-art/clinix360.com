@@ -5,10 +5,8 @@ defmodule Stitch.Web.EventsChannel do
   """
 
   use Stitch.Web, :channel
-  import Ecto.Query
 
   alias Stitch.{
-    Repo,
     Group,
     GroupUser,
     TeamQueries,

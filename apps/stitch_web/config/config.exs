@@ -3,7 +3,7 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-use Mix.Config
+import Config
 
 # General application configuration
 config :stitch_web,
@@ -84,3 +84,5 @@ config :stitch_web, :phoenix_swagger,
     "swagger.json" => [router: Stitch.Web.Router],
     "carespace-swagger.json" => [router: Stitch.Web.SubdomainRouter]
   }
+
+  config :phoenix, :json_library, Poison

@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :stitch, Stitch.Repo,
   adapter: Ecto.Adapters.Postgres,

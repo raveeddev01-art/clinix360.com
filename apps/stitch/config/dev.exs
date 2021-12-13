@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 repo_opts = [
   adapter: Ecto.Adapters.Postgres,
