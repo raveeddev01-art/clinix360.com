@@ -3,6 +3,8 @@ use Mix.Config
 config :stitch, Stitch.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
+  password: System.get_env("STITCH_POSTGRES_PASSWORD") || "postgres",
+  database: System.get_env("STITCH_CONNECT_POSTGRES_DATABASE") || "stitch_connect_dev",
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
   ssl: true,
   loggers: [Appsignal.Ecto, Ecto.LogEntry]
@@ -10,6 +12,8 @@ config :stitch, Stitch.Repo,
 config :stitch, Stitch.ReadReplicaRepo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("REPLICA_1_DATABASE_URL"),
+  password: System.get_env("STITCH_POSTGRES_PASSWORD") || "postgres",
+  database: System.get_env("STITCH_CONNECT_POSTGRES_DATABASE") || "stitch_connect_dev",
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
   ssl: true,
   loggers: [Appsignal.Ecto, Ecto.LogEntry]
