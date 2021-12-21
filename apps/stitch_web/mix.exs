@@ -40,7 +40,7 @@ defmodule Stitch.Web.Mixfile do
     [
       {:phoenix, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_html, "~> 2.10"},
+      {:phoenix_html, "~> 2.10",override: true},
       {:phoenix_live_reload, "~> 1.1", only: :dev},
       {:phoenix_ecto, "~> 3.0"},
       {:phoenix_etag, "~> 0.1"},
@@ -51,11 +51,16 @@ defmodule Stitch.Web.Mixfile do
       {:corsica, "~> 1.0"},
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.3"},
-      {:quantum, ">= 2.2.7"},
+      {:quantum, ">= 2.2.7", override: true},
+      {:bamboo_phoenix, "~> 1.0", override: true},
+      {:bamboo, "~> 0.8", override: true},
+      # {:quantum, "~> 3.4"},
       {:sweet_xml, "~> 0.6.5"},
       {:stitch, in_umbrella: true},
       {:appsignal, "~> 1.5"},
+      {:plug_cowboy, "~> 1.0"},
       {:wallaby, "~> 0.19.2", only: :test},
+      # {:guardian, "~> 1.1.0",override: true},
       # For mobile push notifications.
       {:pigeon, "~> 1.1.6"},
       # Used by Pigeon for push notifications.
@@ -63,7 +68,8 @@ defmodule Stitch.Web.Mixfile do
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
       {:remote_ip, "~> 0.1.4"},
-      {:phoenix_swagger, "~> 0.8"}
+      {:phoenix_swagger, "~> 0.8"},
+      {:ex_json_schema, "~> 0.5"}
     ]
   end
 
