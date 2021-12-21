@@ -26,6 +26,6 @@ defmodule Stitch.FindYourTeam.Email do
         "content": "#{endpoint_base_url}/find-your-team/#{token.token}"
       },
     ])
-    |> Stitch.Mailer.deliver_later
+    |> Stitch.NewMailer.deliver_now()
   end
 end

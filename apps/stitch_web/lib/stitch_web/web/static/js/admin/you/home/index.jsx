@@ -80,7 +80,7 @@ export default class YouHome extends Component {
           <div className="admin-products-wrapper">
             <HomeItem
               icon="fa-comments"
-              title="Stitch Connect"
+              title="Stitch"
               description="Team Communication: Send messages, write notes, upload files, and track tasks on any device."
               openButtonText="Launch"
               link="/"

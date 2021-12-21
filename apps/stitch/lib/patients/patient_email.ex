@@ -20,14 +20,14 @@ defmodule Stitch.PatientEmail do
     setup_auth_email(patient.email, "Stitch Health Password Reset")
     |> assign(:reset_link, reset_link)
     |> render("email/patient_reset_password.html")
-    |> Stitch.NewMailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   def send_find_team(email, token) do
     setup_auth_email(email, "Find Your Stitch Carespace")
     |> assign(:url, "#{Stitch.Web.Endpoint.url()}/patient/find-your-team/#{token.token}")
     |> render("email/patient_find_team.html")
-    |> Stitch.NewMailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   def send_invitation(patient, invitation) do
@@ -35,7 +35,7 @@ defmodule Stitch.PatientEmail do
 
     setup_invite_email(invitation, patient)
     |> render("email/patient_invite.html")
-    |> Stitch.NewMailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   def send_reminder(patient, invitation) do
@@ -43,7 +43,7 @@ defmodule Stitch.PatientEmail do
 
     setup_invite_email(invitation, patient)
     |> render("email/patient_invite_reminder.html")
-    |> Stitch.NewMailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   defp setup_auth_email(email, subject_line) do

@@ -21,17 +21,11 @@ defmodule Stitch.Accounts.Email do
       |> List.to_string()
 
     new_email()
-    |> template("Sign-Up 1: Authenticate Provider Code (Connect)")
-    |> to(user.email)
+    |> text_body("Sign-Up 1: Authenticate Provider Code (Connect)")
+    |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || user.email)
     |> from(@from_address)
     |> subject("Stitch confirmation code: #{code_string}")
-    |> put_param("global_merge_vars", [
-      %{
-        name: "confirmationCode",
-        content: code_string
-      }
-    ])
-    |> Stitch.Mailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   @doc """
@@ -54,7 +48,7 @@ defmodule Stitch.Accounts.Email do
         content: user.first_name
       }
     ])
-    |> Stitch.Mailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   def role_changed_email(%User{email: to_address, first_name: first_name}, [old_role], [new_role]) do
@@ -77,7 +71,7 @@ defmodule Stitch.Accounts.Email do
         content: Role.display_name(new_role)
       }
     ])
-    |> Stitch.Mailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   defp role_change_subject(old_role, new_role)
@@ -110,7 +104,7 @@ defmodule Stitch.Accounts.Email do
         content: user.first_name
       }
     ])
-    |> Stitch.Mailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   def unread_messages_email([], _team), do: nil
@@ -122,7 +116,7 @@ defmodule Stitch.Accounts.Email do
     |> from(@from_address)
     |> subject("[Stitch Connect] Notifications from #{team_name} *|userTime|*")
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
-    |> Stitch.Mailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   defp unread_messages_for_recipient(%{

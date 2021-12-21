@@ -50,10 +50,14 @@ defmodule Stitch.Mixfile do
       {:ex_machina, "~> 2.1", only: :test},
       {:faker, "~> 0.10", only: :test},
       {:slugger, "~> 0.3"},
+<<<<<<< HEAD
       {:bamboo, "~> 0.8", override: true},
+=======
+      {:bamboo, "~> 1.3.0"},
+>>>>>>> 57a99af0c691aa7d452565770b5a1a3ef689fc6e
       {:timex, "~> 3.3"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-      {:stripity_stripe, "~> 2.0"},
+      {:stripity_stripe, "~> 2.7"},
       {:appsignal, "~> 1.5"},
       {:mogrify, "~> 0.5.6"},
       {:floki, "~> 0.20.3"},
@@ -63,6 +67,7 @@ defmodule Stitch.Mixfile do
       {:murmur, "~> 1.0"},
       {:exq, "~> 0.11.0"},
       {:exq_ui, "~> 0.9.0"},
+      {:plug_cowboy, "~> 1.0"},
       {:elasticsearch, "~> 0.4.1"}
     ]
   end

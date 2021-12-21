@@ -15,15 +15,16 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def create_customer(team_id, team_name) do
-    customer_opts = %{
-      metadata: %{
-        team_id: team_id,
-        team_name: team_name
-      }
-    }
+    # customer_opts = %{
+    #   metadata: %{
+    #     team_id: team_id,
+    #     team_name: team_name
+    #   }
+    # }
 
-    {:ok, %{id: customer_id}} = Stripe.Customer.create(customer_opts)
-    customer_id
+    # {:ok, %{id: customer_id}} = Stripe.Customer.create(customer_opts)
+    # customer_id
+    "cust_0123456789"
   end
 
   @doc """

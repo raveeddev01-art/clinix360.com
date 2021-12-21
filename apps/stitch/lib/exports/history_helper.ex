@@ -11,6 +11,13 @@ defmodule Stitch.Exports.HistoryHelper do
         |> Enum.map_join(" ", &"#{&1.first_name} #{&1.last_name}")
         |> String.replace(~r/(\,|\s)/, "-")
 
+      name =
+        if String.length(name) > 150 do
+          "#{name |> String.slice(0..150)}#{Stitch.Rand.token(20)}"
+        else
+          name
+        end
+
       "DM-#{group.group_id}-" <> name
     else
       group.group_name

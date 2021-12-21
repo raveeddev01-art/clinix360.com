@@ -1,3 +1,3 @@
 defmodule Stitch.Repo do
-  use Ecto.Repo, otp_app: :stitch
+  use Ecto.Repo, otp_app: :stitch, log: false
 end

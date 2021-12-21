@@ -150,15 +150,11 @@ class Header extends Component {
               </LinkContainer>
 
               <MenuItem
-                href="https://help.teamstitch.com"
+                href="https://help.stitch.health"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <i className="far fa-life-ring" /> Help Center
-              </MenuItem>
-
-              <MenuItem href={`https://${applicationHost}/jobs`}>
-                <i className="far fa-wrench" /> Jobs
               </MenuItem>
 
               <MenuItem
@@ -168,19 +164,13 @@ class Header extends Component {
               >
                 <i className="far fa-book" /> Blog
               </MenuItem>
-
-              <MenuItem
-                href="https://stitch.readme.io/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="far fa-code" /> API Docs
-              </MenuItem>
             </NavDropdown>
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
             {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
+
+            {!hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@stitch.health?subject=Stitch: Request Information">Request Information</NavItem>}
           </Nav>
         </Navbar>
 
@@ -211,7 +201,7 @@ class Header extends Component {
                 </LinkContainer>
 
                 <MenuItem
-                  href="https://help.teamstitch.com"
+                  href="https://help.stitch.health"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -246,6 +236,8 @@ class Header extends Component {
               {mobile &&
                 hasLogins &&
                 this.renderYourCarespaces(appSettings.teams, true)}
+
+              {mobile && !hasLogins && <NavItem className="btn-request-info" href="mailto:feedback@stitch.health?subject=Stitch: Request Information">Request Information</NavItem>}
 
               {mobile &&
                 os === "iOS" && (

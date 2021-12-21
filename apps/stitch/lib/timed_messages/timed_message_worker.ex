@@ -31,7 +31,7 @@ defmodule Stitch.TimedMessage.Worker do
       |> assign_vars(rules, data)
       |> put_html_layout({Stitch.EmailView, "layout/email.html"})
       |> render("email/#{type}.html")
-      |> Stitch.NewMailer.deliver_later()
+      |> Stitch.NewMailer.deliver_now()
     end
   end
 

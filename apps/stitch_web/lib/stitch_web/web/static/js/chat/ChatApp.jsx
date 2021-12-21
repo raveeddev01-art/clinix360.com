@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
-import ConnectTour from "common/components/joy-ride/connect-tour";
+// import ConnectTour from "common/components/joy-ride/connect-tour";
 import { AppAlert, Loading } from "common/components";
 import RoleChangedModal from "common/modals/role-changed-modal";
 import UploadZone from "file-upload/upload-zone";
@@ -50,7 +50,7 @@ class ChatApp extends Component {
         {messageStore.loadedInitialMessages || <Loading />}
 
         <UploadZone>
-          <ConnectTour />
+          {/* <ConnectTour /> */}
           <AppAlert />
           <div className="appContainer">
             <Sidemenu />
