@@ -9,7 +9,7 @@ use Mix.Config
 config :stitch_web, Stitch.Web.Endpoint,
   http: [port: 4000],
   https: [
-    port: 4443,
+    port: 4001,
     otp_app: :stitch_web,
     keyfile: "priv/keys/localhost.key",
     certfile: "priv/keys/localhost.crt"
