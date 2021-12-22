@@ -64,7 +64,7 @@ defmodule Stitch.Message do
     :request_id,
     :mentioned_user_ids,
     :read_status,
-    :client_device_type,
+    # :client_device_type,
     :client_os,
     :client_name,
     :requires_fallback_comment
@@ -83,7 +83,7 @@ defmodule Stitch.Message do
       :pinned_by_id,
       :pinned_at,
       :mentioned_user_ids,
-      :client_device_type,
+      # :client_device_type,
       :client_os,
       :client_name
     ])
@@ -114,7 +114,7 @@ defmodule Stitch.Message do
       :text_content,
       :mentioned_user_ids,
       :read_status,
-      :client_device_type,
+      # :client_device_type,
       :client_os,
       :client_name
     ])

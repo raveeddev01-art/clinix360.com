@@ -42,7 +42,7 @@ defmodule Stitch.Engage.ConversationMessage do
     :patient_read_status,
     :has_links,
     :link_previews_generated,
-    :client_device_type,
+    # :client_device_type,
     :client_os,
     :client_name
   ]
