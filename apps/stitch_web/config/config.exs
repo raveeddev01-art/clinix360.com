@@ -33,7 +33,7 @@ config :stitch_web, :generators, context_app: :stitch
 # Configure application environment
 config :stitch_web,
   env: Mix.env(),
-  application_host: "#{System.get_env("APP_HOST")}#{if Mix.env() == :dev, do: ":4443"}",
+  application_host: "#{System.get_env("APP_HOST")}#{if Mix.env() == :dev, do: ":4001"}",
   application_scheme: "https://",
   websocket_scheme: "wss://",
   apns_topic: System.get_env("APNS_TOPIC"),
