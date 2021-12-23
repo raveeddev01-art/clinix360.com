@@ -30,6 +30,7 @@ defmodule Stitch.Elasticsearch.MessageSearch do
       |> select([cm], {cm.id, cm})
       |> Repo.all()
       |> Map.new()
+      |> IO.inspect(label: "messages map")
 
     hits_map =
       hits
@@ -43,6 +44,7 @@ defmodule Stitch.Elasticsearch.MessageSearch do
       highlighted_text_content = Enum.join(highlighted_text_content, " ")
       Map.put(conversation_message, :highlighted_text_content, highlighted_text_content)
     end
+    |> IO.inspect(label: "here is last thing from message side ")
   end
 
   def load_from_store({:ok, %{"hits" => %{"hits" => hits}} = _result}) do
