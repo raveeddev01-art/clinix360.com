@@ -57,13 +57,19 @@ defmodule Stitch.Elasticsearch.MessageSearch do
     search_query =
       search_params
       |> Stitch.SearchInputParser.parse(current_user)
+      |> IO.inspect(label: "here is Parser")
       |> restrict_visibility(current_user)
+      |> IO.inspect(label: "here is current")
       |> SearchQuery.new()
+      |> IO.inspect(label: "here is SearchQuery")
       |> SearchQuery.compose()
+      |> IO.inspect(label: "here is compose")
 
     search_query
     |> do_search()
+    |> IO.inspect(label: "here is do_search")
     |> load_from_store()
+    |> IO.inspect(label: "here is load_from_store")
   end
 
   def restrict_visibility(search_params, %User{} = user) do
