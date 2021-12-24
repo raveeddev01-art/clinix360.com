@@ -85,7 +85,7 @@ class TeamPicker extends Component {
         headerCTA="create"
         description={
           <span>
-            Enter your Carespace's <b> Stitch URL </b>
+            Enter your Carespace's <b> Invochat URL </b>
           </span>
         }
       >
@@ -104,7 +104,7 @@ class TeamPicker extends Component {
               placeholder="your-carespace-url"
               maxLength={80}
             />
-            <span className="domain">.stitch.health</span>
+            <span className="domain">.invochat.io</span>
           </FormGroup>
           {showAlert && <InputErrorBlock>{this.errorText}</InputErrorBlock>}
 
