@@ -90,7 +90,7 @@
       <div class="container">
         <b><%= @today %></b>
         <p>
-          Thanks for using Stitch! We hope you enjoyed your experience with us this month. Below, please find a summary of charges
+          Thanks for using InvoChat! We hope you enjoyed your experience with us this month. Below, please find a summary of charges
           for
           <b><%= @team_name %></b>
         </p>
@@ -124,13 +124,13 @@
       <div class="footer">
         <p>Questions about your billing statement?
           <br/> Email us at
-          <a href="mailto:support@stitch.health">support@stitch.health</a>
+          <a href="mailto:support@stitch.health">support@invochat.io</a>
           or give us a call at
           <a href="#">+1 (650) 282-3388</a>.
         </p>
         <hr/>
         <p>
-          Stitch Technologies, Inc.
+          InvoChat Technologies, Inc.
           <br/> 156 2nd St., San Francisco CA 91405
         </p>
       </div>
