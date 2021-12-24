@@ -69,7 +69,7 @@
                             <h2><br>
 <font color="#003366" face="source sans pro, helvetica neue, helvetica, arial, sans-serif"><span style="font-size:30px"><strong>Create rooms for your team</strong></span></font></h2>
 <br>
-<font color="#000000" face="source sans pro, helvetica neue, helvetica, arial, sans-serif"><span style="font-size:18px">Rooms - public and private - let you organize your conversations in Stitch.&nbsp;Conversations take place in rooms so your team communication happens in the right place.</span></font><br>
+<font color="#000000" face="source sans pro, helvetica neue, helvetica, arial, sans-serif"><span style="font-size:18px">Rooms - public and private - let you organize your conversations in InvoChat.&nbsp;Conversations take place in rooms so your team communication happens in the right place.</span></font><br>
 &nbsp;
                         </td>
                     </tr>
@@ -191,7 +191,7 @@ Email:&nbsp;</span><font color="#000000"><a href="<%=@user_email%>" target="_bla
                             <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">If you need anything, we're here for you. Simply <a href="mailto:support@dvlcloud.com" target="_blank">c</a><span style="color:#000000"><a href="mailto:support@dvlcloud.com" target="_blank">ontact us</a> with feedback or a support request. We love to hear from you :)</span><br>
 <br>
 See you inside!<br>
-<span style="color:#000000">— Team Stitch&nbsp;</span></span></span><br>
+<span style="color:#000000">— Team InvoChat&nbsp;</span></span></span><br>
 &nbsp;
                         </td>
                     </tr>
@@ -236,7 +236,9 @@ See you inside!<br>
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: Verdana, Geneva, sans-serif; line-height: 200%;">
 
                             <div style="text-align: center;"><br>
-<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://dvlcloud.com" target="_blank">Stitch Technologies, Inc.</a><br>
+
+<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://InvoChat.io" target="_blank">InvoChat Technologies, Inc.</a><br>
+
 156 2nd St # 201 • San Francisco, CA • 94105-3724</span></span></div>
 
                         </td>

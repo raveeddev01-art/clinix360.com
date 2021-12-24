@@ -90,7 +90,7 @@
       <div class="container">
         <b><%= @today %></b>
         <p>
-          Thanks for using Stitch! We hope you enjoyed your experience with us this month. Below, please find a summary of charges
+          Thanks for using InvoChat! We hope you enjoyed your experience with us this month. Below, please find a summary of charges
           for
           <b><%= @team_name %></b>
         </p>
@@ -130,7 +130,7 @@
         </p>
         <hr/>
         <p>
-          Stitch Technologies, Inc.
+          InvoChat Technologies, Inc.
           <br/> 156 2nd St., San Francisco CA 91405
         </p>
       </div>

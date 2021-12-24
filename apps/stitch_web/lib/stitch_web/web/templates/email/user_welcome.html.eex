@@ -67,9 +67,9 @@
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: Verdana, Geneva, sans-serif;">
 
                             <h2><br>
-<span style="color:#036"><span style="font-size:30px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><strong>Welcome to Stitch!</strong></span></span></span></h2>
+<span style="color:#036"><span style="font-size:30px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><strong>Welcome to InvoChatch!</strong></span></span></span></h2>
 <br>
-<span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">You have joined <%=@team_name%> on Stitch. Here are your account details:</font></span></span>
+<span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">You have joined <%=@team_name%> on InvoChatch. Here are your account details:</font></span></span>
                         </td>
                     </tr>
                 </tbody></table>
@@ -155,7 +155,7 @@ Email:&nbsp;</span><font color="#000000"><a href="<%=@user_email%>" target="_bla
 
                             <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">Check out our <a href="https://help.dvlcloud.com/" target="_blank">help guides</a> to learn more now about setting up your account, sending out invites, sending messages, uploading files, and more.</font></span><br>
 <br>
-<span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">This is the first of a few important emails to help you get started with Stitch!</font></span></span>
+<span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">This is the first of a few important emails to help you get started with InvoChatch!</font></span></span>
                         </td>
                     </tr>
                 </tbody></table>
@@ -208,7 +208,7 @@ Email:&nbsp;</span><font color="#000000"><a href="<%=@user_email%>" target="_bla
                             <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">If you need anything, we're here for you. Simply <a href="mailto:support@dvlcloud.com" target="_blank">c</a><span style="color:#000000"><a href="mailto:support@dvlcloud.com" target="_blank">ontact us</a> with feedback or a support request. We love to hear from you :)</span><br>
 <br>
 See you inside!<br>
-<span style="color:#000000">— Team Stitch&nbsp;</span></span></span><br>
+<span style="color:#000000">— Team InvoChatch&nbsp;</span></span></span><br>
 &nbsp;
                         </td>
                     </tr>
@@ -253,7 +253,8 @@ See you inside!<br>
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: Verdana, Geneva, sans-serif; line-height: 200%;">
 
                             <div style="text-align: center;"><br>
-<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://dvlcloud.com" target="_blank">Stitch Technologies, Inc.</a><br>
+
+<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://InvoChat.io" target="_blank">InvoChatch Technologies, Inc.</a><br>
 156 2nd Street, 2nd Floor&nbsp;• San Francisco, CA 94105</span></span></div>
 
                         </td>
