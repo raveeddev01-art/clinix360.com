@@ -91,7 +91,7 @@ class CarespaceUrlCard extends Component {
           description={
             <span>
               This is the URL you and your team members will use to sign in to
-              Stitch.
+              Invochat.
             </span>
           }
           onNext={this.onNext}
@@ -112,7 +112,7 @@ class CarespaceUrlCard extends Component {
                 onChange={this.onChange}
                 maxLength={80}
               />
-              <span className="domain">.dvlcloud.com</span>
+              <span className="domain">.Invochat.io</span>
             </div>
             {error && <InputErrorBlock> {error} </InputErrorBlock>}
           </FormGroup>
