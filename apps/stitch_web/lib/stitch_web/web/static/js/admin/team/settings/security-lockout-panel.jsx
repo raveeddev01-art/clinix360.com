@@ -14,7 +14,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Security Lockout";
 const description =
-  "Stitch will automatically lockout after a specified period of inactivity. You can unlock it with your PIN or password.";
+  "InvoChat will automatically lockout after a specified period of inactivity. You can unlock it with your PIN or password.";
 
 @inject("teamStore")
 @observer

@@ -115,9 +115,9 @@ class Header extends Component {
             <Navbar.Brand>
               <Link to="/" className="brand">
                 {this.props.blueNav ? (
-                  <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
+                  <img src="/images/stitch-brand-alt.svg" alt="InvoChat" />
                 ) : (
-                  <img src="/images/stitch-brand.svg" alt="Stitch" />
+                  <img src="/images/stitch-brand.svg" alt="InvoChat" />
                 )}
               </Link>
             </Navbar.Brand>
@@ -178,7 +178,7 @@ class Header extends Component {
           <div className="header">
             <div className="container">
               <Link className="brand" to="/">
-                <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
+                <img src="/images/stitch-brand-alt.svg" alt="InvoChat" />
               </Link>
 
               <a className="close-menu" onClick={this.mobileNavToggle}>
@@ -247,7 +247,7 @@ class Header extends Component {
                     rel="noopener noreferrer"
                     className="appstore-btn"
                   >
-                    Get Stitch for iOS
+                    Get InvoChat for iOS
                   </NavItem>
                 )}
 
@@ -259,7 +259,7 @@ class Header extends Component {
                     rel="noopener noreferrer"
                     className="appstore-btn"
                   >
-                    Get Stitch for Android
+                    Get InvoChat for Android
                   </NavItem>
                 )}
             </Nav>

@@ -67,7 +67,7 @@ class LockedApp extends Component {
           <AuthenticationPage
             headerCTA="no-cta"
             title="Locked Out"
-            description="Enter your PIN to resume using Stitch."
+            description="Enter your PIN to resume using InvoChat."
           >
             <div className="locked-out">
               <Form onSubmit={this.handleSubmit}>

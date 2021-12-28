@@ -8,7 +8,7 @@ defmodule Stitch.Accounts.Email do
   alias Stitch.Accounts.{User, Role}
 
   @guest_roles Role.guests()
-  @from_address {"Stitch", "support@teamstitch.com"}
+  @from_address {"InvoChat", "support@teamstitch.com"}
 
   @doc """
   Sends confirmation code email to the user.
@@ -24,7 +24,7 @@ defmodule Stitch.Accounts.Email do
     |> text_body("Sign-Up 1: Authenticate Provider Code (Connect)")
     |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || user.email)
     |> from(@from_address)
-    |> subject("Stitch confirmation code: #{code_string}")
+    |> subject("InvoChat confirmation code: #{code_string}")
     |> Stitch.NewMailer.deliver_now()
   end
 
@@ -92,8 +92,8 @@ defmodule Stitch.Accounts.Email do
     new_email()
     |> template("Security Password Reset (Phoenix)")
     |> to(user.email)
-    |> from({"Stitch", "support@teamstitch.com"})
-    |> subject("ACTION REQUIRED: Please reset your Stitch password")
+    |> from({"InvoChat", "support@teamstitch.com"})
+    |> subject("ACTION REQUIRED: Please reset your InvoChat password")
     |> put_param("global_merge_vars", [
       %{
         name: "resetPasswordUrl",
@@ -114,7 +114,7 @@ defmodule Stitch.Accounts.Email do
     |> template("Message Waiting - Offline Email (Connect)")
     |> to(Enum.map(recipients, & &1.email))
     |> from(@from_address)
-    |> subject("[Stitch Connect] Notifications from #{team_name} *|userTime|*")
+    |> subject("[InvoChat Connect] Notifications from #{team_name} *|userTime|*")
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
     |> Stitch.NewMailer.deliver_now()
   end

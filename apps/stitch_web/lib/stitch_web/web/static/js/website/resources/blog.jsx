@@ -17,7 +17,7 @@ export default class Blog extends Component {
           <div className="container">
             <h1>To the Point</h1>
             <h3 className="m-b-30">
-              Stories and updates from the Stitch Health team, customers and
+              Stories and updates from the InvoChat Health team, customers and
               partners.
             </h3>
           </div>
@@ -31,7 +31,7 @@ export default class Blog extends Component {
               </h3>
               <Panel className="m-b-50">
                 <h2 className="text-center m-b-40">
-                  Introducing Stitch: tools for making healthcare a great
+                  Introducing InvoChat: tools for making healthcare a great
                   customer experience
                 </h2>
 
@@ -143,15 +143,15 @@ export default class Blog extends Component {
                 </p>
 
                 <h3 className="m-b-30">
-                  That’s why today, we’re introducing Stitch – a home base for
+                  That’s why today, we’re introducing InvoChat – a home base for
                   healthcare teams to work together.
                 </h3>
 
                 <p className="m-b-30">
-                  Unlike the software of yesterday, Stitch’s suite of tools
+                  Unlike the software of yesterday, InvoChat’s suite of tools
                   focuses on three core pillars of patient care: team
                   collaboration, patient engagement, and patient management.
-                  Stitch is specifically designed for how healthcare teams work:
+                  InvoChat is specifically designed for how healthcare teams work:
                 </p>
 
                 <ul className="m-b-30">
@@ -167,14 +167,14 @@ export default class Blog extends Component {
                   </li>
 
                   <li>
-                    <strong>Cross-platform:</strong> Making Stitch easily
+                    <strong>Cross-platform:</strong> Making InvoChat easily
                     available anywhere providers operate (desktop, iOS, or
                     Android)
                   </li>
                 </ul>
 
                 <p className="m-b-30">
-                  By offering these capabilities, we believe Stitch can empower
+                  By offering these capabilities, we believe InvoChat can empower
                   healthcare teams to work better together and with their
                   patients.
                 </p>
@@ -191,12 +191,12 @@ export default class Blog extends Component {
                   </a>, and <a href="http://dermntx.com/">DSSI</a>. We are also
                   thrilled to announce our Series A funding, led by Bill Gurley
                   of Benchmark, with participation from Y Combinator Continuity,
-                  to help us bring Stitch to more healthcare organizations and
+                  to help us bring InvoChat to more healthcare organizations and
                   their patients.
                 </p>
 
                 <p className="m-b-40">
-                  The mission of Stitch is to empower healthcare teams to build
+                  The mission of InvoChat is to empower healthcare teams to build
                   high-quality customer experiences for their patients. If
                   you’re passionate about this movement, join us! We’re{" "}
                   <a href="https://stitch.health/jobs">hiring</a>.
@@ -214,7 +214,7 @@ export default class Blog extends Component {
                   </li>
                   <li>
                     <a
-                      href={`https://twitter.com/intent/tweet?hashtags=stitchhealthcare&via=StitchHQ&text=${encodeURI(
+                      href={`https://twitter.com/intent/tweet?hashtags=stitchhealthcare&via=InvoChatHQ&text=${encodeURI(
                         document.title
                       )} ${window.location}`}
                       target="_blank"

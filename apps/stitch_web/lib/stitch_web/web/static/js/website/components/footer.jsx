@@ -14,7 +14,7 @@ export default class Footer extends Component {
               <img
                 className="stitch-logo"
                 src="/images/logo-blue.svg"
-                alt="Stitch"
+                alt="InvoChat"
               />
             </Col>
 
@@ -83,7 +83,7 @@ export default class Footer extends Component {
                 <Col xs={6} sm={3} xsPull={6} smPull={0}>
                   <h5>Contact</h5>
                   <address>
-                    Stitch Health
+                    InvoChat 
                     <br />
                     156 2nd Street<br />
                     San Francisco, CA<br />

@@ -85,7 +85,7 @@ class Subscription extends Component {
       )} tier`;
 
       alertModal({
-        title: "Thanks for using Stitch!",
+        title: "Thanks for using InvoChat!",
         message: (
           <p>
             We successfully saved your card info. <br /> <b>{text}</b>
@@ -150,7 +150,7 @@ class Subscription extends Component {
           planRemainingDays > 0 && (
             <span>
               Click{" "}
-              <a href="mailto:support@stitch.health?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch subscription for the following reasons:">
+              <a href="mailto:support@stitch.health?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our InvoChat subscription for the following reasons:">
                 here
               </a>{" "}
               to cancel your subscription.

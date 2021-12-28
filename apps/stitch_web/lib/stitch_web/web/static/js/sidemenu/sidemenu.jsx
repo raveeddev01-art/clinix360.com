@@ -203,7 +203,7 @@ class Sidemenu extends Component {
               {userStore.isAdmin && this.renderAdminOptions()}
 
               <div className="separator text-center">
-                <span>Stitch</span>
+                <span>InvoChat</span>
               </div>
 
               {userStore.canInvite && (

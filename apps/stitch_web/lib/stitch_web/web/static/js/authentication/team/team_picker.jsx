@@ -81,7 +81,7 @@ class TeamPicker extends Component {
 
     return (
       <AuthenticationPage
-        title="Sign in to Stitch"
+        title="Sign in to InvoChat"
         headerCTA="create"
         description={
           <span>

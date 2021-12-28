@@ -39,11 +39,11 @@ class PlatformTour extends Component {
       {
         placement: "center",
         disableBeacon: true,
-        title: "Welcome to Stitch",
+        title: "Welcome to InvoChat",
         target: ".admin-content-wrapper",
         content: (
           <p>
-            Stitch is a care coordination platform for healthcare teams.
+            InvoChat is a care coordination platform for healthcare teams.
             Communicate, write notes, track tasks and upload files on any
             device.
           </p>
@@ -88,7 +88,7 @@ class PlatformTour extends Component {
       {
         placement: "right",
         disableBeacon: true,
-        title: "Stitch Controls",
+        title: "InvoChat Controls",
         target: ".switcher__bottom",
         content: <p>Sign out or lock the app.</p>
       }

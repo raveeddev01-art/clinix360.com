@@ -52,7 +52,7 @@ class SelectTeam extends Component {
       <AuthenticationPage
         title="Your Carespaces"
         headerCTA="no-cta"
-        description="You are a member of of these Stitch carespaces:"
+        description="You are a member of of these InvoChat carespaces:"
       >
         <div className="select-team-list m-b-40">
           {this.state.teams.map(this.renderTeamLink)}

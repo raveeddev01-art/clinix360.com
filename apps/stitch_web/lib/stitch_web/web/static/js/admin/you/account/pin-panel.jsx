@@ -7,7 +7,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "PIN";
 const description =
-  "Set your PIN. This will be used to resume Stitch after inactivity lockouts.";
+  "Set your PIN. This will be used to resume InvoChat after inactivity lockouts.";
 
 @inject("userStore")
 @observer
