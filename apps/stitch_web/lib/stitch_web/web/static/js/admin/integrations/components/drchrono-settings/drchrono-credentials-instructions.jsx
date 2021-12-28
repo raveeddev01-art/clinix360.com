@@ -49,7 +49,7 @@ class DrChronoCredentialsInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 3</h4>
             <p>
-              Set a name for your application. We recommend ‘Stitch’. Then, copy
+              Set a name for your application. We recommend InvoChat. Then, copy
               and paste the redirect URI (on the right). Then click on 'Save
               Changes' in drchrono.
             </p>
@@ -71,7 +71,7 @@ class DrChronoCredentialsInstructions extends Component {
             <h4 className="integrations-panel__heading">Step 4</h4>
             <p>
               In drchrono, click 'Show' next to Client ID and Client Secret.
-              Copy these values and paste them into Stitch below (under
+              Copy these values and paste them into InvoChat below (under
               'Integration Settings'). Then click 'Authenticate' and follow the
               steps in drchrono to authenticate your integration.
             </p>

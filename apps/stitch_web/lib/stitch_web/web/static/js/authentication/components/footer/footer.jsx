@@ -85,13 +85,13 @@ export default class Footer extends Component {
             <Col xs={6} md={3}>
               <h5>Contact</h5>
               <address>
-                <strong>Stitch Technologies, Inc.</strong>
+                <strong>InvoChat Technologies, Inc.</strong>
                 <br />
                 156 2nd Street<br />
                 San Francisco, CA 94105<br />
                 <a href="tel:+16502823388">+1 (650) 282-3388</a>
-                <a href="mailto:support@dvlcloud.com">
-                  support@dvlcloud.com
+                <a href="mailto:support@InvoChat.io">
+                  support@InvoChat.io
                 </a>
               </address>
             </Col>

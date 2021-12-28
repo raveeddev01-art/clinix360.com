@@ -16,7 +16,7 @@ class DrChronoSetupInstructions extends Component {
               Now go to the section titled 'Webhook'. Set a name for your
               webhook. We recommend 'Stitch'. Then, copy and paste 'Your
               Callback URL' (on the right) into drchrono. Set your webhook
-              secret token to ‘stitch’.
+              secret token to InvoChat.
             </p>
           </Col>
           <Col sm={7}>
@@ -60,8 +60,8 @@ class DrChronoSetupInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 3</h4>
             <p>
-              Finally, in Stitch, select which notifications you want to display
-              and confirm your room. Then click 'Save Integration' in Stitch to
+              Finally, in InvoChat, select which notifications you want to display
+              and confirm your room. Then click 'Save Integration' in InvoChat to
               complete. Note that when you are done, drcrhrono will continue to
               list the app as in 'Restricted Mode', which is expected for the
               integration.

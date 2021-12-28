@@ -85,7 +85,7 @@ class Subscription extends Component {
       )} tier`;
 
       alertModal({
-        title: "Thanks for using Stitch!",
+        title: "Thanks for using InvoChat!",
         message: (
           <p>
             We successfully saved your card info. <br /> <b>{text}</b>

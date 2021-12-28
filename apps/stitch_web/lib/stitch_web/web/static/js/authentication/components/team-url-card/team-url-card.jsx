@@ -87,7 +87,7 @@ class CarespaceUrlCard extends Component {
       <div>
         <OnboardPage
           {...this.props}
-          title="Choose a URL for your Stitch Carespace"
+          title="Choose a URL for your InvoChat Carespace"
           description={
             <span>
               This is the URL you and your team members will use to sign in to

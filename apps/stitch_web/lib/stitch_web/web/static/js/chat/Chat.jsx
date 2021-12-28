@@ -37,15 +37,15 @@ class Chat extends Component {
     const { groupsStore, sidemenuStore } = this.props;
     const { currentGroup } = groupsStore;
 
-    let title = "Stitch";
+    let title = "InvoChat";
 
     if (currentGroup) {
-      title = `${groupsStore.getGroupName(currentGroup)} | Stitch`;
+      title = `${groupsStore.getGroupName(currentGroup)} | InvoChat`;
 
       if (currentGroup.type === "regular") {
         title = `${groupsStore.getGroupName(
           currentGroup
-        )} | ${sidemenuStore.teamName} | Stitch`;
+        )} | ${sidemenuStore.teamName} | InvoChat`;
       }
     }
 

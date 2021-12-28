@@ -68,7 +68,7 @@ export default class Connect extends Component {
               <div className="flex-item">
                 <img
                   src="/images/connect-header.png"
-                  alt="Stitch Platform"
+                  alt="InvoChat Platform"
                   className="img-responsive"
                 />
               </div>
@@ -92,7 +92,7 @@ export default class Connect extends Component {
           heading="Share information across your entire team"
           image="/images/connect-feature-2.png"
         >
-          Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
+          Easily upload files of any type into InvoChat — JPEG, PNG, PDF, MP3,
           Word, Excel, PowerPoint, and more. Make them instantly available to
           your team members, and drop the headache of tedious email attachments.
           Start sharing patient charts, labs, images, intake forms and more.
@@ -103,10 +103,10 @@ export default class Connect extends Component {
           heading="Choose notifications that matter to you"
           image="/images/connect-feature-3.png"
         >
-          With Stitch, you can apply custom notification preferences to every
+          With InvoChat, you can apply custom notification preferences to every
           conversation, so you can stay focused and in the loop. Say goodbye to
           cluttered inboxes, noisy pagers and unruly text threads. Best of all,
-          Stitch goes wherever you go with native Mac, Windows, iOS and Android
+          InvoChat goes wherever you go with native Mac, Windows, iOS and Android
           apps.
         </Feature>
 
@@ -115,7 +115,7 @@ export default class Connect extends Component {
           heading="Instantly find answers when you need them"
           image="/images/connect-feature-4.png"
         >
-          Stitch turns historical conversations into the ultimate source of
+          InvoChat turns historical conversations into the ultimate source of
           answers: it’s built from the ground up for deep search. Every message,
           every file, every comment is carefully archived and made searchable.
           Team knowledge at your fingertips, whenever you need it.
@@ -133,7 +133,7 @@ export default class Connect extends Component {
                   </h4>
                   <p className="m-b-15">
                     View engagement statistics to understand the how, when and
-                    who of your team’s Stitch usage.
+                    who of your team’s InvoChat usage.
                   </p>
 
                   <a href="https://help.dvlcloud.com/hc/en-us/articles/360010902353">
@@ -212,8 +212,8 @@ export default class Connect extends Component {
                     <i className="far fa-refresh" /> EHR Integrations
                   </h4>
                   <p className="m-b-15">
-                    Tie Stitch into your existing toolset with a seamless EHR
-                    integration. Get alerts for key updates right in Stitch.
+                    Tie InvoChat into your existing toolset with a seamless EHR
+                    integration. Get alerts for key updates right in InvoChat.
                   </p>
 
                   <a href="https://help.dvlcloud.com/hc/en-us/articles/360007574334-EHR-Integrations">
@@ -243,8 +243,8 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Create an account</h4>
 
                     <p>
-                      Stitch is 100% free to start. Pick a team name and a
-                      custom URL you can use to access Stitch easily.
+                      InvoChat is 100% free to start. Pick a team name and a
+                      custom URL you can use to access InvoChat easily.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -254,8 +254,8 @@ export default class Connect extends Component {
                     <div className="number m-b-30">2</div>
                     <h4 className="m-b-20">Invite your team</h4>
                     <p>
-                      Stitch works best when your entire team is inside. Use
-                      Stitch with an unlimited number of users.
+                      InvoChat works best when your entire team is inside. Use
+                      InvoChat with an unlimited number of users.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -266,7 +266,7 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Add chat rooms</h4>
                     <p>
                       Pick a few major topics that your team talks about
-                      frequently, and create your Stitch rooms to get started.
+                      frequently, and create your InvoChat rooms to get started.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -309,6 +309,6 @@ Connect.defaultProps = {
   flipped: false,
   header: "Healthcare Messaging",
   subHeader:
-    "Message your team, from any device. Stitch is HIPAA compliant and free to use with an unlimited number of people."
+    "Message your team, from any device. InvoChat is HIPAA compliant and free to use with an unlimited number of people."
   // industryBodyText: "healthcare"
 };

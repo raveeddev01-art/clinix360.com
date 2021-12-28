@@ -31,7 +31,7 @@ class Engage extends Component {
     return (
       <div className="engage-wrapper">
         <Helmet>
-          <title>{`${teamStore.name} | Stitch Engage`}</title>
+          <title>{`${teamStore.name} | InvoChat Engage`}</title>
         </Helmet>
 
         {inboxStore.messagesLoaded && <InboxMenu />}

@@ -7,7 +7,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Profile Image";
 const description =
-  "Upload a profile image. This will be displayed when users view your information in Stitch.";
+  "Upload a profile image. This will be displayed when users view your information in InvoChat.";
 
 @inject("userStore", "uploadStore", "teamStore")
 @observer

@@ -37,11 +37,11 @@ class ConnectTour extends Component {
       {
         placement: "center",
         disableBeacon: true,
-        title: "Welcome to Stitch",
+        title: "Welcome to InvoChat",
         target: ".message-form-action-item",
         content: (
           <p>
-            Message your team, from any device. Stitch is HIPAA
+            Message your team, from any device. InvoChat is HIPAA
             compliant and free to use with an unlimited number of people.
           </p>
         )
@@ -53,7 +53,7 @@ class ConnectTour extends Component {
         target: ".create-room-button",
         content: (
           <p>
-            Conversations in Stitch take place in <b>rooms</b>. Create
+            Conversations in InvoChat take place in <b>rooms</b>. Create
             rooms for common topics of discussion.
           </p>
         )
@@ -92,7 +92,7 @@ class ConnectTour extends Component {
         target: ".invite-link",
         content: (
           <p>
-            Invite your team members into Stitch, so you can bring all your
+            Invite your team members into InvoChat, so you can bring all your
             communication into one place.
           </p>
         )

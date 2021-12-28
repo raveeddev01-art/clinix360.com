@@ -52,7 +52,7 @@ export default class Manage extends Component {
                 <h1>Assign, track and complete every task</h1>
 
                 <h3 className="m-b-30">
-                  Stitch Manage is a simple system for tracking tasks. Instantly
+                  InvoChat Manage is a simple system for tracking tasks. Instantly
                   know what your team is doing and ensure every patient task
                   goes from start to done.
                 </h3>
@@ -63,7 +63,7 @@ export default class Manage extends Component {
               <div className="flex-item">
                 <img
                   src="/images/manage-header.png"
-                  alt="Stitch Platform"
+                  alt="InvoChat Platform"
                   className="img-responsive"
                 />
               </div>
@@ -76,7 +76,7 @@ export default class Manage extends Component {
           heading="Assign and track every task for your patients"
           image="/images/manage-feature-1-alt.png"
         >
-          Stitch Manage lets you quickly turn clinical work into tasks your team
+          InvoChat Manage lets you quickly turn clinical work into tasks your team
           needs to complete. Easily add new tasks and assign them to right team
           member. Use due dates and notifications to stay in the loop on
           progress, so you can deliver great patient care 100% of the time.
@@ -87,7 +87,7 @@ export default class Manage extends Component {
           heading="Instantly know the status for any patient"
           image="/images/manage-feature-2.png"
         >
-          Stitch lets you visualize outstanding and completed tasks for any
+          InvoChat lets you visualize outstanding and completed tasks for any
           patient at a glance. Click on any patient to instantly understand
           their status, and see which team members are involved in their care.
           Easily handle patient inquiries regarding status of their care.
@@ -214,8 +214,8 @@ export default class Manage extends Component {
                     <h4 className="m-b-20">Create an account</h4>
 
                     <p>
-                      Stitch is 100% free to start. Pick a team name and a
-                      custom URL you can use to access Stitch easily.
+                      InvoChat is 100% free to start. Pick a team name and a
+                      custom URL you can use to access InvoChat easily.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -225,8 +225,8 @@ export default class Manage extends Component {
                     <div className="number m-b-30">2</div>
                     <h4 className="m-b-20">Invite your team</h4>
                     <p>
-                      Stitch works best when your entire team is inside. Use
-                      Stitch with an unlimited number of users.
+                      InvoChat works best when your entire team is inside. Use
+                      InvoChat with an unlimited number of users.
                     </p>
                   </Panel.Body>
                 </Panel>

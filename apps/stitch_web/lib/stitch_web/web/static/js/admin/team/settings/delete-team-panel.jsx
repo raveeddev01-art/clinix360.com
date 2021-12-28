@@ -60,9 +60,9 @@ class DeleteTeamPanel extends Component {
       >
         <HelpBlock>
           If you delete your carespace, all users will be unable to log into
-          Stitch. Please be sure to export any data before proceeding. If you
+          InvoChat. Please be sure to export any data before proceeding. If you
           have any questions, please send us an email at&nbsp;
-          <a href="mailto:support@dvlcloud.com">support@dvlcloud.com</a>
+          <a href="mailto:support@InvoChat.io">support@InvoChat.io</a>
         </HelpBlock>
 
         <Modal

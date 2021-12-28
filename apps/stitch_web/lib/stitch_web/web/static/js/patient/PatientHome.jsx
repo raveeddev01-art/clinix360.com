@@ -44,7 +44,7 @@ class PatientHome extends Component {
                 <HomeItem
                   icon="fa-question"
                   title="Help"
-                  description="Articles and guides on how to use Stitch."
+                  description="Articles and guides on how to use InvoChat."
                   openButtonText="Open"
                   link="https://help.dvlcloud.com"
                   newTab

@@ -35,7 +35,7 @@ class AuthenticationHeader extends Component {
 
     return (
       <a href={dest} className="brand">
-        <img src="/images/stitch-brand.svg" alt="Stitch" />
+        <img src="/images/stitch-brand.svg" alt="InvoChat" />
       </a>
     );
   }

@@ -72,7 +72,7 @@ class DotOptions extends React.Component {
           <MenuItem
             target="_blank"
             rel="noopener noreferrer"
-            href="https://help.dvlcloud.com"
+            href="https://help.InvoChat.io"
           >
             <i className="fa fa-question-circle m-r-5" /> Help Center
           </MenuItem>

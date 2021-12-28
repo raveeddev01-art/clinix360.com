@@ -66,8 +66,8 @@ export default class Engage extends Component {
                 <h1>Communicate securely with patients</h1>
 
                 <h3 className="m-b-30">
-                  Stitch Engage is a simple system for talking to your patients.
-                  From messages and forms to files and tasks, Stitch lets you
+                  InvoChat Engage is a simple system for talking to your patients.
+                  From messages and forms to files and tasks, InvoChat lets you
                   engage with patients on every level.
                 </h3>
 
@@ -77,7 +77,7 @@ export default class Engage extends Component {
               <div className="flex-item">
                 <img
                   src="/images/engage-header.png"
-                  alt="Stitch Platform"
+                  alt="InvoChat Platform"
                   className="img-responsive"
                 />
               </div>
@@ -91,7 +91,7 @@ export default class Engage extends Component {
           image="/images/engage-feature-1-alt.png"
         >
           Keep patients connected to your practice through regular
-          communication. From followups to appointment reminders, Stitch Engage
+          communication. From followups to appointment reminders, InvoChat Engage
           helps you build deep patient relationships. Give your patients a great
           experience, both inside and outside the clinic walls.
         </Feature>
@@ -103,7 +103,7 @@ export default class Engage extends Component {
           imageClassName="engage-feature-image-2"
         >
           No more siloed conversations in individual mailboxes. Team members in
-          Stitch Engage can jump into and out of patient conversations as
+          InvoChat Engage can jump into and out of patient conversations as
           necessary, consolidating various patient communication streams into a
           single place for improved coordination and transparency.
         </Feature>
@@ -116,7 +116,7 @@ export default class Engage extends Component {
           Send messages and share data of any kind — prescriptions, lab results
           and more. Upload almost any type of file — JPEG, PNG, PDF, MP3. Create
           and collect custom response forms. No more faxing or mailing your
-          patients files. Just easily send them through Stitch Engage to deliver
+          patients files. Just easily send them through InvoChat Engage to deliver
           your patients a seamless experience.
         </Feature>
 
@@ -127,7 +127,7 @@ export default class Engage extends Component {
         >
           Experience Engage as a complete telemedicine platform for delivering
           care to your patients. Schedule video calls and conduct them from
-          directly within Stitch. Give patients great care wherever they want,
+          directly within InvoChat. Give patients great care wherever they want,
           in the office or in the home.
         </Feature>
 
@@ -143,7 +143,7 @@ export default class Engage extends Component {
                   </h4>
                   <p className="m-b-15">
                     Never use paper again. Create custom forms you can send and
-                    collect via Stitch, from intake to waiver.
+                    collect via InvoChat, from intake to waiver.
                   </p>
                 </div>
               </Col>
@@ -202,7 +202,7 @@ export default class Engage extends Component {
                     <i className="fa fa-file-text" /> Content
                   </h4>
                   <p className="m-b-15">
-                    Stitch offers patient educational content for every
+                    InvoChat offers patient educational content for every
                     specialty, so you can keep patients engaged after visits.
                   </p>
                 </div>
@@ -229,8 +229,8 @@ export default class Engage extends Component {
                     <h4 className="m-b-20">Create an account</h4>
 
                     <p>
-                      Stitch is 100% free to start. Pick a team name and a
-                      custom URL you can use to access Stitch easily.
+                      InvoChat is 100% free to start. Pick a team name and a
+                      custom URL you can use to access InvoChat easily.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -240,8 +240,8 @@ export default class Engage extends Component {
                     <div className="number m-b-30">2</div>
                     <h4 className="m-b-20">Invite your team</h4>
                     <p>
-                      Stitch works best when your entire team is inside. Use
-                      Stitch with an unlimited number of users.
+                      InvoChat works best when your entire team is inside. Use
+                      InvoChat with an unlimited number of users.
                     </p>
                   </Panel.Body>
                 </Panel>

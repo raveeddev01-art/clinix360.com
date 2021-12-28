@@ -31,7 +31,7 @@ export default class Landing extends Component {
                 <a href="/" className="brand">
                   <img
                     src="apps/stitch_web/lib/stitch_web/web/static/js/authentication/team/select_team.jsx"
-                    alt="Stitch"
+                    alt="InvoChat"
                   />
                 </a>
               </Col>

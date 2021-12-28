@@ -38,7 +38,7 @@ class Topbar extends Component {
               <OverlayTrigger
                 placement="bottom"
                 container={this}
-                overlay={<Tooltip id="tooltip-info">Stitch</Tooltip>}
+                overlay={<Tooltip id="tooltip-info">InvoChat</Tooltip>}
               >
                 <i className="fa fa-comments" />
               </OverlayTrigger>
