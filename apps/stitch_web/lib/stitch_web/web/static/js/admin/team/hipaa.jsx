@@ -12,7 +12,7 @@ export default class TeamHipaa extends Component {
         <Well>
           <i className="fa fa-check-circle" />
           <p className="m-b-0">
-            Your carespace is <strong>HIPAA compliant</strong>. You can safely
+            Your workspace is <strong>HIPAA compliant</strong>. You can safely
             share patient information in InvoChat.
           </p>
         </Well>

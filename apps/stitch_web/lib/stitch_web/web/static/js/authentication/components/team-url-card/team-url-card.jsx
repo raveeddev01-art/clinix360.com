@@ -12,9 +12,9 @@ function formatUrl(givenName) {
 }
 
 const uniquenessErrorText =
-  "This carespace URL is taken. Please choose another one.";
+  "This workspace URL is taken. Please choose another one.";
 const patternErrorText =
-  "Your carespace URL can only contain lowercase letters, numbers and dashes. It also must start with a letter or number.";
+  "Your workspace URL can only contain lowercase letters, numbers and dashes. It also must start with a letter or number.";
 
 class CarespaceUrlCard extends Component {
   constructor(...args) {
@@ -87,7 +87,7 @@ class CarespaceUrlCard extends Component {
       <div>
         <OnboardPage
           {...this.props}
-          title="Choose a URL for your InvoChat Carespace"
+          title="Choose a URL for your InvoChat Workspace"
           description={
             <span>
               This is the URL you and your team members will use to sign in to
@@ -103,7 +103,7 @@ class CarespaceUrlCard extends Component {
             className=""
             validationState={(error && "error") || null}
           >
-            <ControlLabel>Carespace URL</ControlLabel>
+            <ControlLabel>Workspace URL</ControlLabel>
             <div className="team-form">
               <FormControl
                 required
@@ -117,7 +117,7 @@ class CarespaceUrlCard extends Component {
             {error && <InputErrorBlock> {error} </InputErrorBlock>}
           </FormGroup>
           <HelpBlock className="onboarding-hint m-b-20">
-            Carespace URL must be letters, numbers, or dashes.
+            Workspace URL must be letters, numbers, or dashes.
           </HelpBlock>
         </OnboardPage>
       </div>

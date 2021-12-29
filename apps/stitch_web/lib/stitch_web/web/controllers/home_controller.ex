@@ -12,31 +12,31 @@ defmodule Stitch.Web.HomeController do
   end
 
   # If you change a title, sync it with frontend (website_router)
-  @connect_title "Connect | Stitch"
-  @connect_description "Stitch is a team messaging app for healthcare teams. Bring your team together with rooms and direct messages on any device."
+  @connect_title "Connect | InvoChat"
+  @connect_description "InvoChat is a team messaging app for healthcare teams. Bring your team together with rooms and direct messages on any device."
 
-  @customers_title "Customers | Stitch"
+  @customers_title "Customers | InvoChat"
   @customers_description "Trusted by the best healthcare teams, big and small. See how customers have improved care coordination on our platform."
 
-  @demo_title "Request a Demo | Stitch"
-  @demo_description "Request a Demo of Stitch today. Stitch is free to use with an unlimited number of people."
+  @demo_title "Request a Demo | InvoChat"
+  @demo_description "Request a Demo of InvoChat today. Stitch is free to use with an unlimited number of people."
 
-  @downloads_title "Downloads | Stitch"
-  @downloads_description "Download Stitch for free for mobile devices or desktop. Stay in the loop with our apps for iPhone, Android, Mac and Windows."
+  @downloads_title "Downloads | InvoChat"
+  @downloads_description "Download InvoChat for free for mobile devices or desktop. Stay in the loop with our apps for iPhone, Android, Mac and Windows."
 
-  @engage_title "Engage | Stitch"
-  @engage_description "Stitch Engage is a patient communication app for healthcare teams. From messages and forms to files and tasks, engage your patients on every level."
+  @engage_title "Engage | InvoChat"
+  @engage_description "InvoChat Engage is a patient communication app for healthcare teams. From messages and forms to files and tasks, engage your patients on every level."
 
-  @hipaa_title "HIPAA Compliance | Stitch"
-  @hipaa_description "Stitch is fully HIPAA compliant. Relax knowing we’ve got you covered. Directly name patients and share files in our secure carespace."
+  @hipaa_title "HIPAA Compliance | InvoChat"
+  @hipaa_description "InvoChat is fully HIPAA compliant. Relax knowing we’ve got you covered. Directly name patients and share files in our secure workspace."
 
-  @jobs_title "Jobs | Stitch"
+  @jobs_title "Jobs | InvoChat"
   @jobs_description "We’re hiring! If you’re passionate about making an impact in healthcare by building great technology, then we want to meet you."
 
-  @manage_title "Manage | Stitch"
-  @manage_description "Stitch Manage is a task management app for healthcare teams. Instantly know what your team is doing and ensure every patient task goes from start to done."
+  @manage_title "Manage | InvoChat"
+  @manage_description "InvoChat Manage is a task management app for healthcare teams. Instantly know what your team is doing and ensure every patient task goes from start to done."
 
-  @pricing_title "Pricing | Stitch"
+  @pricing_title "Pricing | InvoChat"
   @pricing_description "Free to start, with upgradeable plans available. Our products work together in a single place. Start with one or many."
 
   defp title_for_path("/connect" <> _rest), do: @connect_title

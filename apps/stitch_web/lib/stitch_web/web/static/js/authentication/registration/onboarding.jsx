@@ -40,7 +40,7 @@ class Onboarding extends Component {
     const { registrationStore, history } = this.props;
     registrationStore.createTeam().catch(() => {
       alertModal({
-        title: "Error in creating carespace",
+        title: "Error in creating workspace",
         message:
           "Sorry, we had an issue completing your onboarding. Could you please start over?",
         okLabel: "Restart"

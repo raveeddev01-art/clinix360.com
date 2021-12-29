@@ -6,7 +6,7 @@ import { AuthenticationPage } from "common/components";
 @inject("titleStore")
 export default class FindTeam extends Component {
   componentWillMount() {
-    this.props.titleStore.setPageName("Find Carespace");
+    this.props.titleStore.setPageName("Find Workspace");
   }
 
   render() {
@@ -19,7 +19,7 @@ export default class FindTeam extends Component {
         <h5>
           Just getting started?{" "}
           <a href={`https://${applicationHost}/signup/email`}>
-            <strong>Create a new carespace</strong>
+            <strong>Create a new workspace</strong>
           </a>
         </h5>
       </AuthenticationPage>

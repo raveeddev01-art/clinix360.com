@@ -4,19 +4,19 @@
     <%= render "_tag_manager_head.html" %>
     <%= render "_shared_head.html" %>
     <link href="https://stitch.health" rel="canonical">
-    <title><%= if assigns[:title], do: @title, else: "Care Coordination | InvoChatch" %></title>
-    <meta name="description" content="<%= if assigns[:description], do: @description, else: "InvoChatch is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
+    <title><%= if assigns[:title], do: @title, else: "Care Coordination | InvoChat" %></title>
+    <meta name="description" content="<%= if assigns[:description], do: @description, else: "InvoChat is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="InvoChatch" />
-    <meta property="og:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | InvoChatch" %>" />
-    <meta property="og:description" content="<%= if assigns[:description], do: @description, else: "InvoChatch is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
+    <meta property="og:site_name" content="InvoChat" />
+    <meta property="og:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | InvoChat" %>" />
+    <meta property="og:description" content="<%= if assigns[:description], do: @description, else: "InvoChat is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
     <meta property="og:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@stitchhq" />
-    <meta name="twitter:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | InvoChatch" %>" />
-    <meta name="twitter:description" content="<%= if assigns[:description], do: @description, else: "InvoChatch is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
+    <meta name="twitter:title" content="<%= if assigns[:title], do: @title, else: "Care Coordination | InvoChat" %>" />
+    <meta name="twitter:description" content="<%= if assigns[:description], do: @description, else: "InvoChat is care coordination platform for healthcare teams. Communicate, write notes, track tasks, upload files, and collaborate on any device." %>" />
     <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
 
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/landing.css") %>">

@@ -60,10 +60,10 @@ class EmailCard extends Component {
     return (
       <div>
         <OnboardPage
-          title="Create a new Carespace"
+          title="Create a new Workspace"
           description={
             <span>
-              Enter your email address to start creating your Carespace on
+              Enter your email address to start creating your Workspace on
               InvoChat.
             </span>
           }

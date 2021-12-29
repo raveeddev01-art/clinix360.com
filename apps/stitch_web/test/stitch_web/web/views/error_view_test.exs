@@ -27,12 +27,12 @@ defmodule Stitch.Web.ErrorViewTest do
 
     test "500 renders system error page", %{conn: conn} do
       error_res = render_to_string(Stitch.Web.ErrorView, "500.html", conn: conn)
-      assert error_res =~ "Stitch failed to load correctly"
+      assert error_res =~ "InvoChat failed to load correctly"
     end
 
     test "5** renders system error page", %{conn: conn} do
       error_res = render_to_string(Stitch.Web.ErrorView, "505.html", conn: conn)
-      assert error_res =~ "Stitch failed to load correctly"
+      assert error_res =~ "InvoChat failed to load correctly"
     end
   end
 end

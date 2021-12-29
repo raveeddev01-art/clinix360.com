@@ -49,7 +49,7 @@ class AuthenticationHeader extends Component {
 
     if (this.props.type === "signin") {
       return [
-        <Navbar.Text key="nav-text">Already part of a Carespace?</Navbar.Text>,
+        <Navbar.Text key="nav-text">Already part of a Workspace?</Navbar.Text>,
         <Nav key="nav-cta">
           <NavItem onClick={this.goToSignIn} className="btn-trial">
             Sign In
@@ -60,11 +60,11 @@ class AuthenticationHeader extends Component {
 
     return [
       <Navbar.Text key="nav-text">
-        Looking to join an existing Carespace?
+        Looking to join an existing Workspace?
       </Navbar.Text>,
       <Nav key="nav-cta">
         <NavItem onClick={this.goToFindTeam} className="btn-trial">
-          Find Your Carespace
+          Find Your Workspace
         </NavItem>
       </Nav>
     ];

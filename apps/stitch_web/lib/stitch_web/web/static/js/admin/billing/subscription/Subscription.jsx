@@ -80,7 +80,7 @@ class Subscription extends Component {
     const { plan } = this.state;
 
     billingStore.subscribe(plan).then(subscription => {
-      const text = `Your carespace is now changed to ${capitalize(
+      const text = `Your workspace is now changed to ${capitalize(
         subscription.tier
       )} tier`;
 

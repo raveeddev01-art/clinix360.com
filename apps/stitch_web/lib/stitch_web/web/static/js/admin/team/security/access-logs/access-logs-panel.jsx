@@ -21,7 +21,7 @@ class AccessLogsPanel extends Component {
   };
 
   render() {
-    const description = `This page lists details about account access for all members of your carespace. It is only accessible to administrators. Individual members can view their own access logs at https://${this
+    const description = `This page lists details about account access for all members of your workspace. It is only accessible to administrators. Individual members can view their own access logs at https://${this
       .props.teamStore.slug}.InvoChat.io/admin/you/account`;
 
     return (

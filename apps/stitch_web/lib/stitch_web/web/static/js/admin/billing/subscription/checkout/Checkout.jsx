@@ -46,7 +46,7 @@ class Checkout extends Component {
           </ul>
           <p className="text-muted">
             We will automatically update your balance when members are added to
-            or removed from your carespace.
+            or removed from your workspace.
           </p>
         </div>
 

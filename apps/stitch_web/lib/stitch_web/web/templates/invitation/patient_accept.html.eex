@@ -15,7 +15,7 @@
     <%= password_input f, :password, placeholder: "password" %>
     <br /> <br />
     
-    <%= submit "Enter Carespace" %>
+    <%= submit "Enter Workspace" %>
 
   <% end %>
 </div>

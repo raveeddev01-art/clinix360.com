@@ -14,7 +14,7 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Delete Team";
 const description =
-  "Deleting your carespace will remove all users and data. You won't be able to recover this information.";
+  "Deleting your workspace will remove all users and data. You won't be able to recover this information.";
 
 @inject("teamStore")
 @observer
@@ -59,7 +59,7 @@ class DeleteTeamPanel extends Component {
         onSave={this._onShowModal}
       >
         <HelpBlock>
-          If you delete your carespace, all users will be unable to log into
+          If you delete your workspace, all users will be unable to log into
           InvoChat. Please be sure to export any data before proceeding. If you
           have any questions, please send us an email at&nbsp;
           <a href="mailto:support@InvoChat.io">support@InvoChat.io</a>
@@ -79,7 +79,7 @@ class DeleteTeamPanel extends Component {
 
           <Modal.Body>
             <h5>
-              Please enter your carespace name to confirm your delete action.
+              Please enter your workspace name to confirm your delete action.
             </h5>
 
             {error && <Alert bsStyle="danger">{error}</Alert>}
