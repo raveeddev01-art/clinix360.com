@@ -1,5 +1,5 @@
 defmodule StitchConnect.MessageMailer do
-  use Quantum, otp_app: :stitch_web
+  use Quantum.Scheduler, otp_app: :stitch_web
   use Appsignal.Instrumentation.Decorators
   import Ecto.Query
   alias Stitch.{Team, UserQueries}

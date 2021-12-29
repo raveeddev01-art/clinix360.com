@@ -126,7 +126,7 @@ export default class Demo extends Component {
                   <FormControl
                     name="companyName"
                     required
-                    placeholder="InvoChat Health"
+                    placeholder="InvoZone"
                     type="text"
                     value={this.state.companyName}
                     onChange={this.handleChange}

@@ -11,7 +11,7 @@ defmodule Stitch.TimedMessage.Worker do
     TimedMessage.ConversationMessageForProvider
   }
 
-  @from_address {"Stitch", "hello@mail.teamstitch.com"}
+  @from_address {"InvoChat", "hello@mail.teamstitch.com"}
 
   # === PUBLIC ===
 
@@ -52,7 +52,7 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &Helper.with_user_and_team_attrs/2
     },
     "admin_invite_prompt" => %{
-      subject: "Invite your team to Stitch",
+      subject: "Invite your team to InvoChat",
       load_data: &Helper.get_user_with_team_invites/1,
       send_if: &Helper.has_not_invited_users/1,
       template_vars: &Helper.with_admin_invitation_attrs/2
@@ -64,7 +64,7 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &Helper.with_user_and_team_attrs/2
     },
     "admin_invite_reminder" => %{
-      subject: "Reminder: Invite your team to Stitch",
+      subject: "Reminder: Invite your team to InvoChat",
       load_data: &Helper.get_user_with_team_invites/1,
       send_if: &Helper.has_not_invited_users/1,
       template_vars: &Helper.with_admin_invitation_attrs/2
@@ -82,7 +82,7 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &Helper.with_complete_profile_link/2
     },
     "invite_reminder" => %{
-      subject: "Reminder: Join your team on Stitch",
+      subject: "Reminder: Join your team on InvoChat",
       load_data: &Helper.get_invitation_and_user/1,
       send_if: &Helper.is_invitation_pending/1,
       template_vars: &Helper.with_invitation_attrs/2
@@ -100,7 +100,7 @@ defmodule Stitch.TimedMessage.Worker do
     #   template_vars: &Helper.with_member_invitation_attrs/2
     # },
     "member_invite_prompt" => %{
-      subject: "Invite your teammates to Stitch",
+      subject: "Invite your teammates to InvoChat",
       load_data: &Helper.get_user_with_team_invites/1,
       send_if: &Helper.user_has_invite_permissions/1,
       template_vars: &Helper.with_member_invitation_attrs/2
