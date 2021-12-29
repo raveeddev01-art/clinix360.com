@@ -38,6 +38,7 @@ defmodule Stitch.Accounts.Email do
     |> to(user.email)
     |> from(@from_address)
     |> subject("Reset Your Password")
+    |> text_body("Dear User, \nYou requested for reset password, Here is link: #{reset_url}")
     |> put_param("global_merge_vars", [
       %{
         name: "resetPasswordUrl",
