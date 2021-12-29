@@ -34,19 +34,19 @@ const YourTeams = ({ asPatient, teams }) => {
 
   return (
     <div>
-      <h1>Your Carespaces</h1>
-      <p>{`You are a ${userType} these InvoChat carespaces:`}</p>
+      <h1>Your Workspaces</h1>
+      <p>{`You are a ${userType} these InvoChat workspaces:`}</p>
       <div className="select-team-list m-b-40">
         {teams.map(team => (
           <TeamLink asPatient={asPatient} key={team.slug} {...team} />
         ))}
       </div>
       <p>
-        If you are looking for a different carespace, you can try a{" "}
+        If you are looking for a different workspace, you can try a{" "}
         <Link to={findTeamLink}> different email address</Link>
         {asPatient
           ? "."
-          : " or request an invitation from your carespace administrator."}
+          : " or request an invitation from your workspace administrator."}
       </p>
     </div>
   );

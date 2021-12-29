@@ -80,7 +80,7 @@ class PlatformTour extends Component {
         target: ".admin-admin-wrapper",
         content: (
           <p>
-            Manage and view your Carespace settings, security, membership, and
+            Manage and view your Workspace settings, security, membership, and
             more.
           </p>
         )

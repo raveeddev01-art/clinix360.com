@@ -184,7 +184,7 @@ export default class Hipaa extends Component {
               and managing patient data properly. It will also clearly outline
               what services you should expect us to render, and what we are
               responsible for. A BAA is necessary for you to complete your HIPAA
-              compliance. If you’re the admin for your carespace, you’ll be
+              compliance. If you’re the admin for your workspace, you’ll be
               prompted to complete the BAA after creating your account.
             </p>
           </div>

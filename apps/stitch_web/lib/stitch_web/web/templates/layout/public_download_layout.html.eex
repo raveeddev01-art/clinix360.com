@@ -16,7 +16,7 @@
     <meta name="author" content="">
     <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token %>">
 
-    <title><%= if assigns[:title], do: @title, else: "Care Coordination | InvoChatch" %></title>
+    <title><%= if assigns[:title], do: @title, else: "Care Coordination | InvoChat" %></title>
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">

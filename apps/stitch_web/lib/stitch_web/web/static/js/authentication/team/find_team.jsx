@@ -22,7 +22,7 @@ class FindTeam extends Component {
   }
 
   componentWillMount() {
-    this.props.titleStore.setPageName("Find Carespace");
+    this.props.titleStore.setPageName("Find Workspace");
   }
 
   _onChange = event => {
@@ -51,12 +51,12 @@ class FindTeam extends Component {
 
     return (
       <OnboardPage
-        title="Find Your Carespace"
+        title="Find Your Workspace"
         headerCTA="signin"
         description={
           <span>
             We’ll send you an email to confirm your address and find existing
-            Carespaces you’ve joined or can join.
+            Workspaces you’ve joined or can join.
           </span>
         }
         onNext={this._onSubmit}
@@ -73,7 +73,7 @@ class FindTeam extends Component {
           />
         </FormGroup>
         <div className="team-picker-find-team-helper">
-          Know your Carespace URL?{" "}
+          Know your Workspace URL?{" "}
           <Link to={singinUrl}>
             <strong>Sign In</strong>
           </Link>

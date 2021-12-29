@@ -2,11 +2,11 @@
 
 <div>
   <h1>
-    Patient Find Your Carespace Email:
+    Patient Find Your Workspace Email:
   </h1>
   <ul>
     <li>
-      <a href="<%=@url%>"> Click Here to Go to Your Carespace </a>
+      <a href="<%=@url%>"> Click Here to Go to Your Workspace </a>
     </li>
   </ul>
 </div>

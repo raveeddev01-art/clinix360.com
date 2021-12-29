@@ -58,8 +58,8 @@ class TeamPicker extends Component {
   get errorText() {
     return (
       <span>
-        We don't have that carespace URL in our system. If you'd like, we can
-        help you <Link to={this.findTeamLink}>find your carespace</Link>.
+        We don't have that workspace URL in our system. If you'd like, we can
+        help you <Link to={this.findTeamLink}>find your workspace</Link>.
       </span>
     );
   }
@@ -85,7 +85,7 @@ class TeamPicker extends Component {
         headerCTA="create"
         description={
           <span>
-            Enter your Carespace's <b> Invochat URL </b>
+            Enter your Workspace's <b> Invochat URL </b>
           </span>
         }
       >
@@ -101,7 +101,7 @@ class TeamPicker extends Component {
               value={teamUrl}
               onChange={this.onChange}
               onFocus={this.moveCaretAtEnd}
-              placeholder="your-carespace-url"
+              placeholder="your-workspace-url"
               maxLength={80}
             />
             <span className="domain">.invochat.io</span>
@@ -124,9 +124,9 @@ class TeamPicker extends Component {
         </Form>
 
         <div className="team-picker-find-team-helper">
-          Don't know your Carespace's URL?{" "}
+          Don't know your Workspace's URL?{" "}
           <Link to={this.findTeamLink}>
-            <strong>Find your Carespace</strong>
+            <strong>Find your Workspace</strong>
           </Link>
         </div>
       </AuthenticationPage>
