@@ -78,7 +78,7 @@ class Header extends Component {
 
     return (
       <NavDropdown
-        title="Your Carespaces"
+        title="Your Workspaces"
         id="yourcarespaces-dropdown"
         {...navProps}
       >

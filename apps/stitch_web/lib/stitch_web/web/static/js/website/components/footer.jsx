@@ -28,9 +28,11 @@ export default class Footer extends Component {
                     </li>
                     <li>
                       <a
+                      disabled
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="https://help.dvlcloud.com"
+
+                        href="/"
                       >
                         Help Center
                       </a>
