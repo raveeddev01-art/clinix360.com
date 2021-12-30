@@ -11,8 +11,8 @@ export default class WindowsDesktop extends Component {
           </div>
         </h5>
 
-        <a
-          href="https://dvlcloud.com/download-win"
+        <a  
+          href="/"
           className="btn btn-onboarding btn-primary btn-lg btn-block m-b-40"
         >
           Download the Windows App
