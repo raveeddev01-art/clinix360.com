@@ -12,7 +12,8 @@ export default class MacDesktop extends Component {
         </h5>
 
         <a
-          href="https://stitch.health/download-mac"
+          
+          href="/"
           className="btn btn-onboarding btn-primary btn-lg btn-block m-b-40"
           alt="Download InvoChat on iTunes store"
         >

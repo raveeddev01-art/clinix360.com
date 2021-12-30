@@ -12,7 +12,7 @@ export default class WindowsDesktop extends Component {
         </h5>
 
         <a
-          href="https://stitch.health/download-win"
+          href="/"
           className="btn btn-onboarding btn-primary btn-lg btn-block m-b-40"
         >
           Download the Windows App
