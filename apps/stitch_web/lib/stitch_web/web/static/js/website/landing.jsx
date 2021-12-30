@@ -86,7 +86,7 @@ export default class Landing extends Component {
         <div id="footer">
           <div className="container">
             <Row>
-              <Col sm={4}>Stitch Technologies, Inc</Col>
+              <Col sm={4}>InvoChat Technologies, Inc</Col>
               <Col sm={8}>
                 <ul className="list-inline m-b-0 text-right">
                   <li>

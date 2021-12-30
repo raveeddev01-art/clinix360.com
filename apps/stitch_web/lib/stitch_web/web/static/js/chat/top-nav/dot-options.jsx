@@ -70,6 +70,7 @@ class DotOptions extends React.Component {
             </MenuItem>
           )}
           <MenuItem
+            disabled
             target="_blank"
             rel="noopener noreferrer"
             href="https://help.InvoChat.io"

@@ -45,9 +45,10 @@ class Topbar extends Component {
 
             <Dropdown.Menu className="more-menu">
               <MenuItem
+                disabled
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://help.stitch.health"
+                href="/"
               >
                 <i className="fa fa-question-circle m-r-5" /> Help Center
               </MenuItem>
