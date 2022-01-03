@@ -47,7 +47,7 @@ export default class Pricing extends Component {
                   <Tab.Pane eventKey="first">
                     <h3 className="pricing-table-heading text-center">
                       <strong>InvoChat for Practices</strong> is a collaboration
-                      space for small or medium sized healthcare businesses.
+                      space for small or medium sized InvoChat businesses.
                     </h3>
                     <div className="hidden-md hidden-lg">
                       <PricingMobile />

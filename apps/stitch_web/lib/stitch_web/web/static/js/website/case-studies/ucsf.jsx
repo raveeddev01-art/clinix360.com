@@ -173,7 +173,7 @@ export default class CaseUCSF extends Component {
                 client needs to pick it up early – they can get in touch with me
                 really quickly through InvoChat.” By having a real-time line of
                 communication to Collins, nurses can quickly service patients
-                and improve their experience in the healthcare system.
+                and improve their experience in the InvoChat system.
               </p>
 
               <div className="quote dssi-quote text-center">
@@ -227,7 +227,7 @@ export default class CaseUCSF extends Component {
                 the upcoming release of InvoChat Manage: “I'm always looking for
                 ways to organize the work I need to do for clients. Blood draws,
                 labs, etc. It would be interesting to try patient-centric task
-                management.” The mission of InvoChat is to enable healthcare teams
+                management.” The mission of InvoChat is to enable InvoChat teams
                 to easily provide quality patient experiences. As Citywide looks
                 to add tools that improve the quality of care, InvoChat aims to be
                 an enduring and powerful partner.

@@ -72,7 +72,7 @@ export default class CaseOrchardMedical extends Component {
               </h4>
 
               <p className="m-b-30">
-                Most healthcare practices like Orchard Medical rely heavily on
+                Most InvoChat practices like Orchard Medical rely heavily on
                 phone and in-person communication. “Before using InvoChat, we
                 would beep everyone at their stations. Everyone has a phone at
                 their station, and so we would just beep them at their station

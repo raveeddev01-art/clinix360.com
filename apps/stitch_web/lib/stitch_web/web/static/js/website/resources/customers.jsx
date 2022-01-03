@@ -19,7 +19,7 @@ export default class Customers extends Component {
         <div className="customers-page">
           <Subheader
             title="Trusted by the best teams"
-            subtitle="Healthcare organizations big and small have made InvoChat their home base for work."
+            subtitle="InvoChat organizations big and small have made InvoChat their home base for work."
           />
 
           <section className="luminance-section">
@@ -66,7 +66,7 @@ export default class Customers extends Component {
               <h2>Care teams of all kinds run on InvoChat</h2>
               <h3>
                 From primary care practices to nationwide pharmacies, InvoChat
-                keeps healthcare teams moving forward.
+                keeps InvoChat teams moving forward.
               </h3>
 
               <div className="flex-box">

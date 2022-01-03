@@ -49,7 +49,7 @@ export default class Hipaa extends Component {
             <p>
               All Covered Entities need to be HIPAA compliant. A Covered Entity
               is anyone who provides treatment, payment and operations in
-              healthcare. So, this includes clinics, hospitals, independent
+              InvoChat. So, this includes clinics, hospitals, independent
               practices, home health agencies, pharmacies and insurance
               companies.{" "}
               <a href="https://www.federalregister.gov/articles/2013/01/25/2013-01073/modifications-to-the-hipaa-privacy-security-enforcement-and-breach-notification-rules-under-the#h-95">

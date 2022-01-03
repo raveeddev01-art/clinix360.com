@@ -81,7 +81,7 @@ export default class Connect extends Component {
           heading="Get to the right person at the right time"
           image="/images/connect-feature-1.png"
         >
-          Public and private rooms bring healthcare teams together for powerful
+          Public and private rooms bring InvoChat teams together for powerful
           team dialogue. Easily discuss patients, events, tasks and more. Direct
           messages enable instant 1-to-1 communication. No more pagers, texting,
           email or phone calls.
@@ -307,8 +307,8 @@ Connect.propTypes = {
 
 Connect.defaultProps = {
   flipped: false,
-  header: "Healthcare Messaging",
+  header: "InvoChat Messaging",
   subHeader:
     "Message your team, from any device. InvoChat is HIPAA compliant and free to use with an unlimited number of people."
-  // industryBodyText: "healthcare"
+  // industryBodyText: "InvoChat"
 };

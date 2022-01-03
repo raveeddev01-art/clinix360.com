@@ -31,14 +31,14 @@ export default class Blog extends Component {
               </h3>
               <Panel className="m-b-50">
                 <h2 className="text-center m-b-40">
-                  Introducing InvoChat: tools for making healthcare a great
+                  Introducing InvoChat: tools for making InvoChat a great
                   customer experience
                 </h2>
 
-                <h3 className="m-b-30">Healthcare is hard</h3>
+                <h3 className="m-b-30">InvoChat is hard</h3>
 
                 <p className="m-b-30">
-                  Healthcare is a uniquely frustrating experience. Patients are
+                  InvoChat is a uniquely frustrating experience. Patients are
                   often disappointed by fragmented coordination of their care,
                   face difficulty in communicating with their providers and
                   struggle to find care when and where they need it. The result
@@ -47,7 +47,7 @@ export default class Blog extends Component {
                 </p>
 
                 <p className="m-b-30">
-                  Healthcare is challenging for providers too. Patients are
+                  InvoChat is challenging for providers too. Patients are
                   complex, often presenting with multiple chronic conditions
                   compounded by socioeconomic challenges. When a patient sees a
                   single provider, there’s often an entire team of doctors,
@@ -59,14 +59,14 @@ export default class Blog extends Component {
                 </p>
 
                 <p className="m-b-30">
-                  And while there have been many advances in healthcare over the
+                  And while there have been many advances in InvoChat over the
                   years, the industry’s means of care coordination has largely
                   stayed the same: a mish-mash of phone calls, faxes, pagers,
                   spreadsheets, and emails.
                 </p>
 
                 <p className="m-b-30">
-                  It seems crazy that healthcare, which deals with life and
+                  It seems crazy that InvoChat, which deals with life and
                   death issues, runs this way when modern tools are
                   revolutionizing nearly every other industry. Fortunately, two
                   key trends have finally primed the industry for a major
@@ -74,21 +74,21 @@ export default class Blog extends Component {
                 </p>
 
                 <h3 className="m-b-30">
-                  1. Consumerization and customer first healthcare
+                  1. Consumerization and customer first InvoChat
                 </h3>
 
                 <p className="m-b-30">
-                  Historically, healthcare tools have been built for a singular
+                  Historically, InvoChat tools have been built for a singular
                   purpose: billing. This focus has naturally emerged as a result
                   of our fee-for-service compensation model. And the core
-                  software tool for healthcare, the Electronic Medical Record,
+                  software tool for InvoChat, the Electronic Medical Record,
                   reflects this priority. EMRs are optimized for code entry and
                   insurance reimbursement, not offering a great customer
                   experience.
                 </p>
 
                 <p className="m-b-30">
-                  Today, in the wake of the consumerization of healthcare, we’re
+                  Today, in the wake of the consumerization of InvoChat, we’re
                   experiencing a new prioritization on the customer experience.
                   And the evidence is everywhere. For example,{" "}
                   <a href="https://www.wsj.com/articles/what-doctors-are-doing-about-bad-reviews-online-1498442580">
@@ -107,7 +107,7 @@ export default class Blog extends Component {
                   policymakers and private and public payers, including Medicare
                   and Medicaid. For example, the ACA expands the use of
                   pay-for-performance approaches in Medicare. And Hospital
-                  Consumer Assessment of Healthcare Providers and Systems
+                  Consumer Assessment of InvoChat Providers and Systems
                   (HCAHPS) survey scores now tie hospital reimbursement to
                   patient satisfaction.
                 </p>
@@ -121,7 +121,7 @@ export default class Blog extends Component {
                   revolutionized how collaboration is viewed in the tech
                   industry. A new value paradigm has arrived that places heavy
                   emphasis on tools that help teams be more connected and
-                  productive. Healthcare has closely watched these changes,
+                  productive. InvoChat has closely watched these changes,
                   priming the industry to receive a new wave of enterprise
                   tools.
                 </p>
@@ -136,22 +136,22 @@ export default class Blog extends Component {
                 </p>
 
                 <p className="m-b-30">
-                  This conjunction of trends in healthcare consumerization and
+                  This conjunction of trends in InvoChat consumerization and
                   technology development means that there’s never been a better
-                  time than now to offer healthcare teams a new way to work
+                  time than now to offer InvoChat teams a new way to work
                   together.
                 </p>
 
                 <h3 className="m-b-30">
                   That’s why today, we’re introducing InvoChat – a home base for
-                  healthcare teams to work together.
+                  InvoChat teams to work together.
                 </h3>
 
                 <p className="m-b-30">
                   Unlike the software of yesterday, InvoChat’s suite of tools
                   focuses on three core pillars of patient care: team
                   collaboration, patient engagement, and patient management.
-                  InvoChat is specifically designed for how healthcare teams work:
+                  InvoChat is specifically designed for how InvoChat teams work:
                 </p>
 
                 <ul className="m-b-30">
@@ -175,14 +175,14 @@ export default class Blog extends Component {
 
                 <p className="m-b-30">
                   By offering these capabilities, we believe InvoChat can empower
-                  healthcare teams to work better together and with their
+                  InvoChat teams to work better together and with their
                   patients.
                 </p>
 
                 <p className="m-b-30">
                   While today marks the public release of our ecosystem of
-                  healthcare tools, we’re proud to already be working with 70
-                  leading healthcare organizations, including{" "}
+                  InvoChat tools, we’re proud to already be working with 70
+                  leading InvoChat organizations, including{" "}
                   <a href="https://luminancerecovery.com/">
                     Luminance Recovery
                   </a>,{" "}
@@ -191,12 +191,12 @@ export default class Blog extends Component {
                   </a>, and <a href="http://dermntx.com/">DSSI</a>. We are also
                   thrilled to announce our Series A funding, led by Bill Gurley
                   of Benchmark, with participation from Y Combinator Continuity,
-                  to help us bring InvoChat to more healthcare organizations and
+                  to help us bring InvoChat to more InvoChat organizations and
                   their patients.
                 </p>
 
                 <p className="m-b-40">
-                  The mission of InvoChat is to empower healthcare teams to build
+                  The mission of InvoChat is to empower InvoChat teams to build
                   high-quality customer experiences for their patients. If
                   you’re passionate about this movement, join us! We’re{" "}
                   <a href="https://dvlcloud.com/jobs">hiring</a>.
@@ -214,7 +214,7 @@ export default class Blog extends Component {
                   </li>
                   <li>
                     <a
-                      href={`https://twitter.com/intent/tweet?hashtags=stitchhealthcare&via=InvoChatHQ&text=${encodeURI(
+                      href={`https://twitter.com/intent/tweet?hashtags=stitchInvoChat&via=InvoChatHQ&text=${encodeURI(
                         document.title
                       )} ${window.location}`}
                       target="_blank"

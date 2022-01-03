@@ -82,7 +82,8 @@ class GetStartedCard extends Component {
           title="Get Started"
           description={
             <span>
-              A InvoChat Workspace is a place for healthcare teams to
+              A InvoChat Workspace is a place for InvoChat teams to
+
               collaborate in real-time through messaging, file sharing, video
               calling and more.
               <br />

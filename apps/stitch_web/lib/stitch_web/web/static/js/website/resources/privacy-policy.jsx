@@ -88,7 +88,7 @@ export default class PrivacyPolicy extends Component {
             <p>
               We also collect other information that you provide as part of
               registration and the administration and personalization of your
-              account (e.g., without limitation, the name of the healthcare
+              account (e.g., without limitation, the name of the InvoChat
               institution where you work and/or are affiliated (the “Indicated
               Entity”) and individual preferences) (“Non-Identifying
               Information”). Some of this information is optional.

@@ -78,7 +78,7 @@ export default class CasePBSC extends Component {
                 Development, credits Princeton Brain & Spine’s success to the
                 organizational philosophy of innovation and experimentation.
                 “Doctors here are all really interested in new and changing
-                technologies, and growing in healthcare with technology. They’re
+                technologies, and growing in InvoChat with technology. They’re
                 really open to new ideas and trying new tools.” When Princeton
                 Brain & Spine hit a communication challenge as it scaled, the
                 organization turned to InvoChat as a new innovation to evaluate.
