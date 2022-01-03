@@ -82,12 +82,12 @@ class GetStartedCard extends Component {
           title="Get Started"
           description={
             <span>
-              A InvoChat Carespace is a place for InvoChat teams to
+              A InvoChat Workspace is a place for InvoChat teams to
               collaborate in real-time through messaging, file sharing, video
               calling and more.
               <br />
               <br />
-              Are you looking to join an existing Carespace or create a new one?
+              Are you looking to join an existing Workspace or create a new one?
             </span>
           }
           headerCTA="signin"
@@ -99,10 +99,10 @@ class GetStartedCard extends Component {
                   to="/signup/email"
                   className="btn btn-onboarding btn-onboarding-primary"
                 >
-                  Create a New Carespace
+                  Create a New Workspace
                 </Link>
                 <div className="get-started-card-link-description">
-                  Set up your Carespace on InvoChat
+                  Set up your Workspace on InvoChat
                 </div>
               </div>
             )}
@@ -112,10 +112,10 @@ class GetStartedCard extends Component {
                 to={findTeamLink}
                 className="btn btn-onboarding btn-onboarding-inverse"
               >
-                Find Your Carespace
+                Find Your Workspace
               </Link>
               <div className="get-started-card-link-description">
-                Join or sign in to an existing Carespace
+                Join or sign in to an existing Workspace
               </div>
             </div>
           </div>
