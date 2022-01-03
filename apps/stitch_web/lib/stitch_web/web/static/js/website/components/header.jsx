@@ -29,6 +29,10 @@ class Header extends Component {
     window.location.href = `https://${applicationHost}/signin`;
   }
 
+  goToCreate() {
+    window.location.href = `https://${applicationHost}/signup/email`;
+  }
+
   goToGetStarted() {
     window.location.href = `https://${applicationHost}/getstarted`;
   }
@@ -150,7 +154,7 @@ class Header extends Component {
               </LinkContainer>
 
               <MenuItem
-                href="https://help.dvlcloud.com"
+                href="/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -158,7 +162,7 @@ class Header extends Component {
               </MenuItem>
 
               <MenuItem
-                href="https://medium.com/stitch-health"
+                href="/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -167,6 +171,8 @@ class Header extends Component {
             </NavDropdown>
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
+
+            <NavItem onClick={this.goToCreate}>Sign Up</NavItem>
 
             {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
 

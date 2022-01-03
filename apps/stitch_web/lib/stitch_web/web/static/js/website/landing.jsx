@@ -43,6 +43,14 @@ export default class Landing extends Component {
                       Sign In
                     </a>
                   </li>
+                  <li>
+                  <a
+                    href="/signup/email"
+                    className="nav-link btn-outline"
+                >
+                Create Team
+                </a>
+                </li>
 
                   <li>
                     <a href="/getstarted" className="nav-link btn-outline">
