@@ -19,7 +19,7 @@ export default class Jobs extends Component {
 
         <Subheader
           title="Join Us"
-          subtitle="We hire talented, driven people passionate about healthcare and
+          subtitle="We hire talented, driven people passionate about InvoChat and
           technology."
         />
 

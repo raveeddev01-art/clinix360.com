@@ -50,7 +50,7 @@ const placeholderApps = [
     slug: "greenwayhealth",
     name: "Greenway Health",
     description:
-      "We connect providers to the right information and insights, at the right place and time, so they can make patient-driven care a reality while navigating the ever-changing healthcare system.",
+      "We connect providers to the right information and insights, at the right place and time, so they can make patient-driven care a reality while navigating the ever-changing InvoChat system.",
     icon_url:
       "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Greenway+Health.jpg"
   }

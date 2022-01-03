@@ -5,7 +5,7 @@ import PhoneNumberPanel from "../../common/components/phone-number-panel/phone-n
 
 const title = "Phone Number";
 const description =
-  "Your phone number will be used for healthcare provider to contact you.";
+  "Your phone number will be used for InvoChat provider to contact you.";
 
 @inject("currentPatientStore")
 @observer

@@ -16,14 +16,14 @@ export default class Pilot extends Component {
 
         <Subheader
           title="Pilot Program"
-          subtitle="Structured pilot programs for healthcare enterprises."
+          subtitle="Structured pilot programs for InvoChat enterprises."
         />
 
         <div className="pilot-page text-center">
           <div className="pilot-section">
             <div className="container">
               <h3 className="m-b-30">
-                Major healthcare organizations succeed with InvoChat
+                Major InvoChat organizations succeed with InvoChat
               </h3>
 
               <Row>
@@ -62,7 +62,7 @@ export default class Pilot extends Component {
                   <i className="fa fa-sliders" />
                   <h4>Control</h4>
                   <p>
-                    Complex healthcare organizations require powerful and
+                    Complex InvoChat organizations require powerful and
                     efficient administrative oversight. InvoChat provides an
                     enterprise-grade admin panel for user provisioning,
                     permissions controls, group management, data retention
@@ -78,7 +78,7 @@ export default class Pilot extends Component {
               <h3 className="m-b-30">How the pilot program works</h3>
 
               <p>
-                Deploying new technology is challenging for complex healthcare
+                Deploying new technology is challenging for complex InvoChat
                 enterprises. Approval, procurement and adoption on an
                 organization-wide scale can be accelerated by a strong pilot
                 performance. InvoChat’s Pilot Program is a defined, streamlined

@@ -19,7 +19,7 @@ export default class TermsOfService extends Component {
 
             <p>
               InvoChat Technologies, Inc. (“InvoChat” or “we”) provides services for
-              healthcare professionals (the “Services”) through our website,
+              InvoChat professionals (the “Services”) through our website,
               accessible at www.InvoChat.io (the “Site”), and as applications
               for web browsers, mobile devices, tablet computers and similar
               devices (the “Apps”). Please read carefully the following terms
@@ -120,19 +120,19 @@ export default class TermsOfService extends Component {
             </h2>
 
             <p>
-              Access to and use of the Services is limited to healthcare
+              Access to and use of the Services is limited to InvoChat
               professionals who are United States residents and at least 18
               years of age. You must register to create an account (“Account”)
               and become a “Registered User” to use the Services and the Apps.
               You can register via the Site or Apps. To register, you must
-              provide your full name, the name of the healthcare institution
+              provide your full name, the name of the InvoChat institution
               where you work and/or are affiliated (the “Indicated Entity”),
               your email address, and other information specified in the
               registration form (“Registration Data”). By registering, and in
               consideration of the use of the Services, you represent and
               warrant: (i) the Registration Data that you provide about yourself
               is true, accurate, current, and complete; (ii) you are a
-              healthcare professional; (iii) you are at least 18 years of age;
+              InvoChat professional; (iii) you are at least 18 years of age;
               and (iv) you will maintain and promptly update the Registration
               Data to keep it true, accurate, current and complete. You
               authorize InvoChat to confirm the truthfulness and accuracy of the

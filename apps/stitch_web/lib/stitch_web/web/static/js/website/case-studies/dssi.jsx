@@ -96,7 +96,7 @@ export default class CaseDSSI extends Component {
               </p>
 
               <p className="m-b-30">
-                This is a common problem faced by many healthcare organizations:
+                This is a common problem faced by many InvoChat organizations:
                 asynchronous task handling. Providers see patients for extended
                 periods of time throughout the clinical day, but urgent matters
                 of patient care constantly arise while providers conduct
@@ -173,7 +173,7 @@ export default class CaseDSSI extends Component {
                 experienced a new benefit: conversation archival. Spencer
                 explains that ”sometimes you’ll have patients say that you did
                 something, so the archival ability is nice to have from a
-                medical legal standpoint, among other things.” Healthcare teams
+                medical legal standpoint, among other things.” InvoChat teams
                 generally communicate through SMS, sticky notes, phone calls,
                 pagers and faxes, none of which are easily traceable or
                 searchable.

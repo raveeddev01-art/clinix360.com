@@ -14,7 +14,7 @@ class PricingEnterprise extends Component {
         <h3 className="pricing-table-heading text-center">
           <strong>InvoChat for Enterprise</strong> scales the power of team
           collaboration to the nation’s largest hospitals, health systems and
-          healthcare organizations.
+          InvoChat organizations.
         </h3>
 
         <Row>

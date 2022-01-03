@@ -47,7 +47,7 @@ export default class Pricing extends Component {
               </h2>
               <h4>
                 Keep everyone in sync with real-time messaging designed for
-                healthcare teams.
+                InvoChat teams.
               </h4>
             </div>
           </div>
