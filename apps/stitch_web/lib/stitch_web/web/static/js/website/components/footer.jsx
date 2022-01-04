@@ -30,7 +30,7 @@ export default class Footer extends Component {
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="https://help.stitch.health"
+                        href="/"
                       >
                         Help Center
                       </a>

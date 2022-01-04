@@ -207,7 +207,7 @@ class Header extends Component {
                 </LinkContainer>
 
                 <MenuItem
-                  href="https://help.stitch.health"
+                  href="/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
