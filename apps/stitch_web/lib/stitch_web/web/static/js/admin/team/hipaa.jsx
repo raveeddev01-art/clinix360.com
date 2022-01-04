@@ -36,18 +36,18 @@ export default class TeamHipaa extends Component {
             <i className="fa fa-check-circle-o" /> Full HIPAA Rules Compliance
           </li>
         </ul>
-
+{/* need to add url */}
         <p>
           For an explanation of our BAA, see{" "}
           <a
-            href="https://help.dvlcloud.com/connect/security/business-associate-agreement-baa"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
           >
             here
           </a>. For details on our HIPAA compliance, see{" "}
           <a
-            href="https://help.dvlcloud.com/connect/security/hipaa-compliance"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
           >
