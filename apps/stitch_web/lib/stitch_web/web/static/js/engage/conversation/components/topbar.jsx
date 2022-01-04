@@ -99,7 +99,7 @@ class Topbar extends Component {
                 disabled
                 target="_blank"
                 rel="noopener noreferrer"
-                href= "/"
+                href="/"
               >
                 <i className="fa fa-question-circle m-r-5" /> Help Center
               </MenuItem>

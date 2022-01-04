@@ -31,7 +31,6 @@ export default class Footer extends Component {
                       disabled
                         target="_blank"
                         rel="noopener noreferrer"
-
                         href="/"
                       >
                         Help Center
