@@ -18,10 +18,10 @@ const PLANS = {
       annual: 0
     },
     items: [
-      {
-        content: "HIPAA Compliance",
-        beta: false
-      },
+      // {
+      //   content: "HIPAA Compliance",
+      //   beta: false
+      // },
       {
         content: "Public & Private Rooms",
         beta: false

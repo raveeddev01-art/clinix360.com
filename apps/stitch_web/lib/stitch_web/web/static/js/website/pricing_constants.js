@@ -1,12 +1,12 @@
 // Desktop Pricing
 export const PRICING_TABLE = {
   PLATFORM: [
-    {
-      feature: "Full HIPAA Compliance",
-      basic: true,
-      standard: true,
-      premium: true
-    },
+    // {
+    //   feature: "Full HIPAA Compliance",
+    //   basic: true,
+    //   standard: true,
+    //   premium: true
+    // },
     {
       feature: "iOS & Android Apps",
       basic: true,
@@ -220,7 +220,7 @@ export const PRICING_TABLE = {
 export const PRICING_TABLE_MOBILE = {
   BASIC: {
     PLATFORM: [
-      { feature: "Full HIPAA Compliance" },
+      // { feature: "Full HIPAA Compliance" },
       { feature: "iOS & Android Apps" },
       { feature: "Mac & Windows Apps" },
       { feature: "EHR Integrations" },

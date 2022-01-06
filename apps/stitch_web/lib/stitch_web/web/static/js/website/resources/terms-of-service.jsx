@@ -185,8 +185,8 @@ export default class TermsOfService extends Component {
               any and all damages or losses that may be incurred or suffered as
               a result of any activities that occur under your Credentials. You
               agree to immediately notify InvoChat in writing by email to{" "}
-              <a href="mailto:support@stitch.health">
-                support@stitch.health
+              <a href="mailto:info@invozone.com">
+                info@invozone.com
               </a>{" "}
               of any unauthorized use of your Credentials or any other breach of
               security. InvoChat is not and shall not be liable for any harm
@@ -305,8 +305,8 @@ export default class TermsOfService extends Component {
               We welcome and encourage you to provide feedback, comments and
               suggestions for improvements to the Site, Services or Apps
               (“Feedback”). You may submit Feedback by emailing us at
-              <a href="mailto:support@stitch.health">
-                support@stitch.health
+              <a href="mailto:info@invozone.com">
+                info@invozone.com
               </a>. You acknowledge and agree that if you submit any Feedback to
               us, you hereby grant to us a non-exclusive, worldwide, perpetual,
               irrevocable, fully-paid, royalty-free, sub-licensable and
@@ -569,8 +569,8 @@ export default class TermsOfService extends Component {
               the event InvoChat terminates these Terms for your breach, you will
               remain liable for all amounts due hereunder. You may cancel your
               Account at any time by sending an email to{" "}
-              <a href="mailto:support@stitch.health">
-                support@stitch.health
+              <a href="mailto:info@invozone.com">
+                info@invozone.com
               </a>.
             </p>
           </div>
@@ -876,8 +876,8 @@ export default class TermsOfService extends Component {
                 the date you first accepted these Terms (or accepted any
                 subsequent changes to these Terms), you may reject any such
                 change by sending us written notice (including by email to{" "}
-                <a href="mailto:support@stitch.health">
-                  support@stitch.health
+                <a href="mailto:info@invozone.com">
+                  info@invozone.com
                 </a>) within 30 days of the date such change became effective,
                 as indicated in the “Last Updated Date” above or in the date of
                 InvoChat’s email to you notifying you of such change. By rejecting
@@ -921,7 +921,7 @@ export default class TermsOfService extends Component {
               San Francisco, CA<br />
               <a href="tel:+16502823388">(650) 282-3388</a>
               <br />
-              <a href="mailto:support@stitch.health">support@stitch.health</a>
+              <a href="mailto:info@invozone.com">info@invozone.com</a>
             </address>
           </div>
         </div>

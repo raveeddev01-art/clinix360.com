@@ -48,7 +48,7 @@ export const PRODUCTS = {
         annual: 0
       },
       features: [
-        { name: "HIPAA Compliance" },
+        // { name: "HIPAA Compliance" },
         { name: "Public & Private Rooms" },
         { name: "Group & Direct Messaging" },
         { name: "1K Message Search Access" },
@@ -98,7 +98,7 @@ export const PRODUCTS = {
         annual: 0
       },
       features: [
-        { name: "Full HIPAA Compliance" },
+        // { name: "Full HIPAA Compliance" },
         { name: "Patient Messaging" },
         { name: "Assignments" },
         { name: "Search & File Uploads" },
@@ -148,7 +148,7 @@ export const PRODUCTS = {
         annual: 0
       },
       features: [
-        { name: "Full HIPAA Compliance" },
+        // { name: "Full HIPAA Compliance" },
         { name: "Task Creation" },
         { name: "Task Assignments" },
         { name: "1GB Total File Storage" },

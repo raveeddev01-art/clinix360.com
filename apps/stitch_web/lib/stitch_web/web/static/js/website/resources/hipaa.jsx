@@ -11,12 +11,12 @@ export default class Hipaa extends Component {
         <Header />
 
         <Subheader
-          title="HIPAA Compliance"
-          subtitle="Take a look at how we’ve made InvoChat HIPAA compliant right out of the box."
+          title="Compliance"
+          subtitle="Take a look at how we’ve made InvoChat compliant right out of the box."
         />
 
         <div className="container">
-          <div className="copy-section">
+          {/* <div className="copy-section">
             <h2>What is HIPAA?</h2>
 
             <p>
@@ -27,9 +27,9 @@ export default class Hipaa extends Component {
               standards intended to secure the sharing of medical data – also
               known protected health information (PHI).
             </p>
-          </div>
+          </div> */}
 
-          <div className="copy-section">
+          {/* <div className="copy-section">
             <h2>Why is InvoChat HIPAA compliant?</h2>
 
             <p>
@@ -41,9 +41,9 @@ export default class Hipaa extends Component {
               or transmits PHI. These entities are now called Business
               Associates So, companies like InvoChat.
             </p>
-          </div>
+          </div> */}
 
-          <div className="copy-section">
+          {/* <div className="copy-section">
             <h2>Do I need HIPAA compliance?</h2>
 
             <p>
@@ -60,9 +60,9 @@ export default class Hipaa extends Component {
               communication experience where you don’t have to worry about
               security and can focus on what you do best: care for patients.
             </p>
-          </div>
+          </div> */}
 
-          <div className="copy-section">
+          {/* <div className="copy-section">
             <h2>How does InvoChat achieve HIPAA compliance?</h2>
 
             <p className="m-b-20">
@@ -155,7 +155,7 @@ export default class Hipaa extends Component {
                 </span>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           <div className="copy-section">
             <h2>Can I see more information on InvoChat’s technical security?</h2>

@@ -16,7 +16,7 @@ export default class NotFound extends Component {
             Sorry, but the page you were looking for could not be found.
           </p>
           <p className="not-found-text">
-            You can return to our homepage or <a href="mailto:support@stitch.health">email us </a>
+            You can return to our homepage or <a href="mailto:info@invozone.com">email us </a>
             if you can't find what you're looking for.
           </p>
         </div>

@@ -11,7 +11,7 @@ import SettingPanel from "../../../admin/components/setting-panel/setting-panel"
 
 const title = "Password";
 const description =
-  "Set a new password. You'll be prompted to meet HIPAA security requirements.";
+  "Set a new password. You'll be prompted to meet security requirements.";
 
 class PasswordPanel extends Component {
   constructor(props) {

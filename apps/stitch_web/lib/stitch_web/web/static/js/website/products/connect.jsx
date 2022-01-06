@@ -277,7 +277,7 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Message securely</h4>
                     <p>
                       Directly name patients and share patient files to
-                      collaborate more efficiently with HIPAA compliance.
+                      collaborate more efficiently with compliance.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -309,6 +309,6 @@ Connect.defaultProps = {
   flipped: false,
   header: "InvoChat Messaging",
   subHeader:
-    "Message your team, from any device. InvoChat is HIPAA compliant and free to use with an unlimited number of people."
+    "Message your team, from any device. InvoChat is compliant and free to use with an unlimited number of people."
   // industryBodyText: "InvoChat"
 };

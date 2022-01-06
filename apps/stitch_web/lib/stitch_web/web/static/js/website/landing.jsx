@@ -68,7 +68,7 @@ export default class Landing extends Component {
             <Row>
               <Col md={5}>
                 <div className="landing-message">
-                  <h1>Care Coordination</h1>
+                  <h1>Work Coordination</h1>
                   <h3>
                     Communicate, write notes, track tasks, upload files, and
                     collaborate on any device.
@@ -94,11 +94,11 @@ export default class Landing extends Component {
         <div id="footer">
           <div className="container">
             <Row>
-              <Col sm={4}>Stitch Technologies, Inc</Col>
+              <Col sm={4}>InvoChat Technologies, Inc</Col>
               <Col sm={8}>
                 <ul className="list-inline m-b-0 text-right">
                   <li>
-                    <Link to="/hipaa">HIPAA</Link>
+                    <Link to="/">InvoChat</Link>
                   </li>
                   <li>
                     <Link to="/privacy-policy">Privacy Policy</Link>

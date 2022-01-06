@@ -43,7 +43,7 @@ export default class Homepage extends Component {
                 <h3 className="m-b-30">
                 InvoChat is an app for InvoChat teams to send internal
                   messages, communicate with patients and track daily tasks —
-                  fully HIPAA compliant and free to use.
+                  fully compliant and free to use.
                 </h3>
 
                 <CreateTeam />
