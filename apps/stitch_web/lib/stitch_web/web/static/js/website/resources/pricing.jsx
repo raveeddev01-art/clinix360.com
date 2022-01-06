@@ -61,7 +61,7 @@ export default class Pricing extends Component {
 
             <h4 className="text-center m-b-0">
               Need to deploy Connect across a large organization?{" "}
-              <a href="mailto:support@dvlcloud.com">Contact us</a> for
+              <a href="mailto:info@invozone.com">Contact us</a> for
               Enterprise pricing.
             </h4>
           </div>
@@ -89,7 +89,11 @@ export default class Pricing extends Component {
 
             <h4 className="text-center m-b-0">
               Need to deploy Engage across a large organization?{" "}
+<<<<<<< HEAD
               <a href="mailto:support@dvlcloud.com">Contact us</a> for
+=======
+              <a href="mailto:info@invozone.com">Contact us</a> for
+>>>>>>> e423510b4... remove hippa and change url to info@invozone.com
               Enterprise pricing.
             </h4>
           </div>
@@ -117,7 +121,11 @@ export default class Pricing extends Component {
 
             <h4 className="text-center m-b-0">
               Need to deploy Manage across a large organization?{" "}
+<<<<<<< HEAD
               <a href="mailto:support@dvlcloud.com">Contact us</a> for
+=======
+              <a href="mailto:info@invozone.com">Contact us</a> for
+>>>>>>> e423510b4... remove hippa and change url to info@invozone.com
               Enterprise pricing.
             </h4>
           </div>

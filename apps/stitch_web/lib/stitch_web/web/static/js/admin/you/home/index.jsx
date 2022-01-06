@@ -38,7 +38,7 @@ export default class YouHome extends Component {
         <HomeItem
           icon="fa-shield"
           title="Security"
-          description="Access and download your team's HIPAA settings, BAA contract, and compliance exports."
+          description="Access and download your team's settings, BAA contract, and compliance exports."
           openButtonText="Open"
           link="/admin/team/security"
         />

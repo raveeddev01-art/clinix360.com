@@ -25,11 +25,11 @@ class HipaaCard extends Component {
     return (
       <div className="onboarding-hipaa">
         <OnboardPage
-          title="HIPAA"
+          title=""
           description={
             <span>
               By checking the box above, you represent that you agree to the
-              terms of the HIPAA Business Associate Agreement.
+              terms of the Business Associate Agreement.
             </span>
           }
           loading={saving}
@@ -42,7 +42,7 @@ class HipaaCard extends Component {
             onChange={this.onChange}
             className="m-b-20"
           >
-            I agree to the terms of the HIPAA BAA
+            I agree to the terms
           </Checkbox>
 
           <HelpBlock className="onboarding-hint m-b-20">

@@ -111,12 +111,12 @@ class WebsiteRouter extends Component {
               path="/customers/orchard-medical-associates"
               component={withTitle(customersTitle, CaseOrchardMedical)}
             />
-            <Route exact path="/baa" component={Baa} />
+            {/* <Route exact path="/baa" component={Baa} />
             <Route
               exact
               path="/hipaa"
               component={withTitle(hipaaTitle, Hipaa)}
-            />
+            /> */}
             <Route exact path="/privacy-policy" component={PrivacyPolicy} />
             <Route exact path="/terms-of-service" component={TermsOfService} />
 
