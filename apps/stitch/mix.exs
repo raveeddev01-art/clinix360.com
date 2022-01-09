@@ -39,11 +39,12 @@ defmodule Stitch.Mixfile do
   defp deps do
     [
       {:ecto, "~> 2.2"},
+      {:phoenix, "~> 1.3.0"},
       {:postgrex, "~> 0.13.3"},
       {:redix, "~> 0.7.0"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
-      {:ex_aws, "~> 2.0"},
+      {:ex_aws, "~> 2.2.5"},
       {:ex_aws_s3, "~> 2.0.2"},
       {:sweet_xml, "~> 0.6.6"},
       {:ex_machina, "~> 2.4.0", only: :test},
