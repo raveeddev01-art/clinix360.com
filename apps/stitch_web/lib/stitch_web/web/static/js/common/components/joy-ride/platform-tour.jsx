@@ -43,7 +43,7 @@ class PlatformTour extends Component {
         target: ".admin-content-wrapper",
         content: (
           <p>
-            InvoChat is a care coordination platform for InvoChat teams.
+            InvoChat is a work coordination platform for InvoChat teams.
             Communicate, write notes, track tasks and upload files on any
             device.
           </p>

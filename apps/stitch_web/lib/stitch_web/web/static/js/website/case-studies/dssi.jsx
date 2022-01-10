@@ -76,7 +76,7 @@ export default class CaseDSSI extends Component {
               </p>
 
               <h4 className="m-b-30">
-                Real-time care coordination is a challenge
+                Real-time work coordination is a challenge
               </h4>
 
               <p className="m-b-30">
@@ -99,7 +99,7 @@ export default class CaseDSSI extends Component {
                 This is a common problem faced by many InvoChat organizations:
                 asynchronous task handling. Providers see patients for extended
                 periods of time throughout the clinical day, but urgent matters
-                of patient care constantly arise while providers conduct
+                of patient work constantly arise while providers conduct
                 consultations or perform procedures.
               </p>
 

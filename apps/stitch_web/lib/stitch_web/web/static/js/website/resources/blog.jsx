@@ -60,7 +60,7 @@ export default class Blog extends Component {
 
                 <p className="m-b-30">
                   And while there have been many advances in InvoChat over the
-                  years, the industry’s means of care coordination has largely
+                  years, the industry’s means of work coordination has largely
                   stayed the same: a mish-mash of phone calls, faxes, pagers,
                   spreadsheets, and emails.
                 </p>

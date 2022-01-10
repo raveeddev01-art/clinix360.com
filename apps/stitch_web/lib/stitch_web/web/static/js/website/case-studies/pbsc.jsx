@@ -153,7 +153,7 @@ export default class CasePBSC extends Component {
                 check-in, consultation, billing, scheduling and follow-up. With
                 the entire team able to coordinate on each individual patient,
                 Princeton Brain & Spine saw reductions in their patient wait
-                times through improved care coordination.
+                times through improved work coordination.
               </p>
 
               <div className="infographic text-center">

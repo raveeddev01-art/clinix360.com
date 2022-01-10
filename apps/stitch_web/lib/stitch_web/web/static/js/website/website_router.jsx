@@ -29,9 +29,9 @@ import Industry from "./industries/industry";
 
 // PAGE TITLES
 // if changed, sync with backend (home_controller)
-const defaultTitle = "Care Coordination | InvoChat";
+const defaultTitle = "Work Coordination | InvoChat";
 const demoTitle = "Request a Demo | InvoChat";
-const connectTitle = "Care Coordination | InvoChat";
+const connectTitle = "Work Coordination | InvoChat";
 const engageTitle = "Engage | InvoChat";
 const manageTitle = "Manage | InvoChat";
 const pricingTitle = "Pricing | InvoChat";

@@ -20,7 +20,7 @@ export default class TeamImport extends Component {
         <br />
         <Row className="m-b-20">
           <Col md={10} className="import-app-option">
-            <img src="/images/invochat mono.png" alt="InvoChat logo" />
+            <img src="/images/invochat-mono.png" alt="InvoChat logo" />
             <div>
               <h4>
                 <strong>InvoChat</strong>

@@ -134,7 +134,7 @@ export default class CaseOrchardMedical extends Component {
               <h4 className="m-b-30">Unblocking the clinical workflow</h4>
 
               <p className="m-b-40">
-                InvoChat has changed the way care coordination happens at Orchard
+                InvoChat has changed the way work coordination happens at Orchard
                 Medical. “Now, we just InvoChat the MA and say ‘Susan is returning
                 your call on Line 1.’ This way, when the MA is done, they have
                 the message in front of them and they'll just pick up the phone

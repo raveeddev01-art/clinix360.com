@@ -74,7 +74,7 @@ export default class Downloads extends Component {
                             >
                               <img
                                 className="mobile-app-img"
-                                src="/images/app logo.png"
+                                src="/images/app-logo.png"
                                 alt="Connect for iOS"
                               />
                             </a>
@@ -105,7 +105,7 @@ export default class Downloads extends Component {
                             >
                               <img
                                 className="mobile-app-img"
-                                src="/images/app logo.png"
+                                src="/images/app-logo.png"
                                 alt="Connect for Android"
                               />
                             </a>
