@@ -30,7 +30,7 @@ export default class PricingDesktop extends Component {
             <div className="pricing-table__row tiers">
               <div className="pricing-table__item">
                 <img
-                  src="/images/logo-blue.svg"
+                  src="/images/invochat mono.png"
                   alt="InvoChat"
                   className="img img-responsive"
                 />

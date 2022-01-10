@@ -13,7 +13,7 @@ export default class Footer extends Component {
             <Col sm={2} md={3}>
               <img
                 className="stitch-logo"
-                src="/images/logo-blue.svg"
+                src="/images/invochat logo.png"
                 alt="InvoChat"
               />
             </Col>

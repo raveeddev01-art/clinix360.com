@@ -1,0 +1,13 @@
+2022-01-07 13:46:14.319 PKT [3691] LOG:  starting PostgreSQL 13.5 on x86_64-apple-darwin21.1.0, compiled by Apple clang version 13.0.0 (clang-1300.0.29.3), 64-bit
+2022-01-07 13:46:14.321 PKT [3691] LOG:  listening on IPv6 address "::1", port 5432
+2022-01-07 13:46:14.321 PKT [3691] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2022-01-07 13:46:14.322 PKT [3691] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2022-01-07 13:46:14.325 PKT [3692] LOG:  database system was shut down at 2022-01-07 13:46:10 PKT
+2022-01-07 13:46:14.327 PKT [3691] LOG:  database system is ready to accept connections
+2022-01-07 13:46:23.484 PKT [3876] ERROR:  database "stitch_connect_dev" does not exist
+2022-01-07 13:46:23.484 PKT [3876] STATEMENT:  DROP DATABASE "stitch_connect_dev"
+2022-01-07 15:21:23.838 PKT [14199] ERROR:  database "stitch_connect_dev" already exists
+2022-01-07 15:21:23.838 PKT [14199] STATEMENT:  CREATE DATABASE "stitch_connect_dev" ENCODING 'UTF8'
+2022-01-07 15:28:45.909 PKT [15277] ERROR:  database "stitch_connect_dev" already exists
+2022-01-07 15:28:45.909 PKT [15277] STATEMENT:  CREATE DATABASE "stitch_connect_dev" ENCODING 'UTF8'
+2022-01-09 16:33:57.145 PKT [33939] LOG:  could not receive data from client: Connection reset by peer
