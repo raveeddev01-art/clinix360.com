@@ -84,6 +84,9 @@ defmodule Stitch.Web do
         Phoenix.Transports.WebSocket,
         timeout: 45_000,
         check_origin: [
+          "//*.invochat.io",
+          "//*.dev.invochat.io",
+          "//*.localhost.app",
           "//*.teamstitch-staging.com",
           "//*.teamstitchapp.com",
           "//*.dvlcloud.com",
