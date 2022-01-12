@@ -117,11 +117,11 @@ class Header extends Component {
         <Navbar id="header" inverse fixedTop className={blueNav}>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to="/" className="brand">
+              <Link to="/" className="brand custom-brand">
                 {this.props.blueNav ? (
-                  <img src="/images/high-res.png" alt="InvoChat" max-width="100%" max-height="205%"/>
+                  <img src="/images/invo_logo.png" alt="InvoChat"/>
                 ) : (
-                  <img src="/images/high-res.png" alt="InvoChat" max-width="100%" max-height="205%"/>
+                  <img src="/images/invo_logo.png" alt="InvoChat"/>
                 )}
               </Link>
             </Navbar.Brand>
@@ -184,7 +184,7 @@ class Header extends Component {
           <div className="header">
             <div className="container">
               <Link className="brand" to="/">
-                <img src="/images/high-res.png" alt="InvoChat" width="1063px" height="251px"/>
+                <img src="/images/invo_logo.png" alt="InvoChat" width="1063px" height="251px"/>
               </Link>
 
               <a className="close-menu" onClick={this.mobileNavToggle}>

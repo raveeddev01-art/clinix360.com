@@ -24,7 +24,7 @@ class PricingEnterprise extends Component {
                 <div className="enterprise-contact-us">
                   <img
                     className="stitch-logo m-b-50"
-                    src="/images/high-res.png"
+                    src="/images/invo_logo.png"
                     alt="InvoChat"
                   />
                 </div>
