@@ -8,11 +8,12 @@ defmodule Stitch.AWS.S3 do
   @spec upload(binary) :: {:ok, map} | {:error, term}
   def upload(path) do
     object_name = Path.basename(path)
-
+    IO.inspect(object_name, label: "here is object_name")
     path
     |> ExAws.S3.Upload.stream_file()
     |> ExAws.S3.upload(@s3.bucket, object_name, encryption: "AES256")
     |> ExAws.request()
+    |> IO.inspect(label: "here is end of upload")
   end
 
   @spec upload_avatar(binary, binary) :: {:ok, map} | {:error, term}
@@ -25,7 +26,7 @@ defmodule Stitch.AWS.S3 do
 
   @spec download(binary, binary) :: {:ok, :done} | {:error, term}
   def download(filename, dest) do
-    ExAws.S3.download_file(@s3.bucket, filename, dest) |> ExAws.request()
+    ExAws.S3.download_file(@s3.bucket, filename, dest) |> IO.inspect(label: "here is before") |> ExAws.request() |> IO.inspect(label: "here is after")
   end
 
   @spec avatar_path(binary) :: binary
