@@ -60,6 +60,9 @@ defmodule Stitch.Files.Thumb do
 
   @spec generate_preview(binary) :: Mogrify.Image.t()
   def generate_preview(origin) do
+
+    try do
+
     origin
     |> IO.inspect(label: "in generate preview")
     |> open
@@ -68,7 +71,9 @@ defmodule Stitch.Files.Thumb do
     |> IO.inspect(label: "resize limit")
     |> save
     |> IO.inspect(label: "in generate preview save end")
-
+    catch
+      e -> IO.inspect(e, label: "here is error")
+    end
   end
 
   defp get_filename(url) do
