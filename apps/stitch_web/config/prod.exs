@@ -17,7 +17,7 @@ config :stitch_web, Stitch.Web.Endpoint,
   load_from_system_env: true,
   http: [
     port: {:system, "STITCH_CONNECT_APP_PORT"},
-    protocol_options: [timeout: 5_000_000],
+    # protocol_options: [timeout: 5_000_000],
     compress: true
   ],
   url: [scheme: "https", host: System.get_env("STITCH_CONNECT_APP_HOST"), port: 443],
