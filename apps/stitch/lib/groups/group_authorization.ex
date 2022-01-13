@@ -128,8 +128,7 @@ defmodule Stitch.GroupAuthorization do
         IO.inspect("can-message 1")
         member_ids = GroupUser.user_ids(group.id)
         IO.inspect("can-message 2")
-        personal_dm?(member_ids, user_id) || any_member_enabled?(member_ids, user_id)
-        |> IO.inspect(label: "can-message 3")
+        personal_dm?(member_ids, user_id) |> IO.inspect(label: "personal_Dm") || any_member_enabled?(member_ids, user_id) |> IO.inspect(label: "any member")
       else
         true
       end

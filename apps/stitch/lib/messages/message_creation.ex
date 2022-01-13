@@ -50,6 +50,8 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
+    IO.inspect("here is messages cretions 2")
+        IO.inspect(upload, label: "here is upload 2")
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
       message = %Message{group: group, user: user, upload: upload}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
