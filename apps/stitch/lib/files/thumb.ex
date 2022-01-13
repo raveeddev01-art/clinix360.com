@@ -65,6 +65,7 @@ defmodule Stitch.Files.Thumb do
     |> open
     |> IO.inspect(label: "opening generate preview")
     |> resize_to_limit("#{@settings.max_preview_width}x#{@settings.max_preview_height}")
+    |> IO.inspect(label: "resize limit")
     |> save
     |> IO.inspect(label: "in generate preview save end")
 
