@@ -35,6 +35,9 @@ defmodule Stitch.AWS.S3 do
 
   def fullpath(file \\ "", dir \\ "") do
     object = Path.join(dir, Path.basename(file))
+    IO.inspect(object, label: "object")
+    IO.inspect(file, label: "here is file")
+    IO.inspect(dir, label: "here is dir")
     "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
   end
 
