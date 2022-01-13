@@ -36,6 +36,8 @@ defmodule Stitch.Message.MessageCreation do
         upload_comment,
         opts
       ) do
+        IO.inspect("here is messages cretions")
+        IO.inspect(upload, label: "here is upload")
     with {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
       message = %Message{group: group, user: user, upload: upload, upload_comment: upload_comment}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
