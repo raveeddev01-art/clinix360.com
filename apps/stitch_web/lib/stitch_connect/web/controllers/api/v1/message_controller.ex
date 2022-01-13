@@ -124,9 +124,9 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     IO.inspect(" check - 3")
     authenticated_urls = get_authenticated_urls(message_params)
-    IO.inspect(" check - 4")
+    |> IO.inspect(label: " check - 4")
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
-    IO.inspect(" check - 5", label: message_params_with_client)
+    |> IO.inspect(label: "check - 5")
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <-
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
