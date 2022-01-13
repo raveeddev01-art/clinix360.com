@@ -80,10 +80,14 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def do_create(message, attrs, presence, opts \\ %{}) do
+    IO.inpsect("do-create 1")
     user = message.user
     group = Repo.preload(message.group, :users)
+    IO.inpsect("do-create 2")
+
     users = group.users
     text_content = attrs["text_content"] || ""
+    IO.inpsect("do-create 3")
 
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
