@@ -7,6 +7,7 @@ defmodule Stitch.AWS.S3 do
 
   @spec upload(binary) :: {:ok, map} | {:error, term}
   def upload(path) do
+    IO.inspect(path, label: "here is path")
     object_name = Path.basename(path)
     IO.inspect(object_name, label: "here is object_name")
     path
