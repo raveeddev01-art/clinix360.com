@@ -69,6 +69,7 @@ defmodule Stitch.Files.Thumb do
   defp get_filename(url) do
     IO.inspect("get_filename")
     IO.inspect(url, label: "here is url")
+    IO.inspect(URI.parse(url), label: "here is path")
     with %{path: path} <- URI.parse(url) do
       {:ok, Path.basename(path)} |> IO.inspect(label: "here is path basename")
     end
