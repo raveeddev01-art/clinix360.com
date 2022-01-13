@@ -126,7 +126,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     authenticated_urls = get_authenticated_urls(message_params)
     IO.inspect(" check - 4")
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
-    IO.inspect(" check - 5")
+    IO.inspect(" check - 5", label: message_params_with_client)
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <-
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
