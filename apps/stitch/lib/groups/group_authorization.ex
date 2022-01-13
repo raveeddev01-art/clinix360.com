@@ -123,6 +123,7 @@ defmodule Stitch.GroupAuthorization do
   def can_message?(%Group{} = group, user_id) do
     IO.inspect("start can message")
     if is_member?(group.id, user_id) do
+      IO.inspect(group.name, label: "here is group name")
       if Group.direct_message?(group) do
         IO.inspect("can-message 1")
         member_ids = GroupUser.user_ids(group.id)
