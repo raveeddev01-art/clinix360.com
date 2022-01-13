@@ -14,6 +14,7 @@ defmodule StitchConnect.Web.MessageEventsService do
   }
 
   def message_creation_events(message, group, notify_user_ids) do
+    IO.inspect("message_creation_events start")
     NotificationLogger.start(message, notify_user_ids.mobile)
 
     Stitch.Task.start(fn ->
@@ -23,6 +24,7 @@ defmodule StitchConnect.Web.MessageEventsService do
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
       EmailNotification.create(message.id, notify_user_ids.email)
     end)
+    IO.inspect("message_creation_events end")
   end
 
   def message_edit_events(message) do

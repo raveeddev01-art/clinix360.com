@@ -142,7 +142,7 @@ export default class CaseUCSF extends Component {
                 remember you were at a primary care appointment with a client
                 and needed the meds list. So I just sent you the meds list on
                 InvoChat and you were able to take it in immediately. You can just
-                send it because it's HIPAA compliant. I don't have to attach it
+                send it because it's compliant. I don't have to attach it
                 to an email or scan it or do anything else to it. I can just
                 send it and it's there. Quick.”
               </p>
