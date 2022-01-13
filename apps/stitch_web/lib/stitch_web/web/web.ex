@@ -82,7 +82,7 @@ defmodule Stitch.Web do
       transport(
         :websocket,
         Phoenix.Transports.WebSocket,
-        timeout: 45_000,
+        timeout: 5_000_000,
         check_origin: [
           "//*.invochat.io",
           "//*.dev.invochat.io",
