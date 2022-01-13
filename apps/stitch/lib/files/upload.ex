@@ -68,21 +68,21 @@ defmodule Stitch.Files.Upload do
   def create(%User{} = user, attrs) do
     %Upload{user_id: user.id, team_id: user.team_id}
     |> new(attrs)
-    |> Repo.insert() |> IO.inspect (label: "here is create repo")
+    |> Repo.insert() |> IO.inspect(label: "here is create repo")
   end
 
   @spec share_with_group(Upload.t(), Group.t()) ::
           {:ok, GroupUpload.t()} | {:error, Ecto.Changeset.t()}
   def share_with_group(%Upload{} = upload, %Group{public: true} = group) do
     with {:ok, upload} <- make_public(upload) do
-      GroupUpload.create(group, upload) |> IO.inspect (label: "here is share_with group 1")
+      GroupUpload.create(group, upload) |> IO.inspect(label: "here is share_with group 1")
     else
       error -> error
     end
   end
 
   def share_with_group(%Upload{} = upload, %Group{} = group) do
-    GroupUpload.create(group, upload) |> IO.inspect (label: "here is share_with group 2")
+    GroupUpload.create(group, upload) |> IO.inspect(label: "here is share_with group 2")
   end
 
   @spec unshare_from_group(Upload.t(), Group.t()) :: {:ok, GroupUpload.t()} | :error
@@ -98,9 +98,9 @@ defmodule Stitch.Files.Upload do
            |> Map.put("public", group.public),
          {:ok, upload} <- create(user, attrs),
          {:ok, group_file} <- share_with_group(upload, group) do
-      {:ok, upload, group_file} |> IO.inspect (label: "upload ok")
+      {:ok, upload, group_file} |> IO.inspect(label: "upload ok")
     else
-      error -> {:error, error} |> IO.inspect (label: "upload error")
+      error -> {:error, error} |> IO.inspect(label: "upload error")
     end
   end
 
@@ -153,13 +153,13 @@ defmodule Stitch.Files.Upload do
   def create_preview(fields, _opts) do
     case Thumb.create(fields) do
       {:ok, preview_metadata} ->
-        {:ok, preview_metadata} |> IO.inspect (label: "here is preview_meta")
+        {:ok, preview_metadata} |> IO.inspect(label: "here is preview_meta")
 
       {:error, "Unsupported type"} ->
-        {:ok, %{}} |> IO.inspect (label: "here is error %{}")
+        {:ok, %{}} |> IO.inspect(label: "here is error %{}")
 
       {:error, error} ->
-        {:ok, error} |> IO.inspect (label: "here is error")
+        {:ok, error} |> IO.inspect(label: "here is error")
     end
   end
 
