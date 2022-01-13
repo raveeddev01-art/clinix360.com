@@ -8,6 +8,7 @@ defmodule Stitch.Files.Thumb do
   def create(%{"mimetype" => "image/tiff"}), do: {:error, "Unsupported type"}
 
   def create(%{"url" => url, "mimetype" => "image/" <> _image}) do
+    IO.inspect("here is thumb 1")
     with {:ok, filename} <- get_filename(url),
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(filename, dest),
@@ -46,7 +47,7 @@ defmodule Stitch.Files.Thumb do
         "preview_url" => S3.fullpath(preview_path)
       }
 
-      {:ok, preview}
+      {:ok, preview} |> IO.inspect(label: "here is thumb create end")
     else
       error ->
         {:error, error}
@@ -66,8 +67,10 @@ defmodule Stitch.Files.Thumb do
   end
 
   defp get_filename(url) do
+    IO.inspect("get_filename")
+    IO.inspect(url, label: "here is url")
     with %{path: path} <- URI.parse(url) do
-      {:ok, Path.basename(path)}
+      {:ok, Path.basename(path)} |> IO.inspect(label: "here is path basename")
     end
   end
 end
