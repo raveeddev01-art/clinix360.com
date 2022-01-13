@@ -518,7 +518,7 @@ defmodule Stitch.Group do
   """
   @spec direct_message?(Group.t()) :: boolean
   def direct_message?(%Group{name: name}) when name in @dm_groups, do: true
-  def direct_message?(%Group{}), do: false
+  def direct_message?(%Group{}) do false end
 
   @doc """
   Returns string depending on type of group.
