@@ -62,7 +62,7 @@ defmodule Stitch.Accounts.ProfileImage do
          {:ok, %{status_code: 200}} <- S3.upload_avatar(preview_path, avatar_name),
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
-      {:ok, S3.avatar_path(avatar_name)}
+      {:ok, S3.avatar_path(avatar_name)} |> IO.inspect(label: "name of avatar")
     else
       error ->
         {:error, error}
