@@ -266,8 +266,9 @@ defmodule Stitch.Accounts.User do
   def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
     case ProfileImage.create_thumb(url) do
       {:ok, profile_image_thumb_url} ->
+        IO.inspect("incase true")
         put_change(changeset, :profile_image_thumb_url, profile_image_thumb_url)
-
+        |> IO.inspect(label: "incase true end")
       {:error, _error} ->
         changeset
     end

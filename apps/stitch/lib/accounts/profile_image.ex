@@ -76,7 +76,9 @@ defmodule Stitch.Accounts.ProfileImage do
     origin
     |> open
     |> resize_to_limit("#{@thumb.width}x#{@thumb.height}")
+    |> IO.inspect(label: "here is resizing")
     |> save
+    |> IO.inspect(label: "end with save")
   end
 
   defp get_filename(url) do

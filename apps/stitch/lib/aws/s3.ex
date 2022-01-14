@@ -40,11 +40,11 @@ defmodule Stitch.AWS.S3 do
     IO.inspect(object, label: "object")
     IO.inspect(file, label: "here is file")
     IO.inspect(dir, label: "here is dir")
-    if object == "" do
-    "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
-    else
+    # if object == "" do
+    # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
+    # else
       "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
-    end
+    # end
   end
 
   @spec basepath(binary) :: {:ok, binary}

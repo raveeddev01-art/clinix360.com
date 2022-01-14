@@ -12,5 +12,6 @@ defmodule Stitch.UserAuthorization do
     else
       _ -> false
     end
+    |> IO.inspect(label: "can_update_user")
   end
 end
