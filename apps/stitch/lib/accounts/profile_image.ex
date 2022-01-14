@@ -60,8 +60,9 @@ defmodule Stitch.Accounts.ProfileImage do
          %Mogrify.Image{path: preview_path} <- generate_preview(dest),
          avatar_name = String.downcase(Rand.token(32)) <> extname,
          {:ok, %{status_code: 200}} <- S3.upload_avatar(preview_path, avatar_name),
-         :ok <- File.rm(dest),
-         :ok <- File.rm(preview_path) do
+         :ok <- File.rm(dest) |> IO.inspect(label: "file rm 1"),
+         :ok <- File.rm(preview_path) |> IO.inspect(label: "file rm 2") do
+          IO.inspect(avatar_name, label: "avatar_name")
       {:ok, S3.avatar_path(avatar_name)} |> IO.inspect(label: "name of avatar")
     else
       error ->
