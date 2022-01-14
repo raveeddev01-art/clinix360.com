@@ -254,11 +254,13 @@ defmodule Stitch.Accounts.User do
     |> unsafe_validate_unique([:username, :team_id], Repo)
     |> unique_constraint(:username, name: :users_username_team_id_index)
   end
-
   def profile_image_changeset(struct, params) do
     struct
     |> cast(params, [:profile_image_url])
+    |> IO.inspect(label: "after cast")
     |> add_thumb()
+    |> IO.inspect(label: "after add thumb")
+
   end
 
   def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
