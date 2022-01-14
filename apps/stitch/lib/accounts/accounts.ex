@@ -122,8 +122,14 @@ defmodule Stitch.Accounts do
 
   def update_profile_image(user_id, url) do
     User
+    |> IO.inspect(label: "user")
+
     |> Repo.get(user_id)
+    |> IO.inspect(label: " get user")
+
     |> User.profile_image_changeset(%{"profile_image_url" => url})
+    |> IO.inspect(label: "user changeset")
+
     |> Repo.update()
     |> IO.inspect(label: "after update_profile_image accounts repo")
   end
