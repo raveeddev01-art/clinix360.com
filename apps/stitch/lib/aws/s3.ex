@@ -36,7 +36,8 @@ defmodule Stitch.AWS.S3 do
 
   @spec avatar_path(binary) :: binary
   def avatar_path(object_name) do
-    Path.join(@avatar.origin, object_name)
+    IO.inspect(@avatar.origin, label: "here is @avatar.origin")
+    Path.join(@avatar.origin, object_name) |> IO.inspect(label: "avatar paths")
   end
 
   def fullpath(file \\ "", dir \\ "") do
