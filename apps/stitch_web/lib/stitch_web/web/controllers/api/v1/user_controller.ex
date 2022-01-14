@@ -93,6 +93,7 @@ defmodule Stitch.Web.Api.V1.UserController do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(current_user, user_id),
          {:ok, user} <- Admin.update_user(user_id, params, user_id == current_user.id) do
+          IO.inspect("in u")
       TeamChannel.broadcast_user_info(conn.assigns.team, user)
       render(conn, "update.json", user: user)
     else
@@ -282,10 +283,14 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
+    IO.inspect("in upload_profile_image")
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Accounts.update_profile_image(user_id, url) do
-      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+    IO.inspect("in upload_profile_image after with")
+
+
+    TeamChannel.broadcast_user_info(conn.assigns.team, user) |> IO.inspect(label: "after broadcast_user_info ")
       conn |> render("show.json", user: user)
     else
       false ->
