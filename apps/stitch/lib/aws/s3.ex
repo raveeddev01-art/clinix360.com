@@ -21,8 +21,12 @@ defmodule Stitch.AWS.S3 do
   def upload_avatar(path, object_name) do
     path
     |> ExAws.S3.Upload.stream_file()
+    |> IO.inspect(label: "update file stream")
     |> ExAws.S3.upload(@avatar.bucket, object_name, encryption: "AES256")
+    |> IO.inspect(label: "update in bucket")
     |> ExAws.request()
+    |> IO.inspect(label: "update_avatar end")
+
   end
 
   @spec download(binary, binary) :: {:ok, :done} | {:error, term}
