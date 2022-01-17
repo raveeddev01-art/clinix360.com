@@ -7,6 +7,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
     Patient,
     Accounts.User,
     PatientQueries,
+    LinkPreviewGenerator,
     Message.Reaction,
     Message.LinkPreview,
     Engage.Conversation,
@@ -194,6 +195,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
         ConversationQueries.load_message_info(updated_conversation_message)
 
       ConversationChannel.broadcast_message_edited(updated_message_with_assocs)
+      LinkPreviewGenerator.queue(updated_message_with_assocs)
 
       render(conn, "show.json", conversation_message: updated_message_with_assocs)
     else
@@ -450,6 +452,7 @@ defmodule StitchEngage.Web.Api.V1.ConversationMessageController do
       )
 
       ConversationChannel.broadcast_message_created(conversation_message)
+      LinkPreviewGenerator.queue(conversation_message)
       update_patient_unread_conversations(conversation)
 
       StitchEngage.Web.ConversationMessageEventsService.conversation_message_creation_events(

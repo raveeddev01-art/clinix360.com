@@ -2,8 +2,10 @@ defmodule StitchConnect.Web.GroupChannel do
   use Stitch.Web, :channel
   import Ecto.Query
   alias Stitch.Accounts.{User, ActivityTracker}
+  alias Stitch.LinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
   alias Stitch.Web.Api.V1.FileView
+  alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
 
@@ -233,6 +235,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
     case message && Message.update(message, params) do
       {:ok, message} ->
+        LinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
         MessageEventsService.message_edit_events(message)
         json = MessageView.render("show.json", %{message: message})
@@ -570,6 +573,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
       case Message.create(group, user, attrs, presence_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
+          LinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
           message = Repo.preload(message, :upload, force: true)
 
