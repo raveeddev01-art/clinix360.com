@@ -7,8 +7,11 @@ defmodule Stitch.Web.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
-      supervisor(Stitch.Web.Endpoint, []),
-      supervisor(Stitch.Web.Presence, [])
+      {Phoenix.PubSub, [name: StitchConnect.PubSub, adapter: Phoenix.PubSub.PG2]},
+      Stitch.Web.Endpoint,
+      Stitch.Web.Presence
+      # supervisor(Stitch.Web.Endpoint, []),
+      # supervisor(Stitch.Web.Presence, [])
       # Start your own worker by calling: StitchConnect.Worker.start_link(arg1, arg2, arg3)
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
     ]

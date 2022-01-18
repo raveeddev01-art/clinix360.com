@@ -39,7 +39,7 @@ defmodule Stitch.Mixfile do
   defp deps do
     [
       {:ecto, "~> 2.2"},
-      {:phoenix, "~> 1.3.0"},
+      {:phoenix, "~> 1.6"},
       {:postgrex, "~> 0.13.3"},
       {:redix, "~> 0.7.0"},
       {:comeonin, "~> 4.0"},
@@ -62,8 +62,8 @@ defmodule Stitch.Mixfile do
       {:ua_inspector, "~> 0.17"},
       {:murmur, "~> 1.0.1"},
       {:exq, "~> 0.11.0"},
-      {:exq_ui, "~> 0.9.0"},
-      {:plug_cowboy, "~> 1.0"},
+      {:exq_ui, "~> 0.12.0"},
+      {:plug_cowboy, "~> 2.0"},
       {:elasticsearch, "~> 0.4.1"}
     ]
   end
