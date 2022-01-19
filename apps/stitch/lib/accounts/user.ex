@@ -135,8 +135,11 @@ defmodule Stitch.Accounts.User do
 
       case user_update do
         {:ok, user} ->
+          IO.inspect(user, label: "here is user in user.ex")
+          IO.inspect(params["group_preferences"], label: "here is params group_preferences")
+
           group_preferences = params["group_preferences"]
-          if group_preferences, do: GroupUser.batch_preference_update(group_preferences, user)
+          if group_preferences, do: GroupUser.batch_preference_update(group_preferences, user) |> IO.inspect(label: "group update for user")
           %{user: user}
 
         {:error, changeset} ->

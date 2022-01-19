@@ -100,6 +100,7 @@ defmodule Stitch.Accounts.Email do
     |> subject("[InvoChat Connect] Notifications from #{team_name} *|userTime|*")
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
     |> Stitch.NewMailer.deliver_now()
+    |> IO.inspect(label: "here is sending email after time setting")
   end
 
   defp unread_messages_for_recipient(%{

@@ -65,6 +65,7 @@ defmodule Stitch.UserQueries do
     initial_query
     |> where(email_notification_preference: ^preference)
     |> where(disabled: false)
+    |> IO.inspect(label: "here is user that set time for email")
   end
 
   @doc """

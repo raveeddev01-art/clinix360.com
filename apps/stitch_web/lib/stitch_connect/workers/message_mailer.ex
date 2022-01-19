@@ -23,6 +23,7 @@ defmodule StitchConnect.MessageMailer do
     |> Stitch.ChunkStream.chunk(50)
     |> Stream.each(&deliver_for_users(&1, team))
     |> Stream.run()
+    |> IO.inspect(label: "stream run for email notificaiton")
   end
 
   def deliver_for_users(users, team) do
