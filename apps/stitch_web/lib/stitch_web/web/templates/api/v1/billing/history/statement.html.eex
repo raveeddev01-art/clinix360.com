@@ -85,7 +85,7 @@
   <body>
     <div class="wrapper">
       <div class="header">
-        <img src="https://dvlcloud.com/images/invo_logo.png" />
+        <img src="https://dvlcloud.com/images/invochat-600.png" />
       </div>
       <div class="container">
         <b><%= @today %></b>

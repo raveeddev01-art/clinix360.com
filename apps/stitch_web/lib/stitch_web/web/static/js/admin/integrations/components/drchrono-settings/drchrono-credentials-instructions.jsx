@@ -19,7 +19,7 @@ class DrChronoCredentialsInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 1"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-1-invo_logo.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-1-invochat-600.png"
               />
             </div>
           </Col>
@@ -38,7 +38,7 @@ class DrChronoCredentialsInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 2"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-2-invo_logo.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-2-invochat-600.png"
               />
             </div>
           </Col>
@@ -58,7 +58,7 @@ class DrChronoCredentialsInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 3"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-3-invo_logo.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-3-invochat-600.png"
               />
               <DrChronoRedirectUri />
             </div>

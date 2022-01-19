@@ -35,7 +35,7 @@ class AuthenticationHeader extends Component {
 
     return (
       <a href={dest} className="brand custom-brand">
-        <img src="/images/invo_logo.png" alt="InvoChat" />
+        <img src="/images/invochat-600.png" alt="InvoChat" />
       </a>
     );
   }

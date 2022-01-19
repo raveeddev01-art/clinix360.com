@@ -23,7 +23,7 @@ class DrChronoSetupInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 4"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-4-invo_logo.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-4-invochat-600.png"
               />
             </div>
             <DrChronoWebhookUrl />
@@ -48,7 +48,7 @@ class DrChronoSetupInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 5"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-5-invo_logo.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-5-invochat-600.png"
               />
             </div>
           </Col>
