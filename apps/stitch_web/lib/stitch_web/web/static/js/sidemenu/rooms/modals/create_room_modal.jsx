@@ -163,7 +163,7 @@ class CreateRoomModal extends Component {
               <FormControl
                 name="name"
                 type="text"
-                placeholder="e.g. Emergency Room"
+                placeholder="e.g. General Room"
                 maxLength="25"
                 value={name}
                 onKeyPress={this.cleanName}
@@ -186,7 +186,7 @@ class CreateRoomModal extends Component {
             <Col sm={9}>
               <FormControl
                 name="reference"
-                placeholder="e.g. #emergency-room"
+                placeholder="e.g. #general-room"
                 value={this.getSlug()}
                 disabled
               />
