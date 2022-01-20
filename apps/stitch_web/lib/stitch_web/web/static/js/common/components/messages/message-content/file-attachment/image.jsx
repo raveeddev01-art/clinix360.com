@@ -61,7 +61,7 @@ class ImageFileAttachment extends Component {
       placeholderStyle = {
         width: width / ratio,
         paddingTop: `${height / width * 100}%`,
-        backgroundImage: `url(${previewUrl})`
+        backgroundImage: `url(${url})`
       };
       holderStyle = {
         maxHeight: Math.min(height, 360) // constraint holder size for when paddingTop is bigger than height
