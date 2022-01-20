@@ -52,7 +52,7 @@ defmodule Stitch.Web.Mixfile do
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.3"},
       {:quantum, ">= 2.2.7"},
-      {:sweet_xml, "~> 0.6.5"},
+      {:sweet_xml, "~> 0.7"},
       {:stitch, in_umbrella: true},
       {:appsignal, "~> 1.5"},
       {:wallaby, "~> 0.19.2", only: :test},
