@@ -119,9 +119,9 @@ class Header extends Component {
             <Navbar.Brand>
               <Link to="/" className="brand custom-brand">
                 {this.props.blueNav ? (
-                  <img src="/images/invochat-600.png" alt="InvoChat"/>
+                  <img src="/images/invochat-logo-blue.png" alt="InvoChat"/>
                 ) : (
-                  <img src="/images/invochat-600.png" alt="InvoChat"/>
+                  <img src="/images/invochat-logo-blue.png" alt="InvoChat"/>
                 )}
               </Link>
             </Navbar.Brand>
@@ -183,8 +183,8 @@ class Header extends Component {
         <nav id="mobile-nav" className={mobileNavClasses}>
           <div className="header">
             <div className="container">
-              <Link className="brand" to="/">
-                <img src="/images/invochat-600.png" alt="InvoChat" width="1063px" height="251px"/>
+              <Link className="brand custom-brand" to="/">
+                <img src="/images/invochat-logo-blue.png" alt="InvoChat" width="1063px" height="251px"/>
               </Link>
 
               <a className="close-menu" onClick={this.mobileNavToggle}>

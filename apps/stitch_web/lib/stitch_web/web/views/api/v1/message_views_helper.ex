@@ -24,7 +24,7 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
   def render_fields(%{type: "file_share"} = message, false, files_endpoint) do
     message.fields
     |> put_preview_presigned_url(false, message.id, files_endpoint)
-    |> put_download_link(true, message.id, files_endpoint)
+    |> put_download_link(false, message.id, files_endpoint)
   end
 
   def render_fields(%{type: "file_share"} = message, true, files_endpoint) do
