@@ -108,18 +108,17 @@ defmodule Stitch.Accounts.ProfileImage do
   """
   # @spec pick_default_random(User.t()) :: {:ok, binary}
   def pick_default_random(%{first_name: first_name, last_name: last_name} = _user) do
-    "xyz.png"
-    # with {:ok, image_path} <- create_from_initials(first_name, last_name),
-    #      {:ok, %{status_code: 200}} <- S3.upload(image_path),
-    #      {:ok, grey_image_path} <- create_from_initials_grey(first_name, last_name),
-    #      {:ok, %{status_code: 200}} <- S3.upload(grey_image_path),
-    #      :ok <- File.rm(image_path),
-    #      :ok <- File.rm(grey_image_path) do
-    #   {:ok, S3.fullpath(image_path)}
-    # else
-    #   error ->
-    #     {:error, error}
-    # end
+    with {:ok, image_path} <- create_from_initials(first_name, last_name),
+         {:ok, %{status_code: 200}} <- S3.upload(image_path),
+         {:ok, grey_image_path} <- create_from_initials_grey(first_name, last_name),
+         {:ok, %{status_code: 200}} <- S3.upload(grey_image_path),
+         :ok <- File.rm(image_path),
+         :ok <- File.rm(grey_image_path) do
+      {:ok, S3.fullpath(image_path)}
+    else
+      error ->
+        {:error, error}
+    end
   end
 
   def pick_default_random(), do: Enum.random(@default_profile_images)
