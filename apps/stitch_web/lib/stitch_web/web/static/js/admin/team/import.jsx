@@ -84,7 +84,7 @@ export default class TeamImport extends Component {
           </Col>
         </Row>
 
-        <Row className="m-b-20">
+        {/* <Row className="m-b-20">
           <Col md={10} className="import-app-option">
             <img src="/images/import-hipchat-logo.png" />
             <div>
@@ -104,7 +104,7 @@ export default class TeamImport extends Component {
               Request Import
             </Button>
           </Col>
-        </Row>
+        </Row> */}
       </SettingPanel>
     );
   }

@@ -172,7 +172,7 @@ class Header extends Component {
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
-            <NavItem onClick={this.goToCreate}>Sign Up</NavItem>
+            <NavItem onClick={this.goToCreate}>Create Workspace</NavItem>
 
             {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
 
