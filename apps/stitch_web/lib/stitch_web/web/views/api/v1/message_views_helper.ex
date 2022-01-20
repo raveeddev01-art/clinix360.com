@@ -30,8 +30,10 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
   def render_fields(%{type: "file_share"} = message, true, files_endpoint) do
     encoded_file_id = Upload.encode_url_id(%Upload{id: message.upload_id})
     filename = Map.get(message.fields, "filename", fn -> Stitch.Rand.token(8) end)
+    message.fields  |> IO.inspect(label: "fields_message")
+    # preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
+    preview_url = put_preview_presigned_url(message.fields, false, message.id, files_endpoint) |> IO.inspect(label: "put_preview_presigned_url")
     url = files_file_url(files_endpoint, :download, encoded_file_id, filename)
-    preview_url = put_preview_presigned_url(message.fields, false, message.id, files_endpoint)
 
     message.fields
     |> Map.merge(%{
