@@ -37,7 +37,6 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
     |> Map.merge(%{
       "url" => url,
       "api_url" => api_v1_message_path(@endpoint, :download, message.id),
-      "preview_url" => preview_url,
       "public_url" => get_public_token(message)
     })
   end
