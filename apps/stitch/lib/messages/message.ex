@@ -51,7 +51,9 @@ defmodule Stitch.Message do
 
     belongs_to(:call, Call)
     belongs_to(:upload, Upload)
-    belongs_to(:upload_comment, UploadComment)
+    # belongs_to(:upload_comment, UploadComment)
+    belongs_to(:messages, Message)
+
     embeds_many(:link_previews, LinkPreview, on_replace: :delete)
 
     timestamps()
@@ -158,13 +160,20 @@ defmodule Stitch.Message do
 
   def create(%Group{} = group, user, attrs, presence_user_ids) do
     attrs = Map.put_new(attrs, "type", "chat")
-    IO.inspect(attrs, label: "here is attrs")
+    IO.inspect(attrs, label: " group here is attrs")
     MessageCreation.create(group, user, attrs, presence_user_ids) |> IO.inspect(label: "MessageCreation")
+  end
+
+  def create(%Message{} = message, user, attrs, presence_user_ids) do
+    attrs = Map.put_new(attrs, "type", "chat")
+    IO.inspect(attrs, label: "message here is attrs")
+    MessageCreation.create(message, user, attrs, presence_user_ids) |> IO.inspect(label: "MessageCreation")
   end
 
   def create(group_id, user, attrs, presence_user_ids) do
     group = GroupQueries.get_by_id(group_id)
     attrs = Map.put_new(attrs, "type", "chat")
+    IO.inspect(attrs, label: "group_id here is attrs")
     MessageCreation.create(group, user, attrs, presence_user_ids)
   end
 

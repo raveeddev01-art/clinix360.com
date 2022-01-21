@@ -276,6 +276,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
     scope "/files/:upload_id" do
       resources("/comments", FileCommentController, only: [:create])
+      # post("/comments", MessageController, only: [:create)
     end
 
     resources("/file_comments", FileCommentController, only: [:update, :delete])
@@ -479,6 +480,11 @@ defmodule Stitch.Web.SubdomainRouter do
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_api)
+
+    scope "/messages/:id" do
+      resources("/comments", MessageController, only: [:create])
+      # post("/comments", MessageController, only: [:create)
+    end
 
     get("/groups/:group_id/messages", MessageController, :index)
     get("/groups/:group_id/feed_recent", MessageController, :feed_recent)
