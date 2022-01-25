@@ -83,7 +83,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
       MessageEventsService.message_creation_events(message, message.group, notify_user_ids)
       conn
       |> put_status(:created)
-      |> render("show.json", message: message, authenticated_urls: authenticated_urls)
+      |> render("show.json", file_comment: message)
     else
       {:message, _} ->
         {:error, :not_found, "The room you are looking for does not exist."}

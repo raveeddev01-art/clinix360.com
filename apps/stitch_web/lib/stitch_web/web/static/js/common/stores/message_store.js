@@ -1125,14 +1125,16 @@ class MessageStore extends BaseMessageStore {
         // this.scrollToBottom(null, 0, 0);
 
         const message_comment = {
-            text_content: messageText,
-            request_id: tempMessage.id,
-            thread: true
+            file_comment: {
+                text_content: messageText,
+                request_id: tempMessage.id,
+                thread: true
+            }
         };
-        // const body = { message_comment: { text_content: text, thread: true, } };
+        const body = { file_comment: { text_content: text, thread: true, } };
         console.log(message_comment, "messagecomment")
-        return post(`/api/v1/messages/${this.message.id}/comments`, {
-            message_comment,
+        return post(`/api/v1/files/${this.message.id}/comments`, {
+            body,
             hideNotify: true
         }).then(response => {
             this.file.comments = uniqBy([...this.message.comments, response.data], "id");

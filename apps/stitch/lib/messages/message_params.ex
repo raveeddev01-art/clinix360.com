@@ -35,11 +35,7 @@ defmodule Stitch.Message.Params do
   def with_client_attrs(conn, params) do
     IO.inspect(params, label: "here is params in with_client_attrs")
     ua = parse_conn(conn)
-    param_map = %{
-      "request_id" => "K9l1sYG-R",
-      "text_content" => params,
-      "thread" => true
-    }
+
 
     client_params = %{
       "client_device_type" => device_type(ua),
@@ -47,6 +43,6 @@ defmodule Stitch.Message.Params do
       "client_name" => client_name(ua)
     }
 
-    Map.merge(client_params, param_map) |> IO.inspect(label: "here is message_params")
+    Map.merge(client_params, params) |> IO.inspect(label: "here is message_params")
   end
 end
