@@ -548,3 +548,21 @@ i.fa {
 #mobile-nav .header .custom-brand {
     padding: 0 !important;
 }
+
+@media only screen and (max-width: 600px) {
+    .authentication-page .authentication-header .navbar-header {
+        padding-left: 3px !important;
+    }
+}
+
+.password-formgroup {
+    position: relative;
+}
+
+.password-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
+    z-index: 9999;
+    cursor: pointer;
+}
