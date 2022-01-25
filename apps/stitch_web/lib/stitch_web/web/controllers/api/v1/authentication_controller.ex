@@ -21,7 +21,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
 
     case Authentication.validate_user_email_and_password(email, password, team) do
       false ->
-        {:error, :not_authorized, "Email or password is incorrect."}
+        {:error, :not_authorized, "Incorrect password."}
 
       %User{disabled: true} ->
         {:error, :not_authorized, "This account is disabled - contact your workspace admin."}
