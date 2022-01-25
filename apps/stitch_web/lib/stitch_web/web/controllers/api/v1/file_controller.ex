@@ -48,7 +48,8 @@ defmodule Stitch.Web.Api.V1.FileController do
 
   def do_show(conn, upload_id) do
     current_user = conn.assigns.current_user
-
+# need to change her for getting messages
+    # with {:upload, %Message{} = upload} <- {:message, MessageQueries.get_by_id(upload_id)},
     with {:upload, %Upload{} = upload} <-
            {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true, _} <-

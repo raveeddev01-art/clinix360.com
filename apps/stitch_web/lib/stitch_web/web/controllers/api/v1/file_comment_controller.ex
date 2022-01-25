@@ -65,7 +65,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
 
   ################## test
 
-  def create(conn, %{"file_comment" => %{"text_content" => message_params}, "message_id" => message_id}) do
+  def create(conn, %{"file_comment" => %{"text_content" => message_params}, "upload_id" => message_id}) do
     IO.inspect(message_params, label: "here is message_params")
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)

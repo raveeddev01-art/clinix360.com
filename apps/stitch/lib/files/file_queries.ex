@@ -105,7 +105,8 @@ defmodule Stitch.Files.FileQueries do
 
   def get_by_id(upload_id, preload_assoc: true) do
     upload_comments_query =
-      UploadComment
+      # UploadComment
+      Message
       |> order_by([uc], uc.inserted_at)
 
     result =

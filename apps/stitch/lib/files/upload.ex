@@ -25,7 +25,7 @@ defmodule Stitch.Files.Upload do
     belongs_to(:team, Team)
     has_many(:group_uploads, GroupUpload)
     # has_many(:upload_comments, UploadComment)
-    # has_many(:messages, Message)
+    has_many(:messages, Message)
     has_many(:groups, through: [:group_uploads, :groups])
     field(:filename, :string)
     field(:url, :string)
