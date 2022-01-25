@@ -62,7 +62,7 @@ export default class Connect extends Component {
 
                 <h3 className="m-b-30">{subHeader}</h3>
 
-                <Button bsStyle="primary" href="mailto:feedback@dvlcloud.com?subject=Stitch: Request Information">Request Information</Button>
+                <Button bsStyle="primary" href="mailto:info@invozone.com?subject=InvoChat: Request Information">Request Information</Button>
               </div>
 
               <div className="flex-item">
