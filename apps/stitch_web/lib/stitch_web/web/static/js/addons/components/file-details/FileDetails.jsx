@@ -13,6 +13,7 @@ import FileInfo from "common/components/file/FileInfo";
 class FileDetails extends Component {
   onFileDownload = e => {
     const { file } = this.props.teamFileStore;
+    console.log(this.props, "this.props files")
     const { desktopStore } = this.props;
 
     if (desktopStore.isElectron) {
@@ -54,6 +55,8 @@ class FileDetails extends Component {
 
   render() {
     const { file } = this.props.teamFileStore;
+
+  console.log(this.props, "this.props files")
 
     if (!file.id) return null;
 

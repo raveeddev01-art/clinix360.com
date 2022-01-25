@@ -99,13 +99,22 @@ class MessageActions extends PureComponent {
     this.props.teamFileStore.openShareModal(message.upload_id);
   };
 
-  showComments = () => {
+  showFileComments = () => {
     const { addonStore, message } = this.props;
 
     addonStore.setAddonPanel("files");
     addonStore.toggleAddons(true);
     addonStore.toggleAddonDetail(true);
     addonStore.setAddonDetailPanel("File Details", message.upload_id);
+  };
+
+  showMessageComments = () => {
+    const { addonStore, message } = this.props;
+
+    addonStore.setAddonPanel("thread");
+    addonStore.toggleAddons(true);
+    addonStore.toggleAddonDetail(true);
+    addonStore.setAddonDetailPanel("Message Details", message);
   };
 
   markAsUnread = () => {
@@ -200,15 +209,22 @@ class MessageActions extends PureComponent {
         </OverlayTrigger>
 
         {!isConversationMessage &&
-          (message.type === "upload" || message.type === "file_comment") && (
+          (
             <OverlayTrigger
               placement="top"
               delayShow={150}
               overlay={<Tooltip id="file-comments">Add Comment</Tooltip>}
             >
-              <Button onClick={this.showComments}>
+              {(message.type === "upload" || message.type === "file_comment") ? (
+              <Button onClick={this.showFileComments}>
                 <i className="fa fa-comments" />
               </Button>
+              ) :
+              (
+                <Button onClick={this.showMessageComments}>
+                <i className="fa fa-comments" />
+              </Button>
+              )}
             </OverlayTrigger>
           )}
 

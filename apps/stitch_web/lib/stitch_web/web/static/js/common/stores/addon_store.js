@@ -1,99 +1,102 @@
 import { observable, action } from "mobx";
 
 class AddonStore {
-  @observable showAddons = false;
-  @observable showAddonDetail = false;
-  @observable addonPanelType = null;
-  @observable addonPanelData = null;
-  @observable addonPanelTab = null;
-  @observable detailPanelType = null;
-  @observable detailPanelData = null;
+    @observable showAddons = false;
+    @observable showAddonDetail = false;
+    @observable addonPanelType = null;
+    @observable addonPanelData = null;
+    @observable addonPanelTab = null;
+    @observable detailPanelType = null;
+    @observable detailPanelData = null;
 
-  constructor(rootStore) {
-    this.rootStore = rootStore;
-  }
-
-  @action
-  toggleAddons(value) {
-    if (typeof value !== "undefined") {
-      this.showAddons = value;
-    } else {
-      this.showAddons = !this.showAddons;
+    constructor(rootStore) {
+        this.rootStore = rootStore;
     }
 
-    // when addon panel is closed, collapse pin msgs
-    if (!this.showAddons) {
-      this.rootStore.pinnedMessageStore.onCollapse(false);
-      this.rootStore.filesStore.onCollapseChange(false);
-    }
-  }
+    @action
+    toggleAddons(value) {
+        if (typeof value !== "undefined") {
+            this.showAddons = value;
+        } else {
+            this.showAddons = !this.showAddons;
+        }
 
-  @action
-  setAddonPanelTab(panelType, panelTab) {
-    this.addonPanelTab = panelTab;
-
-    switch (panelType) {
-      case "files":
-        this.rootStore.teamFilesStore.setUserFilter(
-          panelTab === "all" ? undefined : currentUser.id,
-          true
-        );
-        break;
-      default:
-    }
-  }
-
-  @action
-  setAddonPanel(panelType, panelData, panelTab) {
-    if (panelType || panelData) {
-      this.addonPanelType = panelType;
-      this.addonPanelData = panelData;
-      this.addonPanelTab = panelTab;
+        // when addon panel is closed, collapse pin msgs
+        if (!this.showAddons) {
+            this.rootStore.pinnedMessageStore.onCollapse(false);
+            this.rootStore.filesStore.onCollapseChange(false);
+        }
     }
 
-    this.showAddonDetail = false;
+    @action
+    setAddonPanelTab(panelType, panelTab) {
+        this.addonPanelTab = panelTab;
 
-    switch (this.addonPanelType) {
-      case "starred":
-        this.rootStore.globalStarredMessageStore.loadStarredMessages();
-        break;
-
-      case "mentions":
-        this.rootStore.mentionsStore.loadMore();
-        break;
-
-      case "files":
-        this.rootStore.filesStore.onCollapseChange();
-        this.setAddonPanelTab(panelType, panelTab || "all");
-        break;
-
-      default:
-    }
-  }
-
-  @action
-  toggleAddonDetail(value) {
-    if (typeof value !== "undefined") {
-      this.showAddonDetail = value;
-    } else {
-      this.showAddonDetail = !this.showAddonDetail;
-    }
-  }
-
-  @action
-  setAddonDetailPanel(panelType, panelData) {
-    if (panelType || panelData) {
-      this.detailPanelType = panelType;
-      this.detailPanelData = panelData;
+        switch (panelType) {
+            case "files":
+                this.rootStore.teamFilesStore.setUserFilter(
+                    panelTab === "all" ? undefined : currentUser.id,
+                    true
+                );
+                break;
+            default:
+        }
     }
 
-    switch (panelType) {
-      case "File Details":
-        this.rootStore.teamFileStore.load(panelData);
-        break;
-      default:
+    @action
+    setAddonPanel(panelType, panelData, panelTab) {
+        if (panelType || panelData) {
+            this.addonPanelType = panelType;
+            this.addonPanelData = panelData;
+            this.addonPanelTab = panelTab;
+        }
+
+        this.showAddonDetail = false;
+
+        switch (this.addonPanelType) {
+            case "starred":
+                this.rootStore.globalStarredMessageStore.loadStarredMessages();
+                break;
+
+            case "mentions":
+                this.rootStore.mentionsStore.loadMore();
+                break;
+
+            case "files":
+                this.rootStore.filesStore.onCollapseChange();
+                this.setAddonPanelTab(panelType, panelTab || "all");
+                break;
+
+            default:
+        }
     }
-  }
+
+    @action
+    toggleAddonDetail(value) {
+        if (typeof value !== "undefined") {
+            this.showAddonDetail = value;
+        } else {
+            this.showAddonDetail = !this.showAddonDetail;
+        }
+    }
+
+    @action
+    setAddonDetailPanel(panelType, panelData) {
+        if (panelType || panelData) {
+            this.detailPanelType = panelType;
+            this.detailPanelData = panelData;
+        }
+
+        switch (panelType) {
+            case "File Details":
+                this.rootStore.teamFileStore.load(panelData);
+                break;
+            case "Message Details":
+                this.rootStore.messageStore.load(panelData);
+                break;
+            default:
+        }
+    }
 }
 
 export default AddonStore;

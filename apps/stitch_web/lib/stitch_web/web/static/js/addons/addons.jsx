@@ -6,6 +6,7 @@ import Info from "./components/info/info";
 import Directory from "./components/directory/directory";
 import MessageSearch from "./components/message-search/message-search";
 import FileDetails from "./components/file-details/FileDetails";
+import MessageDetails from "./components/message-details/MessageDetails";
 import GlobalStarredMessages from "./components/global-starred-messages/global-starred-messages";
 
 import PeopleDetail from "./components/people-detail/people-detail";
@@ -83,6 +84,7 @@ class Addons extends Component {
               <GlobalStarredMessages />
             )}
             {addonStore.addonPanelType === "files" && <Files />}
+            {addonStore.addonPanelType === "thread" && <Files />}
             {addonStore.addonPanelType === "Updates" && <Updates />}
             {addonStore.addonPanelType === "downloads" && <FileDrawer />}
           </div>
@@ -90,6 +92,9 @@ class Addons extends Component {
           <div className={rightPanelClass}>
             {addonStore.detailPanelType === "File Details" && (
               <FileDetails fileId={addonStore.detailPanelData} />
+            )}
+            {addonStore.detailPanelType === "Message Details" && (
+              <MessageDetails message={addonStore.detailPanelData} />
             )}
             {addonStore.detailPanelType === "people" && (
               <PeopleDetail user={addonStore.detailPanelData} />
