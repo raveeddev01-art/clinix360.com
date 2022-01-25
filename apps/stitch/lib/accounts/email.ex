@@ -8,7 +8,7 @@ defmodule Stitch.Accounts.Email do
   alias Stitch.Accounts.{User, Role}
 
   @guest_roles Role.guests()
-  @from_address {"InvoChat", "support@teamstitch.com"}
+  @from_address {"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"}
   @doc """
   Sends confirmation code email to the user.
   """
