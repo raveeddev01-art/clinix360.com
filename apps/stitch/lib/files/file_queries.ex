@@ -105,14 +105,15 @@ defmodule Stitch.Files.FileQueries do
 
   def get_by_id(upload_id, preload_assoc: true) do
     upload_comments_query =
-      UploadComment
+      # UploadComment
+      Message
       |> order_by([uc], uc.inserted_at)
 
     result =
       Upload
       |> where([u], u.id == ^upload_id)
       |> preload([:group_uploads])
-      |> preload(upload_comments: ^upload_comments_query)
+      |> preload(messages: ^upload_comments_query)
       |> Repo.one()
 
     case result do
@@ -127,7 +128,7 @@ defmodule Stitch.Files.FileQueries do
   @spec file_comment_messages(UploadComment.t()) :: [Message.t()]
   def file_comment_messages(%UploadComment{} = upload_comment) do
     Message
-    |> where([m], m.upload_comment_id == ^upload_comment.id)
+    |> where([m], m.messages_id == ^upload_comment.id)
     |> Repo.all()
   end
 
