@@ -83,7 +83,7 @@ defmodule Stitch.Accounts.Email do
     new_email()
     |> to(user.email)
     |> from({"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
-    |> subject("ACTION REQUIRED: Please reset your Stitch password")
+    |> subject("ACTION REQUIRED: Please reset your Invochat password")
     |> text_body("Hello #{user.first_name}
     Please hit the link to chnage password #{reset_url}
     ")
