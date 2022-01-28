@@ -165,7 +165,7 @@ class Sidemenu extends Component {
                   <Tooltip id="tooltip-preferences">Preferences</Tooltip>
                 }
               >
-                <i className="fa fa-chevron-down" />
+                <i className="fa fa-chevron-down dropdown-chevron"/>
               </OverlayTrigger>
             </Dropdown.Toggle>
 
