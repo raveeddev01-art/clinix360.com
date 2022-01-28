@@ -65,7 +65,8 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
 
   ################## test
 
-  def create(conn, %{"file_comment" => %{"text_content" => message_params}, "upload_id" => message_id}) do
+  def create(conn, %{"file_comment" => %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}, "upload_id" => message_id}) do
+    message_params = %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}
     IO.inspect(message_params, label: "here is message_params")
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
@@ -80,7 +81,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
       # create_optional_upload_comment(message, message, current_user, presence, message_params)
       message = MessageQueries.get_by_id(message.id)
       IO.inspect(message, label: "here is message in file_comment_ci=ontroller")
-      MessageEventsService.message_creation_events(message, message.group, notify_user_ids)
+      MessageEventsService.message_comment_creation_events(message, message.group, notify_user_ids)
       conn
       |> put_status(:created)
       |> render("show.json", file_comment: message)

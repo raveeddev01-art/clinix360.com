@@ -88,12 +88,13 @@ defmodule StitchConnect.Web.GroupChannel do
       else
         MessageQueries.group_latest_messages(group.id, user, opts)
       end
+      |> IO.inspect(label: "rendered_messages --->>> ")
 
     messages_json =
       MessageView.render("index.json", %{
         messages: messages,
         authenticated_urls: authenticated_urls
-      })
+      })|> IO.inspect(label: "rendered_messages_json --->>> ")
 
     group_user = GroupUser.get(group.id, user.id)
 
@@ -385,6 +386,12 @@ defmodule StitchConnect.Web.GroupChannel do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message, true)
     endpoint_broadcast(group, "new_msg", message_json)
+  end
+
+  def broadcast_message_comment_created(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message, true)
+    endpoint_broadcast(group, "new_comment", message_json)
   end
 
   def broadcast_message_pinned(message) do

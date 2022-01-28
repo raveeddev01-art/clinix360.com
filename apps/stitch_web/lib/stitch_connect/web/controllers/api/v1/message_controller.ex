@@ -422,4 +422,19 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     query_opts = Keyword.put(query_opts, :fetch_users, get_fetch_users_param(conn.params))
     assign(conn, :query_opts, query_opts)
   end
+
+
+  def show(conn, %{"id" => message_id}) do
+    current_user = conn.assigns.current_user
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
+    {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, current_user)} do
+      render(conn, "show.json", %{message: message, authenticated_urls: true})
+    else
+      {:authorized?, false} ->
+          {:error, :not_authorized, "You can't see the messages for this room."}
+
+      _ ->
+        {:error, :not_found}
+    end
+  end
 end

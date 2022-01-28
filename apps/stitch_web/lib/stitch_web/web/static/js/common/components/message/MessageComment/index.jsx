@@ -15,7 +15,7 @@ const isOwner = comment => {
   return comment.user_id === currentUser.id;
 };
 
-@inject("usersStore", "teamFileStore")
+@inject("usersStore", "teamFileStore", "messageStore")
 @observer
 class MessageComment extends Component {
   constructor(props) {
@@ -59,9 +59,11 @@ class MessageComment extends Component {
     const { comment, teamFileStore } = this.props;
     const { commentText } = this.state;
 
-    teamFileStore.updateComment(comment.id, commentText).then(() => {
-      this.setState({ editing: false });
-    });
+    // teamFileStore.updateComment(comment.id, commentText).then(() => {
+    //   this.setState({ editing: false });
+    // });
+    const { messageStore } = this.props;
+    messageStore.finishEdit();
   };
 
   renderActions() {

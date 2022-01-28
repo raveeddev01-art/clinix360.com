@@ -6,12 +6,12 @@ import MessageCommentInput from "common/components/message/MessageCommentInput";
 import MessageCommentGroup from "common/components/message/MessageCommentGroup";
 import MessageInfo from "common/components/message/MessageInfo";
 
-@inject("teamFileStore", "usersStore", "groupsStore", "desktopStore")
+@inject("messageStore", "usersStore", "groupsStore", "desktopStore")
 @observer
 class MessageDetails extends Component {
 
   render() {
-    const { message } = this.props;
+    const { message } = this.props.messageStore;
 
     if (!message.id) return null;
 
@@ -34,9 +34,9 @@ class MessageDetails extends Component {
         <span className="file-dot" />
         <MessageCommentGroup message={message} />
         <span className="spacer-10" />
-        {/* {message.comments.map(comment => (
+        {message.thread_messages.map(comment => (
           <MessageComment comment={comment} key={comment.id} />
-        ))} */}
+        ))}
         <MessageCommentInput message={message} />
       </div>
     );

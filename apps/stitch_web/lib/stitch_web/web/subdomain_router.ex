@@ -501,6 +501,8 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/messages/:id/toggle-pin", MessageController, :toggle_pin)
     post("/messages/search", MessageController, :search)
 
+    get("/message/:id", MessageController, :show)
+
     get("/starred_messages", StarredMessageController, :index)
     get("/starred_items", StarredItemController, :index)
     get("/pinned_messages", PinnedMessageController, :index)

@@ -52,7 +52,8 @@ defmodule Stitch.Message do
     belongs_to(:call, Call)
     belongs_to(:upload, Upload)
     # belongs_to(:upload_comment, UploadComment)
-    belongs_to(:messages, Message)
+    belongs_to(:parent_message, Message)
+    has_many(:thread_messages, Message, foreign_key: :parent_message_id)
 
     embeds_many(:link_previews, LinkPreview, on_replace: :delete)
 

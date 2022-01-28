@@ -39,7 +39,7 @@ defmodule Stitch.Message.MessageCreation do
         IO.inspect("here is messages cretions")
         IO.inspect(upload, label: "here is upload")
     with {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
-      message = %Message{group: group, user: user, upload: upload, messages: upload_comment}
+      message = %Message{group: group, user: user, upload: upload, parent_message: upload_comment}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
       do_create(message, attrs, presence, opts)
     else
@@ -71,7 +71,7 @@ defmodule Stitch.Message.MessageCreation do
   def create(message, user, %{"text_content" => _, "thread" => true} = attrs, presence) do
     IO.inspect(message, label: "here in text_content")
     attrs = Map.put(attrs, "type", "chat")
-    message = %Message{messages: message, user: user, group: message.group}
+    message = %Message{parent_message: message, user: user, group: message.group}
     do_create(message, attrs, presence)
   end
 

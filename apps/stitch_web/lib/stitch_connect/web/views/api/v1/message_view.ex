@@ -69,6 +69,34 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       link_previews: message.link_previews,
       request_id: message.request_id,
       highlighted_text_content: message.highlighted_text_content,
+      upload_id: message.upload_id,
+      thread_messages: (if Ecto.assoc_loaded?(message.thread_messages) == true, do: Enum.map(message.thread_messages, &thread_message_json(&1, authenticated_url, @endpoint.files_struct_url())), else: [])
+    }
+  end
+
+  def thread_message_json(message, authenticated_url, files_url) do
+    %{
+      id: message.id,
+      user_id: message.user_id,
+      user: user_info(message),
+      group_id: message.group_id,
+      deleted: message.deleted,
+      text_content: text_content(message),
+      type: type(message.type, authenticated_url),
+      inserted_at: message.inserted_at,
+      updated_at: message.updated_at,
+      pinned_by_id: message.pinned_by_id,
+      pinned: message.pinned,
+      pinned_by: pinned_by_info(message),
+      pinned_at: message.pinned_at,
+      edited: !!message.edited_at,
+      edited_at: message.edited_at,
+      read_status: message.read_status,
+      reactions_web: Map.get(message, :reactions, %{}),
+      mentioned_user_ids: message.mentioned_user_ids,
+      link_previews: message.link_previews,
+      request_id: message.request_id,
+      highlighted_text_content: message.highlighted_text_content,
       upload_id: message.upload_id
     }
   end

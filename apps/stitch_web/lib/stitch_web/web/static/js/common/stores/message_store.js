@@ -23,6 +23,7 @@ import {
 } from "lib/constants";
 import BaseMessageStore from "common/abstract-stores/base-message-store";
 import MessageCache from "./message_cache";
+import uniqBy from "lodash/uniqBy";
 
 class MessageStore extends BaseMessageStore {
     @observable message = {};
@@ -1110,36 +1111,42 @@ class MessageStore extends BaseMessageStore {
     };
 
     @action
-    load(messageId) {
-        this.message = messageId;
-        return this.message;
+    load(message) {
+        return get(`/api/v1/message/${message.id}`).then(response => {
+            this.message = response.data;
+            return this.message;
+        });
+        // this.message = message;
+        // return this.message;
     }
 
     @action
     addComment(text) {
         const messageText = this.encodeMessage(text);
         const tempMessage = this.generateTempMessage(messageText);
-        // Add temp message
-        // this.messages.unshift(tempMessage);
-        // Scroll to bottom
-        // this.scrollToBottom(null, 0, 0);
-
-        const message_comment = {
-            file_comment: {
-                text_content: messageText,
-                request_id: tempMessage.id,
-                thread: true
-            }
-        };
-        const body = { file_comment: { text_content: text, thread: true, } };
-        console.log(message_comment, "messagecomment")
+        const body = { file_comment: { text_content: text, thread: true, request_id: tempMessage.id } };
+        console.log(this.message, "messagecomment")
         return post(`/api/v1/files/${this.message.id}/comments`, {
             body,
             hideNotify: true
         }).then(response => {
-            this.file.comments = uniqBy([...this.message.comments, response.data], "id");
+            this.message.thread_messages = uniqBy([...this.message.thread_messages, response.data], "id");
+            console.log(this.message, "messagecomment")
         });
     }
+
+    @action
+    updateMessageComment = (commentId, commentText) => {
+        const body = { file_comment: { text_content: commentText } };
+        return put(`/api/v1/file_comments/${commentId}`, {
+            body,
+            hideNotify: true
+        }).then(response => {
+            this.file.comments = this.file.comments.map(
+                comment => (comment.id === commentId ? response.data : comment)
+            );
+        });
+    };
 }
 
 export default MessageStore;

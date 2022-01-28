@@ -134,10 +134,12 @@ defmodule Stitch.MessageQueries do
       from(
         m in query,
         where: m.group_id == ^group_id,
+        where: is_nil(m.parent_message_id),
         order_by: [desc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        select: m
+        select: m,
+        preload: [:thread_messages]
       )
 
     query =
@@ -180,7 +182,8 @@ defmodule Stitch.MessageQueries do
         order_by: [asc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        select: m
+        select: m,
+        preload: [:thread_messages]
       )
 
     query =
@@ -258,7 +261,8 @@ defmodule Stitch.MessageQueries do
         preload: [
           group: g,
           user: u,
-          pinned_by: pb
+          pinned_by: pb,
+          thread_messages: :thread_messages
         ]
       )
 
@@ -269,7 +273,7 @@ defmodule Stitch.MessageQueries do
   def get_by_id(id, true), do: get_by_id(id)
 
   def load_info(message) do
-    Repo.preload(message, [:pinned_by, :user], force: true)
+    Repo.preload(message, [:pinned_by, :user, :thread_messages], force: true)
   end
 
   # For a specific group.

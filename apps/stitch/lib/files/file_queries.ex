@@ -128,7 +128,7 @@ defmodule Stitch.Files.FileQueries do
   @spec file_comment_messages(UploadComment.t()) :: [Message.t()]
   def file_comment_messages(%UploadComment{} = upload_comment) do
     Message
-    |> where([m], m.messages_id == ^upload_comment.id)
+    |> where([m], m.parent_message_id == ^upload_comment.id)
     |> Repo.all()
   end
 
