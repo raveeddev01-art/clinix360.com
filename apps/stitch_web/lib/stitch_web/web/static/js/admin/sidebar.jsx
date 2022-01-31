@@ -186,9 +186,11 @@ class Sidebar extends Component {
               {isMemberOrAdmin() && this._nonGuestOptions()}
 
               <ListGroupItem>
-                <Link to="/" target="_blank">
-                  <i className="fa fa-question-circle" />Help{" "}
-                  <i className="fa fa-external-link sm" />
+                <Link to="#" >  
+                {/* we have to add help link with target _blank for new window open */}
+                {/* target="_blank" */}
+                  <i disabled className="fa fa-question-circle" />Help{" "}
+                  <i disabled className="fa fa-external-link sm" />
                 </Link>
               </ListGroupItem>
             </ListGroup>
