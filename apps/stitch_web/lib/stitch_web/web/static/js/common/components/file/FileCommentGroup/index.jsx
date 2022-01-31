@@ -29,8 +29,6 @@ class FileCommentGroup extends Component {
     const { file, label, showClose, groupsStore } = this.props;
     const groups = groupsStore.groups.filter(
       group =>
-        group.type !== "dm" &&
-        group.type !== "multi_dm" &&
         file.shared_in.includes(group.id)
     );
 
