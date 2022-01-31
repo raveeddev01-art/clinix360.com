@@ -25,7 +25,7 @@ defmodule Stitch.TimedMessage.Worker do
          :ok <- check_sendable(rules, data) do
       new_email()
       |> from(@from_address)
-      |> to([System.get_env("MAILGUN_EMAIL_OVERRIDE") || data["user"].email])
+      |> to([data["user"].email])
       |> set_subject(rules, data)
       |> assign_vars(rules, data)
       |> put_html_layout({Stitch.EmailView, "layout/email.html"})

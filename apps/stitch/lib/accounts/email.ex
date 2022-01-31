@@ -21,7 +21,7 @@ defmodule Stitch.Accounts.Email do
 
     new_email()
     |> text_body("Sign-Up 1: Authenticate Provider Code (Connect)")
-    |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || user.email)
+    |> to(user.email)
     |> from(@from_address)
     |> subject("InvoChat confirmation code: #{code_string}")
     |> Stitch.NewMailer.deliver_now()
