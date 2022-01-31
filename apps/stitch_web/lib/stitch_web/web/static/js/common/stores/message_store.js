@@ -1124,9 +1124,9 @@ class MessageStore extends BaseMessageStore {
     addComment(text) {
         const messageText = this.encodeMessage(text);
         const tempMessage = this.generateTempMessage(messageText);
-        const body = { file_comment: { text_content: text, thread: true, request_id: tempMessage.id } };
+        const body = { message_comment: { text_content: text, thread: true, request_id: tempMessage.id } };
         console.log(this.message, "messagecomment")
-        return post(`/api/v1/files/${this.message.id}/comments`, {
+        return post(`/api/v1/messages/${this.message.id}/comments`, {
             body,
             hideNotify: true
         }).then(response => {
@@ -1137,14 +1137,22 @@ class MessageStore extends BaseMessageStore {
 
     @action
     updateMessageComment = (commentId, commentText) => {
-        const body = { file_comment: { text_content: commentText } };
-        return put(`/api/v1/file_comments/${commentId}`, {
+        const body = { message_comment: { text_content: commentText } };
+        return put(`/api/v1/messages/comments/${commentId}`, {
             body,
             hideNotify: true
         }).then(response => {
-            this.file.comments = this.file.comments.map(
+            this.message.thread_messages = this.message.thread_messages.map(
                 comment => (comment.id === commentId ? response.data : comment)
             );
+        });
+    };
+
+    @action
+    deleteMessageComment = commentId => {
+        remove(`/api/v1/messages/comments/${commentId}`).then(() => {
+            const comments = this.message.thread_messages.filter(c => c.id !== commentId);
+            this.message.thread_messages = comments;
         });
     };
 }

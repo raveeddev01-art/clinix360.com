@@ -70,7 +70,7 @@ class AttachmentActions extends Component {
           <OverlayTrigger
             placement={tooltipPlacement}
             delayShow={150}
-            overlay={<Tooltip id="file-comments">Add Comment</Tooltip>}
+            overlay={<Tooltip id="file-comments">Reply in Thread</Tooltip>}
           >
             <Button onClick={onCommentsClick}>
               <i className="fa fa-comments" />

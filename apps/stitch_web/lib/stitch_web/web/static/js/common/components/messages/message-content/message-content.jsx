@@ -7,6 +7,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
+import Replies from "./replies";
 import CallMessage from "./call-message";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
@@ -50,6 +51,7 @@ class MessageContent extends Component {
 
   renderEdited() {
     const { message } = this.props;
+    console.log(message, "message content")
     const { edited, edited_at: editedAt } = message;
 
     if (!edited) {
@@ -152,6 +154,9 @@ class MessageContent extends Component {
             messageId={message.id}
             reactions={message.reactions_web}
             onToggle={this.onToggle}
+          />
+          <Replies
+            message={message}
           />
         </div>
       </div>

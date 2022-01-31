@@ -91,7 +91,7 @@ class Addons extends Component {
 
           <div className={rightPanelClass}>
             {addonStore.detailPanelType === "File Details" && (
-              <FileDetails fileId={addonStore.detailPanelData} />
+              <FileDetails message={addonStore.detailPanelData} />
             )}
             {addonStore.detailPanelType === "Message Details" && (
               <MessageDetails message={addonStore.detailPanelData} />

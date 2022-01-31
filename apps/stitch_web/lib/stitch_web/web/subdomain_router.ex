@@ -482,9 +482,10 @@ defmodule Stitch.Web.SubdomainRouter do
     pipe_through(:authenticated_api)
 
     scope "/messages/:id" do
-      resources("/comments", MessageController, only: [:create])
-      # post("/comments", MessageController, only: [:create)
+      resources("/comments", MessageCommentController, only: [:create])
     end
+
+    resources("/messages/comments", MessageCommentController, only: [:update, :delete])
 
     get("/groups/:group_id/messages", MessageController, :index)
     get("/groups/:group_id/feed_recent", MessageController, :feed_recent)

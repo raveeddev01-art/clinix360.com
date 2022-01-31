@@ -212,6 +212,7 @@ defmodule Stitch.Message do
       mentioned_user_ids: mentioned_user_ids
     })
     |> Repo.update()
+    |> IO.inspect(label: "message_comment_updated")
     |> Audit.Message.track_update(author, message)
   end
 

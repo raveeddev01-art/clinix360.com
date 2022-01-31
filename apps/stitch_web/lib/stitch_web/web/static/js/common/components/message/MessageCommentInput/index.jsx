@@ -54,7 +54,7 @@ class MessageCommentInput extends Component {
               showClose={false}
             />
             <Button type="submit" bsStyle="primary">
-              Add Comment
+              Reply
             </Button>
           </div>
         </FormGroup>

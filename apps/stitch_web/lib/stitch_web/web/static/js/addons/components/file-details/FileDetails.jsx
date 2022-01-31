@@ -6,9 +6,12 @@ import AttachmentActions from "common/components/messages/message-content/file-a
 import FileComment from "common/components/file/FileComment";
 import FileCommentInput from "common/components/file/FileCommentInput";
 import FileCommentGroup from "common/components/file/FileCommentGroup";
+import MessageComment from "common/components/message/MessageComment";
+import MessageCommentInput from "common/components/message/MessageCommentInput";
+import MessageCommentGroup from "common/components/message/MessageCommentGroup";
 import FileInfo from "common/components/file/FileInfo";
 
-@inject("teamFileStore", "usersStore", "groupsStore", "desktopStore")
+@inject("teamFileStore", "usersStore", "groupsStore", "desktopStore", "messageStore")
 @observer
 class FileDetails extends Component {
   onFileDownload = e => {
@@ -55,8 +58,7 @@ class FileDetails extends Component {
 
   render() {
     const { file } = this.props.teamFileStore;
-
-  console.log(this.props, "this.props files")
+    const { message } = this.props.messageStore;
 
     if (!file.id) return null;
 
@@ -95,13 +97,13 @@ class FileDetails extends Component {
         />
         <FileInfo file={file} />
         <span className="file-dot" />
-        <FileCommentGroup file={file} />
+        <MessageCommentGroup message={message} />
         {this.renderPublicLink(file)}
         <span className="spacer-10" />
-        {file.comments.map(comment => (
-          <FileComment comment={comment} key={comment.id} />
+        {message.thread_messages.map(comment => (
+          <MessageComment comment={comment} key={comment.id} />
         ))}
-        <FileCommentInput file={file} />
+        <MessageCommentInput message={message} />
       </div>
     );
   }

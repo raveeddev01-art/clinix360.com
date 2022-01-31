@@ -70,7 +70,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       request_id: message.request_id,
       highlighted_text_content: message.highlighted_text_content,
       upload_id: message.upload_id,
-      thread_messages: (if Ecto.assoc_loaded?(message.thread_messages) == true, do: Enum.map(message.thread_messages, &thread_message_json(&1, authenticated_url, @endpoint.files_struct_url())), else: [])
+      thread_messages: (if Ecto.assoc_loaded?(message.thread_messages) == true, do: Enum.map(message.thread_messages, &thread_message_json(&1, authenticated_url, @endpoint.files_struct_url())), else: []),
+      thread_messages_count: (if Ecto.assoc_loaded?(message.thread_messages) == true, do: Enum.count(message.thread_messages), else: 0)
     }
   end
 

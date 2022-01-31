@@ -105,7 +105,7 @@ class MessageActions extends PureComponent {
     addonStore.setAddonPanel("files");
     addonStore.toggleAddons(true);
     addonStore.toggleAddonDetail(true);
-    addonStore.setAddonDetailPanel("File Details", message.upload_id);
+    addonStore.setAddonDetailPanel("File Details", message);
   };
 
   showMessageComments = () => {
@@ -213,7 +213,7 @@ class MessageActions extends PureComponent {
             <OverlayTrigger
               placement="top"
               delayShow={150}
-              overlay={<Tooltip id="file-comments">Add Comment</Tooltip>}
+              overlay={<Tooltip id="file-comments">Reply in Thread</Tooltip>}
             >
               {(message.type === "upload" || message.type === "file_comment") ? (
               <Button onClick={this.showFileComments}>

@@ -89,7 +89,8 @@ class AddonStore {
 
         switch (panelType) {
             case "File Details":
-                this.rootStore.teamFileStore.load(panelData);
+                this.rootStore.messageStore.load(panelData);
+                this.rootStore.teamFileStore.load(panelData.upload_id);
                 break;
             case "Message Details":
                 this.rootStore.messageStore.load(panelData);

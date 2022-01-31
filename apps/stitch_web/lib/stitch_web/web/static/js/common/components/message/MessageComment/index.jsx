@@ -33,8 +33,8 @@ class MessageComment extends Component {
         "Are you sure you want to delete this comment? This cannot be undone.",
       okLabel: "Delete"
     }).then(() => {
-      const { teamFileStore, comment } = this.props;
-      teamFileStore.deleteComment(comment.id);
+      const { messageStore, comment } = this.props;
+      messageStore.deleteMessageComment(comment.id);
     });
   };
 
@@ -56,14 +56,12 @@ class MessageComment extends Component {
   };
 
   handleSaveEdit = () => {
-    const { comment, teamFileStore } = this.props;
+    const { comment, messageStore } = this.props;
     const { commentText } = this.state;
 
-    // teamFileStore.updateComment(comment.id, commentText).then(() => {
-    //   this.setState({ editing: false });
-    // });
-    const { messageStore } = this.props;
-    messageStore.finishEdit();
+    messageStore.updateMessageComment(comment.id, commentText).then(() => {
+      this.setState({ editing: false });
+    });
   };
 
   renderActions() {
