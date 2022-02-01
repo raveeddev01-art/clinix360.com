@@ -10,7 +10,7 @@ import { confirmModal } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
 import TypingUsers from "./components/typing-users";
-import FormattingGuide from "./components/formatting-guide";
+import FormattingCommands from "./components/formatting-commands";
 import JumpingIndicator from "./components/jumping-indicator";
 import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
@@ -22,6 +22,7 @@ class MessageForm extends Component {
   constructor(props) {
     super(props);
 
+    this.applyTextStyle = this.applyTextStyle.bind(this);
     this.state = {
       text: "",
       searchFilter: "",
@@ -29,6 +30,26 @@ class MessageForm extends Component {
       openEmojiSearch: false,
       isFocused: true
     };
+  }
+
+  applyTextStyle(event, style) {
+    const textStyles = {
+      bold: "**",
+      italic: "__",
+      strike: "~~",
+      highlight: "``",
+      quote: "> "
+    };
+
+    var cursorStart = this.textInput.selectionStart;
+    var cursorEnd = this.textInput.selectionEnd;
+    var formatedText = textStyles[style]
+    if (cursorStart != cursorEnd) {
+      formatedText = textStyles[style][0] + this.getCurrentSelection() + textStyles[style][1];
+    }
+
+    this.insertWord(formatedText, 1);
+    this.componentWillReceiveProps()
   }
 
   componentWillReceiveProps() {
@@ -232,6 +253,10 @@ class MessageForm extends Component {
     return `${preWord}${postWord}`;
   };
 
+  getCurrentSelection = () => {
+    return this.getText().substring(this.textInput.selectionStart, this.textInput.selectionEnd)
+  }
+
   updateInputText = value => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -249,7 +274,7 @@ class MessageForm extends Component {
     messageStore.startTyping();
   };
 
-  insertWord = word => {
+  insertWord = (word, setpBack=0) => {
     const cursorPos = this.textInput.selectionStart;
     const text = this.getText();
     this.updateInputText(
@@ -260,8 +285,8 @@ class MessageForm extends Component {
 
     setTimeout(() => {
       this.textInput.setSelectionRange(
-        cursorPos + word.length,
-        cursorPos + word.length
+        cursorPos + word.length - setpBack,
+        cursorPos + word.length - setpBack
       );
       this.textInput.focus();
     });
@@ -397,7 +422,7 @@ class MessageForm extends Component {
 
         {this.renderInput()}
 
-        {text && text.length < 4000 && <FormattingGuide />}
+        {text && text.length < 4000 && <FormattingCommands applyStyleEvent={this.applyTextStyle} />}
         {text.length > 3999 && (
           <div className="character-limit">
             You have reached the 4000 character limit per message.
