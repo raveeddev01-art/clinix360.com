@@ -113,7 +113,7 @@ class MessageActions extends PureComponent {
 
     addonStore.setAddonPanel("thread");
     addonStore.toggleAddons(true);
-    addonStore.toggleAddonDetail(true);
+    addonStore.toggleAddonDetail(false);
     addonStore.setAddonDetailPanel("Message Details", message);
   };
 

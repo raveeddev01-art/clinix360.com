@@ -468,6 +468,14 @@ defmodule StitchConnect.Web.GroupChannel do
     end)
   end
 
+  def broadcast_message_comment_added(message) do
+    message_json = MessageView.render("show.json", %{message: message})
+
+    broadcast_in_event_channel(message.group, "message_comment_added", message_json)
+
+    @endpoint.broadcast("groups:id:#{message.group_id}", "message_comment_added", message_json)
+  end
+
   def broadcast_file_comment_edited(upload) do
     file_json = FileView.render("show_with_comments.json", %{file: upload})
 

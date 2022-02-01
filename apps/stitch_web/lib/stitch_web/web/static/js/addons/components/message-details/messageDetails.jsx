@@ -41,7 +41,7 @@ class MessageDetails extends Component {
     const messageCreator = this.props.usersStore.usersById[message.user_id];
 
     return (
-      <div className="file-details-addon">
+      <div className="search-results-addon">
         <div className="file-heading">
           <Avatar user={messageCreator} />
           <div className="file-heading__content">

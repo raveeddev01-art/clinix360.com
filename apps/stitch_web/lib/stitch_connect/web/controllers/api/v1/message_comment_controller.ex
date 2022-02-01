@@ -36,16 +36,16 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
-    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
+    with {:message, %Message{} = message_parent} <- {:message, MessageQueries.get_by_id(message_id)},
         #  {:authorized?, true} <-
           #  {:authorized?, GroupAuthorization.can_message?(message, current_user.id)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(message, current_user, message_params_with_client, presence) do
+           Message.create(message_parent, current_user, message_params_with_client, presence) do
       message = %{message | user: current_user}
       # create_optional_upload_comment(message, message, current_user, presence, message_params)
       message = MessageQueries.get_by_id(message.id)
       IO.inspect(message, label: "here is message in file_comment_ci=ontroller")
-      MessageEventsService.message_comment_creation_events(message, message.group, notify_user_ids)
+      message_comment_creation_events(message_parent)
       conn
       |> put_status(:created)
       |> render("show.json", message_comment: message)
@@ -67,20 +67,20 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
 
   ##################
 
-  def file_comment_creation_events(inserted_messages_for_groups, upload) do
-    upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
-    GroupChannel.broadcast_file_comment_added(upload)
+  def message_comment_creation_events(message) do
+    message = MessageQueries.get_by_id(message.id)
+    GroupChannel.broadcast_message_comment_added(message)
 
-    Enum.each(inserted_messages_for_groups, fn %{
-                                                 group: group,
-                                                 message_creation_result: message_creation_result
-                                               } ->
-      MessageEventsService.message_creation_events(
-        message_creation_result.message,
-        group,
-        message_creation_result.notify_user_ids
-      )
-    end)
+    # Enum.each(inserted_messages_for_groups, fn %{
+    #                                              group: group,
+    #                                              message_creation_result: message_creation_result
+    #                                            } ->
+    #   MessageEventsService.message_creation_events(
+    #     message_creation_result.message,
+    #     group,
+    #     message_creation_result.notify_user_ids
+    #   )
+    # end)
   end
 
   def update(conn, %{"id" => message_id, "message_comment" => %{"text_content" => text_content}}) do

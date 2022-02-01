@@ -1155,6 +1155,17 @@ class MessageStore extends BaseMessageStore {
             this.message.thread_messages = comments;
         });
     };
+
+    @action
+    onMessageCommentAdded = message => {
+        this.updateMessageData(message.id, message.group_id, {
+            thread_messages: message.thread_messages,
+            thread_messages_count: message.thread_messages_count
+        });
+        if (message.id === this.message.id) {
+            this.message = message;
+        }
+    };
 }
 
 export default MessageStore;

@@ -84,7 +84,7 @@ class Addons extends Component {
               <GlobalStarredMessages />
             )}
             {addonStore.addonPanelType === "files" && <Files />}
-            {addonStore.addonPanelType === "thread" && <Files />}
+            {addonStore.addonPanelType === "thread" && <MessageDetails message={addonStore.detailPanelData} />}
             {addonStore.addonPanelType === "Updates" && <Updates />}
             {addonStore.addonPanelType === "downloads" && <FileDrawer />}
           </div>
