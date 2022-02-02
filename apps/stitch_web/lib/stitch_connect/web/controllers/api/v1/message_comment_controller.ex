@@ -70,17 +70,6 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   def message_comment_creation_events(message) do
     message = MessageQueries.get_by_id(message.id)
     GroupChannel.broadcast_message_comment_added(message)
-
-    # Enum.each(inserted_messages_for_groups, fn %{
-    #                                              group: group,
-    #                                              message_creation_result: message_creation_result
-    #                                            } ->
-    #   MessageEventsService.message_creation_events(
-    #     message_creation_result.message,
-    #     group,
-    #     message_creation_result.notify_user_ids
-    #   )
-    # end)
   end
 
   def update(conn, %{"id" => message_id, "message_comment" => %{"text_content" => text_content}}) do
@@ -93,7 +82,8 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
            {:authorized?, MessageAuthorization.can_edit?(message, current_user)},
          {:updated, {:ok, message}} <- {:updated, Message.update(message, message_params)} do
       message = MessageQueries.load_info(message)
-      MessageEventsService.message_edit_events(message)
+      parent_message = MessageQueries.get_by_id(message.parent_message_id)
+      GroupChannel.broadcast_message_comment_edited(parent_message)
       render(conn, "show.json", message_comment: message)
     else
       # When an old client is trynig to update "file_comment" via messages API
@@ -108,7 +98,8 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         with {:updated_upload_comment, _updated_upload_comment} <- file_comment_update_result do
           message = MessageQueries.get_by_id(message_id)
           message = MessageQueries.load_info(message)
-          MessageEventsService.message_edit_events(message)
+          parent_message = MessageQueries.get_by_id(message.parent_message_id)
+          GroupChannel.broadcast_message_comment_edited(parent_message)
           render(conn, "show.json", message: message)
         else
           error -> error
@@ -138,7 +129,8 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
            {:authorized?, MessageAuthorization.can_delete?(message, current_user, group)},
          {:deleted, {:ok, %{message: message}}} <-
            {:deleted, Message.delete(message, current_user)} do
-      MessageEventsService.message_delete_events(message)
+          parent_message = MessageQueries.get_by_id(message.parent_message_id)
+          GroupChannel.broadcast_message_comment_deleted(parent_message)
       send_resp(conn, :no_content, "")
     else
       {:authorized?, false} ->

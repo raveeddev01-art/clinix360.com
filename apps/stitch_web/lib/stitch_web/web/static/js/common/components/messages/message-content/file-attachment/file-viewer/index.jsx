@@ -23,7 +23,8 @@ class FileViewer extends Component {
       public_url,
       show,
       onHideModal,
-      type
+      type,
+      message
     } = this.props;
     const Viewer = Viewers[type];
     const user = this.props.usersStore.getUserById(user_id);
@@ -60,6 +61,7 @@ class FileViewer extends Component {
                 user_id={user_id}
                 encoded_id={encoded_id}
                 public_url={public_url}
+                message={message}
                 commentCount={commentCount}
                 onFileDownload={onFileDownload}
                 tooltipPlacement="bottom"

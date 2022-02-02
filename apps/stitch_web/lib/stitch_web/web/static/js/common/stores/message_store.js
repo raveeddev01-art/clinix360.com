@@ -1125,13 +1125,11 @@ class MessageStore extends BaseMessageStore {
         const messageText = this.encodeMessage(text);
         const tempMessage = this.generateTempMessage(messageText);
         const body = { message_comment: { text_content: text, thread: true, request_id: tempMessage.id } };
-        console.log(this.message, "messagecomment")
         return post(`/api/v1/messages/${this.message.id}/comments`, {
             body,
             hideNotify: true
         }).then(response => {
             this.message.thread_messages = uniqBy([...this.message.thread_messages, response.data], "id");
-            console.log(this.message, "messagecomment")
         });
     }
 
@@ -1157,7 +1155,7 @@ class MessageStore extends BaseMessageStore {
     };
 
     @action
-    onMessageCommentAdded = message => {
+    onMessageCommentUpdates = message => {
         this.updateMessageData(message.id, message.group_id, {
             thread_messages: message.thread_messages,
             thread_messages_count: message.thread_messages_count

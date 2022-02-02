@@ -54,7 +54,7 @@ class FileItem extends Component {
   };
 
   render() {
-    const { file, usersStore, isActionsVisible, onFileClick } = this.props;
+    const { file, usersStore, isActionsVisible, onFileClick, message } = this.props;
     const user = usersStore.usersById[file.user_id];
     const username = user && this.renderName(user);
 
@@ -69,6 +69,7 @@ class FileItem extends Component {
                 file_id={file.id}
                 user_id={file.user_id}
                 encoded_id={file.encoded_id}
+                message={message}
                 isOriginalOpenVisible={false}
                 commentCount={file.comment_count}
                 onFileDownload={this.onFileDownload}

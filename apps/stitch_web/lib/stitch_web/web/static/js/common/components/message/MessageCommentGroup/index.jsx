@@ -9,7 +9,6 @@ class MessageCommentGroup extends Component {
 
   render() {
     const { message, label, groupsStore } = this.props;
-    console.log(this.props, "this.props message")
     const groups = groupsStore.groups.filter(
       group =>
         group.type !== "dm" &&

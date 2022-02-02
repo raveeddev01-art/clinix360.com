@@ -136,12 +136,21 @@ class ChannelStore {
             teamFileStore.onFileCommentAdded
         );
         this.eventChannel.on(
-            "message_comment_added",
-            messageStore.onMessageCommentAdded
-        );
-        this.eventChannel.on(
             "file_comment_deleted",
             teamFileStore.onFileCommentDeleted
+        );
+
+        this.eventChannel.on(
+            "message_comment_added",
+            messageStore.onMessageCommentUpdates
+        );
+        this.eventChannel.on(
+            "message_comment_edited",
+            messageStore.onMessageCommentUpdates
+        );
+        this.eventChannel.on(
+            "message_comment_deleted",
+            messageStore.onMessageCommentUpdates
         );
         this.eventChannel.on(
             "file_public_link_updated",

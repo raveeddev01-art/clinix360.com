@@ -24,7 +24,7 @@ class MessageContent extends Component {
     addonStore.setAddonPanel("files");
     addonStore.toggleAddons(true);
     addonStore.toggleAddonDetail(true);
-    addonStore.setAddonDetailPanel("File Details", message.upload_id);
+    addonStore.setAddonDetailPanel("File Details", message);
   };
 
   renderLinkPreviews() {
@@ -51,7 +51,6 @@ class MessageContent extends Component {
 
   renderEdited() {
     const { message } = this.props;
-    console.log(message, "message content")
     const { edited, edited_at: editedAt } = message;
 
     if (!edited) {

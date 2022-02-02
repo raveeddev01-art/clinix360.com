@@ -16,7 +16,6 @@ import FileInfo from "common/components/file/FileInfo";
 class FileDetails extends Component {
   onFileDownload = e => {
     const { file } = this.props.teamFileStore;
-    console.log(this.props, "this.props files")
     const { desktopStore } = this.props;
 
     if (desktopStore.isElectron) {
@@ -75,6 +74,7 @@ class FileDetails extends Component {
                 file_id={file.id}
                 user_id={file.user_id}
                 public_url={file.public_url}
+                message={message}
                 encoded_id={file.encoded_id}
                 commentCount={file.comment_count}
                 onFileDownload={this.onFileDownload}
