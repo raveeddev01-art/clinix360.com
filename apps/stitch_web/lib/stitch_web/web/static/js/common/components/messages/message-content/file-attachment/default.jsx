@@ -92,7 +92,7 @@ class DefaultFileAttachment extends Component {
 
     return (
       <div>
-        {useActions && <span className="text-muted">uploaded this file: </span>}
+        {/* {useActions && <span className="text-muted">uploaded this file: </span>} */}
         <div className={mainCN} onClick={this.onAttachmentClick}>
           <div className="attachment-icon">
             <i className={filetype.icon} />

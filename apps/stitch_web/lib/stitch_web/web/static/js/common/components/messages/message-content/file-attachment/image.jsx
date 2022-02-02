@@ -82,7 +82,7 @@ class ImageFileAttachment extends Component {
         {filename &&
           useActions && (
             <div className="attachment-title">
-              <span>uploaded this image: </span>
+              {/* <span>uploaded this image: </span> */}
               {isConversationMessage ? (
                 <a target="_blank" href={url} onClick={onFileDownload}>
                   <strong>{filename}</strong>

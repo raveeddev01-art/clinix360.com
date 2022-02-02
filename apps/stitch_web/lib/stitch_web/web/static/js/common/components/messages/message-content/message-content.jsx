@@ -111,16 +111,6 @@ class MessageContent extends Component {
       messageContentComponents = messageTextToComponents(textContent || "", {
         inSearch
       });
-
-      if (
-        message.text_content &&
-        (message.type === "upload" ||
-          (message.type === "file_comment" && message.is_sequential))
-      ) {
-        messageContentComponents = (
-          <div className="attachment-comment">{messageContentComponents}</div>
-        );
-      }
     }
 
     return (
@@ -128,6 +118,9 @@ class MessageContent extends Component {
         properties={{ target: "_blank", className: "message-link" }}
         className="message-body-wrapper"
       >
+        <div className="message-body">
+          {messageContentComponents}
+        </div>
         {message.type === "upload" && (
           <FileAttachment
             {...message.fields}
@@ -141,10 +134,6 @@ class MessageContent extends Component {
           />
         )}
         <div className="message-body">
-          {message.type === "file_comment" &&
-            !message.is_sequential &&
-            this.renderFileLink()}
-          {messageContentComponents}
 
           {user && user.is_bot ? this.renderIntegrationLink() : null}
           {this.renderLinkPreviews()}

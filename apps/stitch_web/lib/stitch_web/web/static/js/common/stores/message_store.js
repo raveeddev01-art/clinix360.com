@@ -812,7 +812,8 @@ class MessageStore extends BaseMessageStore {
 
     @action
     onJoinGroupChannel = data => {
-        // sync time as soon as joined to the channel
+        console.log(data, "join channel data")
+            // sync time as soon as joined to the channel
         this.syncTime();
 
         if (this.group.id === this.loadedGroupId) {

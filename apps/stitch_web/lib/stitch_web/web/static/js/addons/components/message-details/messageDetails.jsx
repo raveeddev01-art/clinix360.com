@@ -58,7 +58,7 @@ class MessageDetails extends Component {
         <span className="file-dot" />
         <MessageCommentGroup message={message} />
         <span className="spacer-10" />
-        {message.thread_messages.map(comment => (
+        {message.thread_messages && message.thread_messages.map(comment => (
           <MessageComment comment={comment} key={comment.id} />
         ))}
         <MessageCommentInput message={message} />

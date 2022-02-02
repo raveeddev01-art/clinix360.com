@@ -85,7 +85,8 @@ class FileDetails extends Component {
                 {fileCreator.full_name}
               </UserProfileMenu>
             </div>
-            <div className="file-heading__content-file">{file.filename}</div>
+            <div>{message.text_content}</div>
+            <div className="text-muted">{file.filename}</div>
           </div>
         </div>
         <FileAttachment
@@ -100,7 +101,7 @@ class FileDetails extends Component {
         <MessageCommentGroup message={message} />
         {this.renderPublicLink(file)}
         <span className="spacer-10" />
-        {message.thread_messages.map(comment => (
+        {message.thread_messages && message.thread_messages.map(comment => (
           <MessageComment comment={comment} key={comment.id} />
         ))}
         <MessageCommentInput message={message} />
