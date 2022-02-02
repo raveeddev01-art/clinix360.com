@@ -421,8 +421,8 @@ class MessageForm extends Component {
         )}
 
         {this.renderInput()}
-
-        {text && text.length < 4000 && <FormattingCommands applyStyleEvent={this.applyTextStyle} />}
+        
+        <FormattingCommands applyStyleEvent={this.applyTextStyle} />
         {text.length > 3999 && (
           <div className="character-limit">
             You have reached the 4000 character limit per message.
