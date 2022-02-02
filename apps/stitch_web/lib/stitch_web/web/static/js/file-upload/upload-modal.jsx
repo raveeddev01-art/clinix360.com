@@ -16,6 +16,14 @@ import { Groups } from "common/components";
 @inject("uploadStore")
 @observer
 export default class UploadModal extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fileUploaded: false
+    };
+  }
+
   onChangeGroup = groupId => {
     this.props.uploadStore.changeUploadGroup(groupId);
   };
@@ -23,7 +31,11 @@ export default class UploadModal extends Component {
   onSubmit = evt => {
     evt.preventDefault();
     evt.stopPropagation();
-    this.uploadFile();
+
+    if (!this.state.fileUploaded){
+      this.setState({ fileUploaded: true });
+      this.uploadFile();
+    }
   };
 
   uploadFile = () => {

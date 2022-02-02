@@ -51,7 +51,7 @@ defmodule Stitch.PatientEmail do
     |> from(@from_address)
     |> subject(subject_line)
     |> assign(:subject, subject_line)
-    |> to([System.get_env("MAILGUN_EMAIL_OVERRIDE") || email])
+    |> to([email])
     |> assign(:patient_email, email)
     |> put_html_layout({Stitch.EmailView, "layout/email.html"})
   end
@@ -62,7 +62,7 @@ defmodule Stitch.PatientEmail do
 
     new_email()
     |> from(@from_address)
-    |> to([System.get_env("MAILGUN_EMAIL_OVERRIDE") || patient.email])
+    |> to([patient.email])
     |> subject(subject_line)
     |> assign(:subject, subject_line)
     |> assign(:patient_email, patient.email)

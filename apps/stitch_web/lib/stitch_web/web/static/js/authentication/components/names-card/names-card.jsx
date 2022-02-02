@@ -202,7 +202,7 @@ class NamesCards extends Component {
             )}
         </FormGroup>
         <HelpBlock className="onboarding-hint m-b-20">
-          Usernames must be lowercase and contian only letters, numbers,
+          Usernames must be lowercase and contain only letters, numbers,
           periods, hyphens, and underscores.
         </HelpBlock>
       </div>

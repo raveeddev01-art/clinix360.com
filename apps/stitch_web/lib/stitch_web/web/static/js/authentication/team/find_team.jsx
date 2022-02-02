@@ -94,8 +94,8 @@ class FindTeam extends Component {
         headerCTA="signin"
         description={
           <span>
-            We've emailed a confirmation link to {email}. Click the link to
-            confirm your address and get started. <br /> <br />Wrong email?{" "}
+            We sent an email to {email} if we found your account in our system.
+            This email will give you a link to find your workspace. <br /> <br />Wrong email?{" "}
             <a href={findTeamLink}>Please re-enter your address. </a>
           </span>
         }

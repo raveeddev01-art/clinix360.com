@@ -8,7 +8,7 @@ defmodule Stitch.Accounts.Email do
   alias Stitch.Accounts.{User, Role}
 
   @guest_roles Role.guests()
-  @from_address {"InvoChat", "support@teamstitch.com"}
+  @from_address {"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"}
   @doc """
   Sends confirmation code email to the user.
   """
@@ -21,7 +21,7 @@ defmodule Stitch.Accounts.Email do
 
     new_email()
     |> text_body("Sign-Up 1: Authenticate Provider Code (Connect)")
-    |> to(System.get_env("MAILGUN_EMAIL_OVERRIDE") || user.email)
+    |> to(user.email)
     |> from(@from_address)
     |> subject("InvoChat confirmation code: #{code_string}")
     |> Stitch.NewMailer.deliver_now()
@@ -83,7 +83,7 @@ defmodule Stitch.Accounts.Email do
     new_email()
     |> to(user.email)
     |> from({"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
-    |> subject("ACTION REQUIRED: Please reset your Stitch password")
+    |> subject("ACTION REQUIRED: Please reset your Invochat password")
     |> text_body("Hello #{user.first_name}
     Please hit the link to chnage password #{reset_url}
     ")

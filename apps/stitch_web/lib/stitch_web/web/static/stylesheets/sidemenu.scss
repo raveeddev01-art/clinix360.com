@@ -26,6 +26,7 @@
       color: #fff;
       display: flex;
       align-items: center;
+      margin-top: 4px;
 
       i {
         font-size: 11px;
@@ -65,6 +66,11 @@
         color: #fff;
         opacity: 1;
       }
+    }
+
+    .dropdown-chevron {
+      vertical-align: bottom;
+      margin-bottom: 9px;
     }
 
     .dropdown-menu {

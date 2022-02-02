@@ -5,9 +5,15 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import { isAdmin } from "lib/utils";
 import { MEMBER_TYPE_OPTIONS } from "lib/constants";
 
 class MemberTypeDropdown extends Component {
+
+  getOptions() {
+    return (isAdmin() ? MEMBER_TYPE_OPTIONS : [MEMBER_TYPE_OPTIONS[0]]);
+  }  
+
   render() {
     const { value, onChange, label } = this.props;
     const option = MEMBER_TYPE_OPTIONS.find(opt => opt.value === value) || {};
@@ -21,7 +27,7 @@ class MemberTypeDropdown extends Component {
         <Col sm={9}>
           <Select
             className="multi-select-large"
-            options={MEMBER_TYPE_OPTIONS}
+            options={this.getOptions()}
             simpleValue
             value={value}
             onChange={onChange}
