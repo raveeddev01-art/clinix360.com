@@ -64,6 +64,10 @@ export default class UploadModal extends Component {
   toggleModal = () => {
     const { uploadStore } = this.props;
     uploadStore.isUploadModalVisible = false;
+    setTimeout(
+      () => this.setState({ fileUploaded: false }), 
+      1000
+    );
   };
 
   handleChange = fieldName => evt => {
