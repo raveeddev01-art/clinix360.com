@@ -6,7 +6,7 @@ import Info from "./components/info/info";
 import Directory from "./components/directory/directory";
 import MessageSearch from "./components/message-search/message-search";
 import FileDetails from "./components/file-details/FileDetails";
-import MessageDetails from "./components/message-details/MessageDetails";
+import MessageDetails from "./components/message-details/messageDetails";
 import GlobalStarredMessages from "./components/global-starred-messages/global-starred-messages";
 
 import PeopleDetail from "./components/people-detail/people-detail";

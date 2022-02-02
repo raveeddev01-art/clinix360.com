@@ -4,11 +4,21 @@ class FormattingCommands extends Component {
     render() {
     return (
       <div className="formatting-guide">
-        <b onClick={(evt) => this.props.applyStyleEvent(evt, "bold")}>*bold*</b>
-        <i onClick={(evt) => this.props.applyStyleEvent(evt, "italic")}>_italics_</i>
-        <span onClick={(evt) => this.props.applyStyleEvent(evt, "strike")}>~strike~</span>
-        <code onClick={(evt) => this.props.applyStyleEvent(evt, "highlight")}>`highlight`</code>
-        <span onClick={(evt) => this.props.applyStyleEvent(evt, "quote")}>>quote</span>
+        <code onClick={(evt) => this.props.applyStyleEvent(evt, "bold")}>
+          <i className="fa fa-bold"></i>
+        </code>
+        <code onClick={(evt) => this.props.applyStyleEvent(evt, "italic")}>
+          <i className="fa fa-italic"></i>
+        </code>
+        <code onClick={(evt) => this.props.applyStyleEvent(evt, "strike")}>
+          <i className="fa fa-strikethrough"></i>
+        </code>
+        <code onClick={(evt) => this.props.applyStyleEvent(evt, "highlight")}>
+          <i className="fa fa-code"></i>
+        </code>
+        <code onClick={(evt) => this.props.applyStyleEvent(evt, "quote")}>
+          <i className="fa fa-quote-left"></i>
+        </code>
       </div>
     );
   }

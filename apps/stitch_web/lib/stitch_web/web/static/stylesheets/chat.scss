@@ -280,6 +280,7 @@
         display: flex;
         flex-direction: column;
         visibility: hidden;
+        padding-bottom: 44px;
         @media screen and (-ms-high-contrast: active),
           (-ms-high-contrast: none) {
           scrollbar-track-color: #f3f3f3;
@@ -366,7 +367,7 @@
 
     .message-form {
       position: relative;
-      padding-bottom: 25px;
+      padding-bottom: 20px;
       width: 100%;
 
       .jumped-message-indicator {
@@ -470,6 +471,8 @@
         box-shadow: none;
         border-color: $border-color;
         padding: 8px 72px 8px 43px;
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
         resize: none;
         @include stitch-scroll();
         // overflow: hidden;
@@ -486,10 +489,17 @@
       .formatting-guide,
       .character-limit {
         position: absolute;
-        bottom: 0;
+        border-radius: 4px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        top: -34px;
         height: 23px;
         font-size: 12px;
         color: $brand-primary;
+      }
+
+      .character-limit {
+        padding: 8px;
       }
 
       .users-typing {
@@ -498,8 +508,11 @@
       }
 
       .formatting-guide {
-        right: 17px;
-        left: auto;
+        height: 34px;
+        width: 100%;
+        padding: 5px;
+        padding-left: 10px;
+        background-color: #dfe0e091;
         @media (max-width: 800px) {
           display: none;
         }
@@ -510,7 +523,8 @@
         code {
           cursor: pointer;
           color: inherit;
-          font-size: 12px;
+          padding: 4px;
+          font-size: 14px;
           margin-right: 5px;
 
           &:last-child {
@@ -518,10 +532,10 @@
           }
         }
 
-        code {
-          font-size: 11px;
-          padding: 0 2px;
-        }
+        // code {
+        //   font-size: 11px;
+        //   padding: 0 2px;
+        // }
       }
 
       .character-limit {
