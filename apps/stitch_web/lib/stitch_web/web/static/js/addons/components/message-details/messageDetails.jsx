@@ -9,7 +9,7 @@ import LinkPreview from "../../../common/components/messages/message-content/lin
 
 @inject("messageStore", "usersStore", "groupsStore", "desktopStore")
 @observer
-class MessageDetails extends Component {
+class MessageDetails extends Component { 
 
   renderLinkPreviews() {
     const {
