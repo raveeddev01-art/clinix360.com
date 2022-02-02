@@ -135,7 +135,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       IO.inspect(" check - 6")
       message = %{message | user: current_user}
       IO.inspect(" check - 7")
-      create_optional_upload_comment(message, group, current_user, presence, message_params)
+      # create_optional_upload_comment(message, group, current_user, presence, message_params)
       IO.inspect(" check - 8")
       message = MessageQueries.get_by_id(message.id)
       IO.inspect(" check - 9")
