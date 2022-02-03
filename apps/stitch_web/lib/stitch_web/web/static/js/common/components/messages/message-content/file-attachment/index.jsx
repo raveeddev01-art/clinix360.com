@@ -4,10 +4,12 @@ import PropTypes from "prop-types";
 import getFileType from "lib/file-types";
 import DefaultFileAttachment from "./default";
 import ImageFileAttachment from "./image";
+import VideoFileAttachment from "./video";
 
 const FileAttachmentRenderer = {
   File: DefaultFileAttachment,
-  Image: ImageFileAttachment
+  Image: ImageFileAttachment,
+  "Video File": VideoFileAttachment
 };
 
 @inject("desktopStore")
