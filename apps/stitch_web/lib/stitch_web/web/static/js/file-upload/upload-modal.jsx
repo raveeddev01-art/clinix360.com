@@ -66,7 +66,7 @@ export default class UploadModal extends Component {
     uploadStore.isUploadModalVisible = false;
     setTimeout(
       () => this.setState({ fileUploaded: false }), 
-      1000
+      3000
     );
   };
 
