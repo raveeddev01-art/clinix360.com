@@ -14,8 +14,8 @@ defmodule Stitch.StarrableItems.StarringService do
           {boolean, {:ok, MessageAction.t()}} | {boolean, {:error, Ecto.Changeset.t()}}
 
   def toggle_star(%Message{type: "file_share"} = message, user) do
-    upload = FileQueries.get_by_id(message.upload_id)
-    toggle_star(upload, user)
+    FileQueries.get_by_id(message.upload_id)
+    |> toggle_star(user)
   end
 
   def toggle_star(starrable_item, user) do
