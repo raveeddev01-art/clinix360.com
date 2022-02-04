@@ -34,7 +34,6 @@ defmodule Stitch.Import.Slack do
       |> Enum.filter(&File.dir?(Path.join(path, &1)))
 
     IO.puts("Found these groups:")
-    IO.inspect(groups)
     {:ok, groups}
   end
 

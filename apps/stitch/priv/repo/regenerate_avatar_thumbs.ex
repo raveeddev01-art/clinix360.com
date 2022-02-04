@@ -25,14 +25,11 @@ defmodule Stitch.Repo.Scripts.RegenerateAvatarThumbs do
                   |> Ecto.Changeset.change(profile_image_thumb_url: profile_image_thumb_url)
                   |> Repo.update()
 
-                {:error, error} ->
-                  IO.inspect(error)
+                {:error, error} = e -> e
               end
             end
           rescue
-            error ->
-              IO.inspect(error)
-              IO.inspect(user)
+            error -> error
           end
         end)
         |> Stream.run()

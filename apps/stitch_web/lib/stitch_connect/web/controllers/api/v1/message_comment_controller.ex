@@ -31,7 +31,6 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
 
   def create(conn, %{"message_comment" => %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}, "id" => message_id}) do
     message_params = %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}
-    IO.inspect(message_params, label: "here is message_params")
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
@@ -44,7 +43,6 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
       message = %{message | user: current_user}
       # create_optional_upload_comment(message, message, current_user, presence, message_params)
       message = MessageQueries.get_by_id(message.id)
-      IO.inspect(message, label: "here is message in file_comment_ci=ontroller")
       message_comment_creation_events(message_parent)
       conn
       |> put_status(:created)

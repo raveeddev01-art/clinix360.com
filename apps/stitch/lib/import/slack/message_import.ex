@@ -283,7 +283,6 @@ defmodule Stitch.Import.Slack.MessageImport do
       {:ok, Stitch.AWS.S3.fullpath(filename), filename}
     else
       error ->
-        IO.inspect("Error downloading file #{slack_download_file}")
         error
     end
   end

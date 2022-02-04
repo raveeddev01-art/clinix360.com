@@ -93,25 +93,16 @@ defmodule Stitch.Accounts.Email do
   def unread_messages_email([], _team), do: nil
 
   def unread_messages_email(recipients, %Stitch.Team{name: team_name}) do
-    IO.inspect(recipients, label: "recipients here")
     new_email()
-    |> IO.inspect(label: "start of unread_messages_email")
     |> template("Message Waiting - Offline Email (Connect)")
     |> to(Enum.map(recipients, & &1.email))
     |> from(@from_address)
-    |> IO.inspect(label: "mid of unread_messages_email")
     |> subject("[InvoChat Connect] Notifications from #{team_name} *|userTime|*")
-    |> IO.inspect(label: "subject of unread_messages_email")
-    # |> IO.inspect(recipients, label: "recipients here")
     |> text_body("Hello,
     There are some unread messages, please check these
     ")
-    |> IO.inspect(label: "text_body of unread_messages_email")
-
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
-    |> IO.inspect(label: "before send of unread_messages_email")
     |> Stitch.NewMailer.deliver_now()
-    |> IO.inspect(label: "here is sending email after time setting")
   end
 
   defp unread_messages_for_recipient(%{

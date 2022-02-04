@@ -19,7 +19,6 @@ defmodule Stitch.Billing do
   # @spec setup_new_team(Team.t()) :: Subscription.t()
 
   def setup_new_team(%Team{id: team_id, name: team_name}, tier \\ "FREE") do
-    IO.inspect("Settings up #{tier} for team #{team_name}")
     customer_id = @stripe_client.create_customer(team_id, team_name)
 
     params = %{

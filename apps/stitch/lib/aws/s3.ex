@@ -7,44 +7,34 @@ defmodule Stitch.AWS.S3 do
 
   @spec upload(binary) :: {:ok, map} | {:error, term}
   def upload(path) do
-    IO.inspect(path, label: "here is path")
     object_name = Path.basename(path)
-    IO.inspect(object_name, label: "here is object_name")
     path
     |> ExAws.S3.Upload.stream_file()
     |> ExAws.S3.upload(@s3.bucket, object_name, encryption: "AES256")
     |> ExAws.request()
-    |> IO.inspect(label: "here is end of upload")
   end
 
   @spec upload_avatar(binary, binary) :: {:ok, map} | {:error, term}
   def upload_avatar(path, object_name) do
     path
     |> ExAws.S3.Upload.stream_file()
-    |> IO.inspect(label: "update file stream")
     |> ExAws.S3.upload(@avatar.bucket, object_name, encryption: "AES256")
-    |> IO.inspect(label: "update in bucket")
     |> ExAws.request()
-    |> IO.inspect(label: "update_avatar end")
 
   end
 
   @spec download(binary, binary) :: {:ok, :done} | {:error, term}
   def download(filename, dest) do
-    ExAws.S3.download_file(@s3.bucket, filename, dest) |> IO.inspect(label: "here is before") |> ExAws.request() |> IO.inspect(label: "here is after")
+    ExAws.S3.download_file(@s3.bucket, filename, dest) |> ExAws.request()
   end
 
   @spec avatar_path(binary) :: binary
   def avatar_path(object_name) do
-    IO.inspect(@avatar.origin, label: "here is @avatar.origin")
-    Path.join(@avatar.origin, object_name) |> IO.inspect(label: "avatar paths")
+    Path.join(@avatar.origin, object_name)
   end
 
   def fullpath(file \\ "", dir \\ "") do
     object = Path.join(dir, Path.basename(file))
-    IO.inspect(object, label: "object")
-    IO.inspect(file, label: "here is file")
-    IO.inspect(dir, label: "here is dir")
     # if object == "" do
     # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
     # else

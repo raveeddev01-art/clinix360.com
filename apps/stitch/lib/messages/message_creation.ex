@@ -36,8 +36,6 @@ defmodule Stitch.Message.MessageCreation do
         upload_comment,
         opts
       ) do
-        IO.inspect("here is messages cretions")
-        IO.inspect(upload, label: "here is upload")
     with {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
       message = %Message{group: group, user: user, upload: upload, parent_message: upload_comment}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
@@ -50,8 +48,6 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
-        IO.inspect(group, label: "here is messages cretions 2")
-        IO.inspect(user, label: "here is upload 2")
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
       message = %Message{group: group, user: user, upload: upload}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
@@ -69,14 +65,12 @@ defmodule Stitch.Message.MessageCreation do
   end
 # will use when thread key sent from FE
   def create(message, user, %{"text_content" => _, "thread" => true} = attrs, presence) do
-    IO.inspect(message, label: "here in text_content")
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{parent_message: message, user: user, group: message.group}
     do_create(message, attrs, presence)
   end
 
   def create(group, user, %{"text_content" => _} = attrs, presence) do
-    IO.inspect("here in text_content")
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{group: group, user: user}
     # message = %Message{messages: message, user: user, group: message.group}
@@ -90,37 +84,23 @@ defmodule Stitch.Message.MessageCreation do
 
 
   def do_create(message, attrs, presence, opts \\ %{}) do
-    IO.inspect(message, label: "message in do-create")
     user = message.user
     group = Repo.preload(message.group, :users)
-    # group = ["one"]
-    IO.inspect(user, label: "user in do-create ")
-    IO.inspect(group, label: "group in do-create ")
     users = group.users
-    # users = ["one"]
-    IO.inspect(users, label: "users in do-create ")
     text_content = attrs["text_content"]
-    IO.inspect(text_content, label: "text_content in do-create ")
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
-    IO.inspect(mentioned_user_ids, label: "mentioned_user_ids in do-create ")
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)
-    IO.inspect(notify_user_ids, label: "notify_user_ids in do-create ")
     {read_status, recipients} = ReadStatus.get_read_status(:message, users, user)
-    IO.inspect(recipients, label: "recipients in do-create ")
-    IO.inspect(read_status, label: "read_status in do-create ")
     attrs =
       attrs
       |> Map.merge(%{
         "mentioned_user_ids" => mentioned_user_ids,
         "read_status" => read_status
       })
-      IO.inspect(attrs, label: "attrs in do-create ")
     mention_users = Message.mention_users(group, mentioned_user_ids, recipients)
-    IO.inspect(mention_users, label: "mention_users in do-create ")
     increment_unread_counter = ReadStatus.increment_unread_counter(:message, group.id, recipients)
-    IO.inspect(increment_unread_counter, label: "increment_unread_counter in do-create ")
     last =
     if opts[:silent] == true do
       Multi.new()
@@ -128,18 +108,14 @@ defmodule Stitch.Message.MessageCreation do
       |> Repo.transaction()
       |> silent_post_creation()
     else
-      IO.inspect("in else statement")
       Multi.new()
       |> Multi.insert(:message, Message.message_changeset(message, attrs))
       |> Multi.update_all(:mention_users, mention_users, [])
       |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
       |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
-      |> IO.inspect(label: "here is 135 output")
       |> Repo.transaction()
-      |> IO.inspect(label: "here is repo error")
       |> post_creation(notify_user_ids)
     end
-    IO.inspect(last, label: "last in do-create ")
   end
 
   def multi_mark_as_read_on_creation_if_member(multi, group_id, user_id, :message) do

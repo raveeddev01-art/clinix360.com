@@ -37,7 +37,7 @@ defmodule Stitch.Repo.Scripts.OldBillingHistory do
 
     case Stripe.Event.list(options) do
       {:ok, %{data: events}} -> do_import_payment_history(teams, events)
-      any -> IO.inspect(any)
+      any -> any
     end
   end
 

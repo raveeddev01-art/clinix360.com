@@ -33,7 +33,6 @@ defmodule Stitch.Message.Params do
   end
 
   def with_client_attrs(conn, params) do
-    IO.inspect(params, label: "here is params in with_client_attrs")
     ua = parse_conn(conn)
 
 
@@ -43,6 +42,6 @@ defmodule Stitch.Message.Params do
       "client_name" => client_name(ua)
     }
 
-    Map.merge(client_params, params) |> IO.inspect(label: "here is message_params")
+    Map.merge(client_params, params)
   end
 end

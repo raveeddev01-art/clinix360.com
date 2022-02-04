@@ -118,7 +118,7 @@ defmodule StitchConnect.Web.PushNotifications do
         message_id: message.id
       })
     end)
-    |> apns_push(on_response: &handle_apns_push/1) |> IO.inspect(label: "notify_user_ios_devices apns_push")
+    |> apns_push(on_response: &handle_apns_push/1)
   end
 
   defp notify_user_android_devices(

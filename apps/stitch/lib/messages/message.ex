@@ -161,20 +161,17 @@ defmodule Stitch.Message do
 
   def create(%Group{} = group, user, attrs, presence_user_ids) do
     attrs = Map.put_new(attrs, "type", "chat")
-    IO.inspect(attrs, label: " group here is attrs")
-    MessageCreation.create(group, user, attrs, presence_user_ids) |> IO.inspect(label: "MessageCreation")
+    MessageCreation.create(group, user, attrs, presence_user_ids)
   end
 
   def create(%Message{} = message, user, attrs, presence_user_ids) do
     attrs = Map.put_new(attrs, "type", "chat")
-    IO.inspect(attrs, label: "message here is attrs")
-    MessageCreation.create(message, user, attrs, presence_user_ids) |> IO.inspect(label: "MessageCreation")
+    MessageCreation.create(message, user, attrs, presence_user_ids)
   end
 
   def create(group_id, user, attrs, presence_user_ids) do
     group = GroupQueries.get_by_id(group_id)
     attrs = Map.put_new(attrs, "type", "chat")
-    IO.inspect(attrs, label: "group_id here is attrs")
     MessageCreation.create(group, user, attrs, presence_user_ids)
   end
 
@@ -212,7 +209,6 @@ defmodule Stitch.Message do
       mentioned_user_ids: mentioned_user_ids
     })
     |> Repo.update()
-    |> IO.inspect(label: "message_comment_updated")
     |> Audit.Message.track_update(author, message)
   end
 

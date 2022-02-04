@@ -116,19 +116,14 @@ defmodule Stitch.GroupAuthorization do
   @spec is_member?(pos_integer, pos_integer) :: boolean
   def is_member?(group_id, user_id) do
     Stitch.GroupQueries.user_is_member?(group_id, user_id)
-    |> IO.inspect(label: "is_member")
   end
 
   @spec can_message?(Group.t(), pos_integer) :: boolean
   def can_message?(%Group{} = group, user_id) do
-    IO.inspect("start can message")
     if is_member?(group.id, user_id) do
-      IO.inspect(group.name, label: "here is group name")
       if Group.direct_message?(group) do
-        IO.inspect("can-message 1")
         member_ids = GroupUser.user_ids(group.id)
-        IO.inspect("can-message 2")
-        personal_dm?(member_ids, user_id) |> IO.inspect(label: "personal_Dm") || any_member_enabled?(member_ids, user_id) |> IO.inspect(label: "any member")
+        personal_dm?(member_ids, user_id) || any_member_enabled?(member_ids, user_id)
       else
         true
       end
