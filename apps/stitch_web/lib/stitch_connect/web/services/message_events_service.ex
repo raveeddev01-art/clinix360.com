@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.MessageEventsService do
       LinkPreviewGenerator.queue(message)
       GroupChannel.broadcast_message_created(message)
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-      PushNotifications.notify_users(group, message, notify_user_ids.mobile)
+      PushNotifications.notify_users(group, message, notify_user_ids.mobile) |> IO.inspect(label: "message_creation_events notify_users")
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
       EmailNotification.create(message.id, notify_user_ids.email)
     end)
