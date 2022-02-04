@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { withRouter } from "react-router-dom";
+import { withRouter, NavLink } from "react-router-dom";
 import cx from "classnames";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -13,6 +13,8 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
 import { isMemberOrAdmin } from "../lib/utils";
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../lib/constants";
+import { Element } from "react-scroll";
 
 @inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
@@ -229,6 +231,20 @@ class Sidemenu extends Component {
               }}
             >
               <div className="rooms-menu__scroll-wrap">
+              <div className="menu-nav m-b-20">
+                <Element name={`${ROOM_MENU_ITEM_ANCHOR_PREFIX}threads`}>
+                  <NavLink
+                    to="/threads"
+                    className="item"
+                    activeClassName="active"
+                  >
+                    <div className="item-icon">
+                      <i className="fa fa-comment" />
+                    </div>
+                    <div className="item-text">Threads</div>
+                  </NavLink>
+                </Element>
+              </div>
                 <FavoritesList
                   heading={"Favorites"}
                   rooms={groupsStore.favoriteGroups}

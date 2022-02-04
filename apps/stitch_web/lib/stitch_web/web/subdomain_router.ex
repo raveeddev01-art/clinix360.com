@@ -574,6 +574,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/exports/:id/download", ExportController, :download)
     get("/user_exports/:id/download", ExportController, :user_export_download)
+    get("/threads", ThreadController, :index)
   end
 
   # Catch any remaining patient routes
