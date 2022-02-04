@@ -50,8 +50,6 @@ defmodule Stitch.Repo.Scripts.OldBillingHistory do
     Enum.map(events, fn %{data: %{object: object}} ->
       if team = teams[object.customer] do
         exists = Repo.one(PaymentHistory |> where(invoice_id: ^object.id))
-        # IO.inspect(object, limit: :infinity)
-        # IO.inspect(exists, limit: :infinity)
 
         if exists do
           Logger.info("==== Skipping because already saved invoice #{object.id}")
