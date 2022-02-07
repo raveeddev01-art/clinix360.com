@@ -6,6 +6,7 @@ import MessageCommentInput from "common/components/message/MessageCommentInput";
 import MessageCommentGroup from "common/components/message/MessageCommentGroup";
 import MessageInfo from "common/components/message/MessageInfo";
 import LinkPreview from "../../../common/components/messages/message-content/link-preview";
+import messageTextToComponents from "../../../chat/message-list/message-text-to-components";
 
 @inject("messageStore", "usersStore", "groupsStore", "desktopStore")
 @observer
@@ -39,7 +40,8 @@ class MessageDetails extends Component {
     if (!message.id) return null;
 
     const messageCreator = this.props.usersStore.usersById[message.user_id];
-
+    const text_content = messageTextToComponents(message.text_content)
+    
     return (
       <div className="search-results-addon">
         <div className="file-heading">
@@ -50,7 +52,9 @@ class MessageDetails extends Component {
                 {messageCreator.full_name}
               </UserProfileMenu>
             </div>
-            <div className="file-heading__content-file">{message.text_content}</div>
+            <div className="file-heading__content-file">
+              {text_content}
+            </div>
             {this.renderLinkPreviews()}
           </div>
         </div>
