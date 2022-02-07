@@ -118,29 +118,19 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
-    IO.inspect(" check - 1")
     current_user = conn.assigns.current_user
-    IO.inspect(" check - 2")
     presence = UserStatusService.presence_user_ids(current_user.team_id)
-    IO.inspect(" check - 3")
     authenticated_urls = get_authenticated_urls(message_params)
-    |> IO.inspect(label: " check - 4")
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
-    |> IO.inspect(label: "check - 5")
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <-
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(group, current_user, message_params_with_client, presence) do
-      IO.inspect(" check - 6")
       message = %{message | user: current_user}
-      IO.inspect(" check - 7")
       # create_optional_upload_comment(message, group, current_user, presence, message_params)
-      IO.inspect(" check - 8")
       message = MessageQueries.get_by_id(message.id)
-      IO.inspect(" check - 9")
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
-      IO.inspect(" check - 10")
       conn
       |> put_status(:created)
       |> render("show.json", message: message, authenticated_urls: authenticated_urls)

@@ -52,9 +52,7 @@ defmodule Stitch.Repo.Scripts.GeneratePdfThumbs do
               nil
           end
         rescue
-          error ->
-            IO.inspect(error)
-            IO.inspect(upload)
+          error -> error
         end
 
       _ ->

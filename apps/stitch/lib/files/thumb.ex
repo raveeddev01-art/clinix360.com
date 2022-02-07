@@ -8,7 +8,6 @@ defmodule Stitch.Files.Thumb do
   def create(%{"mimetype" => "image/tiff"}), do: {:error, "Unsupported type"}
 
   def create(%{"url" => url, "mimetype" => "image/" <> _image}) do
-    IO.inspect("here is thumb 1")
     with {:ok, filename} <- get_filename(url),
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(filename, dest),
@@ -47,7 +46,7 @@ defmodule Stitch.Files.Thumb do
         "preview_url" => S3.fullpath(preview_path)
       }
 
-      {:ok, preview} |> IO.inspect(label: "here is thumb create end")
+      {:ok, preview}
     else
       error ->
         {:error, error}
@@ -64,25 +63,17 @@ defmodule Stitch.Files.Thumb do
     try do
 
     origin
-    |> IO.inspect(label: "in generate preview")
     |> open
-    |> IO.inspect(label: "opening generate preview")
     |> resize_to_limit("#{@settings.max_preview_width}x#{@settings.max_preview_height}")
-    |> IO.inspect(label: "resize limit")
     |> save
-    # |> IO.inspect(label: "in generate preview save end")
     catch
-      e -> IO.inspect(e, label: "here is error")
+      e -> e
     end
   end
 
   defp get_filename(url) do
-    IO.inspect("get_filename")
-    IO.inspect(url, label: "here is url")
-    # IO.inspect(URI.parse(url), label: "here is path")
-    # String.replace
     with %{path: path} <- URI.parse(url) do
-      {:ok, Path.basename(path)} |> IO.inspect(label: "here is path basename")
+      {:ok, Path.basename(path)}
     end
   end
 end

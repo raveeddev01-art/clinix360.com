@@ -88,13 +88,12 @@ defmodule StitchConnect.Web.GroupChannel do
       else
         MessageQueries.group_latest_messages(group.id, user, opts)
       end
-      |> IO.inspect(label: "rendered_messages --->>> ")
 
     messages_json =
       MessageView.render("index.json", %{
         messages: messages,
         authenticated_urls: authenticated_urls
-      })|> IO.inspect(label: "rendered_messages_json --->>> ")
+      })
 
     group_user = GroupUser.get(group.id, user.id)
 

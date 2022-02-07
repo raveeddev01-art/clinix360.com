@@ -125,12 +125,11 @@ defmodule Stitch.GroupQueries do
 
   def get_by_id(%Team{id: team_id}, group_id) do
 
-    Repo.get_by(Group, id: group_id, team_id: team_id) |> IO.inspect(label: "here is get_by_id 2")
+    Repo.get_by(Group, id: group_id, team_id: team_id)
   end
 
   def get_by_id(id) do
-
-    Repo.get(Group, id) |> IO.inspect(label: "here is get_by_id 3")
+    Repo.get(Group, id)
   end
 
   @doc """

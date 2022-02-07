@@ -345,15 +345,6 @@ defmodule Stitch.Drchrono do
     end
   end
 
-  # We haven't implemented these two webhooks.
-  # def handle_webhook("CLINICAL_NOTE_LOCK", params) do
-  #   IO.inspect(params)
-  # end
-
-  # def handle_webhook("CLINICAL_NOTE_UNLOCK", params) do
-  #   IO.inspect(params)
-  # end
-
   def handle_webhook(_event_type, _params) do
     Logger.info("[dr-chrono] [webhook] Unidentified event_type, can't handle this webhook.")
   end
@@ -361,10 +352,7 @@ defmodule Stitch.Drchrono do
   def get_patient_info(integration, patient_id) do
     api_url = "https://drchrono.com/api/patients/#{patient_id}"
     api_headers = headers(integration)
-    IO.inspect(api_headers)
-
     http_get(api_url, api_headers)
-    |> IO.inspect()
   end
 
   def get_doctor_info(integration, doctor_id) do

@@ -211,17 +211,15 @@ defmodule Stitch.MessageQueries do
       from(
         m in Message,
         join: a in MessageAction,
-        on: a.message_id == m.id,
+        on: a.message_id == m.id or m.upload_id == a.upload_id,
         left_join: u in assoc(m, :user),
         where: a.category == "star",
         where: a.user_id == ^user_id,
-        where: m.type != ^"file_share",
         order_by: [desc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        preload: [user: u]
+        preload: [:upload, user: u]
       )
-
     Repo.all(query)
   end
 

@@ -6,15 +6,11 @@ defmodule StitchConnect.MessageMailer do
 
   @decorate transaction(:background_job)
   def deliver(notification_preference) do
-    IO.inspect("start Email deliver")
-    IO.inspect(notification_preference, label: "notification_preference")
     Team
     |> select([:id, :name, :slug])
-    |> IO.inspect(label: "here is team")
     |> Stitch.ChunkStream.chunk(25)
     |> Stream.each(&deliver_for_teams(&1, notification_preference))
     |> Stream.run()
-    |> IO.inspect(label: "end of deliver email")
   end
 
   def deliver_for_teams(teams, notification_preference) do
@@ -27,7 +23,6 @@ defmodule StitchConnect.MessageMailer do
     |> Stitch.ChunkStream.chunk(50)
     |> Stream.each(&deliver_for_users(&1, team))
     |> Stream.run()
-    |> IO.inspect(label: "stream run for email notificaiton")
   end
 
   def deliver_for_users(users, team) do

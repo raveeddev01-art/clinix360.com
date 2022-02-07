@@ -121,7 +121,7 @@ class MessageContent extends Component {
         <div className="message-body">
           {messageContentComponents}
         </div>
-        {message.type === "upload" && (
+        {(message.type === "upload" || message.type === "file_share") && (
           <FileAttachment
             {...message.fields}
             message={message}
