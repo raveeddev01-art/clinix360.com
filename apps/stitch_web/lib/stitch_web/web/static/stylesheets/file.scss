@@ -425,7 +425,19 @@
 .attachment-block {
   .attachment-title {
     color: #003366 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
+
+  // .attachment-icon {
+  //   width: 30%;
+  // }
+
+  .attachment-description {
+    width: 100%;
+  }
+
 
   .attachment-actions {
     background: -webkit-linear-gradient(
