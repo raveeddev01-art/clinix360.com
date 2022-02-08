@@ -317,6 +317,19 @@ class ChannelStore {
         return this.channels[this.groupChannelTopic];
     }
 
+    joinThreadsChannel(options = {}) {
+        const { messageStore, groupStore, teamFileStore } = this.rootStore;
+
+        const joined = this.join("threads", options);
+        console.log(joined, "joined channel 2")
+
+        // Message related
+        // this.groupChannel.on("new_msg", messageStore.onNewMessage);
+        // this.groupChannel.on("is_typing", groupStore.onStartedTyping);
+
+        return joined;
+    }
+
     joinGroupChannel(options = {}) {
         const { messageStore, groupStore, teamFileStore } = this.rootStore;
 

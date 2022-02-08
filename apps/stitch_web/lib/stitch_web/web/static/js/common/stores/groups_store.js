@@ -9,686 +9,715 @@ import history from "lib/history";
 import orderBy from "lodash/orderBy";
 
 import {
-  getGroupUserIdsThatHasCurrentUser,
-  getSlugOfDMGroupByUsers,
-  getGroupUrl,
-  isFullMember
+    getGroupUserIdsThatHasCurrentUser,
+    getSlugOfDMGroupByUsers,
+    getGroupUrl,
+    isFullMember
 } from "lib/utils";
 
 class GroupsStore {
-  @observable groups = [];
-  @observable groupCursors = {}; // { group_id: message_id }, Holds the id of oldest message that is visible in chat pane in group
-  @observable currentGroupId = null;
+    @observable groups = [];
+    @observable groupCursors = {}; // { group_id: message_id }, Holds the id of oldest message that is visible in chat pane in group
+    @observable currentGroupId = null;
 
-  constructor(rootStore) {
-    this.rootStore = rootStore;
-  }
-
-  // //////// //
-  // COMPUTED //
-  // //////// //
-
-  getGroupById = id => this.groups.find(group => group.id === id);
-
-  getGroupBySlug = slug => this.groups.find(group => group.slug === slug);
-
-  getGroupUrl = id => getGroupUrl(this.getGroupById(id));
-
-  @computed
-  get currentGroup() {
-    if (!this.currentGroupId) {
-      return null;
+    constructor(rootStore) {
+        this.rootStore = rootStore;
     }
 
-    return this.getGroupById(this.currentGroupId);
-  }
+    // //////// //
+    // COMPUTED //
+    // //////// //
 
-  @computed
-  get defaultGroup() {
-    if (isFullMember(currentUser)) {
-      return this.groups.find(g => g.is_default);
+    getGroupById = id => this.groups.find(group => group.id === id);
+
+    getGroupBySlug = slug => this.groups.find(group => group.slug === slug);
+
+    getGroupUrl = id => getGroupUrl(this.getGroupById(id));
+
+    @computed
+    get currentGroup() {
+        if (!this.currentGroupId) {
+            return null;
+        }
+
+        return this.getGroupById(this.currentGroupId);
     }
 
-    // for guests, just return first regular group
-    const regularGroups = this.groups.filter(g => g.type === "regular");
-    if (regularGroups.length) {
-      return regularGroups[0];
+    @computed
+    get defaultGroup() {
+        if (isFullMember(currentUser)) {
+            return this.groups.find(g => g.is_default);
+        }
+
+        // for guests, just return first regular group
+        const regularGroups = this.groups.filter(g => g.type === "regular");
+        if (regularGroups.length) {
+            return regularGroups[0];
+        }
+
+        // otherwise self dm
+        const selfDMGroup = this.groups.find(
+            g => g.type === "dm" && g.users.length === 1
+        );
+
+        // unhide it if self dm is hidden
+        if (selfDMGroup.is_hidden) {
+            this.unhideGroup(selfDMGroup.id);
+        }
+        return selfDMGroup;
     }
 
-    // otherwise self dm
-    const selfDMGroup = this.groups.find(
-      g => g.type === "dm" && g.users.length === 1
-    );
-
-    // unhide it if self dm is hidden
-    if (selfDMGroup.is_hidden) {
-      this.unhideGroup(selfDMGroup.id);
-    }
-    return selfDMGroup;
-  }
-
-  @computed
-  get visibleGroups() {
-    return this.groups.filter(g => !g.is_hidden);
-  }
-
-  @computed
-  get hiddenGroups() {
-    return this.groups.filter(g => g.is_hidden);
-  }
-
-  @computed
-  get favoriteGroups() {
-    return this.visibleGroups.filter(group => group.is_favorite);
-  }
-
-  @computed
-  get regularGroups() {
-    return this.visibleGroups.filter(group => group.type === "regular");
-  }
-
-  @computed
-  get allDMGroups() {
-    return this.visibleGroups.filter(group => group.type !== "regular");
-  }
-
-  @computed
-  get nonFavoritedRegularGroups() {
-    return this.regularGroups.filter(group => !group.is_favorite);
-  }
-
-  @computed
-  get directGroups() {
-    const isSelfDM = group => group.type === "dm" && group.users.length === 1;
-
-    return this.visibleGroups
-      .filter(group => group.type !== "regular" && !group.is_favorite)
-      .sort((group1, group2) => {
-        // Sorting and comparing if it's a self-DM, "You" goes first
-        if (isSelfDM(group1) > isSelfDM(group2)) return -1;
-        if (isSelfDM(group1) < isSelfDM(group2)) return 1;
-
-        // Then sorts DMs in alphabetical order
-        if (
-          this.getGroupName(group1).toLowerCase() <
-          this.getGroupName(group2).toLowerCase()
-        )
-          return -1;
-        if (
-          this.getGroupName(group1).toLowerCase() >
-          this.getGroupName(group2).toLowerCase()
-        )
-          return 1;
-        return 0;
-      });
-  }
-
-  @computed
-  get quickSwitchGroups() {
-    // Favorites before non faves,
-    // thenGroups before DMs,
-    // then alphabetical
-    return this.groups.sort((roomA, roomB) => {
-      if (roomA.is_favorite && !roomB.is_favorite) {
-        return -1;
-      }
-
-      if (!roomA.is_favorite && roomB.is_favorite) {
-        return 1;
-      }
-
-      if (roomA.type === "multi_dm" && roomB.type !== "multi_dm") {
-        return 1;
-      }
-
-      if (roomA.type !== "multi_dm" && roomB.type === "multi_dm") {
-        return -1;
-      }
-
-      if (roomA.type === "dm" && roomB.type !== "dm") {
-        return 1;
-      }
-
-      if (roomA.type !== "dm" && roomB.type === "dm") {
-        return -1;
-      }
-
-      const aName = this.getGroupName(roomA).toLowerCase();
-      const bName = this.getGroupName(roomB).toLowerCase();
-
-      if (aName < bName) return -1;
-      if (aName > bName) return 1;
-      return 0;
-    });
-  }
-
-  @computed
-  get multiDMGroups() {
-    return this.visibleGroups.filter(group => group.type === "multi_dm");
-  }
-
-  @computed
-  get roomsInShowOrder() {
-    return this.favoriteGroups.concat(
-      this.nonFavoritedRegularGroups,
-      this.directGroups
-    );
-  }
-
-  @computed
-  get totalMentionsCount() {
-    return this.visibleGroups.reduce((count, group) => {
-      if (group.type === "regular") {
-        return count + group.mentions_count;
-      }
-
-      return count + group.unread_messages_count;
-    }, 0);
-  }
-
-  @computed
-  get totalUnreadMessagesCount() {
-    return this.visibleGroups.reduce((count, group) => {
-      return count + group.unread_messages_count;
-    }, 0);
-  }
-
-  @computed
-  get isCurrentGroupDeactivated() {
-    if (!this.currentGroup) {
-      return false;
+    @computed
+    get visibleGroups() {
+        return this.groups.filter(g => !g.is_hidden);
     }
 
-    if (this.currentGroup.type === "regular") {
-      return false;
+    @computed
+    get hiddenGroups() {
+        return this.groups.filter(g => g.is_hidden);
     }
 
-    const { usersStore } = this.rootStore;
-
-    if (this.currentGroup.users.length === 1) {
-      // self-dm
-      return false;
+    @computed
+    get favoriteGroups() {
+        return this.visibleGroups.filter(group => group.is_favorite);
     }
 
-    return this.currentGroup.users.every(u => {
-      const user = usersStore.users.find(s => s.id === u.id && s.disabled);
-      return u.id === currentUser.id || !!user;
-    });
-  }
-
-  // //////////
-  // ACTIONS //
-  // /////// //
-
-  hasAccess = groupId => {
-    return !!this.groups.find(g => g.id === groupId);
-  };
-
-  getGroupName = group => {
-    if (!group) {
-      return "";
+    @computed
+    get regularGroups() {
+        return this.visibleGroups.filter(group => group.type === "regular");
     }
 
-    if (group.type === "regular") {
-      return group.name;
+    @computed
+    get allDMGroups() {
+        return this.visibleGroups.filter(group => group.type !== "regular");
     }
 
-    if (group.type === "dm" && group.users.length === 1) {
-      return `${group.users[0].full_name} (You)`;
+    @computed
+    get nonFavoritedRegularGroups() {
+        return this.regularGroups.filter(group => !group.is_favorite);
     }
 
-    return group.users
-      .filter(u => u.id !== currentUser.id)
-      .map(u => u.full_name)
-      .join(", ");
-  };
+    @computed
+    get directGroups() {
+        const isSelfDM = group => group.type === "dm" && group.users.length === 1;
 
-  getDMNameWithUsernames = group => {
-    if (group.users.length === 1) {
-      return group.users[0].username;
+        return this.visibleGroups
+            .filter(group => group.type !== "regular" && !group.is_favorite)
+            .sort((group1, group2) => {
+                // Sorting and comparing if it's a self-DM, "You" goes first
+                if (isSelfDM(group1) > isSelfDM(group2)) return -1;
+                if (isSelfDM(group1) < isSelfDM(group2)) return 1;
+
+                // Then sorts DMs in alphabetical order
+                if (
+                    this.getGroupName(group1).toLowerCase() <
+                    this.getGroupName(group2).toLowerCase()
+                )
+                    return -1;
+                if (
+                    this.getGroupName(group1).toLowerCase() >
+                    this.getGroupName(group2).toLowerCase()
+                )
+                    return 1;
+                return 0;
+            });
     }
 
-    return group.users
-      .filter(u => u.id !== currentUser.id)
-      .map(u => u.username)
-      .join(",");
-  };
+    @computed
+    get quickSwitchGroups() {
+        // Favorites before non faves,
+        // thenGroups before DMs,
+        // then alphabetical
+        return this.groups.sort((roomA, roomB) => {
+            if (roomA.is_favorite && !roomB.is_favorite) {
+                return -1;
+            }
 
-  @action
-  updateGroupData = (id, data) => {
-    const group = this.getGroupById(id);
+            if (!roomA.is_favorite && roomB.is_favorite) {
+                return 1;
+            }
 
-    if (group) {
-      Object.assign(group, data);
+            if (roomA.type === "multi_dm" && roomB.type !== "multi_dm") {
+                return 1;
+            }
+
+            if (roomA.type !== "multi_dm" && roomB.type === "multi_dm") {
+                return -1;
+            }
+
+            if (roomA.type === "dm" && roomB.type !== "dm") {
+                return 1;
+            }
+
+            if (roomA.type !== "dm" && roomB.type === "dm") {
+                return -1;
+            }
+
+            const aName = this.getGroupName(roomA).toLowerCase();
+            const bName = this.getGroupName(roomB).toLowerCase();
+
+            if (aName < bName) return -1;
+            if (aName > bName) return 1;
+            return 0;
+        });
     }
-  };
 
-  @action
-  updateGroupCursor = (id, cursor) => {
-    this.groupCursors[id] = cursor;
-  };
-
-  @action
-  getDMGroup = userId => {
-    const users =
-      userId < currentUser.id
-        ? [userId, currentUser.id]
-        : [currentUser.id, userId];
-    return this.groups.find(g => g.slug === `__dm:${users.join(".")}`);
-  };
-
-  @action
-  updateUserInAllGroups = (userId, userData) => {
-    this.groups.forEach(group => {
-      const user = group.users.find(u => u.id === userId);
-      if (user) {
-        extendObservable(user, userData);
-      }
-    });
-  };
-
-  @action
-  loadGroups = () => {
-    return get("/api/v1/groups?fetchUsers=false").then(response => {
-      const users = this.rootStore.usersStore.users.toJS();
-      const groups = response.data.map(group => ({
-        ...group,
-        users: group.user_ids.map(id => users.find(u => u.id === id))
-      }));
-
-      this.onLoadedGroups(groups);
-    });
-  };
-
-  @action
-  loadGroupsWithUsers = () => {
-    return get("/api/v1/groups").then(response => {
-      this.onLoadedGroups(response.data);
-    });
-  };
-
-  @action
-  loadAdditionalGroup = groupId => {
-    return get(`/api/v1/groups/${groupId}`).then(response => {
-      if (!this.getGroupById(groupId)) {
-        this.onLoadedGroups([...this.groups, response.data]);
-      }
-    });
-  };
-
-  @action
-  onLoadedGroups = groups => {
-    const { sidemenuStore } = this.rootStore;
-    this.groups = orderBy(groups, ["name"]).map(group => ({
-      ...group,
-      new_message_line_at: null,
-      marked_as_unread: false
-    }));
-
-    sidemenuStore.updateFavicon();
-  };
-
-  // DM group open/create steps
-  // 1. Calculate slug from members selected
-  // 2. Find if dm group already exists
-  //  2.1. If exists,
-  //   2.1.1. If hidden, unhide
-  //   2.1.2. If not hidden, do nothing
-  //  2.2. If not, create
-  // 3. Navigate to the dm created
-  @action
-  goToDM = userIds => {
-    const slug = getSlugOfDMGroupByUsers(userIds);
-    const group = this.getGroupBySlug(slug);
-
-    if (!group) {
-      this.createAndOpenDM(userIds);
-    } else {
-      this.goToCreatedDM(group);
+    @computed
+    get multiDMGroups() {
+        return this.visibleGroups.filter(group => group.type === "multi_dm");
     }
-  };
 
-  @action
-  goToCreatedDM = group => {
-    this.unhideIfHiddenPromise(group).then(groupCreated => {
-      history.push(getGroupUrl(groupCreated));
-    });
-  };
+    @computed
+    get roomsInShowOrder() {
+        return this.favoriteGroups.concat(
+            this.nonFavoritedRegularGroups,
+            this.directGroups
+        );
+    }
 
-  @action
-  createAndOpenDM = userIds => {
-    const parseResponseAndAddGroup = response => {
-      const groupFromApi = response.data;
-      this.onCreatedGroup(groupFromApi);
-      return groupFromApi;
+    @computed
+    get totalMentionsCount() {
+        return this.visibleGroups.reduce((count, group) => {
+            if (group.type === "regular") {
+                return count + group.mentions_count;
+            }
+
+            return count + group.unread_messages_count;
+        }, 0);
+    }
+
+    @computed
+    get totalUnreadMessagesCount() {
+        return this.visibleGroups.reduce((count, group) => {
+            return count + group.unread_messages_count;
+        }, 0);
+    }
+
+    @computed
+    get isCurrentGroupDeactivated() {
+        if (!this.currentGroup) {
+            return false;
+        }
+
+        if (this.currentGroup.type === "regular") {
+            return false;
+        }
+
+        const { usersStore } = this.rootStore;
+
+        if (this.currentGroup.users.length === 1) {
+            // self-dm
+            return false;
+        }
+
+        return this.currentGroup.users.every(u => {
+            const user = usersStore.users.find(s => s.id === u.id && s.disabled);
+            return u.id === currentUser.id || !!user;
+        });
+    }
+
+    // //////////
+    // ACTIONS //
+    // /////// //
+
+    hasAccess = groupId => {
+        return !!this.groups.find(g => g.id === groupId);
     };
 
-    this.createDMGroup(userIds)
-      .then(parseResponseAndAddGroup)
-      .then(groupCreated => {
-        history.push(getGroupUrl(groupCreated));
-      });
-  };
-
-  @action
-  unhideIfHiddenPromise = group => {
-    return group.is_hidden
-      ? this.unhideGroup(group.id).then(() => group)
-      : Promise.resolve(group);
-  };
-
-  @action
-  openGroup = slug => {
-    const group = this.getGroupBySlug(slug);
-
-    if (group && group.id !== this.currentGroupId) {
-      if (this.currentGroupId) {
-        this.onClosedGroup();
-      }
-
-      // Change the group
-      this.currentGroupId = group.id;
-      this.onOpenedGroup();
-    }
-  };
-
-  @action
-  openDMGroup = usernames => {
-    const { usersStore } = this.rootStore;
-    const users = usernames.map(username =>
-      usersStore.getUserByUsername(username)
-    );
-    const userIds = getGroupUserIdsThatHasCurrentUser(users);
-    const slug = getSlugOfDMGroupByUsers(userIds);
-
-    this.openGroup(slug);
-  };
-
-  @action
-  hideGroup = id => {
-    return put(`/api/v1/groups/${id}/hide`)
-      .then(() => {
-        this.updateGroupData(id, { is_hidden: true });
-      })
-      .then(() => {
-        if (this.currentGroupId === id) {
-          history.push(`/rooms/${this.defaultGroup.slug}`);
+    getGroupName = group => {
+        if (!group) {
+            return "";
         }
-      });
-  };
 
-  @action
-  unhideGroup = id => {
-    return put(`/api/v1/groups/${id}/unhide`).then(() => {
-      this.updateGroupData(id, { is_hidden: false });
-    });
-  };
+        if (group.type === "regular") {
+            return group.name;
+        }
 
-  @action
-  createGroup = params => {
-    return post("/api/v1/groups", {
-      body: params,
-      hideNotify: true
-    }).then(resp => {
-      const { data } = resp;
-      this.onCreatedGroup(data);
-      return data.slug;
-    });
-  };
+        if (group.type === "dm" && group.users.length === 1) {
+            return `${group.users[0].full_name} (You)`;
+        }
 
-  @action
-  createDMGroup = userIds => {
-    const body = { user_ids: userIds };
+        return group.users
+            .filter(u => u.id !== currentUser.id)
+            .map(u => u.full_name)
+            .join(", ");
+    };
 
-    return userIds.length > 2
-      ? post(`/api/v1/groups/multi_dm`, {
-          body
-        })
-      : post(`/api/v1/groups/dm`, { body });
-  };
+    getDMNameWithUsernames = group => {
+        if (group.users.length === 1) {
+            return group.users[0].username;
+        }
 
-  @action
-  joinGroup = id => {
-    return post(`/api/v1/groups/${id}/join`).then(() => {
-      this.updateGroupData(id, { joined: true });
-    });
-  };
+        return group.users
+            .filter(u => u.id !== currentUser.id)
+            .map(u => u.username)
+            .join(",");
+    };
 
-  @action
-  leaveGroup = id => {
-    return post(`/api/v1/groups/${id}/leave`).then(resp => {
-      this.updateGroupData(id, { joined: false });
+    @action
+    updateGroupData = (id, data) => {
+        const group = this.getGroupById(id);
 
-      return resp.data.redirect_to;
-    });
-  };
+        if (group) {
+            Object.assign(group, data);
+        }
+    };
 
-  @action
-  renameGroup = (id, name) => {
-    return patch(`/api/v1/groups/${id}/rename`, {
-      body: { name }
-    });
-  };
+    @action
+    updateGroupCursor = (id, cursor) => {
+        this.groupCursors[id] = cursor;
+    };
 
-  @action
-  inviteUsersToGroup = (id, userIds) => {
-    return post(`/api/v1/groups/${id}/invite`, {
-      body: {
-        user_ids: userIds
-      }
-    });
-  };
+    @action
+    getDMGroup = userId => {
+        const users =
+            userId < currentUser.id ? [userId, currentUser.id] : [currentUser.id, userId];
+        return this.groups.find(g => g.slug === `__dm:${users.join(".")}`);
+    };
 
-  @action
-  removeUsersFromGroup = (id, userIds) => {
-    return post(`/api/v1/groups/${id}/remove_users`, {
-      body: {
-        user_ids: userIds
-      }
-    });
-  };
-
-  @action
-  setPublicOfGroup = (id, value) => {
-    return post(`/api/v1/groups/${id}/toggle-public`, {
-      body: { public: value }
-    }).then(() => {
-      this.updateGroupData(id, { public: value });
-    });
-  };
-
-  @action
-  toggleFavorite = id => {
-    return post(`/api/v1/groups/${id}/toggle-favorite`);
-  };
-
-  @action
-  removeGroup = id => {
-    return remove(`/api/v1/groups/${id}`, {
-      hideNotify: true
-    });
-  };
-
-  /* Event handlers */
-
-  /**
-   * Run the process of when opening the group
-   */
-  @action
-  onOpenedGroup = () => {
-    const { channelStore, messageStore } = this.rootStore;
-    const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
-
-    if (fetchMessages) {
-      channelStore
-        .joinGroupChannel({
-          authenticated_urls: true,
-          fetch_messages: fetchMessages
-        })
-        .receive(
-          "ok",
-          data => fetchMessages && messageStore.onJoinGroupChannel(data)
-        )
-        .receive("error", err => notify.show(err.message, "error"));
-      this.resetRelatedStores({ withMessages: !!fetchMessages });
-    } else {
-      channelStore
-        .joinGroupChannel({
-          authenticated_urls: true,
-          fetch_messages: fetchMessages
-        })
-        .receive("ok", () => null)
-        .receive("error", err => notify.show(err.message, "error"));
-      this.resetRelatedStores({ withMessages: false });
-      messageStore.onJoinGroupChannelCached();
-    }
-  };
-
-  resetRelatedStores(options) {
-    const {
-      messageStore,
-      pinnedMessageStore,
-      filesStore,
-      groupStore
-    } = this.rootStore;
-
-    // Reset messages
-    messageStore.reset(options);
-    // reset current group
-    groupStore.reset();
-
-    // Reset pinned messages and files
-    pinnedMessageStore.reset();
-    filesStore.reset();
-  }
-
-  /**
-   * Run the process of when closing the group
-   */
-  @action
-  onClosedGroup = () => {
-    const { channelStore, messageStore } = this.rootStore;
-
-    channelStore.leaveGroupChannel();
-
-    // Reset messages
-    messageStore.reset();
-
-    this.currentGroupId = null;
-  };
-
-  @action
-  onHidGroup = ({ group_id: id, is_hidden }) => {
-    this.updateGroupData(id, { is_hidden });
-  };
-
-  @action
-  onRemovedGroup = ({ group_id: id }) => {
-    this.groups = this.groups.filter(g => g.id !== id);
-
-    // move to default group if current group is removed
-    if (id === this.currentGroupId) {
-      if (this.defaultGroup.type === "dm") {
-        history.push(`/direct/${this.defaultGroup.users[0].username}`);
-      } else {
-        history.push(`/rooms/${this.defaultGroup.slug}`);
-      }
-    }
-  };
-
-  @action
-  onCreatedGroup = newGroup => {
-    const alreadyAdded = !!this.groups.find(g => g.id === newGroup.id);
-
-    if (!alreadyAdded) {
-      this.groups.push(newGroup);
-    }
-  };
-
-  @action
-  onJoinedGroup = ({ group_id: id }) => {
-    this.updateGroupData(id, { joined: true });
-  };
-
-  @action
-  onLeftGroup = ({ group_id: id }) => {
-    this.updateGroupData(id, { joined: false });
-  };
-
-  @action
-  onRenamedGroup = ({ group_id: id, group_slug: slug, group_name: name }) => {
-    this.updateGroupData(id, { slug, name });
-
-    if (id === this.currentGroupId) {
-      history.push(`/rooms/${slug}`);
-    }
-  };
-
-  @action
-  onMarkedAsRead = payload => {
-    const { sidemenuStore } = this.rootStore;
-
-    this.updateGroupData(payload.group_id, {
-      unread_messages_count: payload.unread_messages_count,
-      mentions_count: payload.mentions_count,
-      last_read_at: payload.last_read_at,
-      marked_as_unread: false
-    });
-
-    // Update favicon
-    sidemenuStore.updateFavicon();
-  };
-
-  @action
-  onMarkedAsUnread = payload => {
-    const { sidemenuStore } = this.rootStore;
-
-    this.updateGroupData(payload.group_id, {
-      unread_messages_count: payload.unread_messages_count,
-      mentions_count: payload.mentions_count,
-      last_read_at: payload.last_read_at,
-      new_message_line_at: payload.last_read_at,
-      marked_as_unread: true
-    });
-
-    // Update favicon
-    sidemenuStore.updateFavicon();
-  };
-
-  @action
-  onMembersUpdated = payload => {
-    const allUsers = this.rootStore.usersStore.usersById;
-    // filter undefined because sometimes this event is broadcasted after user_joined
-    const users = payload.user_ids.map(id => allUsers[id]).filter(u => u);
-
-    if (isFullMember(currentUser)) {
-      if (this.hasAccess(payload.group_id)) {
-        this.updateGroupData(payload.group_id, {
-          users
+    @action
+    updateUserInAllGroups = (userId, userData) => {
+        this.groups.forEach(group => {
+            const user = group.users.find(u => u.id === userId);
+            if (user) {
+                extendObservable(user, userData);
+            }
         });
-      } else {
-        // load group
-        this.loadAdditionalGroup(payload.group_id);
-      }
+    };
 
-      // Redirects to default group if user is removed from current room
-      const meRemoved = !payload.user_ids.includes(currentUser.id);
-      if (meRemoved && this.currentGroupId === payload.group_id) {
-        history.push(`/rooms/${this.defaultGroup.slug}`);
-      }
-    } else if (this.hasAccess(payload.group_id)) {
-      this.updateGroupData(payload.group_id, {
-        users
-      });
+    @action
+    loadGroups = () => {
+        return get("/api/v1/groups?fetchUsers=false").then(response => {
+            const users = this.rootStore.usersStore.users.toJS();
+            const groups = response.data.map(group => ({
+                ...group,
+                users: group.user_ids.map(id => users.find(u => u.id === id))
+            }));
+
+            this.onLoadedGroups(groups);
+        });
+    };
+
+    @action
+    loadGroupsWithUsers = () => {
+        return get("/api/v1/groups").then(response => {
+            this.onLoadedGroups(response.data);
+        });
+    };
+
+    @action
+    loadAdditionalGroup = groupId => {
+        return get(`/api/v1/groups/${groupId}`).then(response => {
+            if (!this.getGroupById(groupId)) {
+                this.onLoadedGroups([...this.groups, response.data]);
+            }
+        });
+    };
+
+    @action
+    onLoadedGroups = groups => {
+        const { sidemenuStore } = this.rootStore;
+        this.groups = orderBy(groups, ["name"]).map(group => ({
+            ...group,
+            new_message_line_at: null,
+            marked_as_unread: false
+        }));
+
+        sidemenuStore.updateFavicon();
+    };
+
+    // DM group open/create steps
+    // 1. Calculate slug from members selected
+    // 2. Find if dm group already exists
+    //  2.1. If exists,
+    //   2.1.1. If hidden, unhide
+    //   2.1.2. If not hidden, do nothing
+    //  2.2. If not, create
+    // 3. Navigate to the dm created
+    @action
+    goToDM = userIds => {
+        const slug = getSlugOfDMGroupByUsers(userIds);
+        const group = this.getGroupBySlug(slug);
+
+        if (!group) {
+            this.createAndOpenDM(userIds);
+        } else {
+            this.goToCreatedDM(group);
+        }
+    };
+
+    @action
+    goToCreatedDM = group => {
+        this.unhideIfHiddenPromise(group).then(groupCreated => {
+            history.push(getGroupUrl(groupCreated));
+        });
+    };
+
+    @action
+    createAndOpenDM = userIds => {
+        const parseResponseAndAddGroup = response => {
+            const groupFromApi = response.data;
+            this.onCreatedGroup(groupFromApi);
+            return groupFromApi;
+        };
+
+        this.createDMGroup(userIds)
+            .then(parseResponseAndAddGroup)
+            .then(groupCreated => {
+                history.push(getGroupUrl(groupCreated));
+            });
+    };
+
+    @action
+    unhideIfHiddenPromise = group => {
+        return group.is_hidden ?
+            this.unhideGroup(group.id).then(() => group) :
+            Promise.resolve(group);
+    };
+
+    @action
+    openThreads = () => {
+        this.currentGroupId = 0;
+        const { channelStore, messageStore } = this.rootStore;
+        const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
+
+        if (fetchMessages) {
+            channelStore
+                .joinThreadsChannel({
+                    authenticated_urls: true,
+                    fetch_messages: fetchMessages
+                })
+                .receive(
+                    "ok",
+                    data => fetchMessages && messageStore.onJoinGroupChannel(data)
+                )
+                .receive("error", err => notify.show(err.message, "error"));
+            this.resetRelatedStores({ withMessages: !!fetchMessages });
+        } else {
+            channelStore
+                .joinGroupChannel({
+                    authenticated_urls: true,
+                    fetch_messages: fetchMessages
+                })
+                .receive("ok", () => null)
+                .receive("error", err => notify.show(err.message, "error"));
+            this.resetRelatedStores({ withMessages: false });
+            messageStore.onJoinGroupChannelCached();
+        }
+    };
+
+    @action
+    openGroup = slug => {
+        const group = this.getGroupBySlug(slug);
+
+        if (group && group.id !== this.currentGroupId) {
+            if (this.currentGroupId) {
+                this.onClosedGroup();
+            }
+
+            // Change the group
+            this.currentGroupId = group.id;
+            this.onOpenedGroup();
+        }
+    };
+
+    @action
+    openDMGroup = usernames => {
+        const { usersStore } = this.rootStore;
+        const users = usernames.map(username =>
+            usersStore.getUserByUsername(username)
+        );
+        const userIds = getGroupUserIdsThatHasCurrentUser(users);
+        const slug = getSlugOfDMGroupByUsers(userIds);
+
+        this.openGroup(slug);
+    };
+
+    @action
+    hideGroup = id => {
+        return put(`/api/v1/groups/${id}/hide`)
+            .then(() => {
+                this.updateGroupData(id, { is_hidden: true });
+            })
+            .then(() => {
+                if (this.currentGroupId === id) {
+                    history.push(`/rooms/${this.defaultGroup.slug}`);
+                }
+            });
+    };
+
+    @action
+    unhideGroup = id => {
+        return put(`/api/v1/groups/${id}/unhide`).then(() => {
+            this.updateGroupData(id, { is_hidden: false });
+        });
+    };
+
+    @action
+    createGroup = params => {
+        return post("/api/v1/groups", {
+            body: params,
+            hideNotify: true
+        }).then(resp => {
+            const { data } = resp;
+            this.onCreatedGroup(data);
+            return data.slug;
+        });
+    };
+
+    @action
+    createDMGroup = userIds => {
+        const body = { user_ids: userIds };
+
+        return userIds.length > 2 ?
+            post(`/api/v1/groups/multi_dm`, {
+                body
+            }) :
+            post(`/api/v1/groups/dm`, { body });
+    };
+
+    @action
+    joinGroup = id => {
+        return post(`/api/v1/groups/${id}/join`).then(() => {
+            this.updateGroupData(id, { joined: true });
+        });
+    };
+
+    @action
+    leaveGroup = id => {
+        return post(`/api/v1/groups/${id}/leave`).then(resp => {
+            this.updateGroupData(id, { joined: false });
+
+            return resp.data.redirect_to;
+        });
+    };
+
+    @action
+    renameGroup = (id, name) => {
+        return patch(`/api/v1/groups/${id}/rename`, {
+            body: { name }
+        });
+    };
+
+    @action
+    inviteUsersToGroup = (id, userIds) => {
+        return post(`/api/v1/groups/${id}/invite`, {
+            body: {
+                user_ids: userIds
+            }
+        });
+    };
+
+    @action
+    removeUsersFromGroup = (id, userIds) => {
+        return post(`/api/v1/groups/${id}/remove_users`, {
+            body: {
+                user_ids: userIds
+            }
+        });
+    };
+
+    @action
+    setPublicOfGroup = (id, value) => {
+        return post(`/api/v1/groups/${id}/toggle-public`, {
+            body: { public: value }
+        }).then(() => {
+            this.updateGroupData(id, { public: value });
+        });
+    };
+
+    @action
+    toggleFavorite = id => {
+        return post(`/api/v1/groups/${id}/toggle-favorite`);
+    };
+
+    @action
+    removeGroup = id => {
+        return remove(`/api/v1/groups/${id}`, {
+            hideNotify: true
+        });
+    };
+
+    /* Event handlers */
+
+    /**
+     * Run the process of when opening the group
+     */
+    @action
+    onOpenedGroup = () => {
+        const { channelStore, messageStore } = this.rootStore;
+        const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
+
+        if (fetchMessages) {
+            channelStore
+                .joinGroupChannel({
+                    authenticated_urls: true,
+                    fetch_messages: fetchMessages
+                })
+                .receive(
+                    "ok",
+                    data => fetchMessages && messageStore.onJoinGroupChannel(data)
+                )
+                .receive("error", err => notify.show(err.message, "error"));
+            this.resetRelatedStores({ withMessages: !!fetchMessages });
+        } else {
+            channelStore
+                .joinGroupChannel({
+                    authenticated_urls: true,
+                    fetch_messages: fetchMessages
+                })
+                .receive("ok", () => null)
+                .receive("error", err => notify.show(err.message, "error"));
+            this.resetRelatedStores({ withMessages: false });
+            messageStore.onJoinGroupChannelCached();
+        }
+    };
+
+    resetRelatedStores(options) {
+        const {
+            messageStore,
+            pinnedMessageStore,
+            filesStore,
+            groupStore
+        } = this.rootStore;
+
+        // Reset messages
+        messageStore.reset(options);
+        // reset current group
+        groupStore.reset();
+
+        // Reset pinned messages and files
+        pinnedMessageStore.reset();
+        filesStore.reset();
     }
-  };
 
-  @action
-  onFavoriteChanged = payload => {
-    this.updateGroupData(payload.group_id, {
-      is_favorite: payload.is_favorite
-    });
-  };
+    /**
+     * Run the process of when closing the group
+     */
+    @action
+    onClosedGroup = () => {
+        const { channelStore, messageStore } = this.rootStore;
+
+        channelStore.leaveGroupChannel();
+
+        // Reset messages
+        messageStore.reset();
+
+        this.currentGroupId = null;
+    };
+
+    @action
+    onHidGroup = ({ group_id: id, is_hidden }) => {
+        this.updateGroupData(id, { is_hidden });
+    };
+
+    @action
+    onRemovedGroup = ({ group_id: id }) => {
+        this.groups = this.groups.filter(g => g.id !== id);
+
+        // move to default group if current group is removed
+        if (id === this.currentGroupId) {
+            if (this.defaultGroup.type === "dm") {
+                history.push(`/direct/${this.defaultGroup.users[0].username}`);
+            } else {
+                history.push(`/rooms/${this.defaultGroup.slug}`);
+            }
+        }
+    };
+
+    @action
+    onCreatedGroup = newGroup => {
+        const alreadyAdded = !!this.groups.find(g => g.id === newGroup.id);
+
+        if (!alreadyAdded) {
+            this.groups.push(newGroup);
+        }
+    };
+
+    @action
+    onJoinedGroup = ({ group_id: id }) => {
+        this.updateGroupData(id, { joined: true });
+    };
+
+    @action
+    onLeftGroup = ({ group_id: id }) => {
+        this.updateGroupData(id, { joined: false });
+    };
+
+    @action
+    onRenamedGroup = ({ group_id: id, group_slug: slug, group_name: name }) => {
+        this.updateGroupData(id, { slug, name });
+
+        if (id === this.currentGroupId) {
+            history.push(`/rooms/${slug}`);
+        }
+    };
+
+    @action
+    onMarkedAsRead = payload => {
+        const { sidemenuStore } = this.rootStore;
+
+        this.updateGroupData(payload.group_id, {
+            unread_messages_count: payload.unread_messages_count,
+            mentions_count: payload.mentions_count,
+            last_read_at: payload.last_read_at,
+            marked_as_unread: false
+        });
+
+        // Update favicon
+        sidemenuStore.updateFavicon();
+    };
+
+    @action
+    onMarkedAsUnread = payload => {
+        const { sidemenuStore } = this.rootStore;
+
+        this.updateGroupData(payload.group_id, {
+            unread_messages_count: payload.unread_messages_count,
+            mentions_count: payload.mentions_count,
+            last_read_at: payload.last_read_at,
+            new_message_line_at: payload.last_read_at,
+            marked_as_unread: true
+        });
+
+        // Update favicon
+        sidemenuStore.updateFavicon();
+    };
+
+    @action
+    onMembersUpdated = payload => {
+        const allUsers = this.rootStore.usersStore.usersById;
+        // filter undefined because sometimes this event is broadcasted after user_joined
+        const users = payload.user_ids.map(id => allUsers[id]).filter(u => u);
+
+        if (isFullMember(currentUser)) {
+            if (this.hasAccess(payload.group_id)) {
+                this.updateGroupData(payload.group_id, {
+                    users
+                });
+            } else {
+                // load group
+                this.loadAdditionalGroup(payload.group_id);
+            }
+
+            // Redirects to default group if user is removed from current room
+            const meRemoved = !payload.user_ids.includes(currentUser.id);
+            if (meRemoved && this.currentGroupId === payload.group_id) {
+                history.push(`/rooms/${this.defaultGroup.slug}`);
+            }
+        } else if (this.hasAccess(payload.group_id)) {
+            this.updateGroupData(payload.group_id, {
+                users
+            });
+        }
+    };
+
+    @action
+    onFavoriteChanged = payload => {
+        this.updateGroupData(payload.group_id, {
+            is_favorite: payload.is_favorite
+        });
+    };
 }
 
 export default GroupsStore;

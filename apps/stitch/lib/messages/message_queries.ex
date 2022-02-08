@@ -105,6 +105,53 @@ defmodule Stitch.MessageQueries do
     Message.Reaction.apply_reactions(messages, :message)
   end
 
+  def threads_latest_messages(user, opts \\ []) do
+    limit = Enum.min([Keyword.get(opts, :limit), 60])
+    offset = Keyword.get(opts, :skip, 0)
+    fetch_users = Keyword.get(opts, :fetch_users, true)
+
+    query =
+      if fetch_users do
+        from(
+          m in Message,
+          left_join: g in assoc(m, :group),
+          left_join: u in assoc(m, :user),
+          left_join: pb in assoc(m, :pinned_by),
+          preload: [
+            user: u,
+            group: g,
+            pinned_by: pb
+          ]
+        )
+      else
+        Message
+      end
+
+    query =
+      from(
+        m in query,
+        where: is_nil(m.parent_message_id),
+        order_by: [desc: :inserted_at],
+        limit: ^limit,
+        offset: ^offset,
+        select: m,
+        preload: [thread_messages: ^from(
+          tm in Message,
+          order_by: [asc: tm.inserted_at]
+        )]
+      )
+
+    query =
+      case Keyword.fetch(opts, :max_id) do
+        {:ok, max_id} -> query |> where([m], m.id < ^max_id)
+        :error -> query
+      end
+
+    messages = Repo.all(query)
+    messages = MessageAction.apply_user_message_actions(user, messages)
+    Message.Reaction.apply_reactions(messages, :message)
+  end
+
   @doc """
   Return the latest 30 messages for a group.
   """
