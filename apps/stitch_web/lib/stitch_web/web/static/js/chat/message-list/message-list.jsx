@@ -43,7 +43,7 @@ class MessageList extends Component {
   };
 
   render() {
-    const { messageStore } = this.props;
+    const { messageStore, isThreadView } = this.props;
     const { messagesByDate, newMessageLineMessage, highlightId } = messageStore;
 
     return (
@@ -74,6 +74,7 @@ class MessageList extends Component {
                     <Message
                       // start of dummy prop so that message list react to message prop change
                       edited_at={message.edited_at}
+                      isThreadView={isThreadView}
                       pinned={message.pinned}
                       starred={message.starred}
                       status={message.status}

@@ -9,7 +9,8 @@ import {
   MessageHeader,
   MessageContent,
   TimestampTooltip,
-  UserProfileMenu
+  UserProfileMenu,
+  MessageNav
 } from "common/components";
 import MessageActions from "./message-actions";
 
@@ -70,7 +71,7 @@ class Message extends PureComponent {
 
   renderGutter(message) {
     const { inserted_at: insertedAt } = message;
-    const { isConversationMessage } = this.props;
+    const { isConversationMessage, isThreadView } = this.props;
     const user = this.getUser(message);
 
     return (
@@ -134,7 +135,8 @@ class Message extends PureComponent {
       chatDiv,
       messageStore,
       isConversationMessage,
-      lastOtherUserMessage
+      lastOtherUserMessage,
+      isThreadView
     } = this.props;
     const user = this.getUser(message);
 
@@ -149,6 +151,7 @@ class Message extends PureComponent {
 
     return (
       <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+        {isThreadView && <MessageNav message={message} isThreadView={isThreadView} />}
         {hasNML && (
           <Element name="newMessageBanner" className="new-message-banner">
             <div className="blue-line">
@@ -223,6 +226,7 @@ class Message extends PureComponent {
 }
 
 Message.propTypes = {
+  isThreadView: PropTypes.bool,
   hasNML: PropTypes.bool,
   isHighlighted: PropTypes.bool,
   message: PropTypes.object.isRequired,
@@ -237,6 +241,7 @@ Message.propTypes = {
 };
 
 Message.defaultProps = {
+  isThreadView: false,
   hasNML: false,
   isHighlighted: false,
   onMounted: () => undefined,

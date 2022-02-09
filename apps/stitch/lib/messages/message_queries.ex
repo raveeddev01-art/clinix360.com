@@ -109,6 +109,7 @@ defmodule Stitch.MessageQueries do
     limit = Enum.min([Keyword.get(opts, :limit), 60])
     offset = Keyword.get(opts, :skip, 0)
     fetch_users = Keyword.get(opts, :fetch_users, true)
+    skip_types = ["system", "call"]
 
     query =
       if fetch_users do
@@ -132,6 +133,7 @@ defmodule Stitch.MessageQueries do
         m in query,
         where: is_nil(m.parent_message_id),
         where: m.user_id == ^user.id,
+        where: m.type not in ^skip_types,
         order_by: [desc: :inserted_at],
         limit: ^limit,
         offset: ^offset,

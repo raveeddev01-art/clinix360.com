@@ -165,7 +165,7 @@ export default class MessagePanel extends Component {
   }
 
   render() {
-    const { messageStore } = this.props;
+    const { messageStore, isThreadView } = this.props;
     const chatContainerClassName = classNames({
       loaded: messageStore.loadedInitial
     });
@@ -177,7 +177,7 @@ export default class MessagePanel extends Component {
           <UploadProgress />
         </div>
 
-        <MessageList />
+        <MessageList isThreadView={isThreadView}/>
         {this.renderFooter()}
       </div>
     );

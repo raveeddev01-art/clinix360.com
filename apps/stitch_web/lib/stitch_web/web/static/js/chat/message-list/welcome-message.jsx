@@ -77,7 +77,7 @@ class WelcomeMessage extends Component {
 
     groupStore.group.users.forEach((u, index) => {
       const name = this.getUserFullName(u);
-      
+
       const nameText = <span className="welcome-message__name">{name}</span>
 
       if (index === 0) {
@@ -97,23 +97,31 @@ class WelcomeMessage extends Component {
     );
   }
 
-  render() {
+  renderWelcomeMessage() {
     const { groupStore } = this.props;
     const { group } = groupStore;
 
     return (
-      <div className="welcome-message">
-        <div className="welcome-message__container">
-          <div className="welcome-message__title">
-            <h3>
-              <span>
-                {this.getIcon()}
-                {` ${groupStore.groupName}`}
-              </span>
-            </h3>
-          </div>
-          {group.type === "regular" ? this.renderForRoom() : this.renderForDM()}
+      <div className="welcome-message__container">
+        <div className="welcome-message__title">
+          <h3>
+            <span>
+              {this.getIcon()}
+              {` ${groupStore.groupName}`}
+            </span>
+          </h3>
         </div>
+        {group.type === "regular" ? this.renderForRoom() : this.renderForDM()}
+      </div>
+    )
+  }
+
+  render() {
+    const { groupStore } = this.props;
+
+    return (
+      <div className="welcome-message">
+        {groupStore.groupName != "Threads" && this.renderWelcomeMessage()}
       </div>
     );
   }

@@ -61,7 +61,7 @@ class Threads extends Component {
         <div id="main">
           <ThreadsTopNav />
           <div className="flex-content">
-            <MessagePanel />
+            <MessagePanel isThreadView={true}/>
             <Addons />
           </div>
         </div>
