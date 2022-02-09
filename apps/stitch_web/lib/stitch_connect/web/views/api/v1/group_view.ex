@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
           json
         end
       end
-    end)
+    end) ++ thread_group_json()
   end
 
   def render("show.json", %{group: group, user_id: user_id} = attrs) do
@@ -89,4 +89,27 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
   defp type(%Group{name: "__dm_group__"}), do: :dm
   defp type(%Group{name: "__multi_dm_group__"}), do: :multi_dm
   defp type(_), do: :regular
+
+  defp thread_group_json() do
+    [
+      %{
+        id: 0,
+        name: "threads",
+        slug: "threads",
+        public: true,
+        description: "",
+        is_default: false,
+        is_hidden: false,
+        is_favorite: false,
+        joined: true,
+        type: "regular",
+        unread_messages_count: 0,
+        mentions_count: 0,
+        last_read_at: DateTime.utc_now(),
+        inserted_at: DateTime.utc_now(),
+        updated_at: DateTime.utc_now(),
+        creator_user_id: 6
+      }
+    ]
+  end
 end

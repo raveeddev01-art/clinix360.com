@@ -376,34 +376,45 @@ class GroupsStore {
     };
 
     @action
-    openThreads = () => {
-        this.currentGroupId = 0;
-        const { channelStore, messageStore } = this.rootStore;
-        const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
+    openThreads = (slug) => {
+        const group = this.getGroupBySlug(slug);
+        console.log(group, "this group")
 
-        if (fetchMessages) {
-            channelStore
-                .joinThreadsChannel({
-                    authenticated_urls: true,
-                    fetch_messages: fetchMessages
-                })
-                .receive(
-                    "ok",
-                    data => fetchMessages && messageStore.onJoinGroupChannel(data)
-                )
-                .receive("error", err => notify.show(err.message, "error"));
-            this.resetRelatedStores({ withMessages: !!fetchMessages });
-        } else {
-            channelStore
-                .joinGroupChannel({
-                    authenticated_urls: true,
-                    fetch_messages: fetchMessages
-                })
-                .receive("ok", () => null)
-                .receive("error", err => notify.show(err.message, "error"));
-            this.resetRelatedStores({ withMessages: false });
-            messageStore.onJoinGroupChannelCached();
+        if (group && group.id !== this.currentGroupId) {
+            if (this.currentGroupId) {
+                this.onClosedGroup();
+            }
+
+            // Change the group
+            this.currentGroupId = group.id;
+            const { channelStore, messageStore } = this.rootStore;
+            const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
+
+            if (fetchMessages) {
+                channelStore
+                    .joinThreadsChannel({
+                        authenticated_urls: true,
+                        fetch_messages: fetchMessages
+                    })
+                    .receive(
+                        "ok",
+                        data => fetchMessages && messageStore.onJoinThreadChannel(data)
+                    )
+                    .receive("error", err => notify.show(err.message, "error"));
+                this.resetRelatedStores({ withMessages: !!fetchMessages });
+            } else {
+                channelStore
+                    .joinGroupChannel({
+                        authenticated_urls: true,
+                        fetch_messages: fetchMessages
+                    })
+                    .receive("ok", () => null)
+                    .receive("error", err => notify.show(err.message, "error"));
+                this.resetRelatedStores({ withMessages: false });
+                // messageStore.onJoinGroupChannelCached();
+            }
         }
+
     };
 
     @action

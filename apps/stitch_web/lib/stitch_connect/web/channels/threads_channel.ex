@@ -62,21 +62,21 @@ defmodule StitchConnect.Web.ThreadsChannel do
         authenticated_urls: authenticated_urls
       })
 
-    group_user = false
+    group_user = true
 
     json =
       if group_user do
         %{
-          last_read_at: group_user.last_read_at,
-          mentions_count: group_user.mentions_count,
-          unread_messages_count: group_user.unread_messages_count,
+          last_read_at: DateTime.utc_now(),
+          mentions_count: 0,
+          unread_messages_count: 0,
           messages: messages_json
         }
       else
         %{messages: messages_json}
       end
 
-    {:ok, json, assign(socket, :group, %{last_read_at: DateTime.utc_now()})}
+    {:ok, json, assign(socket, :group, %{})}
   end
 
   # ignore Pigeon callbacks

@@ -19,7 +19,7 @@ class MessageHeader extends Component {
       disabledMenu,
       isConversationMessage
     } = this.props;
-
+console.log(this.props, "message header")
     return (
       <div className="message-header">
         {isConversationMessage ? (

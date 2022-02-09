@@ -45,6 +45,7 @@ class ChatApp extends Component {
 
   render() {
     const { groupsStore: { defaultGroup }, messageStore } = this.props;
+    console.log(messageStore.group, "chatapp this.props")
 
     return (
       <div>

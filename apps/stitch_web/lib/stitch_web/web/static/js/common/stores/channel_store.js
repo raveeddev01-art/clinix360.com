@@ -321,7 +321,6 @@ class ChannelStore {
         const { messageStore, groupStore, teamFileStore } = this.rootStore;
 
         const joined = this.join("threads", options);
-        console.log(joined, "joined channel 2")
 
         // Message related
         // this.groupChannel.on("new_msg", messageStore.onNewMessage);

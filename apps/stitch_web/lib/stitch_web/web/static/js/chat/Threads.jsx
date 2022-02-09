@@ -11,7 +11,6 @@ import TopNav from "./top-nav/top-nav";
 @observer
 class Threads extends Component {
   componentWillMount() {
-    console.log(this.props, "threads this.props")
     this.openGroup(this.props.match.params);
   }
 
@@ -33,8 +32,7 @@ class Threads extends Component {
       groupsStore.openDMGroup(params.usernames.split(","));
     }
     else{
-        console.log("this open threads")
-        groupsStore.openThreads();
+        groupsStore.openThreads('threads');
     }
   }
 

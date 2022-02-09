@@ -59,8 +59,10 @@ class Message extends PureComponent {
     if (window.currentPatient || message.patient_id) {
       return message.user;
     }
+    console.log(message, "message, user")
 
     const userId = message.user && message.user.id;
+    console.log(usersStore.usersById[userId], "message, user 2")
     return usersStore.usersById[userId];
   };
 
