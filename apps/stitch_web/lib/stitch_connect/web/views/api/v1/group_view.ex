@@ -94,8 +94,8 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
     [
       %{
         id: 0,
-        name: "threads",
-        slug: "threads",
+        name: "Threads",
+        slug: "!__in__threads__!",
         public: true,
         description: "",
         is_default: false,
@@ -108,7 +108,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
         last_read_at: DateTime.utc_now(),
         inserted_at: DateTime.utc_now(),
         updated_at: DateTime.utc_now(),
-        creator_user_id: 6
+        creator_user_id: 0
       }
     ]
   end

@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 
 import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
-import TopNav from "./top-nav/top-nav";
+import ThreadsTopNav from "./top-nav/threads-top-nav";
 
 @inject("groupsStore", "sidemenuStore")
 @observer
@@ -32,7 +32,8 @@ class Threads extends Component {
       groupsStore.openDMGroup(params.usernames.split(","));
     }
     else{
-        groupsStore.openThreads('threads');
+      console.log("here")
+        groupsStore.openThreads();
     }
   }
 
@@ -58,7 +59,7 @@ class Threads extends Component {
           <title>{title}</title>
         </Helmet>
         <div id="main">
-          <TopNav />
+          <ThreadsTopNav />
           <div className="flex-content">
             <MessagePanel />
             <Addons />

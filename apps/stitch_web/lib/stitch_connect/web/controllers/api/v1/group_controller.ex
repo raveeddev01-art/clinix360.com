@@ -27,7 +27,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     fetch_users? = get_fetch_users_param(params)
     include_user_ids? = get_include_user_ids(params)
 
-    groups = GroupQueries.available_groups(user, include_user_ids?) |> IO.inspect(label: "groups")
+    groups = GroupQueries.available_groups(user, include_user_ids?)
 
     render(
       conn,

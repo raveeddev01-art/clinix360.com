@@ -86,6 +86,7 @@ class MessageStore extends BaseMessageStore {
 
     get groupChannel() {
         const { channelStore } = this.rootStore;
+        console.log(channelStore, "channelStore")
 
         return channelStore.groupChannel;
     }

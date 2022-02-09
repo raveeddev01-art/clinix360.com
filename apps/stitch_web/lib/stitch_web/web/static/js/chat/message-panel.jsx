@@ -152,14 +152,16 @@ export default class MessagePanel extends Component {
       );
     }
 
-    return (
-      <div className="flex-footer">
-        <MessageForm
-          messageStore={messageStore}
-          currentGroup={groupsStore.currentGroup}
-        />
-      </div>
-    );
+    if (groupStore.group.id) {
+      return (
+        <div className="flex-footer">
+          <MessageForm
+            messageStore={messageStore}
+            currentGroup={groupsStore.currentGroup}
+          />
+        </div>
+      );
+    }
   }
 
   render() {

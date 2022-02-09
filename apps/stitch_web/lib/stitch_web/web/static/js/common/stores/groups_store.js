@@ -36,7 +36,7 @@ class GroupsStore {
 
     @computed
     get currentGroup() {
-        if (!this.currentGroupId) {
+        if (!this.currentGroupId && this.currentGroupId !== 0) {
             return null;
         }
 
@@ -94,7 +94,7 @@ class GroupsStore {
 
     @computed
     get nonFavoritedRegularGroups() {
-        return this.regularGroups.filter(group => !group.is_favorite);
+        return this.regularGroups.filter(group => !group.is_favorite && group.id !== 0);
     }
 
     @computed
@@ -376,43 +376,17 @@ class GroupsStore {
     };
 
     @action
-    openThreads = (slug) => {
-        const group = this.getGroupBySlug(slug);
-        console.log(group, "this group")
+    openThreads = () => {
+        const group = this.getGroupById(0);
 
         if (group && group.id !== this.currentGroupId) {
-            if (this.currentGroupId) {
+            if (this.currentGroupId || this.currentGroupId === 0) {
                 this.onClosedGroup();
             }
 
             // Change the group
             this.currentGroupId = group.id;
-            const { channelStore, messageStore } = this.rootStore;
-            const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
-
-            if (fetchMessages) {
-                channelStore
-                    .joinThreadsChannel({
-                        authenticated_urls: true,
-                        fetch_messages: fetchMessages
-                    })
-                    .receive(
-                        "ok",
-                        data => fetchMessages && messageStore.onJoinThreadChannel(data)
-                    )
-                    .receive("error", err => notify.show(err.message, "error"));
-                this.resetRelatedStores({ withMessages: !!fetchMessages });
-            } else {
-                channelStore
-                    .joinGroupChannel({
-                        authenticated_urls: true,
-                        fetch_messages: fetchMessages
-                    })
-                    .receive("ok", () => null)
-                    .receive("error", err => notify.show(err.message, "error"));
-                this.resetRelatedStores({ withMessages: false });
-                // messageStore.onJoinGroupChannelCached();
-            }
+            this.onOpenedThread();
         }
 
     };
@@ -554,6 +528,36 @@ class GroupsStore {
     /**
      * Run the process of when opening the group
      */
+    @action
+    onOpenedThread = () => {
+        const { channelStore, messageStore } = this.rootStore;
+        const fetchMessages = !messageStore.hasCachedGroup(this.currentGroupId);
+
+        if (fetchMessages) {
+            channelStore
+                .joinThreadsChannel({
+                    authenticated_urls: true,
+                    fetch_messages: fetchMessages
+                })
+                .receive(
+                    "ok",
+                    data => fetchMessages && messageStore.onJoinThreadChannel(data)
+                )
+                .receive("error", err => notify.show(err.message, "error"));
+            this.resetRelatedStores({ withMessages: !!fetchMessages });
+        } else {
+            channelStore
+                .joinGroupChannel({
+                    authenticated_urls: true,
+                    fetch_messages: fetchMessages
+                })
+                .receive("ok", () => null)
+                .receive("error", err => notify.show(err.message, "error"));
+            this.resetRelatedStores({ withMessages: false });
+            messageStore.onJoinGroupChannelCached();
+        }
+    };
+
     @action
     onOpenedGroup = () => {
         const { channelStore, messageStore } = this.rootStore;
