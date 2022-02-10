@@ -158,12 +158,41 @@
 
 .file-comment {
   display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  .comment-content {
+    position: relative;
+    top: 17px;
+    left: -49%;
+  }
 
   &:hover {
     .file-comment__action {
       opacity: 1;
     }
   }
+
+
+  .user-profile-menu {
+    a{
+      color: $brand-primary;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+  }
+
+  // .content {
+  //   flex: 1;
+
+  //   .full-name {
+  //     color: $brand-primary;
+  //     font-size: 14px;
+  //     font-weight: 700;
+  //     line-height: 1.2;
+  //   }
+  // }
 
   .avatar {
     img {
@@ -213,7 +242,9 @@
       align-items: center;
       color: #707070;
       font-size: 12px;
+      margin-left: 5px;
     }
+
   }
 
   &__group {

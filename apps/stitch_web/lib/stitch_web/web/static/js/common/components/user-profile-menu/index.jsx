@@ -26,7 +26,7 @@ class UserProfileMenu extends Component {
   };
 
   render() {
-    const { user, className, children, disabledMenu } = this.props;
+    const { user, className, children, disabledMenu, showMutedUsername } = this.props;
 
     if (!user) {
       return <div />;
@@ -54,7 +54,7 @@ class UserProfileMenu extends Component {
 
             <div className="content">
               <div className="full-name">{user.full_name}</div>
-              <div className="username text-muted">{user.username}</div>
+              {showMutedUsername && <div className="username text-muted">{user.username}</div>}
             </div>
           </div>
           <MenuItem onClick={this._toggleAddonMenu}>View Profile</MenuItem>
@@ -80,7 +80,8 @@ UserProfileMenu.propTypes = {
 
 UserProfileMenu.defaultProps = {
   className: "",
-  disabledMenu: false
+  disabledMenu: false,
+  showMutedUsername: true
 };
 
 export default UserProfileMenu;
