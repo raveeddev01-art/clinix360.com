@@ -57,7 +57,7 @@ class Chat extends Component {
         <div id="main">
           <TopNav />
           <div className="flex-content">
-            <MessagePanel />
+            <MessagePanel isThreadView={false}/>
             <Addons />
           </div>
         </div>

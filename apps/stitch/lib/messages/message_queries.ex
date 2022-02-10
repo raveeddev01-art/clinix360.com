@@ -109,7 +109,7 @@ defmodule Stitch.MessageQueries do
     limit = Enum.min([Keyword.get(opts, :limit), 60])
     offset = Keyword.get(opts, :skip, 0)
     fetch_users = Keyword.get(opts, :fetch_users, true)
-    skip_types = ["system", "call"]
+    skipable_types = ["system", "call"]
 
     query =
       if fetch_users do
@@ -118,11 +118,16 @@ defmodule Stitch.MessageQueries do
           left_join: g in assoc(m, :group),
           left_join: u in assoc(m, :user),
           left_join: pb in assoc(m, :pinned_by),
-          # order_by: [asc: m.inserted_at],
+          left_join: tm in assoc(m, :thread_messages),
           preload: [
             user: u,
             group: g,
-            pinned_by: pb
+            pinned_by: pb,
+            thread_messages:
+              ^from(
+                tm in Message,
+                order_by: [asc: tm.inserted_at]
+              )
           ]
         )
       else
@@ -134,31 +139,17 @@ defmodule Stitch.MessageQueries do
         m in query,
         where: is_nil(m.parent_message_id),
         where: m.user_id == ^user.id,
-        where: m.type not in ^skip_types,
+        where: m.type not in ^skipable_types,
         order_by: [desc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        select: m,
-        preload: [thread_messages: ^from(
-          tm in Message,
-          order_by: [asc: tm.inserted_at]
-        )
-        # |> where([tm], tm.thread_messages != ^[])
-      ]
-        # where: thread_messages != ^[]
+        select: m
       )
-      # |> where([m], m.thread_messages != ^[])
-    # |> select_merge: %{thread_messages: m.thread_messages.count > 0},
 
-    query =
-      case Keyword.fetch(opts, :max_id) do
-        {:ok, max_id} -> query |> where([m], m.id < ^max_id)
-        :error -> query
-      end
+    messages =
+      Repo.all(query)
+      |> Enum.reject(fn x -> x.thread_messages == [] end)
 
-    messages = Repo.all(query)
-    |> Enum.reject(fn x -> x.thread_messages == [] end)
-    |> IO.inspect(label: "here is data")
     messages = MessageAction.apply_user_message_actions(user, messages)
     Message.Reaction.apply_reactions(messages, :message)
   end
@@ -197,10 +188,13 @@ defmodule Stitch.MessageQueries do
         limit: ^limit,
         offset: ^offset,
         select: m,
-        preload: [thread_messages: ^from(
-          tm in Message,
-          order_by: [asc: tm.inserted_at]
-        )]
+        preload: [
+          thread_messages:
+            ^from(
+              tm in Message,
+              order_by: [asc: tm.inserted_at]
+            )
+        ]
       )
 
     query =
@@ -244,10 +238,13 @@ defmodule Stitch.MessageQueries do
         limit: ^limit,
         offset: ^offset,
         select: m,
-        preload: [thread_messages: ^from(
-          tm in Message,
-          order_by: [asc: tm.inserted_at]
-        )]
+        preload: [
+          thread_messages:
+            ^from(
+              tm in Message,
+              order_by: [asc: tm.inserted_at]
+            )
+        ]
       )
 
     query =
@@ -278,6 +275,7 @@ defmodule Stitch.MessageQueries do
         offset: ^offset,
         preload: [:upload, user: u]
       )
+
     Repo.all(query)
   end
 
@@ -324,10 +322,11 @@ defmodule Stitch.MessageQueries do
           group: g,
           user: u,
           pinned_by: pb,
-          thread_messages: ^from(
-            tm in Message,
-            order_by: [asc: tm.inserted_at]
-          )
+          thread_messages:
+            ^from(
+              tm in Message,
+              order_by: [asc: tm.inserted_at]
+            )
         ]
       )
 
@@ -338,11 +337,19 @@ defmodule Stitch.MessageQueries do
   def get_by_id(id, true), do: get_by_id(id)
 
   def load_info(message) do
-    Repo.preload(message, [:pinned_by, :user, thread_messages: from(
-      tm in Message,
-      order_by: [asc: tm.inserted_at]
+    Repo.preload(
+      message,
+      [
+        :pinned_by,
+        :user,
+        thread_messages:
+          from(
+            tm in Message,
+            order_by: [asc: tm.inserted_at]
+          )
+      ],
+      force: true
     )
-    ], force: true)
   end
 
   # For a specific group.

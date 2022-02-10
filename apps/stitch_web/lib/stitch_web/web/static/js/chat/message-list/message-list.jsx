@@ -15,9 +15,13 @@ class MessageList extends Component {
     const { messageStore, isThreadView } = this.props;
 
     messageStore.loadChatDiv(this.chatDiv);
-    this.scroll = setTimeout(() => {
-      this.chatDiv.scrollTop = isThreadView;
-    }, 1000);
+    
+    if (isThreadView){
+      setTimeout(() => {
+        messageStore.scrollToNewBanner();
+      }, 1000);
+      
+    }
   }
     
   componentWillUnmount() {
@@ -139,5 +143,9 @@ class MessageList extends Component {
     );
   }
 }
+
+MessageList.defaultProps = {
+  isThreadView: false
+};
 
 export default MessageList;
