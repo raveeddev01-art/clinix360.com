@@ -7,29 +7,21 @@ import Message from "./message";
 import SystemMessage from "./system-message";
 import MessageInfoModal from "./message-info-modal";
 import FileShareModal from "./file-share-modal";
-import { animateScroll as scroll } from "react-scroll";
 
 @inject("messageStore")
 @observer
 class MessageList extends Component {
-  constructor(props) {
-    super(props);
-    this.scrollToTop = this.scrollToTop.bind(this);
-  }
-
-  scrollToTop() {
-    scroll.scrollToTop();
-  }
-  
   componentDidMount() {
-    const { messageStore } = this.props;
+    const { messageStore, isThreadView } = this.props;
 
     messageStore.loadChatDiv(this.chatDiv);
+    this.scroll = setTimeout(() => {
+      this.chatDiv.scrollTop = isThreadView;
+    }, 1000);
   }
-
+    
   componentWillUnmount() {
     const { messageStore } = this.props;
-
     messageStore.unloadChatDiv();
   }
 
@@ -52,14 +44,13 @@ class MessageList extends Component {
     messageStore.infoModalMessageId = id;
   };
 
-  
+
 
   render() {
     const { messageStore, isThreadView } = this.props;
     const { messagesByDate, messagesByDateDesc, newMessageLineMessage, highlightId } = messageStore;
-    const order_by_function = isThreadView ? messagesByDateDesc : messagesByDate;
-    // scroll.scrollToTop();
-    // this.onScrollTop();
+    const orderBy = isThreadView ? messagesByDateDesc : messagesByDate;
+
     return (
       <div
         id="chat"
@@ -74,10 +65,10 @@ class MessageList extends Component {
           )}
 
         {(!messageStore.jumpMode || messageStore.isJumpLoaded) &&
-          Object.keys(order_by_function).map(date => (
+          Object.keys(orderBy).map(date => (
             <div key={`${date}`}>
               <DateSeparator timestamp={date} />
-              {order_by_function[date].map(
+              {orderBy[date].map(
                 message =>
                   message.type === "system" ? (
                     <SystemMessage
@@ -143,9 +134,8 @@ class MessageList extends Component {
         />
         <MessageInfoModal />
         <FileShareModal />
-        {scroll.scrollToTop()}
       </div>
-     
+
     );
   }
 }
