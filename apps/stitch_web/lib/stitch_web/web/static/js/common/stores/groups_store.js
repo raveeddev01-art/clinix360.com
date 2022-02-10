@@ -547,7 +547,7 @@ class GroupsStore {
             this.resetRelatedStores({ withMessages: !!fetchMessages });
         } else {
             channelStore
-                .joinGroupChannel({
+                .joinThreadsChannel({
                     authenticated_urls: true,
                     fetch_messages: fetchMessages
                 })

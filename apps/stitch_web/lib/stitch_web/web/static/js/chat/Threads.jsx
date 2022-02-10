@@ -32,7 +32,6 @@ class Threads extends Component {
       groupsStore.openDMGroup(params.usernames.split(","));
     }
     else{
-      console.log("here")
         groupsStore.openThreads();
     }
   }

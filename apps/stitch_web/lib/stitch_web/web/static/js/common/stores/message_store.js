@@ -86,7 +86,6 @@ class MessageStore extends BaseMessageStore {
 
     get groupChannel() {
         const { channelStore } = this.rootStore;
-        console.log(channelStore, "channelStore")
 
         return channelStore.groupChannel;
     }
@@ -1189,6 +1188,10 @@ class MessageStore extends BaseMessageStore {
             thread_messages: message.thread_messages,
             thread_messages_count: message.thread_messages_count
         });
+        if (0 === this.group.id && !this.messages.find(msg => msg.id === message.id)) {
+            this.messages.unshift(message);
+        }
+        this.messageCache.addNewToThread(message);
         if (message.id === this.message.id) {
             this.message = message;
         }
