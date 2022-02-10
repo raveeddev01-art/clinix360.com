@@ -6,6 +6,8 @@ import flow from "lodash/flow";
 import groupBy from "lodash/fp/groupBy";
 import mapValues from "lodash/fp/mapValues";
 import sortBy from "lodash/fp/sortBy";
+import orderBy from "lodash/fp/orderBy";
+
 import isFunction from "lodash/fp/isFunction";
 
 import REGEX from "lib/regex";
@@ -277,9 +279,9 @@ export default class BaseMessageStore {
   // Utilities
   // ===========================
 
-  groupMessagesByDate(messagesToGroup) {
+  groupMessagesByDate(messagesToGroup, orderby = "asc") {
     return flow(
-      sortBy("inserted_at"),
+      orderBy("inserted_at", orderby),
       groupBy(sortableDateFromMessage),
       mapValues(msgGroup => {
         const [firstMsg, ...messages] = msgGroup;

@@ -118,6 +118,7 @@ defmodule Stitch.MessageQueries do
           left_join: g in assoc(m, :group),
           left_join: u in assoc(m, :user),
           left_join: pb in assoc(m, :pinned_by),
+          # order_by: [asc: m.inserted_at],
           preload: [
             user: u,
             group: g,
@@ -141,8 +142,13 @@ defmodule Stitch.MessageQueries do
         preload: [thread_messages: ^from(
           tm in Message,
           order_by: [asc: tm.inserted_at]
-        )]
+        )
+        # |> where([tm], tm.thread_messages != ^[])
+      ]
+        # where: thread_messages != ^[]
       )
+      # |> where([m], m.thread_messages != ^[])
+    # |> select_merge: %{thread_messages: m.thread_messages.count > 0},
 
     query =
       case Keyword.fetch(opts, :max_id) do
@@ -151,6 +157,8 @@ defmodule Stitch.MessageQueries do
       end
 
     messages = Repo.all(query)
+    |> Enum.reject(fn x -> x.thread_messages == [] end)
+    |> IO.inspect(label: "here is data")
     messages = MessageAction.apply_user_message_actions(user, messages)
     Message.Reaction.apply_reactions(messages, :message)
   end

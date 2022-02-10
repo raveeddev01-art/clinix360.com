@@ -76,6 +76,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
         %{messages: messages_json}
       end
 
+      # IO.inspect(json, label: "here is json")
     {:ok, json, assign(socket, :group, %{})}
   end
 

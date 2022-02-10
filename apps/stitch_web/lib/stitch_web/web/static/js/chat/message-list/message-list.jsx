@@ -7,10 +7,20 @@ import Message from "./message";
 import SystemMessage from "./system-message";
 import MessageInfoModal from "./message-info-modal";
 import FileShareModal from "./file-share-modal";
+import { animateScroll as scroll } from "react-scroll";
 
 @inject("messageStore")
 @observer
 class MessageList extends Component {
+  constructor(props) {
+    super(props);
+    this.scrollToTop = this.scrollToTop.bind(this);
+  }
+
+  scrollToTop() {
+    scroll.scrollToTop();
+  }
+  
   componentDidMount() {
     const { messageStore } = this.props;
 
@@ -42,10 +52,14 @@ class MessageList extends Component {
     messageStore.infoModalMessageId = id;
   };
 
+  
+
   render() {
     const { messageStore, isThreadView } = this.props;
-    const { messagesByDate, newMessageLineMessage, highlightId } = messageStore;
-
+    const { messagesByDate, messagesByDateDesc, newMessageLineMessage, highlightId } = messageStore;
+    const order_by_function = isThreadView ? messagesByDateDesc : messagesByDate;
+    // scroll.scrollToTop();
+    // this.onScrollTop();
     return (
       <div
         id="chat"
@@ -60,10 +74,10 @@ class MessageList extends Component {
           )}
 
         {(!messageStore.jumpMode || messageStore.isJumpLoaded) &&
-          Object.keys(messagesByDate).map(date => (
+          Object.keys(order_by_function).map(date => (
             <div key={`${date}`}>
               <DateSeparator timestamp={date} />
-              {messagesByDate[date].map(
+              {order_by_function[date].map(
                 message =>
                   message.type === "system" ? (
                     <SystemMessage
@@ -129,7 +143,9 @@ class MessageList extends Component {
         />
         <MessageInfoModal />
         <FileShareModal />
+        {scroll.scrollToTop()}
       </div>
+     
     );
   }
 }

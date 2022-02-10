@@ -16,6 +16,7 @@ import unionBy from "lodash/unionBy";
 
 import { scroller } from "react-scroll";
 import { Promise } from "es6-promise";
+
 import shortid from "shortid";
 import {
     START_TYPING_THROTTLE_MS,
@@ -216,6 +217,11 @@ class MessageStore extends BaseMessageStore {
     @computed
     get messagesByDate() {
         return this.groupMessagesByDate(this.messages);
+    }
+
+    @computed
+    get messagesByDateDesc() {
+        return this.groupMessagesByDate(this.messages, "desc");
     }
 
     @computed
