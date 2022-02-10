@@ -102,7 +102,7 @@ class FileDetails extends Component {
         {this.renderPublicLink(file)}
         <span className="spacer-10" />
         {message.thread_messages && message.thread_messages.map(comment => (
-          <MessageComment comment={comment} key={comment.id} />
+          <MessageComment comment={comment} key={comment.id} user={fileCreator} />
         ))}
         <MessageCommentInput message={message} />
       </div>

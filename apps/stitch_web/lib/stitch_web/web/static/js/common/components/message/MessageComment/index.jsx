@@ -9,6 +9,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import { confirmModal } from "common/modals";
+import UserProfileMenu from "../../user-profile-menu";
 import ActionToggle from "./ActionToggle";
 
 const isOwner = comment => {
@@ -120,6 +121,29 @@ class MessageComment extends Component {
     );
   }
 
+  renderTimestamp() {
+    const { comment } = this.props;
+
+    return (
+      <div className="file-comment__details">
+        <div className="file-comment__details-header">
+          <TimestampTooltip timestamp={comment.inserted_at} className="time" />
+          {(isOwner(comment) || isAdmin()) && this.renderActions()}
+        </div>
+      </div>
+    );
+  }
+
+  renderCommentText () {
+    const { comment } = this.props;
+
+    return (
+      <div className="comment-text">
+        <p>{comment.text_content}</p>
+      </div>
+    );
+  }
+
   render() {
     const { usersStore, comment } = this.props;
     const { editing } = this.state;
@@ -128,7 +152,14 @@ class MessageComment extends Component {
     return (
       <div className="file-comment">
         <Avatar user={user} />
-        {editing ? this.renderEditInput() : this.renderDetail()}
+        <UserProfileMenu user={user} className="name" showMutedUsername={false}>
+          {user.full_name}
+        </UserProfileMenu>
+        {this.renderTimestamp()}
+
+        <div className="comment-content">
+          {editing ? this.renderEditInput() : this.renderCommentText()}
+        </div>
       </div>
     );
   }
