@@ -150,7 +150,10 @@ class Message extends PureComponent {
     });
 
     return (
-      <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+      <div
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        className={`${isThreadView ? "thread-box" : ""}`} >
         {isThreadView && <MessageNav message={message} isThreadView={isThreadView} />}
         {hasNML && (
           <Element name="newMessageBanner" className="new-message-banner">
