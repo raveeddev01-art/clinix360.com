@@ -9,7 +9,6 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import { confirmModal } from "common/modals";
-import UserProfileMenu from "../../user-profile-menu";
 import ActionToggle from "./ActionToggle";
 import Message from "../../../../chat/message-list/message";
 
@@ -147,7 +146,6 @@ class MessageComment extends Component {
 
   render() {
     const { usersStore, comment, messageStore } = this.props;
-    const message = messageStore.getMessageById(comment.id);
     const { editing } = this.state;
     const user = usersStore.usersById[comment.user_id];
 

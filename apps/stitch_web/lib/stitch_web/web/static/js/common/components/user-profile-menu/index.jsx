@@ -19,6 +19,9 @@ class UserProfileMenu extends Component {
   _toggleAddonMenu = () => {
     const { addonStore, user } = this.props;
 
+    console.log("USER menu", user);
+    console.log("addon store", addonStore);
+
     addonStore.setAddonPanel("directory");
     addonStore.toggleAddons(true);
     addonStore.toggleAddonDetail(true);

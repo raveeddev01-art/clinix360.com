@@ -95,6 +95,7 @@ class AddonStore {
             case "Message Details":
                 this.rootStore.messageStore.load(panelData);
                 break;
+            
             default:
         }
     }
