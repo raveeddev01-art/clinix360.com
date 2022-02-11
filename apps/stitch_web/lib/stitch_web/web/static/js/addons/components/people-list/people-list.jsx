@@ -16,8 +16,10 @@ class PeopleList extends Component {
 
   render() {
     const { groupStore, usersStore, presenceStore, teamDirectory } = this.props;
+    var groupMembers = [];
 
-    const groupMembers = groupStore.group.users.filter(u => !u.disabled);
+    if (groupStore.group.users)
+      groupMembers = groupStore.group.users.filter(u => !u.disabled);
 
     const teamMembers = usersStore.activatedUsers.filter(u => !u.disabled);
 
