@@ -56,13 +56,10 @@ class Message extends PureComponent {
   };
 
   getUser = message => {
-    const { usersStore } = this.props;
-    if (window.currentPatient || message.patient_id) {
-      return message.user;
-    }
+    const { usersStore, messageUser } = this.props;
+    const user = messageUser == null ? message.user : messageUser;
 
-    const userId = message.user && message.user.id;
-    return usersStore.usersById[userId];
+    return usersStore.usersById[user.id];
   };
 
   setSelected = newState => {
@@ -138,6 +135,7 @@ class Message extends PureComponent {
       lastOtherUserMessage,
       isThreadView
     } = this.props;
+
     const user = this.getUser(message);
 
     const messageClassName = cx("message", {

@@ -11,6 +11,7 @@ import Button from "react-bootstrap/lib/Button";
 import { confirmModal } from "common/modals";
 import UserProfileMenu from "../../user-profile-menu";
 import ActionToggle from "./ActionToggle";
+import Message from "../../../../chat/message-list/message";
 
 const isOwner = comment => {
   return comment.user_id === currentUser.id;
@@ -145,13 +146,34 @@ class MessageComment extends Component {
   }
 
   render() {
-    const { usersStore, comment } = this.props;
+    const { usersStore, comment, messageStore } = this.props;
+    const message = messageStore.getMessageById(comment.id);
     const { editing } = this.state;
     const user = usersStore.usersById[comment.user_id];
 
     return (
-      <div className="file-comment">
-        <Avatar user={user} />
+      <div className="">
+        <Message
+          edited_at={comment.edited_at}
+          messageUser={user}
+          pinned={comment.pinned}
+          starred={comment.starred}
+          status={comment.status}
+          is_sequential={comment.is_sequential}
+          reactions_web={comment.reactions_web}
+          link_previews={comment.link_previews}
+          key={`comment_${comment.id}`}
+          message={comment}
+          lastOtherUserMessage={messageStore.lastOtherUserMessage}
+          messageStore={messageStore}
+          chatDiv={messageStore.chatDiv}
+          onMounted={messageStore.onMessageMounted}
+          onUnmounted={messageStore.onMessageUnmounted}
+          onShow={messageStore.onMessageShow}
+          onHide={messageStore.onMessageHide}
+        />
+
+        {/* <Avatar user={user} />
         <UserProfileMenu user={user} className="name" showMutedUsername={false}>
           {user.full_name}
         </UserProfileMenu>
@@ -159,7 +181,7 @@ class MessageComment extends Component {
 
         <div className="comment-content">
           {editing ? this.renderEditInput() : this.renderCommentText()}
-        </div>
+        </div> */}
       </div>
     );
   }
