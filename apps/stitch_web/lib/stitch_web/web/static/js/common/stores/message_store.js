@@ -1165,6 +1165,10 @@ class MessageStore extends BaseMessageStore {
             this.message = message;
         }
     };
+
+    getMessageByID = id => {
+        return this.getMessageById(id);
+    }
 }
 
 export default MessageStore;
