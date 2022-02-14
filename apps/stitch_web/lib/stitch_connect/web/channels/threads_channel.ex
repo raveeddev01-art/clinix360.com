@@ -46,7 +46,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
   end
 
   defp render_messages(user, socket, params) do
-    opts = [limit: params["limit"]]
+    opts = [limit: params["limit"]] |> IO.inspect(label: "messages limit")
     authenticated_urls = Map.get(params, "authenticated_urls", false)
 
     messages =

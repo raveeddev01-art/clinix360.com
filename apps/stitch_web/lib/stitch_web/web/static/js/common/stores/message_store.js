@@ -846,8 +846,9 @@ class MessageStore extends BaseMessageStore {
 
     @action
     onJoinThreadChannel = data => {
-        // sync time as soon as joined to the channel
-        // this.syncTime();
+        console.log(data, "data --->>> ")
+            // sync time as soon as joined to the channel
+            // this.syncTime();
 
         if (this.group.id === this.loadedGroupId) {
             // // new message has more precedance by putting it as first param.
@@ -1194,8 +1195,12 @@ class MessageStore extends BaseMessageStore {
             thread_messages: message.thread_messages,
             thread_messages_count: message.thread_messages_count
         });
-        if (0 === this.group.id && !this.messages.find(msg => msg.id === message.id)) {
-            this.messages.unshift(message);
+        if (0 === this.group.id) {
+            console.log(this.messages, "this.messages  1")
+            this.messages = this.messages.filter(msg => msg.id !== message.id)
+            console.log(this.messages, "this.messages  2")
+                // this.messages.unshift(message);
+                // console.log(this.messages, "this.messages  3")
         }
         this.messageCache.addNewToThread(message);
         if (message.id === this.message.id) {
