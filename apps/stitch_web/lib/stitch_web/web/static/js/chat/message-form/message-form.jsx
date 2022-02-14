@@ -426,10 +426,10 @@ class MessageForm extends Component {
         {openEmojiSearch && (
           <EmojiSearch filter={searchFilter} onSelect={this.onSelectEmoji} />
         )}
-
-        {this.renderInput()}
         
         <FormattingCommands applyStyleEvent={this.applyTextStyle} />
+        {this.renderInput()}
+        
         {text.length > 3999 && (
           <div className="character-limit">
             You have reached the 4000 character limit per message.

@@ -161,6 +161,15 @@
   margin-top: 10px;
   margin-bottom: 10px;
 
+  .flex-footer {
+    flex-direction: column;
+
+    .message-form {
+      padding-bottom: 0px;
+    }
+
+  }
+
   .comment-content {
     position: relative;
     top: 17px;
