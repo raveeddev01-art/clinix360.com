@@ -21,7 +21,8 @@ import EmojiSearch from "./components/emoji-search";
 class MessageForm extends Component {
   constructor(props) {
     super(props);
-
+    // this.onEntercallback = this.props.addComment == null ? this.onEnter : this.props.addComment;
+    // console.log(this.onEntercallback, "here is OnEnterCall");
     this.applyTextStyle = this.applyTextStyle.bind(this);
     this.state = {
       text: "",
@@ -88,7 +89,7 @@ class MessageForm extends Component {
   };
 
   onEnter = () => {
-    const { messageStore, socketStore } = this.props;
+    const { messageStore, socketStore, onEnterCallback } = this.props;
 
     // if not connected, just no send message at all
     if (!socketStore.isConnected) {
@@ -112,8 +113,15 @@ class MessageForm extends Component {
         messageStore.finishEdit();
       }
     } else if (trimmedText) {
+      console.log(onEnterCallback, "here is onEnterCallback");
+      if (!onEnterCallback){
+        console.log("if is here");
       messageStore.sendMessage(trimmedText);
-
+      }
+      else {
+        console.log("else is here");
+        onEnterCallback(trimmedText);
+      }
       this.setState({ text: "" });
     }
   };
@@ -343,7 +351,6 @@ class MessageForm extends Component {
       allowMention
     } = this.props;
     const { isFocused } = this.state;
-
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
       disconnected: !socketStore.isConnected,

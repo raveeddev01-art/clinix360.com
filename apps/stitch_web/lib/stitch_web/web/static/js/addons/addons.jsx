@@ -46,7 +46,8 @@ class Addons extends Component {
       opened: !addonStore.showAddonDetail
     });
     const rightPanelClass = cx("addon-right-panel", {
-      opened: addonStore.showAddonDetail
+      // opened: addonStore.showAddonDetail
+      opened: !addonStore.showAddonDetail
     });
 
     const addonPanelTitle = addonStore.addonPanelType;

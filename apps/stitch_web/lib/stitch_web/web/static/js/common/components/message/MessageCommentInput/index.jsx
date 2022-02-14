@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import { Avatar } from "common/components";
 import MessageCommentGroup from "../MessageCommentGroup";
-
+import MessageForm from "../../../../chat/message-form/message-form";
 @inject("usersStore", "messageStore", "groupsStore")
 @observer
 class MessageCommentInput extends Component {
@@ -35,18 +35,25 @@ class MessageCommentInput extends Component {
   };
 
   render() {
-    const { message, usersStore } = this.props;
+    const { message, usersStore, messageStore, groupsStore , groupStore} = this.props;
     const user = usersStore.usersById[currentUser.id];
-
     return (
       <form className="file-comment" onSubmit={this.addComment}>
         <Avatar user={user} />
         <FormGroup className="file-comment__edit">
-          <FormControl
+          {/* <FormControl
             type="text"
             value={this.state.commentText}
             onChange={this.handleChange}
-          />
+          /> */}
+          <div className="flex-footer">
+            <MessageForm
+              addComment={this.addComment}
+              messageStore={messageStore}
+              currentGroup={groupsStore.currentGroup}
+            />
+          </div>
+
           <div className="file-comment__edit-buttons file-comment__edit-buttons--add">
             <MessageCommentGroup
               message={message}
