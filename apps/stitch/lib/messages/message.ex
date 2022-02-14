@@ -165,8 +165,8 @@ defmodule Stitch.Message do
   end
 
   def create(%Message{} = message, user, attrs, presence_user_ids) do
-    attrs = Map.put_new(attrs, "type", "chat")
-    MessageCreation.create(message, user, attrs, presence_user_ids)
+    attrs = Map.put_new(attrs, "type", "chat") |> IO.inspect(label: "message creation -->>> 1")
+    MessageCreation.create(message, user, attrs, presence_user_ids) |> IO.inspect(label: "message creation -->>> 2")
   end
 
   def create(group_id, user, attrs, presence_user_ids) do
@@ -175,6 +175,10 @@ defmodule Stitch.Message do
     MessageCreation.create(group, user, attrs, presence_user_ids)
   end
 
+  @spec message_changeset(%Stitch.Message{optional(atom) => any}, %{
+          optional(:__struct__) => none,
+          optional(atom | binary) => any
+        }) :: Ecto.Changeset.t()
   def message_changeset(message, %{"type" => "chat"} = attrs) do
     message |> chat_changeset(attrs)
   end
