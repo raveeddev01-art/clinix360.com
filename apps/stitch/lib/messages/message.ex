@@ -175,10 +175,6 @@ defmodule Stitch.Message do
     MessageCreation.create(group, user, attrs, presence_user_ids)
   end
 
-  @spec message_changeset(%Stitch.Message{optional(atom) => any}, %{
-          optional(:__struct__) => none,
-          optional(atom | binary) => any
-        }) :: Ecto.Changeset.t()
   def message_changeset(message, %{"type" => "chat"} = attrs) do
     message |> chat_changeset(attrs)
   end
