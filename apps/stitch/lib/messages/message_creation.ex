@@ -65,7 +65,7 @@ defmodule Stitch.Message.MessageCreation do
   end
 # will use when thread key sent from FE
   def create(message, user, %{"text_content" => _, "thread" => true} = attrs, presence) do
-    attrs = Map.put(attrs, "type", "chat") |> IO.inspect(label: "message creation -->>> 3")
+    attrs = Map.put(attrs, "type", "chat")
     message = %Message{parent_message: message, user: user, group: message.group}
     do_create(message, attrs, presence)
   end

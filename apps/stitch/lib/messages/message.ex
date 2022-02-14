@@ -165,8 +165,8 @@ defmodule Stitch.Message do
   end
 
   def create(%Message{} = message, user, attrs, presence_user_ids) do
-    attrs = Map.put_new(attrs, "type", "chat") |> IO.inspect(label: "message creation -->>> 1")
-    MessageCreation.create(message, user, attrs, presence_user_ids) |> IO.inspect(label: "message creation -->>> 2")
+    attrs = Map.put_new(attrs, "type", "chat")
+    MessageCreation.create(message, user, attrs, presence_user_ids)
   end
 
   def create(group_id, user, attrs, presence_user_ids) do
