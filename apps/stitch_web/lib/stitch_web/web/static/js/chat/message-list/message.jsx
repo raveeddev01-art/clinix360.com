@@ -133,7 +133,8 @@ class Message extends PureComponent {
       messageStore,
       isConversationMessage,
       lastOtherUserMessage,
-      isThreadView
+      isThreadView,
+      isReply
     } = this.props;
 
     const user = this.getUser(message);
@@ -211,6 +212,7 @@ class Message extends PureComponent {
                 !isConversationMessage && (
                   <MessageActions
                     user={user}
+                    isReply={isReply}
                     message={message}
                     lastOtherUserMessage={lastOtherUserMessage}
                     messageStore={messageStore}
@@ -251,7 +253,8 @@ Message.defaultProps = {
   onHide: () => undefined,
   lastOtherUserMessage: null,
   isConversationMessage: false,
-  chatDiv: null
+  chatDiv: null,
+  isReply: false
 };
 
 export default Message;
