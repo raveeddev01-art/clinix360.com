@@ -34,7 +34,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
-    message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
+    message_params_with_client = Message.Params.with_client_attrs(conn, message_params) |> IO.inspect(label: "message_comment_create_params 2 --->>> ")
     with {:message, %Message{} = message_parent} <- {:message, MessageQueries.get_by_id(message_id)},
         #  {:authorized?, true} <-
           #  {:authorized?, GroupAuthorization.can_message?(message, current_user.id)},
