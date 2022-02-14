@@ -42,12 +42,15 @@ class Addons extends Component {
       return null;
     }
 
+    const showRightPanel = ((addonStore.addonPanelType === "thread") &&
+      (addonStore.detailPanelType === "Message Details") &&
+      (addonStore.showAddonDetail));
+
     const leftPanelClass = cx("addon-left-panel", {
-      opened: !addonStore.showAddonDetail
+      opened: showRightPanel
     });
     const rightPanelClass = cx("addon-right-panel", {
-      // opened: addonStore.showAddonDetail
-      opened: !addonStore.showAddonDetail
+      opened: !showRightPanel
     });
 
     const addonPanelTitle = addonStore.addonPanelType;

@@ -153,7 +153,6 @@ class MessageComment extends Component {
       <div className="">
         <Message
           edited_at={comment.edited_at}
-          // isConversationMessage={true} 
           isReply={true}
           messageUser={user}
           pinned={comment.pinned}

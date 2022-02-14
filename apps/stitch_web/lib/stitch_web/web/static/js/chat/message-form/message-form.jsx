@@ -113,13 +113,10 @@ class MessageForm extends Component {
         messageStore.finishEdit();
       }
     } else if (trimmedText) {
-      console.log(onEnterCallback, "here is onEnterCallback");
-      if (!onEnterCallback){
-        console.log("if is here");
-      messageStore.sendMessage(trimmedText);
+      if (!onEnterCallback) {
+        messageStore.sendMessage(trimmedText);
       }
       else {
-        console.log("else is here");
         onEnterCallback(trimmedText);
       }
       this.setState({ text: "" });
@@ -188,7 +185,9 @@ class MessageForm extends Component {
   };
 
   onSelectMention = username => {
+    console.log(username, "this is username");
     if (username) {
+      console.log(username, "if is true");
       this.replaceCurrentWord(`@${username} `);
     } else {
       this.onEnter();
@@ -282,13 +281,13 @@ class MessageForm extends Component {
     messageStore.startTyping();
   };
 
-  insertWord = (word, setpBack=0) => {
+  insertWord = (word, setpBack = 0) => {
     const cursorPos = this.textInput.selectionStart;
     const text = this.getText();
     this.updateInputText(
       text.substring(0, this.textInput.selectionStart) +
-        word +
-        text.substring(this.textInput.selectionEnd)
+      word +
+      text.substring(this.textInput.selectionEnd)
     );
 
     setTimeout(() => {
@@ -426,10 +425,10 @@ class MessageForm extends Component {
         {openEmojiSearch && (
           <EmojiSearch filter={searchFilter} onSelect={this.onSelectEmoji} />
         )}
-        
+
         <FormattingCommands applyStyleEvent={this.applyTextStyle} />
         {this.renderInput()}
-        
+
         {text.length > 3999 && (
           <div className="character-limit">
             You have reached the 4000 character limit per message.
