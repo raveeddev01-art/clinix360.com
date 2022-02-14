@@ -30,7 +30,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
   def create(conn, %{"message_comment" => %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}, "id" => message_id}) do
-    message_params = %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}
+    message_params = %{"text_content" => text_content, "thread" => thread, "request_id" => request_id} |> IO.inspect(label: "message_comment_create_params --->>> ")
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
