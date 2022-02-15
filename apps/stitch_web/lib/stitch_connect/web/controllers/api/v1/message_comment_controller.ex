@@ -60,7 +60,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   def message_comment_creation_events(message) do
     message = MessageQueries.get_by_id(message.id)
     GroupChannel.broadcast_message_comment_added(message)
-    GroupChannel.broadcast_message_edited(message)
+    GroupChannel.broadcast_message_updated(message)
   end
 
   def update(conn, %{"id" => message_id, "message_comment" => %{"text_content" => text_content}}) do
@@ -122,7 +122,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
            {:deleted, Message.delete(message, current_user)} do
           parent_message = MessageQueries.get_by_id(message.parent_message_id)
           GroupChannel.broadcast_message_comment_deleted(parent_message)
-          GroupChannel.broadcast_message_edited(message)
+          GroupChannel.broadcast_message_updated(message)
       send_resp(conn, :no_content, "")
     else
       {:authorized?, false} ->
