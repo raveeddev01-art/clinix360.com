@@ -43,7 +43,6 @@ class MessageComment extends Component {
 
   editComment = () => {
     this.setState({ editing: true });
-    console.log("editing is on", this.state.editing);
   };
 
   // handleEditInputChange = e => {
@@ -61,8 +60,6 @@ class MessageComment extends Component {
 
   handleSaveEdit = (commentText) => {
     const { comment, messageStore } = this.props;
-
-    console.log("comment text", commentText);
 
     messageStore.updateMessageComment(comment.id, commentText).then(() => {
       this.setState({ editing: false });
@@ -151,13 +148,11 @@ class MessageComment extends Component {
   renderEditInput() {
     const { comment } = this.props;
 
-    console.log("old commment", comment.text_content);
-
     return (
-      <MessageCommentInput 
-        message={comment} 
-        commentText={comment.text_content} 
-        editing={true} 
+      <MessageCommentInput
+        message={comment}
+        commentText={comment.text_content}
+        editing={true}
         handleSaveEdit={this.handleSaveEdit}
       />
     );
@@ -199,7 +194,7 @@ class MessageComment extends Component {
 
     return (
       <div className="">
-        
+
         {editing ? this.renderEditInput() : this.renderCommentContent()}
 
         {/* <Avatar user={user} />
