@@ -130,7 +130,7 @@ class MessageActions extends PureComponent {
   };
 
   delete = () => {
-    const { message, messageStore } = this.props;
+    const { message, messageStore, isReply } = this.props;
     let confirmMsg =
       "Are you sure you want to delete this message? This cannot be undone.";
 
@@ -157,7 +157,11 @@ class MessageActions extends PureComponent {
       message: confirmMsg,
       okLabel: "Delete"
     }).then(() => {
-      messageStore.delete(message.id);
+      if (isReply) {
+        messageStore.deleteMessageComment(message.id);
+      } else {
+        messageStore.delete(message.id);
+      }
     });
   };
 
@@ -209,7 +213,7 @@ class MessageActions extends PureComponent {
           </Button>
         </OverlayTrigger>
 
-        {!isConversationMessage && !isReply && 
+        {!isConversationMessage && !isReply &&
           (
             <OverlayTrigger
               placement="top"
@@ -217,19 +221,19 @@ class MessageActions extends PureComponent {
               overlay={<Tooltip id="file-comments">Reply in Thread</Tooltip>}
             >
               {(message.type === "upload" || message.type === "file_comment") ? (
-              <Button onClick={this.showFileComments}>
-                <i className="fa fa-comments" />
-              </Button>
+                <Button onClick={this.showFileComments}>
+                  <i className="fa fa-comments" />
+                </Button>
               ) :
-              (
-                <Button onClick={this.showMessageComments}>
-                <i className="fa fa-comments" />
-              </Button>
-              )}
+                (
+                  <Button onClick={this.showMessageComments}>
+                    <i className="fa fa-comments" />
+                  </Button>
+                )}
             </OverlayTrigger>
           )}
 
-        {!isConversationMessage && !isReply && 
+        {!isConversationMessage && !isReply &&
           message.type === "upload" && (
             <OverlayTrigger
               placement="top"
@@ -242,7 +246,7 @@ class MessageActions extends PureComponent {
             </OverlayTrigger>
           )}
 
-        {!isConversationMessage && !isReply &&  (
+        {!isConversationMessage && !isReply && (
           <OverlayTrigger
             placement="top"
             delayShow={150}
@@ -317,8 +321,8 @@ class MessageActions extends PureComponent {
               )}
 
             {(mine || isAdmin()) && (
-                <MenuItem onClick={this.delete}>Delete message</MenuItem>
-              )}
+              <MenuItem onClick={this.delete}>Delete message</MenuItem>
+            )}
           </DropdownButton>
         </OverlayTrigger>
       </ButtonGroup>,
