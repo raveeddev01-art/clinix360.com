@@ -94,7 +94,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       edited: !!message.edited_at,
       edited_at: message.edited_at,
       read_status: message.read_status,
-      reactions_web: Map.get(message, :reactions, %{}),
+      reactions_web: Message.Reaction.group_reactions(message.reactions),
       mentioned_user_ids: message.mentioned_user_ids,
       link_previews: message.link_previews,
       request_id: message.request_id,
