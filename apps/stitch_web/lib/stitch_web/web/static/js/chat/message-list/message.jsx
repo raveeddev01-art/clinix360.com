@@ -126,6 +126,7 @@ class Message extends PureComponent {
   render() {
     const { isActionsVisible, isSelected } = this.state;
     const {
+      onStartEditCallback,
       message,
       hasNML,
       isHighlighted,
@@ -211,6 +212,7 @@ class Message extends PureComponent {
               {(isActionsVisible || isSelected) &&
                 !isConversationMessage && (
                   <MessageActions
+                    onStartEditCallback={onStartEditCallback}
                     user={user}
                     isReply={isReply}
                     message={message}
@@ -229,6 +231,7 @@ class Message extends PureComponent {
 }
 
 Message.propTypes = {
+  onStartEditCallback: PropTypes.func,
   isThreadView: PropTypes.bool,
   hasNML: PropTypes.bool,
   isHighlighted: PropTypes.bool,
@@ -244,6 +247,7 @@ Message.propTypes = {
 };
 
 Message.defaultProps = {
+  onStartEditCallback: null,
   isThreadView: false,
   hasNML: false,
   isHighlighted: false,

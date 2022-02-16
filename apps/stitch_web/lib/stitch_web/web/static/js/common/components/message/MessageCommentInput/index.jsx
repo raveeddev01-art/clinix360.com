@@ -18,9 +18,6 @@ class MessageCommentInput extends Component {
   }
 
   addComment = commentText => {
-    // const { commentText } = this.state;
-    // e.preventDefault();
-
     if (!commentText) {
       return;
     }
@@ -35,30 +32,25 @@ class MessageCommentInput extends Component {
   };
 
   render() {
-    const { message, usersStore, messageStore, groupsStore} = this.props;
+    const { message, usersStore, messageStore, groupsStore, commentText, editing, handleSaveEdit} = this.props;
     const user = usersStore.usersById[currentUser.id];
     return (
       <form className="file-comment" onSubmit={this.addComment}>
         <FormGroup className="file-comment__edit">
           <div className="flex-footer">
             <MessageForm
+              editing={editing}
+              commentText={ editing ? commentText : "" }
               allowTypingUsers={false}
-              onEnterCallback={this.addComment}
+              onEnterCallback={editing ? handleSaveEdit : this.addComment}
               messageStore={messageStore}
               currentGroup={groupsStore.currentGroup}
             />
-            <MessageCommentGroup
+            {!editing && <MessageCommentGroup
               message={message}
               label="Commenting in"
               showClose={false}
-            />
-          </div>
-          
-
-          <div className="file-comment__edit-buttons file-comment__edit-buttons--add">
-            {/* <Button type="submit" bsStyle="primary">
-              Reply
-            </Button> */}
+            />}
           </div>
         </FormGroup>
       </form>

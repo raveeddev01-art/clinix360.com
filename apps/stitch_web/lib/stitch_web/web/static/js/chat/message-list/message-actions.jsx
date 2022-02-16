@@ -124,9 +124,13 @@ class MessageActions extends PureComponent {
   };
 
   edit = () => {
-    const { message, messageStore } = this.props;
+    const { message, messageStore, onStartEditCallback } = this.props;
 
     messageStore.startEdit(message.id);
+    
+    if(onStartEditCallback) {
+      onStartEditCallback(message.id);
+    } 
   };
 
   delete = () => {

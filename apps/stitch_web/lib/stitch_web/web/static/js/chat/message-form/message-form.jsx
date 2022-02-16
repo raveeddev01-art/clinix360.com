@@ -343,14 +343,27 @@ class MessageForm extends Component {
     }, 100);
   };
 
+  getCommentText = () => {
+    const { commentText, editing } = this.props;
+
+    if (editing) {
+      return commentText;
+    } 
+
+    return this.getText();
+  }
+
   renderInput() {
     const {
       messageStore: { messageInEdit },
       socketStore,
-      allowMention
+      allowMention,
+      editing,
+      commentText
     } = this.props;
     const { isFocused } = this.state;
-    const text = this.getText();
+    const text = this.getCommentText();
+
     const className = classNames("form-control", "message-text", {
       disconnected: !socketStore.isConnected,
       editing: !!messageInEdit
