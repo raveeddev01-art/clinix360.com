@@ -40,12 +40,8 @@ class MessageDetails extends Component {
     if (!message.id) return null;
 
     const messageCreator = this.props.usersStore.usersById[message.user_id];
-    var text_content = messageTextToComponents(message.text_content); 
+    const text_content = messageTextToComponents(message.text_content || ""); 
 
-    if (text_content == null) {
-      text_content = "";
-    }
-    
     return (
       <div className="search-results-addon">
         <div className="file-heading">

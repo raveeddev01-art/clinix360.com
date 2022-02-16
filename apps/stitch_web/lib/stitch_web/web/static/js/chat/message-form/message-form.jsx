@@ -21,7 +21,8 @@ import EmojiSearch from "./components/emoji-search";
 class MessageForm extends Component {
   constructor(props) {
     super(props);
-
+    // this.onEntercallback = this.props.addComment == null ? this.onEnter : this.props.addComment;
+    // console.log(this.onEntercallback, "here is OnEnterCall");
     this.applyTextStyle = this.applyTextStyle.bind(this);
     this.state = {
       text: "",
@@ -88,7 +89,7 @@ class MessageForm extends Component {
   };
 
   onEnter = () => {
-    const { messageStore, socketStore } = this.props;
+    const { messageStore, socketStore, onEnterCallback } = this.props;
 
     // if not connected, just no send message at all
     if (!socketStore.isConnected) {
@@ -112,8 +113,12 @@ class MessageForm extends Component {
         messageStore.finishEdit();
       }
     } else if (trimmedText) {
-      messageStore.sendMessage(trimmedText);
-
+      if (!onEnterCallback) {
+        messageStore.sendMessage(trimmedText);
+      }
+      else {
+        onEnterCallback(trimmedText);
+      }
       this.setState({ text: "" });
     }
   };
@@ -180,7 +185,9 @@ class MessageForm extends Component {
   };
 
   onSelectMention = username => {
+    console.log(username, "this is username");
     if (username) {
+      console.log(username, "if is true");
       this.replaceCurrentWord(`@${username} `);
     } else {
       this.onEnter();
@@ -274,13 +281,13 @@ class MessageForm extends Component {
     messageStore.startTyping();
   };
 
-  insertWord = (word, setpBack=0) => {
+  insertWord = (word, setpBack = 0) => {
     const cursorPos = this.textInput.selectionStart;
     const text = this.getText();
     this.updateInputText(
       text.substring(0, this.textInput.selectionStart) +
-        word +
-        text.substring(this.textInput.selectionEnd)
+      word +
+      text.substring(this.textInput.selectionEnd)
     );
 
     setTimeout(() => {
@@ -343,7 +350,6 @@ class MessageForm extends Component {
       allowMention
     } = this.props;
     const { isFocused } = this.state;
-
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
       disconnected: !socketStore.isConnected,
@@ -420,9 +426,9 @@ class MessageForm extends Component {
           <EmojiSearch filter={searchFilter} onSelect={this.onSelectEmoji} />
         )}
 
-        {this.renderInput()}
-        
         <FormattingCommands applyStyleEvent={this.applyTextStyle} />
+        {this.renderInput()}
+
         {text.length > 3999 && (
           <div className="character-limit">
             You have reached the 4000 character limit per message.

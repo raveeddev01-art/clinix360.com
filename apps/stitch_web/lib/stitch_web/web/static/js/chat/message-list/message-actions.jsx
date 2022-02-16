@@ -166,7 +166,8 @@ class MessageActions extends PureComponent {
       lastOtherUserMessage,
       message,
       user,
-      isConversationMessage
+      isConversationMessage,
+      isReply
     } = this.props;
     const mine = user.id === currentUser.id;
     const unsent = message.status === "sending" || message.status === "failed";
@@ -208,7 +209,7 @@ class MessageActions extends PureComponent {
           </Button>
         </OverlayTrigger>
 
-        {!isConversationMessage &&
+        {!isConversationMessage && !isReply && 
           (
             <OverlayTrigger
               placement="top"
@@ -228,7 +229,7 @@ class MessageActions extends PureComponent {
             </OverlayTrigger>
           )}
 
-        {!isConversationMessage &&
+        {!isConversationMessage && !isReply && 
           message.type === "upload" && (
             <OverlayTrigger
               placement="top"
@@ -241,7 +242,7 @@ class MessageActions extends PureComponent {
             </OverlayTrigger>
           )}
 
-        {!isConversationMessage && (
+        {!isConversationMessage && !isReply &&  (
           <OverlayTrigger
             placement="top"
             delayShow={150}
@@ -258,7 +259,7 @@ class MessageActions extends PureComponent {
           </OverlayTrigger>
         )}
 
-        {!isConversationMessage && (
+        {!isConversationMessage && !isReply && (
           <OverlayTrigger
             placement="top"
             delayShow={150}

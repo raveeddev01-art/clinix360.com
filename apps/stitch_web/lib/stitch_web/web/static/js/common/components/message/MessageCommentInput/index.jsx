@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import { Avatar } from "common/components";
 import MessageCommentGroup from "../MessageCommentGroup";
-
+import MessageForm from "../../../../chat/message-form/message-form";
 @inject("usersStore", "messageStore", "groupsStore")
 @observer
 class MessageCommentInput extends Component {
@@ -17,9 +17,9 @@ class MessageCommentInput extends Component {
     };
   }
 
-  addComment = e => {
-    const { commentText } = this.state;
-    e.preventDefault();
+  addComment = commentText => {
+    // const { commentText } = this.state;
+    // e.preventDefault();
 
     if (!commentText) {
       return;
@@ -35,27 +35,30 @@ class MessageCommentInput extends Component {
   };
 
   render() {
-    const { message, usersStore } = this.props;
+    const { message, usersStore, messageStore, groupsStore} = this.props;
     const user = usersStore.usersById[currentUser.id];
-
     return (
       <form className="file-comment" onSubmit={this.addComment}>
-        <Avatar user={user} />
         <FormGroup className="file-comment__edit">
-          <FormControl
-            type="text"
-            value={this.state.commentText}
-            onChange={this.handleChange}
-          />
-          <div className="file-comment__edit-buttons file-comment__edit-buttons--add">
+          <div className="flex-footer">
+            <MessageForm
+              allowTypingUsers={false}
+              onEnterCallback={this.addComment}
+              messageStore={messageStore}
+              currentGroup={groupsStore.currentGroup}
+            />
             <MessageCommentGroup
               message={message}
               label="Commenting in"
               showClose={false}
             />
-            <Button type="submit" bsStyle="primary">
+          </div>
+          
+
+          <div className="file-comment__edit-buttons file-comment__edit-buttons--add">
+            {/* <Button type="submit" bsStyle="primary">
               Reply
-            </Button>
+            </Button> */}
           </div>
         </FormGroup>
       </form>
