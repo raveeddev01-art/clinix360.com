@@ -8,28 +8,20 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   }
 
   alias Stitch.{
-    Files.FileQueries,
-    Files.Upload,
-    Files.FileAuthorization,
-    Files.UploadComment,
     GroupAuthorization,
     GroupQueries,
     Group,
-    Files,
-    StarrableItems.StarringService,
     Message,
     MessageAuthorization,
     MessageAction,
     MessageQueries,
-    Message.Upload,
-    ReadStatus,
-    Web.EventsChannel,
     Web.FileService
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
   def create(conn, %{"message_comment" => %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}, "id" => message_id}) do
+    thread = if thread == "true", do: true, else: thread
     message_params = %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
@@ -68,6 +60,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   def message_comment_creation_events(message) do
     message = MessageQueries.get_by_id(message.id)
     GroupChannel.broadcast_message_comment_added(message)
+    GroupChannel.broadcast_message_edited(message)
   end
 
   def update(conn, %{"id" => message_id, "message_comment" => %{"text_content" => text_content}}) do
@@ -129,6 +122,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
            {:deleted, Message.delete(message, current_user)} do
           parent_message = MessageQueries.get_by_id(message.parent_message_id)
           GroupChannel.broadcast_message_comment_deleted(parent_message)
+          GroupChannel.broadcast_message_edited(parent_message)
       send_resp(conn, :no_content, "")
     else
       {:authorized?, false} ->
@@ -145,44 +139,4 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         {:error, :not_found}
     end
   end
-
-  # def update(conn, %{
-  #       "message_comment" => %{"text_content" => text_content},
-  #       "id" => upload_comment_id
-  #     }) do
-  #   current_user = conn.assigns.current_user
-
-  #   file_comment_update_result =
-  #     Stitch.Web.FileService.update_file_comment(
-  #       text_content,
-  #       upload_comment_id,
-  #       current_user
-  #     )
-
-  #   with {:updated_upload_comment, upload_comment} <- file_comment_update_result do
-  #     conn
-  #     |> render("show.json", file_comment: upload_comment)
-  #   else
-  #     error -> error
-  #   end
-  # end
-
-  # def delete(conn, %{"id" => upload_comment_id}) do
-  #   current_user = conn.assigns.current_user
-  #   team = conn.assigns.team
-
-  #   file_comment_delete_result =
-  #     Stitch.Web.FileService.delete_file_comment(
-  #       upload_comment_id,
-  #       current_user,
-  #       team
-  #     )
-
-  #   with {:deleted_upload_comment, upload_comment} <- file_comment_delete_result do
-  #     conn
-  #     |> render("show.json", file_comment: upload_comment)
-  #   else
-  #     error -> error
-  #   end
-  # end
 end
