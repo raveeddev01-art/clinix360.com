@@ -7,7 +7,7 @@ class FileInfo extends Component {
   render() {
     const { file } = this.props;
     const prettySize = prettyFileSize(file.size_in_bytes);
-    const extension = file.filetype;
+    const extension = file.filename.split('.').pop();
     const addedOn = moment(file.inserted_at).format("D MMMM, YYYY");
 
     return (
