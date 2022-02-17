@@ -117,6 +117,7 @@ defmodule Stitch.MessageQueries do
           left_join: g in assoc(m, :group),
           left_join: u in assoc(m, :user),
           left_join: pb in assoc(m, :pinned_by),
+          left_join: tmm in assoc(m, :thread_messages),
           preload: [
             user: u,
             group: g,
@@ -130,9 +131,11 @@ defmodule Stitch.MessageQueries do
           where: is_nil(m.parent_message_id),
           where: m.user_id == ^user.id,
           where: m.type not in ^skipable_types,
-          order_by: [desc: fragment("(select inserted_at from messages where id = ?)", m.id)],
+          having: fragment("COUNT(?) > 0", tmm.id),
+          order_by: [desc: fragment("MAX(?)", tmm.inserted_at)],
           limit: ^limit,
           offset: ^offset,
+          group_by: [m.id, u.id, g.id, pb.id, tmm.id],
           select: m
         )
 

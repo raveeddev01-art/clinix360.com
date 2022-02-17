@@ -846,9 +846,8 @@ class MessageStore extends BaseMessageStore {
 
     @action
     onJoinThreadChannel = data => {
-        console.log(data, "data --->>> ")
-            // sync time as soon as joined to the channel
-            // this.syncTime();
+        // sync time as soon as joined to the channel
+        // this.syncTime();
 
         if (this.group.id === this.loadedGroupId) {
             // // new message has more precedance by putting it as first param.
@@ -1158,7 +1157,7 @@ class MessageStore extends BaseMessageStore {
     @action
     addComment(text) {
         const messageText = this.encodeMessage(text);
-        const tempMessage = this.generateTempMessage(messageText); 
+        const tempMessage = this.generateTempMessage(messageText);
         const body = { message_comment: { text_content: messageText, thread: true, request_id: tempMessage.id } };
         return post(`/api/v1/messages/${this.message.id}/comments`, {
             body,
@@ -1199,8 +1198,8 @@ class MessageStore extends BaseMessageStore {
             console.log(this.messages, "this.messages  1")
             this.messages = this.messages.filter(msg => msg.id !== message.id)
             console.log(this.messages, "this.messages  2")
-                // this.messages.unshift(message);
-                // console.log(this.messages, "this.messages  3")
+            this.messages.unshift(message);
+            // console.log(this.messages, "this.messages  3")
         }
         this.messageCache.addNewToThread(message);
         if (message.id === this.message.id) {

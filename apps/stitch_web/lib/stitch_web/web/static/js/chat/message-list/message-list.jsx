@@ -52,7 +52,7 @@ class MessageList extends Component {
 
   render() {
     const { messageStore, isThreadView } = this.props;
-    const { messagesByDate, messagesByDateDesc, newMessageLineMessage, highlightId } = messageStore;
+    const { messagesByDate, messagesByDateDesc, newMessageLineMessage, highlightId, messages } = messageStore;
     const orderBy = isThreadView ? messagesByDateDesc : messagesByDate;
 
     return (
@@ -69,47 +69,81 @@ class MessageList extends Component {
           )}
 
         {(!messageStore.jumpMode || messageStore.isJumpLoaded) &&
-          Object.keys(orderBy).map(date => (
-            <div key={`${date}`}>
-              <DateSeparator timestamp={date} />
-              {orderBy[date].map(
-                message =>
-                  message.type === "system" ? (
-                    <SystemMessage
-                      key={`message_${message.id}`}
-                      message={message}
-                    />
-                  ) : (
-                    <Message
-                      // start of dummy prop so that message list react to message prop change
-                      edited_at={message.edited_at}
-                      isThreadView={isThreadView}
-                      pinned={message.pinned}
-                      starred={message.starred}
-                      status={message.status}
-                      is_sequential={message.is_sequential}
-                      reactions_web={message.reactions_web}
-                      link_previews={message.link_previews}
-                      // end of dummy prop
-                      key={`message_${message.id}`}
-                      message={message}
-                      hasNML={
-                        newMessageLineMessage &&
-                        newMessageLineMessage.id === message.id
-                      }
-                      lastOtherUserMessage={messageStore.lastOtherUserMessage}
-                      messageStore={messageStore}
-                      chatDiv={messageStore.chatDiv}
-                      onMounted={messageStore.onMessageMounted}
-                      onUnmounted={messageStore.onMessageUnmounted}
-                      onShow={messageStore.onMessageShow}
-                      onHide={messageStore.onMessageHide}
-                      isHighlighted={highlightId === message.id}
-                    />
-                  )
-              )}
-            </div>
-          ))}
+          !isThreadView ? 
+            Object.keys(orderBy).map(date => (
+              <div key={`${date}`}>
+                <DateSeparator timestamp={date} />
+                {orderBy[date].map(
+                  message =>
+                    message.type === "system" ? (
+                      <SystemMessage
+                        key={`message_${message.id}`}
+                        message={message}
+                      />
+                    ) : (
+                      <Message
+                        // start of dummy prop so that message list react to message prop change
+                        edited_at={message.edited_at}
+                        isThreadView={isThreadView}
+                        pinned={message.pinned}
+                        starred={message.starred}
+                        status={message.status}
+                        is_sequential={message.is_sequential}
+                        reactions_web={message.reactions_web}
+                        link_previews={message.link_previews}
+                        // end of dummy prop
+                        key={`message_${message.id}`}
+                        message={message}
+                        hasNML={
+                          newMessageLineMessage &&
+                          newMessageLineMessage.id === message.id
+                        }
+                        lastOtherUserMessage={messageStore.lastOtherUserMessage}
+                        messageStore={messageStore}
+                        chatDiv={messageStore.chatDiv}
+                        onMounted={messageStore.onMessageMounted}
+                        onUnmounted={messageStore.onMessageUnmounted}
+                        onShow={messageStore.onMessageShow}
+                        onHide={messageStore.onMessageHide}
+                        isHighlighted={highlightId === message.id}
+                      />
+                    )
+                )}
+              </div>
+            )) :
+            (<div key={`thread`}>
+            {messages.map(
+              message =>
+                  (<Message
+                    // start of dummy prop so that message list react to message prop change
+                    edited_at={message.edited_at}
+                    isThreadView={isThreadView}
+                    pinned={message.pinned}
+                    starred={message.starred}
+                    status={message.status}
+                    is_sequential={message.is_sequential}
+                    reactions_web={message.reactions_web}
+                    link_previews={message.link_previews}
+                    // end of dummy prop
+                    key={`message_${message.id}`}
+                    message={message}
+                    hasNML={
+                      newMessageLineMessage &&
+                      newMessageLineMessage.id === message.id
+                    }
+                    lastOtherUserMessage={messageStore.lastOtherUserMessage}
+                    messageStore={messageStore}
+                    chatDiv={messageStore.chatDiv}
+                    onMounted={messageStore.onMessageMounted}
+                    onUnmounted={messageStore.onMessageUnmounted}
+                    onShow={messageStore.onMessageShow}
+                    onHide={messageStore.onMessageHide}
+                    isHighlighted={highlightId === message.id}
+                  />
+                )
+            )}
+          </div>)
+        }
         {!messageStore.jumpMode &&
           messageStore.isLoadingRecent && (
             <div className="loading-message">Loading recent messages...</div>
