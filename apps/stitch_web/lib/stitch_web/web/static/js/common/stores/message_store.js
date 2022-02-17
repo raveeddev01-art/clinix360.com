@@ -519,9 +519,7 @@ class MessageStore extends BaseMessageStore {
             this.switchFromJumpMode();
         }
 
-        console.log("raw text", text)
         const messageText = this.encodeMessage(text);
-        console.log(messageText, "here is encoded comment");
         const tempMessage = this.generateTempMessage(messageText);
         // Add temp message
         this.messages.unshift(tempMessage);
@@ -1159,11 +1157,9 @@ class MessageStore extends BaseMessageStore {
 
     @action
     addComment(text) {
-        console.log("raw text", text)
         const messageText = this.encodeMessage(text);
-        console.log(messageText, "here is encoded comment");
-        const tempMessage = this.generateTempMessage(messageText);
-        const body = { message_comment: { text_content: text, thread: true, request_id: tempMessage.id } };
+        const tempMessage = this.generateTempMessage(messageText); 
+        const body = { message_comment: { text_content: messageText, thread: true, request_id: tempMessage.id } };
         return post(`/api/v1/messages/${this.message.id}/comments`, {
             body,
             hideNotify: true
@@ -1212,9 +1208,6 @@ class MessageStore extends BaseMessageStore {
         }
     };
 
-    getMessageByID = id => {
-        return this.getMessageById(id);
-    }
 }
 
 export default MessageStore;

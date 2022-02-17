@@ -236,6 +236,7 @@ defmodule Stitch.MessageQueries do
       from(
         m in query,
         where: m.group_id == ^group_id,
+        where: is_nil(m.parent_message_id),
         order_by: [asc: :inserted_at],
         limit: ^limit,
         offset: ^offset,

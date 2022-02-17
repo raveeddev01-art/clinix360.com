@@ -21,16 +21,26 @@ import EmojiSearch from "./components/emoji-search";
 class MessageForm extends Component {
   constructor(props) {
     super(props);
-    // this.onEntercallback = this.props.addComment == null ? this.onEnter : this.props.addComment;
-    // console.log(this.onEntercallback, "here is OnEnterCall");
+
     this.applyTextStyle = this.applyTextStyle.bind(this);
     this.state = {
-      text: "",
+      text: this.getCommentText(),
       searchFilter: "",
       openMentionMenu: false,
       openEmojiSearch: false,
       isFocused: true
     };
+  }
+
+  getCommentText = () => {
+    const { commentText, editing } = this.props;
+
+    if (editing) {
+      return commentText;
+    }
+    
+    return "";
+
   }
 
   applyTextStyle(event, style) {
@@ -185,9 +195,7 @@ class MessageForm extends Component {
   };
 
   onSelectMention = username => {
-    console.log(username, "this is username");
     if (username) {
-      console.log(username, "if is true");
       this.replaceCurrentWord(`@${username} `);
     } else {
       this.onEnter();
@@ -347,17 +355,19 @@ class MessageForm extends Component {
     const {
       messageStore: { messageInEdit },
       socketStore,
-      allowMention
+      allowMention,
+      editing
     } = this.props;
     const { isFocused } = this.state;
     const text = this.getText();
+
     const className = classNames("form-control", "message-text", {
       disconnected: !socketStore.isConnected,
-      editing: !!messageInEdit
+      editing: !!messageInEdit || editing
     });
 
     const inputWrapperClass = classNames("message-input-wrapper", {
-      isFocused: isFocused || messageInEdit
+      isFocused: isFocused || messageInEdit || editing
     });
 
     return (
