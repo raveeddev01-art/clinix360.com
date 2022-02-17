@@ -71,7 +71,8 @@ class MessageCache {
 
     addNewToThread(newMessage) {
         const groupId = 0;
-        if (this.cache[groupId] && !this.cache[groupId].find(message => message.id === newMessage.id)) {
+        if (this.cache[groupId]) {
+            this.cache[groupId].filter(msg => msg.id !== newMessage.id)
             this.cache[groupId].unshift(newMessage);
         }
     }

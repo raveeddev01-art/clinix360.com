@@ -1195,11 +1195,8 @@ class MessageStore extends BaseMessageStore {
             thread_messages_count: message.thread_messages_count
         });
         if (0 === this.group.id) {
-            console.log(this.messages, "this.messages  1")
             this.messages = this.messages.filter(msg => msg.id !== message.id)
-            console.log(this.messages, "this.messages  2")
             this.messages.unshift(message);
-            // console.log(this.messages, "this.messages  3")
         }
         this.messageCache.addNewToThread(message);
         if (message.id === this.message.id) {
