@@ -63,6 +63,12 @@ defmodule Stitch.Message.MessageCreation do
     message = %Message{group: group, user: user, call_id: call_id}
     do_create(message, attrs, presence)
   end
+
+  def create(group, user, %{"type" => "meet_link"} = attrs, presence) do
+    message = %Message{group: group, user: user}
+    do_create(message, attrs, presence)
+  end
+
 # will use when thread key sent from FE
   def create(message, user, %{"text_content" => _, "thread" => true} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")

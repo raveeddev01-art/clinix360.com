@@ -9,6 +9,7 @@ import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
 import Replies from "./replies";
 import CallMessage from "./call-message";
+import MeetLinkMessage from "./meet-link-message";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
 @inject("usersStore", "addonStore")
@@ -103,6 +104,8 @@ class MessageContent extends Component {
 
     if (message.type === "call") {
       messageContentComponents = <CallMessage message={message} />;
+    } else if (message.type === "meet_link") {
+      messageContentComponents = <MeetLinkMessage message={message} />;
     } else {
       const textContent = inSearch
         ? message.highlighted_text_content || message.text_content

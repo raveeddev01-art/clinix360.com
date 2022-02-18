@@ -21,7 +21,7 @@ defmodule Stitch.Message do
     Call
   }
 
-  @valid_types ["chat", "call", "system", "upload", "file_share", "file_comment"]
+  @valid_types ["chat", "call", "system", "upload", "file_share", "file_comment", "meet_link"]
 
   schema "messages" do
     belongs_to(:user, User)
@@ -126,6 +126,22 @@ defmodule Stitch.Message do
     |> LinkPreview.check_for_links()
   end
 
+  def meet_link_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [
+      :type,
+      :request_id,
+      :text_content,
+      :mentioned_user_ids,
+      :read_status,
+      :client_device_type,
+      :client_os,
+      :client_name
+    ])
+    |> validate_required([:type, :text_content])
+    |> validate_inclusion(:type, ["meet_link"])
+  end
+
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
     |> cast(params, @upload_castable_attributes)
@@ -159,6 +175,10 @@ defmodule Stitch.Message do
           {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
   def create(group, user, attrs, presence_user_ids \\ %{active: [], online: []})
 
+  def create(%Group{} = group, user, %{"type" => "meet_link"} = attrs, presence_user_ids) do
+    MessageCreation.create(group, user, attrs, presence_user_ids)
+  end
+
   def create(%Group{} = group, user, attrs, presence_user_ids) do
     attrs = Map.put_new(attrs, "type", "chat")
     MessageCreation.create(group, user, attrs, presence_user_ids)
@@ -177,6 +197,10 @@ defmodule Stitch.Message do
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do
     message |> chat_changeset(attrs)
+  end
+
+  def message_changeset(message, %{"type" => "meet_link"} = attrs) do
+    message |> meet_link_changeset(attrs)
   end
 
   def message_changeset(message, %{"type" => "call"} = attrs) do
