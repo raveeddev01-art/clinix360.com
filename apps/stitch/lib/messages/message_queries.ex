@@ -109,51 +109,36 @@ defmodule Stitch.MessageQueries do
     limit = Enum.min([Keyword.get(opts, :limit), 60])
     offset = Keyword.get(opts, :skip, 0)
     # fetch_users = Keyword.get(opts, :fetch_users, true)
-    skipable_types = ["system", "call"]
-
-    query =
-        from(
-          m in Message,
-          left_join: g in assoc(m, :group),
-          left_join: u in assoc(m, :user),
-          left_join: pb in assoc(m, :pinned_by),
-          left_join: tmm in assoc(m, :thread_messages),
-          preload: [
-            user: u,
-            group: g,
-            pinned_by: pb,
-            thread_messages:
-              ^from(
-                tm in Message,
-                order_by: [asc: tm.inserted_at]
-              )
-          ],
-          where: is_nil(m.parent_message_id),
-          where: m.user_id == ^user.id,
-          where: m.type not in ^skipable_types,
-          having: fragment("COUNT(?) > 0", tmm.id),
-          order_by: [desc: fragment("MAX(?)", tmm.inserted_at)],
-          limit: ^limit,
-          offset: ^offset,
-          group_by: [m.id, u.id, g.id, pb.id, tmm.id],
-          select: m
-        )
-
-    # query =
-    #   from(
-    #     m in query,
-    #     where: is_nil(m.parent_message_id),
-    #     where: m.user_id == ^user.id,
-    #     where: m.type not in ^skipable_types,
-    #     order_by: [desc: :inserted_at],
-    #     limit: ^limit,
-    #     offset: ^offset,
-    #     select: m
-    #   )
+    ignore_types = ["system", "call"]
 
     messages =
-      Repo.all(query)
-      |> Enum.reject(fn x -> x.thread_messages == [] end)
+      from(
+        m in Message,
+        left_join: g in assoc(m, :group),
+        left_join: u in assoc(m, :user),
+        left_join: pb in assoc(m, :pinned_by),
+        left_join: tmm in assoc(m, :thread_messages),
+        preload: [
+          user: u,
+          group: g,
+          pinned_by: pb,
+          thread_messages:
+            ^from(
+              tm in Message,
+              order_by: [asc: tm.inserted_at]
+            )
+        ],
+        where: is_nil(m.parent_message_id),
+        where: m.user_id == ^user.id or ^user.id in m.mentioned_user_ids,
+        where: m.type not in ^ignore_types,
+        having: fragment("COUNT(?) > 0", tmm.id),
+        order_by: [desc: fragment("MAX(?)", tmm.inserted_at)],
+        limit: ^limit,
+        offset: ^offset,
+        group_by: [m.id, u.id, g.id, pb.id, tmm.id],
+        select: m
+      )
+      |> Repo.all()
 
     messages = MessageAction.apply_user_message_actions(user, messages)
     Message.Reaction.apply_reactions(messages, :message)
