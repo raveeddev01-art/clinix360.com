@@ -1190,7 +1190,19 @@ class MessageStore extends BaseMessageStore {
 
     @action
     onMessageCommentUpdates = message => {
+        const { sidemenuStore } = this.rootStore;
+        this.updateMessageCommentData(message);
+        sidemenuStore.showNotificationCardForNewComment(message);
+    };
+
+    @action 
+    onMessageCommentReactionUpdates = message => {
+        this.updateMessageCommentData(message);
+    };
+
+    updateMessageCommentData = message => {
         this.updateMessageData(message.id, message.group_id, {
+            unread_messages_count: this.unreadMessagesCount,
             thread_messages: message.thread_messages,
             thread_messages_count: message.thread_messages_count
         });

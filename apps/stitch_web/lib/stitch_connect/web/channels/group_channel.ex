@@ -349,13 +349,6 @@ defmodule StitchConnect.Web.GroupChannel do
     endpoint_broadcast(group, "reactions_updated", payload)
   end
 
-  def broadcast_comment_reactions_updated(message) do
-    message = MessageQueries.get_by_id(message.parent_message_id)
-    message_json = MessageView.render("show.json", %{message: message})
-    broadcast_in_event_channel(message.group, "comment_reactions_updated", message_json)
-    @endpoint.broadcast("groups:id:#{message.group_id}", "comment_reactions_updated", message_json)
-  end
-
   def broadcast_message_starred(message, starred_by_user_id) do
     group = Repo.get(Group, message.group_id)
 
@@ -507,6 +500,13 @@ defmodule StitchConnect.Web.GroupChannel do
     message_json = MessageView.render("show.json", %{message: message})
     broadcast_in_event_channel(message.group, "message_comment_edited", message_json)
     @endpoint.broadcast("groups:id:#{message.group_id}", "message_comment_edited", message_json)
+  end
+
+  def broadcast_comment_reactions_updated(message) do
+    message = MessageQueries.get_by_id(message.parent_message_id)
+    message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(message.group, "comment_reactions_updated", message_json)
+    @endpoint.broadcast("groups:id:#{message.group_id}", "comment_reactions_updated", message_json)
   end
 
   def broadcast_message_comment_deleted(message) do

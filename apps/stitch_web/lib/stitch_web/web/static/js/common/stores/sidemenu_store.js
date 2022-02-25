@@ -226,6 +226,23 @@ class SidemenuStore {
     }
   }
 
+  showThreadComments = (message) => () => {
+    const { addonStore } = this.rootStore
+
+    if (message.type === "upload" || message.type === "file_comment") {
+      addonStore.setAddonPanel('files');
+      addonStore.toggleAddons(true);
+      addonStore.toggleAddonDetail(true);
+      addonStore.setAddonDetailPanel('File Details', message);
+    } else {
+      addonStore.setAddonPanel('thread');
+      addonStore.toggleAddons(true);
+      addonStore.toggleAddonDetail(false);
+      addonStore.setAddonDetailPanel('Message Details', message);
+    }
+  }
+
+
   playNotificationAudio() {
     this.notificationAudio.play();
   }
@@ -261,6 +278,24 @@ class SidemenuStore {
     }
   }
 
+  showNotificationCardForNewComment(message) {
+    if (this.isOwnMessage(message) || this.isSystemMessage(message))
+      return
+
+    const { groupsStore } = this.rootStore;
+
+    // GET MSG TYPE
+    const group = groupsStore.getGroupById(message.group_id);
+
+    // SENDING THE MESSAGE
+    this.showNotificationCard(
+      this.getNotificationTitle(group),
+      this.getNotificationText(message, group, false, true),
+      `message-${message.id}`,
+      this.showThreadComments(message),
+    );
+  }
+
   showNotificationCardForNewMessage(message) {
     if (
       this.isOwnMessage(message) ||
@@ -268,7 +303,7 @@ class SidemenuStore {
       this.isCurrentlyInRoom(message.group_id) ||
       this.isSystemMessage(message)
     ) {
-      return;
+      return
     }
 
     const { notificationStore, groupsStore } = this.rootStore;
@@ -306,14 +341,17 @@ class SidemenuStore {
     return `${this.rootStore.groupsStore.getGroupName(group)}`;
   }
 
-  getNotificationText(message, group, isMention) {
-    const senderName = `${message.user.first_name} ${message.user.last_name}`;
-    const messageBody = this.getMessageBody(message, group, isMention);
-
+  getNotificationText(message, group, isMention, isReply = false) {
+    const user = isReply ? message.thread_messages[message.thread_messages.length - 1].user : message.user;
+    const senderName = `${user.first_name} ${user.last_name}`;
+    const messageBody = this.getMessageBody(message, group, isMention, isReply);
     return `${senderName} ${messageBody}`;
   }
 
-  getMessageBody(message, group, isMention) {
+  getMessageBody(message, group, isMention, isReply = false) {
+    if (isReply) {
+      return 'replied to your message in ' + this.rootStore.groupsStore.getGroupName(group) + '.';
+    }
     if (this.isUpload(message)) {
       return "uploaded a file.";
     }
