@@ -318,7 +318,10 @@ defmodule StitchConnect.Web.GroupChannel do
 
       {message, true} ->
         {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
-        broadcast_reactions_updated(group, message)
+        case message.parent_message_id do
+          nil -> broadcast_reactions_updated(group, message)
+          _ -> broadcast_comment_reactions_updated(message)
+        end
         {:reply, :ok, socket}
     end
   end
@@ -344,6 +347,13 @@ defmodule StitchConnect.Web.GroupChannel do
 
     broadcast_in_event_channel(group, "reactions_updated", payload)
     endpoint_broadcast(group, "reactions_updated", payload)
+  end
+
+  def broadcast_comment_reactions_updated(message) do
+    message = MessageQueries.get_by_id(message.parent_message_id)
+    message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(message.group, "comment_reactions_updated", message_json)
+    @endpoint.broadcast("groups:id:#{message.group_id}", "comment_reactions_updated", message_json)
   end
 
   def broadcast_message_starred(message, starred_by_user_id) do

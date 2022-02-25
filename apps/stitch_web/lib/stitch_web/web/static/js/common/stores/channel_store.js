@@ -149,6 +149,10 @@ class ChannelStore {
             messageStore.onMessageCommentUpdates
         );
         this.eventChannel.on(
+            "comment_reactions_updated",
+            messageStore.onMessageCommentUpdates
+        );
+        this.eventChannel.on(
             "message_comment_deleted",
             messageStore.onMessageCommentUpdates
         );
