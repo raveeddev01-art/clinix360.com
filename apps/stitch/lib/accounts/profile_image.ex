@@ -135,7 +135,7 @@ defmodule Stitch.Accounts.ProfileImage do
     first_initial = String.at(first_name, 0) |> String.upcase()
     last_initial = String.at(last_name, 0) |> String.upcase()
     initials = "#{first_initial}#{last_initial}"
-    image_path = System.tmp_dir!() |> Path.join("#{initials}.png")
+    image_path = System.tmp_dir!() |> Path.join("#{initials}.png") |> IO.inspect(label: "image_initials --->>> ")
 
     System.cmd("convert", [
       # sample up
@@ -167,6 +167,7 @@ defmodule Stitch.Accounts.ProfileImage do
       "#{resolution}",
       image_path
     ])
+    |> IO.inspect(label: "image_initials 2 --->>> ")
 
     {:ok, image_path}
   end
