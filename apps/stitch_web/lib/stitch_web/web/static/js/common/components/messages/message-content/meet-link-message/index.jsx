@@ -16,7 +16,7 @@ class MeetLinkMessage extends Component {
 
   copyLinkToClipboard = () => {
     const { message } = this.props;
-    navigator.clipboard.writeText('Copy this text to clipboard');
+    navigator.clipboard.writeText(message.text_content);
     window.notify.show("Meeting link copied!", "info")
   }
 
