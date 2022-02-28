@@ -498,7 +498,9 @@ class MessageStore extends BaseMessageStore {
         }
 
         if (groupStore.group.joined) {
-            post(`/api/v1/groups/${this.group.id}/mark_as_read`);
+            if (this.group.id !== 0) {
+                post(`/api/v1/groups/${this.group.id}/mark_as_read`);
+            }
         }
     };
 
@@ -1195,7 +1197,7 @@ class MessageStore extends BaseMessageStore {
         sidemenuStore.showNotificationCardForNewComment(message);
     };
 
-    @action 
+    @action
     onMessageCommentReactionUpdates = message => {
         this.updateMessageCommentData(message);
     };
