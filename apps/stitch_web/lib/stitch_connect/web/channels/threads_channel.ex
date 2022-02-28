@@ -272,11 +272,12 @@ defmodule StitchConnect.Web.ThreadsChannel do
         %{"message_id" => message_id, "emoji_name" => emoji_name},
         socket
       ) do
-    %{group: group, current_user: user} = socket.assigns
+    %{current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
-    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
+    # message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
+    message = MessageQueries.get_by_id(message_id)
 
-    case {message, message && GroupAuthorization.can_view?(group, user)} do
+    case {message, message && GroupAuthorization.can_view?(message.group, user)} do
       {nil, _} ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
 
@@ -286,7 +287,10 @@ defmodule StitchConnect.Web.ThreadsChannel do
 
       {message, true} ->
         {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
-        broadcast_reactions_updated(group, message)
+        case message.parent_message_id do
+          nil -> broadcast_reactions_updated(message.group, message)
+          _ -> broadcast_comment_reactions_updated(message)
+        end
         {:reply, :ok, socket}
     end
   end
@@ -465,6 +469,13 @@ defmodule StitchConnect.Web.ThreadsChannel do
     message_json = MessageView.render("show.json", %{message: message})
     broadcast_in_event_channel(message.group, "message_comment_edited", message_json)
     @endpoint.broadcast("groups:id:#{message.group_id}", "message_comment_edited", message_json)
+  end
+
+  def broadcast_comment_reactions_updated(message) do
+    message = MessageQueries.get_by_id(message.parent_message_id)
+    message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(message.group, "comment_reactions_updated", message_json)
+    @endpoint.broadcast("groups:id:#{message.group_id}", "comment_reactions_updated", message_json)
   end
 
   def broadcast_message_comment_deleted(message) do
