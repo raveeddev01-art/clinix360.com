@@ -176,6 +176,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
 
           Map.put(map, email, result)
         end)
+        IO.inspect(results, label: "email collections")
       json(conn, results)
     else
       conn
