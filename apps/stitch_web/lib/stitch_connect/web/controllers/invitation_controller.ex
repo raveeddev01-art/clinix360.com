@@ -4,6 +4,7 @@ defmodule StitchConnect.Web.InvitationController do
   alias Stitch.Invitation
 
   def accept(conn, %{"token" => invite_token}) do
+    IO.inspect(label: "in invitation --->>> ")
     get_is_onboarded = fn invitation ->
       invitation.user.onboarded
     end |> IO.inspect(label: "get_is_onboarded")
