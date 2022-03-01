@@ -42,9 +42,7 @@ class MeetLinkMessage extends Component {
     const faClasses = cx("fa fa-phone", { "fa-rotate-135": false });
     const iconClasses = cx("call-message__card-icon", { active: true });
 
-    console.log(message.text_content, "here is meeting link");
-
-    return (
+   return (
       <div className="call-message">
         <div className="call-message__title">
           {userFullName} Started a call &nbsp;
