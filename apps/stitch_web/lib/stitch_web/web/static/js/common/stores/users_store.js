@@ -32,8 +32,6 @@ class UsersStore {
     const { groups } = this.rootStore.groupsStore;
     const userIDs = [];
 
-    console.log(groups, "here goes the groups");
-
     groups.forEach(g => {
       if (g.id !== 0) {
         g.users.forEach(u => {
