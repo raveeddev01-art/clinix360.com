@@ -1206,7 +1206,6 @@ class MessageStore extends BaseMessageStore {
 
     updateMessageCommentData = message => {
         this.updateMessageData(message.id, message.group_id, {
-            unread_messages_count: this.unreadMessagesCount,
             thread_messages: message.thread_messages,
             thread_messages_count: message.thread_messages_count
         });
@@ -1218,6 +1217,9 @@ class MessageStore extends BaseMessageStore {
         if (message.id === this.message.id) {
             this.message = message;
         }
+        this.timeoutManager.setTimeout(() => {
+            this.markAsRead();
+        }, 100);
     };
 
 }
