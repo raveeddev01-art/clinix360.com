@@ -282,24 +282,25 @@ class SidemenuStore {
   }
 
   showNotificationCardForNewComment(message) {
-    var comment = message.thread_messages[message.thread_messages.length - 1]
-    comment.is_reply = true;
-
-    if (this.isOwnMessage(comment) || this.isSystemMessage(comment))
-      return
-
+    const comment = message.thread_messages[message.thread_messages.length - 1]
     const { groupsStore } = this.rootStore;
+
+    // SET REPLY TYPE
+    comment.is_reply = true;
 
     // GET MSG TYPE
     const group = groupsStore.getGroupById(comment.group_id);
 
-    // SENDING THE MESSAGE
-    this.showNotificationCard(
-      this.getNotificationTitle(group),
-      this.getNotificationText(comment, group, false),
-      `message-${comment.id}`,
-      this.showThreadComments(message),
-    );
+    if (currentUser.id in this.commentNotificationAllowedFor(message, comment)) {
+      // SENDING THE MESSAGE
+      this.showNotificationCard(
+        this.getNotificationTitle(group),
+        this.getNotificationText(comment, group, false),
+        `message-${comment.id}`,
+        this.showThreadComments(message),
+      );
+    }
+
   }
 
   showNotificationCardForNewMessage(message) {
@@ -355,7 +356,7 @@ class SidemenuStore {
 
   getMessageBody(message, group, isMention) {
     if (this.isReply(message)) {
-      return 'replied to your message in ' + this.rootStore.groupsStore.getGroupName(group) + '.';
+      return 'also replied to message in ' + this.rootStore.groupsStore.getGroupName(group) + '.';
     }
     
     if (this.isUpload(message)) {
@@ -385,6 +386,20 @@ class SidemenuStore {
 
   notificationNotAllowed() {
     return window.Notification && Notification.permission !== "granted";
+  }
+
+  commentNotificationAllowedFor(message, comment) {
+    const userIDs = [];
+
+    if (!this.isOwnMessage(comment) || !this.isSystemMessage(comment)) {
+      message.thread_messages.forEach(tm => {
+        if (tm && userIDs.indexOf(tm.user_id) === -1) {
+          userIDs.push(tm.user_id);
+        }
+      });
+    }
+
+    return userIDs
   }
 
   isOwnMessage(message) {
