@@ -229,6 +229,9 @@ class SidemenuStore {
   showThreadComments = (message) => () => {
     const { addonStore } = this.rootStore
 
+    parent.focus();
+    window.focus();
+
     if (message.type === "upload" || message.type === "file_comment") {
       addonStore.setAddonPanel('files');
       addonStore.toggleAddons(true);
@@ -279,19 +282,22 @@ class SidemenuStore {
   }
 
   showNotificationCardForNewComment(message) {
-    if (this.isOwnMessage(message) || this.isSystemMessage(message))
+    var comment = message.thread_messages[message.thread_messages.length - 1]
+    comment.is_reply = true;
+
+    if (this.isOwnMessage(comment) || this.isSystemMessage(comment))
       return
 
     const { groupsStore } = this.rootStore;
 
     // GET MSG TYPE
-    const group = groupsStore.getGroupById(message.group_id);
+    const group = groupsStore.getGroupById(comment.group_id);
 
     // SENDING THE MESSAGE
     this.showNotificationCard(
       this.getNotificationTitle(group),
-      this.getNotificationText(message, group, false, true),
-      `message-${message.id}`,
+      this.getNotificationText(comment, group, false),
+      `message-${comment.id}`,
       this.showThreadComments(message),
     );
   }
@@ -341,17 +347,17 @@ class SidemenuStore {
     return `${this.rootStore.groupsStore.getGroupName(group)}`;
   }
 
-  getNotificationText(message, group, isMention, isReply = false) {
-    const user = isReply ? message.thread_messages[message.thread_messages.length - 1].user : message.user;
-    const senderName = `${user.first_name} ${user.last_name}`;
-    const messageBody = this.getMessageBody(message, group, isMention, isReply);
+  getNotificationText(message, group, isMention) {
+    const senderName = `${message.user.first_name} ${message.user.last_name}`;
+    const messageBody = this.getMessageBody(message, group, isMention);
     return `${senderName} ${messageBody}`;
   }
 
-  getMessageBody(message, group, isMention, isReply = false) {
-    if (isReply) {
+  getMessageBody(message, group, isMention) {
+    if (this.isReply(message)) {
       return 'replied to your message in ' + this.rootStore.groupsStore.getGroupName(group) + '.';
     }
+    
     if (this.isUpload(message)) {
       return "uploaded a file.";
     }
@@ -399,6 +405,10 @@ class SidemenuStore {
 
   isUpload(message) {
     return message.type === "upload";
+  }
+
+  isReply(message) {
+    return message.is_reply ? true : false
   }
 
   goToMessageRoom(message) {
