@@ -1187,16 +1187,12 @@
 
       &.active {
         border-color: #bde1fe;
-        background-color: #f3f9ff;
+        background-color: #bde1fe;
         color: #003366;
       }
 
       &:hover {
         border-color: #003366;
-
-        &.active {
-          border-color: #bde1fe;
-        }
       }
     }
   }

@@ -43,7 +43,7 @@ class Reactions extends Component {
     return (
       <div className="message-reactions">
         {Object.keys(reactions).map(emoji => {
-          const active = reactions[emoji].indexOf(currentUser.id) > -1;
+          const active = reactions[emoji].indexOf(currentUser.id.toString()) > -1;
           return (
             <OverlayTrigger
               placement="top"
