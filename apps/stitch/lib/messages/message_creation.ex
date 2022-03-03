@@ -115,14 +115,15 @@ defmodule Stitch.Message.MessageCreation do
       |> silent_post_creation()
     else
       IO.inspect(attrs, label: "here is message in do create")
-
-      Multi.new()
-      |> Multi.insert(:message, Message.message_changeset(message, attrs))
-      |> Multi.update_all(:mention_users, mention_users, [])
-      |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
-      |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
-      |> Repo.transaction()
-      |> post_creation(notify_user_ids)
+      if attrs.type != "file_comment" do
+        Multi.new()
+        |> Multi.insert(:message, Message.message_changeset(message, attrs))
+        |> Multi.update_all(:mention_users, mention_users, [])
+        |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
+        |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
+        |> Repo.transaction()
+        |> post_creation(notify_user_ids)
+      end
     end
   end
 
