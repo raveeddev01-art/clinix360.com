@@ -215,7 +215,7 @@ defmodule Stitch.Message do
     message |> upload_changeset(attrs)
   end
 
-  def message_changeset(message, %{"type" => "file_comment"} = _attrs) do
+  def message_changeset(message, %{"type" => "file_comment"} = attrs) do
     message |> file_comment_changeset(attrs)
   end
 
