@@ -220,11 +220,11 @@ defmodule Stitch.Message do
     |> IO.inspect(label: "File Share Message Struct")
   end
 
-  def message_changeset(message, %{"type" => "file_comment"} = attrs) do
+  def message_changeset(message, %{"type" => "file_comment"} = _attrs) do
     IO.inspect("in file comment type")
     Process.info(self(), :current_stacktrace) |> elem(1) |> IO.inspect(label: "Here is the stack trace")
-    message |> file_comment_changeset(attrs)
-    |> IO.inspect(label: "File Comment Message Struct")
+    # message |> file_comment_changeset(attrs)
+    # |> IO.inspect(label: "File Comment Message Struct")
   end
 
   def update(message, attributes) do
