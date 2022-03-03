@@ -114,7 +114,6 @@ defmodule Stitch.Message.MessageCreation do
       |> Repo.transaction()
       |> silent_post_creation()
     else
-      IO.inspect(attrs, label: "here is message in do create")
       if attrs["type"] != "file_comment" do
         Multi.new()
         |> Multi.insert(:message, Message.message_changeset(message, attrs))

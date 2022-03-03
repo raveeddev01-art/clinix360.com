@@ -208,23 +208,15 @@ defmodule Stitch.Message do
   end
 
   def message_changeset(message, %{"type" => "upload"} = attrs) do
-    IO.inspect("in upload type")
     message |> upload_changeset(attrs)
-    |> IO.inspect(label: "Upload Message Struct")
   end
 
   def message_changeset(message, %{"type" => "file_share"} = attrs) do
-    IO.inspect("in file share type")
-    Process.info(self(), :current_stacktrace) |> elem(1) |> IO.inspect(label: "Here is the stack trace")
     message |> upload_changeset(attrs)
-    |> IO.inspect(label: "File Share Message Struct")
   end
 
   def message_changeset(message, %{"type" => "file_comment"} = _attrs) do
-    IO.inspect("in file comment type")
-    Process.info(self(), :current_stacktrace) |> elem(1) |> IO.inspect(label: "Here is the stack trace")
-    # message |> file_comment_changeset(attrs)
-    # |> IO.inspect(label: "File Comment Message Struct")
+    message |> file_comment_changeset(attrs)
   end
 
   def update(message, attributes) do

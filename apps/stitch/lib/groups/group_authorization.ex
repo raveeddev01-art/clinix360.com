@@ -130,7 +130,6 @@ defmodule Stitch.GroupAuthorization do
     else
       false
     end
-    |> IO.inspect(label: "Group is autorized")
   end
 
   def personal_dm?(member_ids, user_id) do
