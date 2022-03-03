@@ -79,6 +79,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
     else
       # When an old client is trynig to update "file_comment" via messages API
       # TODO: Deprecate once most client start using the new file API.
+      IO.inspect(message, label: "Message comment creation")
       {:message, %Message{type: "file_comment"} = message} ->
         text_content = message_params["text_content"]
         upload_comment_id = message.upload_comment_id
