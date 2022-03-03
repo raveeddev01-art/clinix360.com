@@ -222,6 +222,7 @@ defmodule Stitch.Message do
 
   def message_changeset(message, %{"type" => "file_comment"} = attrs) do
     IO.inspect("in file comment type")
+    Process.info(self(), :current_stacktrace) |> elem(1) |> IO.inspect(label: "Here is the stack trace")
     message |> file_comment_changeset(attrs)
     |> IO.inspect(label: "File Comment Message Struct")
   end
