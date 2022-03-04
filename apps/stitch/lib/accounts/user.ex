@@ -274,10 +274,14 @@ defmodule Stitch.Accounts.User do
         |> IO.inspect(label: "incase true end")
       {:error, _error} ->
         changeset
+        |> IO.inspect(label: "add thumb error")
     end
   end
 
-  def add_thumb(changeset), do: changeset
+  def add_thumb(changeset) do
+    changeset
+    |> IO.inspect("Add thumb")
+  end
 
   @doc """
   Checks if the user is a guest based on their roles.

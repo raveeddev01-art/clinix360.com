@@ -63,6 +63,7 @@ defmodule Stitch.Accounts.ProfileImage do
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
       {:ok, S3.avatar_path(avatar_name)}
+      |> IO.inspect(label: "thumb created")
     else
       error ->
         {:error, error}
