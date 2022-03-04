@@ -5,7 +5,6 @@ defmodule Stitch.Web.Api.V1.UserController do
   alias Stitch.Web.Endpoint
   alias Stitch.Web.EventsChannel
   alias StitchConnect.Web.GroupChannel
-  alias Stitch.Web.Api.V1.UserView
   alias Stitch.Analytics.User, as: UserAnalytics
 
   alias Stitch.{
@@ -286,8 +285,9 @@ defmodule Stitch.Web.Api.V1.UserController do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Accounts.update_profile_image(user_id, url) do
-      TeamChannel.broadcast_user_info(conn.assigns.team, user)
-      conn |> json(UserView.user_json(user))
+
+    TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      conn |> render("show.json", user: user)
     else
       false ->
         conn

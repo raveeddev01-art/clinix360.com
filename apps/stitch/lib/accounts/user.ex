@@ -259,7 +259,7 @@ defmodule Stitch.Accounts.User do
   end
   def profile_image_changeset(struct, params) do
     struct
-    |> cast(params, [:profile_image_url, :id])
+    |> cast(params, [:profile_image_url])
     |> IO.inspect(label: "after cast")
     |> add_thumb()
     |> IO.inspect(label: "after add thumb")
