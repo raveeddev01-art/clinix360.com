@@ -77,12 +77,14 @@ defmodule Stitch.Accounts.ProfileImage do
     |> open
     |> resize_to_limit("#{@thumb.width}x#{@thumb.height}")
     |> save
+    |> IO.inspect(label: "Generate Previews")
   end
 
   defp get_filename(url) do
     with %{path: path} <- URI.parse(url) do
       {:ok, Path.basename(path)}
     end
+    |> IO.inspect(label: "Get Filename")
   end
 
   @default_profile_images [

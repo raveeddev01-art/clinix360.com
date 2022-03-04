@@ -20,12 +20,13 @@ defmodule Stitch.AWS.S3 do
     |> ExAws.S3.Upload.stream_file()
     |> ExAws.S3.upload(@avatar.bucket, object_name, encryption: "AES256")
     |> ExAws.request()
-
+    |> IO.inspect(label: "Upload Avatar")
   end
 
   @spec download(binary, binary) :: {:ok, :done} | {:error, term}
   def download(filename, dest) do
     ExAws.S3.download_file(@s3.bucket, filename, dest) |> ExAws.request()
+    |> IO.inspect(label: "Download from S3")
   end
 
   @spec avatar_path(binary) :: binary
@@ -47,6 +48,7 @@ defmodule Stitch.AWS.S3 do
     with %{path: path} <- URI.parse(url) do
       {:ok, Path.relative_to(path, "/#{@s3.bucket}")}
     end
+    |> IO.inspect(label: "S3 Base path")
   end
 
   def presigned_url(object, opts \\ [expires_in: @expires_in])
