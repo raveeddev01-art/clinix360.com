@@ -60,8 +60,8 @@ defmodule Stitch.Accounts.ProfileImage do
          %Mogrify.Image{path: preview_path} <- generate_preview(dest),
          avatar_name = String.downcase(Rand.token(32)) <> extname,
          {:ok, %{status_code: 200}} <- S3.upload_avatar(preview_path, avatar_name),
-         :ok <- File.rm(dest),
-         :ok <- File.rm(preview_path) do
+         :ok <- File.rm(dest) |> IO.inspect(label: "Remove File"),
+         :ok <- File.rm(preview_path) |> IO.inspect(label: "Remove Preview File")do
       {:ok, S3.avatar_path(avatar_name)}
       |> IO.inspect(label: "thumb created")
     else
