@@ -20,6 +20,11 @@ config :stitch, Stitch.NewMailer,
   api_key: System.get_env("MAILGUN_KEY"),
   domain: System.get_env("MAILGUN_DOMAIN")
 
+config :stitch, :avatar, %{
+  bucket: System.get_env("S3_AVATAR_BUCKET_NAME"),
+  origin: System.get_env("AVATAR_ORIGIN")
+}
+
 config :stitch, Stitch.Exports, enabled: true
 
 config :stitch,
