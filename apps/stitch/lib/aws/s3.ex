@@ -33,6 +33,7 @@ defmodule Stitch.AWS.S3 do
   def avatar_path(object_name) do
     object_name
     |> IO.inspect(label: "avatar path")
+    IO.inspect(@avatar, "here is avatar")
     Path.join(@avatar.origin, object_name)
     |> IO.inspect(label: "Avatar Path")
   end
