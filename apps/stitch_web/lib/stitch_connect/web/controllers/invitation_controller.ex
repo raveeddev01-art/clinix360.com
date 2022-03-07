@@ -4,10 +4,9 @@ defmodule StitchConnect.Web.InvitationController do
   alias Stitch.Invitation
 
   def accept(conn, %{"token" => invite_token}) do
-    IO.inspect(label: "in invitation --->>> ")
     get_is_onboarded = fn invitation ->
       invitation.user.onboarded
-    end |> IO.inspect(label: "get_is_onboarded")
+    end
 
     do_accept(conn, invite_token, get_is_onboarded)
   end
@@ -28,7 +27,6 @@ defmodule StitchConnect.Web.InvitationController do
     with {:ok, invitation} <- Invitation.get_by_invite_token(invite_token) do
       case invitation.team_id == conn.private[:team_id] do
         true ->
-          IO.inspect(invitation, label: "get_is_onboarded 1")
           case get_is_onboarded.(invitation) do
             false ->
               render(conn, "accept.html", app_params: success_params(conn, invite_token))

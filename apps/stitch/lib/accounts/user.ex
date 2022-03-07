@@ -135,11 +135,11 @@ defmodule Stitch.Accounts.User do
 
       case user_update do
         {:ok, user} ->
-          IO.inspect(user, label: "here is user in user.ex")
-          IO.inspect(params["group_preferences"], label: "here is params group_preferences")
-
           group_preferences = params["group_preferences"]
-          if group_preferences, do: GroupUser.batch_preference_update(group_preferences, user) |> IO.inspect(label: "group update for user")
+
+          if group_preferences,
+            do: GroupUser.batch_preference_update(group_preferences, user)
+
           %{user: user}
 
         {:error, changeset} ->
@@ -257,32 +257,25 @@ defmodule Stitch.Accounts.User do
     |> unsafe_validate_unique([:username, :team_id], Repo)
     |> unique_constraint(:username, name: :users_username_team_id_index)
   end
+
   def profile_image_changeset(struct, params) do
     struct
     |> cast(params, [:profile_image_url])
-    |> IO.inspect(label: "after cast")
     |> add_thumb()
-    |> IO.inspect(label: "after add thumb")
-
   end
 
   def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
-    IO.inspect(label: "here is add thumb call")
     case ProfileImage.create_thumb(url) do
       {:ok, profile_image_thumb_url} ->
-        IO.inspect("incase true")
         put_change(changeset, :profile_image_thumb_url, profile_image_thumb_url)
-        |> IO.inspect(label: "incase true end")
+
       {:error, _error} ->
         changeset
-        |> IO.inspect(label: "add thumb error")
     end
-    |> IO.inspect(label: "here is result of case")
   end
 
   def add_thumb(changeset) do
     changeset
-    |> IO.inspect("Add thumb")
   end
 
   @doc """

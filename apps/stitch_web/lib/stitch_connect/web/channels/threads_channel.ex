@@ -46,7 +46,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
   end
 
   defp render_messages(user, socket, params) do
-    opts = [limit: params["limit"]] |> IO.inspect(label: "messages limit")
+    opts = [limit: params["limit"]]
     authenticated_urls = Map.get(params, "authenticated_urls", false)
 
     messages =
@@ -76,7 +76,6 @@ defmodule StitchConnect.Web.ThreadsChannel do
         %{messages: messages_json}
       end
 
-      # IO.inspect(json, label: "here is json")
     {:ok, json, assign(socket, :group, %{})}
   end
 

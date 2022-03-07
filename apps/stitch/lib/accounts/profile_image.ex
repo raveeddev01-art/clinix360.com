@@ -60,11 +60,9 @@ defmodule Stitch.Accounts.ProfileImage do
          %Mogrify.Image{path: preview_path} <- generate_preview(dest),
          avatar_name = String.downcase(Rand.token(32)) <> extname,
          {:ok, %{status_code: 200}} <- S3.upload_avatar(preview_path, avatar_name),
-         :ok <- File.rm(dest) |> IO.inspect(label: "Remove File"),
-         :ok <- File.rm(preview_path) |> IO.inspect(label: "Remove Preview File")do
-      IO.inspect("this is to create avatar path")
+         :ok <- File.rm(dest),
+         :ok <- File.rm(preview_path) do
       {:ok, S3.avatar_path(avatar_name)}
-      |> IO.inspect(label: "thumb created")
     else
       error ->
         {:error, error}
@@ -79,14 +77,12 @@ defmodule Stitch.Accounts.ProfileImage do
     |> open
     |> resize_to_limit("#{@thumb.width}x#{@thumb.height}")
     |> save
-    |> IO.inspect(label: "Generate Previews")
   end
 
   defp get_filename(url) do
     with %{path: path} <- URI.parse(url) do
       {:ok, Path.basename(path)}
     end
-    |> IO.inspect(label: "Get Filename")
   end
 
   @default_profile_images [
@@ -139,7 +135,7 @@ defmodule Stitch.Accounts.ProfileImage do
     first_initial = String.at(first_name, 0) |> String.upcase()
     last_initial = String.at(last_name, 0) |> String.upcase()
     initials = "#{first_initial}#{last_initial}"
-    image_path = System.tmp_dir!() |> Path.join("#{initials}.png") |> IO.inspect(label: "image_initials --->>> ")
+    image_path = System.tmp_dir!() |> Path.join("#{initials}.png")
 
     System.cmd("convert", [
       # sample up
@@ -171,7 +167,6 @@ defmodule Stitch.Accounts.ProfileImage do
       "#{resolution}",
       image_path
     ])
-    |> IO.inspect(label: "image_initials 2 --->>> ")
 
     {:ok, image_path}
   end
