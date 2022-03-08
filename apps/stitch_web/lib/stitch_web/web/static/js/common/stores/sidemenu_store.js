@@ -5,6 +5,7 @@
  */
 
 import { observable, computed, action } from "mobx";
+import _ from 'lodash';
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 import browserDetails from "lib/browser_details";
@@ -282,20 +283,16 @@ class SidemenuStore {
   }
 
   showNotificationCardForNewComment(message) {
-    const comment = message.thread_messages[message.thread_messages.length - 1]
-    const { groupsStore } = this.rootStore;
+    const comment = this.getLatestComment(message);
+    const notifyUserIDs = this.getNotifyUserIDs(message, comment);
 
-    // SET REPLY TYPE
-    comment.is_reply = true;
+    if (notifyUserIDs.includes(currentUser.id)) {
+      const { groupsStore } = this.rootStore;
+      const group = groupsStore.getGroupById(comment.group_id);
 
-    // GET MSG TYPE
-    const group = groupsStore.getGroupById(comment.group_id);
-
-    if (currentUser.id in this.commentNotificationAllowedFor(message, comment)) {
-      // SENDING THE MESSAGE
       this.showNotificationCard(
         this.getNotificationTitle(group),
-        this.getNotificationText(comment, group, false),
+        this.getNotificationText(comment, group, false, true),
         `message-${comment.id}`,
         this.showThreadComments(message),
       );
@@ -348,14 +345,14 @@ class SidemenuStore {
     return `${this.rootStore.groupsStore.getGroupName(group)}`;
   }
 
-  getNotificationText(message, group, isMention) {
+  getNotificationText(message, group, isMention, isReply = false) {
     const senderName = `${message.user.first_name} ${message.user.last_name}`;
-    const messageBody = this.getMessageBody(message, group, isMention);
+    const messageBody = this.getMessageBody(message, group, isMention, isReply);
     return `${senderName} ${messageBody}`;
   }
 
-  getMessageBody(message, group, isMention) {
-    if (this.isReply(message)) {
+  getMessageBody(message, group, isMention, isReply) {
+    if (isReply) {
       return 'also replied to message in ' + this.rootStore.groupsStore.getGroupName(group) + '.';
     }
     
@@ -388,18 +385,17 @@ class SidemenuStore {
     return window.Notification && Notification.permission !== "granted";
   }
 
-  commentNotificationAllowedFor(message, comment) {
-    const userIDs = [];
+  getLatestComment(message) {
+    return _.orderBy(message.thread_messages, ['inserted_at'], ['asc']).pop();
+  }
 
-    if (!this.isOwnMessage(comment) || !this.isSystemMessage(comment)) {
-      message.thread_messages.forEach(tm => {
-        if (tm && userIDs.indexOf(tm.user_id) === -1) {
-          userIDs.push(tm.user_id);
-        }
-      });
+  getNotifyUserIDs(message, comment) {
+    let user_ids = [];
+    if (!this.isOwnMessage(comment)) {
+      user_ids = _.uniq(message.thread_messages.map(tm => tm.user_id));
+      user_ids.push(message.user_id);
     }
-
-    return userIDs
+    return user_ids.filter(id => id !== comment.user_id);
   }
 
   isOwnMessage(message) {
@@ -420,10 +416,6 @@ class SidemenuStore {
 
   isUpload(message) {
     return message.type === "upload";
-  }
-
-  isReply(message) {
-    return message.is_reply ? true : false
   }
 
   goToMessageRoom(message) {

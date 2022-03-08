@@ -5,7 +5,6 @@ import { animateScroll, scroller } from "react-scroll";
 import flow from "lodash/flow";
 import groupBy from "lodash/fp/groupBy";
 import mapValues from "lodash/fp/mapValues";
-import sortBy from "lodash/fp/sortBy";
 import orderBy from "lodash/fp/orderBy";
 
 import isFunction from "lodash/fp/isFunction";

@@ -28,14 +28,10 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
     authenticated_urls = get_authenticated_urls(message_params)
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
     with {:message, %Message{} = message_parent} <- {:message, MessageQueries.get_by_id(message_id)},
-        #  {:authorized?, true} <-
-          #  {:authorized?, GroupAuthorization.can_message?(message, current_user.id)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(message_parent, current_user, message_params_with_client, presence) do
-      message = %{message | user: current_user}
-      # create_optional_upload_comment(message, message, current_user, presence, message_params)
       message = MessageQueries.get_by_id(message.id)
-      message_comment_creation_events(message_parent)
+      message_comment_creation_events(message_parent, notify_user_ids)
       conn
       |> put_status(:created)
       |> render("show.json", message_comment: message)
@@ -57,10 +53,9 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
 
   ##################
 
-  def message_comment_creation_events(message) do
+  def message_comment_creation_events(message, notify_user_ids) do
     message = MessageQueries.get_by_id(message.id)
-    GroupChannel.broadcast_message_comment_added(message)
-    GroupChannel.broadcast_message_edited(message)
+    MessageEventsService.message_comment_creation_events(message, notify_user_ids)
   end
 
   def update(conn, %{"id" => message_id, "message_comment" => %{"text_content" => text_content}}) do
