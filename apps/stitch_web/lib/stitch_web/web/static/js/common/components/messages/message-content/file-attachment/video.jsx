@@ -82,7 +82,6 @@ class VideoFileAttachment extends Component {
         {filename &&
           useActions && (
             <div className="attachment-title">
-              {/* <span>uploaded this image: </span> */}
               {isConversationMessage ? (
                 <a target="_blank" href={url} onClick={onFileDownload}>
                   <strong>{filename}</strong>
@@ -95,47 +94,37 @@ class VideoFileAttachment extends Component {
             </div>
           )}
         <div className={holderCN} style={holderStyle}>
-          {placeholderStyle ? (
-            <div
-              className="attachment-preview-placeholder"
-              style={placeholderStyle}
-              onClick={this.onToggleModal}
-            >
-              {useActions &&
-                message && (
-                  <AttachmentActions
-                    url={url}
-                    file_id={file_id}
-                    user_id={user_id}
-                    encoded_id={encoded_id}
-                    public_url={public_url}
-                    message={message}
-                    commentCount={commentCount}
-                    isActionsVisible={isConversationMessage ? false : undefined}
-                    isOriginalOpenVisible={
-                      isConversationMessage ? false : undefined
-                    }
-                    onCommentsClick={onCommentsClick}
-                    onFileDownload={onFileDownload}
-                  />
-                )}
-            </div>
-          ) : (
-            <video
-              controls
-              width="320" height="240"
-              src={this.props.url} />
+        { message && (
+            <AttachmentActions
+              url={url}
+              file_id={file_id}
+              user_id={user_id}
+              encoded_id={encoded_id}
+              public_url={public_url}
+              message={message}
+              commentCount={commentCount}
+              isActionsVisible={false}
+              isOriginalOpenVisible={undefined}
+              onCommentsClick={onCommentsClick}
+              onFileDownload={onFileDownload}
+              tooltipPlacement="top"
+            />
           )}
+          <video
+            controls
+            width="320" height="240"
+            src={this.props.url} />
+        
         </div>
 
-        {this.isAllowedForPreview() && (
+        {/* {this.isAllowedForPreview() && (
           <FileViewer
             {...this.props}
             type="Image"
             show={showModal}
             onHideModal={this.onToggleModal}
           />
-        )}
+        )} */}
       </div>
     );
   }
