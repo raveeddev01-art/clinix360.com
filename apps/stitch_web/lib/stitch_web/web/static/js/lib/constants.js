@@ -254,7 +254,8 @@ export const CALL_AUTO_END_AFTER_MS = 30 * 1000;
 
 export const FILE_VIEW_SIZE_LIMIT = {
   "PDF Document": 50 * 1024 * 1024, // 50MB
-  IMAGE: 50 * 1024 * 1024 // 50MB
+  IMAGE: 50 * 1024 * 1024, // 50MB
+  VIDEO: 50 * 1024 * 1024 // 50MB
 };
 
 export const GOOGLE_MEETS_BASE_URL = "https://meet.google.com/lookup/";
