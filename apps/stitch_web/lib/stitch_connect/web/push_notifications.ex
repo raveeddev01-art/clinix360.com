@@ -43,9 +43,9 @@ defmodule StitchConnect.Web.PushNotifications do
   @decorate transaction(:background_job)
   def notify_users(%Group{} = group, %Message{} = message, user_ids) do
     message = Repo.preload(message, :user)
-    |> Io.inspect(label: "user preloaded")
+    |> IO.inspect(label: "user preloaded")
     group = Repo.preload(group, :users)
-    |> Io.inspect(label: "group preloaded")
+    |> IO.inspect(label: "group preloaded")
 
     users =
       User
