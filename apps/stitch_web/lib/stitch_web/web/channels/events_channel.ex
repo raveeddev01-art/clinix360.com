@@ -83,6 +83,21 @@ defmodule Stitch.Web.EventsChannel do
     end
   end
 
+  def broadcast_group_message_comment_added(group, message, notify_user_ids \\ []) do
+    notify_user_ids_set = MapSet.new(notify_user_ids)
+
+    for group_user <- GroupUser.group_users_for(group.id) do
+      json =
+        MessageView.message_json(message, true)
+        |> Map.put(:notify, MapSet.member?(notify_user_ids_set, group_user.user_id))
+        |> Map.put(:unread_messages_count, group_user.unread_messages_count)
+        |> Map.put(:mentions_count, group_user.mentions_count)
+        |> Map.put(:last_read_at, group_user.last_read_at)
+
+      @endpoint.broadcast("events:#{group_user.user_id}", "message_comment_added", json)
+    end
+  end
+
   def broadcast_group_msg_deleted(group, message) do
     for group_user <- GroupUser.group_users_for(group.id) do
       json = %{

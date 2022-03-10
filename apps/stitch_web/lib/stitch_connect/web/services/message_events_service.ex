@@ -29,9 +29,15 @@ defmodule StitchConnect.Web.MessageEventsService do
 
   def message_comment_creation_events(message, notify_user_ids) do
     NotificationLogger.start(message, notify_user_ids.mobile)
-    GroupChannel.broadcast_message_comment_added(message)
-    GroupChannel.broadcast_file_comment_edited(message)
-    PushNotifications.notify_users(message.group, message, notify_user_ids.mobile)
+
+    Stitch.Task.start(fn ->
+      LinkPreviewGenerator.queue(message)
+      GroupChannel.broadcast_message_comment_added(message)
+      EventsChannel.broadcast_group_message_comment_added(message.group, message, notify_user_ids.desktop)
+      PushNotifications.notify_users(message.group, message, notify_user_ids.mobile)
+      PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+      EmailNotification.create(message.id, notify_user_ids.email)
+    end)
   end
 
   def message_edit_events(message) do

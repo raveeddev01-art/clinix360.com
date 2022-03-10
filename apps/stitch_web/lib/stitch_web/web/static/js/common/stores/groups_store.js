@@ -289,6 +289,7 @@ class GroupsStore {
     loadGroups = () => {
         return get("/api/v1/groups?fetchUsers=false").then(response => {
             const users = this.rootStore.usersStore.users.toJS();
+            console.log(response.data);
             const groups = response.data.map(group => ({
                 ...group,
                 users: group.user_ids.map(id => users.find(u => u.id === id))

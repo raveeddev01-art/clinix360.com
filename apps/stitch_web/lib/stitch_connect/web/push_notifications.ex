@@ -42,6 +42,7 @@ defmodule StitchConnect.Web.PushNotifications do
 
   @decorate transaction(:background_job)
   def notify_users(%Group{} = group, %Message{} = message, user_ids) do
+    Logger.info("Notification sendings")
     message = Repo.preload(message, :user)
     group = Repo.preload(group, :users)
 
@@ -50,6 +51,7 @@ defmodule StitchConnect.Web.PushNotifications do
       |> where([u], u.id in ^user_ids)
       |> where(disabled: false)
       |> Repo.all()
+      Logger.info("user count #{Enum.count(users)}")
 
     Enum.each(users, fn user ->
       Logger.info(

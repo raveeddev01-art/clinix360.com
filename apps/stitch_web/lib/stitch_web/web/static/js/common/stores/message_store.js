@@ -1217,9 +1217,7 @@ class MessageStore extends BaseMessageStore {
         if (message.id === this.message.id) {
             this.message = message;
         }
-        this.timeoutManager.setTimeout(() => {
-            this.markAsRead();
-        }, 100);
+        this.markAsRead();
     };
 
 }
