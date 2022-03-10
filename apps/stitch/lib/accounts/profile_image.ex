@@ -241,6 +241,7 @@ defmodule Stitch.Accounts.ProfileImage do
 
     cond do
       needs_avatar_regen(changeset) ->
+        IO.inspect("Regen Required")
         add_default_profile_image(changeset)
 
       true ->
@@ -254,8 +255,9 @@ defmodule Stitch.Accounts.ProfileImage do
       last_name: get_last_name(changeset)
     }
 
-    with {:ok, avatar} <- pick_default_random(user_or_patient),
-         {:ok, avatar_thumb} <- create_thumb(avatar) do
+    with {:ok, avatar} <- pick_default_random(user_or_patient) |> IO.inspect(label: "pick default result"),
+         {:ok, avatar_thumb} <- create_thumb(avatar) |> IO.inspect(label: "thumb created") do
+      IO.inspect("With clause executed")
       changeset
       |> put_change(:profile_image_url, avatar)
       |> put_change(:profile_image_thumb_url, avatar_thumb)

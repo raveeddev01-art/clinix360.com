@@ -8,6 +8,7 @@ defmodule Stitch.AWS.S3 do
   @spec upload(binary) :: {:ok, map} | {:error, term}
   def upload(path) do
     object_name = Path.basename(path)
+
     path
     |> ExAws.S3.Upload.stream_file()
     |> ExAws.S3.upload(@s3.bucket, object_name, encryption: "AES256")
@@ -33,18 +34,25 @@ defmodule Stitch.AWS.S3 do
   end
 
   def fullpath(file \\ "", dir \\ "") do
-    object = Path.join(dir, Path.basename(file))
+    object =
+      case dir do
+        "" -> Path.basename(file)
+        dir -> Path.join(dir, Path.basename(file))
+      end
+      |> IO.inspect(label: "Object path")
+
     # if object == "" do
     # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
     # else
-      "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
+    "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
+    |> IO.inspect(label: "from signature")
     # end
   end
 
   @spec basepath(binary) :: {:ok, binary}
   def basepath(url) do
     with %{path: path} <- URI.parse(url) do
-      {:ok, Path.relative_to(path, "/#{@s3.bucket}") |> String.replace("/", "") }
+      {:ok, Path.relative_to(path, "/#{@s3.bucket}")}
     end
   end
 
