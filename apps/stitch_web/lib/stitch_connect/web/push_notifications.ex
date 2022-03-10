@@ -51,7 +51,8 @@ defmodule StitchConnect.Web.PushNotifications do
       |> where([u], u.id in ^user_ids)
       |> where(disabled: false)
       |> Repo.all()
-      Logger.info("user count #{Enum.count(users)}")
+
+    Logger.info("user count #{Enum.count(users)}")
 
     Enum.each(users, fn user ->
       Logger.info(
@@ -64,7 +65,7 @@ defmodule StitchConnect.Web.PushNotifications do
     {:ok, "Notifications sent out successfully."}
   end
 
-  defp notify_user(group, message, user) do
+  defp notify_user(group, message, user, thread_notification \\ false) do
     with %GroupUser{} = group_user <- Repo.get_by(GroupUser, user_id: user.id, group_id: group.id) do
       %{"ios" => ios_devices, "android" => android_devices} =
         user.id
@@ -77,7 +78,7 @@ defmodule StitchConnect.Web.PushNotifications do
       room_notification_count = Mobile.room_notification_count(user, group_user)
 
       # Notify the user on any iOS devices.
-      notify_user_ios_devices(user, group, message, badge_value, ios_devices)
+      notify_user_ios_devices(user, group, message, badge_value, ios_devices, thread_notification)
 
       # Notify the user on any Android devices.
       notify_user_android_devices(
@@ -86,16 +87,32 @@ defmodule StitchConnect.Web.PushNotifications do
         message,
         badge_value,
         room_notification_count,
-        android_devices
+        android_devices,
+        thread_notification
       )
     else
       _ -> nil
     end
   end
 
-  defp notify_user_ios_devices(_user, _group, _message, _badge_value, []), do: nil
+  defp notify_user_ios_devices(
+         _user,
+         _group,
+         _message,
+         _badge_value,
+         [],
+         _thread_notification
+       ),
+       do: nil
 
-  defp notify_user_ios_devices(user, group, message, badge_value, ios_devices) do
+  defp notify_user_ios_devices(
+         user,
+         group,
+         message,
+         badge_value,
+         ios_devices,
+         thread_notification \\ false
+       ) do
     import APNS.Notification
 
     Logger.info("[notifications] - #{user.id} - #{user.email}: Going to notify iOS devices.")
@@ -103,7 +120,7 @@ defmodule StitchConnect.Web.PushNotifications do
     ios_devices
     |> Enum.map(fn %{token: token} = device ->
       Stitch.Mobile.NotificationLogger.send(message, user, device, "ios")
-      message_body = notification_text_body(group, message, user)
+      message_body = notification_text_body(group, message, user, thread_notification)
 
       message_body
       |> new(token, @apns_topic)
@@ -129,7 +146,8 @@ defmodule StitchConnect.Web.PushNotifications do
          _message,
          _badge_value,
          _room_notification_count,
-         []
+         [],
+         _thread_notification
        ),
        do: nil
 
@@ -139,13 +157,14 @@ defmodule StitchConnect.Web.PushNotifications do
          message,
          badge_value,
          room_notification_count,
-         android_devices
+         android_devices,
+         thread_notification \\ false
        ) do
     import FCM.Notification
 
     Logger.info("[notifications] - #{user.id} - #{user.email}: Going to notify Android devices.")
 
-    message_body = notification_text_body(group, message, user)
+    message_body = notification_text_body(group, message, user, thread_notification)
     message_title = notification_title(group, message, user)
 
     content = %{
@@ -181,18 +200,33 @@ defmodule StitchConnect.Web.PushNotifications do
   # Notification Text Bodies
 
   # File Upload - Room or DM
-  defp notification_text_body(_group, %{user: uploader, type: "upload"}, _receiver) do
+  defp notification_text_body(
+         _group,
+         %{user: uploader, type: "upload"},
+         _receiver,
+         thread_notification
+       ) do
     name_for_notification(uploader) <> " uploaded a file."
   end
 
   # Message - Single DM
-  defp notification_text_body(%{name: group_name}, %{user: author}, _receiver)
+  defp notification_text_body(
+         %{name: group_name},
+         %{user: author},
+         _receiver,
+         thread_notification
+       )
        when group_name == @single_dm_name do
     name_for_notification(author) <> " sent you a direct message."
   end
 
   # Message - Multi DM
-  defp notification_text_body(%{name: group_name}, %{user: author} = message, receiver)
+  defp notification_text_body(
+         %{name: group_name},
+         %{user: author} = message,
+         receiver,
+         thread_notification
+       )
        when group_name == @multi_dm_name do
     if user_was_mentioned(receiver, message) do
       name_for_notification(author) <> " mentioned you in a direct message."
@@ -202,12 +236,18 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   # Message - Room (non-DM)
-  defp notification_text_body(_group, %{user: author} = message, receiver) do
+  defp notification_text_body(_group, %{user: author} = message, receiver, thread_notification) do
     if user_was_mentioned(receiver, message) do
       name_for_notification(author) <> " mentioned you in a room message."
     else
       name_for_notification(author) <> " sent a new room message."
     end
+  end
+
+  # Message - Comment
+  defp notification_text_body(group, message, receiver, thread_notification)
+       when thread_notification == true do
+    name_for_notification(message.user) <> "also replied to message in " <> group.name
   end
 
   # Notification Titles

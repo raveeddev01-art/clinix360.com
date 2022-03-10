@@ -36,7 +36,6 @@ defmodule StitchConnect.Web.MessageEventsService do
       EventsChannel.broadcast_group_message_comment_added(message.group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(message.group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-      EmailNotification.create(message.id, notify_user_ids.email)
     end)
   end
 

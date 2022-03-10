@@ -71,7 +71,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       request_id: message.request_id,
       highlighted_text_content: message.highlighted_text_content,
       upload_id: message.upload_id,
-      comment_notify_ids: Map.get(message, :comment_notify_ids, []),
+      comment_notify_ids: Map.get(message, :comment_notify_ids, default_comment_notify_ids),
       thread_messages: (if Ecto.assoc_loaded?(message.thread_messages) == true, do: Enum.map(message.thread_messages, &thread_message_json(&1, authenticated_url, @endpoint.files_struct_url())), else: []),
       thread_messages_count: (if Ecto.assoc_loaded?(message.thread_messages) == true, do: Enum.count(message.thread_messages), else: 0)
     }
@@ -127,6 +127,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def pinned_by_info(%{pinned_by_id: nil}), do: nil
 
   def pinned_by_info(%{pinned_by: %Ecto.Association.NotLoaded{}}), do: nil
+
+  def default_comment_notify_ids(), do: %{desktop: [], mobile: []}
 
   def pinned_by_info(%{pinned_by: pinned_by}) do
     %{id: pinned_by.id, first_name: pinned_by.first_name, last_name: pinned_by.last_name}
