@@ -43,9 +43,7 @@ defmodule StitchConnect.Web.PushNotifications do
   @decorate transaction(:background_job)
   def notify_users(%Group{} = group, %Message{} = message, user_ids) do
     message = Repo.preload(message, :user)
-    |> IO.inspect(label: "user preloaded")
     group = Repo.preload(group, :users)
-    |> IO.inspect(label: "group preloaded")
 
     users =
       User
@@ -59,7 +57,6 @@ defmodule StitchConnect.Web.PushNotifications do
       )
 
       notify_user(group, message, user)
-      |> IO.inspect(label: "notify user")
     end)
 
     {:ok, "Notifications sent out successfully."}
@@ -146,7 +143,6 @@ defmodule StitchConnect.Web.PushNotifications do
 
     Logger.info("[notifications] - #{user.id} - #{user.email}: Going to notify Android devices.")
 
-    IO.inspect(message, label: "message here")
     message_body = notification_text_body(group, message, user)
     message_title = notification_title(group, message, user)
 
@@ -203,6 +199,19 @@ defmodule StitchConnect.Web.PushNotifications do
     end
   end
 
+  # Message - Comment
+  defp notification_text_body(
+         group,
+         %{comment_notify_ids: _notify_user_ids, comment: comment},
+         receiver
+       ) do
+    if user_was_mentioned(receiver, comment) do
+      name_for_notification(comment.user) <> " mentioned you in a message reply."
+    else
+      name_for_notification(comment.user) <> " also replied to a message in " <> group.name
+    end
+  end
+
   # Message - Room (non-DM)
   defp notification_text_body(_group, %{user: author} = message, receiver) do
     if user_was_mentioned(receiver, message) do
@@ -210,12 +219,6 @@ defmodule StitchConnect.Web.PushNotifications do
     else
       name_for_notification(author) <> " sent a new room message."
     end
-  end
-
-  # Message - Comment
-  defp notification_text_body(group, %{thread: true} = message, receiver) do
-    IO.inspect("called here")
-    name_for_notification(message.user) <> " also replied to message in " <> group.name
   end
 
   # Notification Titles
