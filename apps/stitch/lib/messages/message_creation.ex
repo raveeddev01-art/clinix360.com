@@ -171,10 +171,17 @@ defmodule Stitch.Message.MessageCreation do
       ) do
     thread_reply_notify_ids =
       Map.get(parent_message, :thread_messages, [])
-      |> Enum.map(fn tm -> tm.user_id end)
-      |> insert(parent_message.user_id)
-      |> Enum.uniq()
-      |> List.delete(message.user.id)
+      |> case do
+        [] ->
+          []
+
+        thread_messages ->
+          thread_messages
+          |> Enum.map(fn tm -> tm.user_id end)
+          |> insert(parent_message.user_id)
+          |> Enum.uniq()
+          |> List.delete(message.user.id)
+      end
 
     %{
       desktop: Enum.uniq(notify_user_ids.desktop ++ thread_reply_notify_ids),
@@ -185,5 +192,4 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   defp insert(list, item), do: list ++ [item]
-
 end
