@@ -143,6 +143,7 @@ defmodule StitchConnect.Web.PushNotifications do
 
     Logger.info("[notifications] - #{user.id} - #{user.email}: Going to notify Android devices.")
 
+    IO.inspect(message, label: "message here")
     message_body = notification_text_body(group, message, user)
     message_title = notification_title(group, message, user)
 
@@ -209,7 +210,7 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   # Message - Comment
-  defp notification_text_body(group, %{"thread" => true} = message, receiver) do
+  defp notification_text_body(group, %{thread: true} = message, receiver) do
     IO.inspect("called here")
     name_for_notification(message.user) <> " also replied to message in " <> group.name
   end
