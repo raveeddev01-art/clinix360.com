@@ -92,13 +92,6 @@ defmodule Stitch.Accounts.ProfileImage do
     }
   ]
 
-  @default_profile_images [
-    %{
-      image_url: S3.fullpath("default-avatar.png"),
-      thumb_url: S3.fullpath("default-avatar-thumb.png")
-    }
-  ]
-
   @doc """
   Given a user returns an S3 url pointing to a default avatar
   url that can be set for the user.
@@ -254,6 +247,7 @@ defmodule Stitch.Accounts.ProfileImage do
       first_name: get_first_name(changeset),
       last_name: get_last_name(changeset)
     }
+    |> IO.inspect(label: "username")
 
     with {:ok, avatar} <- pick_default_random(user_or_patient) |> IO.inspect(label: "pick default result"),
          {:ok, avatar_thumb} <- create_thumb(avatar) |> IO.inspect(label: "thumb created") do
