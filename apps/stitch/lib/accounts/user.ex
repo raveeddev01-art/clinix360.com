@@ -272,6 +272,7 @@ defmodule Stitch.Accounts.User do
       {:error, _error} ->
         changeset
     end
+    |> IO.inspect(label: "thumb generated")
   end
 
   def add_thumb(changeset) do

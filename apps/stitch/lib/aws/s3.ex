@@ -37,7 +37,7 @@ defmodule Stitch.AWS.S3 do
     # if object == "" do
     # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
     # else
-      "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
+      "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}#{object}"
     # end
   end
 
