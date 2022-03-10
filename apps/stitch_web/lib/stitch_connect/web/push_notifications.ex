@@ -43,7 +43,9 @@ defmodule StitchConnect.Web.PushNotifications do
   @decorate transaction(:background_job)
   def notify_users(%Group{} = group, %Message{} = message, user_ids) do
     message = Repo.preload(message, :user)
+    |> Io.inspect(label: "user preloaded")
     group = Repo.preload(group, :users)
+    |> Io.inspect(label: "group preloaded")
 
     users =
       User
@@ -57,6 +59,7 @@ defmodule StitchConnect.Web.PushNotifications do
       )
 
       notify_user(group, message, user)
+      |> IO.inspect(label: "notify user")
     end)
 
     {:ok, "Notifications sent out successfully."}
@@ -174,7 +177,7 @@ defmodule StitchConnect.Web.PushNotifications do
     message
     |> Repo.preload(:user)
     |> StitchConnect.Web.Api.V1.MessageView.message_json()
-    |> Map.drop([:text_content, :fields])
+    |> Map.drop([:text_content, :fields, :thread_messages])
   end
 
   # Notification Text Bodies
