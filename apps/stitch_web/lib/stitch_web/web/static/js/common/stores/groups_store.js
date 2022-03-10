@@ -289,8 +289,7 @@ class GroupsStore {
     loadGroups = () => {
         return get("/api/v1/groups?fetchUsers=false").then(response => {
             const users = this.rootStore.usersStore.users.toJS();
-            const response_data = response.data.filter(group => group.slug === '!__in__threads__!');
-            console.log(response_data);
+            const response_data = response.data.filter(group => group.slug !== '!__in__threads__!');
             const groups = response_data.map(group => ({
                 ...group,
                 users: group.user_ids.map(id => users.find(u => u.id === id))
