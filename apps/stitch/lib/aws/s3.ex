@@ -37,14 +37,14 @@ defmodule Stitch.AWS.S3 do
     # if object == "" do
     # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
     # else
-      "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}#{object}"
+      "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
     # end
   end
 
   @spec basepath(binary) :: {:ok, binary}
   def basepath(url) do
     with %{path: path} <- URI.parse(url) do
-      {:ok, Path.relative_to(path, "/#{@s3.bucket}")}
+      {:ok, Path.relative_to(path, "/#{@s3.bucket}") |> String.replace("/", "") }
     end
   end
 
