@@ -283,11 +283,10 @@ class SidemenuStore {
   }
 
   showNotificationCardForNewComment(message) {
-    const comment = this.getLatestComment(message);
-    const notifyUserIDs = this.getNotifyUserIDs(message, comment);
-
-    if (notifyUserIDs.includes(currentUser.id)) {
+    if (this.commentNotificationAllowed(message)) {
       const { groupsStore } = this.rootStore;
+      
+      const comment = this.getLatestComment(message);
       const group = groupsStore.getGroupById(comment.group_id);
 
       this.showNotificationCard(
@@ -389,13 +388,8 @@ class SidemenuStore {
     return _.orderBy(message.thread_messages, ['inserted_at'], ['asc']).pop();
   }
 
-  getNotifyUserIDs(message, comment) {
-    let user_ids = [];
-    if (!this.isOwnMessage(comment)) {
-      user_ids = _.uniq(message.thread_messages.map(tm => tm.user_id));
-      user_ids.push(message.user_id);
-    }
-    return user_ids.filter(id => id !== comment.user_id);
+  commentNotificationAllowed(message) {
+    return message.comment_notify_ids.desktop.includes(currentUser.id);
   }
 
   isOwnMessage(message) {

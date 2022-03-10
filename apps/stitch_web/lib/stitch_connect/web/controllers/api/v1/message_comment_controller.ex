@@ -20,18 +20,34 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
-  def create(conn, %{"message_comment" => %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}, "id" => message_id}) do
+  def create(conn, %{
+        "message_comment" => %{
+          "text_content" => text_content,
+          "thread" => thread,
+          "request_id" => request_id
+        },
+        "id" => message_id
+      }) do
     thread = if thread == "true", do: true, else: thread
-    message_params = %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}
+
+    message_params = %{
+      "text_content" => text_content,
+      "thread" => thread,
+      "request_id" => request_id
+    }
+
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
-    with {:message, %Message{} = message_parent} <- {:message, MessageQueries.get_by_id(message_id)},
+
+    with {:message, %Message{} = message_parent} <-
+           {:message, MessageQueries.get_by_id(message_id)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(message_parent, current_user, message_params_with_client, presence) do
       message = MessageQueries.get_by_id(message.id)
       message_comment_creation_events(message_parent, notify_user_ids)
+
       conn
       |> put_status(:created)
       |> render("show.json", message_comment: message)
@@ -50,12 +66,12 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   def get_authenticated_urls(%{"authenticated_urls" => "true"}), do: true
   def get_authenticated_urls(_params), do: false
 
-
   ##################
 
   def message_comment_creation_events(message, notify_user_ids) do
-    message = MessageQueries.get_by_id(message.id)
-    MessageEventsService.message_comment_creation_events(message, notify_user_ids)
+    MessageQueries.get_by_id(message.id)
+    |> Map.merge(%{comment_notify_ids: notify_user_ids})
+    |> MessageEventsService.message_comment_creation_events(notify_user_ids)
   end
 
   def update(conn, %{"id" => message_id, "message_comment" => %{"text_content" => text_content}}) do
@@ -115,9 +131,9 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
            {:authorized?, MessageAuthorization.can_delete?(message, current_user, group)},
          {:deleted, {:ok, %{message: message}}} <-
            {:deleted, Message.delete(message, current_user)} do
-          parent_message = MessageQueries.get_by_id(message.parent_message_id)
-          GroupChannel.broadcast_message_comment_deleted(parent_message)
-          GroupChannel.broadcast_message_edited(parent_message)
+      parent_message = MessageQueries.get_by_id(message.parent_message_id)
+      GroupChannel.broadcast_message_comment_deleted(parent_message)
+      GroupChannel.broadcast_message_edited(parent_message)
       send_resp(conn, :no_content, "")
     else
       {:authorized?, false} ->

@@ -30,7 +30,6 @@ defmodule StitchConnect.Web.MessageEventsService do
   def message_comment_creation_events(message, notify_user_ids) do
     NotificationLogger.start(message, notify_user_ids.mobile)
     GroupChannel.broadcast_message_comment_added(message)
-    GroupChannel.broadcast_message_comment_edited(message)
     PushNotifications.notify_users(message.group, message, notify_user_ids.mobile)
   end
 

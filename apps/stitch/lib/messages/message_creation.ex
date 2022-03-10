@@ -69,7 +69,7 @@ defmodule Stitch.Message.MessageCreation do
     do_create(message, attrs, presence)
   end
 
-# will use when thread key sent from FE
+  # will use when thread key sent from FE
   def create(message, user, %{"text_content" => _, "thread" => true} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{parent_message: message, user: user, group: message.group}
@@ -79,7 +79,6 @@ defmodule Stitch.Message.MessageCreation do
   def create(group, user, %{"text_content" => _} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{group: group, user: user}
-    # message = %Message{messages: message, user: user, group: message.group}
     do_create(message, attrs, presence)
   end
 
@@ -88,42 +87,48 @@ defmodule Stitch.Message.MessageCreation do
     {:error, :message, changeset, nil}
   end
 
-
   def do_create(message, attrs, presence, opts \\ %{}) do
     user = message.user
     group = Repo.preload(message.group, :users)
     users = group.users
     text_content = attrs["text_content"]
+
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
+
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)
+      |> thread_notify_user_ids(message)
+
     {read_status, recipients} = ReadStatus.get_read_status(:message, users, user)
+
     attrs =
       attrs
       |> Map.merge(%{
         "mentioned_user_ids" => mentioned_user_ids,
         "read_status" => read_status
       })
+
     mention_users = Message.mention_users(group, mentioned_user_ids, recipients)
     increment_unread_counter = ReadStatus.increment_unread_counter(:message, group.id, recipients)
+
     last =
-    if opts[:silent] == true do
-      Multi.new()
-      |> Multi.insert(:message, Message.message_changeset(message, attrs))
-      |> Repo.transaction()
-      |> silent_post_creation()
-    else
-      if attrs["type"] != "file_comment" do
+      if opts[:silent] == true do
         Multi.new()
         |> Multi.insert(:message, Message.message_changeset(message, attrs))
-        |> Multi.update_all(:mention_users, mention_users, [])
-        |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
-        |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
         |> Repo.transaction()
-        |> post_creation(notify_user_ids)
+        |> silent_post_creation()
+      else
+        if attrs["type"] != "file_comment" do
+          Multi.new()
+          |> Multi.insert(:message, Message.message_changeset(message, attrs))
+          |> Multi.update_all(:mention_users, mention_users, [])
+          |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
+          |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
+          |> Repo.transaction()
+          |> post_creation(notify_user_ids)
+        end
       end
-    end
   end
 
   def multi_mark_as_read_on_creation_if_member(multi, group_id, user_id, :message) do
@@ -159,4 +164,26 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def silent_post_creation(error), do: error
+
+  def thread_notify_user_ids(
+        notify_user_ids,
+        %Message{parent_message: parent_message} = message
+      ) do
+    thread_reply_notify_ids =
+      Map.get(parent_message, :thread_messages, [])
+      |> Enum.map(fn tm -> tm.user_id end)
+      |> insert(parent_message.user_id)
+      |> Enum.uniq()
+      |> List.delete(message.user.id)
+
+    %{
+      desktop: Enum.uniq(notify_user_ids.desktop ++ thread_reply_notify_ids),
+      mobile: Enum.uniq(notify_user_ids.mobile ++ thread_reply_notify_ids),
+      mobile_active: notify_user_ids.mobile_active,
+      email: thread_reply_notify_ids
+    }
+  end
+
+  defp insert(list, item), do: list ++ [item]
+
 end
