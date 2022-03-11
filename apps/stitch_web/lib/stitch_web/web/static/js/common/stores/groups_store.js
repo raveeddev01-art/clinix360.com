@@ -278,9 +278,11 @@ class GroupsStore {
     @action
     updateUserInAllGroups = (userId, userData) => {
         this.groups.forEach(group => {
-            const user = group.users.find(u => u.id === userId);
-            if (user) {
-                extendObservable(user, userData);
+            if (group.slug !== '!__in__threads__!') {
+                const user = group.users.find(u => u.id === userId);
+                if (user) {
+                    extendObservable(user, userData);
+                }
             }
         });
     };

@@ -61,7 +61,7 @@ class AvatarImage extends Component {
   }
 
   get useFallback() {
-    return this.state.useFallback || !this.userAvatar(this.props);
+    return !this.userAvatar(this.props);
   }
 
   userAvatar(props) {
@@ -70,7 +70,7 @@ class AvatarImage extends Component {
       return user.grey_avatar;
     }
 
-    return useThumb ? user.avatar_thumb : user.avatar;
+    return user.avatar_thumb;
   }
 
   render() {
