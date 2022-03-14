@@ -25,7 +25,10 @@ defmodule Stitch.AWS.S3 do
 
   @spec download(binary, binary) :: {:ok, :done} | {:error, term}
   def download(filename, dest) do
-    ExAws.S3.download_file(@s3.bucket, filename, dest) |> ExAws.request()
+    IO.inspect(@s3, label: "S3 object")
+    IO.inspect(filename, label: "Filename")
+    IO.inspect(dest, label: "Destionation")
+    ExAws.S3.download_file(@s3.bucket, filename, dest) |> IO.inspect(label: "here is download request") |> ExAws.request()
   end
 
   @spec avatar_path(binary) :: binary
