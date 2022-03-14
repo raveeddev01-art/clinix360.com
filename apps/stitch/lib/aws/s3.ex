@@ -37,19 +37,21 @@ defmodule Stitch.AWS.S3 do
   end
 
   def fullpath(file \\ "", dir \\ "") do
-    object =
-      case dir do
-        "" -> Path.basename(file)
-        dir -> Path.join(dir, Path.basename(file))
-      end
-      |> IO.inspect(label: "Object path")
+    # object =
+    #   case dir do
+    #     "" -> Path.basename(file)
+    #     dir -> Path.join(dir, Path.basename(file))
+    #   end
+    #   |> IO.inspect(label: "Object path")
 
-    # if object == "" do
-    # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
-    # else
+    # # if object == "" do
+    # # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
+    # # else
+    # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
+    # |> IO.inspect(label: "from signature")
+    # # end
+    object = Path.join(dir, Path.basename(file))
     "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
-    |> IO.inspect(label: "from signature")
-    # end
   end
 
   @spec basepath(binary) :: {:ok, binary}
