@@ -34,10 +34,10 @@ config :stitch, :aws_user_upload, %{
   upload_size_cap: 1_000_000_000
 }
 
-# config :stitch, :avatar, %{
-#   bucket: System.get_env("S3_AVATAR_BUCKET_NAME"),
-#   origin: System.get_env("AVATAR_ORIGIN")
-# }
+config :stitch, :avatar, %{
+  bucket: System.get_env("S3_AVATAR_BUCKET_NAME"),
+  origin: System.get_env("AVATAR_ORIGIN")
+}
 
 config :stitch, :user_upload_settings, %{
   max_preview_width: 720,

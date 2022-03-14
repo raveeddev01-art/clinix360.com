@@ -17,11 +17,6 @@ repo_opts = [
 config :stitch, Stitch.Repo, repo_opts
 config :stitch, Stitch.ReadReplicaRepo, repo_opts
 
-config :stitch, :avatar, %{
-  bucket: System.get_env("S3_AVATAR_BUCKET_NAME"),
-  origin: System.get_env("AVATAR_CDN_ORIGIN")
-}
-
 config :stitch, Stitch.NewMailer,
   adapter: Bamboo.MailgunAdapter,
   api_key: System.get_env("MAILGUN_KEY"),
