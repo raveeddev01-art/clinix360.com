@@ -25,10 +25,7 @@ defmodule Stitch.AWS.S3 do
 
   @spec download(binary, binary) :: {:ok, :done} | {:error, term}
   def download(filename, dest) do
-    IO.inspect(@s3, label: "S3 object")
-    IO.inspect(filename, label: "Filename")
-    IO.inspect(dest, label: "Destionation")
-    ExAws.S3.download_file(@s3.bucket, filename, dest) |> IO.inspect(label: "here is download request") |> ExAws.request()
+    ExAws.S3.download_file(@s3.bucket, filename, dest) |> ExAws.request()
   end
 
   @spec avatar_path(binary) :: binary
@@ -37,23 +34,13 @@ defmodule Stitch.AWS.S3 do
   end
 
   def fullpath(file \\ "", dir \\ "") do
-    # object =
-    #   case dir do
-    #     "" -> Path.basename(file)
-    #     dir -> Path.join(dir, Path.basename(file))
-    #   end
-    #   |> IO.inspect(label: "Object path")
-
     # # if object == "" do
     # # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
     # # else
     # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
-    # |> IO.inspect(label: "from signature")
     # # end
     object = Path.join(dir, Path.basename(file))
-    |> IO.inspect(label: "Object")
     "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
-    |> IO.inspect(label: "Fullpath from signature")
   end
 
   @spec basepath(binary) :: {:ok, binary}

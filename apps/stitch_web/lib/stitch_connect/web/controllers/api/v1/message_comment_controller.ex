@@ -45,7 +45,6 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
            {:message, MessageQueries.get_by_id(message_id)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(message_parent, current_user, message_params_with_client, presence) do
-      IO.inspect("comment message created")
       message = MessageQueries.get_by_id(message.id)
       message_comment_creation_events(message_parent, message, notify_user_ids)
 

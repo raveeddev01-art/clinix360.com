@@ -52,17 +52,17 @@ defmodule Stitch.Accounts.ProfileImage do
 
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
   def create_thumb(url) do
-    with {:ok, fullname} <- S3.basepath(url) |> IO.inspect(label: "basepath"),
-         {:ok, filename} <- get_filename(url) |> IO.inspect(label: "filename"),
-         extname = Path.extname(fullname)  |> IO.inspect(label: "file ext"),
-         dest = Path.join(System.tmp_dir!(), filename) |> IO.inspect(label: "dest"),
-         {:ok, :done} <- S3.download(fullname, dest) |> IO.inspect(label: "downloaded"),
-         %Mogrify.Image{path: preview_path} <- generate_preview(dest) |> IO.inspect(label: "preview generated"),
-         avatar_name = String.downcase(Rand.token(32)) <> extname |> IO.inspect(label: "avatar name"),
-         {:ok, %{status_code: 200}} <- S3.upload_avatar(preview_path, avatar_name) |> IO.inspect(label: "uploaded avatar"),
-         :ok <- File.rm(dest) |> IO.inspect(label: "file removed"),
-         :ok <- File.rm(preview_path) |> IO.inspect(label: "preview removed") do
-      {:ok, S3.avatar_path(avatar_name)} |> IO.inspect(label: "avatar thumb generated")
+    with {:ok, fullname} <- S3.basepath(url),
+         {:ok, filename} <- get_filename(url),
+         extname = Path.extname(fullname),
+         dest = Path.join(System.tmp_dir!(), filename),
+         {:ok, :done} <- S3.download(fullname, dest),
+         %Mogrify.Image{path: preview_path} <- generate_preview(dest),
+         avatar_name = String.downcase(Rand.token(32)) <> extname,
+         {:ok, %{status_code: 200}} <- S3.upload_avatar(preview_path, avatar_name),
+         :ok <- File.rm(dest),
+         :ok <- File.rm(preview_path) do
+      {:ok, S3.avatar_path(avatar_name)}
     else
       error ->
         {:error, error}
@@ -234,7 +234,6 @@ defmodule Stitch.Accounts.ProfileImage do
 
     cond do
       needs_avatar_regen(changeset) ->
-        IO.inspect("Regen Required")
         add_default_profile_image(changeset)
 
       true ->
@@ -247,11 +246,9 @@ defmodule Stitch.Accounts.ProfileImage do
       first_name: get_first_name(changeset),
       last_name: get_last_name(changeset)
     }
-    |> IO.inspect(label: "username")
 
-    with {:ok, avatar} <- pick_default_random(user_or_patient) |> IO.inspect(label: "pick default result"),
-         {:ok, avatar_thumb} <- create_thumb(avatar) |> IO.inspect(label: "thumb created") do
-      IO.inspect("With clause executed")
+    with {:ok, avatar} <- pick_default_random(user_or_patient),
+         {:ok, avatar_thumb} <- create_thumb(avatar) do
       changeset
       |> put_change(:profile_image_url, avatar)
       |> put_change(:profile_image_thumb_url, avatar_thumb)

@@ -13,7 +13,6 @@ defmodule Stitch.Web.Api.V1.UploadController do
 
   defp do_create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     S3.signature(filename, mimetype)
-    |> IO.inspect(label: "signature")
 
     conn
     |> put_status(:created)

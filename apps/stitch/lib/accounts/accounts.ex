@@ -121,12 +121,9 @@ defmodule Stitch.Accounts do
   end
 
   def update_profile_image(user_id, url) do
-    IO.inspect(url, label: "URL")
-
     User
     |> Repo.get(user_id)
     |> User.profile_image_changeset(%{"profile_image_url" => url})
-    |> IO.inspect(label: "final profile image chnageset")
     |> Repo.update()
   end
 
@@ -137,7 +134,6 @@ defmodule Stitch.Accounts do
       profile_image_url: nil,
       profile_image_thumb_url: nil
     })
-    |> IO.inspect(label: "profile image final changeset")
     |> Repo.update()
   end
 end

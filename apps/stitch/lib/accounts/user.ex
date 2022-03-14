@@ -261,21 +261,17 @@ defmodule Stitch.Accounts.User do
   def profile_image_changeset(struct, params) do
     struct
     |> cast(params, [:profile_image_url])
-    |> IO.inspect(label: "after cast")
     |> add_thumb()
-    |> IO.inspect(label: "thumb added")
   end
 
   def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
     case ProfileImage.create_thumb(url) do
       {:ok, profile_image_thumb_url} ->
-        IO.inspect(profile_image_thumb_url, label: "thumb created")
         put_change(changeset, :profile_image_thumb_url, profile_image_thumb_url)
 
       {:error, _error} ->
         changeset
     end
-    |> IO.inspect(label: "thumb generated")
   end
 
   def add_thumb(changeset) do
