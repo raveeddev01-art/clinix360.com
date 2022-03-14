@@ -51,7 +51,9 @@ defmodule Stitch.AWS.S3 do
     # |> IO.inspect(label: "from signature")
     # # end
     object = Path.join(dir, Path.basename(file))
+    |> IO.inspect(label: "Object")
     "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
+    |> IO.inspect(label: "Fullpath from signature")
   end
 
   @spec basepath(binary) :: {:ok, binary}
