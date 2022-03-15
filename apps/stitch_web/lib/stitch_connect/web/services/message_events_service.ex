@@ -33,6 +33,7 @@ defmodule StitchConnect.Web.MessageEventsService do
     Stitch.Task.start(fn ->
       LinkPreviewGenerator.queue(message)
       GroupChannel.broadcast_message_comment_added(message)
+      GroupChannel.broadcast_message_edited(message)
       EventsChannel.broadcast_group_message_comment_added(message.group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(message.group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)

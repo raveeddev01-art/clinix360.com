@@ -69,7 +69,7 @@ defmodule Stitch.TimedMessage.Worker do
       template_vars: &Helper.with_admin_invitation_attrs/2
     },
     "app_downloads" => %{
-      subject: "Get the Stitch mobile and desktop apps",
+      subject: "Get the InvoChat mobile and desktop apps",
       load_data: &Helper.get_user_with_team/1,
       send_if: &Helper.is_active_user/1,
       template_vars: &Helper.with_user_and_team_attrs/2

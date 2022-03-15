@@ -31,7 +31,7 @@ export default class TeamImport extends Component {
           <Col md={2}>
             <Button
               className="import-app-button"
-              href={this._mailToFor("Stitch")}
+              href={this._mailToFor("InvoChat")}
               block
               bsStyle="primary"
             >
