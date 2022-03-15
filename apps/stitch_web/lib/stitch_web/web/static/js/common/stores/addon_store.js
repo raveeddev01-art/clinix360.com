@@ -14,6 +14,17 @@ class AddonStore {
     }
 
     @action
+    reset() {
+        this.showAddons = false;
+        this.showAddonDetail = false;
+        this.addonPanelType = null;
+        this.addonPanelData = null;
+        this.addonPanelTab = null;
+        this.detailPanelType = null;
+        this.detailPanelData = null;
+    }
+
+    @action
     toggleAddons(value) {
         if (typeof value !== "undefined") {
             this.showAddons = value;

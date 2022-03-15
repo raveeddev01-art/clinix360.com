@@ -18,11 +18,15 @@ import Updates from "./components/updates/updates";
 @inject("addonStore", "searchStore", "desktopStore")
 @observer
 class Addons extends Component {
-  toggleAddons = () => {
-    this.props.addonStore.toggleAddons();
 
-    if (this.props.addonStore.addonPanelType === "Search Results") {
-      this.props.searchStore.reset();
+  toggleAddons = () => {
+    const { addonStore, searchStore } = this.props;
+
+    addonStore.toggleAddons();
+    addonStore.reset();
+
+    if (addonStore.addonPanelType === "Search Results") {
+      searchStore.reset();
     }
   };
 
@@ -42,14 +46,13 @@ class Addons extends Component {
       return null;
     }
 
-
-    const showRightPanel = addonStore.addonPanelType === "thread"  ? true : addonStore.showAddonDetail;
+    const showAddonDetail = addonStore.addonPanelType === "thread" ? true : addonStore.showAddonDetail;
 
     const leftPanelClass = cx("addon-left-panel", {
-      opened: !showRightPanel
+      opened: !showAddonDetail
     });
     const rightPanelClass = cx("addon-right-panel", {
-      opened: showRightPanel
+      opened: showAddonDetail
     });
 
     const addonPanelTitle = addonStore.addonPanelType;
