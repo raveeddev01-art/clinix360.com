@@ -17,6 +17,10 @@ class MentionsStore {
     return this.mentions.length === 0;
   }
 
+  concatNewMention(message) {
+    this.mentions.splice(0, 0, message);
+  }
+
   @action
   loadMore() {
     if (this.loading || !this.hasMore) {

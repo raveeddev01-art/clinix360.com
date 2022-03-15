@@ -440,23 +440,16 @@ class SidemenuStore {
 
   @action
   onNewMessage = message => {
-    const { groupStore, groupsStore, messageStore } = this.rootStore;
+    const { groupStore, groupsStore, messageStore, mentionsStore } = this.rootStore;
 
     messageStore.messageCache.addNew(message);
 
-    // If the message is system message or for the current group, ignore
-    if (
-      message.type === "system" ||
-      (groupStore.group &&
-        message.group_id === groupStore.group.id &&
-        this.isInChat) ||
-      message.user_id === currentUser.id
-    ) {
-      return;
-    }
-
     const group = groupsStore.getGroupById(message.group_id);
     const isMention = message.mentioned_user_ids.includes(currentUser.id);
+
+    if (isMention) {
+      mentionsStore.concatNewMention(message);
+    }
 
     if (group) {
       group.unread_messages_count += 1;
@@ -470,6 +463,17 @@ class SidemenuStore {
         // just make it unhidden by assuming it's already unhidden when new msg is broadcasted over dm
         groupsStore.updateGroupData(group.id, { is_hidden: false });
       }
+    }
+
+    // If the message is system message or for the current group, ignore
+    if (
+      message.type === "system" ||
+      (groupStore.group &&
+        message.group_id === groupStore.group.id &&
+        this.isInChat) ||
+      message.user_id === currentUser.id
+    ) {
+      return;
     }
 
     // Update Favicon
