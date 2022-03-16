@@ -244,12 +244,14 @@ class RoomsModal extends Component {
                 {joined.map(room => {
                   i += 1;
                   return (
-                    <RoomItem
-                      goToRoom={this.goToRoom}
-                      hasManualFocus={this.focusedItemIndex === i}
-                      key={i}
-                      room={room}
-                    />
+                    room.id !== 0
+                      ? <RoomItem
+                        goToRoom={this.goToRoom}
+                        hasManualFocus={this.focusedItemIndex === i}
+                        key={i}
+                        room={room}
+                      />
+                      : ""
                   );
                 })}
               </div>
