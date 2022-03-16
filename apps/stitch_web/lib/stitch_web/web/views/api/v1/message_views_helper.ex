@@ -108,6 +108,42 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
     end
   end
 
+  defp put_preview_presigned_url(
+         %{"mimetype" => "application/" <> _docx} = fields,
+         true,
+         message_id,
+         files_endpoint
+       ) do
+    case fields["filename"] =~ ".docx" do
+      true ->
+        url = files_file_url(files_endpoint, :download_preview, message_id)
+        Map.put(fields, "preview_url", url)
+
+      false ->
+        fields
+    end
+  end
+
+  defp put_preview_presigned_url(
+         %{"mimetype" => "application/" <> _docx} = fields,
+         false,
+         _message_id,
+         _files_endpoint
+       ) do
+    case fields["filename"] =~ ".docx" do
+      true ->
+        url = Map.get(fields, "preview_url") || Map.get(fields, "url")
+
+        case S3.presign(url) do
+          {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
+          :error -> fields
+        end
+
+      false ->
+        fields
+    end
+  end
+
   defp put_preview_presigned_url(fields, _authenticated_urls, _message_id, _files_endpoint),
     do: fields
 

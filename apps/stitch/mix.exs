@@ -64,7 +64,8 @@ defmodule Stitch.Mixfile do
       {:exq, "~> 0.11.0"},
       {:exq_ui, "~> 0.9.0"},
       {:plug_cowboy, "~> 1.0"},
-      {:elasticsearch, "~> 0.4.1"}
+      {:elasticsearch, "~> 0.4.1"},
+      {:librex, "~> 1.0"}
     ]
   end
 
