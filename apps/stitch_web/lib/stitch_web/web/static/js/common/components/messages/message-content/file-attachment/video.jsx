@@ -4,8 +4,6 @@ import cx from "classnames";
 import { FILE_VIEW_SIZE_LIMIT } from "lib/constants";
 import { getFullUrl } from "lib/utils";
 import AttachmentActions from "./components/attachment-actions";
-import FileViewer from "./file-viewer";
-
 class VideoFileAttachment extends Component {
   constructor(props) {
     super(props);

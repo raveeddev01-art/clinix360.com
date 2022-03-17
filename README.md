@@ -19,6 +19,8 @@ Set up node. Install yarn globally with `npm install -g yarn` if you have not ye
 Set up and launch postgres if you have not yet done so.
 
 Install external dependencies
+- `libreoffice` (https://www.libreoffice.org/get-help/install-howto/) LibreOffice must be installed in order to generate thumbnails and previews for word documents.
+
 
 - `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
 
