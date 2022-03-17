@@ -93,7 +93,7 @@ export default class MessagePanel extends Component {
               {moment
                 .utc(messageStore.lastReadAt)
                 .local()
-                .format("h:mm A on MMMM Do")}
+                .format("h:mm A MMMM Do")}
             </div>
           </div>
 
