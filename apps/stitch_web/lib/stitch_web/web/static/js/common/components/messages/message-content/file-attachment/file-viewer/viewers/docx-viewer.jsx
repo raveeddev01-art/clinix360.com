@@ -6,8 +6,8 @@ class DocxViewer extends Component {
     const { preview_url } = this.props;
 
     return (
-      <div className="word__Document">
-        <iframe className="word__Document" frameBorder="0" src={`https://docs.google.com/gview?url=${encodeURIComponent(preview_url)}&embedded=true`}></iframe>
+      <div className="word-document-body">
+        <iframe className="word-document" frameBorder="0" src={`https://docs.google.com/gview?url=${encodeURIComponent(preview_url)}&embedded=true`}></iframe>
       </div>
     );
   }
