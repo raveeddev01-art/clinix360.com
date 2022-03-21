@@ -3,7 +3,10 @@ import PropTypes from "prop-types";
 
 class DocxViewer extends Component {
   render() {
-    const { public_url } = this.props;
+    const { public_url, url } = this.props;
+
+    console.log("Public URL", public_url);
+    console.log("URL", url);
 
     return (
       <div className="file-viewer__body-img">

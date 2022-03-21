@@ -70,7 +70,6 @@ defmodule Stitch.Files.Upload do
     %Upload{user_id: user.id, team_id: user.team_id}
     |> new(attrs)
     |> Repo.insert()
-    |> create_public_link()
   end
 
   @spec share_with_group(Upload.t(), Group.t()) ::
