@@ -37,6 +37,8 @@ class FileViewer extends Component {
         .format("MMM Do [at] h:mm A");
     }
 
+    console.log("MESSAGE", message);
+
     return (
       <Modal show={show} dialogClassName="file-viewer" onHide={onHideModal}>
         <Modal.Body>
@@ -74,7 +76,7 @@ class FileViewer extends Component {
             </div>
           </div>
           <div className="file-viewer__body">
-            {Viewer && <Viewer url={url} preview_url={message.fields.preview_url} />}
+            {Viewer && <Viewer url={url} preview_url={ message ? message.fields.preview_url : ""} />}
           </div>
         </Modal.Body>
       </Modal>
