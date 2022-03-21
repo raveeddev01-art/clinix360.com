@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 
 class DocxViewer extends Component {
   render() {
-    const { url } = this.props;
-    console.log(this.props);
+    const { public_url } = this.props;
+
     return (
       <div className="file-viewer__body-img">
-        <iframe frameBorder="0" src={`https://docs.google.com/gview?url=${url}&embedded=true`}></iframe>
+        <iframe frameBorder="0" src={`https://docs.google.com/gview?url=${public_url}&embedded=true`}></iframe>
       </div>
     );
   }

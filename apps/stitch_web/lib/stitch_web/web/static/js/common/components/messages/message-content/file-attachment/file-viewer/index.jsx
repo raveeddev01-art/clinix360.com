@@ -74,7 +74,7 @@ class FileViewer extends Component {
             </div>
           </div>
           <div className="file-viewer__body">
-            {Viewer && <Viewer url={url} />}
+            {Viewer && <Viewer url={url} public_url={public_url} />}
           </div>
         </Modal.Body>
       </Modal>
