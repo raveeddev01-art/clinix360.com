@@ -17,6 +17,6 @@ defimpl Elasticsearch.Document, for: Stitch.Message do
   def inserted_at(datetime) do
     datetime
     |> DateTime.from_naive!("Etc/UTC")
-    |> DateTime.to_unix(:seconds)
+    |> DateTime.to_unix(:second)
   end
 end
