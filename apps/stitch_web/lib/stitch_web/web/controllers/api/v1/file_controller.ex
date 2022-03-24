@@ -11,7 +11,7 @@ defmodule Stitch.Web.Api.V1.FileController do
     Message,
     Message.MessageCreation,
     MessageQueries,
-    Web.FileService,
+    # Web.FileService,
     Web.UrlService,
     Web.MessageEventsService,
     StarrableItems.StarringService

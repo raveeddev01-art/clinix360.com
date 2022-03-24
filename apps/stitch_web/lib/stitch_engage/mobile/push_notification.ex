@@ -1,22 +1,22 @@
 defmodule StitchEngage.Mobile.PushNotification do
   alias Stitch.{
     Accounts.User,
-    Group,
-    GroupUser,
-    Message,
+    # Group,
+    # GroupUser,
+    # Message,
     Mobile,
-    Repo,
-    Patient,
-    Engage.ConversationQueries
+    # Repo,
+    Patient
+    # Engage.ConversationQueries
   }
 
   alias Pigeon.{APNS, FCM}
   alias StitchEngage.Mobile.ConversationNotificationView
-  import Ecto.Query
+  # import Ecto.Query
   require Logger
   use Appsignal.Instrumentation.Decorators
 
-  @apns_engage_topic Application.get_env(:stitch_web, :apns_engage_topic)
+  # @apns_engage_topic Application.get_env(:stitch_web, :apns_engage_topic)
 
   def notifications_for_conversation_message(conversation_message, %{
         patients: patients,
@@ -43,7 +43,7 @@ defmodule StitchEngage.Mobile.PushNotification do
   end
 
   def notify_provider(%User{} = provider, conversation_message) do
-    %{"ios" => ios_devices, "android" => android_devices} =
+    %{"ios" => ios_devices, "android" => _android_devices} =
       Mobile.list_user_devices(provider.id)
       |> Enum.group_by(fn device -> device.type end)
       |> Map.put_new("ios", [])
@@ -77,7 +77,7 @@ defmodule StitchEngage.Mobile.PushNotification do
   end
 
   def notify_patient(%Patient{} = patient, conversation_message) do
-    %{"ios" => ios_devices, "android" => android_devices} =
+    %{"ios" => ios_devices, "android" => _android_devices} =
       Mobile.list_patient_devices(patient.id)
 
     conversation_message =
@@ -101,7 +101,7 @@ defmodule StitchEngage.Mobile.PushNotification do
     notify_patient_ios_devices(ios_devices, conversation_notification)
   end
 
-  defp notify_provider_ios_devices([], conversation_notification), do: nil
+  defp notify_provider_ios_devices([], _conversation_notification), do: nil
 
   defp notify_provider_ios_devices(ios_devices, conversation_notification) do
     import APNS.Notification
@@ -114,10 +114,10 @@ defmodule StitchEngage.Mobile.PushNotification do
     |> apns_push(on_response: &handle_apns_push/1)
   end
 
-  defp notify_patient_ios_devices([], conversation_notification), do: nil
+  defp notify_patient_ios_devices([], _conversation_notification), do: nil
 
   defp notify_patient_ios_devices(ios_devices, conversation_notification) do
-    import APNS.Notification
+    # import APNS.Notification
 
     ios_devices
     |> Enum.map(fn device ->
@@ -133,13 +133,13 @@ defmodule StitchEngage.Mobile.PushNotification do
 
   def handle_apns_push(%{response: response, device_token: token} = notification)
       when response in [:bad_device_token, :unregistered] do
-    error = %{response: response, device_token: token, platform: "iOS"}
+    _error = %{response: response, device_token: token, platform: "iOS"}
     Stitch.Mobile.NotificationLogger.response(notification)
     Mobile.remove_patient_device("ios", token)
   end
 
   def handle_apns_push(%{response: response_error, device_token: token} = notification) do
-    error = %{response: response_error, device_token: token, platform: "iOS"}
+    _error = %{response: response_error, device_token: token, platform: "iOS"}
     Stitch.Mobile.NotificationLogger.response(notification)
   end
 end

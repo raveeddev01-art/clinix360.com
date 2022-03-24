@@ -8,12 +8,12 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   }
 
   alias Stitch.{
-    GroupAuthorization,
+    # GroupAuthorization,
     GroupQueries,
-    Group,
+    # Group,
     Message,
     MessageAuthorization,
-    MessageAction,
+    # MessageAction,
     MessageQueries,
     Web.FileService
   }
@@ -38,7 +38,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
 
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
-    authenticated_urls = get_authenticated_urls(message_params)
+    _authenticated_urls = get_authenticated_urls(message_params)
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
 
     with {:message, %Message{} = message_parent} <-
@@ -122,7 +122,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
 
   def delete(conn, %{"id" => message_id}) do
     current_user = conn.assigns.current_user
-    team = conn.assigns.team
+    _team = conn.assigns.team
 
     with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
          {:group, {:ok, group}} <-

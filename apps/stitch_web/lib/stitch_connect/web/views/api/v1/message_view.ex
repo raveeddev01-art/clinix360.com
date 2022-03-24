@@ -77,7 +77,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     }
   end
 
-  def thread_message_json(message, authenticated_url, files_url) do
+  def thread_message_json(message, authenticated_url, _files_url) do
     %{
       id: message.id,
       user_id: message.user_id,
@@ -128,9 +128,10 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
 
   def pinned_by_info(%{pinned_by: %Ecto.Association.NotLoaded{}}), do: nil
 
-  def default_comment_notify_ids(), do: %{desktop: [], mobile: []}
-
   def pinned_by_info(%{pinned_by: pinned_by}) do
     %{id: pinned_by.id, first_name: pinned_by.first_name, last_name: pinned_by.last_name}
   end
+
+  def default_comment_notify_ids(), do: %{desktop: [], mobile: []}
+
 end

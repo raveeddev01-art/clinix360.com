@@ -1,7 +1,7 @@
 defmodule Stitch.Web.Api.V1.CallController do
   use Stitch.Web, :controller
 
-  import Ecto.Query
+  # import Ecto.Query
 
   alias Stitch.{
     Repo,

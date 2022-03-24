@@ -27,7 +27,7 @@ defmodule Stitch.Web.Application do
           [
             worker(StitchConnect.MobileBadgeUpdater, [])
           ]
-        background_jobs =
+        _background_jobs =
           if Application.get_env(:stitch_web, :start_message_link_preview_generator, true) do
             background_jobs ++ [worker(Stitch.LinkPreviewGenerator, [])]
           else
