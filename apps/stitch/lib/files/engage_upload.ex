@@ -12,7 +12,7 @@ defmodule Stitch.Files.EngageUpload do
   }
 
   use Ecto.Schema
-  import Ecto.Query
+  # import Ecto.Query
   import Ecto.Changeset
   alias Ecto.Multi
 

@@ -4,7 +4,7 @@ defmodule Stitch.FindYourTeam.Email do
   """
 
   import Bamboo.Email
-  import Bamboo.MandrillHelper
+  # import Bamboo.MandrillHelper
 
   alias Stitch.FindYourTeam.Token
 

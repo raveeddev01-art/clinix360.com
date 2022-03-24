@@ -21,7 +21,7 @@ defmodule Stitch.Analytics.CohortAnalysis do
       SELECT * FROM series s LEFT OUTER JOIN gteams a ON s.date = a.date
     """
 
-    res =
+    _res =
       Ecto.Adapters.SQL.query!(Stitch.Repo, query, [
         team_ids,
         %Postgrex.Interval{months: months + 1},

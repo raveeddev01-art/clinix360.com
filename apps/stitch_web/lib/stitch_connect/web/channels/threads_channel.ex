@@ -299,7 +299,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
   end
 
   # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-  def handle_in(supported_event, _params, socket) do
+  def handle_in(_supported_event, _params, socket) do
     {:noreply, socket}
   end
 
@@ -537,15 +537,15 @@ defmodule StitchConnect.Web.ThreadsChannel do
     @endpoint.broadcast("groups:id:#{group.id}", event, payload)
   end
 
-  defp create_dm_on_join(id_pair, user, socket) do
-    with {:dm, true} <- {:dm, length(id_pair) == 2},
-         [other_user_id] <- List.delete(id_pair, user.id) do
-      socket = assign(socket, :group, {:create_dm, other_user_id})
-      {:ok, %{messages: []}, socket}
-    else
-      _error -> {:error, %{message: "group not found"}}
-    end
-  end
+  # defp create_dm_on_join(id_pair, user, socket) do
+  #   with {:dm, true} <- {:dm, length(id_pair) == 2},
+  #        [other_user_id] <- List.delete(id_pair, user.id) do
+  #     socket = assign(socket, :group, {:create_dm, other_user_id})
+  #     {:ok, %{messages: []}, socket}
+  #   else
+  #     _error -> {:error, %{message: "group not found"}}
+  #   end
+  # end
 
   defp do_new_msg(socket, {:create_dm, other_user_id}, user, params) do
     with {:ok, group} <- Group.create_single_dm(user, [user.id, other_user_id]) do

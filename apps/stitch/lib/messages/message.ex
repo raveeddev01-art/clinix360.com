@@ -8,7 +8,7 @@ defmodule Stitch.Message do
     Accounts.User,
     Audit,
     Files.Upload,
-    Files.UploadComment,
+    # Files.UploadComment,
     Group,
     GroupQueries,
     GroupUser,
