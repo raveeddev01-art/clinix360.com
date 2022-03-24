@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Avatar, UserProfileMenu } from "common/components";
+import Message from "../../../chat/message-list/message";
 import MessageComment from "common/components/message/MessageComment";
 import MessageCommentInput from "common/components/message/MessageCommentInput";
 import MessageCommentGroup from "common/components/message/MessageCommentGroup";
 import MessageInfo from "common/components/message/MessageInfo";
 import LinkPreview from "../../../common/components/messages/message-content/link-preview";
-import messageTextToComponents from "../../../chat/message-list/message-text-to-components";
 
 @inject("messageStore", "usersStore", "groupsStore", "desktopStore")
 @observer
-class MessageDetails extends Component { 
+class MessageDetails extends Component {
 
   renderLinkPreviews() {
     const {
@@ -35,28 +34,36 @@ class MessageDetails extends Component {
   }
 
   render() {
-    const { message } = this.props.messageStore;
+    const { messageStore } = this.props;
+    const { message } = messageStore;
 
     if (!message.id) return null;
 
     const messageCreator = this.props.usersStore.usersById[message.user_id];
-    const text_content = messageTextToComponents(message.text_content || ""); 
 
     return (
       <div className="search-results-addon">
         <div className="file-heading">
-          <Avatar user={messageCreator} />
-          <div className="file-heading__content">
-            <div className="file-heading__content-user">
-              <UserProfileMenu user={messageCreator} className="name">
-                {messageCreator.full_name}
-              </UserProfileMenu>
-            </div>
-            <div className="file-heading__content-file">
-              {text_content}
-            </div>
-            {this.renderLinkPreviews()}
-          </div>
+          <Message
+            edited_at={message.edited_at}
+            isReply={true}
+            messageUser={messageCreator}
+            pinned={message.pinned}
+            starred={message.starred}
+            status={message.status}
+            is_sequential={message.is_sequential}
+            reactions_web={message.reactions_web}
+            link_previews={message.link_previews}
+            key={`message_${message.id}`}
+            message={message}
+            messageStore={messageStore}
+            chatDiv={messageStore.chatDiv}
+            onMounted={messageStore.onMessageMounted}
+            onUnmounted={messageStore.onMessageUnmounted}
+            onShow={messageStore.onMessageShow}
+            onHide={messageStore.onMessageHide}
+            messageClass={"message-details"}
+          />
         </div>
         <MessageInfo message={message} />
         <span className="file-dot" />

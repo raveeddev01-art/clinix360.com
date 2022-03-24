@@ -135,7 +135,8 @@ class Message extends PureComponent {
       isConversationMessage,
       lastOtherUserMessage,
       isThreadView,
-      isReply
+      isReply,
+      messageClass
     } = this.props;
 
     const user = this.getUser(message);
@@ -153,7 +154,7 @@ class Message extends PureComponent {
       <div
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
-        className={`${isThreadView ? "thread-box" : ""}`} >
+        className={`${isThreadView ? "thread-box" : ""} ${messageClass}`} >
         {isThreadView && <MessageNav message={message} isThreadView={isThreadView} />}
         {hasNML && (
           <Element name="newMessageBanner" className="new-message-banner">

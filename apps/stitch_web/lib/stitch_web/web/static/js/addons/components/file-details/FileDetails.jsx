@@ -1,14 +1,9 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Avatar, UserProfileMenu } from "common/components";
-import FileAttachment from "common/components/messages/message-content/file-attachment";
-import AttachmentActions from "common/components/messages/message-content/file-attachment/components/attachment-actions";
-import FileComment from "common/components/file/FileComment";
-import FileCommentInput from "common/components/file/FileCommentInput";
-import FileCommentGroup from "common/components/file/FileCommentGroup";
 import MessageComment from "common/components/message/MessageComment";
 import MessageCommentInput from "common/components/message/MessageCommentInput";
 import MessageCommentGroup from "common/components/message/MessageCommentGroup";
+import Message from "../../../chat/message-list/message";
 import FileInfo from "common/components/file/FileInfo";
 
 @inject("teamFileStore", "usersStore", "groupsStore", "desktopStore", "messageStore")
@@ -56,53 +51,43 @@ class FileDetails extends Component {
   }
 
   render() {
-    const { file } = this.props.teamFileStore;
-    const { message } = this.props.messageStore;
+    const { messageStore, teamFileStore } = this.props;
+    const { file } = teamFileStore;
+    const { message } = messageStore;
 
     if (!file.id) return null;
-
     const fileCreator = this.props.usersStore.usersById[file.user_id];
 
     return (
-      <div className="file-details-addon">
+      <div className="search-results-addon">
         <div className="file-heading">
-          <Avatar user={fileCreator} />
-          <div className="file-heading__content">
-            <div className="pull-right">
-              <AttachmentActions
-                url={file.url}
-                file_id={file.id}
-                user_id={file.user_id}
-                public_url={file.public_url}
-                message={message}
-                encoded_id={file.encoded_id}
-                commentCount={file.comment_count}
-                onFileDownload={this.onFileDownload}
-              />
-            </div>
-            <div className="file-heading__content-user">
-              <UserProfileMenu user={fileCreator} className="name">
-                {fileCreator.full_name}
-              </UserProfileMenu>
-            </div>
-            <div>{message.text_content}</div>
-            <div className="text-muted">{file.filename}</div>
-          </div>
+          <Message
+            edited_at={message.edited_at}
+            isReply={true}
+            messageUser={fileCreator}
+            pinned={message.pinned}
+            starred={message.starred}
+            status={message.status}
+            is_sequential={message.is_sequential}
+            reactions_web={message.reactions_web}
+            link_previews={message.link_previews}
+            key={`message_${message.id}`}
+            message={message}
+            messageStore={messageStore}
+            chatDiv={messageStore.chatDiv}
+            onMounted={messageStore.onMessageMounted}
+            onUnmounted={messageStore.onMessageUnmounted}
+            onShow={messageStore.onMessageShow}
+            onHide={messageStore.onMessageHide}
+          />
         </div>
-        <FileAttachment
-          api_url={file.api_url}
-          file_id={file.id}
-          size="sm"
-          useActions={false}
-          {...file}
-        />
         <FileInfo file={file} />
         <span className="file-dot" />
         <MessageCommentGroup message={message} />
         {this.renderPublicLink(file)}
         <span className="spacer-10" />
         {message.thread_messages && message.thread_messages.map(comment => (
-          <MessageComment comment={comment} key={comment.id} user={fileCreator} />
+          <MessageComment comment={comment} key={comment.id} />
         ))}
         <MessageCommentInput message={message} />
       </div>

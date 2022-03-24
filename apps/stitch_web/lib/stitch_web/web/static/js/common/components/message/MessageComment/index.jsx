@@ -1,21 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import { isAdmin } from "lib/utils";
-import { Avatar, TimestampTooltip } from "common/components";
-import Dropdown from "react-bootstrap/lib/Dropdown";
-import MenuItem from "react-bootstrap/lib/MenuItem";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
-import Button from "react-bootstrap/lib/Button";
-import { confirmModal } from "common/modals";
-import ActionToggle from "./ActionToggle";
 import Message from "../../../../chat/message-list/message";
 import MessageCommentInput from "../MessageCommentInput";
 
-const isOwner = comment => {
-  return comment.user_id === currentUser.id;
-};
 
 @inject("usersStore", "teamFileStore", "messageStore")
 @observer
@@ -188,24 +176,11 @@ class MessageComment extends Component {
   }
 
   render() {
-    const { usersStore, comment, messageStore } = this.props;
     const { editing } = this.state;
-
 
     return (
       <div className="">
-
         {editing ? this.renderEditInput() : this.renderCommentContent()}
-
-        {/* <Avatar user={user} />
-        <UserProfileMenu user={user} className="name" showMutedUsername={false}>
-          {user.full_name}
-        </UserProfileMenu>
-        {this.renderTimestamp()}
-
-        <div className="comment-content">
-          {editing ? this.renderEditInput() : this.renderCommentText()}
-        </div> */}
       </div>
     );
   }
