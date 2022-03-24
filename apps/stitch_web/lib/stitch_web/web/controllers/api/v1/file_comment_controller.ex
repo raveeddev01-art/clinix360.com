@@ -9,22 +9,22 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
 
   alias Stitch.{
     Files.FileQueries,
-    Files.Upload,
-    Files.FileAuthorization,
-    Files.UploadComment,
-    GroupAuthorization,
-    GroupQueries,
-    Group,
-    Files,
-    StarrableItems.StarringService,
+    # Files.Upload,
+    # Files.FileAuthorization,
+    # Files.UploadComment,
+    # GroupAuthorization,
+    # GroupQueries,
+    # Group,
+    # Files,
+    # StarrableItems.StarringService,
     Message,
-    MessageAuthorization,
-    MessageAction,
+    # MessageAuthorization,
+    # MessageAction,
     MessageQueries,
     Message.Upload,
-    ReadStatus,
-    Web.EventsChannel,
-    Web.FileService
+    # ReadStatus,
+    # Web.EventsChannel,
+    # Web.FileService
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -69,7 +69,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
     message_params = %{"text_content" => text_content, "thread" => thread, "request_id" => request_id}
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
-    authenticated_urls = get_authenticated_urls(message_params)
+    _authenticated_urls = get_authenticated_urls(message_params)
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
     with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
         #  {:authorized?, true} <-

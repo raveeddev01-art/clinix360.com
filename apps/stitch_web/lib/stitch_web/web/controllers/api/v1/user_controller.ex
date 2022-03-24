@@ -281,7 +281,7 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def upload_profile_image(conn, %{"url" => url, "id" => user_id} = op) do
+  def upload_profile_image(conn, %{"url" => url, "id" => user_id} = _op) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Accounts.update_profile_image(user_id, url) do

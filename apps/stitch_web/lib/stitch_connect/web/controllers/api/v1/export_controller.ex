@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.ExportController do
   use Stitch.Web, :controller
-  alias Stitch.{Exports, Accounts.User}
+  alias Stitch.{Exports}
 
   def index(conn, _params) do
     team = conn.assigns.team

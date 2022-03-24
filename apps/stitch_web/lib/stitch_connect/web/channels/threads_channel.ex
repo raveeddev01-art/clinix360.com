@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
   alias Stitch.LinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
   alias Stitch.Web.Api.V1.FileView
-  alias StitchConnect.MessageLinkPreviewGenerator
+  # alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
 
@@ -30,7 +30,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
 
   def join("threads", params, socket) do
     user = socket.assigns.current_user
-    fetch_messages = get_fetch_messages_param(params)
+    _fetch_messages = get_fetch_messages_param(params)
 
     # with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
     #      {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)},
@@ -299,7 +299,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
   end
 
   # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-  def handle_in(_supported_event, _params, socket) do
+  def handle_in(supported_event, _params, socket) do
     {:noreply, socket}
   end
 
