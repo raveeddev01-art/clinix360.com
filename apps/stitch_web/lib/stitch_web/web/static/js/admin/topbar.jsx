@@ -20,9 +20,8 @@ class Topbar extends Component {
         <ul className="nav navbar-nav">
           <li>
             <a
-              href="https://help.dvlcloud.com"
+              href="javascript:void(0)"
               rel="noopener noreferrer"
-              target="_blank"
             >
               <OverlayTrigger
                 placement="bottom"
