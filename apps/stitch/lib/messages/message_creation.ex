@@ -25,7 +25,6 @@ defmodule Stitch.Message.MessageCreation do
   @spec create(Group.t(), User.t(), map, map | nil) ::
           {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
 
-  def create(group, user, attrs, presence \\ %{})
 
   def create(
         group,
@@ -46,6 +45,8 @@ defmodule Stitch.Message.MessageCreation do
         {:error, :message, changeset, nil}
     end
   end
+
+  def create(group, user, attrs, presence \\ %{})
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
@@ -112,7 +113,7 @@ defmodule Stitch.Message.MessageCreation do
     mention_users = Message.mention_users(group, mentioned_user_ids, recipients)
     increment_unread_counter = ReadStatus.increment_unread_counter(:message, group.id, recipients)
 
-    last =
+    _last =
       if opts[:silent] == true do
         Multi.new()
         |> Multi.insert(:message, Message.message_changeset(message, attrs))

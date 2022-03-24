@@ -21,7 +21,7 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
     # MessageAuthorization,
     # MessageAction,
     MessageQueries,
-    Message.Upload,
+    # Message.Upload,
     # ReadStatus,
     # Web.EventsChannel,
     # Web.FileService

@@ -6,7 +6,7 @@ defmodule Stitch.Exports do
   import Ecto.Query
   alias Stitch.{Repo, Team, AWS.S3, Accounts.User}
   alias Stitch.Exports.{Export, TeamHistory, UserExport}
-
+  alias Stitch.Web.EventsChannel
   @exports_enabled Application.get_env(:stitch, Stitch.Exports)[:enabled]
 
   @doc """
@@ -122,7 +122,7 @@ defmodule Stitch.Exports do
     rescue
       e ->
         Logger.error("Failed to complete export for team id #{inspect(team.id)}. #{inspect(e)}")
-        Stitch.Web.EventsChannel.broadcast_export_finished(team, export.id, "FAILED")
+        EventsChannel.broadcast_export_finished(team, export.id, "FAILED")
         update_export(export, %{status: "FAILED"})
     end
   end

@@ -14,7 +14,7 @@ defmodule Stitch.Stripe.Client do
 
   """
   @impl Stitch.Stripe
-  def create_customer(team_id, team_name) do
+  def create_customer(_team_id, _team_name) do
     # customer_opts = %{
     #   metadata: %{
     #     team_id: team_id,

@@ -4,7 +4,7 @@ defmodule Stitch.Invitation.Email do
   """
 
   import Bamboo.Email
-  import Bamboo.MandrillHelper
+  # import Bamboo.MandrillHelper
 
   @doc """
   Sends a team invite email to the user, with personal information

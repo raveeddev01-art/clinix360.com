@@ -5,8 +5,8 @@ defmodule Stitch.Tokbox.Client do
   from this Tokbox Client to finally reach Tokbox API.
   """
 
-  import Ecto.Changeset
-  alias Stitch.{Repo, Group}
+  # import Ecto.Changeset
+  # alias Stitch.{Repo, Group}
 
   def session_create, do: Tokbox.session_create()
 

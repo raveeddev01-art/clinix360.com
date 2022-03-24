@@ -104,7 +104,7 @@ defmodule StitchEngage.Mobile.PushNotification do
   defp notify_provider_ios_devices([], _conversation_notification), do: nil
 
   defp notify_provider_ios_devices(ios_devices, conversation_notification) do
-    import APNS.Notification
+    # import APNS.Notification
 
     ios_devices
     |> Enum.map(fn device ->
