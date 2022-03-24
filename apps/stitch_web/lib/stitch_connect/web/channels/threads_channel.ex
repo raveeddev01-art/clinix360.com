@@ -30,8 +30,8 @@ defmodule StitchConnect.Web.ThreadsChannel do
 
   def join("threads", params, socket) do
     user = socket.assigns.current_user
-    fetch_messages = get_fetch_messages_param(params)
 
+    # fetch_messages = get_fetch_messages_param(params)
     # with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
     #      {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)},
     #      {:fetch_messages, false, group} <- {:fetch_messages, fetch_messages, group} do
@@ -62,19 +62,12 @@ defmodule StitchConnect.Web.ThreadsChannel do
         authenticated_urls: authenticated_urls
       })
 
-    group_user = true
-
-    json =
-      if group_user do
-        %{
-          last_read_at: DateTime.utc_now(),
-          mentions_count: 0,
-          unread_messages_count: 0,
-          messages: messages_json
-        }
-      else
-        %{messages: messages_json}
-      end
+    json = %{
+      last_read_at: DateTime.utc_now(),
+      mentions_count: 0,
+      unread_messages_count: 0,
+      messages: messages_json
+    }
 
     {:ok, json, assign(socket, :group, %{})}
   end
@@ -286,10 +279,12 @@ defmodule StitchConnect.Web.ThreadsChannel do
 
       {message, true} ->
         {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
+
         case message.parent_message_id do
           nil -> broadcast_reactions_updated(message.group, message)
           _ -> broadcast_comment_reactions_updated(message)
         end
+
         {:reply, :ok, socket}
     end
   end
@@ -474,7 +469,12 @@ defmodule StitchConnect.Web.ThreadsChannel do
     message = MessageQueries.get_by_id(message.parent_message_id)
     message_json = MessageView.render("show.json", %{message: message})
     broadcast_in_event_channel(message.group, "comment_reactions_updated", message_json)
-    @endpoint.broadcast("groups:id:#{message.group_id}", "comment_reactions_updated", message_json)
+
+    @endpoint.broadcast(
+      "groups:id:#{message.group_id}",
+      "comment_reactions_updated",
+      message_json
+    )
   end
 
   def broadcast_message_comment_deleted(message) do

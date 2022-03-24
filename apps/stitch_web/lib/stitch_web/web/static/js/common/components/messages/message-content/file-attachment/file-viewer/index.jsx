@@ -37,8 +37,6 @@ class FileViewer extends Component {
         .format("MMM Do [at] h:mm A");
     }
 
-    console.log("MESSAGE", message);
-
     return (
       <Modal show={show} dialogClassName="file-viewer" onHide={onHideModal}>
         <Modal.Body>
