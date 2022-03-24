@@ -128,7 +128,7 @@ defmodule Stitch.MessageQueries do
             )
         ],
         where: is_nil(m.parent_message_id),
-        where: m.user_id == ^user.id,
+        where: m.user_id == ^user.id or ^user.id in m.mentioned_user_ids,
         where: m.type not in ^ignore_types,
         having: fragment("COUNT(?) > 0", tmm.id),
         order_by: [desc: fragment("MAX(?)", tmm.inserted_at)],
