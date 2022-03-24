@@ -15,25 +15,12 @@ class Threads extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      this.props.match.params.slug !== nextProps.match.params.slug ||
-      this.props.match.params.usernames !== nextProps.match.params.usernames
-    ) {
-      this.openGroup(nextProps.match.params);
-    }
+    this.openGroup(nextProps.match.params);
   }
 
   openGroup(params) {
     const { groupsStore } = this.props;
-
-    if (params.slug) {
-      groupsStore.openGroup(params.slug);
-    } else if (params.usernames) {
-      groupsStore.openDMGroup(params.usernames.split(","));
-    }
-    else{
-        groupsStore.openThreads();
-    }
+    groupsStore.openThreads();
   }
 
   render() {

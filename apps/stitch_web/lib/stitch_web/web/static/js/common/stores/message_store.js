@@ -1197,11 +1197,13 @@ class MessageStore extends BaseMessageStore {
         const { sidemenuStore } = this.rootStore;
         this.updateMessageCommentData(message);
         sidemenuStore.showNotificationCardForNewComment(message);
+        this.markAsRead(false);
     };
 
     @action
     onMessageCommentReactionUpdates = message => {
         this.updateMessageCommentData(message);
+        this.markAsRead(false);
     };
 
     updateMessageCommentData = message => {
@@ -1209,7 +1211,7 @@ class MessageStore extends BaseMessageStore {
             thread_messages: message.thread_messages,
             thread_messages_count: message.thread_messages_count
         });
-        if (0 === this.group.id) {
+        if (0 === this.group.id ) {
             this.messages = this.messages.filter(msg => msg.id !== message.id)
             this.messages.unshift(message);
         }
@@ -1217,7 +1219,6 @@ class MessageStore extends BaseMessageStore {
         if (message.id === this.message.id) {
             this.message = message;
         }
-        this.markAsRead();
     };
 
 }
