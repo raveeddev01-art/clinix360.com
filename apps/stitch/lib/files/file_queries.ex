@@ -48,6 +48,7 @@ defmodule Stitch.Files.FileQueries do
       starred: not is_nil(ma.id)
     })
     |> Paginator.new(limit: limit, skip: offset)
+    |> IO.inspect(label: "Here are results")
   end
 
   def filter_by_filetype(query, %{filetype: "all"}), do: query
@@ -59,10 +60,10 @@ defmodule Stitch.Files.FileQueries do
     do: where(query, [f, fg], f.filetype == ^"pdf")
 
   def filter_by_filetype(query, %{filetype: "videos"}),
-    do: where(query, [f, fg], f.filetype in ^FileTypes.videos())
+    do: where(query, [f, fg], f.filetype in ^FileTypes.videos() and ilike(f.mimetype, ^"%video/%"))
 
   def filter_by_filetype(query, %{filetype: "audio"}),
-    do: where(query, [f, fg], f.filetype in ^FileTypes.audio())
+    do: where(query, [f, fg], f.filetype in ^FileTypes.audio() and ilike(f.mimetype, ^"%audio/%"))
 
   def filter_by_filetype(query, %{filetype: "archive"}),
     do: where(query, [f, fg], f.filetype in ^FileTypes.archive())
