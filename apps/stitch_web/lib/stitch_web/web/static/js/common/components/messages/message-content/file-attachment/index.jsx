@@ -12,7 +12,7 @@ const FileAttachmentRenderer = {
   "Video File": VideoFileAttachment
 };
 
-@inject("desktopStore")
+@inject("desktopStore", "teamFileStore")
 class FileAttachment extends Component {
   onCommentsClick = e => {
     e.stopPropagation();
@@ -24,7 +24,9 @@ class FileAttachment extends Component {
   onFileDownload = e => {
     const {
       desktopStore,
+      teamFileStore,
       api_url,
+      url,
       preview_url,
       filename,
       mimetype,
@@ -45,6 +47,8 @@ class FileAttachment extends Component {
         filetype,
         previewUrl: preview_url
       });
+    } else {
+      teamFileStore.downloadFile(url, filename)
     }
   };
 
