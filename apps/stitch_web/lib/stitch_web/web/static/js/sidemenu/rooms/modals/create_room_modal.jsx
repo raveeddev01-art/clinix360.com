@@ -15,7 +15,7 @@ import Modal from "react-bootstrap/lib/Modal";
 
 import { Members, Toggle } from "common/components";
 
-@inject("groupsStore")
+@inject("groupsStore", "messageStore")
 @observer
 class CreateRoomModal extends Component {
   constructor(props) {
@@ -67,7 +67,7 @@ class CreateRoomModal extends Component {
   };
 
   createRoom = () => {
-    const { groupsStore, history, closeModal } = this.props;
+    const { groupsStore, history, closeModal, messageStore } = this.props;
 
     groupsStore
       .createGroup({
@@ -81,6 +81,7 @@ class CreateRoomModal extends Component {
         });
         history.push(`/rooms/${slug}`);
         closeModal();
+        messageStore.markAsRead(false);
       })
       .catch(response => {
         this.setState({
