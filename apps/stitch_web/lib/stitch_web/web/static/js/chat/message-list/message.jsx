@@ -14,7 +14,7 @@ import {
 } from "common/components";
 import MessageActions from "./message-actions";
 
-@inject("usersStore")
+@inject("usersStore", "messageStore")
 class Message extends PureComponent {
   constructor(props) {
     super(props);

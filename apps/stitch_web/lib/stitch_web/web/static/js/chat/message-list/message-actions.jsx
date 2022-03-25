@@ -62,9 +62,10 @@ class MessageActions extends PureComponent {
     if (pos.bottom < window.innerHeight / 2) {
       martStyles.top = "24px";
     } else {
-      martStyles.bottom = "calc(100% + 14px)";
+      martStyles.bottom = "14px";
     }
 
+    martStyles.width = "300px"
     return martStyles;
   };
 
@@ -90,13 +91,13 @@ class MessageActions extends PureComponent {
   };
 
   toggleReaction = () => {
-    this.props.setSelected({ isSelected: true });
     this.setState({ isEmojiPickerOpen: true });
+    this.props.setSelected({ isSelected: true });
   };
 
   shareFile = () => {
-    const { message } = this.props;
-    this.props.teamFileStore.openShareModal(message.upload_id);
+    const { message, teamFileStore } = this.props;
+    teamFileStore.openShareModal(message.upload_id);
   };
 
   showFileComments = () => {

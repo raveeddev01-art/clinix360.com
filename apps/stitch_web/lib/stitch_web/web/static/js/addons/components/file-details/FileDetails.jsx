@@ -51,12 +51,12 @@ class FileDetails extends Component {
   }
 
   render() {
-    const { messageStore, teamFileStore } = this.props;
+    const { messageStore, teamFileStore, usersStore } = this.props;
     const { file } = teamFileStore;
     const { message } = messageStore;
 
     if (!file.id) return null;
-    const fileCreator = this.props.usersStore.usersById[file.user_id];
+    const fileCreator = usersStore.usersById[file.user_id];
 
     return (
       <div className="search-results-addon">
@@ -79,6 +79,7 @@ class FileDetails extends Component {
             onUnmounted={messageStore.onMessageUnmounted}
             onShow={messageStore.onMessageShow}
             onHide={messageStore.onMessageHide}
+            messageClass={"message-details"}
           />
         </div>
         <FileInfo file={file} />

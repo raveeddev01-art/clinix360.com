@@ -34,12 +34,12 @@ class MessageDetails extends Component {
   }
 
   render() {
-    const { messageStore } = this.props;
+    const { messageStore, usersStore } = this.props;
     const { message } = messageStore;
 
     if (!message.id) return null;
 
-    const messageCreator = this.props.usersStore.usersById[message.user_id];
+    const messageCreator = usersStore.usersById[message.user_id];
 
     return (
       <div className="search-results-addon">
