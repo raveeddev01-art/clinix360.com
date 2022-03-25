@@ -300,6 +300,14 @@ defmodule Stitch.MessageQueries do
     Paginator.new(query, skip: offset, limit: limit)
   end
 
+  def load_message(id, user, fetch_users \\ true) do
+    message = get_by_id(id, fetch_users)
+
+    MessageAction.apply_user_message_actions(user, [message])
+    |> Message.Reaction.apply_reactions(:message)
+    |> Enum.at(0)
+  end
+
   def get_by_id(id) do
     query =
       from(

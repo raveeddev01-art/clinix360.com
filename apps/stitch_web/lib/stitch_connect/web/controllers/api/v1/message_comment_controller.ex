@@ -42,7 +42,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
 
     with {:message, %Message{} = message_parent} <-
-           {:message, MessageQueries.get_by_id(message_id)},
+           {:message, MessageQueries.load_message(message_id, current_user)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(message_parent, current_user, message_params_with_client, presence) do
       message = MessageQueries.get_by_id(message.id)

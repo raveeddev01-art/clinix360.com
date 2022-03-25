@@ -129,7 +129,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
            Message.create(group, current_user, message_params_with_client, presence) do
       message = %{message | user: current_user}
       # create_optional_upload_comment(message, group, current_user, presence, message_params)
-      message = MessageQueries.get_by_id(message.id)
+      message = MessageQueries.load_message(message.id, current_user)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
       conn
       |> put_status(:created)
@@ -226,7 +226,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     user = conn.assigns.current_user
 
     with {:message, %Message{type: "file_share"} = message} <-
-           {:message, MessageQueries.get_by_id(message_id)},
+           {:message, MessageQueries.load_message(message_id, user)},
          {:upload, %Files.Upload{} = upload} <-
            {:upload, Files.FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)} do
@@ -416,7 +416,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def show(conn, %{"id" => message_id}) do
     current_user = conn.assigns.current_user
-    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
+    with {:message, %Message{} = message} <- {:message, MessageQueries.load_message(message_id, current_user)},
     {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, current_user)} do
       render(conn, "show.json", %{message: message, authenticated_urls: true})
     else

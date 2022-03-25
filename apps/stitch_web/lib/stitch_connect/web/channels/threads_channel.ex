@@ -138,7 +138,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
     limit = Map.get(params, "limit", 60)
     fetch_users = get_fetch_users_param(params)
 
-    case MessageQueries.get_by_id(message_id, fetch_users) do
+    case MessageQueries.load_message(message_id, user, fetch_users) do
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
 
@@ -267,7 +267,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
     %{current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
     # message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
-    message = MessageQueries.get_by_id(message_id)
+    message = MessageQueries.load_message(message_id, user)
 
     case {message, message && GroupAuthorization.can_view?(message.group, user)} do
       {nil, _} ->
@@ -282,7 +282,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
 
         case message.parent_message_id do
           nil -> broadcast_reactions_updated(message.group, message)
-          _ -> broadcast_comment_reactions_updated(message)
+          _ -> broadcast_comment_reactions_updated(message, user)
         end
 
         {:reply, :ok, socket}
@@ -465,8 +465,8 @@ defmodule StitchConnect.Web.ThreadsChannel do
     @endpoint.broadcast("groups:id:#{message.group_id}", "message_comment_edited", message_json)
   end
 
-  def broadcast_comment_reactions_updated(message) do
-    message = MessageQueries.get_by_id(message.parent_message_id)
+  def broadcast_comment_reactions_updated(message, user) do
+    message = MessageQueries.load_message(message.parent_message_id, user)
     message_json = MessageView.render("show.json", %{message: message})
     broadcast_in_event_channel(message.group, "comment_reactions_updated", message_json)
 

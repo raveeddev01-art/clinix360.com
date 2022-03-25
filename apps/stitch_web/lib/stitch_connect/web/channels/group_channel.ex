@@ -178,7 +178,7 @@ defmodule StitchConnect.Web.GroupChannel do
     limit = Map.get(params, "limit", 60)
     fetch_users = get_fetch_users_param(params)
 
-    case MessageQueries.get_by_id(message_id, fetch_users) do
+    case MessageQueries.load_message(message_id, user, fetch_users) do
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
 
@@ -320,7 +320,7 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
         case message.parent_message_id do
           nil -> broadcast_reactions_updated(group, message)
-          _ -> broadcast_comment_reactions_updated(message)
+          _ -> broadcast_comment_reactions_updated(message, user)
         end
         {:reply, :ok, socket}
     end
@@ -502,8 +502,8 @@ defmodule StitchConnect.Web.GroupChannel do
     @endpoint.broadcast("groups:id:#{message.group_id}", "message_comment_edited", message_json)
   end
 
-  def broadcast_comment_reactions_updated(message) do
-    message = MessageQueries.get_by_id(message.parent_message_id)
+  def broadcast_comment_reactions_updated(message, user) do
+    message = MessageQueries.load_message(message.parent_message_id, user)
     message_json = MessageView.render("show.json", %{message: message})
     broadcast_in_event_channel(message.group, "comment_reactions_updated", message_json)
     @endpoint.broadcast("groups:id:#{message.group_id}", "comment_reactions_updated", message_json)
