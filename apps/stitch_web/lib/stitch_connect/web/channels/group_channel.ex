@@ -346,6 +346,7 @@ defmodule StitchConnect.Web.GroupChannel do
     }
 
     broadcast_in_event_channel(group, "reactions_updated", payload)
+    broadcast_message_edited(message)
     endpoint_broadcast(group, "reactions_updated", payload)
   end
 
