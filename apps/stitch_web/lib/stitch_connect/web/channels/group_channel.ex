@@ -318,10 +318,11 @@ defmodule StitchConnect.Web.GroupChannel do
 
       {message, true} ->
         {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
-        case message.parent_message_id do
-          nil -> broadcast_reactions_updated(group, message)
-          _ -> broadcast_comment_reactions_updated(message, user)
-        end
+        broadcast_comment_reactions_updated(message, user)
+        # case message.parent_message_id do
+        #   nil -> broadcast_reactions_updated(group, message)
+        #   _ -> broadcast_comment_reactions_updated(message, user)
+        # end
         {:reply, :ok, socket}
     end
   end

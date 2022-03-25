@@ -48,7 +48,6 @@ defmodule Stitch.Files.FileQueries do
       starred: not is_nil(ma.id)
     })
     |> Paginator.new(limit: limit, skip: offset)
-    |> IO.inspect(label: "Here are results")
   end
 
   def filter_by_filetype(query, %{filetype: "all"}), do: query
