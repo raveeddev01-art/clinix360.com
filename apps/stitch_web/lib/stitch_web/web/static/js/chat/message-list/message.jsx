@@ -78,12 +78,11 @@ class Message extends PureComponent {
             <i className="fa fa-thumb-tack fa-rotate-45" />
           </div>
         )}
-        {!message.pinned &&
-          message.starred && (
-            <div className="icon-star">
-              <i className="fa fa-star" />
-            </div>
-          )}
+        {message.starred && (
+          <div className="icon-star">
+            <i className="fa fa-star" />
+          </div>
+        )}
         {message.status === "failed" && (
           <div className="icon-status">
             <i className="fa fa-exclamation-triangle" />
@@ -190,8 +189,7 @@ class Message extends PureComponent {
 
               <div className="message-content">
                 {message.pinned && <div className="pin-label">Pinned</div>}
-                {message.starred &&
-                  !message.pinned && <div className="pin-label">Starred</div>}
+                {message.starred && <div className="pin-label">Starred</div>}
                 {message.status === "failed" && (
                   <div className="message-status-label">
                     Failed to send message
