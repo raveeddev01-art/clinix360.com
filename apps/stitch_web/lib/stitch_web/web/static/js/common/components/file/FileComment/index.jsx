@@ -136,7 +136,6 @@ class FileComment extends Component {
 
 FileComment.propTypes = {
   comment: PropTypes.shape({
-    text_content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired
   }).isRequired
 };

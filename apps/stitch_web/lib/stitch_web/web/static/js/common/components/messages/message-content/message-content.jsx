@@ -16,7 +16,8 @@ import messageTextToComponents from "../../../../chat/message-list/message-text-
 @observer
 class MessageContent extends Component {
   onToggle = emoji => {
-    this.props.messageStore.toggleReaction(this.props.message.id, emoji);
+    const { message } = this.props;
+    this.props.messageStore.toggleReaction(message.id, emoji, message.group_id);
   };
 
   onCommentsClick = () => {
@@ -99,7 +100,8 @@ class MessageContent extends Component {
   };
 
   render() {
-    const { inSearch, message, user, isConversationMessage } = this.props;
+    const { inSearch, message, user, isConversationMessage, addonStore } = this.props;
+    const messageId = !message.id ? addonStore.detailPanelData.id : message.id;
     let messageContentComponents;
 
     if (message.type === "call") {
@@ -142,7 +144,7 @@ class MessageContent extends Component {
           {this.renderLinkPreviews()}
           {this.renderEdited()}
           <Reactions
-            messageId={message.id}
+            messageId={messageId}
             reactions={message.reactions_web}
             onToggle={this.onToggle}
           />

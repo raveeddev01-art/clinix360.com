@@ -43,7 +43,7 @@ class MessageActions extends PureComponent {
     const { messageStore, message, setSelected } = this.props;
     this.setState({ isEmojiPickerOpen: false }, () => {
       if (emoji) {
-        messageStore.toggleReaction(message.id, emoji.colons);
+        messageStore.toggleReaction(message.id, emoji.colons, message.group_id);
       }
       setSelected({ isSelected: false, isActionsVisible: false });
     });

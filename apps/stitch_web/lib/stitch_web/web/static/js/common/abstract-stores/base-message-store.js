@@ -42,6 +42,7 @@ export default class BaseMessageStore {
   @action
   updateMessageData = (messageId, groupId, messageAttributes) => {
     const message = this.getMessageById(messageId);
+
     let updatedAttributes;
     if (message) {
       if (isFunction(messageAttributes)) {
@@ -241,6 +242,7 @@ export default class BaseMessageStore {
     this.updateMessageData(payload.message_id, payload.group_id, {
       reactions_web: payload.reactions_web
     });
+    this.rootStore.addonStore.updateThreadAddonPanel();
   };
 
   @action

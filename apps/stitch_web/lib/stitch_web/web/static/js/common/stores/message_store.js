@@ -1154,8 +1154,6 @@ class MessageStore extends BaseMessageStore {
             this.message = response.data;
             return this.message;
         });
-        // this.message = message;
-        // return this.message;
     }
 
     @action
@@ -1168,6 +1166,8 @@ class MessageStore extends BaseMessageStore {
             hideNotify: true
         }).then(response => {
             this.message.thread_messages = uniqBy([...this.message.thread_messages, response.data], "id");
+        }).catch(e => {
+            console.log(e);
         });
     }
 
@@ -1195,21 +1195,23 @@ class MessageStore extends BaseMessageStore {
     @action
     onMessageCommentUpdates = message => {
         const { sidemenuStore } = this.rootStore;
-        this.updateMessageCommentData(message);
+
+        this.updateMessageThreadData(message);
         sidemenuStore.showNotificationCardForNewComment(message);
         this.markAsRead(false);
     };
 
     @action
     onMessageCommentReactionUpdates = message => {
-        this.updateMessageCommentData(message);
+        this.updateMessageThreadData(message);
         this.markAsRead(false);
     };
 
-    updateMessageCommentData = message => {
+    updateMessageThreadData = message => {
         this.updateMessageData(message.id, message.group_id, {
             thread_messages: message.thread_messages,
-            thread_messages_count: message.thread_messages_count
+            thread_messages_count: message.thread_messages_count,
+            reactions_web: message.reactions_web
         });
         if (0 === this.group.id ) {
             this.messages = this.messages.filter(msg => msg.id !== message.id)

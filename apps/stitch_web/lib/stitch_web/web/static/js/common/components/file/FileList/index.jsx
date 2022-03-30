@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { uniqBy } from "lodash";
 import { inject, observer } from "mobx-react";
 import Pagination from "common/components/pagination";
 import FileItem from "common/components/file/FileItem";
@@ -16,7 +17,7 @@ class FileList extends Component {
         {!files.length && (
           <span className="files-list__nofound">No files found</span>
         )}
-        {files.map(file => (
+        {uniqBy(files, "id").map(file => (
           <FileItem
             key={file.id}
             file={file}

@@ -13,7 +13,8 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentView do
       text_content: message_comment.text_content,
       fields: message_comment.fields,
       user_id: message_comment.user_id,
-      inserted_at: message_comment.inserted_at
+      inserted_at: message_comment.inserted_at,
+      group_id: message_comment.group_id
     }
   end
 end

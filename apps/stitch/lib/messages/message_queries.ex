@@ -300,8 +300,8 @@ defmodule Stitch.MessageQueries do
     Paginator.new(query, skip: offset, limit: limit)
   end
 
-  def load_message(id, user, fetch_users \\ true) do
-    message = get_by_id(id, fetch_users)
+  def load_message(id, user) do
+    message = get_by_id(id, true)
 
     MessageAction.apply_user_message_actions(user, [message])
     |> Message.Reaction.apply_reactions(:message)
@@ -309,26 +309,24 @@ defmodule Stitch.MessageQueries do
   end
 
   def get_by_id(id) do
-    query =
-      from(
-        m in Message,
-        left_join: u in assoc(m, :user),
-        left_join: g in assoc(m, :group),
-        left_join: pb in assoc(m, :pinned_by),
-        where: m.id == ^id,
-        preload: [
-          group: g,
-          user: u,
-          pinned_by: pb,
-          thread_messages:
-            ^from(
-              tm in Message,
-              order_by: [asc: tm.inserted_at]
-            )
-        ]
-      )
-
-    Repo.one(query)
+    from(
+      m in Message,
+      left_join: u in assoc(m, :user),
+      left_join: g in assoc(m, :group),
+      left_join: pb in assoc(m, :pinned_by),
+      where: m.id == ^id,
+      preload: [
+        group: g,
+        user: u,
+        pinned_by: pb,
+        thread_messages:
+          ^from(
+            tm in Message,
+            order_by: [asc: tm.inserted_at]
+          )
+      ]
+    )
+    |> Repo.one()
   end
 
   def get_by_id(id, false), do: Repo.get(Message, id)

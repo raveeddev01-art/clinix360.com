@@ -25,6 +25,7 @@ class Replies extends Component {
 
   render() {
     const message = this.props.message;
+
     if (!message.thread_messages_count) {
       return null;
     }

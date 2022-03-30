@@ -53,6 +53,15 @@ class FileDetailPage extends Component {
     });
   };
 
+  downloadFile = () => {
+    const { teamFileStore } = this.props;
+    const { file } = this.props.teamFileStore;
+
+    console.log(file);
+
+    teamFileStore.downloadFile(file.url, file.filename);
+  }
+
   renderPublicLink(file) {
     const url = file.public_url;
 
@@ -79,7 +88,7 @@ class FileDetailPage extends Component {
         pullRight
       >
         {!desktopStore.isElectron && (
-          <MenuItem eventKey="1" href={file.url} target="_blank">
+          <MenuItem eventKey="1" onClick={this.downloadFile}>
             Download
           </MenuItem>
         )}

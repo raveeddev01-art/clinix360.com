@@ -14,6 +14,18 @@ class AddonStore {
     }
 
     @action
+    updateThreadAddonPanel() {
+
+        if(this.addonPanelType === "files" || this.addonPanelType === "thread") {
+            if(this.detailPanelType === "File Details") {
+                this.setAddonDetailPanel("File Details", this.detailPanelData);
+            } else if (this.detailPanelType === "Message Details") {
+                this.setAddonDetailPanel("Message Details", this.detailPanelData);
+            }
+        }
+    }
+
+    @action
     reset() {
         this.showAddons = false;
         this.showAddonDetail = false;

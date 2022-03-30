@@ -111,6 +111,10 @@ class Message extends PureComponent {
     const { isConversationMessage } = this.props;
     const user = this.getUser(message);
 
+    if(!insertedAt) {
+      return;
+    }
+
     return (
       (!message.is_sequential || message.type === "file_comment") && (
         <MessageHeader

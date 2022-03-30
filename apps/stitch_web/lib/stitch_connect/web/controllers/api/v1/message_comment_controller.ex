@@ -45,7 +45,8 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
            {:message, MessageQueries.load_message(message_id, current_user)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(message_parent, current_user, message_params_with_client, presence) do
-      message = MessageQueries.get_by_id(message.id)
+      message_parent = MessageQueries.load_message(message_parent.id, current_user)
+      message = MessageQueries.load_message(message.id, current_user)
       message_comment_creation_events(message_parent, message, notify_user_ids)
 
       conn
@@ -69,7 +70,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   ##################
 
   def message_comment_creation_events(message, comment, notify_user_ids) do
-    MessageQueries.get_by_id(message.id)
+    message
     |> Map.merge(%{comment_notify_ids: notify_user_ids, comment: comment})
     |> MessageEventsService.message_comment_creation_events(notify_user_ids)
   end
