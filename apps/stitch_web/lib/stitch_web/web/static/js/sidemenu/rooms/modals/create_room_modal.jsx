@@ -81,7 +81,6 @@ class CreateRoomModal extends Component {
         });
         history.push(`/rooms/${slug}`);
         closeModal();
-        messageStore.markAsRead(false);
       })
       .catch(response => {
         this.setState({

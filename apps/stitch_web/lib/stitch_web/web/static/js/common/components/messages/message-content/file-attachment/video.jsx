@@ -75,6 +75,8 @@ class VideoFileAttachment extends Component {
         !this.isAllowedForPreview() && useActions
     });
 
+
+
     return (
       <div className={blockCN}>
         {filename &&
@@ -110,7 +112,7 @@ class VideoFileAttachment extends Component {
           )}
           <video
             controls
-            width="320" height="240"
+            className={holderCN}
             src={this.props.url} />
         
         </div>
