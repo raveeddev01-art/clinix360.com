@@ -103,7 +103,7 @@ defmodule Stitch.Accounts.Email do
     |> IO.inspect(label: "here is 2")
     |> from(@from_address)
     |> IO.inspect(label: "here is 3")
-    |> subject("[InvoChat Connect] Notifications from #{team_name} *|userTime|*")
+    |> subject("[InvoChat Messaging] Notifications from #{team_name}")
     |> text_body("Hello,
     There are some unread messages, please check these
     ")
