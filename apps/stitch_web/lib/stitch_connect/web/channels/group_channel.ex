@@ -203,6 +203,7 @@ defmodule StitchConnect.Web.GroupChannel do
     ActivityTracker.async_update_activity(user)
 
     message_params_with_client = Message.Params.with_client_attrs("channel", params)
+    IO.inspect(message_params_with_client, label: "here is in handle_in(new_msg)" )
     do_new_msg(socket, group, user, message_params_with_client)
   end
 
@@ -620,13 +621,15 @@ defmodule StitchConnect.Web.GroupChannel do
           )
 
           Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
-
+          IO.inspect(notify_user_ids, label: "notify_user_ids in group channels")
           Stitch.Task.start(fn ->
+            Stitch.EmailNotification.create(message.id, notify_user_ids.email)
             broadcast_message_created(message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
             PushNotifications.notify_users(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-            Stitch.EmailNotification.create(message.id, notify_user_ids.email)
+
+
           end)
 
           json = MessageView.render("show.json", %{message: message})

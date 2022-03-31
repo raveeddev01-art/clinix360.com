@@ -80,6 +80,9 @@ defmodule Stitch.Message.MessageCreation do
   def create(group, user, %{"text_content" => _} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{group: group, user: user}
+    IO.inspect(attrs, label: "attrs in message_create.ex group")
+    IO.inspect(message, label: "message in message_create.ex group")
+
     do_create(message, attrs, presence)
   end
 
@@ -93,14 +96,19 @@ defmodule Stitch.Message.MessageCreation do
     group = Repo.preload(message.group, :users)
     users = group.users
     text_content = attrs["text_content"]
+    IO.inspect(message, label: "message in message_controller.ex")
+    IO.inspect(attrs, label: "attrs in message_controller.ex")
+    IO.inspect(presence, label: "presence in message_controller.ex")
+    IO.inspect(opts, label: "opts in message_controller.ex")
 
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
-
+    IO.inspect(presence, label: "presence in message_creation")
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)
+      |> IO.inspect(label: "here is notify_user_ids in message_creation.ex")
       |> thread_notify_user_ids(message)
-
+    IO.inspect(notify_user_ids, label: "notify_user_ids in do_create")
     {read_status, recipients} = ReadStatus.get_read_status(:message, users, user)
 
     attrs =
@@ -183,12 +191,12 @@ defmodule Stitch.Message.MessageCreation do
           |> Enum.uniq()
           |> List.delete(message.user.id)
       end
-
+      IO.inspect(notify_user_ids, label: "notify_user_ids in thread_notify_user_ids function")
     %{
       desktop: Enum.uniq(notify_user_ids.desktop ++ thread_reply_notify_ids),
       mobile: Enum.uniq(notify_user_ids.mobile ++ thread_reply_notify_ids),
       mobile_active: notify_user_ids.mobile_active,
-      email: thread_reply_notify_ids
+      email: notify_user_ids.email ++ thread_reply_notify_ids
     }
   end
 

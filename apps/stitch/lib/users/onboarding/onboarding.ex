@@ -11,6 +11,7 @@ defmodule Stitch.User.Onboarding do
       nil ->
         {:error, "User doesn't exist."}
       user ->
+        IO.inspect("here in send_confirmation_code onboarding")
         Stitch.Accounts.Email.confirmation_code_email(user)
     end
   end

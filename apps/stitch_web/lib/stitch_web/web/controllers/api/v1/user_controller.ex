@@ -159,6 +159,7 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def send_confirmation_code(conn, %{"id" => id}) when is_integer(id) do
+    IO.inspect("here is send_confirmation_code")
     case Stitch.User.Onboarding.send_confirmation_code(id) do
       {:error, message} ->
         conn
