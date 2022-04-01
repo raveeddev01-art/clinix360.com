@@ -452,7 +452,7 @@ class SidemenuStore {
     }
 
     if (group) {
-      group.unread_messages_count += 1;
+      // group.unread_messages_count += 1;
 
       if (isMention) {
         group.mentions_count += 1;
