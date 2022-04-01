@@ -181,18 +181,29 @@ defmodule Stitch.Message do
 
   def create(%Group{} = group, user, attrs, presence_user_ids) do
     attrs = Map.put_new(attrs, "type", "chat")
+    IO.inspect(attrs, label: "here is attrs 1")
     MessageCreation.create(group, user, attrs, presence_user_ids)
+    |> IO.inspect(label: "output of MessageCreation1 in message.ex ")
   end
 
   def create(%Message{} = message, user, attrs, presence_user_ids) do
     attrs = Map.put_new(attrs, "type", "chat")
+    IO.inspect(attrs, label: "here is attrs2")
+
     MessageCreation.create(message, user, attrs, presence_user_ids)
+    |> IO.inspect(label: "output of MessageCreation2 in message.ex ")
   end
 
   def create(group_id, user, attrs, presence_user_ids) do
+
     group = GroupQueries.get_by_id(group_id)
     attrs = Map.put_new(attrs, "type", "chat")
+
+    IO.inspect(group, label: "here is group")
+    IO.inspect(attrs, label: "here is attrs3")
+
     MessageCreation.create(group, user, attrs, presence_user_ids)
+    |> IO.inspect(label: "output of MessageCreation3 in message.ex ")
   end
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do

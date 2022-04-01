@@ -40,9 +40,16 @@ defmodule Stitch.Message.Notification do
       mobile: mobile_user_ids_to_notify,
       mobile_active: mobile_active_user_ids_to_notify,
     }
+    |> IO.inspect(label: "notify_user_ids in notification.ex1")
+
   end
 
   def notify_user_ids(group, author, mentioned_user_ids, active_user_ids) do
+    IO.inspect(active_user_ids, label: "active_user_ids in notificaiton.ex")
+    IO.inspect(mentioned_user_ids, label: "mentioned_user_ids in notificaiton.ex")
+    IO.inspect(author, label: "author in notificaiton.ex")
+    IO.inspect(group, label: "group in notificaiton.ex")
+
     %{desktop_everything: desktop_enabled,
       desktop_nothing: desktop_disabled,
       mobile_everything: mobile_enabled,
@@ -82,6 +89,7 @@ defmodule Stitch.Message.Notification do
       mobile: mobile_user_ids_to_notify,
       mobile_active: mobile_active_user_ids_to_notify,
       email: email_user_ids_to_notify}
+      |> IO.inspect(label: "notify_user_ids in notification.ex2")
   end
 
   defp intersect(a, b), do: a -- (a -- b)

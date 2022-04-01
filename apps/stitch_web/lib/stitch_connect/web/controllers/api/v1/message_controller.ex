@@ -118,10 +118,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
+    IO.inspect(message_params, label: "message_params message_controller")
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
+    IO.inspect(message_params_with_client, label: "message_params_with_client in message controller" )
+    IO.inspect(current_user, label: "current_user in message controller" )
+
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <-
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
@@ -130,6 +134,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       message = %{message | user: current_user}
       # create_optional_upload_comment(message, group, current_user, presence, message_params)
       message = MessageQueries.load_message(message.id, current_user)
+      IO.inspect(notify_user_ids, label: "notify_user_ids in message controller" )
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
       conn
       |> put_status(:created)

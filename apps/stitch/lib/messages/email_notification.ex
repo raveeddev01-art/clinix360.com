@@ -17,6 +17,9 @@ defmodule Stitch.EmailNotification do
   end
 
   def create(message_id, user_ids) do
+    IO.inspect(message_id, label: "herer is message_id in create email notificaiton")
+    IO.inspect(user_ids, label: "herer is user_ids in create email notificaiton")
+
     EmailNotification
     |> Repo.insert_all(Enum.map(user_ids, & [user_id: &1, message_id: message_id, inserted_at: DateTime.utc_now()]))
   end
@@ -30,6 +33,7 @@ defmodule Stitch.EmailNotification do
       message_count: count(en.message_id)
     })
     |> Repo.all
+    |> IO.inspect(label: "here is counter")
   end
 
   def clean_delivered(user_ids) do

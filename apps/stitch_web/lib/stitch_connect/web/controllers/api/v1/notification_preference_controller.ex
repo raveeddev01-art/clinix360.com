@@ -15,6 +15,7 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
   end
 
   def update_global(conn, %{} = params) do
+    IO.inspect(params, label: "here is params in notifiation srtting")
     case User.update_preference(conn.assigns.current_user, params) do
       {:ok, %{user: user}} ->
         notification_preference = Notification.for_user(conn.assigns.current_user.id)
@@ -41,6 +42,7 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
   end
 
   def update(conn, %{"group_id" => group_id} = params) do
+    IO.inspect(params, label: "here is update of notification_setting")
     case GroupUser.update_preference(group_id, conn.assigns.current_user.id, params) do
       {:ok, group_user} ->
         render(conn, "show.json", group_user: group_user)

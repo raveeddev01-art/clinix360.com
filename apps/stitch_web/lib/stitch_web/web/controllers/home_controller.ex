@@ -8,6 +8,7 @@ defmodule Stitch.Web.HomeController do
     |> put_layout("home_layout.html")
     |> assign(:title, title_for_path(path))
     |> assign(:description, description_for_path(path))
+    |> IO.inspect(label: "here is home controller")
     |> render("index.html", login_params: login_params)
   end
 

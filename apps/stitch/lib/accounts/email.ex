@@ -14,6 +14,7 @@ defmodule Stitch.Accounts.Email do
   """
   def confirmation_code_email(user) do
     # code looks like "123-456" in email only
+    IO.inspect(user, label: "here is user")
     code_string =
       String.to_charlist(user.confirmation_code)
       |> List.insert_at(3, "-")
@@ -23,8 +24,10 @@ defmodule Stitch.Accounts.Email do
     |> text_body("Sign-Up 1: Authenticate Provider Code (Connect)")
     |> to(user.email)
     |> from(@from_address)
+    |> IO.inspect(label: "here is from")
     |> subject("InvoChat confirmation code: #{code_string}")
     |> Stitch.NewMailer.deliver_now()
+    |> IO.inspect(label: "here is last")
   end
 
   @doc """
@@ -95,14 +98,20 @@ defmodule Stitch.Accounts.Email do
   def unread_messages_email(recipients, %Stitch.Team{name: team_name}) do
     new_email()
     |> template("Message Waiting - Offline Email (Connect)")
+    |> IO.inspect(label: "here is 1")
     |> to(Enum.map(recipients, & &1.email))
+    |> IO.inspect(label: "here is 2")
     |> from(@from_address)
-    |> subject("[InvoChat Connect] Notifications from #{team_name} *|userTime|*")
+    |> IO.inspect(label: "here is 3")
+    |> subject("[InvoChat Messaging] Notifications from #{team_name}")
     |> text_body("Hello,
     There are some unread messages, please check these
     ")
+    |> IO.inspect(label: "here is 4")
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
+    |> IO.inspect(label: "here is 5")
     |> Stitch.NewMailer.deliver_now()
+    |> IO.inspect(label: "here is last")
   end
 
   defp unread_messages_for_recipient(%{
