@@ -44,6 +44,9 @@ class RootStore {
     this.createStores();
     this.joinChannels();
     this.onStoreInit();
+
+    // reconnect channels after 7 mins
+    this.reconnectTimer = setInterval(this.socketStore.connectionLoop, 1000 * 60 * 7);
   }
 
   createStores() {
