@@ -79,7 +79,7 @@ class FileDetails extends Component {
             onUnmounted={messageStore.onMessageUnmounted}
             onShow={messageStore.onMessageShow}
             onHide={messageStore.onMessageHide}
-            messageClass={"message-details"}
+            messageClass={"file-details"}
           />
         </div>
         <FileInfo file={file} />

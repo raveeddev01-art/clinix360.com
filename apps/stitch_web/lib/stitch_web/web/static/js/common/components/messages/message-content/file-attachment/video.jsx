@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import { FILE_VIEW_SIZE_LIMIT } from "lib/constants";
-import { getFullUrl } from "lib/utils";
+import getFileType from "lib/file-types";
+import { getFullUrl, prettyFileSize } from "lib/utils";
 import AttachmentActions from "./components/attachment-actions";
 class VideoFileAttachment extends Component {
   constructor(props) {
@@ -30,8 +31,10 @@ class VideoFileAttachment extends Component {
   render() {
     const {
       filename,
+      mimetype,
       url,
       size,
+      size_in_bytes,
       comment_count: commentCount,
       onCommentsClick,
       isConversationMessage,
@@ -46,25 +49,12 @@ class VideoFileAttachment extends Component {
       preview_width: width,
       preview_url: previewUrl
     } = this.props;
-    const { showModal } = this.state;
-    let holderStyle = null;
-    let placeholderStyle = null;
 
-    if (height && width) {
-      let ratio = 1; // ratio between original size to rendered size. Rendered max width & height is restricted by 360px
-      if (height > 360) {
-        ratio = height / 360;
-      }
 
-      placeholderStyle = {
-        width: width / ratio,
-        paddingTop: `${height / width * 100}%`,
-        backgroundImage: `url(${url})`
-      };
-      holderStyle = {
-        maxHeight: Math.min(height, 360) // constraint holder size for when paddingTop is bigger than height
-      };
-    }
+    const filetype = getFileType(mimetype);
+    let hoverText = "- Click to view";
+    let hoverIcon = "search";
+    let mainCN = "attachment-block attachment-block--view";
 
     const blockCN = cx("attachment-image-block", {
       "attachment-image-block--sm": size === "sm"
@@ -75,59 +65,57 @@ class VideoFileAttachment extends Component {
         !this.isAllowedForPreview() && useActions
     });
 
-
-
     return (
       <div className={blockCN}>
-        {filename &&
-          useActions && (
+
+        <div className={mainCN}>
+          <div className="attachment-icon">
+            <i className={filetype.icon} />
+            <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
+          </div>
+          <div className="attachment-description">
             <div className="attachment-title">
-              {isConversationMessage ? (
-                <a target="_blank" href={url} onClick={onFileDownload}>
-                  <strong>{filename}</strong>
-                </a>
-              ) : (
-                <a onClick={onCommentsClick}>
-                  <strong>{filename}</strong>
-                </a>
-              )}
+              <strong>{filename}</strong>
             </div>
-          )}
-        <div className={holderCN} style={holderStyle}>
-        { message && (
-            <AttachmentActions
-              url={url}
-              file_id={file_id}
-              user_id={user_id}
-              encoded_id={encoded_id}
-              public_url={public_url}
-              message={message}
-              commentCount={commentCount}
-              isActionsVisible={false}
-              isOriginalOpenVisible={undefined}
-              onCommentsClick={onCommentsClick}
-              onFileDownload={onFileDownload}
-              tooltipPlacement="top"
-            />
-          )}
-          <video
-            controls
-            className={holderCN}
-            src={this.props.url} />
-        
+            <div className="attachment-detail">
+              {prettyFileSize(size_in_bytes)}&nbsp;
+              <span className="attachment-detail__normal">
+                {filetype.title}
+              </span>
+              <span className="attachment-detail__hover">{hoverText}</span>
+            </div>
+
+            <video
+              controls
+              src={this.props.url} />
+
+            {useActions &&
+              message && (
+                <AttachmentActions
+                  url={url}
+                  file_id={file_id}
+                  user_id={user_id}
+                  encoded_id={encoded_id}
+                  public_url={public_url}
+                  message={message}
+                  commentCount={commentCount}
+                  isActionsVisible={isConversationMessage ? false : undefined}
+                  isOriginalOpenVisible={
+                    isConversationMessage ? false : undefined
+                  }
+                  onCommentsClick={onCommentsClick}
+                  onFileDownload={onFileDownload}
+                />
+              )}
+
+          </div>
+
         </div>
 
-        {/* {this.isAllowedForPreview() && (
-          <FileViewer
-            {...this.props}
-            type="Image"
-            show={showModal}
-            onHideModal={this.onToggleModal}
-          />
-        )} */}
       </div>
     );
   }
+
 }
 
 VideoFileAttachment.propTypes = {

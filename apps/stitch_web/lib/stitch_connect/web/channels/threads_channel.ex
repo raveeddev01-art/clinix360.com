@@ -138,7 +138,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
     limit = Map.get(params, "limit", 60)
     fetch_users = get_fetch_users_param(params)
 
-    case MessageQueries.load_message(message_id, user, fetch_users) do
+    case MessageQueries.load_message(message_id, user) do
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
 
@@ -268,6 +268,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
     ActivityTracker.async_update_activity(user)
     # message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
     message = MessageQueries.load_message(message_id, user)
+    |> IO.inspect(label: "Message is here")
 
     case {message, message && GroupAuthorization.can_view?(message.group, user)} do
       {nil, _} ->

@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 import { FILE_VIEW_SIZE_LIMIT } from "lib/constants";
-import { getFullUrl } from "lib/utils";
+import getFileType from "lib/file-types";
+import { getFullUrl, prettyFileSize } from "lib/utils";
 import AttachmentActions from "./components/attachment-actions";
 import FileViewer from "./file-viewer";
 
@@ -32,8 +33,10 @@ class ImageFileAttachment extends Component {
   render() {
     const {
       filename,
+      mimetype,
       url,
       size,
+      size_in_bytes,
       comment_count: commentCount,
       onCommentsClick,
       isConversationMessage,
@@ -49,25 +52,15 @@ class ImageFileAttachment extends Component {
       preview_url: previewUrl
     } = this.props;
     const { showModal } = this.state;
-    let holderStyle = null;
-    let placeholderStyle = null;
+    let placeholderStyle = {
+      backgroundImage: `url(${url})`
+    };
 
-    if (height && width) {
-      let ratio = 1; // ratio between original size to rendered size. Rendered max width & height is restricted by 360px
-      if (height > 360) {
-        ratio = height / 360;
-      }
-
-      placeholderStyle = {
-        width: width / ratio,
-        paddingTop: `${height / width * 100}%`,
-        backgroundImage: `url(${url})`
-      };
-      holderStyle = {
-        maxHeight: Math.min(height, 360) // constraint holder size for when paddingTop is bigger than height
-      };
-    }
-
+    const filetype = getFileType(mimetype);
+    let hoverText = "- Click to view";
+    let hoverIcon = "search";
+    let mainCN = "attachment-block attachment-block--view";
+    
     const blockCN = cx("attachment-image-block", {
       "attachment-image-block--sm": size === "sm"
     });
@@ -79,25 +72,26 @@ class ImageFileAttachment extends Component {
 
     return (
       <div className={blockCN}>
-        {filename &&
-          useActions && (
+
+        <div className={mainCN}>
+          <div className="attachment-icon">
+            <i className={filetype.icon} />
+            <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
+          </div>
+          <div className="attachment-description">
             <div className="attachment-title">
-              {/* <span>uploaded this image: </span> */}
-              {isConversationMessage ? (
-                <a target="_blank" href={url} onClick={onFileDownload}>
-                  <strong>{filename}</strong>
-                </a>
-              ) : (
-                <a onClick={onCommentsClick}>
-                  <strong>{filename}</strong>
-                </a>
-              )}
+              <strong>{filename}</strong>
             </div>
-          )}
-        <div className={holderCN} style={holderStyle}>
-          {placeholderStyle ? (
+            <div className="attachment-detail">
+              {prettyFileSize(size_in_bytes)}&nbsp;
+              <span className="attachment-detail__normal">
+                {filetype.title}
+              </span>
+              <span className="attachment-detail__hover">{hoverText}</span>
+            </div>
+
             <div
-              className="attachment-preview-placeholder"
+              className="attachment-thumb"
               style={placeholderStyle}
               onClick={this.onToggleModal}
             >
@@ -120,15 +114,13 @@ class ImageFileAttachment extends Component {
                   />
                 )}
             </div>
-          ) : (
-            <img
-              src={previewUrl || url}
-              className="img-responsive"
-              alt={filename}
-              onClick={this.onToggleModal}
-            />
-          )}
+
+          </div>
+
         </div>
+
+
+
 
         {this.isAllowedForPreview() && (
           <FileViewer
