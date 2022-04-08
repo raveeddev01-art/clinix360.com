@@ -29,8 +29,9 @@ services:
     environment:
       - ELASTICSEARCH_URL=http://elastic_search:9200
       - REDIS_URL=redis://redis:6379
-    expose:
-    - "4001"
+      - DATABASE_URL=postgressql://postgres:postgres@postgres:5432/stitch_connect_dev
+    ports:
+      - "4101:4101"
     networks:
       - invochat
     restart: unless-stopped

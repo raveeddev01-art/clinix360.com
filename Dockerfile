@@ -27,9 +27,6 @@ ENV MIX_ENV prod
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-RUN apt-get update && apt-get install -y --no-install-recommends locales
-RUN echo en_US.UTF-8 UTF-8 > /etc/locale.gen && locale-gen && \
-  update-locale LANG=en_US.UTF-8
 
 # Install hex package manager and rebar
 # By using --force, we don’t need to type “Y” to confirm the installation
