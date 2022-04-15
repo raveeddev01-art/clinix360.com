@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import AvatarImage from "./avatar-image";
-
+import UserProfileMenu from "../user-profile-menu";
 class Avatar extends Component {
+
   render() {
     const { user, size } = this.props;
     const wrapperClass = size === "sm" ? "avatar" : "";
@@ -11,7 +12,9 @@ class Avatar extends Component {
 
     return (
       <div className={wrapperClass}>
-        <AvatarImage useThumb className={avatarClass} user={user} />
+        <UserProfileMenu user={user}>
+          <AvatarImage useThumb className={avatarClass} user={user} />
+        </UserProfileMenu>
       </div>
     );
   }

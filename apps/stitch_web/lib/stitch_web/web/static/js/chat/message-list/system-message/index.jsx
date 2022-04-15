@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import partRenderers from "./part-renderers";
+import { inject } from "mobx-react";
 
+@inject("usersStore")
 class SystemMessage extends Component {
   render() {
     const { message } = this.props;
     const parts = message.text_content.split(/(\{[a-z]*\})/).filter(Boolean);
+    const user = this.props.usersStore.getUserById(message.user_id);
+
     return (
       <div
         className="system-message"
@@ -18,12 +22,21 @@ class SystemMessage extends Component {
           if (matches && matches.length) {
             const type = matches[1];
             if (partRenderers[type]) {
-              return prev.concat(
-                partRenderers[type](
-                  message.fields[type],
-                  `system-message-${type}-${index}`
-                )
-              );
+              if(type === 'user') {
+                return prev.concat(
+                  partRenderers[type](
+                    user,
+                    `system-message-${type}-${index}`
+                  )
+                );
+              } else {
+                return prev.concat(
+                  partRenderers[type](
+                    message.fields[type],
+                    `system-message-${type}-${index}`
+                  )
+                );
+              }
             }
           }
 
