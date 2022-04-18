@@ -1,0 +1,65 @@
+version: "3.7"
+
+services:
+  
+  redis:
+    image: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - invochat
+    restart: unless-stopped
+    container_name: redis
+    volumes:
+      - redis:/data
+
+  elastic_search:
+    image: bitnami/elasticsearch:latest
+    networks:
+      - invochat
+    restart: unless-stopped
+    container_name: elastic_search
+    volumes:
+      - elasticsearch:/bitnami/elasticsearch/data
+    
+  invochatapp:
+    build:
+      context: '.'
+    env_file:
+      - docker.env
+    environment:
+      - ELASTICSEARCH_URL=http://elastic_search:9200
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgressql://postgres:postgres@postgres:5432/stitch_connect_dev
+    ports:
+      - "4101:4101"
+    networks:
+      - invochat
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+      - elastic_search
+    entrypoint: ["./entrypoint.sh"]
+
+  postgres:
+    image: postgres:10.12-alpine
+    networks:
+      - invochat
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: stitch_connect_dev
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+    container_name: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:
+  elasticsearch:
+  redis:
+networks:
+  invochat:
+   external: true

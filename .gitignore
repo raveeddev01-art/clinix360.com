@@ -44,3 +44,4 @@ apps/stitch_web/screenshots/
 dump.rdb
 package-lock.json
 yarn.lock
+docker.env
