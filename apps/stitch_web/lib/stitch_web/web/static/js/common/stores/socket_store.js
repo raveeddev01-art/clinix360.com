@@ -47,10 +47,6 @@ class SocketStore {
     this.isConnected = false;
   };
 
-  connectionLoop = () => {
-    this.loadAfterReconnect();
-  }
-
   @action
   loadAfterReconnect = () => {
     const { usersStore, groupsStore } = this.rootStore;

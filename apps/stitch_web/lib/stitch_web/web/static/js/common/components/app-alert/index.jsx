@@ -10,6 +10,7 @@ export default class AppAlert extends Component {
     const { socketStore } = this.props;
 
     if (!socketStore.isConnected) {
+      socketStore.onSocketOpen();
       return <ReconnectionAlert />;
     }
 
