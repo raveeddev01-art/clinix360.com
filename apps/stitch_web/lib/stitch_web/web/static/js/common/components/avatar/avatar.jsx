@@ -5,7 +5,19 @@ import AvatarImage from "./avatar-image";
 import UserProfileMenu from "../user-profile-menu";
 class Avatar extends Component {
 
-  render() {
+  renderAvatar = () => {
+    const { user, size } = this.props;
+    const wrapperClass = size === "sm" ? "avatar" : "";
+    const avatarClass = size === "sm" ? "img-circle" : "img-responsive";
+
+    return (
+      <div className={wrapperClass}>
+        <AvatarImage useThumb className={avatarClass} user={user} />
+      </div>
+    );
+  };
+
+  renderProfileMenu = () => {
     const { user, size } = this.props;
     const wrapperClass = size === "sm" ? "avatar" : "";
     const avatarClass = size === "sm" ? "img-circle" : "img-responsive";
@@ -17,6 +29,10 @@ class Avatar extends Component {
         </UserProfileMenu>
       </div>
     );
+  };
+
+  render() {
+    return this.props.hideProfileDropDown ? this.renderAvatar() : this.renderProfileMenu();
   }
 }
 

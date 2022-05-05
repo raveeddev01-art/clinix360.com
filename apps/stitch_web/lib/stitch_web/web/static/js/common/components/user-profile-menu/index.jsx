@@ -50,7 +50,7 @@ class UserProfileMenu extends Component {
           className="user-profile-menu-dropdown"
         >
           <div className="header">
-            <Avatar user={user} size="sm" />
+            <Avatar user={user} size="sm" hideProfileDropDown={true} />
 
             <div className="content">
               <div className="full-name">{user.full_name}</div>
