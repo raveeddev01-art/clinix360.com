@@ -20,7 +20,7 @@ defmodule Stitch.FindYourTeam.Email do
     |> from({"InvoChat", "hello@#{System.get_env("MAILGUN_DOMAIN")}"})
     |> IO.inspect(label: "here is from")
     |> subject("Find Your Team")
-    |> text_body("Hit your temam here: #{endpoint_base_url}/find-your-team/#{token.token}")
+    |> text_body("Find your workspace here: #{endpoint_base_url}/find-your-team/#{token.token}")
     |> Stitch.NewMailer.deliver_now()
   end
 end
