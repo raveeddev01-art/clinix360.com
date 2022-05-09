@@ -59,7 +59,7 @@ class FileItem extends Component {
     const username = user && this.renderName(user);
 
     return (
-      <div className="file-item" onClick={this.onClick}>
+      <div className="file-item" /* onClick={this.onClick} */>
         <FileThumb mimetype={file.mimetype} previewUrl={file.preview_url} />
         <div className="file-item__content">
           {isActionsVisible && (

@@ -16,7 +16,7 @@ import { isMemberOrAdmin } from "../lib/utils";
 import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../lib/constants";
 import { Element } from "react-scroll";
 
-@inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
+@inject("presenceStore", "sidemenuStore", "userStore", "groupsStore", "usersStore")
 @observer
 class Sidemenu extends Component {
   componentDidMount() {
@@ -136,8 +136,9 @@ class Sidemenu extends Component {
   }
 
   render() {
-    const { sidemenuStore, userStore, groupsStore } = this.props;
+    const { sidemenuStore, userStore, usersStore, groupsStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
+    const user = usersStore.getUserById(userStore.id);
 
     return (
       <div id="sidemenu">
@@ -174,10 +175,7 @@ class Sidemenu extends Component {
             <Dropdown.Menu className="super-colors">
               <div className="user-header m-b-20">
                 <Avatar
-                  user={{
-                    avatar_thumb: userStore.avatarThumb,
-                    username: userStore.username
-                  }}
+                  user={user}
                   size="sm"
                 />
 
