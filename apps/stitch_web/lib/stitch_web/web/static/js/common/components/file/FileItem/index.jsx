@@ -77,18 +77,20 @@ class FileItem extends Component {
             </div>
           )}
 
-          {onFileClick ? (
+          {/* {onFileClick ? (
             <a onClick={() => onFileClick(file.id)} className="file-item__link">
               {file.filename}
             </a>
           ) : (
-            <Link
+
+          )} */}
+          <Link
               className="file-item__link"
               to={`/admin/files/${file.encoded_id}`}
+              target='_blank'
             >
               {file.filename}
-            </Link>
-          )}
+          </Link>
 
           <div className="file-item__content-user">
             <span onClick={e => e.stopPropagation()}>
