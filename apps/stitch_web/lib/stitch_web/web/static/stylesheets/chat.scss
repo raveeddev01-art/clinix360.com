@@ -319,9 +319,9 @@
           border-radius: 3px;
         }
 
-        .message-nav{
-          margin-left: 20px;
-        }
+        // .message-nav{
+        //   margin-left: 20px;
+        // }
         
         .new-message-banner {
           position: absolute;
@@ -768,6 +768,20 @@
 
   a {
     outline: none;
+  }
+}
+
+.thread {
+  margin: 12px; 
+
+  .message-thread {
+    margin: 0;
+    padding: 0;
+  }
+
+  .message-nav {
+    margin: 0;
+    padding: 0;
   }
 }
 

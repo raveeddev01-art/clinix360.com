@@ -65,7 +65,7 @@ class MessageList extends Component {
           this.chatDiv = div;
         }}
       >
-        {!messageStore.jumpMode && messageStore.loadedAll && <WelcomeMessage />}
+        {!messageStore.jumpMode && messageStore.loadedAll && !isThreadView && <WelcomeMessage />}
         {!messageStore.jumpMode &&
           messageStore.isLoadingPast && (
             <div className="loading-message">Loading messages...</div>
@@ -116,34 +116,38 @@ class MessageList extends Component {
           )) :
           (<div key={`thread`}>
             {messages.map(
-              message =>
+              (message, index) =>
               (this.showThreadMessage(message) &&
-                <Message
-                  // start of dummy prop so that message list react to message prop change
-                  edited_at={message.edited_at}
-                  isThreadView={isThreadView}
-                  pinned={message.pinned}
-                  starred={message.starred}
-                  status={message.status}
-                  is_sequential={message.is_sequential}
-                  reactions_web={message.reactions_web}
-                  link_previews={message.link_previews}
-                  // end of dummy prop
-                  key={`message_${message.id}`}
-                  message={message}
-                  hasNML={
-                    newMessageLineMessage &&
-                    newMessageLineMessage.id === message.id
-                  }
-                  lastOtherUserMessage={messageStore.lastOtherUserMessage}
-                  messageStore={messageStore}
-                  chatDiv={messageStore.chatDiv}
-                  onMounted={messageStore.onMessageMounted}
-                  onUnmounted={messageStore.onMessageUnmounted}
-                  onShow={messageStore.onMessageShow}
-                  onHide={messageStore.onMessageHide}
-                  isHighlighted={highlightId === message.id}
-                />
+                <div className="message-container addon thread" key={index}>
+                  <div className="message message-thread">
+                    <Message
+                      // start of dummy prop so that message list react to message prop change
+                      edited_at={message.edited_at}
+                      isThreadView={isThreadView}
+                      pinned={message.pinned}
+                      starred={message.starred}
+                      status={message.status}
+                      is_sequential={message.is_sequential}
+                      reactions_web={message.reactions_web}
+                      link_previews={message.link_previews}
+                      // end of dummy prop
+                      key={`message_${message.id}`}
+                      message={message}
+                      hasNML={
+                        newMessageLineMessage &&
+                        newMessageLineMessage.id === message.id
+                      }
+                      lastOtherUserMessage={messageStore.lastOtherUserMessage}
+                      messageStore={messageStore}
+                      chatDiv={messageStore.chatDiv}
+                      onMounted={messageStore.onMessageMounted}
+                      onUnmounted={messageStore.onMessageUnmounted}
+                      onShow={messageStore.onMessageShow}
+                      onHide={messageStore.onMessageHide}
+                      isHighlighted={highlightId === message.id}
+                    />
+                  </div>
+                </div>
               )
             )}
           </div>)

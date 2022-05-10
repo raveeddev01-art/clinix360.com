@@ -144,7 +144,7 @@ class Message extends PureComponent {
 
     const user = this.getUser(message);
 
-    const messageClassName = cx("message", {
+    const messageClassName = cx(isThreadView ? " " : "message", {
       sequential: message.is_sequential,
       selected: isSelected,
       highlight: isHighlighted,
@@ -157,8 +157,8 @@ class Message extends PureComponent {
       <div
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
-        className={`${isThreadView ? "thread-box" : ""} ${messageClass}`} >
-        {isThreadView && <MessageNav message={message} isThreadView={isThreadView} />}
+        className={`${messageClassName} ${messageClass}`} >
+        {isThreadView && <MessageNav message={message} />}
         {hasNML && (
           <Element name="newMessageBanner" className="new-message-banner">
             <div className="blue-line">

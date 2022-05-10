@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 @inject("groupsStore")
 class MessageNav extends Component {
   render() {
-    const { groupsStore, message, isThreadView } = this.props;
+    const { groupsStore, message } = this.props;
     const group = groupsStore.getGroupById(message.group_id);
     const url = groupsStore.getGroupUrl(message.group_id);
     const now = moment();
@@ -20,8 +20,7 @@ class MessageNav extends Component {
           />{" "}
           {groupsStore.getGroupName(group)}
         </NavLink>
-
-        {!isThreadView && <span className="m-l-10">
+        <span className="m-l-10">
           {moment
             .utc(message.inserted_at)
             .local()
@@ -37,7 +36,7 @@ class MessageNav extends Component {
                 }
               }
             })}
-        </span>}
+        </span>
       </div>
     );
   }
