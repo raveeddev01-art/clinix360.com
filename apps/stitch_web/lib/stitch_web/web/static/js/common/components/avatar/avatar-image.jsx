@@ -70,7 +70,7 @@ class AvatarImage extends Component {
       return user.grey_avatar;
     }
 
-    return user.avatar_thumb;
+    return useThumb ? user.avatar_thumb : user.avatar;
   }
 
   render() {
