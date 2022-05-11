@@ -175,6 +175,7 @@ class Sidemenu extends Component {
             <Dropdown.Menu className="super-colors">
               <div className="user-header m-b-20">
                 <Avatar
+                  hideProfileDropDown={true}
                   user={user}
                   size="sm"
                 />
