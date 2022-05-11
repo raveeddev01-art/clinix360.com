@@ -530,6 +530,18 @@
       font-size: 18px;
     }
 
+    .trial-link {
+      margin: 20px;
+      i {
+        margin-right: 5px;
+      }
+    }
+
+    .signin-link{
+      margin: 5px;
+      font-weight: 700;
+    }
+
     .btn {
       padding: 16px 30px;
     }
@@ -561,11 +573,16 @@
         padding: 95px 0;
       }
 
+      ul {
+        margin-top: 10px;
+        padding-left: 20px;
+      }
+
       .info {
         max-width: 100%;
         padding: 0;
         @media (min-width: $screen-md) {
-          max-width: 85%;
+          max-width: 100%;
           margin: 0 auto 0 0 !important;
         }
 
