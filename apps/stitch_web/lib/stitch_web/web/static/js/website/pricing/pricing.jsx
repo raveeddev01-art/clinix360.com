@@ -24,13 +24,43 @@ export default class Pricing extends Component {
         <Header />
 
         <Subheader
-          title="Free to use, upgrade any time"
-          subtitle="InvoChat is free to use with an unlimited number of people."
+          title="Set up your workspace, pay later"
+          subtitle="Try InvoChat free for 14 days, no credit card required"
         />
 
         <div className="pricing-section">
           <div className="container">
             <Tab.Container id="pricing-tabs" defaultActiveKey="first">
+              <div>
+                <Nav bsStyle="tabs">
+                  <NavItem eventKey="first">
+                    {/* <span className="hidden-xs hidden-sm">InvoChat for</span>{" "} */}
+                    InvoChat for Practices
+                  </NavItem>
+                </Nav>
+
+                <Tab.Content animation unmountOnExit>
+                  <Tab.Pane eventKey="first">
+                    <h3 className="pricing-table-heading text-center">
+                      <strong>InvoChat</strong> is a collaboration
+                      space, tailored to fulfill needs of businesses of all scales.
+                    </h3>
+                    <div className="hidden-md hidden-lg">
+                      <PricingMobile />
+                    </div>
+
+                    <div className="hidden-xs hidden-sm">
+                      <PricingDesktop />
+                    </div>
+                  </Tab.Pane>
+
+                  <Tab.Pane eventKey="second">
+                    <PricingEnterprise />
+                  </Tab.Pane>
+                </Tab.Content>
+              </div>
+            </Tab.Container>
+            {/* <Tab.Container id="pricing-tabs" defaultActiveKey="first">
               <div>
                 <Nav bsStyle="tabs">
                   <NavItem eventKey="first">
@@ -63,7 +93,7 @@ export default class Pricing extends Component {
                   </Tab.Pane>
                 </Tab.Content>
               </div>
-            </Tab.Container>
+            </Tab.Container> */}
           </div>
         </div>
 

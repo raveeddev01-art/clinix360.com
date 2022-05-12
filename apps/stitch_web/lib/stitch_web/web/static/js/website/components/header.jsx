@@ -141,11 +141,11 @@ class Header extends Component {
               open={this.state.resourcesMenuOpened}
               noCaret
             >
-              <LinkContainer to="/downloads">
+              {/* <LinkContainer to="/downloads">
                 <MenuItem>
                   <i className="far fa-cloud-download" /> Downloads
                 </MenuItem>
-              </LinkContainer>
+              </LinkContainer> */}
 
               <LinkContainer to="/customers">
                 <MenuItem>

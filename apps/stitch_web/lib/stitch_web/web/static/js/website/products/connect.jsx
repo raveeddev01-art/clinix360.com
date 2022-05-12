@@ -64,8 +64,7 @@ export default class Connect extends Component {
 
                 <Button bsStyle="primary" href="mailto:info@invozone.com?subject=InvoChat: Request Information">Request Demo</Button>
 
-
-                <a className="trial-link" href="/signup/email">
+                <a className="trial-link" href="/getstarted/">
                   <i className="fa fa-external-link"></i>
                   Sign up for a free 14 days trail
                 </a>
@@ -79,11 +78,13 @@ export default class Connect extends Component {
                 />
               </div>
             </div>
-            <h4>Already using InvoChat?              
-              <a className="signin-link" href="/signin">
-                Sign in
-              </a>
-            </h4>
+            <div>
+              <h4>Already using InvoChat?              
+                <a className="signin-link" href="/signin">
+                  Sign in
+                </a>
+              </h4>
+            </div>
           </div>
         </div>
 
@@ -155,9 +156,9 @@ export default class Connect extends Component {
         </Feature>
 
         <Feature
-          featureClassName={flipped ? "alt" : ""}
+          featureClassName={flipped ? "" : "alt"}
           heading="Create collaborative workspaces to stay on top of things"
-          image="/images/connect-feature-4.png"
+          image="/images/connect-feature-3.png"
         >
           InvoChat workspaces offer a single most centralized 
           platform for companies and it’s employees who require
@@ -327,7 +328,7 @@ export default class Connect extends Component {
                     <div className="number m-b-30">4</div>
                     <h4 className="m-b-20">Message securely</h4>
                     <p>
-                      InvoChat’s app for instant messaging is secured with end-to-end encryption. 
+                      InvoChat is secured with end-to-end encryption. 
                       Securely chat and share files for efficient collaboration.
                     </p>
                   </Panel.Body>

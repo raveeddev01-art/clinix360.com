@@ -2,29 +2,17 @@
 export const PRICING_TABLE = {
   PLATFORM: [
     // {
-    //   feature: "Full HIPAA Compliance",
+    //   feature: "iOS & Android Apps",
     //   basic: true,
     //   standard: true,
     //   premium: true
     // },
-    {
-      feature: "iOS & Android Apps",
-      basic: true,
-      standard: true,
-      premium: true
-    },
-    {
-      feature: "Mac & Windows Apps",
-      basic: true,
-      standard: true,
-      premium: true
-    },
-    {
-      feature: "EHR Integrations",
-      basic: true,
-      standard: true,
-      premium: true
-    },
+    // {
+    //   feature: "Mac & Windows Apps",
+    //   basic: true,
+    //   standard: true,
+    //   premium: true
+    // },
     {
       feature: "API Access",
       basic: true,
@@ -159,12 +147,12 @@ export const PRICING_TABLE = {
       standard: true,
       premium: true
     },
-    {
-      feature: "Phone Support",
-      basic: false,
-      standard: true,
-      premium: true
-    },
+    // {
+    //   feature: "Phone Support",
+    //   basic: false,
+    //   standard: true,
+    //   premium: true
+    // },
     {
       feature: "Custom Data Retention",
       basic: false,
@@ -183,18 +171,18 @@ export const PRICING_TABLE = {
       standard: false,
       premium: true
     },
-    {
-      feature: "Advanced Security Controls",
-      basic: false,
-      standard: false,
-      premium: true
-    },
-    {
-      feature: "On-Site Training",
-      basic: false,
-      standard: false,
-      premium: true
-    },
+    // {
+    //   feature: "Advanced Security Controls",
+    //   basic: false,
+    //   standard: false,
+    //   premium: true
+    // },
+    // {
+    //   feature: "On-Site Training",
+    //   basic: false,
+    //   standard: false,
+    //   premium: true
+    // },
     {
       feature: "Custom Profiles",
       basic: false,
@@ -220,7 +208,6 @@ export const PRICING_TABLE = {
 export const PRICING_TABLE_MOBILE = {
   BASIC: {
     PLATFORM: [
-      // { feature: "Full HIPAA Compliance" },
       { feature: "iOS & Android Apps" },
       { feature: "Mac & Windows Apps" },
       { feature: "EHR Integrations" },
@@ -264,12 +251,41 @@ export const PRICING_TABLE_MOBILE = {
     ]
   },
   PREMIUM: {
-    COMMUNICATION: [{ feature: "Voice & Video Calls" }],
-    FILE_SHARING: [{ feature: "10GB/User" }],
+    PLATFORM: [
+      // { feature: "iOS & Android Apps" },
+      // { feature: "Mac & Windows Apps" },
+      { feature: "API Access" }
+    ],
+    COMMUNICATION: [
+      { feature: "Public & Private Rooms" },
+      { feature: "Group & Direct Messaging" },
+      { feature: "Unlimited" },
+      { feature: "Priority Messaging" },
+      { feature: "Voice & Video Calls" }
+    ],
+    FILE_SHARING: [
+      { feature: "Image & Video Uploads" },
+      { feature: "Document Uploads" },
+      { feature: "10GB Total File Storage" },
+      { feature: "Threaded File Comments" }
+    ],
+    PRODUCTIVITY: [
+      { feature: "Read Receipts" },
+      { feature: "Message Pinning" },
+      { feature: "Message Starring" },
+      { feature: "Emoji Reactions" },
+      { feature: "Search Modifiers" }
+    ],
     ADMINISTRATION: [
+      { feature: "Usage Analytics" },
+      { feature: "User Access Logs" },
+      { feature: "Member Management" },
+      { feature: "Inactivity Lockout Timer" },
+      { feature: "Data Import & Export" },
+      { feature: "Priority Email Support" },
+      { feature: "Custom Data Retention" },
+      { feature: "Guest Access" },
       { feature: "Dedicated Support" },
-      { feature: "Advanced Security Controls" },
-      { feature: "On-site Training" },
       { feature: "Custom Profiles" },
       { feature: "Single Sign On" },
       { feature: "Custom Integrations" }

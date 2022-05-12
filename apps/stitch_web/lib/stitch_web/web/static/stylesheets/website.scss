@@ -531,10 +531,22 @@
     }
 
     .trial-link {
-      margin: 20px;
-      i {
-        margin-right: 5px;
+      border: 1px solid $brand-primary;
+      border-radius: 3px;
+      padding: 15px 20px;
+      margin: 0 0 0 10px;
+      font-weight: 700;
+
+      &:hover,
+      &:focus {
+        color: #fff;
+        background: $brand-primary;
       }
+
+
+    i {
+      margin-right: 5px;
+    }
     }
 
     .signin-link{

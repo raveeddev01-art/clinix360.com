@@ -37,9 +37,6 @@ export default class Footer extends Component {
                       </a>
                     </li>
                     <li>
-                      <Link to="/hipaa">HIPAA</Link>
-                    </li>
-                    <li>
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
@@ -57,9 +54,9 @@ export default class Footer extends Component {
                     <li>
                       <Link to="/connect">Product</Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link to="/downloads">Downloads</Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link to="/pricing">Pricing</Link>
                     </li>
@@ -74,9 +71,6 @@ export default class Footer extends Component {
                     </li>
                     <li>
                       <Link to="/terms-of-service">Terms of Service</Link>
-                    </li>
-                    <li>
-                      <Link to="/baa">BAA</Link>
                     </li>
                   </ul>
                 </Col>
