@@ -132,7 +132,7 @@ class Header extends Component {
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
-            <NavDropdown
+            {/* <NavDropdown
               title="Resources"
               id="resources-dropdown"
               onMouseEnter={this.toggleResourcesMenu}
@@ -141,11 +141,11 @@ class Header extends Component {
               open={this.state.resourcesMenuOpened}
               noCaret
             >
-              {/* <LinkContainer to="/downloads">
+              <LinkContainer to="/downloads">
                 <MenuItem>
                   <i className="far fa-cloud-download" /> Downloads
                 </MenuItem>
-              </LinkContainer> */}
+              </LinkContainer>
 
               <LinkContainer to="/customers">
                 <MenuItem>
@@ -168,7 +168,7 @@ class Header extends Component {
               >
                 <i className="far fa-book" /> Blog
               </MenuItem>
-            </NavDropdown>
+            </NavDropdown> */}
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 

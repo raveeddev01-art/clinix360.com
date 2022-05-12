@@ -34,8 +34,8 @@ export default class Pricing extends Component {
               <div>
                 <Nav bsStyle="tabs">
                   <NavItem eventKey="first">
-                    {/* <span className="hidden-xs hidden-sm">InvoChat for</span>{" "} */}
-                    InvoChat for Practices
+                    {/* <span className="hidden-xs hidden-sm">InvoChat for</span>{" "}
+                    InvoChat for Practices */}
                   </NavItem>
                 </Nav>
 

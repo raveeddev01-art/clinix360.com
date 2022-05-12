@@ -77,7 +77,7 @@ export default class PricingDesktop extends Component {
                 </h2>
 
                 <p className="text-muted">
-                  per user per month <br />billed{" "}
+                  per month <br />billed{" "}
                   <a role="button" onClick={this.handleClick}>
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>
