@@ -184,6 +184,11 @@ export default class PricingMobile extends Component {
                     </a>
                   </p>
 
+                  <a className="trial-link m-b-10" href="/getstarted/">
+                    <i className="fa fa-external-link"></i>
+                    Start with a 14 day free trail now.
+                  </a>
+
                   <Button
                     href={appSettings.hasLogin ? "/signin" : "/getstarted"}
                     bsStyle="primary"
