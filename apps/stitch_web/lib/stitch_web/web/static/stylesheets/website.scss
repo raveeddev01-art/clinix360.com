@@ -1143,6 +1143,12 @@
           padding: 18px 30px;
           border-right: 1px solid #ebebeb;
 
+          .trial-link {
+            i {
+              margin-right: 5px;
+            }
+          }
+
           img {
             width: 100px;
           }
