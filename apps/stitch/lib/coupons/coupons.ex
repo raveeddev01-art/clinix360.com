@@ -119,7 +119,7 @@ defmodule Stitch.Coupons do
   end
 
   defp parse_coupon_code_response(nil), do: :invalid_coupon_code
-  defp parse_coupon_code_response(%SignupCoupon{} = signup_coupon) when signup_coupon.is_used, do: :coupon_already_used
+  defp parse_coupon_code_response(%SignupCoupon{is_used: true}), do: :coupon_already_used
   defp parse_coupon_code_response(%SignupCoupon{}), do: :valid_coupon_code
 
 
