@@ -69,7 +69,7 @@ class Sidemenu extends Component {
 
   renderMenuItem(url, text, eventKey) {
     return (
-      <MenuItem eventKey={eventKey} href={url} target="_blank">
+      <MenuItem eventKey={eventKey} href={url} /*target="_blank"*/>
         {text}
       </MenuItem>
     );
