@@ -15,23 +15,59 @@ class EmailCard extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
+      showCodePanel: true,
       email: "",
       formValid: false,
       loading: false,
-      errorMessage: ""
+      errorMessage: "",
+      code: ""
     };
   }
+
+  onSubmitCouponCode = () => {
+    this.setState({ loading: true, errorMessage: "" });
+    post("/api/v1/validate-coupon-code", {
+      body: { code: this.state.code },
+      hideNotify: true
+    }).then(response => {
+        console.log(response);
+        if(response.data.success) {
+          this.props.registrationStore.setCookie(
+            response.data.id,
+            this.state.email,
+            this.state.code
+          );
+          this.setState({ loading: false, showCodePanel: false });          
+        } else {
+          this.setState({ loading: false, errorMessage: response.data.message });
+        }
+      })
+      .catch(err => {
+        this.setState({
+          loading: false,
+          errorMessage: err.data ? err.data.message : err.message
+        });
+      });
+  };
+
+  onCodeChange = evt => {
+    this.setState({
+      code: evt.target.value,
+      formValid: evt.target.value.length === 8,
+    });
+  };
 
   onNext = () => {
     this.setState({ loading: true });
     post("/api/v1/users", {
-      body: { email: this.state.email },
+      body: { email: this.state.email, code: this.state.code },
       hideNotify: true
     })
       .then(response => {
         this.props.registrationStore.setCookie(
           response.data.id,
-          this.state.email
+          this.state.email,
+          this.state.code
         );
         return post("/api/v1/users/send-confirmation-code", {
           body: { id: response.data.id }
@@ -55,7 +91,51 @@ class EmailCard extends Component {
     });
   };
 
-  render() {
+  renderCouponPanel() {
+    const { errorMessage } = this.state;
+    return (
+      <div>
+        <OnboardPage
+          title="Create a new Workspace"
+          description={
+            <span>
+              Enter your coupon code that you got from AppSummo.
+            </span>
+          }
+          onNext={this.onSubmitCouponCode}
+          loading={this.state.loading}
+          disableNext={!this.state.formValid}
+        >
+          <FormGroup
+            bsSize="large"
+            validationState={(errorMessage && "error") || null}
+          >
+            <ControlLabel>Coupon Code</ControlLabel>
+            <FormControl
+              name={`couponcode_${new Date().getTime()}`}
+              required
+              autoFocus
+              autoComplete="off"
+              type="text"
+              placeholder="Coupon Code"
+              value={this.state.code}
+              onChange={this.onCodeChange}
+              maxLength="8"
+            />
+            {errorMessage && (
+              <HelpBlock className="text-left">
+                <i className="fa fa-exclamation-circle" />
+                {errorMessage}
+              </HelpBlock>
+            )}
+          </FormGroup>
+        </OnboardPage>
+      </div>
+    );
+  }
+
+
+  renderEmailPanel() {
     const { errorMessage } = this.state;
     return (
       <div>
@@ -97,6 +177,13 @@ class EmailCard extends Component {
       </div>
     );
   }
+
+  render() {
+    return this.state.showCodePanel ? this.renderCouponPanel() : this.renderEmailPanel();
+  }
+
+
+  
 }
 
 export default EmailCard;

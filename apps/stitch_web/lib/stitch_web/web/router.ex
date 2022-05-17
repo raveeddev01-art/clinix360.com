@@ -49,6 +49,7 @@ defmodule Stitch.Web.Router do
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
     # Onboarding routes for new users.
+    post("/validate-coupon-code", CouponCodeController, :validate_coupon)
     post("/request-demo", UserController, :request_demo)
     post("/users", UserController, :create)
     post("/users/validate-emails", UserController, :validate_emails)

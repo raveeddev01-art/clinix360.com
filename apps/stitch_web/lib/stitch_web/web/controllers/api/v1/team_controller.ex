@@ -1,7 +1,7 @@
 defmodule Stitch.Web.Api.V1.TeamController do
   use Stitch.Web, :controller
   alias Stitch.Team.Admin
-  alias Stitch.{Team, TeamQueries, TeamAuthorization}
+  alias Stitch.{Team, TeamQueries, TeamAuthorization, Coupons}
   alias Stitch.Web.TeamChannel
 
   action_fallback(Stitch.Web.Api.FallbackController)
@@ -20,8 +20,9 @@ defmodule Stitch.Web.Api.V1.TeamController do
     })
   end
 
-  def create(conn, %{"name" => name, "url" => slug}) do
+  def create(conn, %{"name" => name, "url" => slug, "code" => coupon_code}) do
     with {:team, {:ok, %{team: team}}} <- {:team, Team.Onboarding.create_team(name, slug)} do
+      Coupons.update_signup_coupon(%{code: coupon_code, team_id: team.id, is_used: true})
       conn
       |> json(%{id: team.id, name: team.name, slug: team.slug})
     else

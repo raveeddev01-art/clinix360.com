@@ -28,17 +28,19 @@ class RegistrationStore {
   @observable saving = false;
 
   @action
-  setCookie = (userId, email) => {
+  setCookie = (userId, email, code) => {
     Cookies.set(
       "registration",
       {
         userId,
-        email
+        email,
+        code
       },
       { expires: 1 }
     ); // expires in a day
     this.userId = userId;
     this.email = email;
+    this.code = code;
   };
 
   @action
@@ -61,7 +63,8 @@ class RegistrationStore {
     return post(`/api/v1/teams`, {
       body: {
         name: this.teamname,
-        url: this.teamurl
+        url: this.teamurl,
+        code: Cookies.getJSON("registration").code
       }
     })
       .then(response => {
@@ -97,7 +100,7 @@ class RegistrationStore {
             .teamurl}.${applicationHost}`;
         } else {
           window.location.href = `${applicationScheme}${this
-            .teamurl}.${applicationHost}/apps`;
+            .teamurl}.${applicationHost}`;
         }
       })
       .catch(err => {

@@ -19,7 +19,8 @@ defmodule Stitch.Web.Api.V1.UserController do
     Team,
     TeamQueries,
     TimedMessage,
-    UserQueries
+    UserQueries,
+    Coupons
   }
 
   import Stitch.UserAuthorization, only: [can_update_user?: 2]
@@ -135,7 +136,7 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def create(conn, %{"email" => email}) do
+  def create(conn, %{"email" => email, "code" => coupon_code}) do
     case Accounts.create_user_with_email_only(email) do
       {:error, %Ecto.Changeset{errors: [email: {_, [host: host]}]}} ->
         conn
@@ -152,6 +153,8 @@ defmodule Stitch.Web.Api.V1.UserController do
         |> unprocessable_entity_error(%{message: message})
 
       user ->
+        %{user_id: user.id, code: coupon_code}
+        |> Coupons.update_signup_coupon()
         conn
         |> put_session(:user_id, user.id)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
