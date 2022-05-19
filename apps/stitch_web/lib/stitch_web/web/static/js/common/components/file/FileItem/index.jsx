@@ -9,11 +9,11 @@ import FileInfo from "../FileInfo";
 import FileCommentGroup from "../FileCommentGroup";
 import FileThumb from "./file-thumb";
 
-@inject("usersStore", "desktopStore")
+@inject("usersStore", "desktopStore", "teamFileStore")
 @observer
 class FileItem extends Component {
   onFileDownload = e => {
-    const { desktopStore, file } = this.props;
+    const { desktopStore, file, teamFileStore } = this.props;
 
     if (desktopStore.isElectron) {
       e.stopPropagation();
@@ -28,6 +28,8 @@ class FileItem extends Component {
         filetype: file.filetype,
         previewUrl: file.preview_url
       });
+    } else {
+      teamFileStore.downloadFile(file.url, file.filename)
     }
   };
 
@@ -77,20 +79,18 @@ class FileItem extends Component {
             </div>
           )}
 
-          {/* {onFileClick ? (
-            <a onClick={() => onFileClick(file.id)} className="file-item__link">
+          {
+            <a onClick={this.onFileDownload} className="file-item__link">
               {file.filename}
             </a>
-          ) : (
-
-          )} */}
-          <Link
+          }
+          {/* <Link
               className="file-item__link"
               to={`/admin/files/${file.encoded_id}`}
               target='_blank'
             >
               {file.filename}
-          </Link>
+          </Link> */}
 
           <div className="file-item__content-user">
             <span onClick={e => e.stopPropagation()}>
