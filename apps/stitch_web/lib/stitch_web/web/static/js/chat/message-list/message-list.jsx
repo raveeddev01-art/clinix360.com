@@ -49,9 +49,9 @@ class MessageList extends Component {
   };
 
 
-  showThreadMessage(message) {
-    return message.comment_notify_ids.desktop.includes(currentUser.id) || message.user_id === currentUser.id;
-  }
+  // showThreadMessage(message) {
+  //   return message.comment_notify_ids.desktop.includes(currentUser.id) || message.user_id === currentUser.id;
+  // }
 
   render() {
     const { messageStore, isThreadView } = this.props;
@@ -117,8 +117,7 @@ class MessageList extends Component {
           (<div key={`thread`}>
             {messages.map(
               (message, index) =>
-              (this.showThreadMessage(message) &&
-                <div className="message-container addon thread" key={index}>
+              ( <div className="message-container addon thread" key={index}>
                   <div className="message message-thread">
                     <Message
                       // start of dummy prop so that message list react to message prop change

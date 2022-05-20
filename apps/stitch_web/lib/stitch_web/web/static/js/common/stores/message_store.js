@@ -825,29 +825,31 @@ class MessageStore extends BaseMessageStore {
     @action
     onJoinGroupChannel = data => {
         // sync time as soon as joined to the channel
-        this.syncTime();
+        if (this.group) {
+            this.syncTime();
 
-        if (this.group.id === this.loadedGroupId) {
-            // // new message has more precedance by putting it as first param.
-            this.messageCache = new MessageCache();
-            this.messages = unionBy(data.messages, this.messages, msg => {
-                return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
-            });
-            this.messageCache.addBatchToCache(this.group.id, this.messages);
-        } else if (this.messageCache.hasLoadedGroup(this.group.id)) {
-            this.messages = this.messageCache.getCache(this.group.id);
-        } else {
-            this.messages = data.messages;
-            this.messageCache.addBatchToCache(this.group.id, data.messages);
+            if (this.group.id === this.loadedGroupId) {
+                // // new message has more precedance by putting it as first param.
+                this.messageCache = new MessageCache();
+                this.messages = unionBy(data.messages, this.messages, msg => {
+                    return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
+                });
+                this.messageCache.addBatchToCache(this.group.id, this.messages);
+            } else if (this.messageCache.hasLoadedGroup(this.group.id)) {
+                this.messages = this.messageCache.getCache(this.group.id);
+            } else {
+                this.messages = data.messages;
+                this.messageCache.addBatchToCache(this.group.id, data.messages);
+            }
+    
+            if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
+                this.loadedAll = true;
+            }
+    
+            this.loadedGroupId = this.group.id;
+    
+            when(() => this.mountedAllMessages, this.handleInitialLoading);
         }
-
-        if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
-            this.loadedAll = true;
-        }
-
-        this.loadedGroupId = this.group.id;
-
-        when(() => this.mountedAllMessages, this.handleInitialLoading);
     };
 
     @action
@@ -855,27 +857,29 @@ class MessageStore extends BaseMessageStore {
         // sync time as soon as joined to the channel
         // this.syncTime();
 
-        if (this.group.id === this.loadedGroupId) {
-            // // new message has more precedance by putting it as first param.
-            this.messageCache = new MessageCache();
-            this.messages = unionBy(data.messages, this.messages, msg => {
-                return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
-            });
-            this.messageCache.addBatchToCache(this.group.id, this.messages);
-        } else if (this.messageCache.hasLoadedGroup(this.group.id)) {
-            this.messages = this.messageCache.getCache(this.group.id);
-        } else {
-            this.messages = data.messages;
-            this.messageCache.addBatchToCache(this.group.id, data.messages);
+        if (this.group) {
+            if (this.group.id === this.loadedGroupId) {
+                // // new message has more precedance by putting it as first param.
+                this.messageCache = new MessageCache();
+                this.messages = unionBy(data.messages, this.messages, msg => {
+                    return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
+                });
+                this.messageCache.addBatchToCache(this.group.id, this.messages);
+            } else if (this.messageCache.hasLoadedGroup(this.group.id)) {
+                this.messages = this.messageCache.getCache(this.group.id);
+            } else {
+                this.messages = data.messages;
+                this.messageCache.addBatchToCache(this.group.id, data.messages);
+            }
+
+            if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
+                this.loadedAll = true;
+            }
+
+            this.loadedGroupId = this.group.id;
+
+            when(() => this.mountedAllMessages, this.handleInitialLoading);
         }
-
-        if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
-            this.loadedAll = true;
-        }
-
-        this.loadedGroupId = this.group.id;
-
-        when(() => this.mountedAllMessages, this.handleInitialLoading);
     };
 
     @action
