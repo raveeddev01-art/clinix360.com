@@ -785,12 +785,14 @@ class MessageStore extends BaseMessageStore {
     };
 
     @action
-    toggleReaction = (messageId, emoji) => {
+    toggleReaction = (messageId, emoji, group_id) => {
         const { channelStore, groupsStore } = this.rootStore;
+
         const channel = groupsStore.currentGroupId === 0 ? channelStore.channels["threads"] : this.groupChannel;
         channel.push("toggle_reaction", {
             message_id: messageId,
-            emoji_name: emoji
+            emoji_name: emoji,
+            group_id: group_id
         });
     };
 

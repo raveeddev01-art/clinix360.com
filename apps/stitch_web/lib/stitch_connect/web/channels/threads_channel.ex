@@ -261,16 +261,14 @@ defmodule StitchConnect.Web.ThreadsChannel do
   @decorate channel_action()
   def handle_in(
         "toggle_reaction",
-        %{"message_id" => message_id, "emoji_name" => emoji_name},
+        %{"message_id" => message_id, "emoji_name" => emoji_name, "group_id" => group_id},
         socket
       ) do
     %{current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
-    # message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
-    message = MessageQueries.load_message(message_id, user)
-    |> IO.inspect(label: "Message is here")
-
-    case {message, message && GroupAuthorization.can_view?(message.group, user)} do
+    group = Group |> where(id: ^group_id) |> Repo.one()
+    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
+    case {message, message && GroupAuthorization.can_view?(group, user)} do
       {nil, _} ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
 
@@ -282,7 +280,7 @@ defmodule StitchConnect.Web.ThreadsChannel do
         {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
 
         case message.parent_message_id do
-          nil -> broadcast_reactions_updated(message.group, message)
+          nil -> broadcast_reactions_updated(group, message)
           _ -> broadcast_comment_reactions_updated(message, user)
         end
 
