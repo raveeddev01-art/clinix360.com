@@ -8,7 +8,7 @@ import { inject, observer } from "mobx-react";
 @observer
 class InsertMenu extends Component {
   uploadFile = () => {
-    this.props.uploadStore.openFileDialog();
+    this.props.uploadStore.openFileDialog(this.props.isComment);
   };
 
   render() {

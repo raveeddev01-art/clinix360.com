@@ -35,7 +35,7 @@ class MessageCommentInput extends Component {
     const { message, usersStore, messageStore, groupsStore, commentText, editing, handleSaveEdit} = this.props;
     const user = usersStore.usersById[currentUser.id];
     return (
-      <form className="file-comment" onSubmit={this.addComment}>
+      <form className="file-comment" /*onSubmit={this.addComment}*/>
         <FormGroup className="file-comment__edit">
           <div className="flex-footer">
             <MessageForm

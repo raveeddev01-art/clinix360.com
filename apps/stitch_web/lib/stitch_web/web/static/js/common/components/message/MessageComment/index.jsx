@@ -12,7 +12,7 @@ class MessageComment extends Component {
     super(props);
     this.state = {
       editing: false,
-      commentText: props.comment.text_content
+      commentText: props.comment.text_content || ''
     };
     this.editComment = this.editComment.bind(this);
   }
@@ -188,7 +188,6 @@ class MessageComment extends Component {
 
 MessageComment.propTypes = {
   comment: PropTypes.shape({
-    text_content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired
   }).isRequired
 };

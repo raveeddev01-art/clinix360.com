@@ -356,7 +356,8 @@ class MessageForm extends Component {
       messageStore: { messageInEdit },
       socketStore,
       allowMention,
-      editing
+      editing,
+      onEnterCallback
     } = this.props;
     const { isFocused } = this.state;
     const text = this.getText();
@@ -373,7 +374,7 @@ class MessageForm extends Component {
     return (
       <div className={inputWrapperClass}>
         <div className="message-form-upload">
-          <InsertMenu />
+          <InsertMenu isComment={onEnterCallback && !editing ? true : false}/>
         </div>
 
         <Textarea

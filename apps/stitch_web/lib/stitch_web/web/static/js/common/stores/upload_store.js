@@ -13,6 +13,8 @@ class UploadStore {
   @observable conversationId = null;
   @observable isUploadModalVisible = false;
   @observable from = "connect";
+  @observable commentUpload = false;
+  @observable messageId = null;
   xhrs = {};
   dropzoneRef = null;
   file = null;
@@ -21,7 +23,12 @@ class UploadStore {
     this.rootStore = rootStore;
   }
 
-  openFileDialog = () => {
+  openFileDialog = (isComment) => {
+    this.commentUpload = isComment;
+    if (this.commentUpload) {
+      this.messageId = this.rootStore.messageStore.message.id;
+    }
+
     if (this.dropzoneRef) {
       this.dropzoneRef.open();
     }
@@ -176,18 +183,7 @@ class UploadStore {
       .then(url => {
         this.uploadProgress.set(key, "done");
         return post(`${this.rootStore.apiBasePath}${apiUrl}`, {
-          body: {
-            message: {
-              type: "upload",
-              fields: {
-                filename: title,
-                mimetype: file.type,
-                size_in_bytes: file.size,
-                url
-              },
-              text_content: description
-            }
-          }
+          body: this.uploadBody(url)
         });
       })
       .then(() => {
@@ -202,10 +198,45 @@ class UploadStore {
       });
   };
 
+  uploadBody = (url) => {
+    const { file, title, description, commentUpload } = this;
+    if (this.commentUpload) {
+      return {
+        message_comment: {
+          type: "upload",
+          fields: {
+            filename: title,
+            mimetype: file.type,
+            size_in_bytes: file.size,
+            url
+          },
+          text_content: description,
+          thread: true
+        }
+      }
+    } else {
+      return {
+        message: {
+          type: "upload",
+          fields: {
+            filename: title,
+            mimetype: file.type,
+            size_in_bytes: file.size,
+            url
+          },
+          text_content: description
+        }
+      };
+    }
+
+  }
+
   @action
   removeProgress = key => {
     this.uploadProgress.delete(key);
     this.fileNames.delete(key);
+    this.messageId = null;
+    this.commentUpload = false;
   };
 
   onProgress = key =>

@@ -77,11 +77,11 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     }
   end
 
-  def thread_message_json(message, authenticated_url, _files_url) do
+  def thread_message_json(message, authenticated_url, files_url) do
     %{
       id: message.id,
       user_id: message.user_id,
-      user: user_info(message),
+      fields: MessagesHelper.render_fields(message, authenticated_url, files_url),
       group_id: message.group_id,
       deleted: message.deleted,
       text_content: text_content(message),

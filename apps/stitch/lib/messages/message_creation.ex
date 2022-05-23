@@ -9,6 +9,7 @@ defmodule Stitch.Message.MessageCreation do
     Files.UploadComment,
     Files.FileAuthorization,
     GroupUser,
+    Group,
     Message,
     Message.Mention,
     Message.Notification,
@@ -25,6 +26,29 @@ defmodule Stitch.Message.MessageCreation do
   @spec create(Group.t(), User.t(), map, map | nil) ::
           {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
 
+  def create(
+        %Message{} = message,
+        user,
+        %{"text_content" => _, "thread" => true, "type" => "upload", "fields" => fields} = attrs,
+        presence
+      ) do
+
+    with {:ok, upload, _} <- Upload.create_and_share_with_group(message.group, user, fields) do
+      message = %Message{
+        parent_message: message,
+        group: message.group,
+        user: user,
+        upload: upload
+      }
+
+      attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
+      do_create(message, attrs, presence)
+    else
+      _ ->
+        changeset = %Message{} |> change() |> add_error(:upload_id, "Error creating file")
+        {:error, :message, changeset, nil}
+    end
+  end
 
   def create(
         group,
@@ -49,6 +73,8 @@ defmodule Stitch.Message.MessageCreation do
   def create(group, user, attrs, presence \\ %{})
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
+    IO.inspect(group, label: "Here is message in create grp")
+
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
       message = %Message{group: group, user: user, upload: upload}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
@@ -103,11 +129,14 @@ defmodule Stitch.Message.MessageCreation do
 
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
+
     IO.inspect(presence, label: "presence in message_creation")
+
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)
       |> IO.inspect(label: "here is notify_user_ids in message_creation.ex")
       |> thread_notify_user_ids(message)
+
     IO.inspect(notify_user_ids, label: "notify_user_ids in do_create")
     {read_status, recipients} = ReadStatus.get_read_status(:message, users, user)
 
@@ -191,7 +220,9 @@ defmodule Stitch.Message.MessageCreation do
           |> Enum.uniq()
           |> List.delete(message.user.id)
       end
-      IO.inspect(notify_user_ids, label: "notify_user_ids in thread_notify_user_ids function")
+
+    IO.inspect(notify_user_ids, label: "notify_user_ids in thread_notify_user_ids function")
+
     %{
       desktop: Enum.uniq(notify_user_ids.desktop ++ thread_reply_notify_ids),
       mobile: Enum.uniq(notify_user_ids.mobile ++ thread_reply_notify_ids),

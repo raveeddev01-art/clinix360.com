@@ -53,9 +53,12 @@ export default class UploadModal extends Component {
       if (!uploadStore.groupId) {
         notify.show("Please select a room to upload file.", "error");
         return;
+      } else if (uploadStore.commentUpload) {
+        uploadStore.uploadFile(`/messages/${uploadStore.messageId}/comments`);
+      } else {
+        uploadStore.uploadFile(`/groups/${uploadStore.groupId}/messages`)
       }
 
-      uploadStore.uploadFile(`/groups/${uploadStore.groupId}/messages`);
     }
 
     this.toggleModal();
