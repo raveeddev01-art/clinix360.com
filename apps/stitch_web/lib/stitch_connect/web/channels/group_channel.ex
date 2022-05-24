@@ -199,6 +199,10 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @decorate channel_action()
   def handle_in("new_msg", params, socket) do
+    IO.inspect("handle_in new_msg called")
+    IO.inspect(params, label: "Params recieved")
+    IO.inspect(socket, label: "socket recieved")
+
     %{group: group, current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
 
