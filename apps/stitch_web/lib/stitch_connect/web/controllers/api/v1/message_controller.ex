@@ -132,6 +132,9 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       # create_optional_upload_comment(message, group, current_user, presence, message_params)
       message = MessageQueries.load_message(message.id, current_user)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
+
+      IO.inspect(message, label: "here is created message")
+
       conn
       |> put_status(:created)
       |> render("show.json", message: message, authenticated_urls: authenticated_urls)
