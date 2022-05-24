@@ -20,7 +20,6 @@ defmodule Stitch.Invitation.Email do
     """)
     |> to(invitation.user.email)
     |> from({"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
-    |> IO.inspect(label: "here is from")
     |> subject("Join Your Team")
   end
 end

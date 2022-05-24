@@ -6,7 +6,6 @@ defmodule StitchConnect.MessageMailer do
 
   @decorate transaction(:background_job)
   def deliver(notification_preference) do
-    IO.inspect(notification_preference, label: "here is notification_preference checkpoint1")
     Team
     |> select([:id, :name, :slug])
     |> Stitch.ChunkStream.chunk(25)
@@ -19,37 +18,23 @@ defmodule StitchConnect.MessageMailer do
   end
 
   def deliver_for_team(team, notification_preference) do
-    IO.inspect(notification_preference , label: "here is sending emails notification_preference checkpoint2")
-    IO.inspect(team , label: "here is sending emails to the team checkpoint2")
     UserQueries.with_email_notification_preference(notification_preference)
-    |> IO.inspect(label: "1")
     |> UserQueries.for_team_query(team.id)
-    |> IO.inspect(label: "2")
     |> Stitch.ChunkStream.chunk(50)
-    |> IO.inspect(label: "3")
     |> Stream.each(&deliver_for_users(&1, team))
-    |> IO.inspect(label: "4")
     |> Stream.run()
     # |> Enum.each(fn x -> :ok end)
-    |> IO.inspect(label: "running stream")
   end
 
   def deliver_for_users(users, team) do
-    IO.inspect(users, label: "here is sending emails to the users checkpoint3")
-    IO.inspect(team, label: "here is sending emails to the team checkpoint3")
     user_ids = Enum.map(users, & &1.id)
-    IO.inspect(user_ids, label: "here is user_ids")
 
     with_new_emails =
       Stitch.EmailNotification.count(user_ids)
-      |> IO.inspect(label: "after emailnotification count")
       |> Enum.reduce(%{}, &Map.put(&2, &1.user_id, &1.message_count))
-    IO.inspect(with_new_emails, label: "here is with_new_emails")
 
     recipients = prepare_recipients(users, team, with_new_emails)
-    IO.inspect(recipients, label: "here is recipients")
     Stitch.Accounts.Email.unread_messages_email(recipients, team)
-    |> IO.inspect(label: "here is sending emails lastly")
     Stitch.EmailNotification.clean_delivered(user_ids)
   end
 

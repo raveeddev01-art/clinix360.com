@@ -104,7 +104,6 @@ defmodule Stitch.Web.Api.V1.FileCommentController do
   def file_comment_creation_events(inserted_messages_for_groups, upload) do
     upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
     GroupChannel.broadcast_file_comment_added(upload)
-    IO.inspect("file_comment_creation_events")
     Enum.each(inserted_messages_for_groups, fn %{
                                                  group: group,
                                                  message_creation_result: message_creation_result

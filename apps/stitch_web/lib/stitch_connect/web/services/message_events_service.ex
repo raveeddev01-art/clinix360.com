@@ -15,9 +15,7 @@ defmodule StitchConnect.Web.MessageEventsService do
   }
 
   def message_creation_events(message, group, notify_user_ids) do
-    IO.inspect(notify_user_ids, label: "notify_user_ids in message_creation_events start")
     NotificationLogger.start(message, notify_user_ids.mobile)
-    IO.inspect(notify_user_ids, label: "herer is notify_user_ids in message_event_services")
     Stitch.Task.start(fn ->
       EmailNotification.create(message.id, notify_user_ids.email)
       LinkPreviewGenerator.queue(message)
@@ -25,9 +23,7 @@ defmodule StitchConnect.Web.MessageEventsService do
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-
     end)
-    |> IO.inspect(label: "here is starting tasks function")
   end
 
   def message_comment_creation_events(message, notify_user_ids) do

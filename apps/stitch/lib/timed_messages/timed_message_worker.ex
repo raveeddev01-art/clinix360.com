@@ -25,26 +25,12 @@ defmodule Stitch.TimedMessage.Worker do
          :ok <- check_sendable(rules, data) do
       new_email()
       |> from(@from_address)
-      |> IO.inspect(label: "here is from")
-
       |> to([data["user"].email])
-      |> IO.inspect(label: "here is to")
-
       |> set_subject(rules, data)
-      |> IO.inspect(label: "here is set_subject")
-
       |> assign_vars(rules, data)
-      |> IO.inspect(label: "here is assign_vars")
-
       |> put_html_layout({Stitch.EmailView, "layout/email.html"})
-      |> IO.inspect(label: "here is put_html_layout")
-
       |> render("email/#{type}.html")
-      |> IO.inspect(label: "here is render")
-
       |> Stitch.NewMailer.deliver_now()
-      |> IO.inspect(label: "here is deliver_now")
-
     end
   end
 

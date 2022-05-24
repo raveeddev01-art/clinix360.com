@@ -73,8 +73,6 @@ defmodule Stitch.Message.MessageCreation do
   def create(group, user, attrs, presence \\ %{})
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
-    IO.inspect(group, label: "Here is message in create grp")
-
     with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
       message = %Message{group: group, user: user, upload: upload}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
@@ -106,8 +104,6 @@ defmodule Stitch.Message.MessageCreation do
   def create(group, user, %{"text_content" => _} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{group: group, user: user}
-    IO.inspect(attrs, label: "attrs in message_create.ex group")
-    IO.inspect(message, label: "message in message_create.ex group")
 
     do_create(message, attrs, presence)
   end
@@ -122,22 +118,14 @@ defmodule Stitch.Message.MessageCreation do
     group = Repo.preload(message.group, :users)
     users = group.users
     text_content = attrs["text_content"]
-    IO.inspect(message, label: "message in message_controller.ex")
-    IO.inspect(attrs, label: "attrs in message_controller.ex")
-    IO.inspect(presence, label: "presence in message_controller.ex")
-    IO.inspect(opts, label: "opts in message_controller.ex")
 
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
 
-    IO.inspect(presence, label: "presence in message_creation")
-
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)
-      |> IO.inspect(label: "here is notify_user_ids in message_creation.ex")
       |> thread_notify_user_ids(message)
 
-    IO.inspect(notify_user_ids, label: "notify_user_ids in do_create")
     {read_status, recipients} = ReadStatus.get_read_status(:message, users, user)
 
     attrs =
@@ -220,8 +208,6 @@ defmodule Stitch.Message.MessageCreation do
           |> Enum.uniq()
           |> List.delete(message.user.id)
       end
-
-    IO.inspect(notify_user_ids, label: "notify_user_ids in thread_notify_user_ids function")
 
     %{
       desktop: Enum.uniq(notify_user_ids.desktop ++ thread_reply_notify_ids),
