@@ -3,7 +3,8 @@ defmodule Stitch.Web.Api.V1.UploadController do
   use Stitch.Web.Api.V1.UploadDocs
   alias Stitch.{ AWS.S3}
 
-  def create(conn, params = %{"filename" => _filename, "mimetype" => _mimetype}) do
+  def create(conn, params = %{"filename" => _filename, "mimetype" => _mimetype} = params) do
+    IO.inspect(params, label: "incoming params at upload-signature")
     do_create(conn, params)
   end
 
@@ -13,6 +14,7 @@ defmodule Stitch.Web.Api.V1.UploadController do
 
   defp do_create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     S3.signature(filename, mimetype)
+    |> IO.inspect(label: "Here is upload-signature result")
 
     conn
     |> put_status(:created)
