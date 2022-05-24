@@ -11,7 +11,6 @@ defmodule Stitch.Web.Plug.Authenticate do
            {:token, ControllerHelpers.get_session_token(conn)},
          {:user, %User{disabled: false} = user} <- {:user, UserQueries.get_by_token(token)},
          {:team_member?, true} <- {:team_member?, user.team_id == conn.assigns.team.id} do
-          IO.inspect("here in plug")
       conn
       |> assign(:current_user, user)
       |> ControllerHelpers.create_access_log_record(user)
