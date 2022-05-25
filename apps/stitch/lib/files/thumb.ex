@@ -1,6 +1,6 @@
 defmodule Stitch.Files.Thumb do
   alias Stitch.{AWS.S3}
-  import Mogrify
+  import Mogrify, except: [create: 1]
 
   @settings Application.get_env(:stitch, :user_upload_settings)
 
@@ -53,9 +53,24 @@ defmodule Stitch.Files.Thumb do
     end
   end
 
-  def create(%{"url" => url, "mimetype" => "application/" <> _docx} = upload) do
-    with true <- upload["filename"] =~ ".docx",
-         {:ok, filename} <- get_filename(url),
+  def create(%{"url" => url, "mimetype" => "application/vnd.ms-excel"}) do
+    create(%{"url" => url, "mimetype" => "application/document"})
+  end
+
+  def create(%{"url" => url, "mimetype" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}) do
+    create(%{"url" => url, "mimetype" => "application/document"})
+  end
+
+  def create(%{"url" => url, "mimetype" => "application/msword"}) do
+    create(%{"url" => url, "mimetype" => "application/document"})
+  end
+
+  def create(%{"url" => url, "mimetype" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}) do
+    create(%{"url" => url, "mimetype" => "application/document"})
+  end
+
+  def create(%{"url" => url, "mimetype" => "application/document"}) do
+    with {:ok, filename} <- get_filename(url),
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(filename, dest),
          {:ok, preview_path} <- Stitch.Files.ThumbGenerator.generate_word_thumbnail(dest),
@@ -69,6 +84,7 @@ defmodule Stitch.Files.Thumb do
         "preview_width" => preview_width,
         "preview_url" => S3.fullpath(preview_path)
       }
+      |> IO.inspect(label: "Here is generated preview")
 
       {:ok, preview}
     else
