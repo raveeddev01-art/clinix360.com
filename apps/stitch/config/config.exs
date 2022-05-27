@@ -6,10 +6,6 @@ config :stitch, :read_repo, Stitch.ReadReplicaRepo
 
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET_KEY")
 
-config :stitch, Stitch.Repo,
-  show_sensitive_data_on_connection_error: true
-
-
 config :stitch,
   stripe_client: Stitch.Stripe.Client,
   stripe_publishable_key: System.get_env("STRIPE_PUBLISHABLE_KEY")

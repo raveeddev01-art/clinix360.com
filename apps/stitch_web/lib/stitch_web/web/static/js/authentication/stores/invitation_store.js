@@ -55,7 +55,9 @@ class InvitationStore {
         if (asPatient) {
           window.location = "/patient";
         } else {
-          history.push("/apps");
+          // will enable this once apps are published
+          // history.push("/apps");
+          history.push("/");
         }
       })
       .catch(err => {

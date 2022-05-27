@@ -10,8 +10,7 @@ repo_opts = [
   pool_size: String.to_integer(System.get_env("STITCH_CONNECT_POSTGRES_POOL_SIZE") || "10"),
   ssl: false,
   log: true,
-  loggers: [Ecto.LogEntry],
-  show_sensitive_data_on_connection_error: true
+  loggers: [Ecto.LogEntry]
   # loggers: [Appsignal.Ecto, Ecto.LogEntry]
 ]
 
