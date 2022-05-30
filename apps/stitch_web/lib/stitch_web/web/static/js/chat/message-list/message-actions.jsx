@@ -63,7 +63,7 @@ class MessageActions extends PureComponent {
       martStyles.top = "24px";
     } else {
       if(inThread) {
-        martStyles.bottom = "-55px";
+        martStyles.bottom = "-100px";
       } else {
         martStyles.bottom = "-14px";
       }
