@@ -59,13 +59,13 @@ class MessageActions extends PureComponent {
     }
 
     const pos = messageDiv.getBoundingClientRect();
+    console.log(pos.bottom, " < ", window.innerHeight / 2);
     if (pos.bottom < window.innerHeight / 2) {
       martStyles.top = "24px";
     } else {
       martStyles.bottom = "14px";
     }
 
-    martStyles.width = "300px"
     return martStyles;
   };
 

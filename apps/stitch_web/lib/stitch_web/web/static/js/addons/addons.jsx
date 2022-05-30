@@ -47,6 +47,7 @@ class Addons extends Component {
     }
 
     const showAddonDetail = addonStore.addonPanelType === "thread" ? true : addonStore.showAddonDetail;
+    const leftPanelDisplay = showAddonDetail ? "none" : "block";
 
     const leftPanelClass = cx("addon-left-panel", {
       opened: !showAddonDetail
@@ -58,7 +59,8 @@ class Addons extends Component {
     const addonPanelTitle = addonStore.addonPanelType;
 
     return (
-      <div id="addons" className="opened">
+      /* overflow is set visible to override all inherited overflow attributes and show emoji mart without overlaping */
+      <div id="addons" className="opened" style={{overflow: "visible"}}>
         <div className="flex-header">
           {addonStore.showAddonDetail && (
             <a
@@ -78,8 +80,9 @@ class Addons extends Component {
           </a>
         </div>
 
-        <div className="flex-content">
-          <div className={leftPanelClass}>
+        <div className="flex-content" style={{overflow: "visible"}}>
+          {/* set display to none if thread is open so the left panel does not overlap chat panel */}
+          <div className={leftPanelClass} style={{display: leftPanelDisplay}}>
             {addonStore.addonPanelType === "Room Information" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
             {addonStore.addonPanelType === "Search Results" && (
@@ -95,7 +98,7 @@ class Addons extends Component {
             {addonStore.addonPanelType === "downloads" && <FileDrawer />}
           </div>
 
-          <div className={rightPanelClass}>
+          <div className={rightPanelClass}  style={{overflow: "visible"}}>
             {addonStore.detailPanelType === "File Details" && (
               <FileDetails message={addonStore.detailPanelData} />
             )}
