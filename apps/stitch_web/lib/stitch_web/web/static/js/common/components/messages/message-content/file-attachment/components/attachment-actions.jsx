@@ -66,7 +66,7 @@ class AttachmentActions extends Component {
         className="attachment-actions btn-group"
         onClick={this.stopPropagation}
       >
-        {onCommentsClick && (
+        {/* {onCommentsClick && (
           <OverlayTrigger
             placement={tooltipPlacement}
             delayShow={150}
@@ -76,7 +76,7 @@ class AttachmentActions extends Component {
               <i className="fa fa-comments" />
             </Button>
           </OverlayTrigger>
-        )}
+        )} */}
 
         {isDownloadVisible && (
           <OverlayTrigger
