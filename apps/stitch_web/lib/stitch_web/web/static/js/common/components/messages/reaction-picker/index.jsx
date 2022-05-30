@@ -50,7 +50,8 @@ class ReactionPicker extends Component {
 
   render() {
     const { showPicker } = this.state;
-    const { style, onSelectReaction } = this.props;
+    const { style, onSelectReaction, inThread } = this.props;
+
     if (!showPicker) {
       return null;
     }
@@ -64,7 +65,8 @@ class ReactionPicker extends Component {
           {
             position: "absolute",
             right: 10,
-            zIndex: 11
+            zIndex: 11,
+            maxWidth: inThread ? "280px" : "initial",
           },
           style
         )}

@@ -139,6 +139,7 @@ class Message extends PureComponent {
       lastOtherUserMessage,
       isThreadView,
       isReply,
+      inThread,
       messageClass
     } = this.props;
 
@@ -215,6 +216,7 @@ class Message extends PureComponent {
               {(isActionsVisible || isSelected) &&
                 !isConversationMessage && (
                   <MessageActions
+                    inThread={inThread ? inThread : false}
                     onStartEditCallback={onStartEditCallback}
                     user={user}
                     isReply={isReply}

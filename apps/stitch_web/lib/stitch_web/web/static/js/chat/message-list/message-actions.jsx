@@ -51,7 +51,7 @@ class MessageActions extends PureComponent {
 
   getEmojiMartStyle = () => {
     const martStyles = {};
-    const { messageStore, message } = this.props;
+    const { messageStore, message, inThread } = this.props;
     const messageDiv = messageStore.messageElements[message.id].div;
 
     if (!messageDiv) {
@@ -59,11 +59,14 @@ class MessageActions extends PureComponent {
     }
 
     const pos = messageDiv.getBoundingClientRect();
-    console.log(pos.bottom, " < ", window.innerHeight / 2);
     if (pos.bottom < window.innerHeight / 2) {
       martStyles.top = "24px";
     } else {
-      martStyles.bottom = "14px";
+      if(inThread) {
+        martStyles.bottom = "-55px";
+      } else {
+        martStyles.bottom = "-14px";
+      }
     }
 
     return martStyles;
@@ -176,7 +179,8 @@ class MessageActions extends PureComponent {
       message,
       user,
       isConversationMessage,
-      isReply
+      isReply,
+      inThread
     } = this.props;
     const mine = user.id === currentUser.id;
     const unsent = message.status === "sending" || message.status === "failed";
@@ -333,6 +337,7 @@ class MessageActions extends PureComponent {
       </ButtonGroup>,
 
       <ReactionPicker
+        inThread={inThread}
         key="reaction-picker"
         message={message}
         onSelectReaction={this.onSelectEmoji}

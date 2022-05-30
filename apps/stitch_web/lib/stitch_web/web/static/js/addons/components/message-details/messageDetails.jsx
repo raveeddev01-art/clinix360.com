@@ -45,6 +45,7 @@ class MessageDetails extends Component {
       <div className="search-results-addon">
         <div className="file-heading">
           <Message
+            inThread={true}
             edited_at={message.edited_at}
             isReply={true}
             messageUser={messageCreator}

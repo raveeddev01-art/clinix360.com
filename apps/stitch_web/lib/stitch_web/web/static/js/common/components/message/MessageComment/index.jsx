@@ -171,6 +171,7 @@ class MessageComment extends Component {
         onUnmounted={messageStore.onMessageUnmounted}
         onShow={messageStore.onMessageShow}
         onHide={messageStore.onMessageHide}
+        inThread={true}
       />
     )
   }
