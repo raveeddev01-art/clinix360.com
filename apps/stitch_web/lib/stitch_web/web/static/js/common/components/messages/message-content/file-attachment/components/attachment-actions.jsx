@@ -90,7 +90,7 @@ class AttachmentActions extends Component {
           </OverlayTrigger>
         )}
 
-        {isOriginalOpenVisible && (
+        {/* {isOriginalOpenVisible && (
           <OverlayTrigger
             placement={tooltipPlacement}
             delayShow={150}
@@ -100,7 +100,7 @@ class AttachmentActions extends Component {
               <i className="fa fa-external-link" />
             </Button>
           </OverlayTrigger>
-        )}
+        )} */}
 
         {isActionsVisible && (
           <SmartDropdown id="file-actions-dropdown">
