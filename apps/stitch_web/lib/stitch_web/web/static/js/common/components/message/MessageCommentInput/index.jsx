@@ -2,9 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
-import Button from "react-bootstrap/lib/Button";
-import { Avatar } from "common/components";
 import MessageCommentGroup from "../MessageCommentGroup";
 import MessageForm from "../../../../chat/message-form/message-form";
 @inject("usersStore", "messageStore", "groupsStore")
@@ -32,25 +29,24 @@ class MessageCommentInput extends Component {
   };
 
   render() {
-    const { message, usersStore, messageStore, groupsStore, commentText, editing, handleSaveEdit} = this.props;
-    const user = usersStore.usersById[currentUser.id];
+    const { message, messageStore, groupsStore } = this.props;
+
     return (
       <form className="file-comment" /*onSubmit={this.addComment}*/>
         <FormGroup className="file-comment__edit">
           <div className="flex-footer">
             <MessageForm
-              editing={editing}
-              commentText={ editing ? commentText : "" }
               allowTypingUsers={false}
-              onEnterCallback={editing ? handleSaveEdit : this.addComment}
+              onEnterCallback={this.addComment}
               messageStore={messageStore}
               currentGroup={groupsStore.currentGroup}
+              inThread={true}
             />
-            {!editing && <MessageCommentGroup
+            <MessageCommentGroup
               message={message}
               label="Commenting in"
               showClose={false}
-            />}
+            />
           </div>
         </FormGroup>
       </form>

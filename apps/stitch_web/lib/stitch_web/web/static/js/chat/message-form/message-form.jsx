@@ -6,13 +6,11 @@ import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
 import some from "lodash/some";
 
-import { confirmModal } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
 import TypingUsers from "./components/typing-users";
 import FormattingCommands from "./components/formatting-commands";
 import JumpingIndicator from "./components/jumping-indicator";
-import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 
@@ -24,23 +22,12 @@ class MessageForm extends Component {
 
     this.applyTextStyle = this.applyTextStyle.bind(this);
     this.state = {
-      text: this.getCommentText(),
+      text: "",
       searchFilter: "",
       openMentionMenu: false,
       openEmojiSearch: false,
       isFocused: true
     };
-  }
-
-  getCommentText = () => {
-    const { commentText, editing } = this.props;
-
-    if (editing) {
-      return commentText;
-    }
-    
-    return "";
-
   }
 
   applyTextStyle(event, style) {
@@ -107,22 +94,7 @@ class MessageForm extends Component {
     }
 
     const trimmedText = this.state.text.trim();
-
-    if (messageStore.messageInEdit) {
-      if (!messageStore.textInEdit) {
-        confirmModal({
-          title: "Delete Message",
-          message:
-            "Are you sure you want to delete this message? This cannot be undone.",
-          okLabel: "Delete"
-        }).then(() => {
-          messageStore.delete(messageStore.messageInEdit.id);
-          messageStore.finishEdit();
-        });
-      } else {
-        messageStore.finishEdit();
-      }
-    } else if (trimmedText) {
+    if (trimmedText) {
       if (!onEnterCallback) {
         messageStore.sendMessage(trimmedText);
       }
@@ -135,21 +107,13 @@ class MessageForm extends Component {
 
   onKeyUp = evt => {
     const { messageStore, allowMention } = this.props;
-    const { messageInEdit } = messageStore;
     const { openMentionMenu, openEmojiSearch } = this.state;
 
     if (evt.keyCode === 27) {
       // escape
       if (openMentionMenu || openEmojiSearch) {
         this.setState({ openMentionMenu: false, openEmojiSearch: false });
-      } else if (messageInEdit) {
-        messageStore.cancelEdit();
-      }
-    } else if (evt.keyCode === 38) {
-      // Up arrow
-      if (!this.state.text && !messageInEdit) {
-        messageStore.editLastMessage();
-      }
+      } 
     } else if ([37, 38, 39, 40].indexOf(evt.keyCode) > -1) {
       // Do nothing for arrow keys
     } else {
@@ -251,11 +215,7 @@ class MessageForm extends Component {
   };
 
   getText = () => {
-    const { messageStore } = this.props;
-
-    return messageStore.messageInEdit
-      ? messageStore.textInEdit
-      : this.state.text;
+    return this.state.text;
   };
 
   getCurrentWord = () => {
@@ -273,14 +233,7 @@ class MessageForm extends Component {
   }
 
   updateInputText = value => {
-    const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
-
-    if (messageInEdit) {
-      messageStore.editText(value);
-    } else {
-      this.setState({ text: value });
-    }
+    this.setState({ text: value });
   };
 
   typingStarted = () => {
@@ -353,28 +306,27 @@ class MessageForm extends Component {
 
   renderInput() {
     const {
-      messageStore: { messageInEdit },
       socketStore,
       allowMention,
-      editing,
-      onEnterCallback
+      inThread
     } = this.props;
     const { isFocused } = this.state;
     const text = this.getText();
 
+    console.log("in thread message form", inThread);
+
     const className = classNames("form-control", "message-text", {
-      disconnected: !socketStore.isConnected,
-      editing: !!messageInEdit || editing
+      disconnected: !socketStore.isConnected
     });
 
     const inputWrapperClass = classNames("message-input-wrapper", {
-      isFocused: isFocused || messageInEdit || editing
+      isFocused: isFocused
     });
 
     return (
       <div className={inputWrapperClass}>
         <div className="message-form-upload">
-          <InsertMenu isComment={onEnterCallback && !editing ? true : false}/>
+          <InsertMenu isComment={inThread ? true : false}/>
         </div>
 
         <Textarea
@@ -403,7 +355,7 @@ class MessageForm extends Component {
               <i className="fa fa-at" />
             </a>
           )}
-          <EmojiPicker onSelectEmoji={this.insertWord} />
+          <EmojiPicker onSelectEmoji={this.insertWord} inThread={inThread} />
         </div>
       </div>
     );
@@ -415,7 +367,6 @@ class MessageForm extends Component {
       allowTypingUsers,
       allowMention,
       allowJumpingIndicator,
-      messageStore,
       currentGroup
     } = this.props;
 
@@ -446,7 +397,6 @@ class MessageForm extends Component {
           </div>
         )}
         {allowTypingUsers && <TypingUsers />}
-        <EditingCommand messageStore={messageStore} />
       </div>
     );
   }

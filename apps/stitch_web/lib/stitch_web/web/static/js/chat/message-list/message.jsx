@@ -12,6 +12,7 @@ import {
   UserProfileMenu,
   MessageNav
 } from "common/components";
+import MessageEditForm from "../message-form/message-edit-form";
 import MessageActions from "./message-actions";
 
 @inject("usersStore", "messageStore")
@@ -106,6 +107,34 @@ class Message extends PureComponent {
     );
   }
 
+  rendedContent(user) {
+    const {messageStore, message, isConversationMessage } = this.props;
+    return (
+      <div className="message-content-wrapper">
+        <MessageContent
+          isConversationMessage={isConversationMessage}
+          messageStore={messageStore}
+          message={message}
+          user={user}
+        />
+      </div>
+    );
+  }
+
+  renderEditForm() {
+    const {messageStore, message, isReply, inThread } = this.props;
+
+    return (
+      <MessageEditForm
+        messageStore={messageStore}
+        message={message}
+        isReply={isReply}
+        inThread={inThread}
+      />
+    )
+  }
+
+
   renderHeader(message) {
     const { inserted_at: insertedAt } = message;
     const { isConversationMessage } = this.props;
@@ -129,7 +158,6 @@ class Message extends PureComponent {
   render() {
     const { isActionsVisible, isSelected } = this.state;
     const {
-      onStartEditCallback,
       message,
       hasNML,
       isHighlighted,
@@ -153,6 +181,10 @@ class Message extends PureComponent {
       failed: message.status === "failed",
       bot_message: user && user.is_bot
     });
+
+    const messageStyles = {};
+    messageStyles.paddingRight = (inThread && isReply) ? "0" : "40px";
+
 
     return (
       <div
@@ -189,6 +221,7 @@ class Message extends PureComponent {
             <Element
               name={`message_${message.id}`}
               className={messageClassName}
+              style={messageStyles}
             >
               {this.renderGutter(message)}
 
@@ -202,22 +235,17 @@ class Message extends PureComponent {
                 )}
 
                 {this.renderHeader(message)}
-
-                <div className="message-content-wrapper">
-                  <MessageContent
-                    isConversationMessage={isConversationMessage}
-                    messageStore={messageStore}
-                    message={message}
-                    user={user}
-                  />
-                </div>
+                {(messageStore.messageInEdit && message) && 
+                  (messageStore.messageInEdit.id === message.id)
+                    ? this.renderEditForm() 
+                    : this.rendedContent(user)
+                }
               </div>
 
               {(isActionsVisible || isSelected) &&
                 !isConversationMessage && (
                   <MessageActions
                     inThread={inThread ? inThread : false}
-                    onStartEditCallback={onStartEditCallback}
                     user={user}
                     isReply={isReply}
                     message={message}
@@ -236,7 +264,6 @@ class Message extends PureComponent {
 }
 
 Message.propTypes = {
-  onStartEditCallback: PropTypes.func,
   isThreadView: PropTypes.bool,
   hasNML: PropTypes.bool,
   isHighlighted: PropTypes.bool,
@@ -252,7 +279,6 @@ Message.propTypes = {
 };
 
 Message.defaultProps = {
-  onStartEditCallback: null,
   isThreadView: false,
   hasNML: false,
   isHighlighted: false,

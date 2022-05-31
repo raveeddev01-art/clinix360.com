@@ -1178,15 +1178,31 @@ class MessageStore extends BaseMessageStore {
     }
 
     @action
-    updateMessageComment = (commentId, commentText) => {
-        const body = { message_comment: { text_content: commentText } };
-        return put(`/api/v1/messages/comments/${commentId}`, {
+    finishCommentEdit() {
+
+        if (!this.messageInEdit) {
+            return;
+        }
+
+        const trimmedEditText = this.textInEdit.trim();
+
+        if (!trimmedEditText ||
+            this.messageInEdit.text_content === trimmedEditText
+        ) {
+            this.cancelEdit();
+            return;
+        }
+
+        const body = { message_comment: { text_content: this.encodeMessage(trimmedEditText) } };
+        return put(`/api/v1/messages/comments/${this.messageInEdit.id}`, {
             body,
             hideNotify: true
         }).then(response => {
             this.message.thread_messages = this.message.thread_messages.map(
-                comment => (comment.id === commentId ? response.data : comment)
+                comment => (comment.id === this.messageInEdit.id ? response.data : comment)
             );
+
+            this.messageInEdit = null;
         });
     };
 

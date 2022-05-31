@@ -111,8 +111,10 @@ export default class BaseMessageStore {
   // ===========================
 
   @action
-  startEdit(id) {
-    const message = this.getMessageById(id);
+  startEdit(id, message=null) {
+    if (!message) {
+      message = this.getMessageById(id);
+    }
 
     if (message) {
       this.messageInEdit = message;

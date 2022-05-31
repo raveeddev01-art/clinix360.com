@@ -556,9 +556,8 @@
       .editing-commands {
         background: #fff;
         position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        right: 2px;
+        bottom: 2px;
         display: flex;
         justify-content: space-between;
         font-size: 85%;
@@ -577,6 +576,7 @@
       }
     }
   }
+
 }
 
 .notifications.radio-group {
@@ -1415,13 +1415,12 @@ i.file-data-separator {
 }
 
 .emoji-picker-container {
-  position: relative;
-  display: inline;
+  // position: relative;
+  // display: inline;
 
   .emoji-picker-wrapper {
-    position: absolute;
     bottom: 34px;
-    right: -12px;
+    // right: -12px;
   }
 }
 

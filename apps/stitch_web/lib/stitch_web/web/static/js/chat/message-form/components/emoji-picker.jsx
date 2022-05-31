@@ -42,7 +42,13 @@ class EmojiPicker extends Component {
 
   render() {
     const { showPicker } = this.state;
+
+    console.log("props at picker", this.props);
+
+    const { inThread } = this.props;
     const { onSelectEmoji } = this;
+
+    console.log("In Thread Emoki Picker", inThread);
 
     return (
       <div className="emoji-picker-container">
@@ -52,7 +58,15 @@ class EmojiPicker extends Component {
             this.pickerEl = node;
           }}
         >
-          {showPicker && <Picker set="apple" autoFocus onClick={onSelectEmoji} />}
+          {showPicker && 
+            <Picker set="apple" autoFocus onClick={onSelectEmoji} 
+              style={Object.assign(
+                {
+                  zIndex: 11,
+                  maxWidth: inThread ? "280px" : "initial",
+                }
+              )}
+            />}
         </div>
         <a
           role="link"
