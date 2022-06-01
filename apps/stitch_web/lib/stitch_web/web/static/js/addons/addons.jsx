@@ -79,7 +79,6 @@ class Addons extends Component {
         </div>
 
         <div className="flex-content">
-          {/* set display to none if thread is open so the left panel does not overlap chat panel */}
           <div className={leftPanelClass} >
             {addonStore.addonPanelType === "Room Information" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
@@ -96,17 +95,18 @@ class Addons extends Component {
             {addonStore.addonPanelType === "downloads" && <FileDrawer />}
           </div>
 
-          <div className={rightPanelClass}>
-            {addonStore.detailPanelType === "File Details" && (
-              <FileDetails message={addonStore.detailPanelData}/>
-            )}
-            {addonStore.detailPanelType === "Message Details" && (
-              <MessageDetails message={addonStore.detailPanelData}/>
-            )}
-            {addonStore.detailPanelType === "people" && (
-              <PeopleDetail user={addonStore.detailPanelData} />
-            )}
-          </div>
+          {(showAddonDetail || addonStore.detailPanelType === "people") && 
+            <div className={rightPanelClass}>
+              {addonStore.detailPanelType === "File Details" && (
+                <FileDetails message={addonStore.detailPanelData}/>
+              )}
+              {addonStore.detailPanelType === "Message Details" && (
+                <MessageDetails message={addonStore.detailPanelData}/>
+              )}
+              {addonStore.detailPanelType === "people" && (
+                <PeopleDetail user={addonStore.detailPanelData} />
+              )}
+            </div>}
         </div>
       </div>
     );
