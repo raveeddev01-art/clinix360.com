@@ -313,8 +313,6 @@ class MessageForm extends Component {
     const { isFocused } = this.state;
     const text = this.getText();
 
-    console.log("in thread message form", inThread);
-
     const className = classNames("form-control", "message-text", {
       disconnected: !socketStore.isConnected
     });
@@ -355,7 +353,7 @@ class MessageForm extends Component {
               <i className="fa fa-at" />
             </a>
           )}
-          <EmojiPicker onSelectEmoji={this.insertWord} inThread={inThread} />
+          <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>
     );

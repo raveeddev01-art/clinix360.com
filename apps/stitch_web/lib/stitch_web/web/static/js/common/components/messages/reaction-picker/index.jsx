@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Picker } from "emoji-mart";
+import { Modal } from "react-bootstrap";
 
 class ReactionPicker extends Component {
   constructor(...args) {
@@ -46,31 +47,49 @@ class ReactionPicker extends Component {
     if (!target.classList.contains("emoji-mart")) {
       this.props.onSelectReaction();
     }
+
   };
+
+  styleModal = (e) => {
+    const { pos } = this.props;
+
+    var root = document.getRootNode();
+    var modalDialog = root.getElementsByClassName("modal-dialog")[0];
+
+    modalDialog.style.position = "absolute";
+    modalDialog.style.maxWidth = "max-content";
+    modalDialog.style.width = "fit-content";
+    modalDialog.style.bottom = pos.bottom;
+    modalDialog.style.top = pos.top;
+  }
+
+  renderPicker() {
+    return (
+      <Picker
+        set="apple"
+        autoFocus
+        onClick={this.props.onSelectReaction}
+      />
+    );
+  }
 
   render() {
     const { showPicker } = this.state;
-    const { style, onSelectReaction, inThread } = this.props;
 
     if (!showPicker) {
       return null;
     }
 
     return (
-      <Picker
-        set="apple"
-        autoFocus
-        onClick={onSelectReaction}
-        style={Object.assign(
-          {
-            position: "absolute",
-            right: 10,
-            zIndex: 11,
-            maxWidth: inThread ? "280px" : "initial",
-          },
-          style
-        )}
-      />
+      <Modal
+        onShow={this.styleModal}
+        style={{position: "absolute"}} 
+        animation={false}
+        backdrop={false}
+        show
+      >
+        {this.renderPicker()}
+      </Modal>
     );
   }
 }

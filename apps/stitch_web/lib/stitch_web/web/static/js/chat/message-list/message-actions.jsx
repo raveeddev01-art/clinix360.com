@@ -51,7 +51,7 @@ class MessageActions extends PureComponent {
 
   getEmojiMartStyle = () => {
     const martStyles = {};
-    const { messageStore, message, inThread } = this.props;
+    const { messageStore, message } = this.props;
     const messageDiv = messageStore.messageElements[message.id].div;
 
     if (!messageDiv) {
@@ -62,11 +62,7 @@ class MessageActions extends PureComponent {
     if (pos.bottom < window.innerHeight / 2) {
       martStyles.top = "24px";
     } else {
-      if(inThread) {
-        martStyles.bottom = "-100px";
-      } else {
-        martStyles.bottom = "-14px";
-      }
+      martStyles.bottom = "-14px";
     }
 
     return martStyles;
@@ -93,7 +89,7 @@ class MessageActions extends PureComponent {
     messageStore.toggleStar(message.id);
   };
 
-  toggleReaction = () => {
+  toggleReaction = (e) => {
     this.setState({ isEmojiPickerOpen: true });
     this.props.setSelected({ isSelected: true });
   };
@@ -174,8 +170,7 @@ class MessageActions extends PureComponent {
       message,
       user,
       isConversationMessage,
-      isReply,
-      inThread
+      isReply
     } = this.props;
     const mine = user.id === currentUser.id;
     const unsent = message.status === "sending" || message.status === "failed";
@@ -332,12 +327,11 @@ class MessageActions extends PureComponent {
       </ButtonGroup>,
 
       <ReactionPicker
-        inThread={inThread}
         key="reaction-picker"
         message={message}
         onSelectReaction={this.onSelectEmoji}
         show={isEmojiPickerOpen}
-        style={this.getEmojiMartStyle()}
+        pos={this.getEmojiMartStyle()}
       />
     ];
   }

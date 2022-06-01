@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Modal } from 'react-bootstrap';
 import { Picker } from "emoji-mart";
 import cx from "classnames";
 
@@ -40,15 +41,37 @@ class EmojiPicker extends Component {
     this.setState({ showPicker: !this.state.showPicker });
   };
 
+  styleModal = () => {
+    var root = document.getRootNode();
+    var modalDialog = root.getElementsByClassName("modal-dialog")[0];
+
+    modalDialog.style.position = "absolute";
+    modalDialog.style.maxWidth = "max-content";
+    modalDialog.style.width = "fit-content";
+    modalDialog.style.bottom = "10px";
+    modalDialog.style.right = "80px";
+  }
+
+  renderPicker() {
+    return (
+      <Modal
+        onShow={this.styleModal}
+        style={{position: "absolute"}} 
+        animation={false}
+        backdrop={false}
+        show
+      >
+        <Picker
+          set="apple"
+          autoFocus
+          onClick={this.onSelectEmoji}
+        />
+      </Modal>
+    )
+  }
+
   render() {
     const { showPicker } = this.state;
-
-    console.log("props at picker", this.props);
-
-    const { inThread } = this.props;
-    const { onSelectEmoji } = this;
-
-    console.log("In Thread Emoki Picker", inThread);
 
     return (
       <div className="emoji-picker-container">
@@ -58,15 +81,7 @@ class EmojiPicker extends Component {
             this.pickerEl = node;
           }}
         >
-          {showPicker && 
-            <Picker set="apple" autoFocus onClick={onSelectEmoji} 
-              style={Object.assign(
-                {
-                  zIndex: 11,
-                  maxWidth: inThread ? "280px" : "initial",
-                }
-              )}
-            />}
+          {showPicker && this.renderPicker()}
         </div>
         <a
           role="link"

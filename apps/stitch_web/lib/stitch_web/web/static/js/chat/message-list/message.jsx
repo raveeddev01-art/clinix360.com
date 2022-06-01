@@ -129,7 +129,6 @@ class Message extends PureComponent {
         messageStore={messageStore}
         message={message}
         isReply={isReply}
-        inThread={inThread}
       />
     )
   }
@@ -245,7 +244,6 @@ class Message extends PureComponent {
               {(isActionsVisible || isSelected) &&
                 !isConversationMessage && (
                   <MessageActions
-                    inThread={inThread ? inThread : false}
                     user={user}
                     isReply={isReply}
                     message={message}

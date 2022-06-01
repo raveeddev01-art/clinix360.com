@@ -337,8 +337,7 @@ class MessageEditForm extends Component {
     const {
       messageStore,
       socketStore,
-      allowMention,
-      inThread
+      allowMention
     } = this.props;
     const { isFocused } = this.state;
     const text = this.getText();
@@ -381,7 +380,7 @@ class MessageEditForm extends Component {
               <i className="fa fa-at" />
             </a>
           )}
-          <EmojiPicker onSelectEmoji={this.insertWord} inThread={inThread} />
+          <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>
     );
