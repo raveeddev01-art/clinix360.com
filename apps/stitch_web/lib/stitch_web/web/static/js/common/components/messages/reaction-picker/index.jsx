@@ -61,6 +61,7 @@ class ReactionPicker extends Component {
     modalDialog.style.width = "fit-content";
     modalDialog.style.bottom = pos.bottom;
     modalDialog.style.top = pos.top;
+    modalDialog.style.right = "80px";
   }
 
   renderPicker() {

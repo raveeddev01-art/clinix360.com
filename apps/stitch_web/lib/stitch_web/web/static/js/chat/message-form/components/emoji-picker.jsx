@@ -42,13 +42,16 @@ class EmojiPicker extends Component {
   };
 
   styleModal = () => {
+    const { pos } = this.props;
+
     var root = document.getRootNode();
     var modalDialog = root.getElementsByClassName("modal-dialog")[0];
 
     modalDialog.style.position = "absolute";
     modalDialog.style.maxWidth = "max-content";
     modalDialog.style.width = "fit-content";
-    modalDialog.style.bottom = "10px";
+    modalDialog.style.bottom = pos.bottom;
+    modalDialog.style.top = pos.top;
     modalDialog.style.right = "80px";
   }
 
