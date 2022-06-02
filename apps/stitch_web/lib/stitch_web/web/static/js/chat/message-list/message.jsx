@@ -133,6 +133,13 @@ class Message extends PureComponent {
     )
   }
 
+  isInEditMode = () => {
+    const { message, messageStore } = this.props;
+
+    return ((messageStore.messageInEdit && message) && 
+                  (messageStore.messageInEdit.id === message.id))
+  }
+
 
   renderHeader(message) {
     const { inserted_at: insertedAt } = message;
@@ -182,8 +189,11 @@ class Message extends PureComponent {
     });
 
     const messageStyles = {};
-    messageStyles.paddingRight = (inThread && isReply) ? "0" : "40px";
 
+    // remove extra padding when in edit mode and thread is open
+    if(this.isInEditMode() && (inThread && isReply)) {
+      messageStyles.paddingRight = "0";  
+    }
 
     return (
       <div
@@ -234,10 +244,9 @@ class Message extends PureComponent {
                 )}
 
                 {this.renderHeader(message)}
-                {(messageStore.messageInEdit && message) && 
-                  (messageStore.messageInEdit.id === message.id)
-                    ? this.renderEditForm() 
-                    : this.rendedContent(user)
+                {this.isInEditMode()   
+                  ? this.renderEditForm() 
+                  : this.rendedContent(user)
                 }
               </div>
 

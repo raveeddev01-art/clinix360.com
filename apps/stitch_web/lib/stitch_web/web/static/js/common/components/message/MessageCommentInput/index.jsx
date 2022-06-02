@@ -34,7 +34,7 @@ class MessageCommentInput extends Component {
     return (
       <form className="file-comment" /*onSubmit={this.addComment}*/>
         <FormGroup className="file-comment__edit">
-          <div className="flex-footer">
+          <div className="flex-footer" style={{padding: "0px"}}>
             <MessageForm
               allowTypingUsers={false}
               onEnterCallback={this.addComment}
