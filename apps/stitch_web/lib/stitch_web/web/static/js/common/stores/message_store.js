@@ -1179,7 +1179,6 @@ class MessageStore extends BaseMessageStore {
 
     @action
     finishCommentEdit() {
-
         if (!this.messageInEdit) {
             return;
         }

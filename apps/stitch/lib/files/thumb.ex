@@ -8,12 +8,12 @@ defmodule Stitch.Files.Thumb do
   def create(%{"mimetype" => "image/tiff"}), do: {:error, "Unsupported type"}
 
   def create(%{"url" => url, "mimetype" => "image/" <> _image}) do
-    with {:ok, filename} <- get_filename(url),
-         dest = Path.join(System.tmp_dir!(), filename),
-         {:ok, :done} <- S3.download(filename, dest),
-         image <- generate_preview(dest),
+    with {:ok, filename} <- get_filename(url) |> IO.inspect(label: "filename"),
+         dest = Path.join(System.tmp_dir!(), filename) |> IO.inspect(label: "destination"),
+         {:ok, :done} <- S3.download(filename, dest) |> IO.inspect(label: "download"),
+         image <- generate_preview(dest) |> IO.inspect(label: "generated"),
          %Mogrify.Image{path: preview_path} <- image,
-         %Mogrify.Image{height: preview_height, width: preview_width} <- Mogrify.verbose(image),
+         %Mogrify.Image{height: preview_height, width: preview_width} <- verbose(image) |> IO.inspect(label: "in verbose"),
          {:ok, %{status_code: 200}} <- S3.upload(preview_path),
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
@@ -35,8 +35,8 @@ defmodule Stitch.Files.Thumb do
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(filename, dest),
          {:ok, preview_path} <- Stitch.Files.ThumbGenerator.generate_pdf_thumbnail(dest),
-         image <- Mogrify.open(preview_path),
-         %Mogrify.Image{height: preview_height, width: preview_width} <- Mogrify.verbose(image),
+         image <- open(preview_path),
+         %Mogrify.Image{height: preview_height, width: preview_width} <- verbose(image),
          {:ok, %{status_code: 200}} <- S3.upload(preview_path),
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
@@ -74,8 +74,8 @@ defmodule Stitch.Files.Thumb do
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(filename, dest),
          {:ok, preview_path} <- Stitch.Files.ThumbGenerator.generate_word_thumbnail(dest),
-         image <- Mogrify.open(preview_path),
-         %Mogrify.Image{height: preview_height, width: preview_width} <- Mogrify.verbose(image),
+         image <- open(preview_path),
+         %Mogrify.Image{height: preview_height, width: preview_width} <- verbose(image),
          {:ok, %{status_code: 200}} <- S3.upload(preview_path),
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
@@ -102,8 +102,11 @@ defmodule Stitch.Files.Thumb do
     try do
       origin
       |> open
+      |> IO.inspect(label: "open")
       |> resize_to_limit("#{@settings.max_preview_width}x#{@settings.max_preview_height}")
+      |> IO.inspect(label: "resized")
       |> save
+      |> IO.inspect(label: "saved")
     catch
       e -> e
     end
