@@ -20,7 +20,8 @@ class MessageActions extends PureComponent {
 
     this.state = {
       dropup: false,
-      isEmojiPickerOpen: false
+      isEmojiPickerOpen: false,
+      emojiPickerOffset: {}
     };
   }
 
@@ -90,7 +91,7 @@ class MessageActions extends PureComponent {
   };
 
   toggleReaction = (e) => {
-    this.setState({ isEmojiPickerOpen: true });
+    this.setState({ emojiPickerOffset: e.target.getBoundingClientRect(), isEmojiPickerOpen: true })
     this.props.setSelected({ isSelected: true });
   };
 
@@ -174,7 +175,7 @@ class MessageActions extends PureComponent {
     } = this.props;
     const mine = user.id === currentUser.id;
     const unsent = message.status === "sending" || message.status === "failed";
-    const { dropup, isEmojiPickerOpen } = this.state;
+    const { dropup, isEmojiPickerOpen, emojiPickerOffset } = this.state;
     const starredCX = message.starred ? "" : "-o";
     const detailPageUrl =
       message.fields &&
@@ -331,7 +332,7 @@ class MessageActions extends PureComponent {
         message={message}
         onSelectReaction={this.onSelectEmoji}
         show={isEmojiPickerOpen}
-        pos={this.getEmojiMartStyle()}
+        pos={emojiPickerOffset}
       />
     ];
   }

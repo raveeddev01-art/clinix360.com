@@ -55,13 +55,18 @@ class ReactionPicker extends Component {
 
     var root = document.getRootNode();
     var modalDialog = root.getElementsByClassName("modal-dialog")[0];
+    var modalRect = modalDialog.getBoundingClientRect();
 
     modalDialog.style.position = "absolute";
     modalDialog.style.maxWidth = "max-content";
     modalDialog.style.width = "fit-content";
-    modalDialog.style.bottom = pos.bottom;
-    modalDialog.style.top = pos.top;
-    modalDialog.style.right = "80px";
+    modalDialog.style.left = pos.left - (modalRect.width/2) + "px";
+
+    if(window.innerHeight - pos.y > modalRect.height) {
+      modalDialog.style.top = pos.top + "px";
+    } else {
+      modalDialog.style.bottom = pos.bottom - pos.top + "px";
+    }
   }
 
   renderPicker() {
