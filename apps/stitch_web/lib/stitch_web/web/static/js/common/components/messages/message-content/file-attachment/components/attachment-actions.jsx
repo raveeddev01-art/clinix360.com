@@ -148,9 +148,9 @@ class AttachmentActions extends Component {
 
               {isAdminOrOwner(user_id) && <MenuItem divider />}
 
-              {onCommentsClick && (
+              {/* {onCommentsClick && (
                 <MenuItem onClick={onCommentsClick}>View Details</MenuItem>
-              )}
+              )} */}
 
               {isAdminOrOwner(user_id) && (
                 <MenuItem onClick={this.delete}>Delete File</MenuItem>
