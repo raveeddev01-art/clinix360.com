@@ -105,7 +105,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   end
 
   # TODO: remove `requires_fallback_comment: false` guard on the next release
-  def text_content(%Message{type: "file_share", requires_fallback_comment: false}), do: nil
+  # def text_content(%Message{type: "file_share", requires_fallback_comment: false}), do: nil
   def text_content(message), do: message.text_content
 
   def type("file_share", _), do: "upload"
