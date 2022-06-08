@@ -103,9 +103,8 @@ class FileItem extends Component {
               )}
             </span>
           </div>
-
           <FileInfo file={file} />
-          <span className="file-dot" />
+          <br></br>
           <FileCommentGroup file={file} showClose={false} />
         </div>
       </div>
