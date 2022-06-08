@@ -4,15 +4,6 @@ import PropTypes from "prop-types";
 
 @inject("usersStore", "addonStore")
 class Replies extends Component {
-
-    showFileComments = () => {
-        const { addonStore, message } = this.props;
-    
-        addonStore.setAddonPanel("files");
-        addonStore.toggleAddons(true);
-        addonStore.toggleAddonDetail(true);
-        addonStore.setAddonDetailPanel("File Details", message);
-    };
     
     showMessageComments = () => {
         const { addonStore, message } = this.props;
@@ -32,7 +23,7 @@ class Replies extends Component {
 
     return (
       <div className="thread-messages-count">
-        <span onClick={(message.type === "upload" || message.type === "file_comment") ? this.showFileComments : this.showMessageComments}>
+        <span onClick={this.showMessageComments}>
             {message.thread_messages_count} {message.thread_messages_count > 1 ? "replies" : "reply"}
         </span>
       </div>
