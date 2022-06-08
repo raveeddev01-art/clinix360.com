@@ -17,7 +17,7 @@ class PeopleDetail extends Component {
     const online = this.props.presenceStore.isOnline(`${this.props.user.id}`);
 
     return (
-      <div className="user-view" style={{maxHeight:'250px',minHeight:'200px',overflow:'hidden'}}>
+      <div className="user-view">
         <div className="user-avatar m-b-20">
           <AvatarImage
             useThumb={false}

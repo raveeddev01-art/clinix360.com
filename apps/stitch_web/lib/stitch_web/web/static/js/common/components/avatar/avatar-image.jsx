@@ -80,6 +80,7 @@ class AvatarImage extends Component {
 
     return (
       <img
+        style={{maxHeight:'250px', minHeight:'200px', overflow:'hidden'}}
         alt={username}
         className={this.imageClass}
         onError={this.onImageError}
