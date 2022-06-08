@@ -100,15 +100,6 @@ class MessageActions extends PureComponent {
     teamFileStore.openShareModal(message.upload_id);
   };
 
-  showFileComments = () => {
-    const { addonStore, message } = this.props;
-
-    addonStore.setAddonPanel("files");
-    addonStore.toggleAddons(true);
-    addonStore.toggleAddonDetail(true);
-    addonStore.setAddonDetailPanel("File Details", message);
-  };
-
   showMessageComments = () => {
     const { addonStore, message } = this.props;
 
@@ -219,17 +210,10 @@ class MessageActions extends PureComponent {
               placement="top"
               delayShow={150}
               overlay={<Tooltip id="file-comments">Reply in Thread</Tooltip>}
-            >
-              {(message.type === "upload" || message.type === "file_comment") ? (
-                <Button onClick={this.showFileComments}>
-                  <i className="fa fa-comments" />
-                </Button>
-              ) :
-                (
-                  <Button onClick={this.showMessageComments}>
-                    <i className="fa fa-comments" />
-                  </Button>
-                )}
+            >    
+              <Button onClick={this.showMessageComments}>
+                <i className="fa fa-comments" />
+              </Button>
             </OverlayTrigger>
           )}
 
