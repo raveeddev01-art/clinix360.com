@@ -90,6 +90,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     search_options = cast_params(types, params)
     current_user = conn.assigns.current_user
     messages = Stitch.Elasticsearch.MessageSearch.search_for_params(current_user, search_options)
+    |> IO.inspect(label: "after search")
     render(conn, "index.json", messages: messages, user_id: current_user.id)
   end
 
