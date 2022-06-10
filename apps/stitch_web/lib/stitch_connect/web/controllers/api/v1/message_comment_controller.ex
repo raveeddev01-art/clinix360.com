@@ -29,7 +29,6 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         "id" => message_id
       } = params) do
     thread = if thread == "true", do: true, else: thread
-    IO.inspect(params, label: "params text_content in comment controller")
 
     %{
       "text_content" => text_content,
@@ -48,9 +47,9 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
           "fields" => fields
         },
         "id" => message_id
-      } = params) do
+      }) do
     thread = if thread == "true", do: true, else: thread
-    IO.inspect(params, label: "params in comment controller")
+
     %{
       "text_content" => text_content,
       "thread" => thread,
@@ -70,7 +69,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
     with {:message, %Message{} = message_parent} <-
            {:message, MessageQueries.load_message(message_id, current_user)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(message_parent, current_user, message_params_with_client, presence) |> IO.inspect(label: "Create") do
+           Message.create(message_parent, current_user, message_params_with_client, presence) do
       message_parent = MessageQueries.load_message(message_parent.id, current_user)
       message = MessageQueries.load_message(message.id, current_user)
       message_comment_creation_events(message_parent, message, notify_user_ids)
