@@ -27,7 +27,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
           "request_id" => request_id
         },
         "id" => message_id
-      }) do
+      } = params) do
     thread = if thread == "true", do: true, else: thread
     IO.inspect(params, label: "params text_content in comment controller")
 
