@@ -212,6 +212,34 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
+  def handle_in("new_comment", params, socket) do
+    current_user = socket.assigns.current_user
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
+    message_params_with_client = Message.Params.with_client_attrs("channel", params)
+
+    with {:message, %Message{} = message_parent} <-
+           {:message, MessageQueries.load_message(params.parent_message_id, current_user)},
+         {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
+           Message.create(message_parent, current_user, message_params_with_client, presence) do
+      message_parent = MessageQueries.load_message(message_parent.id, current_user)
+      message = MessageQueries.load_message(message.id, current_user)
+      message_comment_creation_events(message_parent, message, notify_user_ids)
+
+      json = MessageView.render("show.json", %{message: message})
+      {:reply, {:ok, json}, socket}
+    else
+      {:message, _} ->
+        {:reply, {:error, :not_found, "The room you are looking for does not exist."}, socket}
+
+      {:authorized?, false} ->
+        {:reply, {:error, :not_authorized, "You can't see the messages for this room."}, socket}
+
+      {:error, :message, changeset, _changeset_so_far} ->
+        {:reply, {:error, :unprocessable_entity, Stitch.Web.ControllerHelpers.changeset_errors_to_string(changeset)}, socket}
+    end
+  end
+
+  @decorate channel_action()
   def handle_in("mark_as_unread", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Repo.get!(Message, message_id)
@@ -645,6 +673,12 @@ defmodule StitchConnect.Web.GroupChannel do
       {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}},
        socket}
     end
+  end
+
+  defp message_comment_creation_events(message, comment, notify_user_ids) do
+    message
+    |> Map.merge(%{comment_notify_ids: notify_user_ids, comment: comment})
+    |> MessageEventsService.message_comment_creation_events(notify_user_ids)
   end
 
   defp message_delete_failure_reply(socket) do
