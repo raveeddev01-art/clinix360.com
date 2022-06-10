@@ -37,6 +37,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
       "request_id" => request_id
     }
     |> create_message(conn, message_id)
+    |> IO.inspect(label: "create response")
   end
 
   def create(conn, %{
@@ -57,6 +58,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
       "type" => "upload"
     }
     |> create_message(conn, message_id)
+    |> IO.inspect(label: "create response")
   end
 
   def create_message(message_params, conn, message_id) do
