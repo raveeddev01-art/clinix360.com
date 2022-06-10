@@ -31,7 +31,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - DATABASE_URL=postgressql://postgres:postgres@postgres:5432/stitch_connect_dev
     ports:
-      - "4101:4101"
+      - "4001:4001"
     networks:
       - invochat
     restart: unless-stopped
