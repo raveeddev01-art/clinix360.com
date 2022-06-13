@@ -28,7 +28,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         },
         "id" => message_id
       }) do
-    thread = if thread == "true", do: true, else: thread
+    thread = if thread == "true" or thread == "1" , do: true, else: thread
 
     %{
       "text_content" => text_content,
@@ -49,7 +49,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         },
         "id" => message_id
       }) do
-    thread = if thread == "true", do: true, else: thread
+    thread = if thread == "true" or thread == "1" , do: true, else: thread
 
     %{
       "text_content" => text_content,
