@@ -29,7 +29,7 @@ defmodule Stitch.Message.MessageCreation do
   def create(
         %Message{} = message,
         user,
-        %{"text_content" => _, "thread" => "1", "type" => "upload", "fields" => fields} = attrs,
+        %{"text_content" => _, "thread" => true, "type" => "upload", "fields" => fields} = attrs,
         presence
       ) do
 

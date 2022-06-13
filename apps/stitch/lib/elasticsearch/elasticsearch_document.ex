@@ -36,6 +36,10 @@ defimpl Elasticsearch.Document, for: Stitch.Message do
   end
 
   defp parse_text_styles(text, style) do
-    Regex.replace(@text_styles[style], text, fn _, x -> "#{x}" end)
+    if text do
+      Regex.replace(@text_styles[style], text, fn _, x -> "#{x}" end)
+    else
+      text
+    end
   end
 end
