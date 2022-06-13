@@ -1,10 +1,10 @@
 defimpl Elasticsearch.Document, for: Stitch.Message do
-  @text_styles %{
-    "_" => ~r/[_](.*)[_]/,
-    "*" => ~r/[*](.*)[*]/,
-    "`" => ~r/[`](.*)[`]/,
-    "~" => ~r/[~](.*)[~]/
-  }
+  @text_style_regex [
+    ~r/[_](.*)[_]/,
+    ~r/[*](.*)[*]/,
+    ~r/[`](.*)[`]/,
+    ~r/[~](.*)[~]/
+  ]
 
   def id(message), do: message.id
 
@@ -22,11 +22,9 @@ defimpl Elasticsearch.Document, for: Stitch.Message do
   end
 
   defp text_content(text) do
-    text
-    |> parse_text_styles("*")
-    |> parse_text_styles("_")
-    |> parse_text_styles("`")
-    |> parse_text_styles("~")
+    Enum.reduce @text_style_regex, text, fn regex, acc ->
+      parse_text_styles(acc, regex)
+    end
   end
 
   defp inserted_at(datetime) do
@@ -35,11 +33,8 @@ defimpl Elasticsearch.Document, for: Stitch.Message do
     |> DateTime.to_unix(:second)
   end
 
-  defp parse_text_styles(text, style) do
-    if text do
-      Regex.replace(@text_styles[style], text, fn _, x -> "#{x}" end)
-    else
-      text
-    end
-  end
+  defp parse_text_styles("", _regex), do: ""
+  defp parse_text_styles(nil, _regex), do: ""
+  defp parse_text_styles(text, regex), do: Regex.replace(regex, text, fn _, x -> "#{x}" end)
+
 end
