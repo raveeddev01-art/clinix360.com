@@ -35,7 +35,9 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
       "thread" => thread,
       "request_id" => request_id
     }
+    |> IO.inspect(label: "here is params")
     |> create_message(conn, message_id)
+    |> IO.inspect(label: "here is response")
   end
 
   def create(conn, %{
@@ -55,7 +57,9 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
       "fields" => fields,
       "type" => "upload"
     }
+    |> IO.inspect(label: "here is params")
     |> create_message(conn, message_id)
+    |> IO.inspect(label: "here is response")
   end
 
   def create_message(message_params, conn, message_id) do
