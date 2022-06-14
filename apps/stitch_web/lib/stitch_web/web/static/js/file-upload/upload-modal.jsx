@@ -46,7 +46,7 @@ export default class UploadModal extends Component {
         return;
       }
 
-      uploadStore.uploadFile(
+      uploadStore.uploadFiles(
         `/conversations/${uploadStore.conversationId}/messages`
       );
     } else {
@@ -54,9 +54,9 @@ export default class UploadModal extends Component {
         notify.show("Please select a room to upload file.", "error");
         return;
       } else if (uploadStore.commentUpload) {
-        uploadStore.uploadFile(`/messages/${uploadStore.messageId}/comments`);
+        uploadStore.uploadFiles(`/messages/${uploadStore.messageId}/comments`);
       } else {
-        uploadStore.uploadFile(`/groups/${uploadStore.groupId}/messages`)
+        uploadStore.uploadFiles(`/groups/${uploadStore.groupId}/messages`)
       }
 
     }

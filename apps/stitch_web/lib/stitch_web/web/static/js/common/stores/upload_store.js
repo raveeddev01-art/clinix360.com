@@ -35,9 +35,9 @@ class UploadStore {
   };
 
   @action
-  openUploadModal = (file, fileName, from = "connect") => {
-    this.file = file;
-    this.title = fileName || file.name;
+  openUploadModal = (files, fileName, from = "connect") => {
+    this.files = files;
+    this.title = files.map(file => file.name).join(", ");  /*fileName || file.name;*/
     this.description = "";
     this.isUploadModalVisible = true;
     this.from = from;
@@ -165,8 +165,28 @@ class UploadStore {
   };
 
   @action
-  uploadFile = apiUrl => {
-    const { file, title, description } = this;
+  uploadFiles = apiUrl => {
+    const { files } = this;
+    let promises = [];
+
+    for (let file of files) {
+      promises.push(this.uploadFile(file));
+    }
+
+    Promise.all(promises)
+      .then((results) => {
+        const fields = results.filter((result) => result);
+        if (fields.length) {
+          return post(`${this.rootStore.apiBasePath}${apiUrl}`, {
+            body: this.uploadBody(fields)
+          });
+        }
+      }) 
+  }
+
+  @action
+  uploadFile = (file) => {
+    const title = file.name;
     const filenameSplit = file.name.split(".");
     const ext = filenameSplit.length
       ? `.${filenameSplit[filenameSplit.length - 1]}`
@@ -182,12 +202,13 @@ class UploadStore {
     })
       .then(url => {
         this.uploadProgress.set(key, "done");
-        return post(`${this.rootStore.apiBasePath}${apiUrl}`, {
-          body: this.uploadBody(url)
-        });
-      })
-      .then(() => {
         this.removeProgress(key);
+        return {
+          filename: title,
+          mimetype: file.type,
+          size_in_bytes: file.size,
+          url
+        };
       })
       .catch(e => {
         if (e === "aborted") {
@@ -195,21 +216,51 @@ class UploadStore {
             this.removeProgress(key);
           }, 1000); // show cancelling for a blink
         }
+        return false;
       });
   };
 
-  uploadBody = (url) => {
+  // @action
+  // uploadFile = apiUrl => {
+  //   const { file, title, description } = this;
+  //   const filenameSplit = file.name.split(".");
+  //   const ext = filenameSplit.length
+  //     ? `.${filenameSplit[filenameSplit.length - 1]}`
+  //     : "";
+  //   const key = `${Guid.create()}${ext}`;
+
+  //   return this.uploadAWS(file, file.type, key, {
+  //     onBeforeUpload: () => {
+  //       this.uploadProgress.set(key, 0);
+  //       this.fileNames.set(key, title);
+  //     },
+  //     onProgress: (...args) => this.onProgress(key)(...args)
+  //   })
+  //     .then(url => {
+  //       this.uploadProgress.set(key, "done");
+  //       return post(`${this.rootStore.apiBasePath}${apiUrl}`, {
+  //         body: this.uploadBody(url)
+  //       });
+  //     })
+  //     .then(() => {
+  //       this.removeProgress(key);
+  //     })
+  //     .catch(e => {
+  //       if (e === "aborted") {
+  //         setTimeout(() => {
+  //           this.removeProgress(key);
+  //         }, 1000); // show cancelling for a blink
+  //       }
+  //     });
+  // };
+
+  uploadBody = (fileFields) => {
     const { file, title, description, commentUpload } = this;
     if (this.commentUpload) {
       return {
         message_comment: {
           type: "upload",
-          fields: {
-            filename: title,
-            mimetype: file.type,
-            size_in_bytes: file.size,
-            url
-          },
+          fields: fileFields,
           text_content: description,
           thread: true
         }
@@ -218,12 +269,7 @@ class UploadStore {
       return {
         message: {
           type: "upload",
-          fields: {
-            filename: title,
-            mimetype: file.type,
-            size_in_bytes: file.size,
-            url
-          },
+          fields: fileFields,
           text_content: description
         }
       };

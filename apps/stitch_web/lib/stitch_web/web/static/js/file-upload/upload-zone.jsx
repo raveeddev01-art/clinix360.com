@@ -33,7 +33,7 @@ class UploadZone extends Component {
 
     if (files.length) {
       uploadStore.openUploadModal(
-        files[0],
+        files,
         undefined,
         isEngage ? "engage" : "connect"
       );
