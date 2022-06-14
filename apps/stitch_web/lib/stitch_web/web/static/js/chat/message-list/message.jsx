@@ -69,11 +69,12 @@ class Message extends PureComponent {
 
   renderGutter(message) {
     const { inserted_at: insertedAt } = message;
-    const { isConversationMessage, isThreadView } = this.props;
+    const { isConversationMessage, inThread } = this.props;
     const user = this.getUser(message);
+    const gutterStyles = inThread ? {width: "40px"} : {width: "65px"};
 
     return (
-      <div className="message-gutter">
+      <div className="message-gutter" style={gutterStyles}>
         {message.pinned && (
           <div className="icon-pin">
             <i className="fa fa-thumb-tack fa-rotate-45" />
@@ -190,9 +191,9 @@ class Message extends PureComponent {
 
     const messageStyles = {};
 
-    // remove extra padding when in edit mode and thread is open
-    if(this.isInEditMode() && (inThread && isReply)) {
-      messageStyles.paddingRight = "0";  
+    // remove extra padding in thread
+    if(inThread && isReply) {
+      messageStyles.paddingRight = "10px";  
     }
 
     return (

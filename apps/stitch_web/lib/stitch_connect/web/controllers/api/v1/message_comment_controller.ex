@@ -28,14 +28,16 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         },
         "id" => message_id
       }) do
-    thread = if thread == "true", do: true, else: thread
+    thread = if thread == "true" or thread == "1" , do: true, else: thread
 
     %{
       "text_content" => text_content,
       "thread" => thread,
       "request_id" => request_id
     }
+    |> IO.inspect(label: "here is params")
     |> create_message(conn, message_id)
+    |> IO.inspect(label: "here is response")
   end
 
   def create(conn, %{
@@ -47,7 +49,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         },
         "id" => message_id
       }) do
-    thread = if thread == "true", do: true, else: thread
+    thread = if thread == "true" or thread == "1" , do: true, else: thread
 
     %{
       "text_content" => text_content,
@@ -55,7 +57,9 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
       "fields" => fields,
       "type" => "upload"
     }
+    |> IO.inspect(label: "here is params")
     |> create_message(conn, message_id)
+    |> IO.inspect(label: "here is response")
   end
 
   def create_message(message_params, conn, message_id) do

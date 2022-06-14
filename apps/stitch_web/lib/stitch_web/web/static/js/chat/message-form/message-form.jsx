@@ -50,23 +50,6 @@ class MessageForm extends Component {
     this.textInput.focus();
   }
 
-  getEmojiMartStyle = () => {
-    const martStyles = {};
-
-    if (!this.textInput) {
-      return {};
-    }
-
-    const pos = this.textInput.getBoundingClientRect();
-    if (pos.bottom < window.innerHeight / 2) {
-      martStyles.top = "24px";
-    } else {
-      martStyles.bottom = "-14px";
-    }
-
-    return martStyles;
-  };
-
   componentWillReceiveProps() {
     // if a modal is open, don't steal focus from it
     if (!this.props.sidemenuStore.currentModal) {
@@ -370,7 +353,7 @@ class MessageForm extends Component {
               <i className="fa fa-at" />
             </a>
           )}
-          <EmojiPicker onSelectEmoji={this.insertWord} pos={this.getEmojiMartStyle()} />
+          <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>
     );
