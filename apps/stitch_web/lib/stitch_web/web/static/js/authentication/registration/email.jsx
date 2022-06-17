@@ -30,7 +30,6 @@ class EmailCard extends Component {
       body: { code: this.state.code },
       hideNotify: true
     }).then(response => {
-        console.log(response);
         if(response.data.success) {
           this.props.registrationStore.setCookie(
             response.data.id,

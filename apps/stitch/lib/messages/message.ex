@@ -298,14 +298,14 @@ defmodule Stitch.Message do
     system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
       type: "system",
       text_content: "{user} joined the room at {time}",
-      fields: %{
+      fields: [%{
         type: "join_group",
         user: %{
           id: user.id,
           name: "#{user.first_name} #{user.last_name}"
         },
         time: NaiveDateTime.utc_now()
-      }
+      }]
     })
   end
 
@@ -317,14 +317,14 @@ defmodule Stitch.Message do
     system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
       type: "system",
       text_content: "{user} left the room at {time}",
-      fields: %{
+      fields: [%{
         type: "leave_group",
         user: %{
           id: user.id,
           name: "#{user.first_name} #{user.last_name}"
         },
         time: NaiveDateTime.utc_now()
-      }
+      }]
     })
   end
 

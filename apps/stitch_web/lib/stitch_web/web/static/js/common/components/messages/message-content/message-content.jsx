@@ -143,9 +143,6 @@ class MessageContent extends Component {
       });
     }
 
-    console.log("type", message.type);
-    message.fields.map((field) => console.log(field))
-
     return (
       <div
         properties={{ target: "_blank", className: "message-link" }}

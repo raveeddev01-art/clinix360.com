@@ -5,7 +5,6 @@ class DocxViewer extends Component {
   render() {
     const { preview_url, url } = this.props;
     const file = `${url}?authenticationToken=${window.authenticationToken}`;
-    console.log("URL", url);
 
     return (
       <div className="word-document-body">

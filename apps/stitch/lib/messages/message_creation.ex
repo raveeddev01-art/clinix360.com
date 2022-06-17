@@ -32,16 +32,20 @@ defmodule Stitch.Message.MessageCreation do
         %{"text_content" => _, "thread" => true, "type" => "upload", "fields" => fields} = attrs,
         presence
       ) do
-    with {:ok, upload, _} <- Upload.create_and_share_with_group(message.group, user, fields) |> IO.inspect(label: "here after group create") do
+        IO.inspect(attrs, label: "Here attrs")
+    with {:ok, uploads} <-
+           Upload.create_and_share_with_group(message.group, user, fields)
+           |> IO.inspect(label: "here after group create") do
       message = %Message{
         parent_message: message,
         group: message.group,
         user: user,
-        upload: upload
+        upload: hd(uploads)
       }
 
-      attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
+      attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
       do_create(message, attrs, presence)
+      |> IO.inspect(label: "Here after do create")
     else
       _ ->
         changeset = %Message{} |> change() |> add_error(:upload_id, "Error creating file")
@@ -75,7 +79,6 @@ defmodule Stitch.Message.MessageCreation do
     with {:ok, uploads} <- Upload.create_and_share_with_group(group, user, fields) do
       message = %Message{group: group, user: user, upload: hd(uploads)}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
-
       do_create(message, attrs, presence)
       |> IO.inspect(label: "do create")
     else
@@ -105,7 +108,6 @@ defmodule Stitch.Message.MessageCreation do
   def create(group, user, %{"text_content" => _} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
     message = %Message{group: group, user: user}
-
     do_create(message, attrs, presence)
   end
 
@@ -123,7 +125,12 @@ defmodule Stitch.Message.MessageCreation do
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
 
-    upload_ids = Enum.map(attrs["fields"], & &1["id"])
+    upload_ids =
+      if message.type == "upload" or message.type == "file_share" do
+        Enum.map(attrs["fields"], & &1["id"])
+      else
+        []
+      end
 
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)

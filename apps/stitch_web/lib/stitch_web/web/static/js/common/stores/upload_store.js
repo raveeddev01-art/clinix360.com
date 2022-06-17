@@ -220,42 +220,8 @@ class UploadStore {
       });
   };
 
-  // @action
-  // uploadFile = apiUrl => {
-  //   const { file, title, description } = this;
-  //   const filenameSplit = file.name.split(".");
-  //   const ext = filenameSplit.length
-  //     ? `.${filenameSplit[filenameSplit.length - 1]}`
-  //     : "";
-  //   const key = `${Guid.create()}${ext}`;
-
-  //   return this.uploadAWS(file, file.type, key, {
-  //     onBeforeUpload: () => {
-  //       this.uploadProgress.set(key, 0);
-  //       this.fileNames.set(key, title);
-  //     },
-  //     onProgress: (...args) => this.onProgress(key)(...args)
-  //   })
-  //     .then(url => {
-  //       this.uploadProgress.set(key, "done");
-  //       return post(`${this.rootStore.apiBasePath}${apiUrl}`, {
-  //         body: this.uploadBody(url)
-  //       });
-  //     })
-  //     .then(() => {
-  //       this.removeProgress(key);
-  //     })
-  //     .catch(e => {
-  //       if (e === "aborted") {
-  //         setTimeout(() => {
-  //           this.removeProgress(key);
-  //         }, 1000); // show cancelling for a blink
-  //       }
-  //     });
-  // };
-
   uploadBody = (fileFields) => {
-    const { file, title, description, commentUpload } = this;
+    const { file, title, description } = this;
     if (this.commentUpload) {
       return {
         message_comment: {
@@ -281,8 +247,6 @@ class UploadStore {
   removeProgress = key => {
     this.uploadProgress.delete(key);
     this.fileNames.delete(key);
-    this.messageId = null;
-    this.commentUpload = false;
   };
 
   onProgress = key =>

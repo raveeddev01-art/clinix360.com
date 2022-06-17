@@ -57,8 +57,6 @@ class FileDetailPage extends Component {
     const { teamFileStore } = this.props;
     const { file } = this.props.teamFileStore;
 
-    console.log(file);
-
     teamFileStore.downloadFile(file.url, file.filename);
   }
 
