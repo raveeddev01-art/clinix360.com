@@ -104,16 +104,16 @@ defmodule Stitch.Files.FileQueries do
   end
 
   def get_by_id(upload_id, preload_assoc: true) do
-    upload_comments_query =
-      # UploadComment
-      Message
-      |> order_by([uc], uc.inserted_at)
+    # upload_comments_query =
+    #   # UploadComment
+    #   Message
+    #   |> order_by([uc], uc.inserted_at)
 
     result =
       Upload
       |> where([u], u.id == ^upload_id)
       |> preload([:group_uploads])
-      |> preload(messages: ^upload_comments_query)
+      # |> preload(messages: ^upload_comments_query)
       |> Repo.one()
 
     case result do
