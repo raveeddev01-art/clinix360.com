@@ -32,7 +32,7 @@ defmodule Stitch.Message.MessageCreation do
         %{"text_content" => _, "thread" => true, "type" => "upload", "fields" => fields} = attrs,
         presence
       ) do
-    with {:ok, upload, _} <- Upload.create_and_share_with_group(message.group, user, fields) do
+    with {:ok, upload, _} <- Upload.create_and_share_with_group(message.group, user, fields) |> IO.inspect(label: "here after group create") do
       message = %Message{
         parent_message: message,
         group: message.group,

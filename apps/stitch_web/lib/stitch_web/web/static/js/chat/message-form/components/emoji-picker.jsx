@@ -8,8 +8,7 @@ class EmojiPicker extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      showPicker: false,
-      pos: {}
+      showPicker: false
     };
   }
 
@@ -51,12 +50,12 @@ class EmojiPicker extends Component {
     modalDialog.style.position = "absolute";
     modalDialog.style.maxWidth = "max-content";
     modalDialog.style.width = "fit-content";
-    modalDialog.style.left = pos.left - (modalRect.width/2 + 50) + "px";
+    modalDialog.style.left = `${pos.left - (modalRect.width/2 + 50)}px`;
 
     if(window.innerHeight - pos.y > modalRect.height) {
-      modalDialog.style.top = pos.top + "px";
+      modalDialog.style.top = `${pos.top}px`;
     } else {
-      modalDialog.style.bottom = pos.bottom - pos.top + "px";
+      modalDialog.style.bottom = `${pos.bottom - pos.top}px`;
     }
   }
 
