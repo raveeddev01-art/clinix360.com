@@ -32,7 +32,7 @@ defmodule Stitch.Message do
     field(:edited_at, :utc_datetime)
     field(:text_content, :string)
     field(:type, :string)
-    field(:fields, :map)
+    field(:fields, {:array, :map})
     field(:pinned, :boolean)
     field(:pinned_at, :utc_datetime)
     field(:read_status, :map, default: %{})
@@ -46,11 +46,13 @@ defmodule Stitch.Message do
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
     field(:reactions, :map, default: %{})
+    field(:upload_ids, {:array, :integer}, deafult: [])
     # Remove on the next release
     field(:requires_fallback_comment, :boolean, default: true)
 
     belongs_to(:call, Call)
     belongs_to(:upload, Upload)
+    # has_many(:uploads, Upload)
     # belongs_to(:upload_comment, UploadComment)
     belongs_to(:parent_message, Message)
     has_many(:thread_messages, Message, foreign_key: :parent_message_id)
@@ -70,7 +72,8 @@ defmodule Stitch.Message do
     :client_device_type,
     :client_os,
     :client_name,
-    :requires_fallback_comment
+    :requires_fallback_comment,
+    :upload_ids
   ]
 
   def changeset(%Message{} = struct, params) do
@@ -218,6 +221,13 @@ defmodule Stitch.Message do
 
   def message_changeset(message, %{"type" => "file_comment"} = attrs) do
     message |> file_comment_changeset(attrs)
+  end
+
+  def update_uploads(upload, %Message{} = struct) do
+    struct
+    |> changeset(upload)
+    |> cast_assoc(:upload)
+    |> Repo.update()
   end
 
   def update(message, attributes) do

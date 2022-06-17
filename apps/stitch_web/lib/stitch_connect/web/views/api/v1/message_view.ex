@@ -53,7 +53,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       deleted: message.deleted,
       # text_content: text_content(message),
       text_content: message.text_content,
-      fields: MessagesHelper.render_fields(message, authenticated_url, files_url),
+      fields: MessagesHelper.render_fields(message, authenticated_url, files_url) |> IO.inspect(label: "fields"),
       type: type(message.type, authenticated_url),
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,
@@ -71,6 +71,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       request_id: message.request_id,
       highlighted_text_content: message.highlighted_text_content,
       upload_id: message.upload_id,
+      upload_ids: message.upload_ids,
       comment_notify_ids: Map.get(message, :comment_notify_ids, default_comment_notify_ids()),
       thread_messages: (if Ecto.assoc_loaded?(message.thread_messages) == true, do: Enum.map(message.thread_messages, &thread_message_json(&1, authenticated_url, @endpoint.files_struct_url())), else: []),
       thread_messages_count: (if Ecto.assoc_loaded?(message.thread_messages) == true, do: Enum.count(message.thread_messages), else: 0)
@@ -100,7 +101,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       link_previews: message.link_previews,
       request_id: message.request_id,
       highlighted_text_content: message.highlighted_text_content,
-      upload_id: message.upload_id
+      upload_id: message.upload_id,
+      upload_ids: message.upload_ids,
     }
   end
 

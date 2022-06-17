@@ -99,6 +99,31 @@ class MessageContent extends Component {
     );
   };
 
+  renderAttchments() {
+    const { message, user, isConversationMessage } = this.props;
+    return (
+      <div>
+        {(message.type === "upload" || message.type === "file_share") &&
+          (
+            <div>
+              {message.fields.map((fields, index) => (   
+                <FileAttachment
+                  {...fields}
+                  key={index}
+                  message={message}
+                  user_id={user.id}
+                  file_id={fields.id}
+                  isConversationMessage={isConversationMessage}
+                  onCommentsClick={this.onCommentsClick}
+                />
+              ))}
+            </div>
+          )
+        }
+      </div>
+    );
+  }
+
   render() {
     const { inSearch, message, user, isConversationMessage, addonStore } = this.props;
     const messageId = !message.id ? addonStore.detailPanelData.id : message.id;
@@ -118,6 +143,9 @@ class MessageContent extends Component {
       });
     }
 
+    console.log("type", message.type);
+    message.fields.map((field) => console.log(field))
+
     return (
       <div
         properties={{ target: "_blank", className: "message-link" }}
@@ -126,20 +154,10 @@ class MessageContent extends Component {
         <div className="message-body">
           {messageContentComponents}
         </div>
-        {(message.type === "upload" || message.type === "file_share") && (
-          <FileAttachment
-            {...message.fields}
-            message={message}
-            user_id={user.id}
-            file_id={message.upload_id}
-            isConversationMessage={isConversationMessage}
-            onCommentsClick={
-              isConversationMessage ? null : this.onCommentsClick
-            }
-          />
-        )}
-        <div className="message-body">
 
+        {this.renderAttchments()}
+
+        <div className="message-body">
           {user && user.is_bot ? this.renderIntegrationLink() : null}
           {this.renderLinkPreviews()}
           {this.renderEdited()}

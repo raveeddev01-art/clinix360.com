@@ -25,7 +25,7 @@ defmodule Stitch.Files.Upload do
     belongs_to(:team, Team)
     has_many(:group_uploads, GroupUpload)
     # has_many(:upload_comments, UploadComment)
-    has_many(:messages, Message)
+    belongs_to(:messages, Message)
     has_many(:groups, through: [:group_uploads, :groups])
     field(:filename, :string)
     field(:url, :string)
@@ -53,7 +53,8 @@ defmodule Stitch.Files.Upload do
     :size_in_bytes,
     :preview_height,
     :preview_width,
-    :preview_url
+    :preview_url,
+    :id
   ]
 
   @spec new(Upload.t(), map) :: Ecto.Changeset.t()
@@ -89,6 +90,16 @@ defmodule Stitch.Files.Upload do
   @spec unshare_from_group(Upload.t(), Group.t()) :: {:ok, GroupUpload.t()} | :error
   def unshare_from_group(%Upload{} = upload, %Group{} = group) do
     GroupUpload.delete(group, upload)
+  end
+
+  def create_and_share_with_group(%Group{} = group, %User{} = user, attrs)
+      when is_list(attrs) do
+    {:ok,
+     Enum.map(attrs, fn attr ->
+       {:ok, upload, _} = create_and_share_with_group(group, user, attr)
+       upload
+     end)}
+    |> IO.inspect(label: "uploads")
   end
 
   def create_and_share_with_group(%Group{} = group, %User{} = user, attrs, opts \\ []) do
@@ -184,7 +195,14 @@ defmodule Stitch.Files.Upload do
     !!(upload.preview_height && upload.preview_width && upload.preview_url)
   end
 
-  @spec fields(Upload.t()) :: map
+  @spec fields(Upload.t() | list()) :: map
+  def fields(uploads) when is_list(uploads) do
+    Enum.map(uploads, fn upload ->
+      fields(upload)
+    end)
+    |> IO.inspect(label: "upload message fields")
+  end
+
   def fields(%Upload{} = upload) do
     upload
     |> Map.take(@attributes ++ [:comment_count, :public_token])

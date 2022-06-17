@@ -15,25 +15,42 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   def render_fields(%{fields: nil}, _authenticated_urls, _files_endpoint), do: nil
 
+  def render_fields(%{fields: fields} = message, authenticated_urls, files_endpoint) when is_list(fields) do
+    IO.inspect(fields, label: "fields")
+
+    Enum.map(fields, fn upload ->
+      message
+      |> Map.merge(%{upload_id: upload["id"]})
+      |> Map.merge(%{fields: upload})
+      |> render_fields(authenticated_urls, files_endpoint)
+    end)
+  end
+
   def render_fields(%{type: "upload"} = message, authenticated_urls, files_endpoint) do
+    IO.inspect(message.upload_id, label: "upload_id")
     message.fields
     |> put_preview_presigned_url(authenticated_urls, message.id, files_endpoint)
     |> put_download_link(authenticated_urls, message.id, files_endpoint)
+    |> put_upload_id(message.upload_id)
   end
 
   def render_fields(%{type: "file_share"} = message, false, files_endpoint) do
+    IO.inspect(message.upload_id, label: "upload_id")
     message.fields
     |> put_preview_presigned_url(false, message.id, files_endpoint)
     |> put_download_link(false, message.id, files_endpoint)
+    |> put_upload_id(message.upload_id)
   end
 
   def render_fields(%{type: "file_share"} = message, true, files_endpoint) do
+    IO.inspect(message.upload_id, label: "upload_id")
     encoded_file_id = Upload.encode_url_id(%Upload{id: message.upload_id})
     filename = Map.get(message.fields, "filename", fn -> Stitch.Rand.token(8) end)
     url = files_file_url(files_endpoint, :download, encoded_file_id, filename)
     # preview_url = files_file_url(files_endpoint, :download_preview, encoded_file_id)
 
     put_preview_presigned_url(message.fields, false, message.id, files_endpoint)
+    |> put_upload_id(message.upload_id)
     |> Map.merge(%{
       "url" => url,
       "api_url" => api_v1_message_path(@endpoint, :download, message.id),
@@ -42,6 +59,12 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
   end
 
   def render_fields(%{fields: fields}, _authenticated_urls, _files_endpoint), do: fields
+
+  defp put_upload_id(nil, _upload_id), do: nil
+  defp put_upload_id(fields, upload_id) do
+    fields
+    |> Map.merge(%{"id" => upload_id})
+  end
 
   defp put_download_link(fields, true, message_id, files_endpoint) do
     filename = Map.get(fields, "filename", fn -> Stitch.Rand.token(8) end)
