@@ -458,6 +458,7 @@ defmodule Stitch.Group do
   end
 
   def update_users(%Group{team_id: team_id} = group, user_ids) do
+    IO.inspect(user_ids, label: "USER IDs")
     group = Repo.preload(group, group_users: :user)
     current_members = group.group_users
 
@@ -490,6 +491,20 @@ defmodule Stitch.Group do
     group = Repo.preload(group, group_users: :user)
     current_group_user_ids = Enum.map(group.group_users, & &1.user_id)
     new_group_user_ids = current_group_user_ids -- user_ids_to_remove
+
+    update_users(group, new_group_user_ids)
+  end
+
+  @doc """
+  Invites users to group given a list of ids.
+  """
+  @spec invite_users_by_id(Group.t(), [user_id :: pos_integer]) ::
+          {:ok, membership_changes} | {:error, Ecto.Changeset.t()}
+  def invite_users_by_id(%Group{} = group, user_ids_to_invite) do
+    group = Repo.preload(group, group_users: :user)
+    new_group_user_ids =
+      Enum.map(group.group_users, & &1.user_id) ++ user_ids_to_invite
+      |> Enum.uniq()
 
     update_users(group, new_group_user_ids)
   end

@@ -23,7 +23,7 @@ export default class NavItemInviteMembers extends Component {
     const { groupStore } = this.props;
     const groupUsers = groupStore.group.users;
     this.props.groupStore.inviteUsers(
-      `${groupUsers.map(u => u.id).join(",")},${this.state.members}`
+      `${this.state.members}`
     );
     this.setState({ showModal: false });
   };

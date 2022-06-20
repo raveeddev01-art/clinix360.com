@@ -356,7 +356,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           |> String.split(",", trim: true)
           |> Enum.map(&String.to_integer/1)
 
-        {:ok, {removed_users, added_users}} = Group.update_users(group, user_ids)
+        {:ok, {removed_users, added_users}} = Group.invite_users_by_id(group, user_ids)
         GroupChannel.broadcast_members_update(group, removed_users, added_users)
 
         conn |> json(%{message: "Users invited to room."})
