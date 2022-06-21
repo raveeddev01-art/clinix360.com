@@ -47,13 +47,14 @@ class ImageFileAttachment extends Component {
       encoded_id,
       user_id,
       public_url,
-      preview_height: height,
-      preview_width: width,
-      preview_url: previewUrl
+      preview_height,
+      preview_width,
+      preview_url
     } = this.props;
     const { showModal } = this.state;
+
     let placeholderStyle = {
-      backgroundImage: `url(${url})`
+      backgroundImage: `url(${preview_url})`
     };
 
     const filetype = getFileType(mimetype);

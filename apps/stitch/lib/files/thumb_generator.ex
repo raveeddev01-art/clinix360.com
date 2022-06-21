@@ -17,6 +17,8 @@ defmodule Stitch.Files.ThumbGenerator do
         "x#{@settings.max_preview_height}",
         "-background",
         "white",
+        "-colorspace",
+        "RGB",
         "#{target_pdf}[0]",
         image_path
       ])
@@ -29,7 +31,7 @@ defmodule Stitch.Files.ThumbGenerator do
     end
   end
 
-  def generate_word_thumbnail(target_doc) do
+  def generate_document_thumbnail(target_doc) do
     with thumb_name <- String.downcase(Rand.token(32)),
          pdf_path <- System.tmp_dir!() |> Path.join("#{thumb_name}-thumb.pdf"),
          {:ok, _filepath} <- convert(target_doc, pdf_path) do

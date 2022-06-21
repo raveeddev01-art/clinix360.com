@@ -16,8 +16,6 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
   def render_fields(%{fields: nil}, _authenticated_urls, _files_endpoint), do: nil
 
   def render_fields(%{fields: fields} = message, authenticated_urls, files_endpoint) when is_list(fields) do
-    IO.inspect(fields, label: "fields")
-
     Enum.map(fields, fn upload ->
       message
       |> Map.merge(%{upload_id: upload["id"]})
@@ -27,7 +25,6 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
   end
 
   def render_fields(%{type: "upload"} = message, authenticated_urls, files_endpoint) do
-    IO.inspect(message.upload_id, label: "upload_id")
     message.fields
     |> put_preview_presigned_url(authenticated_urls, message.id, files_endpoint)
     |> put_download_link(authenticated_urls, message.id, files_endpoint)
@@ -35,7 +32,6 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
   end
 
   def render_fields(%{type: "file_share"} = message, false, files_endpoint) do
-    IO.inspect(message.upload_id, label: "upload_id")
     message.fields
     |> put_preview_presigned_url(false, message.id, files_endpoint)
     |> put_download_link(false, message.id, files_endpoint)

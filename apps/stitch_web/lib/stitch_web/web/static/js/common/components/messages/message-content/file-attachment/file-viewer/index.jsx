@@ -74,7 +74,7 @@ class FileViewer extends Component {
             </div>
           </div>
           <div className="file-viewer__body">
-            {Viewer && <Viewer url={url} preview_url={ message ? message.fields.preview_url : ""} />}
+            {Viewer && <Viewer filename={filename} url={url} preview_url={ message ? message.fields.preview_url : ""} />}
           </div>
         </Modal.Body>
       </Modal>

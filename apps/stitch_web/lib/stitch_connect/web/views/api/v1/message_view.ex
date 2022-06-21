@@ -45,6 +45,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def message_json(message, true), do: message_json(message, true, @endpoint.files_struct_url())
 
   def message_json(message, authenticated_url, files_url) do
+    IO.inspect(authenticated_url, label: "Auth URLS")
     %{
       id: message.id,
       user_id: message.user_id,

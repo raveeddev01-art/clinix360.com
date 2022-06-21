@@ -73,7 +73,7 @@ defmodule Stitch.Files.Thumb do
     with {:ok, filename} <- get_filename(url),
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(filename, dest),
-         {:ok, preview_path} <- Stitch.Files.ThumbGenerator.generate_word_thumbnail(dest),
+         {:ok, preview_path} <- Stitch.Files.ThumbGenerator.generate_document_thumbnail(dest),
          image <- open(preview_path),
          %Mogrify.Image{height: preview_height, width: preview_width} <- verbose(image),
          {:ok, %{status_code: 200}} <- S3.upload(preview_path),
