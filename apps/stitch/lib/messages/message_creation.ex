@@ -32,10 +32,8 @@ defmodule Stitch.Message.MessageCreation do
         %{"text_content" => _, "thread" => true, "type" => "upload", "fields" => fields} = attrs,
         presence
       ) do
-        IO.inspect(attrs, label: "Here attrs")
     with {:ok, uploads} <-
-           Upload.create_and_share_with_group(message.group, user, fields)
-           |> IO.inspect(label: "here after group create") do
+           Upload.create_and_share_with_group(message.group, user, fields) do
       message = %Message{
         parent_message: message,
         group: message.group,
@@ -45,7 +43,6 @@ defmodule Stitch.Message.MessageCreation do
 
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
       do_create(message, attrs, presence)
-      |> IO.inspect(label: "Here after do create")
     else
       _ ->
         changeset = %Message{} |> change() |> add_error(:upload_id, "Error creating file")

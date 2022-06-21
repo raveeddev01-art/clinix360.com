@@ -56,19 +56,13 @@ defmodule Stitch.Elasticsearch.MessageSearch do
   def search_for_params(current_user, search_params) do
     search_query =
       search_params
-      |> IO.inspect(label: "search params")
       |> Stitch.SearchInputParser.parse(current_user)
-      |> IO.inspect(label: "search params parse")
       |> restrict_visibility(current_user)
-      |> IO.inspect(label: "restrict visibilty")
       |> SearchQuery.new()
-      |> IO.inspect(label: "new query")
       |> SearchQuery.compose()
-      |> IO.inspect(label: "query compose")
 
     search_query
     |> do_search()
-    |> IO.inspect(label: "do search")
     |> load_from_store()
   end
 
@@ -84,7 +78,6 @@ defmodule Stitch.Elasticsearch.MessageSearch do
   @spec do_search(map) :: elasticsearch_response
   def do_search(query) do
     Elasticsearch.post(ElasticsearchCluster, "/messages/_search", query)
-    |> IO.inspect(label: "elastic search")
   end
 
   @spec add_to_index(Message.t()) :: elasticsearch_response

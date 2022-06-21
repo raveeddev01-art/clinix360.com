@@ -90,7 +90,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     search_options = cast_params(types, params)
     current_user = conn.assigns.current_user
     messages = Stitch.Elasticsearch.MessageSearch.search_for_params(current_user, search_options)
-    |> IO.inspect(label: "after search")
     render(conn, "index.json", messages: messages, user_id: current_user.id)
   end
 
@@ -119,7 +118,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
-    IO.inspect(message_params, label: "message params")
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
@@ -134,8 +132,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       # create_optional_upload_comment(message, group, current_user, presence, message_params)
       message = MessageQueries.load_message(message.id, current_user)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
-
-      IO.inspect(message, label: "here is created message")
 
       conn
       |> put_status(:created)

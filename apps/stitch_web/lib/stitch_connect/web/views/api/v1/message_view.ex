@@ -45,7 +45,6 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def message_json(message, true), do: message_json(message, true, @endpoint.files_struct_url())
 
   def message_json(message, authenticated_url, files_url) do
-    IO.inspect(authenticated_url, label: "Auth URLS")
     %{
       id: message.id,
       user_id: message.user_id,
@@ -54,7 +53,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       deleted: message.deleted,
       # text_content: text_content(message),
       text_content: message.text_content,
-      fields: MessagesHelper.render_fields(message, authenticated_url, files_url) |> IO.inspect(label: "fields"),
+      fields: MessagesHelper.render_fields(message, authenticated_url, files_url) |> IO.inspect(label: "fields in view"),
       type: type(message.type, authenticated_url),
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,

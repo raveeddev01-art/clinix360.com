@@ -99,7 +99,7 @@ defmodule Stitch.Files.Upload do
        {:ok, upload, _} = create_and_share_with_group(group, user, attr)
        upload
      end)}
-    |> IO.inspect(label: "uploads")
+    |> IO.inspect(label: "created and shared with group")
   end
 
   def create_and_share_with_group(%Group{} = group, %User{} = user, attrs, opts \\ []) do
@@ -200,7 +200,7 @@ defmodule Stitch.Files.Upload do
     Enum.map(uploads, fn upload ->
       fields(upload)
     end)
-    |> IO.inspect(label: "upload message fields")
+    |> IO.inspect(label: "message upload fields generated")
   end
 
   def fields(%Upload{} = upload) do

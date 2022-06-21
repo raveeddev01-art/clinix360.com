@@ -458,7 +458,6 @@ defmodule Stitch.Group do
   end
 
   def update_users(%Group{team_id: team_id} = group, user_ids) do
-    IO.inspect(user_ids, label: "USER IDs")
     group = Repo.preload(group, group_users: :user)
     current_members = group.group_users
 
