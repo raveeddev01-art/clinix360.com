@@ -23,50 +23,16 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
   def create(conn, %{
         "message_comment" => %{
           "text_content" => text_content,
-          "thread" => thread,
-          "request_id" => request_id
-        },
+          "thread" => thread
+        } = params,
         "id" => message_id
       }) do
     thread = if thread == "true" or thread == "1" , do: true, else: thread
 
-    %{
-      "text_content" => text_content,
-      "thread" => thread,
-      "request_id" => request_id
-    }
-    |> IO.inspect(label: "here is params")
-    |> create_message(conn, message_id)
-    |> IO.inspect(label: "here is response")
-  end
-
-  def create(conn, %{
-        "message_comment" => %{
-          "text_content" => text_content,
-          "thread" => thread,
-          "type" => "upload",
-          "fields" => fields
-        },
-        "id" => message_id
-      }) do
-    thread = if thread == "true" or thread == "1" , do: true, else: thread
-
-    %{
-      "text_content" => text_content,
-      "thread" => thread,
-      "fields" => fields,
-      "type" => "upload"
-    }
-    |> IO.inspect(label: "here is params")
-    |> create_message(conn, message_id)
-    |> IO.inspect(label: "here is response")
-  end
-
-  def create_message(message_params, conn, message_id) do
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
-    _authenticated_urls = get_authenticated_urls(message_params)
-    message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
+    _authenticated_urls = get_authenticated_urls(params)
+    message_params_with_client = Message.Params.with_client_attrs(conn, params)
 
     with {:message, %Message{} = message_parent} <-
            {:message, MessageQueries.load_message(message_id, current_user)},
