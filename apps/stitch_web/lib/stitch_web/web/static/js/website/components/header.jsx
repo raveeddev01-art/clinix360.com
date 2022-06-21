@@ -128,6 +128,9 @@ class Header extends Component {
             <Navbar.Toggle onClick={this.mobileNavToggle} />
           </Navbar.Header>
           <Nav pullRight>
+            <LinkContainer to="/blog">
+              <NavItem>Blog</NavItem>
+            </LinkContainer>
             <LinkContainer to="/pricing">
               <NavItem>Pricing</NavItem>
             </LinkContainer>
