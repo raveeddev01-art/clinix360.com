@@ -15,7 +15,8 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   def render_fields(%{fields: nil}, _authenticated_urls, _files_endpoint), do: nil
 
-  def render_fields(%{fields: fields} = message, authenticated_urls, files_endpoint) when is_list(fields) do
+  def render_fields(%{fields: fields} = message, authenticated_urls, files_endpoint)
+      when is_list(fields) do
     Enum.map(fields, fn upload ->
       message
       |> Map.merge(%{upload_id: upload["id"]})
@@ -26,6 +27,7 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   def render_fields(%{type: "upload"} = message, authenticated_urls, files_endpoint) do
     IO.inspect(message, label: "type upload")
+
     message.fields
     |> put_preview_presigned_url(authenticated_urls, message.id, files_endpoint)
     |> put_download_link(authenticated_urls, message.id, files_endpoint)
@@ -33,6 +35,7 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   def render_fields(%{type: "file_share"} = message, false, files_endpoint) do
     IO.inspect(message, label: "false auth urls")
+
     message.fields
     |> put_preview_presigned_url(false, message.id, files_endpoint)
     |> put_download_link(false, message.id, files_endpoint)
@@ -58,6 +61,7 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
   def render_fields(%{fields: fields}, _authenticated_urls, _files_endpoint), do: fields
 
   defp put_upload_id(nil, _upload_id), do: nil
+
   defp put_upload_id(fields, upload_id) do
     fields
     |> Map.merge(%{"id" => upload_id})
@@ -134,9 +138,8 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
          message_id,
          files_endpoint
        ) do
-        url = files_file_url(files_endpoint, :download_preview, message_id)
-        Map.put(fields, "preview_url", url)
-
+    url = files_file_url(files_endpoint, :download_preview, message_id)
+    Map.put(fields, "preview_url", url)
   end
 
   defp put_preview_presigned_url(
@@ -145,12 +148,12 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
          _message_id,
          _files_endpoint
        ) do
-      url = Map.get(fields, "preview_url") || Map.get(fields, "url")
+    url = Map.get(fields, "preview_url") || Map.get(fields, "url")
 
-      case S3.presign(url) do
-        {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
-        :error -> fields
-      end
+    case S3.presign(url) do
+      {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
+      :error -> fields
+    end
   end
 
   defp put_preview_presigned_url(fields, _authenticated_urls, _message_id, _files_endpoint),
