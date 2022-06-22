@@ -222,7 +222,7 @@ class MessageActions extends PureComponent {
             <OverlayTrigger
               placement="top"
               delayShow={150}
-              overlay={<Tooltip id="message-react">Share file</Tooltip>}
+              overlay={<Tooltip id="message-react">Share message</Tooltip>}
             >
               <Button onClick={this.shareFile}>
                 <i className="fa fa-share" />

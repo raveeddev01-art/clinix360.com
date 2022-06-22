@@ -155,7 +155,7 @@ class DefaultFileAttachment extends Component {
 DefaultFileAttachment.propTypes = {
   filename: PropTypes.string.isRequired,
   mimetype: PropTypes.string.isRequired,
-  size_in_bytes: PropTypes.number.isRequired,
+  size_in_bytes: PropTypes.number,
   url: PropTypes.string.isRequired,
   preview_url: PropTypes.string,
   comment_count: PropTypes.number,

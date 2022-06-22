@@ -122,7 +122,7 @@ VideoFileAttachment.propTypes = {
   preview_height: PropTypes.number,
   preview_width: PropTypes.number,
   preview_url: PropTypes.string,
-  size_in_bytes: PropTypes.number.isRequired,
+  size_in_bytes: PropTypes.number,
   filename: PropTypes.string,
   url: PropTypes.string.isRequired,
   comment_count: PropTypes.number,

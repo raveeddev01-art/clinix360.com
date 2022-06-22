@@ -20,9 +20,7 @@ defmodule Stitch.Web.Api.V1.FileView do
   end
 
   def render("show_with_comments.json", %{file: file}) do
-    json = file(file)
-    comments = FileCommentView.render("index.json", %{file_comments: file.messages})
-    Map.put(json, :comments, comments)
+    file(file)
   end
 
   def render("show.json", %{file: file}), do: file(file)

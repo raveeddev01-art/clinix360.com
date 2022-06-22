@@ -48,8 +48,6 @@ defmodule Stitch.Web.Api.V1.FileController do
 
   def do_show(conn, upload_id) do
     current_user = conn.assigns.current_user
-# need to change her for getting messages
-    # with {:upload, %Message{} = upload} <- {:message, MessageQueries.get_by_id(upload_id)},
     with {:upload, %Upload{} = upload} <-
            {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:authorized, true, _} <-
@@ -71,22 +69,18 @@ defmodule Stitch.Web.Api.V1.FileController do
   end
 
   def share(conn, %{"group_id" => group_id, "id" => upload_id} = attrs) do
-    text_content = attrs["text_content"]
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
+    message_params_with_client = create_file_share_params(conn, attrs)
 
     with {:upload, %Upload{} = upload} <-
            {:upload, FileQueries.get_by_id(upload_id, preload_assoc: true)},
          {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized, true} <- {:authorized, GroupAuthorization.can_view?(group, current_user)},
          {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, current_user)},
-         {:shared, {_, _}} <- {:shared, Upload.share_with_group(upload, group)},
-         upload <- %{upload | shared_in: Enum.uniq([group.id | upload.shared_in])},
          {:joined, _} <- {:joined, ensure_joined(group, current_user)},
-         {:message, {:ok, %{message: message, notify_user_ids: notify_user_ids}}} <-
-           {:message, create_message(group, upload, current_user, presence, text_content)} do
-        #  {:comment, _} <-
-        #    {:comment, FileService.create_optional_comment(upload, current_user, presence, attrs)} do
+         {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
+           Message.create(group, current_user, message_params_with_client, presence) do
       message = MessageQueries.get_by_id(message.id)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
       upload = FileQueries.get_by_id(upload.id, preload_assoc: true)
@@ -124,10 +118,22 @@ defmodule Stitch.Web.Api.V1.FileController do
     end
   end
 
-  def create_message(group, upload, current_user, presence, text_content) do
-    message = %Message{group: group, user: current_user, upload: upload}
-    attrs = %{"type" => "file_share", "fields" => Upload.fields(upload), "text_content" => text_content}
-    MessageCreation.do_create(message, attrs, presence)
+  def create_file_share_params(conn, %{"id" => upload_id, "text_content" => text_content}) do
+    upload = FileQueries.get_by_id(upload_id)
+
+    attrs = %{
+      "text_content" => text_content,
+      "type" => "upload",
+      "fields" => [
+        %{
+          "filename" => upload.filename,
+          "mimetype" => upload.mimetype,
+          "url" => upload.url
+        }
+      ]
+    }
+
+    message_params_with_client = Message.Params.with_client_attrs(conn, attrs)
   end
 
   def file_details_update(upload) do
