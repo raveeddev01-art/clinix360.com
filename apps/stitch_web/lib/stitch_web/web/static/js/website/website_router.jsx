@@ -85,7 +85,7 @@ class WebsiteRouter extends Component {
               path="/customers"
               component={withTitle(customersTitle, Customers)}
             />
-            <Route exact path="/blog" component={Blog} />
+            {/* <Route exact path="/blog" component={Blog} /> */}
             <Route
               exact
               path="/customers/luminance-recovery"
