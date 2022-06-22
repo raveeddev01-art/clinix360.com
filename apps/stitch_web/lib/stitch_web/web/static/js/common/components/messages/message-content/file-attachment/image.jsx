@@ -15,6 +15,11 @@ class ImageFileAttachment extends Component {
     };
   }
 
+  calculateAspectRatioFit(srcWidth, srcHeight) {
+    var ratio = Math.min(360 / srcWidth, 360 / srcHeight);
+    return { width: srcWidth*ratio, height: srcHeight*ratio };
+  }
+
   onToggleModal = () => {
     const { encoded_id, useActions } = this.props;
     if (this.isAllowedForPreview()) {
@@ -53,15 +58,14 @@ class ImageFileAttachment extends Component {
     } = this.props;
     const { showModal } = this.state;
 
+    var previewSize = this.calculateAspectRatioFit(preview_width, preview_height);
     let placeholderStyle = {
-      backgroundImage: `url(${preview_url})`
+      height: previewSize.height,
+      width: previewSize.width,
+      maxWidth: "100%",
+      maxHeight: "100%"
     };
 
-    const filetype = getFileType(mimetype);
-    let hoverText = "- Click to view";
-    let hoverIcon = "search";
-    let mainCN = "attachment-block attachment-block--view";
-    
     const blockCN = cx("attachment-image-block", {
       "attachment-image-block--sm": size === "sm"
     });
@@ -74,28 +78,29 @@ class ImageFileAttachment extends Component {
     return (
       <div className={blockCN}>
 
-        <div className={mainCN}>
-          <div className="attachment-icon">
+        <div className={holderCN}>
+          {/* <div className="attachment-icon">
             <i className={filetype.icon} />
             <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
-          </div>
+          </div> */}
           <div className="attachment-description">
             <div className="attachment-title">
-              <strong>{filename}</strong>
+              {filename}
             </div>
-            <div className="attachment-detail">
+            {/* <div className="attachment-detail">
               {prettyFileSize(size_in_bytes)}&nbsp;
               <span className="attachment-detail__normal">
                 {filetype.title}
               </span>
               <span className="attachment-detail__hover">{hoverText}</span>
-            </div>
+            </div> */}
 
             <div
-              className="attachment-thumb"
-              style={placeholderStyle}
+              className="image-attachment-thumb"
+              style={{marginLeft: 0}}
               onClick={this.onToggleModal}
             >
+              <img src={preview_url} style={placeholderStyle} className="attachment-block--view" />
               {useActions &&
                 message && (
                   <AttachmentActions
@@ -115,13 +120,8 @@ class ImageFileAttachment extends Component {
                   />
                 )}
             </div>
-
           </div>
-
         </div>
-
-
-
 
         {this.isAllowedForPreview() && (
           <FileViewer
