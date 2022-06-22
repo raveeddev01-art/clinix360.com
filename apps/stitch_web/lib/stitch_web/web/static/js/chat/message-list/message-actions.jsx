@@ -95,9 +95,9 @@ class MessageActions extends PureComponent {
     this.props.setSelected({ isSelected: true });
   };
 
-  shareFile = () => {
-    const { message, teamFileStore } = this.props;
-    teamFileStore.openShareModal(message.upload_id);
+  shareMessage = () => {
+    const { message, messageStore } = this.props;
+    messageStore.openShareModal(message.id);
   };
 
   showMessageComments = () => {
@@ -224,7 +224,7 @@ class MessageActions extends PureComponent {
               delayShow={150}
               overlay={<Tooltip id="message-react">Share message</Tooltip>}
             >
-              <Button onClick={this.shareFile}>
+              <Button onClick={this.shareMessage}>
                 <i className="fa fa-share" />
               </Button>
             </OverlayTrigger>

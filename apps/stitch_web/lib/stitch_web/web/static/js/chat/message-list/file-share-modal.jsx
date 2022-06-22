@@ -68,7 +68,7 @@ class FileShareModal extends Component {
 
           <div className="file-comment">
             <FormGroup className="file-share-comment">
-              <ControlLabel>Add Comment (optional)</ControlLabel>
+              <ControlLabel>Text (optional)</ControlLabel>
               <FormControl
                 value={commentText}
                 type="text"

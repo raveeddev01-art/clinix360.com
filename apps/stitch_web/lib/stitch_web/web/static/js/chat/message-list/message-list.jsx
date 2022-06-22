@@ -7,6 +7,7 @@ import Message from "./message";
 import SystemMessage from "./system-message";
 import MessageInfoModal from "./message-info-modal";
 import FileShareModal from "./file-share-modal";
+import MessageShareModal from "./message-share-modal";
 
 @inject("messageStore")
 @observer
@@ -179,6 +180,7 @@ class MessageList extends Component {
         />
         <MessageInfoModal />
         <FileShareModal />
+        <MessageShareModal />
       </div>
 
     );

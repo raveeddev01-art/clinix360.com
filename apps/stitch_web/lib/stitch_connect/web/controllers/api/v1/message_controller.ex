@@ -22,9 +22,11 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     Files,
     StarrableItems.StarringService,
     Message,
+    Message.MessageCreation,
     MessageAuthorization,
     MessageAction,
     MessageQueries,
+    Files.FileQueries,
     # Message.Upload,
     ReadStatus,
     Web.EventsChannel,
@@ -365,6 +367,68 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def share(conn, %{"id" => message_id, "group_id" => group_id, "text_content" => text_content}) do
+    current_user = conn.assigns.current_user
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
+
+    with {:message, %Message{} = message} <-
+           {:message, MessageQueries.get_by_id(message_id)},
+         {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:authorized, true} <- {:authorized, GroupAuthorization.can_view?(group, current_user)},
+         {:joined, _} <- {:joined, ensure_joined(group, current_user)},
+         {:shared, {:ok, %{message: message, notify_user_ids: notify_user_ids}}} <-
+           {:shared, create_and_share_with_group(message, text_content, group, current_user, presence)} do
+      message = MessageQueries.get_by_id(message.id)
+      MessageEventsService.message_creation_events(message, group, notify_user_ids)
+
+      render(conn, "show.json", %{message: message})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:group, _} ->
+        {:error, :not_found}
+
+      {:authorized, false} ->
+        {:error, :not_authorized}
+
+      {:shared, {:error, "not found"}} ->
+        {:error, :unprocessable_entity, "The file is not shared"}
+
+      _ ->
+        {:error, :unprocessable_entity, "Error sharing the file"}
+    end
+  end
+
+  defp create_and_share_with_group(message, text_content, group, current_user, presence) do
+    Enum.map(message.upload_ids, fn upload_id ->
+      FileQueries.get_by_id(upload_id, preload_assoc: true)
+      |> Upload.share_with_group(group)
+    end)
+
+    attrs = %{
+      "text_content" => text_content,
+      "type" => message.type,
+      "fields" => message.fields
+    }
+
+    %Message{group: group, user: current_user}
+    |> MessageCreation.do_create(attrs, presence)
+  end
+
+  def ensure_joined(group, user) do
+    with false <- Group.direct_message?(group),
+         false <- GroupAuthorization.is_member?(group.id, user.id) do
+      Group.add_user(group, user.id)
+
+      Stitch.Task.start(fn ->
+        GroupChannel.broadcast_members_update(group, [], [user])
+      end)
+    else
+      true -> :ok
+    end
+  end
+
   def delete_message_link_preview(conn, %{"id" => message_id, "link" => link} = _params) do
     current_user = conn.assigns.current_user
 
@@ -415,15 +479,17 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     assign(conn, :query_opts, query_opts)
   end
 
-
   def show(conn, %{"id" => message_id}) do
     current_user = conn.assigns.current_user
-    with {:message, %Message{} = message} <- {:message, MessageQueries.load_message(message_id, current_user)},
-    {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, current_user)} do
+
+    with {:message, %Message{} = message} <-
+           {:message, MessageQueries.load_message(message_id, current_user)},
+         {:authorized?, true} <-
+           {:authorized?, GroupAuthorization.can_view?(message.group, current_user)} do
       render(conn, "show.json", %{message: message, authenticated_urls: true})
     else
       {:authorized?, false} ->
-          {:error, :not_authorized, "You can't see the messages for this room."}
+        {:error, :not_authorized, "You can't see the messages for this room."}
 
       _ ->
         {:error, :not_found}

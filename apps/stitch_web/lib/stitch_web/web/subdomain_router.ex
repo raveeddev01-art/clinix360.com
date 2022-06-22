@@ -500,6 +500,7 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/messages/:id/download", MessageController, :download)
     post("/messages/:id/toggle-star", MessageController, :toggle_star)
     post("/messages/:id/toggle-pin", MessageController, :toggle_pin)
+    post("/messages/:id/share", MessageController, :share)
     post("/messages/search", MessageController, :search)
 
     get("/message/:id", MessageController, :show)

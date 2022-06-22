@@ -49,6 +49,9 @@ class MessageStore extends BaseMessageStore {
     @observable highlightId = null; // message will be highlighted
     @observable infoModalMessageId = null; // info modal will be displayed for this id
 
+    @observable messageInSharing = {}; // set message to be shared in message share modal
+    @observable messageShareModalId = undefined; // set this id to open message share modal
+
     messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
 
     // mobx when() monitor disposers
@@ -759,6 +762,17 @@ class MessageStore extends BaseMessageStore {
         }
     }
 
+    @action
+    share = (groupId, messageText) => {
+        const body = { group_id: groupId, text_content: messageText };
+        return post(`/api/v1/messages/${this.messageInSharing.id}/share`, {
+            body,
+            hideNotify: true
+        }).then(response => {
+            this.messageInSharing = response.data;
+        });
+    };
+
     startTyping = throttle(
         () => {
             this.groupChannel.push("is_typing");
@@ -1085,6 +1099,14 @@ class MessageStore extends BaseMessageStore {
         } else {
             pinnedMessageStore.remove(message.id);
         }
+    };
+
+    @action
+    openShareModal = messageId => {
+        get(`/api/v1/message/${messageId}`).then(response => {
+            this.messageInSharing = response.data;
+            this.messageShareModalId = messageId;
+        });
     };
 
     @action
