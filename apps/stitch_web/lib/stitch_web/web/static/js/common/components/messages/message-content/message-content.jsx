@@ -101,12 +101,13 @@ class MessageContent extends Component {
 
   renderAttchments() {
     const { message, user, isConversationMessage } = this.props;
+
     return (
       <div>
         {(message.type === "upload" || message.type === "file_share") &&
           (
             <div>
-              {message.fields.map((fields, index) => (   
+              {message.fields && message.fields.map((fields, index) => (   
                 <FileAttachment
                   {...fields}
                   key={index}

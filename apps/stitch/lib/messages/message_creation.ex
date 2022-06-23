@@ -77,7 +77,6 @@ defmodule Stitch.Message.MessageCreation do
       message = %Message{group: group, user: user, upload: hd(uploads)}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
       do_create(message, attrs, presence)
-      |> IO.inspect(label: "do create")
     else
       _ ->
         changeset = %Message{} |> change() |> add_error(:upload_id, "Error creating file")
@@ -123,7 +122,7 @@ defmodule Stitch.Message.MessageCreation do
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
 
     upload_ids =
-      if message.type == "upload" or message.type == "file_share" do
+      if attrs["type"] == "upload" or attrs["type"] == "file_share" do
         Enum.map(attrs["fields"], & &1["id"])
       else
         []

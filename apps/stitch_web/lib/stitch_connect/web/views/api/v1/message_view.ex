@@ -53,7 +53,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       deleted: message.deleted,
       # text_content: text_content(message),
       text_content: message.text_content,
-      fields: MessagesHelper.render_fields(message, authenticated_url, files_url) |> IO.inspect(label: "fields in view"),
+      fields: MessagesHelper.render_fields(message, authenticated_url, files_url),
       type: type(message.type, authenticated_url),
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,

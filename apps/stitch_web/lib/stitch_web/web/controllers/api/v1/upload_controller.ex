@@ -13,8 +13,6 @@ defmodule Stitch.Web.Api.V1.UploadController do
 
   defp do_create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     S3.signature(filename, mimetype)
-    |> IO.inspect(label: "Here is upload-signature result")
-
     conn
     |> put_status(:created)
     |> render("create.json", signature: S3.signature(filename, mimetype))

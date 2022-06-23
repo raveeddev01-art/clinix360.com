@@ -27,7 +27,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     MessageAction,
     MessageQueries,
     Files.FileQueries,
-    # Message.Upload,
+    Files.Upload,
     ReadStatus,
     Web.EventsChannel,
     Web.FileService
@@ -377,7 +377,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
          {:authorized, true} <- {:authorized, GroupAuthorization.can_view?(group, current_user)},
          {:joined, _} <- {:joined, ensure_joined(group, current_user)},
          {:shared, {:ok, %{message: message, notify_user_ids: notify_user_ids}}} <-
-           {:shared, create_and_share_with_group(message, text_content, group, current_user, presence)} do
+           {:shared, create_and_share_with_group(conn, message, text_content, group, current_user, presence)} do
       message = MessageQueries.get_by_id(message.id)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
@@ -400,7 +400,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  defp create_and_share_with_group(message, text_content, group, current_user, presence) do
+  defp create_and_share_with_group(conn, message, text_content, group, current_user, presence) do
     Enum.map(message.upload_ids, fn upload_id ->
       FileQueries.get_by_id(upload_id, preload_assoc: true)
       |> Upload.share_with_group(group)
@@ -409,11 +409,13 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     attrs = %{
       "text_content" => text_content,
       "type" => message.type,
-      "fields" => message.fields
+      "fields" => message.fields,
+      "upload_ids" => message.upload_ids
     }
 
+    message_params_with_client = Message.Params.with_client_attrs(conn, attrs)
     %Message{group: group, user: current_user}
-    |> MessageCreation.do_create(attrs, presence)
+    |> MessageCreation.do_create(message_params_with_client, presence)
   end
 
   def ensure_joined(group, user) do
