@@ -119,7 +119,7 @@ export default class UploadModal extends Component {
               <FormGroup bsSize="large">
                 <Row>
                   <Col componentClass={ControlLabel} sm={3}>
-                    Comment
+                    Message
                     <br />
                     <small>(optional)</small>
                   </Col>
