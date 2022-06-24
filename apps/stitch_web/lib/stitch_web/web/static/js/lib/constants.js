@@ -256,8 +256,8 @@ export const FILE_VIEW_SIZE_LIMIT = {
   "Word Document": 50 * 1024 * 1024, // 50MB
   "PDF Document": 50 * 1024 * 1024, // 50MB
   "Excel Document": 50 * 1024 * 1024, // 50MB
-  IMAGE: 50 * 1024 * 1024, // 50MB
-  VIDEO: 50 * 1024 * 1024 // 50MB
+  "Image": 50 * 1024 * 1024, // 50MB
+  "Video File": 50 * 1024 * 1024 // 50MB
 };
 
 export const GOOGLE_MEETS_BASE_URL = "https://meet.google.com/lookup/";

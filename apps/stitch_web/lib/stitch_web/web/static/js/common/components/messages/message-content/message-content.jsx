@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-import FileAttachment from "./file-attachment";
+import FileAttachments from "./file-attachments";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
 import Replies from "./replies";
@@ -100,29 +100,17 @@ class MessageContent extends Component {
   };
 
   renderAttchments() {
-    const { message, user, isConversationMessage } = this.props;
-
-    return (
-      <div>
-        {(message.type === "upload" || message.type === "file_share") &&
-          (
-            <div>
-              {message.fields && message.fields.map((fields, index) => (   
-                <FileAttachment
-                  {...fields}
-                  key={index}
-                  message={message}
-                  user_id={user.id}
-                  file_id={fields.id}
-                  isConversationMessage={isConversationMessage}
-                  onCommentsClick={this.onCommentsClick}
-                />
-              ))}
-            </div>
-          )
-        }
-      </div>
-    );
+    const { message } = this.props;
+    if (message.type === "upload" || message.type === "file_share") {
+      if (message.fields) {
+        return (
+          <FileAttachments
+            {...this.props}
+            onCommentsClick={this.onCommentsClick}
+          />
+        );
+      }
+    }
   }
 
   render() {

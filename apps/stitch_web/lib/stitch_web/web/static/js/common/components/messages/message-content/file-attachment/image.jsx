@@ -77,27 +77,13 @@ class ImageFileAttachment extends Component {
 
     return (
       <div className={blockCN}>
-
         <div className={holderCN}>
-          {/* <div className="attachment-icon">
-            <i className={filetype.icon} />
-            <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
-          </div> */}
           <div className="attachment-description">
             <div className="attachment-title">
               {filename}
             </div>
-            {/* <div className="attachment-detail">
-              {prettyFileSize(size_in_bytes)}&nbsp;
-              <span className="attachment-detail__normal">
-                {filetype.title}
-              </span>
-              <span className="attachment-detail__hover">{hoverText}</span>
-            </div> */}
-
             <div
               className="image-attachment-thumb"
-              style={{marginLeft: 0}}
               onClick={this.onToggleModal}
             >
               <img src={preview_url} style={placeholderStyle} className="attachment-block--view" />

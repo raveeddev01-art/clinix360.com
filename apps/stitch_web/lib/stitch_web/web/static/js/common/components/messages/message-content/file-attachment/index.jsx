@@ -5,11 +5,15 @@ import getFileType from "lib/file-types";
 import DefaultFileAttachment from "./default";
 import ImageFileAttachment from "./image";
 import VideoFileAttachment from "./video";
+import DocumentFileAttachment from "./document";
 
 const FileAttachmentRenderer = {
   File: DefaultFileAttachment,
   Image: ImageFileAttachment,
-  "Video File": VideoFileAttachment
+  "Video File": VideoFileAttachment,
+  "Excel Document": DocumentFileAttachment,
+  "Word Document": DocumentFileAttachment,
+  "PDF Document": DocumentFileAttachment
 };
 
 @inject("desktopStore", "teamFileStore")
@@ -53,10 +57,14 @@ class FileAttachment extends Component {
   };
 
   render() {
-    const { mimetype, onCommentsClick } = this.props;
+    const { mimetype, onCommentsClick, useDefault } = this.props;
     const filetype = getFileType(mimetype);
-    const Renderer =
+    var Renderer =
       FileAttachmentRenderer[filetype.title] || FileAttachmentRenderer.File;
+
+    if (useDefault) {
+      Renderer = FileAttachmentRenderer.File;
+    }
 
     return (
       <Renderer
@@ -76,14 +84,16 @@ FileAttachment.propTypes = {
   filetype: PropTypes.string.isRequired,
   file_id: PropTypes.number.isRequired,
   message: PropTypes.object,
-  onCommentsClick: PropTypes.func
+  onCommentsClick: PropTypes.func,
+  useDefault: PropTypes.bool
 };
 
 FileAttachment.defaultProps = {
   onCommentsClick: undefined,
   api_url: undefined,
   preview_url: "",
-  message: null
+  message: null,
+  useDefault: false
 };
 
 export default FileAttachment;

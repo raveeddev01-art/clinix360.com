@@ -22,7 +22,7 @@ class DefaultFileAttachment extends Component {
       onFileDownload,
       encoded_id,
       useActions,
-      url
+      url,
     } = this.props;
 
     if (this.hasViewer() && this.isAllowedForPreview()) {
@@ -42,7 +42,7 @@ class DefaultFileAttachment extends Component {
   hasViewer = () => {
     const { mimetype } = this.props;
     const fileType = getFileType(mimetype);
-    return ["PDF Document", "Video File", "Word Document", "Excel Document"].includes(fileType.title);
+    return ["PDF Document", "Word Document", "Excel Document", "Image"].includes(fileType.title);
   };
 
   isAllowedForPreview = () => {
@@ -80,23 +80,25 @@ class DefaultFileAttachment extends Component {
       hoverText = "- Click to view";
       hoverIcon = "search";
       mainCN = "attachment-block attachment-block--view";
-    } else if (this.hasViewer() && useActions && !desktopStore.isElectron) {
-      hoverText = "- Click to open original";
-      hoverIcon = "external-link";
-      mainCN = "attachment-block";
     } else if (useActions) {
       hoverText = "- Click to download";
       hoverIcon = "arrow-down";
       mainCN = "attachment-block";
     }
 
+    let placeholderStyle = {
+      height: "40px",
+      width: "40px",
+      maxWidth: "100%",
+      maxHeight: "100%",
+      borderRadius: "5px"
+    };
+
     return (
       <div>
-        {/* {useActions && <span className="text-muted">uploaded this file: </span>} */}
         <div className={mainCN} onClick={this.onAttachmentClick}>
           <div className="attachment-icon">
-            <i className={filetype.icon} />
-            <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
+            <img src={preview_url} style={placeholderStyle}/>
           </div>
           <div className="attachment-description">
             <div className="attachment-title">
@@ -109,13 +111,6 @@ class DefaultFileAttachment extends Component {
               </span>
               <span className="attachment-detail__hover">{hoverText}</span>
             </div>
-
-            {this.hasViewer() && (
-              <div
-                className="attachment-thumb"
-                style={{ backgroundImage: `url(${preview_url})` }}
-              />
-            )}
           </div>
 
           {useActions &&
