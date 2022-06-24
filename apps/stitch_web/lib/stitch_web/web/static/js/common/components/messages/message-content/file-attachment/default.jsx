@@ -42,7 +42,7 @@ class DefaultFileAttachment extends Component {
   hasViewer = () => {
     const { mimetype } = this.props;
     const fileType = getFileType(mimetype);
-    return ["PDF Document", "Word Document", "Excel Document", "Image"].includes(fileType.title);
+    return ["PDF Document", "Word Document", "Excel Document", "Image", "Video File"].includes(fileType.title);
   };
 
   isAllowedForPreview = () => {

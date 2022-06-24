@@ -83,7 +83,7 @@ class FileViewer extends Component {
 }
 
 FileViewer.propTypes = {
-  type: PropTypes.oneOf(["Image", "PDF Document", "Word Document", "Excel Document"]),
+  type: PropTypes.oneOf(["Image", "PDF Document", "Word Document", "Excel Document", "Video File"]),
   show: PropTypes.bool.isRequired,
   onHideModal: PropTypes.func.isRequired,
   filename: PropTypes.string,
