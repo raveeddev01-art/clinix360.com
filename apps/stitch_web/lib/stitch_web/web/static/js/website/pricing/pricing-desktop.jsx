@@ -84,7 +84,7 @@ export default class PricingDesktop extends Component {
                 </p>
                 <a className="trial-link" href="/getstarted/">
                   <i className="fa fa-external-link"></i>
-                  Start with a 14 day free trail now.
+                  Start with a 14 day free trial now.
                 </a>
               </div>
             </div>
