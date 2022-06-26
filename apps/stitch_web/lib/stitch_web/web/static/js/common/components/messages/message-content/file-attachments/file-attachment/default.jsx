@@ -86,7 +86,7 @@ class DefaultFileAttachment extends Component {
       mainCN = "attachment-block";
     }
 
-    let placeholderStyle = {
+    let iconStyles = {
       height: "40px",
       width: "40px",
       maxWidth: "100%",
@@ -98,7 +98,7 @@ class DefaultFileAttachment extends Component {
       <div>
         <div className={mainCN} onClick={this.onAttachmentClick}>
           <div className="attachment-icon">
-            <img src={preview_url} style={placeholderStyle}/>
+            <img src={preview_url} style={iconStyles}/>
           </div>
           <div className="attachment-description">
             <div className="attachment-title">

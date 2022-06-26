@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import FileAttachment from "../file-attachment";
+import FileAttachment from "./file-attachment";
 
 class MediaAttachments extends Component {
     constructor(props) {

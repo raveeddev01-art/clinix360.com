@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
-import FileAttachment from "../file-attachment";
+import FileAttachment from "./file-attachment";
 
 @inject("desktopStore")
 class DefaultAttachments extends Component {

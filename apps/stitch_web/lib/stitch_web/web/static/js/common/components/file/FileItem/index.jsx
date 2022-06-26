@@ -4,7 +4,7 @@ import history from "lib/history";
 import { inject, observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import { UserProfileMenu } from "common/components";
-import AttachmentActions from "common/components/messages/message-content/file-attachment/components/attachment-actions";
+import AttachmentActions from "../../messages/message-content/file-attachments/file-attachment/components/attachment-actions";
 import FileInfo from "../FileInfo";
 import FileCommentGroup from "../FileCommentGroup";
 import FileThumb from "./file-thumb";

@@ -8,7 +8,7 @@ import Button from "react-bootstrap/lib/Button";
 import { inject, observer } from "mobx-react";
 import { isAdminOrOwner } from "lib/utils";
 
-import FileAttachment from "common/components/messages/message-content/file-attachment";
+import FileAttachment from "common/components/messages/message-content/file-attachments/file-attachment";
 import FileHeading from "common/components/file/FileHeading";
 import FileInfo from "common/components/file/FileInfo";
 import FileComment from "common/components/file/FileComment";
