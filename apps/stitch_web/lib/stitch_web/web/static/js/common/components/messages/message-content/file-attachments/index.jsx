@@ -15,7 +15,7 @@ class FileAttachments extends Component {
 
         switch (rendererTypes.length) {
             case 1:
-              if (this.isMedia(rendererTypes[0])) {
+              if (this.isMedia(rendererTypes.pop())) {
                 return MediaAttachments;
               } else {
                 return DefaultAttachments;
