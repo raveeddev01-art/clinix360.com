@@ -15,24 +15,8 @@ class ImageFileAttachment extends Component {
     };
   }
 
-  calculateAspectRatioFit(srcWidth, srcHeight) {
-    var ratio = Math.min(360 / srcWidth, 360 / srcHeight);
-    return { width: srcWidth*ratio, height: srcHeight*ratio };
-  }
-
   onToggleModal = () => {
-    const { encoded_id, useActions } = this.props;
-    if (this.isAllowedForPreview()) {
-      this.setState({ showModal: !this.state.showModal });
-    } else if (useActions) {
-      const detailPageUrl =
-        encoded_id && getFullUrl(`/admin/files/${encoded_id}`);
-      window.open(detailPageUrl);
-    }
-  };
-
-  isAllowedForPreview = () => {
-    return this.props.size_in_bytes < FILE_VIEW_SIZE_LIMIT.IMAGE;
+    this.setState({ showModal: !this.state.showModal });
   };
 
   render() {
@@ -58,22 +42,10 @@ class ImageFileAttachment extends Component {
     } = this.props;
     const { showModal } = this.state;
 
-    var previewSize = this.calculateAspectRatioFit(preview_width, preview_height);
-    let placeholderStyle = {
-      height: previewSize.height,
-      width: previewSize.width,
-      maxWidth: "100%",
-      maxHeight: "100%"
-    };
-
     const blockCN = cx("attachment-image-block", {
       "attachment-image-block--sm": size === "sm"
     });
-    const holderCN = cx("attachment-image-holder", {
-      "attachment-image-holder--zoom": this.isAllowedForPreview(),
-      "attachment-image-holder--original":
-        !this.isAllowedForPreview() && useActions
-    });
+    const holderCN = "attachment-image-holder attachment-block--view";
 
     return (
       <div className={blockCN}>
@@ -83,10 +55,10 @@ class ImageFileAttachment extends Component {
               {filename}
             </div>
             <div
-              className="image-attachment-thumb"
+              className="attachment-thumb"
               onClick={this.onToggleModal}
             >
-              <img src={preview_url} style={placeholderStyle} className="attachment-block--view" />
+              <img src={preview_url} className="image-block-size" />
               {useActions &&
                 message && (
                   <AttachmentActions
@@ -109,14 +81,12 @@ class ImageFileAttachment extends Component {
           </div>
         </div>
 
-        {this.isAllowedForPreview() && (
-          <FileViewer
-            {...this.props}
-            type="Image"
-            show={showModal}
-            onHideModal={this.onToggleModal}
-          />
-        )}
+        <FileViewer
+          {...this.props}
+          type="Image"
+          show={showModal}
+          onHideModal={this.onToggleModal}
+        />
       </div>
     );
   }

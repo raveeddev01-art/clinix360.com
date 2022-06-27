@@ -5,6 +5,7 @@ import { FILE_VIEW_SIZE_LIMIT } from "lib/constants";
 import getFileType from "lib/file-types";
 import { getFullUrl, prettyFileSize } from "lib/utils";
 import AttachmentActions from "./components/attachment-actions";
+import FileViewer from "./file-viewer";
 class VideoFileAttachment extends Component {
   constructor(props) {
     super(props);
@@ -14,14 +15,7 @@ class VideoFileAttachment extends Component {
   }
 
   onToggleModal = () => {
-    const { encoded_id, useActions } = this.props;
-    if (this.isAllowedForPreview()) {
-      this.setState({ showModal: !this.state.showModal });
-    } else if (useActions) {
-      const detailPageUrl =
-        encoded_id && getFullUrl(`/admin/files/${encoded_id}`);
-      window.open(detailPageUrl);
-    }
+    this.setState({ showModal: !this.state.showModal });
   };
 
   isAllowedForPreview = () => {
@@ -51,67 +45,55 @@ class VideoFileAttachment extends Component {
     } = this.props;
 
 
-    const filetype = getFileType(mimetype);
-    let hoverText = "- Click to view";
-    let hoverIcon = "search";
-    let mainCN = "attachment-block attachment-block--view";
+    let mainCN = "attachment-block--view";
 
     const blockCN = cx("attachment-image-block", {
       "attachment-image-block--sm": size === "sm"
     });
-    const holderCN = cx("attachment-image-holder", {
-      "attachment-image-holder--zoom": this.isAllowedForPreview(),
-      "attachment-image-holder--original":
-        !this.isAllowedForPreview() && useActions
-    });
 
     return (
       <div className={blockCN}>
-
         <div className={mainCN}>
-          <div className="attachment-icon">
-            <i className={filetype.icon} />
-            <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
-          </div>
           <div className="attachment-description">
             <div className="attachment-title">
-              <strong>{filename}</strong>
+              {filename}
             </div>
-            <div className="attachment-detail">
-              {prettyFileSize(size_in_bytes)}&nbsp;
-              <span className="attachment-detail__normal">
-                {filetype.title}
-              </span>
-              <span className="attachment-detail__hover">{hoverText}</span>
+            <div
+              className="attachment-thumb"
+              onClick={this.onToggleModal}
+            >
+              <video
+                className="image-block-size"
+                controls
+                src={this.props.url} />
+              {useActions &&
+                message && (
+                  <AttachmentActions
+                    url={url}
+                    file_id={file_id}
+                    user_id={user_id}
+                    encoded_id={encoded_id}
+                    public_url={public_url}
+                    message={message}
+                    commentCount={commentCount}
+                    isActionsVisible={isConversationMessage ? false : undefined}
+                    isOriginalOpenVisible={
+                      isConversationMessage ? false : undefined
+                    }
+                    onCommentsClick={onCommentsClick}
+                    onFileDownload={onFileDownload}
+                  />
+                )}
             </div>
-
-            <video
-              controls
-              src={this.props.url} />
-
-            {useActions &&
-              message && (
-                <AttachmentActions
-                  url={url}
-                  file_id={file_id}
-                  user_id={user_id}
-                  encoded_id={encoded_id}
-                  public_url={public_url}
-                  message={message}
-                  commentCount={commentCount}
-                  isActionsVisible={isConversationMessage ? false : undefined}
-                  isOriginalOpenVisible={
-                    isConversationMessage ? false : undefined
-                  }
-                  onCommentsClick={onCommentsClick}
-                  onFileDownload={onFileDownload}
-                />
-              )}
-
           </div>
-
         </div>
 
+        <FileViewer
+          {...this.props}
+          type="Image"
+          show={this.state.showModal}
+          onHideModal={this.onToggleModal}
+        />
       </div>
     );
   }

@@ -17,7 +17,7 @@ class MediaAttachments extends Component {
                         <div className="row no-gutters">
                             {message.fields.map((fields, index) => {
                                 return (
-                                    <div className="col-sm-6" key={index}>
+                                    <div className="col-sm-6 col-lg-4 col-md-6" key={index}>
                                         <FileAttachment
                                             {...fields}
                                             className="img-fluid"

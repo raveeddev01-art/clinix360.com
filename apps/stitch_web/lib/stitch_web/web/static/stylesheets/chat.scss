@@ -1297,18 +1297,6 @@
     background-position: top center;
   }
 
-  .image-attachment-thumb {
-    margin-top: 10px;
-    background-color: #fff;
-    border: 1px solid #e2e2e2;
-    max-height: 200px;
-    height: 200px;
-    overflow-y: hidden;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: top center;
-  }
-
   &:hover {
     border: 1px solid rgba(0, 0, 0, 0.15);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1335,6 +1323,17 @@
   .attachment-title {
     color: #777;
     font-size: 13px;
+  }
+
+  .image-block-size{
+    height: 320px !important;
+    width: 100% !important;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  video {
+    border-radius: 5px;
   }
 
   &.attachment-image-block--sm {
