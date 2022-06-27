@@ -7,32 +7,9 @@ class ExcelViewer extends Component {
     super(props);
   }
 
-  hoverRow = e => {
-    e.target.style.backgroundColor = "#003366";
-    e.target.style.color = "white";
-  }
-
-  blurRow = e => {
-    e.target.style.backgroundColor = "#eee";
-    e.target.style.color = "#333";
-  }
-
   setHTML(html) {
     var container = document.getElementById('excel-doc-viewer');
     container.innerHTML = html;
-    container.getElementsByTagName('table')[0].style.width = "100%";
-    container.getElementsByTagName('tr')[0].style.fontWeight = "bold";
-    var tds = container.getElementsByTagName('td');
-    for (let i=0; i < tds.length; i++) {
-      tds[i].style.border = "1px solid #707070";
-      tds[i].style.padding = "4px";
-    }
-
-    var rows = container.getElementsByTagName('tr');
-    for (let i=0; i < rows.length; i++) {
-      rows[i].onmouseenter = this.hoverRow;
-      rows[i].onmouseleave = this.blurRow;
-    }
   }
 
   readFile() {

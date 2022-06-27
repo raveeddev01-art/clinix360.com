@@ -106,6 +106,28 @@
       }
     }
 
+    #excel-doc-viewer {
+      table {
+        width: 100%;
+        border-radius: 5px;
+        tbody {
+          tr:nth-of-type(1) {
+            font-weight: bold;
+          }
+          tr {
+            td {
+              border: 1px solid #707070;
+              padding: 4px;
+            }
+            &:hover {
+              background-color: #003366;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
     .react-pdf__Document {
       box-sizing: border-box;
       padding: 20px;
