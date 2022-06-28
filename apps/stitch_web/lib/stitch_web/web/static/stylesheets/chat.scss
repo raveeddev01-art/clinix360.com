@@ -1244,6 +1244,12 @@
     margin-right: 8px;
     position: relative;
 
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 5px;
+    }
+
     .fa {
       font-size: 2.5em !important;
     }
@@ -1327,7 +1333,7 @@
   }
 
   .image-block-size{
-    height: 320px !important;
+    height: 300px !important;
     width: 100% !important;
     object-fit: cover;
     object-position: center;

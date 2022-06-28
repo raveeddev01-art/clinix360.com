@@ -118,11 +118,7 @@ class Header extends Component {
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/" className="brand custom-brand">
-                {this.props.blueNav ? (
-                  <img src="/images/invochat-logo-blue.png" alt="InvoChat"/>
-                ) : (
-                  <img src="/images/invochat-logo-blue.png" alt="InvoChat"/>
-                )}
+                <img src="/images/invochat-logo-blue.png" alt="InvoChat"/>
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle onClick={this.mobileNavToggle} />

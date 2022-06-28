@@ -86,20 +86,19 @@ class DefaultFileAttachment extends Component {
       mainCN = "attachment-block";
     }
 
-    let iconStyles = {
-      height: "40px",
-      width: "40px",
-      maxWidth: "100%",
-      maxHeight: "100%",
-      borderRadius: "5px"
-    };
+    let fileIcon = !preview_url ? 
+      <div className="attachment-icon">            
+        <i className={filetype.icon} />
+        <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
+      </div> :
+      <div className="attachment-icon">
+        <img src={preview_url} />
+      </div>      
 
     return (
       <div>
         <div className={mainCN} onClick={this.onAttachmentClick}>
-          <div className="attachment-icon">
-            <img src={preview_url} style={iconStyles}/>
-          </div>
+          {fileIcon}
           <div className="attachment-description">
             <div className="attachment-title">
               <strong>{filename}</strong>

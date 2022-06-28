@@ -13,7 +13,7 @@ class MediaAttachments extends Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-lg">
+                    <div className="col-sm">
                         <div className="row no-gutters">
                             {message.fields.map((fields, index) => {
                                 return (
