@@ -13,26 +13,22 @@ class MediaAttachments extends Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-sm">
-                        <div className="row no-gutters">
-                            {message.fields.map((fields, index) => {
-                                return (
-                                    <div className="col-sm-6 col-lg-4 col-md-6" key={index}>
-                                        <FileAttachment
-                                            {...fields}
-                                            className="img-fluid"
-                                            key={index}
-                                            message={message}
-                                            user_id={user.id}
-                                            file_id={fields.id}
-                                            isConversationMessage={isConversationMessage}
-                                            onCommentsClick={onCommentsClick}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
+                    {message.fields.map((fields, index) => {
+                        return (
+                            <div className="col-sm-6 col-lg-4 col-md-6" key={index}>
+                                <FileAttachment
+                                    {...fields}
+                                    className="img-fluid"
+                                    key={index}
+                                    message={message}
+                                    user_id={user.id}
+                                    file_id={fields.id}
+                                    isConversationMessage={isConversationMessage}
+                                    onCommentsClick={onCommentsClick}
+                                />
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
         )
