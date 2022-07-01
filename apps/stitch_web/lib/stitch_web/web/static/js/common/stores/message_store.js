@@ -18,6 +18,7 @@ import { scroller } from "react-scroll";
 import { Promise } from "es6-promise";
 
 import shortid from "shortid";
+import REGEX from "lib/regex";
 import {
     START_TYPING_THROTTLE_MS,
     MAX_MESSAGE_COUNT_PER_BATCH
@@ -524,6 +525,10 @@ class MessageStore extends BaseMessageStore {
             this.switchFromJumpMode();
         }
 
+        if (text.search(REGEX.getIntenalLink()) !== -1) {
+            additionalFields.type = "internal_link";
+        }
+
         const messageText = this.encodeMessage(text);
         const tempMessage = this.generateTempMessage(messageText);
         // Add temp message
@@ -590,9 +595,9 @@ class MessageStore extends BaseMessageStore {
             }
             this.isLoadingPast = true;
             get(
-                    `/api/v1/groups/${this.group.id}/messages?fetchUsers=false&max_id=${this
-          .messages[this.messages.length - 1].id}&authenticated_urls=true`
-                )
+                `/api/v1/groups/${this.group.id}/messages?fetchUsers=false&max_id=${this
+                    .messages[this.messages.length - 1].id}&authenticated_urls=true`
+            )
                 .then(response => {
                     const users = this.rootStore.usersStore.users.toJS();
                     const messages = response.data.map(msg => ({
@@ -647,9 +652,9 @@ class MessageStore extends BaseMessageStore {
             this.isLoadingRecent = true;
 
             get(
-                    `/api/v1/groups/${this.group
-          .id}/feed_recent?fetchUsers=false&min_id=${this.messages[0].id}`
-                )
+                `/api/v1/groups/${this.group
+                    .id}/feed_recent?fetchUsers=false&min_id=${this.messages[0].id}`
+            )
                 .then(response => {
                     const users = this.rootStore.usersStore.users.toJS();
                     const messages = response.data.map(msg => ({
@@ -855,13 +860,13 @@ class MessageStore extends BaseMessageStore {
                 this.messages = data.messages;
                 this.messageCache.addBatchToCache(this.group.id, data.messages);
             }
-    
+
             if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
                 this.loadedAll = true;
             }
-    
+
             this.loadedGroupId = this.group.id;
-    
+
             when(() => this.mountedAllMessages, this.handleInitialLoading);
         }
     };
@@ -1135,11 +1140,11 @@ class MessageStore extends BaseMessageStore {
     onPublicLinkUpdate = payload => {
         const files = this.messages.filter(
             message =>
-            message.upload_id === payload.upload_id && message.type === "upload"
+                message.upload_id === payload.upload_id && message.type === "upload"
         );
 
         files.forEach(file => {
-            const fields = {...file.fields, public_url: payload.public_url };
+            const fields = { ...file.fields, public_url: payload.public_url };
             this.updateMessageData(file.id, file.group_id, { fields });
         });
     };
@@ -1148,11 +1153,11 @@ class MessageStore extends BaseMessageStore {
     onFileDetailsUpdate = payload => {
         const files = this.messages.filter(
             message =>
-            message.upload_id === payload.upload_id && message.type === "upload"
+                message.upload_id === payload.upload_id && message.type === "upload"
         );
 
         files.forEach(file => {
-            const fields = {...file.fields, public_url: payload.public_url };
+            const fields = { ...file.fields, public_url: payload.public_url };
             this.updateMessageData(file.id, file.group_id, { fields });
         });
     };
@@ -1161,8 +1166,8 @@ class MessageStore extends BaseMessageStore {
     onFileDeleted = payload => {
         const files = this.messages.filter(
             message =>
-            message.upload_id === payload.upload_id &&
-            (message.type === "upload" || message.type === "file_comment")
+                message.upload_id === payload.upload_id &&
+                (message.type === "upload" || message.type === "file_comment")
         );
 
         files.forEach(file => {
@@ -1178,17 +1183,27 @@ class MessageStore extends BaseMessageStore {
 
     @action
     load(message) {
-        return get(`/api/v1/message/${message.id}`).then(response => {
+        var url = ""
+        if (message && message.id) {
+            url = `/api/v1/message/${message.id}`;
+        } else {
+            url = `/api/v1/message/${message}`;
+        }
+        return get(url).then(response => {
             this.message = response.data;
             return this.message;
         });
     }
 
     @action
-    addComment(text) {
+    addComment(text, additionalFields = {}) {
+        if (text.search(REGEX.getIntenalLink()) !== -1) {
+            additionalFields.type = "internal_link";
+        }
+
         const messageText = this.encodeMessage(text);
         const tempMessage = this.generateTempMessage(messageText);
-        const body = { message_comment: { text_content: messageText, thread: true, request_id: tempMessage.id } };
+        const body = { message_comment: { text_content: messageText, thread: true, request_id: tempMessage.id, ...additionalFields } };
         return post(`/api/v1/messages/${this.message.id}/comments`, {
             body,
             hideNotify: true
@@ -1256,7 +1271,7 @@ class MessageStore extends BaseMessageStore {
             thread_messages_count: message.thread_messages_count,
             reactions_web: message.reactions_web
         });
-        if (0 === this.group.id ) {
+        if (0 === this.group.id) {
             this.messages = this.messages.filter(msg => msg.id !== message.id)
             this.messages.unshift(message);
         }

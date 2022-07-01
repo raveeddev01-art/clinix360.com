@@ -21,7 +21,16 @@ defmodule Stitch.Message do
     Call
   }
 
-  @valid_types ["chat", "call", "system", "upload", "file_share", "file_comment", "meet_link"]
+  @valid_types [
+    "chat",
+    "call",
+    "system",
+    "upload",
+    "file_share",
+    "file_comment",
+    "meet_link",
+    "internal_link"
+  ]
 
   schema "messages" do
     belongs_to(:user, User)
@@ -145,6 +154,23 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["meet_link"])
   end
 
+  def internal_link_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [
+      :type,
+      :request_id,
+      :text_content,
+      :mentioned_user_ids,
+      :read_status,
+      :client_device_type,
+      :client_os,
+      :client_name,
+      :fields
+    ])
+    |> validate_required([:type, :text_content])
+    |> validate_inclusion(:type, ["internal_link"])
+  end
+
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
     |> cast(params, @upload_castable_attributes)
@@ -182,6 +208,22 @@ defmodule Stitch.Message do
     MessageCreation.create(group, user, attrs, presence_user_ids)
   end
 
+  def create(%Group{} = group, user, %{"type" => "internal_link"} = attrs, presence_user_ids) do
+    attrs =
+      decode_message_link_ids_to_fields(attrs["text_content"])
+      |> Map.merge(attrs)
+
+    MessageCreation.create(group, user, attrs, presence_user_ids)
+  end
+
+  def create(%Message{} = message, user, %{"type" => "internal_link"} = attrs, presence_user_ids) do
+    attrs =
+      decode_message_link_ids_to_fields(attrs["text_content"])
+      |> Map.merge(attrs)
+
+    MessageCreation.create(message, user, attrs, presence_user_ids)
+  end
+
   def create(%Group{} = group, user, attrs, presence_user_ids) do
     attrs = Map.put_new(attrs, "type", "chat")
     MessageCreation.create(group, user, attrs, presence_user_ids)
@@ -193,7 +235,6 @@ defmodule Stitch.Message do
   end
 
   def create(group_id, user, attrs, presence_user_ids) do
-
     group = GroupQueries.get_by_id(group_id)
     attrs = Map.put_new(attrs, "type", "chat")
     MessageCreation.create(group, user, attrs, presence_user_ids)
@@ -205,6 +246,10 @@ defmodule Stitch.Message do
 
   def message_changeset(message, %{"type" => "meet_link"} = attrs) do
     message |> meet_link_changeset(attrs)
+  end
+
+  def message_changeset(message, %{"type" => "internal_link"} = attrs) do
+    message |> internal_link_changeset(attrs)
   end
 
   def message_changeset(message, %{"type" => "call"} = attrs) do
@@ -298,14 +343,16 @@ defmodule Stitch.Message do
     system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
       type: "system",
       text_content: "{user} joined the room at {time}",
-      fields: [%{
-        type: "join_group",
-        user: %{
-          id: user.id,
-          name: "#{user.first_name} #{user.last_name}"
-        },
-        time: NaiveDateTime.utc_now()
-      }]
+      fields: [
+        %{
+          type: "join_group",
+          user: %{
+            id: user.id,
+            name: "#{user.first_name} #{user.last_name}"
+          },
+          time: NaiveDateTime.utc_now()
+        }
+      ]
     })
   end
 
@@ -317,14 +364,16 @@ defmodule Stitch.Message do
     system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
       type: "system",
       text_content: "{user} left the room at {time}",
-      fields: [%{
-        type: "leave_group",
-        user: %{
-          id: user.id,
-          name: "#{user.first_name} #{user.last_name}"
-        },
-        time: NaiveDateTime.utc_now()
-      }]
+      fields: [
+        %{
+          type: "leave_group",
+          user: %{
+            id: user.id,
+            name: "#{user.first_name} #{user.last_name}"
+          },
+          time: NaiveDateTime.utc_now()
+        }
+      ]
     })
   end
 
@@ -337,5 +386,36 @@ defmodule Stitch.Message do
     Message
     |> where(upload_id: ^upload.id)
     |> Repo.update_all(set: [fields: Upload.fields(upload)])
+  end
+
+  def encode_url_id(message_id) do
+    "m" <> Base.encode64("#{message_id}", case: :upper, padding: true)
+  end
+
+  def decode_message_link_ids_to_fields(url) do
+    decoded_ids =
+      Regex.split(~r{-m}, url)
+      |> Enum.take(-3)
+      |> Enum.map(fn id -> decode_url_id(id) end)
+      |> IO.inspect(label: "ids")
+
+    %{
+      "fields" => [
+        %{
+          "ref_message_id" => decoded_ids |> Enum.at(1),
+          "ref_group_id" => decoded_ids |> Enum.at(0),
+          "parent_message_id" => decoded_ids |> Enum.at(2)
+        }
+      ]
+    }
+  end
+
+  def decode_url_id(encoded_id) do
+    with {:ok, string_id} <- Base.decode64("#{encoded_id}", case: :upper, padding: true),
+         {int_id, _} <- Integer.parse(string_id) do
+      int_id
+    else
+      _ -> :error
+    end
   end
 end

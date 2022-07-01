@@ -10,11 +10,13 @@ import Reactions from "./reactions";
 import Replies from "./replies";
 import CallMessage from "./call-message";
 import MeetLinkMessage from "./meet-link-message";
+import InternalLinkMessage from "./internal-link-message";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
 @inject("usersStore", "addonStore")
 @observer
 class MessageContent extends Component {
+
   onToggle = emoji => {
     const { message } = this.props;
     this.props.messageStore.toggleReaction(message.id, emoji, message.group_id);
@@ -49,6 +51,34 @@ class MessageContent extends Component {
     }
 
     return null;
+  }
+
+  renderInternalLink() {
+    return (
+      <InternalLinkMessage {...this.props} />
+    );
+  }
+
+  renderMeetLink() {
+    return (
+      <MeetLinkMessage message={this.props.message} />
+    );
+  }
+
+  renderCallComp() {
+    return (
+      <CallMessage message={this.props.message} />
+    );
+  }
+
+  renderTextComp() {
+    const { message, inSearch } = this.props;
+    
+    const textContent = inSearch
+      ? message.highlighted_text_content || message.text_content
+      : message.text_content;
+
+    return messageTextToComponents(textContent || "", {inSearch});
   }
 
   renderEdited() {
@@ -114,22 +144,18 @@ class MessageContent extends Component {
   }
 
   render() {
-    const { inSearch, message, user, isConversationMessage, addonStore } = this.props;
+    const { message, user, addonStore } = this.props;
     const messageId = !message.id ? addonStore.detailPanelData.id : message.id;
-    let messageContentComponents;
+    let messageContentComponents = "";
 
     if (message.type === "call") {
-      messageContentComponents = <CallMessage message={message} />;
+      messageContentComponents = this.renderCallComp();
     } else if (message.type === "meet_link") {
-      messageContentComponents = <MeetLinkMessage message={message} />;
+      messageContentComponents = this.renderTextComp();
+    } else if (message.type === "internal_link") {
+      messageContentComponents = this.renderInternalLink();
     } else {
-      const textContent = inSearch
-        ? message.highlighted_text_content || message.text_content
-        : message.text_content;
-
-      messageContentComponents = messageTextToComponents(textContent || "", {
-        inSearch
-      });
+      messageContentComponents = this.renderTextComp();
     }
 
     return (

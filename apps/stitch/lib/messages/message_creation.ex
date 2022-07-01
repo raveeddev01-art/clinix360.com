@@ -94,6 +94,16 @@ defmodule Stitch.Message.MessageCreation do
     do_create(message, attrs, presence)
   end
 
+  def create(message, user, %{"type" => "internal_link", "thread" => true} = attrs, presence) do
+    message = %Message{parent_message: message, user: user, group: message.group}
+    do_create(message, attrs, presence)
+  end
+
+  def create(group, user, %{"type" => "internal_link"} = attrs, presence) do
+    message = %Message{group: group, user: user}
+    do_create(message, attrs, presence)
+  end
+
   # will use when thread key sent from FE
   def create(message, user, %{"text_content" => _, "thread" => true} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
@@ -162,6 +172,7 @@ defmodule Stitch.Message.MessageCreation do
           |> post_creation(notify_user_ids)
         end
       end
+      |> IO.inspect(label: "here in shapper")
   end
 
   def multi_mark_as_read_on_creation_if_member(multi, group_id, user_id, :message) do

@@ -254,6 +254,7 @@ class Message extends PureComponent {
               {(isActionsVisible || isSelected) &&
                 !isConversationMessage && (
                   <MessageActions
+                    {...this.props}
                     user={user}
                     isReply={isReply}
                     message={message}

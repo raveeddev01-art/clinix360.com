@@ -162,16 +162,15 @@ class MessageActions extends PureComponent {
       message,
       user,
       isConversationMessage,
-      isReply
+      isReply,
+      parentMessageId
     } = this.props;
     const mine = user.id === currentUser.id;
     const unsent = message.status === "sending" || message.status === "failed";
     const { dropup, isEmojiPickerOpen, emojiPickerOffset } = this.state;
     const starredCX = message.starred ? "" : "-o";
-    const detailPageUrl =
-      message.fields &&
-      message.fields.encoded_id &&
-      getFullUrl(`/admin/files/${message.fields.encoded_id}`);
+
+    const detailPageUrl = getFullUrl(`/archives-m${btoa(message.group_id)}-m${btoa(message.id)}-m${btoa(parentMessageId)}`);
 
     // disabling context menu
     if (unsent) {
@@ -285,15 +284,11 @@ class MessageActions extends PureComponent {
 
             {message.type !== "call" && (
               <CopyToClipboard
-                text={
-                  message.type === "upload"
-                    ? detailPageUrl
-                    : message.text_content
-                }
+                text={detailPageUrl}
                 onCopy={this.copy}
               >
                 <MenuItem>
-                  Copy {message.type === "upload" ? "Link" : "Message"}
+                  Copy Link
                 </MenuItem>
               </CopyToClipboard>
             )}

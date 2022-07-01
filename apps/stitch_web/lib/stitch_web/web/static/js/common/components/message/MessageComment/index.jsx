@@ -19,6 +19,7 @@ class MessageComment extends Component {
 
     return (
       <Message
+        {...this.props}
         edited_at={comment.edited_at}
         isReply={true}
         messageUser={user}

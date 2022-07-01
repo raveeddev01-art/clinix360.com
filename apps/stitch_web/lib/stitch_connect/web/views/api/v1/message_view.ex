@@ -51,7 +51,6 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       user: user_info(message),
       group_id: message.group_id,
       deleted: message.deleted,
-      # text_content: text_content(message),
       text_content: message.text_content,
       fields: MessagesHelper.render_fields(message, authenticated_url, files_url),
       type: type(message.type, authenticated_url),
