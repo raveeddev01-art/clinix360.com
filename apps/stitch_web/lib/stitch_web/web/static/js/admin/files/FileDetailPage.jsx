@@ -133,7 +133,6 @@ class FileDetailPage extends Component {
               file.comments.map(comment => (
                 <FileComment comment={comment} key={comment.id} />
               ))}
-            <FileCommentInput file={file} />
           </div>
         </div>
       </div>
