@@ -50,11 +50,11 @@ class InternalLinkMessage extends Component {
   };
 
   render() {
-    const { message } = this.props;
+    const { messageTextComponents } = this.props;
 
     return (
       <div className="internal-link" onClick={this.navigateToMessage}>
-        {message.text_content}
+        { messageTextComponents }
       </div>
     );
   }

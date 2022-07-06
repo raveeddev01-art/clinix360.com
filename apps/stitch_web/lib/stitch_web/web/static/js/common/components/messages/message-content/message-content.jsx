@@ -53,21 +53,15 @@ class MessageContent extends Component {
     return null;
   }
 
-  renderInternalLink() {
+  renderInternalLink(messageTextComponents) {
     return (
-      <InternalLinkMessage {...this.props} />
+      <InternalLinkMessage {...this.props} messageTextComponents={messageTextComponents} />
     );
   }
 
   renderMeetLink() {
     return (
       <MeetLinkMessage message={this.props.message} />
-    );
-  }
-
-  renderCallComp() {
-    return (
-      <CallMessage message={this.props.message} />
     );
   }
 
@@ -146,17 +140,14 @@ class MessageContent extends Component {
   render() {
     const { message, user, addonStore } = this.props;
     const messageId = !message.id ? addonStore.detailPanelData.id : message.id;
-    let messageContentComponents = "";
+    const messageTextComponents = this.renderTextComp();
+    let messageContentComponents = null;
 
-    if (message.type === "call") {
-      messageContentComponents = this.renderCallComp();
-    } else if (message.type === "meet_link") {
-      messageContentComponents = this.renderTextComp();
+    if (message.type === "meet_link") {
+      messageContentComponents = this.renderMeetLink();
     } else if (message.type === "internal_link") {
-      messageContentComponents = this.renderInternalLink();
-    } else {
-      messageContentComponents = this.renderTextComp();
-    }
+      messageContentComponents = this.renderInternalLink(messageTextComponents);
+    } 
 
     return (
       <div

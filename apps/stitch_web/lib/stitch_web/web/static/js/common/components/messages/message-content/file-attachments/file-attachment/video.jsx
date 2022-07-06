@@ -60,7 +60,8 @@ class VideoFileAttachment extends Component {
               <video
                 className={mediaBlockClass}
                 controls
-                src={this.props.url} />
+                src={this.props.url} 
+              />
               {useActions &&
                 message && (
                   <AttachmentActions
@@ -85,7 +86,7 @@ class VideoFileAttachment extends Component {
 
         <FileViewer
           {...this.props}
-          type="Image"
+          type="Video File"
           show={this.state.showModal}
           onHideModal={this.onToggleModal}
         />

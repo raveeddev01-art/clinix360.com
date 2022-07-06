@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { FILE_VIEW_SIZE_LIMIT } from "lib/constants";
-import getFileType from "lib/file-types";
-import { getFullUrl, prettyFileSize } from "lib/utils";
 import AttachmentActions from "./components/attachment-actions";
 import FileViewer from "./file-viewer";
 
