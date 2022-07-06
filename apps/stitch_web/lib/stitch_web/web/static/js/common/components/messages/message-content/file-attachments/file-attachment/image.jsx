@@ -38,10 +38,11 @@ class ImageFileAttachment extends Component {
       public_url,
       preview_height,
       preview_width,
-      preview_url
+      preview_url,
+      mediaBlockClass
     } = this.props;
     const { showModal } = this.state;
-
+    const thumbnail_src = preview_url ? preview_url : "/images/default-file-thumb.jpeg";
     const blockCN = cx("attachment-image-block", {
       "attachment-image-block--sm": size === "sm"
     });
@@ -51,14 +52,11 @@ class ImageFileAttachment extends Component {
       <div className={blockCN}>
         <div className={holderCN}>
           <div className="attachment-description">
-            <div className="attachment-title">
-              {filename}
-            </div>
             <div
               className="attachment-thumb"
               onClick={this.onToggleModal}
             >
-              <img src={preview_url} className="image-block-size" />
+              <img src={thumbnail_src} className={mediaBlockClass} />
               {useActions &&
                 message && (
                   <AttachmentActions

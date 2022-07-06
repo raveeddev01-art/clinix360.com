@@ -90,6 +90,8 @@ class DocumentFileAttachment extends Component {
       mainCN = "attachment-block";
     }
 
+    const thumbnail_src = preview_url ? preview_url : "/images/default-file-thumb.jpeg";
+
     return (
       <div>
         {/* {useActions && <span className="text-muted">uploaded this file: </span>} */}
@@ -111,10 +113,7 @@ class DocumentFileAttachment extends Component {
             </div>
 
             {this.hasViewer() && (
-              <div
-                className="attachment-thumb"
-                style={{ backgroundImage: `url(${preview_url})` }}
-              />
+              <img src={thumbnail_src} className="attachment-thumb" />
             )}
           </div>
 

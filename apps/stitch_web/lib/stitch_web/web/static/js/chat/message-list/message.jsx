@@ -109,10 +109,11 @@ class Message extends PureComponent {
   }
 
   rendedContent(user) {
-    const {messageStore, message, isConversationMessage } = this.props;
+    const { messageStore, message, isConversationMessage, inThread } = this.props;
     return (
       <div className="message-content-wrapper">
         <MessageContent
+          inThread={inThread}
           isConversationMessage={isConversationMessage}
           messageStore={messageStore}
           message={message}

@@ -907,6 +907,19 @@
       .message-body-wrapper {
         display: block;
 
+        .attachment-title {
+          color: #777;
+          font-size: 13px;
+          word-wrap: break-word;
+        }
+
+        .media-grid {
+          display: flex;
+          flex-wrap: wrap;
+          row-gap: 5px;
+          column-gap: 5px;
+        }
+
         .message-body {
           display: block;
           word-wrap: break-word;
@@ -1332,11 +1345,22 @@
     word-wrap: break-word;
   }
 
-  .image-block-size{
-    height: 280px !important;
-    width: 280px !important;
+  .media-thumbnail{
     object-fit: cover;
     object-position: center;
+  }
+
+  .media-size-lg {
+    height: 280px !important;
+    width: 280px !important;    
+  }
+  .media-size-md {
+    height: 240px !important;
+    width: 240px !important;    
+  }
+  .media-size-sm {
+    height: 200px !important;
+    width: 200px !important;    
   }
 
   video {

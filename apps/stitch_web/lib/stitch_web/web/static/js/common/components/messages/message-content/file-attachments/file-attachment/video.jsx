@@ -39,9 +39,7 @@ class VideoFileAttachment extends Component {
       encoded_id,
       user_id,
       public_url,
-      preview_height: height,
-      preview_width: width,
-      preview_url: previewUrl
+      mediaBlockClass
     } = this.props;
 
 
@@ -55,15 +53,12 @@ class VideoFileAttachment extends Component {
       <div className={blockCN}>
         <div className={mainCN}>
           <div className="attachment-description">
-            <div className="attachment-title">
-              {filename}
-            </div>
             <div
               className="attachment-thumb"
               onClick={this.onToggleModal}
             >
               <video
-                className="image-block-size"
+                className={mediaBlockClass}
                 controls
                 src={this.props.url} />
               {useActions &&

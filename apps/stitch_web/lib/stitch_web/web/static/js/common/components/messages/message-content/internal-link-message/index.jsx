@@ -15,8 +15,7 @@ class InternalLinkMessage extends Component {
     const parentMessageId = message.fields[0].parent_message_id;
     
     if(parentMessageId === "error") {
-      this.goToMessageRoom(groupId);
-      this.jumpToMessage(messageId);
+      this.goToMessageRoom(groupId, messageId);
     } else {
       this.openMessageThread(parentMessageId);
     }
@@ -24,26 +23,25 @@ class InternalLinkMessage extends Component {
 
   jumpToMessage(messageId) {
     const { messageStore } = this.props;
-
-    messageStore.load(messageId).then(message => {
-      messageStore.jumpToMessage(message);
-    });
+    if(messageId) {
+      messageStore.load(messageId).then(message => {
+        messageStore.jumpToMessage(message);
+      });
+    }
   }
 
-  goToMessageRoom(groupId) {
+  goToMessageRoom(groupId, messageId) {
     const { sidemenuStore, groupsStore } = this.props;
-    // const group = groupsStore.getGroupById(groupId);
-    // groupsStore.openGroup(group.slug)
-    sidemenuStore.onRoomMenuItemShow(groupId);
-
     const url = groupsStore.getGroupUrl(groupId);
+
+    sidemenuStore.onRoomMenuItemShow(groupId);
     window.focus();
     history.push(url);
+    this.jumpToMessage(messageId)
   }
 
   openMessageThread = (messageId) => {
-    const { addonStore, messageStore } = this.props;
-    const message = messageStore.getMessageById(messageId);
+    const { addonStore } = this.props;
 
     addonStore.setAddonPanel("thread");
     addonStore.toggleAddons(true);
