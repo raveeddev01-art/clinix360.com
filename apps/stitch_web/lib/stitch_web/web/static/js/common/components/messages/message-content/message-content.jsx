@@ -147,8 +147,9 @@ class MessageContent extends Component {
       messageContentComponents = this.renderMeetLink();
     } else if (message.type === "internal_link") {
       messageContentComponents = this.renderInternalLink(messageTextComponents);
-    } 
-
+    } else {
+      messageContentComponents = messageTextComponents;
+    }
     return (
       <div
         properties={{ target: "_blank", className: "message-link" }}
