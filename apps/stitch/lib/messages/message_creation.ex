@@ -37,8 +37,7 @@ defmodule Stitch.Message.MessageCreation do
       message = %Message{
         parent_message: message,
         group: message.group,
-        user: user,
-        upload: hd(uploads)
+        user: user
       }
 
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
@@ -74,7 +73,7 @@ defmodule Stitch.Message.MessageCreation do
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
     with {:ok, uploads} <- Upload.create_and_share_with_group(group, user, fields) do
-      message = %Message{group: group, user: user, upload: hd(uploads)}
+      message = %Message{group: group, user: user}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
       do_create(message, attrs, presence)
     else
@@ -131,13 +130,6 @@ defmodule Stitch.Message.MessageCreation do
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
 
-    upload_ids =
-      if attrs["type"] == "upload" or attrs["type"] == "file_share" do
-        Enum.map(attrs["fields"], & &1["id"])
-      else
-        []
-      end
-
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)
       |> thread_notify_user_ids(message)
@@ -148,8 +140,7 @@ defmodule Stitch.Message.MessageCreation do
       attrs
       |> Map.merge(%{
         "mentioned_user_ids" => mentioned_user_ids,
-        "read_status" => read_status,
-        "upload_ids" => upload_ids
+        "read_status" => read_status
       })
 
     mention_users = Message.mention_users(group, mentioned_user_ids, recipients)
@@ -172,7 +163,6 @@ defmodule Stitch.Message.MessageCreation do
           |> post_creation(notify_user_ids)
         end
       end
-      |> IO.inspect(label: "here in shapper")
   end
 
   def multi_mark_as_read_on_creation_if_member(multi, group_id, user_id, :message) do
@@ -184,10 +174,6 @@ defmodule Stitch.Message.MessageCreation do
     end
   end
 
-  def register_uploads({:ok, response}, uploads) do
-    %{uploads: Enum.map(uploads, fn upload -> upload.id end)}
-    |> Message.update_uploads(response.message)
-  end
 
   def post_creation({:ok, %{message: message} = result_map}, notify_user_ids) do
     MessageAnalytics.track_message_sent(message, message.user, message.group)

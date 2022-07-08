@@ -275,6 +275,12 @@ defmodule Stitch.Message do
     |> Repo.update()
   end
 
+  def update_fields(fields, %Message{} = struct) do
+    upload_ids = Enum.map(fields, & &1["id"])
+    attrs = %{upload_ids: upload_ids, fields: fields}
+    struct |> upload_changeset(attrs) |> Repo.update()
+  end
+
   def update(message, attributes) do
     group = GroupQueries.get_by_id(message.group_id)
     group = Repo.preload(group, :users)
@@ -397,7 +403,6 @@ defmodule Stitch.Message do
       Regex.split(~r{-m}, url)
       |> Enum.take(-3)
       |> Enum.map(fn id -> decode_url_id(id) end)
-      |> IO.inspect(label: "ids")
 
     %{
       "fields" => [

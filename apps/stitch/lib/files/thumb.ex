@@ -18,9 +18,9 @@ defmodule Stitch.Files.Thumb do
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
       preview = %{
-        "preview_height" => preview_height,
-        "preview_width" => preview_width,
-        "preview_url" => S3.fullpath(preview_path)
+        preview_height: preview_height,
+        preview_width: preview_width,
+        preview_url: S3.fullpath(preview_path)
       }
 
       {:ok, preview}
@@ -41,9 +41,9 @@ defmodule Stitch.Files.Thumb do
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
       preview = %{
-        "preview_height" => preview_height,
-        "preview_width" => preview_width,
-        "preview_url" => S3.fullpath(preview_path)
+        preview_height: preview_height,
+        preview_width: preview_width,
+        preview_url: S3.fullpath(preview_path)
       }
 
       {:ok, preview}
@@ -57,7 +57,10 @@ defmodule Stitch.Files.Thumb do
     create(%{"url" => url, "mimetype" => "application/document"})
   end
 
-  def create(%{"url" => url, "mimetype" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}) do
+  def create(%{
+        "url" => url,
+        "mimetype" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      }) do
     create(%{"url" => url, "mimetype" => "application/document"})
   end
 
@@ -65,7 +68,10 @@ defmodule Stitch.Files.Thumb do
     create(%{"url" => url, "mimetype" => "application/document"})
   end
 
-  def create(%{"url" => url, "mimetype" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}) do
+  def create(%{
+        "url" => url,
+        "mimetype" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      }) do
     create(%{"url" => url, "mimetype" => "application/document"})
   end
 
@@ -80,11 +86,10 @@ defmodule Stitch.Files.Thumb do
          :ok <- File.rm(dest),
          :ok <- File.rm(preview_path) do
       preview = %{
-        "preview_height" => preview_height,
-        "preview_width" => preview_width,
-        "preview_url" => S3.fullpath(preview_path)
+        preview_height: preview_height,
+        preview_width: preview_width,
+        preview_url: S3.fullpath(preview_path)
       }
-      |> IO.inspect(label: "Here is generated preview")
 
       {:ok, preview}
     else

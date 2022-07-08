@@ -11,7 +11,8 @@ defmodule StitchConnect.Web.MessageEventsService do
   alias Stitch.{
     EmailNotification,
     LinkPreviewGenerator,
-    Mobile.NotificationLogger
+    Mobile.NotificationLogger,
+    FilesPreviewGenerator
   }
 
   def message_creation_events(message, group, notify_user_ids) do
@@ -19,10 +20,12 @@ defmodule StitchConnect.Web.MessageEventsService do
     Stitch.Task.start(fn ->
       EmailNotification.create(message.id, notify_user_ids.email)
       LinkPreviewGenerator.queue(message)
+      FilesPreviewGenerator.queue(message)
       GroupChannel.broadcast_message_created(message)
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+
     end)
   end
 
@@ -30,7 +33,8 @@ defmodule StitchConnect.Web.MessageEventsService do
     NotificationLogger.start(message, notify_user_ids.mobile)
 
     Stitch.Task.start(fn ->
-      LinkPreviewGenerator.queue(message)
+      LinkPreviewGenerator.queue(message.comment)
+      FilesPreviewGenerator.queue(message.comment)
       GroupChannel.broadcast_message_comment_added(message)
       GroupChannel.broadcast_message_edited(message)
       EventsChannel.broadcast_group_message_comment_added(message.group, message, notify_user_ids.desktop)

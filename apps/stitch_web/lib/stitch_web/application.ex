@@ -16,7 +16,8 @@ defmodule Stitch.Web.Application do
     background_jobs = [
       worker(StitchConnect.MessageMailer, []),
       worker(Stitch.PresignedUrlCache, []),
-      worker(StitchConnect.ActivityTrackerWorker, [])
+      worker(StitchConnect.ActivityTrackerWorker, []),
+      worker(Stitch.FilesPreviewGenerator, [])
     ]
 
     background_jobs =

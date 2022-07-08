@@ -101,12 +101,8 @@ defmodule Stitch.Files.Upload do
      end)}
   end
 
-  def create_and_share_with_group(%Group{} = group, %User{} = user, attrs, opts \\ []) do
-    with {:ok, preview} <- create_preview(attrs, opts),
-         attrs =
-           attrs
-           |> Map.merge(preview)
-           |> Map.put("public", group.public),
+  def create_and_share_with_group(%Group{} = group, %User{} = user, attrs, _opts \\ []) do
+    with attrs = Map.put(attrs, "public", group.public),
          {:ok, upload} <- create(user, attrs),
          {:ok, group_file} <- share_with_group(upload, group) do
       {:ok, upload, group_file}
@@ -159,6 +155,25 @@ defmodule Stitch.Files.Upload do
 
   def put_filetype(changeset), do: changeset
 
+  def create_previews(fields, opts \\ []) do
+    Enum.map(fields, fn field ->
+      create_preview(field, opts)
+      |> case do
+        {:ok, preview} ->
+          %Upload{id: field["id"]}
+          |> update_preview_fields(preview)
+
+          field
+          |> Map.replace("preview_height", preview.preview_height)
+          |> Map.replace("preview_width", preview.preview_width)
+          |> Map.replace("preview_url", preview.preview_url)
+
+        {:error, _} ->
+          field
+      end
+    end)
+  end
+
   def create_preview(_attrs, with_preview: false), do: {:ok, %{}}
 
   def create_preview(fields, _opts) do
@@ -167,10 +182,10 @@ defmodule Stitch.Files.Upload do
         {:ok, preview_metadata}
 
       {:error, "Unsupported type"} ->
-        {:ok, %{}}
+        {:error, %{}}
 
       {:error, error} ->
-        {:ok, error}
+        {:error, error}
     end
   end
 
@@ -211,6 +226,11 @@ defmodule Stitch.Files.Upload do
   @spec has_public_token?(Upload.t()) :: boolean
   def has_public_token?(%Upload{} = upload) do
     !!upload.public_token
+  end
+
+  def update_preview_fields(%Upload{} = struct, attrs) do
+    change(struct, attrs)
+    |> Repo.update()
   end
 
   @spec create_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
