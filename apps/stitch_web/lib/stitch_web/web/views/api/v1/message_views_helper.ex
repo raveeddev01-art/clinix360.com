@@ -17,22 +17,24 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   def render_fields(%{fields: fields} = message, authenticated_urls, files_endpoint)
       when is_list(fields) do
-
     Enum.map(fields, fn upload ->
-      if message.upload_ids == [] do
+      if message.upload_ids == [] and message.type == "file_share" do
         render_fields(upload, files_endpoint)
       else
-      message
-      |> Map.merge(%{upload_id: upload["id"]})
-      |> Map.merge(%{fields: upload})
-      |> render_fields(authenticated_urls, files_endpoint)
+        message
+        |> Map.merge(%{upload_id: upload["id"]})
+        |> Map.merge(%{fields: upload})
+        |> render_fields(authenticated_urls, files_endpoint)
       end
     end)
   end
 
   def render_fields(fields, files_endpoint) do
-    fields
-    |> Map.replace("url", files_file_url(files_endpoint, :download, fields["encoded_id"], fields["filename"]))
+    Map.replace(
+      fields,
+      "url",
+      files_file_url(files_endpoint, :download, fields["encoded_id"], fields["filename"])
+    )
   end
 
   def render_fields(%{type: "upload"} = message, authenticated_urls, files_endpoint) do
