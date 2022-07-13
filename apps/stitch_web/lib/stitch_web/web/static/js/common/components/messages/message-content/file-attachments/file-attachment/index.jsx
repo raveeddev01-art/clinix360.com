@@ -54,6 +54,9 @@ class FileAttachment extends Component {
     } else {
       teamFileStore.downloadFile(url, filename)
     }
+
+    
+
   };
 
   render() {
