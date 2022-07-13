@@ -367,9 +367,11 @@ defmodule Stitch.Web.SubdomainRouter do
   # API routes which need token.
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api_auth)
-
+    scope "/teams" do
+      pipe_through(:team_admin_api)
+      put("/:id", TeamController, :update)
+    end
     get("/teams/:id", TeamController, :show)
-    put("/teams/:id", TeamController, :update)
 
     post("/login", AuthenticationController, :submit_login)
     post("/patient/login", AuthenticationController, :submit_patient_login)
