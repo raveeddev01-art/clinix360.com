@@ -17,22 +17,20 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   def render_fields(%{fields: fields} = message, authenticated_urls, files_endpoint)
       when is_list(fields) do
-
     Enum.map(fields, fn upload ->
-      if message.upload_ids == [] do
-        render_fields(upload, files_endpoint)
+      if message.type == "file_share" do
+        if message.upload_ids == [] do
+          put_file_url(upload, files_endpoint)
+        else
+          message
+          |> Map.merge(%{upload_id: upload["id"]})
+          |> Map.merge(%{fields: upload})
+          |> render_fields(authenticated_urls, files_endpoint)
+        end
       else
-      message
-      |> Map.merge(%{upload_id: upload["id"]})
-      |> Map.merge(%{fields: upload})
-      |> render_fields(authenticated_urls, files_endpoint)
+        upload
       end
     end)
-  end
-
-  def render_fields(fields, files_endpoint) do
-    fields
-    |> Map.replace("url", files_file_url(files_endpoint, :download, fields["encoded_id"], fields["filename"]))
   end
 
   def render_fields(%{type: "upload"} = message, authenticated_urls, files_endpoint) do
@@ -158,6 +156,14 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
       {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
       :error -> fields
     end
+  end
+
+  def put_file_url(fields, files_endpoint) do
+    Map.replace(
+      fields,
+      "url",
+      files_file_url(files_endpoint, :download, fields["encoded_id"], fields["filename"])
+    )
   end
 
   defp put_preview_presigned_url(fields, _authenticated_urls, _message_id, _files_endpoint),
