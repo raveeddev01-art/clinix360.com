@@ -117,10 +117,11 @@ defmodule Stitch.Web.AuthenticationController do
         "teamName" => conn.private[:team_name],
         "teamSlug" => conn.private[:team_slug]
       })
-
+      IO.inspect(conn, label: "here is logout___________---------")
     conn
     |> delete_team_session(conn.assigns.team.id)
     |> delete_session(:redirect_url)
+    |> clear_session()
     |> render("logged_out.html", logged_out_params: logged_out_params)
   end
 
