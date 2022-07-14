@@ -51,6 +51,10 @@ defmodule Stitch.Web.SubdomainRouter do
     plug(Stitch.Web.Plug.ApiAuthenticate)
   end
 
+  pipeline :plug_attack do
+    plug(Stitch.Web.Plug.PlugAttack)
+  end
+
   pipeline :team_admin_api do
     plug(:accepts, ["json"])
     plug(:fetch_session)
@@ -238,10 +242,11 @@ defmodule Stitch.Web.SubdomainRouter do
 
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_locked_api)
-
+    pipe_through(:plug_attack)
     post("/session-lock", SessionLockController, :lock)
     post("/session-unlock", SessionLockController, :unlock)
   end
+
 
   # ====
   # NOTE: Some StitchConnect routes up here to pattern match first
@@ -367,6 +372,7 @@ defmodule Stitch.Web.SubdomainRouter do
   # API routes which need token.
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api_auth)
+    pipe_through(:plug_attack)
     scope "/teams" do
       pipe_through(:team_admin_api)
       put("/:id", TeamController, :update)
