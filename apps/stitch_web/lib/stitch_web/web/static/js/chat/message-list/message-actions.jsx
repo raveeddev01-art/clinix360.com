@@ -42,12 +42,12 @@ class MessageActions extends PureComponent {
 
   subscribeMessageNotifications = () => {
     const { messageStore, message, user } = this.props;
-    messageStore.subscribeMessageNotifications(message.id, user.id, true);
+    messageStore.subscribeMessageNotifications(message, user.id, true);
   }
 
   unsubscribeMessageNotifications = () => {
     const { messageStore, message, user } = this.props;
-    messageStore.subscribeMessageNotifications(message.id, user.id, false);
+    messageStore.subscribeMessageNotifications(message, user.id, false);
   }
 
   onSelectEmoji = emoji => {

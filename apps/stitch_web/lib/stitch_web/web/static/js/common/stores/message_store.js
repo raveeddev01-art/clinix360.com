@@ -1090,19 +1090,18 @@ class MessageStore extends BaseMessageStore {
     };
 
     @action
-    subscribeMessageNotifications = (messageId, userId, subscribe = true) => {
+    subscribeMessageNotifications = (message, userId, subscribe = true) => {
         const body = {
             user_id: userId,
             subscribe: subscribe
         };
 
-        return put(`/api/v1/message/${messageId}/notifications`, {
+        return put(`/api/v1/message/${message.id}/notifications`, {
             body
         }).then(response => {
             this.updateMessageData(message.id, message.group_id, {
-                notify_user_ids: message.notify_user_ids
+                notify_user_ids: response.data.notify_user_ids
             });
-            console.log("RESPONSE", response);
         }).catch(e => {
             console.log(e);
         });
