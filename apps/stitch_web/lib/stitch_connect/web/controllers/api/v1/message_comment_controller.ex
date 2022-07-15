@@ -64,7 +64,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
 
   def message_comment_creation_events(message, comment, notify_user_ids) do
     message
-    |> Map.merge(%{comment_notify_ids: notify_user_ids, comment: comment})
+    |> Map.merge(%{comment: comment})
     |> MessageEventsService.message_comment_creation_events(notify_user_ids)
   end
 

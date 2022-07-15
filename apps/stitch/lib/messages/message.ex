@@ -56,6 +56,7 @@ defmodule Stitch.Message do
     field(:highlighted_text_content, :string, virtual: true)
     field(:reactions, :map, default: %{})
     field(:upload_ids, {:array, :integer}, deafult: [])
+    field(:notify_user_ids, {:array, :integer}, default: [])
     # Remove on the next release
     field(:requires_fallback_comment, :boolean, default: true)
 
@@ -169,6 +170,12 @@ defmodule Stitch.Message do
     ])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["internal_link"])
+  end
+
+  def notify_user_ids_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:notify_user_ids])
+    |> validate_required([:notify_user_ids])
   end
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
@@ -392,6 +399,24 @@ defmodule Stitch.Message do
     Message
     |> where(upload_id: ^upload.id)
     |> Repo.update_all(set: [fields: Upload.fields(upload)])
+  end
+
+  def subscribe_notifications(message, user_id, true) do
+    message.notify_user_ids ++ [user_id]
+    |> Enum.uniq()
+    |> update_notify_ids(message)
+  end
+
+  def subscribe_notifications(message, user_id, false) do
+    message.notify_user_ids
+    |> List.delete(user_id)
+    |> update_notify_ids(message)
+  end
+
+  def update_notify_ids(notify_user_ids, message) do
+    message
+    |> notify_user_ids_changeset(%{notify_user_ids: notify_user_ids})
+    |> Repo.update()
   end
 
   def encode_url_id(message_id) do

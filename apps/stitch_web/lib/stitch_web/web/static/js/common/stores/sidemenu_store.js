@@ -233,17 +233,10 @@ class SidemenuStore {
     parent.focus();
     window.focus();
 
-    if (message.type === "upload" || message.type === "file_comment") {
-      addonStore.setAddonPanel('files');
-      addonStore.toggleAddons(true);
-      addonStore.toggleAddonDetail(true);
-      addonStore.setAddonDetailPanel('File Details', message);
-    } else {
-      addonStore.setAddonPanel('thread');
-      addonStore.toggleAddons(true);
-      addonStore.toggleAddonDetail(false);
-      addonStore.setAddonDetailPanel('Message Details', message);
-    }
+    addonStore.setAddonPanel('thread');
+    addonStore.toggleAddons(true);
+    addonStore.toggleAddonDetail(false);
+    addonStore.setAddonDetailPanel('Message Details', message);
   }
 
 
@@ -289,12 +282,16 @@ class SidemenuStore {
       const comment = this.getLatestComment(message);
       const group = groupsStore.getGroupById(comment.group_id);
 
-      this.showNotificationCard(
-        this.getNotificationTitle(group),
-        this.getNotificationText(comment, group, false, true),
-        `message-${comment.id}`,
-        this.showThreadComments(message),
-      );
+      // show notification if not own message
+      if (!this.isOwnMessage(comment)) {
+        this.showNotificationCard(
+          this.getNotificationTitle(group),
+          this.getNotificationText(comment, group, false, true),
+          `message-${comment.id}`,
+          this.showThreadComments(message),
+        );
+      }
+
     }
 
   }
@@ -385,11 +382,14 @@ class SidemenuStore {
   }
 
   getLatestComment(message) {
-    return _.orderBy(message.thread_messages, ['inserted_at'], ['asc']).pop();
+    const { usersStore } = this.rootStore;
+    var comment = _.orderBy(message.thread_messages, ['inserted_at'], ['asc']).pop();
+    comment.user = usersStore.getUserById(comment.user_id);
+    return comment;
   }
 
   commentNotificationAllowed(message) {
-    return message.comment_notify_ids.desktop.includes(currentUser.id);
+    return message.notify_user_ids.includes(currentUser.id);
   }
 
   isOwnMessage(message) {

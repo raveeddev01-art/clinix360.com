@@ -132,7 +132,6 @@ defmodule Stitch.Message.MessageCreation do
 
     notify_user_ids =
       Notification.notify_user_ids(group, user, mentioned_user_ids, presence.active)
-      |> thread_notify_user_ids(message)
 
     {read_status, recipients} = ReadStatus.get_read_status(:message, users, user)
 
@@ -174,12 +173,12 @@ defmodule Stitch.Message.MessageCreation do
     end
   end
 
-
   def post_creation({:ok, %{message: message} = result_map}, notify_user_ids) do
     MessageAnalytics.track_message_sent(message, message.user, message.group)
     NotificationQueue.async_enqueue_for_users(notify_user_ids.mobile_active, message.id)
     Stitch.Elasticsearch.MessageSearch.add_to_index(message)
     Stitch.AnalyticsMessageCount.create(message)
+    update_parent_notify_user_ids(message)
     result_map = Map.put(result_map, :notify_user_ids, notify_user_ids)
     {:ok, result_map}
   end
@@ -200,31 +199,15 @@ defmodule Stitch.Message.MessageCreation do
 
   def silent_post_creation(error), do: error
 
-  def thread_notify_user_ids(
-        notify_user_ids,
-        %Message{parent_message: parent_message} = message
-      ) do
-    thread_reply_notify_ids =
-      Map.get(parent_message, :thread_messages, [])
-      |> case do
-        [] ->
-          []
+  def update_parent_notify_user_ids(message) do
+    case message.parent_message_id do
+      nil ->
+        Message.subscribe_notifications(message, message.user_id, true)
 
-        thread_messages ->
-          thread_messages
-          |> Enum.map(fn tm -> tm.user_id end)
-          |> insert(parent_message.user_id)
-          |> Enum.uniq()
-          |> List.delete(message.user.id)
-      end
-
-    %{
-      desktop: Enum.uniq(notify_user_ids.desktop ++ thread_reply_notify_ids),
-      mobile: Enum.uniq(notify_user_ids.mobile ++ thread_reply_notify_ids),
-      mobile_active: notify_user_ids.mobile_active,
-      email: notify_user_ids.email ++ thread_reply_notify_ids
-    }
+      parent_message_id ->
+        Stitch.MessageQueries.get_by_id(parent_message_id)
+        |> Message.subscribe_notifications(message.user_id, true)
+    end
   end
 
-  defp insert(list, item), do: list ++ [item]
 end

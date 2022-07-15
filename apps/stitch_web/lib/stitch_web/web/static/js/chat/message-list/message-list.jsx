@@ -49,11 +49,6 @@ class MessageList extends Component {
     messageStore.infoModalMessageId = id;
   };
 
-
-  // showThreadMessage(message) {
-  //   return message.comment_notify_ids.desktop.includes(currentUser.id) || message.user_id === currentUser.id;
-  // }
-
   render() {
     const { messageStore, isThreadView } = this.props;
     const { messagesByDate, messagesByDateDesc, newMessageLineMessage, highlightId, messages } = messageStore;
