@@ -3,6 +3,9 @@ defmodule Stitch.Web.Plug.PlugAttack do
   use PlugAttack
 
   # For more rules examples see PlugAttack.rule/2 macro documentation
+
+  ##### if you want to allow your local server then uncomment below lines
+
   # rule "allow local", conn do
   #   allow conn.remote_ip == {127, 0, 0, 1}
   # end
@@ -23,7 +26,15 @@ defmodule Stitch.Web.Plug.PlugAttack do
   rule "throttle login requests", conn do
     if conn.method == "POST" and conn.path_info == ["api", "v1","login"] do
       throttle conn.params["email"],
-        period: 60_000, limit: 10,
+        period: 60_000, limit: 5,
+        storage: {PlugAttack.Storage.Ets, Stitch.Web.Plug.PlugAttack.Storage}
+    end
+  end
+
+  rule "throttle forget password requests", conn do
+    if conn.method == "POST" and conn.path_info == ["api", "v1","reset_password"] do
+      throttle conn.params["email"],
+        period: 60_000, limit: 5,
         storage: {PlugAttack.Storage.Ets, Stitch.Web.Plug.PlugAttack.Storage}
     end
   end
