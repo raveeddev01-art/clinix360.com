@@ -33,7 +33,8 @@ class DefaultFileAttachment extends Component {
     } else if (useActions && desktopStore.isElectron) {
       onFileDownload(e);
     } else if (useActions) {
-      window.open(url);
+      onFileDownload(e);
+      // window.open(url);
     }
   };
 

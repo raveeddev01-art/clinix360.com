@@ -170,8 +170,19 @@ defmodule Stitch.Web.Api.V1.TeamController do
     end
   end
 
+  def limit_check(params) do
+    if Keyword.get(params, :limit) > 50 do
+      list =
+      Keyword.drop(params, [:limit])
+      list ++ [limit: 50]
+    else
+      params
+    end
+  end
+
   def access_log(conn, %{"id" => _} = params) do
-    pagination_opts = parse_pagination_params(params, [:limit, :skip])
+
+    pagination_opts = parse_pagination_params(params, [:limit, :skip]) |> limit_check()
     team = conn.assigns.team
     paginated_result = Stitch.Accounts.AccessLog.list(team, pagination_opts)
     render(conn, "access_log.json", access_log: paginated_result)
