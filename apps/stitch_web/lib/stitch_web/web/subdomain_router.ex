@@ -511,6 +511,7 @@ defmodule Stitch.Web.SubdomainRouter do
     post("/messages/:id/share", MessageController, :share)
     post("/messages/search", MessageController, :search)
 
+    put("/message/:id/notifications", MessageController, :subscribe_message_notifications)
     get("/message/:id", MessageController, :show)
 
     get("/starred_messages", StarredMessageController, :index)

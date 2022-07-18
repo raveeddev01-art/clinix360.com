@@ -1090,6 +1090,24 @@ class MessageStore extends BaseMessageStore {
     };
 
     @action
+    subscribeMessageNotifications = (message, userId, subscribe = true) => {
+        const body = {
+            user_id: userId,
+            subscribe: subscribe
+        };
+
+        return put(`/api/v1/message/${message.id}/notifications`, {
+            body
+        }).then(response => {
+            this.updateMessageData(message.id, message.group_id, {
+                notify_user_ids: response.data.notify_user_ids
+            });
+        }).catch(e => {
+            console.log(e);
+        });
+    }
+
+    @action
     onPinnedMessage = message => {
         const { pinnedMessageStore } = this.rootStore;
 

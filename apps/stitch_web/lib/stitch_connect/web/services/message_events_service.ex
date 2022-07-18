@@ -16,7 +16,9 @@ defmodule StitchConnect.Web.MessageEventsService do
   }
 
   def message_creation_events(message, group, notify_user_ids) do
+    notify_user_ids = parse_notify_user_ids(message, notify_user_ids)
     NotificationLogger.start(message, notify_user_ids.mobile)
+
     Stitch.Task.start(fn ->
       EmailNotification.create(message.id, notify_user_ids.email)
       LinkPreviewGenerator.queue(message)
@@ -25,11 +27,11 @@ defmodule StitchConnect.Web.MessageEventsService do
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-
     end)
   end
 
   def message_comment_creation_events(message, notify_user_ids) do
+    notify_user_ids = parse_notify_user_ids(message, notify_user_ids)
     NotificationLogger.start(message, notify_user_ids.mobile)
 
     Stitch.Task.start(fn ->
@@ -37,7 +39,13 @@ defmodule StitchConnect.Web.MessageEventsService do
       FilesPreviewGenerator.queue(message.comment)
       GroupChannel.broadcast_message_comment_added(message)
       GroupChannel.broadcast_message_edited(message)
-      EventsChannel.broadcast_group_message_comment_added(message.group, message, notify_user_ids.desktop)
+
+      EventsChannel.broadcast_group_message_comment_added(
+        message.group,
+        message,
+        notify_user_ids.desktop
+      )
+
       PushNotifications.notify_users(message.group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
     end)
@@ -55,5 +63,14 @@ defmodule StitchConnect.Web.MessageEventsService do
     EventsChannel.broadcast_group_msg_deleted(message.group, message)
     PushNotifications.push_badge_update(message)
     Stitch.Elasticsearch.MessageSearch.delete_from_index(message)
+  end
+
+  def parse_notify_user_ids(message, notify_user_ids) do
+    %{
+      desktop: Enum.uniq(notify_user_ids.desktop ++ message.notify_user_ids),
+      mobile: Enum.uniq(notify_user_ids.mobile ++ message.notify_user_ids),
+      mobile_active: notify_user_ids.mobile_active,
+      email: notify_user_ids.email ++ message.notify_user_ids
+    }
   end
 end

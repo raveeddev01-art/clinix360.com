@@ -202,7 +202,7 @@ defmodule StitchConnect.Web.PushNotifications do
   # Message - Comment
   defp notification_text_body(
          group,
-         %{comment_notify_ids: _notify_user_ids, comment: comment},
+         %{comment: comment},
          receiver
        ) do
     if user_was_mentioned(receiver, comment) do

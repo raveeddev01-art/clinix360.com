@@ -377,7 +377,15 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
          {:authorized, true} <- {:authorized, GroupAuthorization.can_view?(group, current_user)},
          {:joined, _} <- {:joined, ensure_joined(group, current_user)},
          {:shared, {:ok, %{message: message, notify_user_ids: notify_user_ids}}} <-
-           {:shared, create_and_share_with_group(conn, message, text_content, group, current_user, presence)} do
+           {:shared,
+            create_and_share_with_group(
+              conn,
+              message,
+              text_content,
+              group,
+              current_user,
+              presence
+            )} do
       message = MessageQueries.get_by_id(message.id)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
@@ -414,6 +422,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     }
 
     message_params_with_client = Message.Params.with_client_attrs(conn, attrs)
+
     %Message{group: group, user: current_user}
     |> MessageCreation.do_create(message_params_with_client, presence)
   end
@@ -464,6 +473,18 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       {:group, _} -> {:error, :not_found}
       {:authorized?, false} -> {:error, :not_authorized}
     end
+  end
+
+  def subscribe_message_notifications(conn, %{
+        "id" => id,
+        "user_id" => user_id,
+        "subscribe" => subscribe
+      }) do
+    {:ok, message} =
+      MessageQueries.get_by_id(id)
+      |> Message.subscribe_notifications(user_id, subscribe)
+
+    render(conn, "show.json", %{message: message})
   end
 
   def parse_query_params(conn, _opts) do

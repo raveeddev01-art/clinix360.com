@@ -40,6 +40,16 @@ class MessageActions extends PureComponent {
     }
   };
 
+  subscribeMessageNotifications = () => {
+    const { messageStore, message, user } = this.props;
+    messageStore.subscribeMessageNotifications(message, user.id, true);
+  }
+
+  unsubscribeMessageNotifications = () => {
+    const { messageStore, message, user } = this.props;
+    messageStore.subscribeMessageNotifications(message, user.id, false);
+  }
+
   onSelectEmoji = emoji => {
     const { messageStore, message, setSelected } = this.props;
     this.setState({ isEmojiPickerOpen: false }, () => {
@@ -169,7 +179,7 @@ class MessageActions extends PureComponent {
     const unsent = message.status === "sending" || message.status === "failed";
     const { dropup, isEmojiPickerOpen, emojiPickerOffset } = this.state;
     const starredCX = message.starred ? "" : "-o";
-
+    const notificationsEnabled = !isReply && message.notify_user_ids.includes(currentUser.id) ? true : false;
     const detailPageUrl = getFullUrl(`/archives-m${btoa(message.group_id)}-m${btoa(message.id)}-m${btoa(parentMessageId)}`);
 
     // disabling context menu
@@ -209,7 +219,7 @@ class MessageActions extends PureComponent {
               placement="top"
               delayShow={150}
               overlay={<Tooltip id="file-comments">Reply in Thread</Tooltip>}
-            >    
+            >
               <Button onClick={this.showMessageComments}>
                 <i className="fa fa-comments" />
               </Button>
@@ -276,11 +286,23 @@ class MessageActions extends PureComponent {
             id="actions-dropdown"
             onToggle={this.onToggleContextualMenu}
           >
+
+            {!notificationsEnabled && (
+              <MenuItem onClick={this.subscribeMessageNotifications}>Get notified about new replies</MenuItem>
+            )}
+
+            {notificationsEnabled && (
+              <MenuItem onClick={this.unsubscribeMessageNotifications}>Turn off notifications for replies</MenuItem>
+            )}
+
+            {<MenuItem divider />}
+
             {(!mine ||
               (lastOtherUserMessage &&
                 message.id < lastOtherUserMessage.id)) && (
                 <MenuItem onClick={this.markAsUnread}>Mark as unread</MenuItem>
               )}
+
 
             {message.type !== "call" && (
               <CopyToClipboard
