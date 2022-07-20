@@ -6,7 +6,7 @@ defmodule Stitch.Web.Api.V1.UserController do
   alias Stitch.Web.EventsChannel
   alias StitchConnect.Web.GroupChannel
   alias Stitch.Analytics.User, as: UserAnalytics
-
+  alias NotQwerty123.PasswordStrength, as: Pwd_check
   alias Stitch.{
     AWS.S3,
     Accounts,
@@ -231,7 +231,9 @@ defmodule Stitch.Web.Api.V1.UserController do
         "new_password" => new_password,
         "old_password" => old_password
       }) do
-    case Stitch.User.Authentication.update_password(
+    case Pwd_check.strong_password?(new_password) do
+      {:ok, _} ->
+      case Stitch.User.Authentication.update_password(
            conn.assigns.current_user,
            old_password,
            new_password
@@ -248,6 +250,10 @@ defmodule Stitch.Web.Api.V1.UserController do
 
       {:error, message} ->
         {:error, message}
+      end
+      {:error, message} ->
+        {:error, message}
+
     end
   end
 
