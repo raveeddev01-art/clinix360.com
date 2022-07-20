@@ -13,8 +13,9 @@ import FormattingCommands from "./components/formatting-commands";
 import JumpingIndicator from "./components/jumping-indicator";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
+import ConnectionError from "./components/connection-error";
 
-@inject("socketStore", "uploadStore", "billingStore", "sidemenuStore")
+@inject("socketStore", "uploadStore", "billingStore", "sidemenuStore", "socketStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -89,19 +90,21 @@ class MessageForm extends Component {
     const { messageStore, socketStore, onEnterCallback } = this.props;
 
     // if not connected, just no send message at all
-    if (!socketStore.isConnected) {
-      return;
-    }
-
-    const trimmedText = this.state.text.trim();
-    if (trimmedText) {
-      if (!onEnterCallback) {
-        messageStore.sendMessage(trimmedText);
+    if(navigator.onLine) {
+      if (!socketStore.isConnected) {
+        return;
       }
-      else {
-        onEnterCallback(trimmedText);
+  
+      const trimmedText = this.state.text.trim();
+      if (trimmedText) {
+        if (!onEnterCallback) {
+          messageStore.sendMessage(trimmedText);
+        }
+        else {
+          onEnterCallback(trimmedText);
+        }
+        this.setState({ text: "" });
       }
-      this.setState({ text: "" });
     }
   };
 
@@ -304,6 +307,18 @@ class MessageForm extends Component {
     }, 100);
   };
 
+  renderExtras() {
+    if(navigator.onLine) {
+      if(this.props.allowTypingUsers) {
+        return <TypingUsers />;
+      } else {
+        return "";
+      }
+    } else {
+      return <ConnectionError />;
+    }
+  }
+
   renderInput() {
     const {
       socketStore,
@@ -394,7 +409,7 @@ class MessageForm extends Component {
             You have reached the 4000 character limit per message.
           </div>
         )}
-        {allowTypingUsers && <TypingUsers />}
+        { this.renderExtras() }
       </div>
     );
   }
