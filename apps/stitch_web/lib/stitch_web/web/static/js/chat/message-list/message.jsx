@@ -58,7 +58,10 @@ class Message extends PureComponent {
 
   onResend = () => {
     const { message, messageStore } = this.props;
-    messageStore.resendMessage(message);
+
+    if(message.status === "failed") {
+      messageStore.resendMessage(message);
+    }
   }
 
   getUser = message => {
