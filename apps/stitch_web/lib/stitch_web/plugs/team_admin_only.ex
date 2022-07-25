@@ -6,7 +6,9 @@ defmodule Stitch.Web.Plug.TeamAdminOnly do
   def call(conn, _) do
     conn = fetch_query_params(conn)
 
-    case Stitch.UserQueries.get_active_by_token(conn.params["authenticationToken"]) do
+    parse_authentication_token(conn)
+    |> Stitch.UserQueries.get_active_by_token()
+    |> case do
       nil ->
         conn
         |> put_status(:forbidden)
@@ -24,6 +26,14 @@ defmodule Stitch.Web.Plug.TeamAdminOnly do
           true ->
             conn
         end
+    end
+  end
+
+  defp parse_authentication_token(conn) do
+    List.keyfind(conn.req_headers, "x-auth-token", 0)
+    |> case do
+      {_, token} -> token
+      nil -> nil
     end
   end
 end

@@ -104,6 +104,7 @@ defmodule Stitch.Web.Files.FileController do
   # =================
 
   def download(conn, %{"file_id" => "f" <> _ = encoded_file_id} = params) do
+    IO.inspect(conn, label: "File Controller Conn")
     with {:file_id, {:ok, file_id}} <- {:file_id, Upload.decode_url_id(encoded_file_id)},
          {:file, %Upload{} = file} <-
            {:file, FileQueries.get_by_id(file_id, preload_assoc: true)},

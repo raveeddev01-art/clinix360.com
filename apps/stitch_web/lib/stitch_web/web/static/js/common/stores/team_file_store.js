@@ -181,7 +181,23 @@ class TeamFileStore {
 
     downloadFile = (url, name) => {
         const file_url = `${url}?authenticationToken=${window.authenticationToken}`;
-        fetch(file_url)
+
+        const options = {
+            method: "GET",
+            credentials: "include",
+            mode: "no-cors",
+            headers: {
+               "x-csrf-token": window.csrfToken,
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: {
+                "x-auth-token": `${window.authenticationToken}`,
+            }
+        }
+
+        console.log("here is file url: ", url);
+
+        fetch(url)
           .then(response => response.blob())
           .then(blob => {
             const blobURL = URL.createObjectURL(blob);

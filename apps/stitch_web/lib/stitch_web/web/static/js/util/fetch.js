@@ -26,7 +26,8 @@ window.CSRFFetch = function CSRFFetch(url, options = {}) {
       {
         headers: {
           "x-csrf-token": window.csrfToken,
-          "X-Requested-With": "XMLHttpRequest"
+          "X-Requested-With": "XMLHttpRequest",
+          "x-auth-token": window.authenticationToken
         },
         credentials: "same-origin"
       },
@@ -37,12 +38,12 @@ window.CSRFFetch = function CSRFFetch(url, options = {}) {
 
 window.jCSRFFetch = function jCSRFFetch(url, params = {}) {
   let modifiedUrl = url;
-  if (window.authenticationToken) {
-    modifiedUrl = `${url +
-      (url.indexOf("?") > -1
-        ? "&"
-        : "?")}authenticationToken=${window.authenticationToken}`;
-  }
+  // if (window.authenticationToken) {
+  //   modifiedUrl = `${url +
+  //     (url.indexOf("?") > -1
+  //       ? "&"
+  //       : "?")}authenticationToken=${window.authenticationToken}`;
+  // }
 
   const { hideNotify, ...options } = params;
 
@@ -69,6 +70,7 @@ window.jCSRFFetch = function jCSRFFetch(url, params = {}) {
       return response.json().then(json => ({ json, response }));
     })
     .then(({ json, response }) => {
+      console.log("json: ", json, "response: ", response);
       if (!response.ok) {
         if (!hideNotify) {
           if (json && json.errors) {
