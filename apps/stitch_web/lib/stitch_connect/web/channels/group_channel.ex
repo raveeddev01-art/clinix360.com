@@ -6,6 +6,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Api.V1.MessageView
   alias Stitch.Web.Api.V1.FileView
   # alias StitchConnect.MessageLinkPreviewGenerator
+  alias Stitch.FilesPreviewGenerator
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
 
@@ -608,6 +609,7 @@ defmodule StitchConnect.Web.GroupChannel do
       case Message.create(group, user, attrs, presence_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           LinkPreviewGenerator.queue(message)
+          FilesPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
           message = Repo.preload(message, :upload, force: true)
 
