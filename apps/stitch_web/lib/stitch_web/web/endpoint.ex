@@ -2,7 +2,7 @@ defmodule Stitch.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :stitch_web
 
   # Enable Corsica to allow CORS from any domain.
-  plug(Corsica, origins: "*")
+  plug(Corsica, origins: "*", allow_headers: ["Authorization", "x-csrf-token", "X-Requested-With"])
 
   socket("/socket", Stitch.Web.UserSocket)
   socket("/patient_socket", Stitch.Web.PatientSocket)

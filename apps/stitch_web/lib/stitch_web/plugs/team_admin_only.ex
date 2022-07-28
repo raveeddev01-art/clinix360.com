@@ -30,7 +30,7 @@ defmodule Stitch.Web.Plug.TeamAdminOnly do
   end
 
   defp parse_authentication_token(conn) do
-    List.keyfind(conn.req_headers, "x-auth-token", 0)
+    List.keyfind(conn.req_headers, "authorization", 0)
     |> case do
       {_, token} -> token
       nil -> nil

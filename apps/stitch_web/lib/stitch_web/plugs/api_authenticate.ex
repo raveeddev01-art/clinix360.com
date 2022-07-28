@@ -8,9 +8,7 @@ defmodule Stitch.Web.Plug.ApiAuthenticate do
   def call(conn, opts) do
     conn = fetch_query_params(conn)
 
-    parse_authentication_token(conn)
-
-    with token when is_binary(token) <- parse_authentication_token(conn),
+    with token when is_binary(token) <- parse_authentication_token(conn) |> IO.inspect(label: "here is api token"),
          %User{} = user <- UserQueries.get_active_by_token(token) do
       conn
       |> authenticate_user(user, opts)
@@ -20,14 +18,6 @@ defmodule Stitch.Web.Plug.ApiAuthenticate do
         |> put_status(:forbidden)
         |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
         |> halt
-    end
-  end
-
-  defp parse_authentication_token(conn) do
-    List.keyfind(conn.req_headers, "x-auth-token", 0)
-    |> case do
-      {_, token} -> token
-      nil -> nil
     end
   end
 
@@ -50,6 +40,14 @@ defmodule Stitch.Web.Plug.ApiAuthenticate do
       |> put_status(:forbidden)
       |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
       |> halt
+    end
+  end
+
+  defp parse_authentication_token(conn) do
+    List.keyfind(conn.req_headers, "authorization", 0)
+    |> case do
+      {_, token} -> token
+      nil -> nil
     end
   end
 end

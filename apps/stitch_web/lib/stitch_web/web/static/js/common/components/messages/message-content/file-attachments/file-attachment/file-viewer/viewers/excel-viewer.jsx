@@ -1,37 +1,39 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject } from "mobx-react";
 import * as XLSX from "xlsx";
 
+@inject("teamFileStore")
 class ExcelViewer extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      document: null
+    }
   }
 
-  setHTML(html) {
-    var container = document.getElementById('excel-doc-viewer');
-    container.innerHTML = html;
+  componentWillMount() {
+    this.loadDocument();
   }
 
-  readFile() {
-    const file_url = `${this.props.url}?authenticationToken=${window.authenticationToken}`;
-
-    fetch(file_url)
-    .then(response => response.arrayBuffer())
-    .then(buffer => {
-      const xlsx = XLSX.read(new Uint8Array(buffer, {type: 'array'}));
-      const wsname = xlsx.SheetNames[0];
-      const ws = xlsx.Sheets[wsname];
-      const html = XLSX.utils.sheet_to_html(ws);
-      this.setHTML(html);
-     })
-    .catch(err => console.error(err));
+  loadDocument() {
+    this.props.teamFileStore.fetchFile(this.props.url)
+      .then(response => response.arrayBuffer())
+      .then((buffer) => {
+        const xlsx = XLSX.read(new Uint8Array(buffer, { type: 'array' }));
+        const wsname = xlsx.SheetNames[0];
+        const ws = xlsx.Sheets[wsname];
+        const html = XLSX.utils.sheet_to_html(ws);
+        this.setState({document: <div dangerouslySetInnerHTML={ { __html: html}} />});
+      })
+      .catch(err => console.error(err));
   }
 
   render() {
-    this.readFile();
-
     return (
-      <div className="word-document-body" id="excel-doc-viewer"></div>
+      <div className="word-document-body" id="excel-doc-viewer">
+        {this.state.document}
+      </div>
     );
   }
 }

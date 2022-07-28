@@ -34,6 +34,10 @@ defmodule Stitch.Web.ControllerHelpers do
     Stitch.Web.SessionService.get_user_session_token(conn)
   end
 
+  def get_user_auth_token(conn) do
+    List.keyfind(conn.req_headers, "authorization", 0)
+  end
+
   def create_access_log_record(conn, user) do
     ip_address = fetch_user_ip(conn)
     user_agent = fetch_user_agent(conn)

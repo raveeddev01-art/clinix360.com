@@ -1,22 +1,38 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject } from "mobx-react";
 import { LoadingIcon } from "common/components";
 import { Document, Page } from "react-pdf/dist/entry.noworker";
 
+@inject("teamFileStore")
 class PdfViewer extends Component {
   constructor() {
     super();
     this.state = {
-      numPages: 0
+      numPages: 0,
+      document: null
     };
   }
+
+  componentWillMount() {
+    this.loadDocument();
+  }
+
   onDocumentLoad = ({ numPages }) => {
     this.setState({ numPages });
   };
 
+  loadDocument() {
+    this.props.teamFileStore.fetchFile(this.props.url)
+      .then(response => response.blob())
+      .then((blob) => {
+        this.setState({document: window.URL.createObjectURL(blob)});
+      })
+      .catch(err => console.error(err));
+  }
+
   render() {
     const { url } = this.props;
-    const file = `${url}?authenticationToken=${window.authenticationToken}`;
     const pages = [];
 
     for (let i = 0; i < this.state.numPages; i += 1) {
@@ -32,7 +48,7 @@ class PdfViewer extends Component {
 
     return (
       <Document
-        file={file}
+        file={this.state.document}
         renderAnnotations={false}
         renderTextLayer={false}
         loading={<LoadingIcon size={3} />}
