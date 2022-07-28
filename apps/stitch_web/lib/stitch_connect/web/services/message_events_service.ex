@@ -30,7 +30,7 @@ defmodule StitchConnect.Web.MessageEventsService do
   end
 
   def message_comment_creation_events(message, notify_user_ids) do
-    notify_user_ids = parse_notify_user_ids(message, notify_user_ids)
+    notify_user_ids = merge_notify_user_ids(message, notify_user_ids)
     NotificationLogger.start(message, notify_user_ids.mobile)
 
     Stitch.Task.start(fn ->
@@ -64,7 +64,7 @@ defmodule StitchConnect.Web.MessageEventsService do
     Stitch.Elasticsearch.MessageSearch.delete_from_index(message)
   end
 
-  def parse_notify_user_ids(message, notify_user_ids) do
+  def merge_notify_user_ids(message, notify_user_ids) do
     %{
       desktop: Enum.uniq(notify_user_ids.desktop ++ message.notify_user_ids),
       mobile: Enum.uniq(notify_user_ids.mobile ++ message.notify_user_ids),
