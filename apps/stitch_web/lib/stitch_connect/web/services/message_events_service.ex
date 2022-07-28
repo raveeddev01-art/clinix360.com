@@ -16,7 +16,6 @@ defmodule StitchConnect.Web.MessageEventsService do
   }
 
   def message_creation_events(message, group, notify_user_ids) do
-    notify_user_ids = parse_notify_user_ids(message, notify_user_ids)
     NotificationLogger.start(message, notify_user_ids.mobile)
 
     Stitch.Task.start(fn ->

@@ -401,24 +401,6 @@ defmodule Stitch.Message do
     |> Repo.update_all(set: [fields: Upload.fields(upload)])
   end
 
-  def subscribe_notifications(message, user_id, true) do
-    message.notify_user_ids ++ [user_id]
-    |> Enum.uniq()
-    |> update_notify_ids(message)
-  end
-
-  def subscribe_notifications(message, user_id, false) do
-    message.notify_user_ids
-    |> List.delete(user_id)
-    |> update_notify_ids(message)
-  end
-
-  def update_notify_ids(notify_user_ids, message) do
-    message
-    |> notify_user_ids_changeset(%{notify_user_ids: notify_user_ids})
-    |> Repo.update()
-  end
-
   def encode_url_id(message_id) do
     "m" <> Base.encode64("#{message_id}", case: :upper, padding: true)
   end

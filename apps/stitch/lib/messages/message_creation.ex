@@ -73,7 +73,7 @@ defmodule Stitch.Message.MessageCreation do
 
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
     with {:ok, uploads} <- Upload.create_and_share_with_group(group, user, fields) do
-      message = %Message{group: group, user: user}
+      message = %Message{group: group, user: user, notify_user_ids: [user.id]}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
       do_create(message, attrs, presence)
     else
@@ -89,7 +89,7 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def create(group, user, %{"type" => "meet_link"} = attrs, presence) do
-    message = %Message{group: group, user: user}
+    message = %Message{group: group, user: user, notify_user_ids: [user.id]}
     do_create(message, attrs, presence)
   end
 
@@ -99,7 +99,7 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def create(group, user, %{"type" => "internal_link"} = attrs, presence) do
-    message = %Message{group: group, user: user}
+    message = %Message{group: group, user: user, notify_user_ids: [user.id]}
     do_create(message, attrs, presence)
   end
 
@@ -112,7 +112,7 @@ defmodule Stitch.Message.MessageCreation do
 
   def create(group, user, %{"text_content" => _} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
-    message = %Message{group: group, user: user}
+    message = %Message{group: group, user: user, notify_user_ids: [user.id]}
     do_create(message, attrs, presence)
   end
 
@@ -178,7 +178,7 @@ defmodule Stitch.Message.MessageCreation do
     NotificationQueue.async_enqueue_for_users(notify_user_ids.mobile_active, message.id)
     Stitch.Elasticsearch.MessageSearch.add_to_index(message)
     Stitch.AnalyticsMessageCount.create(message)
-    update_parent_notify_user_ids(message)
+    Stitch.MessageNotification.update_parent_notify_user_ids(message)
     result_map = Map.put(result_map, :notify_user_ids, notify_user_ids)
     {:ok, result_map}
   end
@@ -198,16 +198,4 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def silent_post_creation(error), do: error
-
-  def update_parent_notify_user_ids(message) do
-    case message.parent_message_id do
-      nil ->
-        Message.subscribe_notifications(message, message.user_id, true)
-
-      parent_message_id ->
-        Stitch.MessageQueries.get_by_id(parent_message_id)
-        |> Message.subscribe_notifications(message.user_id, true)
-    end
-  end
-
 end

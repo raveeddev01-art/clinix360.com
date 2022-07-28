@@ -166,6 +166,25 @@ class MessageActions extends PureComponent {
     });
   };
 
+  renderNotificationSetting() {
+    const { isReply, message } = this.props;
+    if (!isReply && message.status !== "failed" && message.notify_user_ids.includes(currentUser.id)) {
+      return (
+        <div>
+          <MenuItem onClick={this.unsubscribeMessageNotifications}>Turn off notifications for replies</MenuItem>
+          <MenuItem divider />
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <MenuItem onClick={this.subscribeMessageNotifications}>Get notified about new replies</MenuItem>
+          <MenuItem divider />
+        </div>
+      );
+    }
+  }
+
   render() {
     const {
       lastOtherUserMessage,
@@ -286,16 +305,7 @@ class MessageActions extends PureComponent {
             id="actions-dropdown"
             onToggle={this.onToggleContextualMenu}
           >
-
-            {!notificationsEnabled && (
-              <MenuItem onClick={this.subscribeMessageNotifications}>Get notified about new replies</MenuItem>
-            )}
-
-            {notificationsEnabled && (
-              <MenuItem onClick={this.unsubscribeMessageNotifications}>Turn off notifications for replies</MenuItem>
-            )}
-
-            {<MenuItem divider />}
+            {this.renderNotificationSetting()}
 
             {(!mine ||
               (lastOtherUserMessage &&

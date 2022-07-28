@@ -25,6 +25,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     Message.MessageCreation,
     MessageAuthorization,
     MessageAction,
+    MessageNotification,
     MessageQueries,
     Files.FileQueries,
     Files.Upload,
@@ -482,7 +483,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       }) do
     {:ok, message} =
       MessageQueries.get_by_id(id)
-      |> Message.subscribe_notifications(user_id, subscribe)
+      |> MessageNotification.subscribe_notifications(user_id, subscribe)
 
     render(conn, "show.json", %{message: message})
   end

@@ -25,6 +25,7 @@ defmodule Stitch.Web.UserSocket do
       # Handle concurrent browser tests
       socket = Stitch.Web.ChannelSandbox.configure_channel_sandbox(params, socket)
 
+
       case Stitch.UserQueries.get_active_by_token(token) do
         nil ->
           :error

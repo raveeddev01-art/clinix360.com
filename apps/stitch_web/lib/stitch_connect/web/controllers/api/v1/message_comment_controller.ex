@@ -34,13 +34,13 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
     _authenticated_urls = get_authenticated_urls(params)
     message_params_with_client = Message.Params.with_client_attrs(conn, params)
 
-    with {:message, %Message{} = message_parent} <-
-           {:message, MessageQueries.load_message(message_id, current_user)},
+    with {:parent_message, %Message{} = parent_message} <-
+           {:parent_message, MessageQueries.load_message(message_id, current_user)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(message_parent, current_user, message_params_with_client, presence) do
-      message_parent = MessageQueries.load_message(message_parent.id, current_user)
+           Message.create(parent_message, current_user, message_params_with_client, presence) do
+            parent_message = MessageQueries.load_message(parent_message.id, current_user)
       message = MessageQueries.load_message(message.id, current_user)
-      message_comment_creation_events(message_parent, message, notify_user_ids)
+      message_comment_creation_events(parent_message, message, notify_user_ids)
 
       conn
       |> put_status(:created)
