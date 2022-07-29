@@ -13,6 +13,7 @@ import memoize from "lodash/memoize";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import unionBy from "lodash/unionBy";
+import remove from "lodash/remove";
 
 import { scroller } from "react-scroll";
 import { Promise } from "es6-promise";
@@ -519,6 +520,14 @@ class MessageStore extends BaseMessageStore {
             leading: true
         });
     });
+
+    // removes the temp message and try to resend the message again
+    resendMessage = (message) => {
+        remove(this.messages, function removeByValue(msg) {
+            return msg.id === message.id
+        });
+        this.sendMessage(message.text_content, message);
+    }
 
     sendMessage = (text, additionalFields = {}) => {
         if (this.jumpMode) {

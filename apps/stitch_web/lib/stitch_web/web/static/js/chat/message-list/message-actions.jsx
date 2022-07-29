@@ -179,7 +179,7 @@ class MessageActions extends PureComponent {
     const unsent = message.status === "sending" || message.status === "failed";
     const { dropup, isEmojiPickerOpen, emojiPickerOffset } = this.state;
     const starredCX = message.starred ? "" : "-o";
-    const notificationsEnabled = !isReply && message.notify_user_ids.includes(currentUser.id) ? true : false;
+    const notificationsEnabled = message.status !== "failed" && !isReply && message.notify_user_ids.includes(currentUser.id) ? true : false;
     const detailPageUrl = getFullUrl(`/archives-m${btoa(message.group_id)}-m${btoa(message.id)}-m${btoa(parentMessageId)}`);
 
     // disabling context menu

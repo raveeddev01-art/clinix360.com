@@ -202,7 +202,9 @@ class UploadStore {
     })
       .then(url => {
         this.uploadProgress.set(key, "done");
-        this.removeProgress(key);
+        setTimeout(() => {
+          this.removeProgress(key);
+        }, 2000); 
         return {
           filename: title,
           mimetype: file.type,

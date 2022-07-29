@@ -498,6 +498,7 @@
 
       .users-typing,
       .formatting-guide,
+      .connection-error,
       .character-limit {
         position: relative;
         border-radius: 4px;
@@ -506,6 +507,13 @@
         height: 23px;
         font-size: 12px;
         color: $brand-primary;
+      }
+
+      .connection-error {
+        color: $error-color;
+        i{
+          padding: 3px;
+        }
       }
 
       .character-limit {

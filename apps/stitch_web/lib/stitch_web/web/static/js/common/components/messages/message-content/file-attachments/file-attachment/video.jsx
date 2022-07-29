@@ -59,6 +59,7 @@ class VideoFileAttachment extends Component {
             >
               <video
                 className={mediaBlockClass}
+                style={{maxWidth: "660px"}}
                 controls
                 src={this.props.url} 
               />

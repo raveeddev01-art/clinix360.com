@@ -180,10 +180,8 @@ class TeamFileStore {
 
 
     downloadFile = (url, name) => {
-        if (!url) {
-          throw new Error("Resource URL not provided! You need to provide one");
-        }
-        fetch(url)
+        const file_url = `${url}?authenticationToken=${window.authenticationToken}`;
+        fetch(file_url)
           .then(response => response.blob())
           .then(blob => {
             const blobURL = URL.createObjectURL(blob);

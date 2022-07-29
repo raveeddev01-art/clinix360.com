@@ -56,6 +56,14 @@ class Message extends PureComponent {
     this.setState({ isActionsVisible: false });
   };
 
+  onResend = () => {
+    const { message, messageStore } = this.props;
+
+    if(message.status === "failed") {
+      messageStore.resendMessage(message);
+    }
+  }
+
   getUser = message => {
     const { usersStore, messageUser } = this.props;
     const user = messageUser == null ? message.user : messageUser;
@@ -142,12 +150,6 @@ class Message extends PureComponent {
                   (messageStore.messageInEdit.id === message.id))
   }
 
-  resend = () => {
-    const { message, messageStore } = this.props;
-    messageStore.sendMessage(message.text_content, message);
-    
-  }
-  
   renderHeader(message) {
     const { inserted_at: insertedAt } = message;
     const { isConversationMessage } = this.props;
@@ -240,12 +242,12 @@ class Message extends PureComponent {
             >
               {this.renderGutter(message)}
 
-              <div className="message-content">
+              <div className="message-content" onClick={this.onResend}>
                 {message.pinned && <div className="pin-label">Pinned</div>}
                 {message.starred && <div className="pin-label">Starred</div>}
                 {message.status === "failed" && (
-                  <div className="message-status-label" onClick={this.resend}> 
-                    Failed to send message 
+                  <div className="message-status-label"> 
+                    Failed to send message, tap to retry
                   </div>
                 )}
 

@@ -84,7 +84,7 @@ class AttachmentActions extends Component {
             delayShow={150}
             overlay={<Tooltip id="download-file">Download</Tooltip>}
           >
-            <Button target="_blank" href={url} onClick={onFileDownload}>
+            <Button onClick={onFileDownload}>
               <i className="fa fa-download" />
             </Button>
           </OverlayTrigger>
