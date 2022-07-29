@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.GroupChannel do
   # alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
-
+  alias StitchConnect.Web.Api.V1.MessageController
   alias StitchConnect.Web.{
     MessageEventsService
   }
@@ -50,9 +50,10 @@ defmodule StitchConnect.Web.GroupChannel do
     user = socket.assigns.current_user
     fetch_messages = get_fetch_messages_param(params)
 
-    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
-         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)},
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user) |> IO.inspect(label: "group_query")},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user) |> IO.inspect(label: "GroupAuthorization")},
          {:fetch_messages, false, group} <- {:fetch_messages, fetch_messages, group} do
+          IO.inspect(group, label: "group")
       {:ok, %{}, assign(socket, :group, group)}
     else
       {:group, {:error, _}} -> {:error, %{message: "group not found"}}
@@ -63,6 +64,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   # TODO: Remove this once no one is using older version of mobile app. Also, remove `groups:{group.slug}` broadcasts as well.
   def join("groups:" <> group_slug, params, socket) do
+    IO.inspect(group_slug, label: "in group slug______________")
     %{team_id: team_id, current_user: user} = socket.assigns
     fetch_messages = get_fetch_messages_param(params)
 
@@ -199,11 +201,13 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @decorate channel_action()
   def handle_in("new_msg", params, socket) do
+    IO.inspect(socket, label: "here is socket in new_msg function")
     %{group: group, current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
 
     message_params_with_client = Message.Params.with_client_attrs("channel", params)
-    do_new_msg(socket, group, user, message_params_with_client)
+    do_new_msg(socket, group, user, message_params_with_client) |> IO.inspect(label: "DO_NEW_MSG")
+    # MessageController.create(socket, group)
   end
 
   @decorate channel_action()
