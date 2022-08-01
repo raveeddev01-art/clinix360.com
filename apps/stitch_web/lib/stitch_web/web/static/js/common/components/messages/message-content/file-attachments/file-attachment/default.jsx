@@ -93,7 +93,8 @@ class DefaultFileAttachment extends Component {
         <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
       </div> :
       <div className="attachment-icon">
-        <img src={preview_url} />
+        <img src={preview_url} width="40" height="40" />
+        <i className={`fa attachment-icon__hover fa-${hoverIcon}`} />
       </div>      
 
     return (
