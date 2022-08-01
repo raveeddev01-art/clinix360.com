@@ -32,9 +32,13 @@ export default class UploadModal extends Component {
     evt.preventDefault();
     evt.stopPropagation();
 
-    if (!this.state.fileUploaded){
+    const text = this.props.uploadStore.files > 1 ? "files" : "file";
+
+    if (!this.state.fileUploaded && navigator.onLine){
       this.setState({ fileUploaded: true });
       this.uploadFile();
+    } else {
+      notify.show(`No Connection. Unable to upload ${text}.`, "error");
     }
   };
 

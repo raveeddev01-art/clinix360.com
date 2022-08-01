@@ -7,7 +7,7 @@ class ConnectionError extends Component {
     return (
         <div className="connection-error">
           <i className="fa fa-exclamation-circle"></i>
-          InvoChat is trying to connect, messages can't be sent yet.
+          InvoChat is trying to connect.
         </div>
     );
   }
