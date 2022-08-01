@@ -98,6 +98,7 @@ class TeamPicker extends Component {
             <FormControl
               required
               autoFocus
+              id="workspace-url-field"
               value={teamUrl}
               onChange={this.onChange}
               onFocus={this.moveCaretAtEnd}
@@ -109,6 +110,7 @@ class TeamPicker extends Component {
           {showAlert && <InputErrorBlock>{this.errorText}</InputErrorBlock>}
 
           <Button
+            id="workspace-url-btn"
             bsStyle="primary"
             bsSize="lg"
             type="submit"

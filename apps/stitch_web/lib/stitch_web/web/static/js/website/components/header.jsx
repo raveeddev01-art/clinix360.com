@@ -124,10 +124,10 @@ class Header extends Component {
             <Navbar.Toggle onClick={this.mobileNavToggle} />
           </Navbar.Header>
           <Nav pullRight>
-            <NavItem href="https://invochat.io/blog/">
+            <NavItem href="https://invochat.io/blog/" id="header-blog-link">
               Blog
             </NavItem>
-            <LinkContainer to="/pricing">
+            <LinkContainer to="/pricing" id="header-pricing-link">
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
@@ -169,9 +169,9 @@ class Header extends Component {
               </MenuItem>
             </NavDropdown> */}
 
-            <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
+            <NavItem onClick={this.goToSignIn} id="header-signin-link">Sign In</NavItem>
 
-            <NavItem onClick={this.goToCreate}>Create Workspace</NavItem>
+            <NavItem onClick={this.goToCreate} id="header-signup-link">Create Workspace</NavItem>
 
             {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
 

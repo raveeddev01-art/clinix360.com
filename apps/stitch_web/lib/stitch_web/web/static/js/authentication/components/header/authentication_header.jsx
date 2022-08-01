@@ -51,7 +51,7 @@ class AuthenticationHeader extends Component {
       return [
         <Navbar.Text key="nav-text">Already part of a Workspace?</Navbar.Text>,
         <Nav key="nav-cta">
-          <NavItem onClick={this.goToSignIn} className="btn-trial">
+          <NavItem id="signin-nav-link" onClick={this.goToSignIn} className="btn-trial">
             Sign In
           </NavItem>
         </Nav>

@@ -69,6 +69,7 @@ class SendEmail extends Component {
               <FormControl
                 required
                 autoFocus
+                id="reset-email-field"
                 type="email"
                 placeholder="Email"
                 value={email}
@@ -76,6 +77,7 @@ class SendEmail extends Component {
               />
             </FormGroup>
             <Button
+              id="reset-pass-btn"
               type="submit"
               bsStyle="primary"
               bsSize="lg"

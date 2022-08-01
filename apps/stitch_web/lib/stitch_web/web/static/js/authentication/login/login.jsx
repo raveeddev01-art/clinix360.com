@@ -159,6 +159,7 @@ class Login extends Component {
           >
             <FormControl
               name="email"
+              id="email-field"
               required
               autoFocus
               type="email"
@@ -175,7 +176,8 @@ class Login extends Component {
           >
             <FormControl
               required
-              name='password'
+              id="password-field"
+              name="password"
               autoComplete="off"
               type={this.state.showPassword ? "text" : "password"}
               placeholder="Password"
@@ -211,6 +213,7 @@ class Login extends Component {
           )}
 
           <Button
+            id="signin-btn"
             type="submit"
             bsStyle="primary"
             bsSize="lg"

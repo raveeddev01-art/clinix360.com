@@ -60,12 +60,14 @@ class FindTeam extends Component {
           </span>
         }
         onNext={this._onSubmit}
+        nextBtnId={"find-ws-next-btn"}
       >
         <ControlLabel>Email</ControlLabel>
         <FormGroup bsSize="large">
           <FormControl
             required
             autoFocus={!mobile}
+            id="find-ws-by-email-field"
             type="email"
             placeholder="Email"
             value={email}
@@ -74,7 +76,7 @@ class FindTeam extends Component {
         </FormGroup>
         <div className="team-picker-find-team-helper">
           Know your Workspace URL?{" "}
-          <Link to={singinUrl}>
+          <Link id="singin-page-link" to={singinUrl}>
             <strong>Sign In</strong>
           </Link>
         </div>
