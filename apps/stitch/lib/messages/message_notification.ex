@@ -8,13 +8,11 @@ defmodule Stitch.MessageNotification do
   end
 
   def subscribe_notifications(message, user_id, false) do
-    message.notify_user_ids
-    |> List.delete(user_id)
+    message.notify_user_ids -- [user_id]
     |> update_notify_ids(message)
   end
 
-  def update_parent_notify_user_ids(%{parent_message_id: nil}), do: ""
-
+  def update_parent_notify_user_ids(%{parent_message_id: nil}), do: nil
   def update_parent_notify_user_ids(%{parent_message_id: parent_message_id} = message) do
     Stitch.MessageQueries.get_by_id(parent_message_id)
     |> subscribe_notifications(message.user_id, true)
