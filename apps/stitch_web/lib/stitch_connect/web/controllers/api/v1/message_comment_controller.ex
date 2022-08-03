@@ -28,15 +28,15 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         "id" => message_id
       }) do
     IO.inspect(params, label: "PARAMS")
-    thread = if thread == "true" or thread == "1" , do: true, else: thread
+    thread = if thread == "true" or thread == "1" , do: true, else: thread |> IO.inspect(label: "THREAD KEY")
 
     current_user = conn.assigns.current_user
-    presence = UserStatusService.presence_user_ids(current_user.team_id)
+    presence = UserStatusService.presence_user_ids(current_user.team_id) |> IO.inspect(label: "presence")
     _authenticated_urls = get_authenticated_urls(params)
-    message_params_with_client = Message.Params.with_client_attrs(conn, params)
+    message_params_with_client = Message.Params.with_client_attrs(conn, params) |> IO.inspect(label: "client params")
 
     with {:parent_message, %Message{} = parent_message} <-
-           {:parent_message, MessageQueries.load_message(message_id, current_user)},
+           {:parent_message, MessageQueries.load_message(message_id, current_user) |> IO.inspect(label: "parent")},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(parent_message, current_user, message_params_with_client, presence) |> IO.inspect(label: "created") do
             parent_message = MessageQueries.load_message(parent_message.id, current_user)
