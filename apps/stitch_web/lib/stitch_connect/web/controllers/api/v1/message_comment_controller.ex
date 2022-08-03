@@ -27,26 +27,17 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         } = params,
         "id" => message_id
       }) do
-    IO.inspect(params, label: "PARAMS")
 
-    thread =
-      case thread do
-        "true" -> true
-        "1" -> true
-        _ -> thread
-      end
-
-    params = Map.replace(params, "thread", thread)
-
+    params = parse_thread_key(params)
     current_user = conn.assigns.current_user
-    presence = UserStatusService.presence_user_ids(current_user.team_id) |> IO.inspect(label: "presence")
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
     _authenticated_urls = get_authenticated_urls(params)
-    message_params_with_client = Message.Params.with_client_attrs(conn, params) |> IO.inspect(label: "client params")
+    message_params_with_client = Message.Params.with_client_attrs(conn, params)
 
     with {:parent_message, %Message{} = parent_message} <-
-           {:parent_message, MessageQueries.load_message(message_id, current_user) |> IO.inspect(label: "parent")},
+           {:parent_message, MessageQueries.load_message(message_id, current_user)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(parent_message, current_user, message_params_with_client, presence) |> IO.inspect(label: "created") do
+           Message.create(parent_message, current_user, message_params_with_client, presence) |> IO.inspect(label: "comment created") do
             parent_message = MessageQueries.load_message(parent_message.id, current_user)
       message = MessageQueries.load_message(message.id, current_user)
       message_comment_creation_events(parent_message, message, notify_user_ids)
@@ -65,6 +56,10 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
   end
+
+  def parse_thread_key(%{"thread" => "true"} = params), do: Map.replace(params, "thread", true)
+  def parse_thread_key(%{"thread" => "1"} = params), do: Map.replace(params, "thread", true)
+  def parse_thread_key(params), do: params
 
   def get_authenticated_urls(%{"authenticated_urls" => "true"}), do: true
   def get_authenticated_urls(_params), do: false
