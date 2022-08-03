@@ -28,7 +28,14 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         "id" => message_id
       }) do
     IO.inspect(params, label: "PARAMS")
-    thread = if thread == "true" or thread == "1" , do: true, else: thread |> IO.inspect(label: "THREAD KEY")
+
+    thread =
+      case thread do
+        "true" -> true
+        "1" -> true
+        _ -> thread
+      end
+      |> IO.inspect(label: "Thraed key")
 
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id) |> IO.inspect(label: "presence")
