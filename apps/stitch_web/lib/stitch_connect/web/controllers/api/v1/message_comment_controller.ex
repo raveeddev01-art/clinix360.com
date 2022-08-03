@@ -35,7 +35,8 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         "1" -> true
         _ -> thread
       end
-      |> IO.inspect(label: "Thraed key")
+
+    params = Map.replace(params, "thread", thread)
 
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id) |> IO.inspect(label: "presence")
