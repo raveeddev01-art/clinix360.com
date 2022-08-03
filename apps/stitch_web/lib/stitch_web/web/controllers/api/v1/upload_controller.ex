@@ -14,7 +14,6 @@ defmodule Stitch.Web.Api.V1.UploadController do
       Enum.map(uploads, fn upload ->
         S3.signature(upload["filename"], upload["mimetype"])
       end)
-      |> IO.inspect(label: "signatures generated")
 
     put_status(conn, :created)
     |> render("create.json", signature: signatures)
