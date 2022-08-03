@@ -27,6 +27,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
         } = params,
         "id" => message_id
       }) do
+    IO.inspect(params, label: "PARAMS")
     thread = if thread == "true" or thread == "1" , do: true, else: thread
 
     current_user = conn.assigns.current_user
@@ -37,7 +38,7 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
     with {:parent_message, %Message{} = parent_message} <-
            {:parent_message, MessageQueries.load_message(message_id, current_user)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(parent_message, current_user, message_params_with_client, presence) do
+           Message.create(parent_message, current_user, message_params_with_client, presence) |> IO.inspect(label: "created") do
             parent_message = MessageQueries.load_message(parent_message.id, current_user)
       message = MessageQueries.load_message(message.id, current_user)
       message_comment_creation_events(parent_message, message, notify_user_ids)
