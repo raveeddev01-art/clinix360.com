@@ -3,6 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="">
 <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token %>">
+<meta name="facebook-domain-verification" content="ko49o29xtyt7yipv7bm2tnvnzedmew" />
 <meta name="robots" content="noindex, nofollow">
 <link rel="shortcut icon" type="image/png" href="/favicon.ico">
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
