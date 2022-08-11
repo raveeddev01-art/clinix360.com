@@ -169,7 +169,7 @@
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div class="content">
-      <%= render @view_module, @view_template, assigns %>
+       <%= @inner_content %>
     </div>
 
     <%= render "_sentry.html", conn: @conn %>

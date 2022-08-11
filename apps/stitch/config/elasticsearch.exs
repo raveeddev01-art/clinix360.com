@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :stitch, Stitch.ElasticsearchCluster,
   # The URL where Elasticsearch is hosted on your system

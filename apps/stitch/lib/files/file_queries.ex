@@ -22,8 +22,8 @@ defmodule Stitch.Files.FileQueries do
     offset = options[:skip] || 0
 
     Upload
-    |> join(:inner, [f], gu in GroupUpload, f.id == gu.upload_id)
-    |> join(:left, [f, gu], ma in Stitch.MessageAction, ma.upload_id == f.id)
+    |> join(:inner, [f], gu in GroupUpload, on: f.id == gu.upload_id)
+    |> join(:left, [f, gu], ma in Stitch.MessageAction, on: ma.upload_id == f.id)
     |> where([f, gu], gu.group_id in ^group_ids)
     |> group_by([f, gu, ma], [f.id, ma.id])
     |> order_by([f, gu, ma], desc: f.inserted_at)

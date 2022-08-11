@@ -39,6 +39,7 @@ defmodule Stitch.Web do
 
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
+      use Appsignal.Phoenix.View
 
       import Stitch.Web.Router.Helpers
       alias Stitch.Web.SubdomainRouter.Helpers, as: SubdomainRouter

@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 repo_opts = [
   adapter: Ecto.Adapters.Postgres,
@@ -7,7 +7,7 @@ repo_opts = [
   username: System.get_env("STITCH_CONNECT_POSTGRES_USERNAME") || "postgres",
   password: System.get_env("STITCH_CONNECT_POSTGRES_PASSWORD") || "postgres",
   database: System.get_env("STITCH_CONNECT_POSTGRES_DATABASE") || "stitch_connect_dev",
-  log: true,
+  log: :info,
   loggers: [Ecto.LogEntry]
   # loggers: [Appsignal.Ecto, Ecto.LogEntry]
 ]

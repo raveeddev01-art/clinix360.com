@@ -26,7 +26,7 @@ defmodule Stitch.Accounts.AccessLog do
 
   @spec new(AccessLog.t(), map | nil) :: Changeset.t()
   def new(%AccessLog{} = struct, attrs \\ %{}) do
-    naive_datetime = NaiveDateTime.utc_now()
+    naive_datetime = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     struct
     |> cast(attrs, [:user_agent, :ip_address, :app_version])

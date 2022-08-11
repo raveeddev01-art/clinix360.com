@@ -1,7 +1,8 @@
-use Mix.Config
+import Config
 
 config :appsignal, :config,
   name: "stitch-phoenix",
+  otp_app: :stitch_web,
   push_api_key: "fa210ad7-ab32-4513-bb9b-57bc406e846a",
   env: Mix.env,
   active: true,

@@ -18,7 +18,7 @@ defmodule StitchConnect.ActivityTrackerWorker do
   # 60 seconds
   @clean_interval 60
 
-  def start_link do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 

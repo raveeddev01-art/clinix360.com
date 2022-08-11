@@ -55,7 +55,7 @@ defmodule Stitch.Message do
     field(:slack_import_id, :string)
     field(:highlighted_text_content, :string, virtual: true)
     field(:reactions, :map, default: %{})
-    field(:upload_ids, {:array, :integer}, deafult: [])
+    field(:upload_ids, {:array, :integer}, default: [])
     field(:notify_user_ids, {:array, :integer}, default: [])
     # Remove on the next release
     field(:requires_fallback_comment, :boolean, default: true)

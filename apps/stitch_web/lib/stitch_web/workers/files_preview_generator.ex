@@ -12,7 +12,7 @@ defmodule Stitch.FilesPreviewGenerator do
   alias StitchConnect.Web.GroupChannel
   use Appsignal.Instrumentation.Decorators
 
-  def start_link do
+  def start_link(_) do
     GenServer.start_link(
       __MODULE__,
       [],

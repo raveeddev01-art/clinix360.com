@@ -3,19 +3,17 @@ defmodule Stitch.Application do
 
   use Application
 
-  def start(_type, _args) do
-    import Supervisor.Spec, warn: false
-
+  def start(_type, _) do
     children = [
-      supervisor(Stitch.ReadReplicaRepo, []),
-      supervisor(Stitch.Repo, []),
-      supervisor(Stitch.ElasticsearchCluster, [])
+      Stitch.ReadReplicaRepo,
+      Stitch.Repo,
+      Stitch.ElasticsearchCluster
     ]
 
     background_jobs = [
-      supervisor(Task.Supervisor, [[name: Stitch.Exports.Supervisor]]),
-      supervisor(Stitch.Analytics.Supervisor, []),
-      supervisor(Stitch.Redix.Supervisor, [])
+      {Task.Supervisor, name: Stitch.Exports.Supervisor},
+      {Stitch.Redix, name: :redix},
+      Stitch.Analytics.Supervisor
     ]
 
     children =
@@ -27,5 +25,7 @@ defmodule Stitch.Application do
 
     opts = [strategy: :one_for_one, name: Stitch.Supervisor]
     Supervisor.start_link(children, opts)
+    |> IO.inspect(label: "applications started")
+    # require IEx; IEx.pry()
   end
 end

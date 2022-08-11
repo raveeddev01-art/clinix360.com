@@ -24,7 +24,9 @@ defmodule StitchUmbrella.Mixfile do
   defp deps do
     [
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:appsignal, "~> 1.5"}
+      {:appsignal, "~> 2.0"},
+      {:telemetry, "~> 1.1.0"},
+      {:crontab, "~> 1.1.11"}
     ]
   end
 end

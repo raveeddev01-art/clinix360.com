@@ -11,7 +11,7 @@ defmodule Stitch.Message.LinkPreview do
 
   @primary_key false
   embedded_schema do
-    field(:link, :string, primary: true)
+    field(:link, :string)
     field(:site_name)
     field(:title)
     field(:description)

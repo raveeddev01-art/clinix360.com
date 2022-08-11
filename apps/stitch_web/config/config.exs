@@ -3,7 +3,7 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-use Mix.Config
+import Config
 
 # General application configuration
 config :stitch_web,
@@ -12,16 +12,10 @@ config :stitch_web,
 
 # Configures the endpoint
 config :stitch_web, Stitch.Web.Endpoint,
-  instrumenters: [Appsignal.Phoenix.Instrumenter],
   url: [host: System.get_env("STITCH_CONNECT_APP_HOST")],
   secret_key_base: "rp9jtclD/mgOBBlbo+mFKHVZ0UKNdC6DoofvmAy0Z/gSmgPy0/73DhzLrDalDf/G",
   render_errors: [view: Stitch.Web.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: StitchConnect.PubSub, adapter: Phoenix.PubSub.PG2]
-
-# Configure AppSignal Template Instrumentation
-config :phoenix, :template_engines,
-  eex: Appsignal.Phoenix.Template.EExEngine,
-  exs: Appsignal.Phoenix.Template.ExsEngine
+  pubsub_server: StitchConnect.PubSub
 
 # Configures Elixir's Logger
 config :logger, :console,

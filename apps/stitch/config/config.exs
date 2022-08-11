@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :stitch, ecto_repos: [Stitch.Repo]
 
@@ -79,4 +79,5 @@ config :stitch, Tokbox,
   ttl: 60 * 5
 
 import_config "elasticsearch.exs"
-import_config "#{Mix.env()}.exs"
+import_config "#{config_env()}.exs"
+# import_config "#{Mix.env()}.exs"

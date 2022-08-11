@@ -38,32 +38,36 @@ defmodule Stitch.Web.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.0"},
-      {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_html, "~> 2.10"},
+      {:phoenix, "~> 1.6"},
+      {:phoenix_html, "~> 3.2.0"},
+      {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_live_reload, "~> 1.1", only: :dev},
-      {:phoenix_ecto, "~> 3.0"},
+      {:phoenix_ecto, "~> 4.4.0"},
       {:phoenix_etag, "~> 0.1"},
       {:gettext, "~> 0.18"},
-      {:cowboy, "~> 1.1"},
-      {:guardian, "~> 0.14"},
+      {:plug_cowboy, "~> 2.0"},
+      {:plug, "~> 1.13.6"},
+      {:guardian, "~> 2.2.4"},
+      {:jason, "~> 1.3.0"},
       {:poison, "~> 3.1"},
-      {:corsica, "~> 1.0"},
+      {:corsica, "~> 1.2.0"},
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.3"},
       {:quantum, ">= 2.2.7"},
       {:sweet_xml, "~> 0.7"},
       {:stitch, in_umbrella: true},
-      {:appsignal, "~> 1.5"},
+      {:appsignal_phoenix, "~> 2.0"},
       {:wallaby, "~> 0.19.2", only: :test},
       # For mobile push notifications.
       {:pigeon, "~> 1.1.6"},
       # Used by Pigeon for push notifications.
       {:kadabra, "~> 0.3.7"},
+      {:joken, "~> 2.5.0"},
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
       {:remote_ip, "~> 0.1.4"},
-      {:phoenix_swagger, "~> 0.8"},
+      {:phoenix_swagger, "~> 0.8.0"},
+      {:ex_json_schema, "~> 0.5"},
       {:not_qwerty123, "~> 2.4.1"}
     ]
   end

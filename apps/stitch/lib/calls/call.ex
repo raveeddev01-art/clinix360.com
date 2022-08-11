@@ -18,10 +18,10 @@ defmodule Stitch.Call do
   schema "calls" do
     field(:hash, :string)
     field(:session_id, :string)
-    field(:started_at, :integer, null: true)
-    field(:ended_at, :integer, null: true)
-    field(:active_now, {:array, :integer}, null: false, default: [])
-    field(:attendees, {:array, :integer}, null: false, default: [])
+    field(:started_at, :integer)
+    field(:ended_at, :integer)
+    field(:active_now, {:array, :integer}, default: [])
+    field(:attendees, {:array, :integer}, default: [])
     field(:status, :string, default: "ringing")
 
     belongs_to(:caller, User)
