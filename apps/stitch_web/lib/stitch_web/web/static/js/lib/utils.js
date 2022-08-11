@@ -99,7 +99,11 @@ export function filterUsers(users, filter) {
  * @param {string} text
  */
 export function isValidUnicodeString(text) {
-  return !NON_UNICODE_PATTERN.test(text);
+  if(!text.includes("_")) {
+    return !NON_UNICODE_PATTERN.test(text);
+  }
+  
+  return false;
 }
 
 /**

@@ -24,7 +24,15 @@ function formatName(givenUsername) {
 }
 
 function isValidUsername(username) {
-  if (/[^a-z0-9]/.test(username)) {
+  if (/[^a-z0-9_]/.test(username)) {
+    return false;
+  }
+
+  return true;
+}
+
+function isValidName(name) {
+  if (/[^a-zA-Z ]/.test(username)) {
     return false;
   }
 

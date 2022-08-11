@@ -64,7 +64,7 @@ class PasswordCard extends Component {
               onChange={this._onChange}
             />
             <div className="password-icon" onClick={this.showHide}>
-              <i className={this.state.type === 'text' ? 'fa fa-eye-slash' : 'fa fa-eye'} />
+              <i className={this.state.type === 'text' ? 'fa fa-eye' : 'fa fa-eye-slash'} />
             </div>
           </FormGroup>
           <PasswordValidator
