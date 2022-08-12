@@ -9,11 +9,15 @@ export default class SlowInternetAlert extends Component {
     }
 
     componentWillMount () {
-        navigator.connection.addEventListener('change', this.onDownlinkChange);
+        if(navigator.connection) {
+            navigator.connection.addEventListener('change', this.onDownlinkChange);
+        }
     }
 
     onDownlinkChange = () => {
-        this.setState({ unstableConnection: navigator.connection.downlink < 1 && navigator.onLine ? true : false })
+        if(navigator.connection) {
+            this.setState({ unstableConnection: navigator.connection.downlink < 1 && navigator.onLine ? true : false })
+        }
     }
 
 
