@@ -49,6 +49,7 @@ defmodule Stitch.Web.Router do
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
     # Onboarding routes for new users.
+    post("/validate-coupon-code", CouponCodeController, :validate_coupon)
     post("/request-demo", UserController, :request_demo)
     post("/users", UserController, :create)
     post("/users/validate-emails", UserController, :validate_emails)
@@ -87,7 +88,7 @@ defmodule Stitch.Web.Router do
     get("/pilot", HomeController, :index)
     get("/jobs", HomeController, :index)
     get("/customers", HomeController, :index)
-    get("/blog", HomeController, :index)
+    # get("/blog", HomeController, :index)
     get("/customers/luminance-recovery", HomeController, :index)
     get("/customers/princeton-brain-spine", HomeController, :index)
     get("/customers/dermatology-skin-surgery-institute", HomeController, :index)
@@ -146,13 +147,15 @@ defmodule Stitch.Web.Router do
   get(
     "/download-mac",
     Redirect,
-    external: "https://fz0pxcjnx9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-mac"
+    external:
+      "https://tyyomgzkjh.execute-api.us-east-1.amazonaws.com/prod/latest-stitch-desktop-mac"
   )
 
   get(
     "/download-win",
     Redirect,
-    external: "https://1lyrransd9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-win"
+    external:
+      "https://tyyomgzkjh.execute-api.us-east-1.amazonaws.com/prod/latest-stitch-desktop-win"
   )
 
   # ==============

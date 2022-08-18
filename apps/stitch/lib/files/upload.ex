@@ -3,7 +3,7 @@ defmodule Stitch.Files.Upload do
     Accounts.User,
     Files.Upload,
     Files.EngageUpload,
-    Files.UploadComment,
+    # Files.UploadComment,
     Files.GroupUpload,
     Files.Thumb,
     Message,
@@ -24,7 +24,8 @@ defmodule Stitch.Files.Upload do
     belongs_to(:user, User)
     belongs_to(:team, Team)
     has_many(:group_uploads, GroupUpload)
-    has_many(:upload_comments, UploadComment)
+    # has_many(:upload_comments, UploadComment)
+    # belongs_to(:messages, Message)
     has_many(:groups, through: [:group_uploads, :groups])
     field(:filename, :string)
     field(:url, :string)
@@ -52,7 +53,8 @@ defmodule Stitch.Files.Upload do
     :size_in_bytes,
     :preview_height,
     :preview_width,
-    :preview_url
+    :preview_url,
+    :id
   ]
 
   @spec new(Upload.t(), map) :: Ecto.Changeset.t()
@@ -90,12 +92,17 @@ defmodule Stitch.Files.Upload do
     GroupUpload.delete(group, upload)
   end
 
-  def create_and_share_with_group(%Group{} = group, %User{} = user, attrs, opts \\ []) do
-    with {:ok, preview} <- create_preview(attrs, opts),
-         attrs =
-           attrs
-           |> Map.merge(preview)
-           |> Map.put("public", group.public),
+  def create_and_share_with_group(%Group{} = group, %User{} = user, attrs)
+      when is_list(attrs) do
+    {:ok,
+     Enum.map(attrs, fn attr ->
+       {:ok, upload, _} = create_and_share_with_group(group, user, attr)
+       upload
+     end)}
+  end
+
+  def create_and_share_with_group(%Group{} = group, %User{} = user, attrs, _opts \\ []) do
+    with attrs = Map.put(attrs, "public", group.public),
          {:ok, upload} <- create(user, attrs),
          {:ok, group_file} <- share_with_group(upload, group) do
       {:ok, upload, group_file}
@@ -148,6 +155,25 @@ defmodule Stitch.Files.Upload do
 
   def put_filetype(changeset), do: changeset
 
+  def create_previews(fields, opts \\ []) do
+    Enum.map(fields, fn field ->
+      create_preview(field, opts)
+      |> case do
+        {:ok, preview} ->
+          %Upload{id: field["id"]}
+          |> update_preview_fields(preview)
+
+          field
+          |> Map.replace("preview_height", preview.preview_height)
+          |> Map.replace("preview_width", preview.preview_width)
+          |> Map.replace("preview_url", preview.preview_url)
+
+        {:error, _} ->
+          field
+      end
+    end)
+  end
+
   def create_preview(_attrs, with_preview: false), do: {:ok, %{}}
 
   def create_preview(fields, _opts) do
@@ -156,10 +182,10 @@ defmodule Stitch.Files.Upload do
         {:ok, preview_metadata}
 
       {:error, "Unsupported type"} ->
-        {:ok, %{}}
+        {:error, %{}}
 
       {:error, error} ->
-        {:ok, error}
+        {:error, error}
     end
   end
 
@@ -183,7 +209,13 @@ defmodule Stitch.Files.Upload do
     !!(upload.preview_height && upload.preview_width && upload.preview_url)
   end
 
-  @spec fields(Upload.t()) :: map
+  @spec fields(Upload.t() | list()) :: map
+  def fields(uploads) when is_list(uploads) do
+    Enum.map(uploads, fn upload ->
+      fields(upload)
+    end)
+  end
+
   def fields(%Upload{} = upload) do
     upload
     |> Map.take(@attributes ++ [:comment_count, :public_token])
@@ -194,6 +226,11 @@ defmodule Stitch.Files.Upload do
   @spec has_public_token?(Upload.t()) :: boolean
   def has_public_token?(%Upload{} = upload) do
     !!upload.public_token
+  end
+
+  def update_preview_fields(%Upload{} = struct, attrs) do
+    change(struct, attrs)
+    |> Repo.update()
   end
 
   @spec create_public_link(Upload.t()) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
@@ -243,7 +280,7 @@ defmodule Stitch.Files.Upload do
   end
 
   def update_comment_counter(upload_id, by) do
-    changeset = where(Upload, id: ^upload_id)
+    _changeset = where(Upload, id: ^upload_id)
 
     Ecto.Multi.new()
     |> multi_update_comment_counter(upload_id, by)

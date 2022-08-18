@@ -34,13 +34,13 @@ class PaymentMethods extends Component {
         <div className="tab-section saved-cards">
           <h4>Saved Cards</h4>
           <p>
-            Manage your saved cards for Stitch payments. If you have an active
-            Stitch subscription, you'll need to make sure you have at least one
+            Manage your saved cards for InvoChat payments. If you have an active
+            InvoChat subscription, you'll need to make sure you have at least one
             card on file. You can read more about payments{" "}
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href="https://help.teamstitch.com/team-administration/subscribing-and-billing"
+              href="https://help.dvlcloud.com/team-administration/subscribing-and-billing"
             >
               here
             </a>

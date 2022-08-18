@@ -136,7 +136,10 @@ defmodule Stitch.Accounts.User do
       case user_update do
         {:ok, user} ->
           group_preferences = params["group_preferences"]
-          if group_preferences, do: GroupUser.batch_preference_update(group_preferences, user)
+
+          if group_preferences,
+            do: GroupUser.batch_preference_update(group_preferences, user)
+
           %{user: user}
 
         {:error, changeset} ->
@@ -250,7 +253,7 @@ defmodule Stitch.Accounts.User do
     |> cast(params, [:username, :team_id])
     |> validate_required(:username)
     |> validate_length(:username, min: 2, max: 50)
-    |> validate_format(:username, ~r/^[a-z0-9]+$/)
+    |> validate_format(:username, ~r/^[a-z0-9_]+$/)
     |> unsafe_validate_unique([:username, :team_id], Repo)
     |> unique_constraint(:username, name: :users_username_team_id_index)
   end
@@ -271,7 +274,9 @@ defmodule Stitch.Accounts.User do
     end
   end
 
-  def add_thumb(changeset), do: changeset
+  def add_thumb(changeset) do
+    changeset
+  end
 
   @doc """
   Checks if the user is a guest based on their roles.

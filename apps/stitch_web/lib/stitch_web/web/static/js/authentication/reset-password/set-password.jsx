@@ -16,7 +16,8 @@ class SetPassword extends Component {
     this.state = {
       password: "",
       error: false,
-      formValid: false
+      formValid: false,
+      showPassword: false
     };
   }
 
@@ -56,6 +57,13 @@ class SetPassword extends Component {
       });
   };
 
+  togglePasswordShow = () => {
+    const { showPassword } = this.state;
+    this.setState({
+      showPassword: !showPassword
+    });
+  }
+
   render() {
     const { password, error } = this.state;
     return (
@@ -70,15 +78,24 @@ class SetPassword extends Component {
         }
       >
         <Form onSubmit={this._onSubmit}>
-          <FormGroup bsSize="large">
+          <FormGroup 
+            bsSize="large" 
+            className="password-formgroup"
+          >
             <FormControl
               required
               autoFocus
-              type="password"
+              name='password'
+              autoComplete="off"
+              type={this.state.showPassword ? "text" : "password"}
               placeholder="Password"
+              maxLength={80}
               value={password}
               onChange={this.onChange}
             />
+            <div className="password-icon" onClick={this.togglePasswordShow}>
+              <i className={this.state.showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} />
+            </div>
           </FormGroup>
           <PasswordValidator
             password={password}

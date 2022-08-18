@@ -5,11 +5,11 @@ defmodule Stitch.Web.AuthenticationController do
   alias Stitch.Accounts.{PasswordResetToken}
 
   # If you change a title, sync it with frontend (website_router)
-  @login_title "Sign In | Stitch"
-  @login_description "Sign in to your Stitch team by entering your carespace’s Stitch URL. Don't know your carespace URL? Enter your email address and we’ll send you a list of your carespaces."
+  @login_title "Sign In | InvoChat"
+  @login_description "Sign in to your InvoChat team by entering your workspace’s InvoChat URL. Don't know your workspace URL? Enter your email address and we’ll send you a list of your workspaces."
 
-  @signup_title "Create a Team | Stitch"
-  @signup_description "Create your Stitch team for free. Get started with our apps for internal team messaging, patient communication and task management."
+  @signup_title "Create a Team | InvoChat"
+  @signup_description "Create your InvoChat team for free. Get started with our collaboration hub for healthcare teams."
 
   def index(conn = %{request_path: path}, _params) do
     login_params = Stitch.Web.PageService.get_logins_json(conn)
@@ -94,7 +94,7 @@ defmodule Stitch.Web.AuthenticationController do
             conn
             |> put_flash(
               :invalid_login,
-              "This account is disabled - contact your carespace admin."
+              "This account is disabled - contact your workspace admin."
             )
             |> redirect(to: "/login")
         end
@@ -117,10 +117,10 @@ defmodule Stitch.Web.AuthenticationController do
         "teamName" => conn.private[:team_name],
         "teamSlug" => conn.private[:team_slug]
       })
-
     conn
     |> delete_team_session(conn.assigns.team.id)
     |> delete_session(:redirect_url)
+    |> clear_session()
     |> render("logged_out.html", logged_out_params: logged_out_params)
   end
 

@@ -29,6 +29,10 @@ class Header extends Component {
     window.location.href = `https://${applicationHost}/signin`;
   }
 
+  goToCreate() {
+    window.location.href = `https://${applicationHost}/signup/email`;
+  }
+
   goToGetStarted() {
     window.location.href = `https://${applicationHost}/getstarted`;
   }
@@ -78,7 +82,7 @@ class Header extends Component {
 
     return (
       <NavDropdown
-        title="Your Carespaces"
+        title="Your Workspaces"
         id="yourcarespaces-dropdown"
         {...navProps}
       >
@@ -113,22 +117,21 @@ class Header extends Component {
         <Navbar id="header" inverse fixedTop className={blueNav}>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to="/" className="brand">
-                {this.props.blueNav ? (
-                  <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
-                ) : (
-                  <img src="/images/stitch-brand.svg" alt="Stitch" />
-                )}
+              <Link to="/" className="brand custom-brand">
+                <img src="/images/invochat-logo-blue.png" alt="InvoChat"/>
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle onClick={this.mobileNavToggle} />
           </Navbar.Header>
           <Nav pullRight>
-            <LinkContainer to="/pricing">
+            <NavItem href="https://invochat.io/blog/" id="header-blog-link">
+              Blog
+            </NavItem>
+            <LinkContainer to="/pricing" id="header-pricing-link">
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
-            <NavDropdown
+            {/* <NavDropdown
               title="Resources"
               id="resources-dropdown"
               onMouseEnter={this.toggleResourcesMenu}
@@ -150,45 +153,37 @@ class Header extends Component {
               </LinkContainer>
 
               <MenuItem
-                href="https://help.teamstitch.com"
+                href="/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <i className="far fa-life-ring" /> Help Center
               </MenuItem>
 
-              <MenuItem href={`https://${applicationHost}/jobs`}>
-                <i className="far fa-wrench" /> Jobs
-              </MenuItem>
-
               <MenuItem
-                href="https://medium.com/stitch-health"
+                href="/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <i className="far fa-book" /> Blog
               </MenuItem>
+            </NavDropdown> */}
 
-              <MenuItem
-                href="https://stitch.readme.io/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="far fa-code" /> API Docs
-              </MenuItem>
-            </NavDropdown>
+            <NavItem onClick={this.goToSignIn} id="header-signin-link">Sign In</NavItem>
 
-            <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
+            <NavItem onClick={this.goToCreate} id="header-signup-link">Create Workspace</NavItem>
 
             {hasLogins && this.renderYourCarespaces(appSettings.teams, false)}
+
+            {!hasLogins && <NavItem className="btn-request-info" href="mailto:info@invozone.com?subject=InvoChat: Request Information">Request Information</NavItem>}
           </Nav>
         </Navbar>
 
         <nav id="mobile-nav" className={mobileNavClasses}>
           <div className="header">
             <div className="container">
-              <Link className="brand" to="/">
-                <img src="/images/stitch-brand-alt.svg" alt="Stitch" />
+              <Link className="brand custom-brand" to="/">
+                <img src="/images/invochat-logo-blue.png" alt="InvoChat" width="1063px" height="251px"/>
               </Link>
 
               <a className="close-menu" onClick={this.mobileNavToggle}>
@@ -211,7 +206,7 @@ class Header extends Component {
                 </LinkContainer>
 
                 <MenuItem
-                  href="https://help.teamstitch.com"
+                  href="/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -247,6 +242,8 @@ class Header extends Component {
                 hasLogins &&
                 this.renderYourCarespaces(appSettings.teams, true)}
 
+              {mobile && !hasLogins && <NavItem className="btn-request-info" href="mailto:info@invozone.com?subject=InvoChat: Request Information">Request Information</NavItem>}
+
               {mobile &&
                 os === "iOS" && (
                   <NavItem
@@ -255,7 +252,7 @@ class Header extends Component {
                     rel="noopener noreferrer"
                     className="appstore-btn"
                   >
-                    Get Stitch for iOS
+                    Get InvoChat for iOS
                   </NavItem>
                 )}
 
@@ -267,7 +264,7 @@ class Header extends Component {
                     rel="noopener noreferrer"
                     className="appstore-btn"
                   >
-                    Get Stitch for Android
+                    Get InvoChat for Android
                   </NavItem>
                 )}
             </Nav>

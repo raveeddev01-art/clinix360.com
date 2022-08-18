@@ -36,6 +36,7 @@ class OnboardingPage extends Component {
 
     return (
       <LoadingButton
+        id={ this.props.nextBtnId || "next" }
         type="submit"
         bsStyle="primary"
         bsSize="lg"
@@ -44,7 +45,7 @@ class OnboardingPage extends Component {
         loading={this.props.loading}
         onClick={this._onNext}
       >
-        {this.props.nextButtonText || this.defaultNext()}
+        { this.defaultNext() }
       </LoadingButton>
     );
   }

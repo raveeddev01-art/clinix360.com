@@ -69,6 +69,7 @@ class SendEmail extends Component {
               <FormControl
                 required
                 autoFocus
+                id="reset-email-field"
                 type="email"
                 placeholder="Email"
                 value={email}
@@ -76,6 +77,7 @@ class SendEmail extends Component {
               />
             </FormGroup>
             <Button
+              id="reset-pass-btn"
               type="submit"
               bsStyle="primary"
               bsSize="lg"
@@ -99,9 +101,8 @@ class SendEmail extends Component {
         className="password-reset-check-email wide"
         description={
           <span>
-            We've emailed instructions on how to reset your password to{" "}
-            <b>{email}</b>. Click the link to confirm your address and get
-            started. <br />
+            We sent an email to {email} if we found your account in our system.
+            This email will give you a link to reset your password. <br />
             <br /> Wrong email? Please{" "}
             <button className="btn-link" onClick={pageReload}>
               re-enter your address

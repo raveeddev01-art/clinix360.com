@@ -35,7 +35,7 @@ class SocketStore {
 
     // upon reconnect, load users, groups, and last batch of messages of current group again
     if (!this.isFirstConnect) {
-      socket.log("stitch", "Reloading after reconnect");
+      socket.log("InvoChat", "Reloading after reconnect");
       this.loadAfterReconnect();
     }
 

@@ -31,7 +31,7 @@ export default class Landing extends Component {
                 <a href="/" className="brand">
                   <img
                     src="apps/stitch_web/lib/stitch_web/web/static/js/authentication/team/select_team.jsx"
-                    alt="Stitch"
+                    alt="InvoChat"
                   />
                 </a>
               </Col>
@@ -43,6 +43,14 @@ export default class Landing extends Component {
                       Sign In
                     </a>
                   </li>
+                  <li>
+                  <a
+                    href="/signup/email"
+                    className="nav-link btn-outline"
+                >
+                Create Team
+                </a>
+                </li>
 
                   <li>
                     <a href="/getstarted" className="nav-link btn-outline">
@@ -60,7 +68,7 @@ export default class Landing extends Component {
             <Row>
               <Col md={5}>
                 <div className="landing-message">
-                  <h1>Care Coordination</h1>
+                  <h1>Work Coordination</h1>
                   <h3>
                     Communicate, write notes, track tasks, upload files, and
                     collaborate on any device.
@@ -86,11 +94,11 @@ export default class Landing extends Component {
         <div id="footer">
           <div className="container">
             <Row>
-              <Col sm={4}>Stitch Technologies, Inc</Col>
+              <Col sm={4}>InvoChat Technologies, Inc</Col>
               <Col sm={8}>
                 <ul className="list-inline m-b-0 text-right">
                   <li>
-                    <Link to="/hipaa">HIPAA</Link>
+                    <Link to="/">InvoChat</Link>
                   </li>
                   <li>
                     <Link to="/privacy-policy">Privacy Policy</Link>

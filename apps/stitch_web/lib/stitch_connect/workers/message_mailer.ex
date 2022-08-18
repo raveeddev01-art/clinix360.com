@@ -23,6 +23,7 @@ defmodule StitchConnect.MessageMailer do
     |> Stitch.ChunkStream.chunk(50)
     |> Stream.each(&deliver_for_users(&1, team))
     |> Stream.run()
+    # |> Enum.each(fn x -> :ok end)
   end
 
   def deliver_for_users(users, team) do

@@ -9,11 +9,13 @@ import {
   MessageHeader,
   MessageContent,
   TimestampTooltip,
-  UserProfileMenu
+  UserProfileMenu,
+  MessageNav
 } from "common/components";
+import MessageEditForm from "../message-form/message-edit-form";
 import MessageActions from "./message-actions";
 
-@inject("usersStore")
+@inject("usersStore", "messageStore")
 class Message extends PureComponent {
   constructor(props) {
     super(props);
@@ -54,14 +56,19 @@ class Message extends PureComponent {
     this.setState({ isActionsVisible: false });
   };
 
-  getUser = message => {
-    const { usersStore } = this.props;
-    if (window.currentPatient || message.patient_id) {
-      return message.user;
-    }
+  onResend = () => {
+    const { message, messageStore } = this.props;
 
-    const userId = message.user && message.user.id;
-    return usersStore.usersById[userId];
+    if(message.status === "failed") {
+      messageStore.resendMessage(message);
+    }
+  }
+
+  getUser = message => {
+    const { usersStore, messageUser } = this.props;
+    const user = messageUser == null ? message.user : messageUser;
+
+    return usersStore.usersById[user.id];
   };
 
   setSelected = newState => {
@@ -70,22 +77,22 @@ class Message extends PureComponent {
 
   renderGutter(message) {
     const { inserted_at: insertedAt } = message;
-    const { isConversationMessage } = this.props;
+    const { isConversationMessage, inThread } = this.props;
     const user = this.getUser(message);
+    const gutterStyles = inThread ? {width: "40px"} : {width: "65px"};
 
     return (
-      <div className="message-gutter">
+      <div className="message-gutter" style={gutterStyles}>
         {message.pinned && (
           <div className="icon-pin">
             <i className="fa fa-thumb-tack fa-rotate-45" />
           </div>
         )}
-        {!message.pinned &&
-          message.starred && (
-            <div className="icon-star">
-              <i className="fa fa-star" />
-            </div>
-          )}
+        {message.starred && (
+          <div className="icon-star">
+            <i className="fa fa-star" />
+          </div>
+        )}
         {message.status === "failed" && (
           <div className="icon-status">
             <i className="fa fa-exclamation-triangle" />
@@ -109,10 +116,48 @@ class Message extends PureComponent {
     );
   }
 
+  rendedContent(user) {
+    const { messageStore, message, isConversationMessage, inThread } = this.props;
+    return (
+      <div className="message-content-wrapper">
+        <MessageContent
+          inThread={inThread}
+          isConversationMessage={isConversationMessage}
+          messageStore={messageStore}
+          message={message}
+          user={user}
+        />
+      </div>
+    );
+  }
+
+  renderEditForm() {
+    const {messageStore, message, isReply, inThread } = this.props;
+
+    return (
+      <MessageEditForm
+        messageStore={messageStore}
+        message={message}
+        isReply={isReply}
+      />
+    )
+  }
+
+  isInEditMode = () => {
+    const { message, messageStore } = this.props;
+
+    return ((messageStore.messageInEdit && message) && 
+                  (messageStore.messageInEdit.id === message.id))
+  }
+
   renderHeader(message) {
     const { inserted_at: insertedAt } = message;
     const { isConversationMessage } = this.props;
     const user = this.getUser(message);
+
+    if(!insertedAt) {
+      return;
+    }
 
     return (
       (!message.is_sequential || message.type === "file_comment") && (
@@ -134,11 +179,16 @@ class Message extends PureComponent {
       chatDiv,
       messageStore,
       isConversationMessage,
-      lastOtherUserMessage
+      lastOtherUserMessage,
+      isThreadView,
+      isReply,
+      inThread,
+      messageClass
     } = this.props;
+
     const user = this.getUser(message);
 
-    const messageClassName = cx("message", {
+    const messageClassName = cx(isThreadView ? " " : "message", {
       sequential: message.is_sequential,
       selected: isSelected,
       highlight: isHighlighted,
@@ -147,8 +197,18 @@ class Message extends PureComponent {
       bot_message: user && user.is_bot
     });
 
+    const messageStyles = {};
+
+    // remove extra padding in thread
+    if(inThread && isReply) {
+      messageStyles.paddingRight = "10px";  
+    }
     return (
-      <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+      <div
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        className={`${messageClassName} ${messageClass}`} >
+        {isThreadView && <MessageNav message={message} />}
         {hasNML && (
           <Element name="newMessageBanner" className="new-message-banner">
             <div className="blue-line">
@@ -178,35 +238,32 @@ class Message extends PureComponent {
             <Element
               name={`message_${message.id}`}
               className={messageClassName}
+              style={messageStyles}
             >
               {this.renderGutter(message)}
 
-              <div className="message-content">
+              <div className="message-content" onClick={this.onResend}>
                 {message.pinned && <div className="pin-label">Pinned</div>}
-                {message.starred &&
-                  !message.pinned && <div className="pin-label">Starred</div>}
+                {message.starred && <div className="pin-label">Starred</div>}
                 {message.status === "failed" && (
-                  <div className="message-status-label">
-                    Failed to send message
+                  <div className="message-status-label"> 
+                    Failed to send message, tap to retry
                   </div>
                 )}
 
                 {this.renderHeader(message)}
-
-                <div className="message-content-wrapper">
-                  <MessageContent
-                    isConversationMessage={isConversationMessage}
-                    messageStore={messageStore}
-                    message={message}
-                    user={user}
-                  />
-                </div>
+                {this.isInEditMode()   
+                  ? this.renderEditForm() 
+                  : this.rendedContent(user)
+                }
               </div>
 
               {(isActionsVisible || isSelected) &&
                 !isConversationMessage && (
                   <MessageActions
+                    {...this.props}
                     user={user}
+                    isReply={isReply}
                     message={message}
                     lastOtherUserMessage={lastOtherUserMessage}
                     messageStore={messageStore}
@@ -223,6 +280,7 @@ class Message extends PureComponent {
 }
 
 Message.propTypes = {
+  isThreadView: PropTypes.bool,
   hasNML: PropTypes.bool,
   isHighlighted: PropTypes.bool,
   message: PropTypes.object.isRequired,
@@ -237,6 +295,7 @@ Message.propTypes = {
 };
 
 Message.defaultProps = {
+  isThreadView: false,
   hasNML: false,
   isHighlighted: false,
   onMounted: () => undefined,
@@ -245,7 +304,8 @@ Message.defaultProps = {
   onHide: () => undefined,
   lastOtherUserMessage: null,
   isConversationMessage: false,
-  chatDiv: null
+  chatDiv: null,
+  isReply: false
 };
 
 export default Message;

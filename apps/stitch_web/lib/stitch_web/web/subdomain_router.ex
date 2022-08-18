@@ -51,6 +51,10 @@ defmodule Stitch.Web.SubdomainRouter do
     plug(Stitch.Web.Plug.ApiAuthenticate)
   end
 
+  pipeline :plug_attack do
+    plug(Stitch.Web.Plug.PlugAttack)
+  end
+
   pipeline :team_admin_api do
     plug(:accepts, ["json"])
     plug(:fetch_session)
@@ -238,10 +242,11 @@ defmodule Stitch.Web.SubdomainRouter do
 
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_locked_api)
-
+    pipe_through(:plug_attack)
     post("/session-lock", SessionLockController, :lock)
     post("/session-unlock", SessionLockController, :unlock)
   end
+
 
   # ====
   # NOTE: Some StitchConnect routes up here to pattern match first
@@ -276,6 +281,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
     scope "/files/:upload_id" do
       resources("/comments", FileCommentController, only: [:create])
+      # post("/comments", MessageController, only: [:create)
     end
 
     resources("/file_comments", FileCommentController, only: [:update, :delete])
@@ -357,6 +363,7 @@ defmodule Stitch.Web.SubdomainRouter do
     resources("/exports/:user_id/user_exports", UserExportController, only: [:create])
     get("/exports/user_exports", UserExportController, :index)
     resources("/exports", ExportController, only: [:index, :create])
+    get("/exports/full_backup", UserExportController, :full_backup)
 
     # Admin repotes route
     resources("/reports", ReportController, only: [:create])
@@ -365,9 +372,12 @@ defmodule Stitch.Web.SubdomainRouter do
   # API routes which need token.
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api_auth)
-
+    pipe_through(:plug_attack)
+    scope "/teams" do
+      pipe_through(:team_admin_api)
+      put("/:id", TeamController, :update)
+    end
     get("/teams/:id", TeamController, :show)
-    put("/teams/:id", TeamController, :update)
 
     post("/login", AuthenticationController, :submit_login)
     post("/patient/login", AuthenticationController, :submit_patient_login)
@@ -479,6 +489,12 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_api)
 
+    scope "/messages/:id" do
+      resources("/comments", MessageCommentController, only: [:create])
+    end
+
+    resources("/messages/comments", MessageCommentController, only: [:update, :delete])
+
     get("/groups/:group_id/messages", MessageController, :index)
     get("/groups/:group_id/feed_recent", MessageController, :feed_recent)
     get("/groups/:group_id/feed_surrounding", MessageController, :feed_surrounding)
@@ -492,7 +508,11 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/messages/:id/download", MessageController, :download)
     post("/messages/:id/toggle-star", MessageController, :toggle_star)
     post("/messages/:id/toggle-pin", MessageController, :toggle_pin)
+    post("/messages/:id/share", MessageController, :share)
     post("/messages/search", MessageController, :search)
+
+    put("/message/:id/notifications", MessageController, :subscribe_message_notifications)
+    get("/message/:id", MessageController, :show)
 
     get("/starred_messages", StarredMessageController, :index)
     get("/starred_items", StarredItemController, :index)
@@ -564,6 +584,7 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/exports/:id/download", ExportController, :download)
     get("/user_exports/:id/download", ExportController, :user_export_download)
+    get("/threads", ThreadController, :index)
   end
 
   # Catch any remaining patient routes

@@ -494,6 +494,20 @@ defmodule Stitch.Group do
     update_users(group, new_group_user_ids)
   end
 
+  @doc """
+  Invites users to group given a list of ids.
+  """
+  @spec invite_users_by_id(Group.t(), [user_id :: pos_integer]) ::
+          {:ok, membership_changes} | {:error, Ecto.Changeset.t()}
+  def invite_users_by_id(%Group{} = group, user_ids_to_invite) do
+    group = Repo.preload(group, group_users: :user)
+    new_group_user_ids =
+      Enum.map(group.group_users, & &1.user_id) ++ user_ids_to_invite
+      |> Enum.uniq()
+
+    update_users(group, new_group_user_ids)
+  end
+
   defp do_calculate_membership_diff(%{user: %{roles: [role]}} = group_user, {remove, add, target})
        when role in @guest_roles do
     {remove, add, [group_user | target]}
@@ -518,7 +532,7 @@ defmodule Stitch.Group do
   """
   @spec direct_message?(Group.t()) :: boolean
   def direct_message?(%Group{name: name}) when name in @dm_groups, do: true
-  def direct_message?(%Group{}), do: false
+  def direct_message?(%Group{}) do false end
 
   @doc """
   Returns string depending on type of group.

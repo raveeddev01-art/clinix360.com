@@ -15,7 +15,7 @@ import Modal from "react-bootstrap/lib/Modal";
 
 import { Members, Toggle } from "common/components";
 
-@inject("groupsStore")
+@inject("groupsStore", "messageStore")
 @observer
 class CreateRoomModal extends Component {
   constructor(props) {
@@ -67,7 +67,7 @@ class CreateRoomModal extends Component {
   };
 
   createRoom = () => {
-    const { groupsStore, history, closeModal } = this.props;
+    const { groupsStore, history, closeModal, messageStore } = this.props;
 
     groupsStore
       .createGroup({
@@ -163,7 +163,7 @@ class CreateRoomModal extends Component {
               <FormControl
                 name="name"
                 type="text"
-                placeholder="e.g. Emergency Room"
+                placeholder="e.g. General Room"
                 maxLength="25"
                 value={name}
                 onKeyPress={this.cleanName}
@@ -186,7 +186,7 @@ class CreateRoomModal extends Component {
             <Col sm={9}>
               <FormControl
                 name="reference"
-                placeholder="e.g. #emergency-room"
+                placeholder="e.g. #general-room"
                 value={this.getSlug()}
                 disabled
               />

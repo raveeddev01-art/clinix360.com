@@ -64,7 +64,7 @@ class WelcomeMessage extends Component {
 
   renderForDM() {
     const { groupStore } = this.props;
-    let userNameText = "";
+    let userNameText = [];
 
     if (groupStore.isLastMember) {
       return (
@@ -77,37 +77,51 @@ class WelcomeMessage extends Component {
 
     groupStore.group.users.forEach((u, index) => {
       const name = this.getUserFullName(u);
-      if (index === 0) userNameText += name;
-      else if (index === groupStore.group.users.length - 1)
-        userNameText += ` and ${name}`;
-      else userNameText += `, ${name}`;
+
+      const nameText = <span className="welcome-message__name">{name}</span>
+
+      if (index === 0) {
+        userNameText.push(nameText)
+      } else if (index === groupStore.group.users.length - 1) {
+        userNameText.push(' and ', nameText)
+      } else {
+        userNameText.push(', ', nameText)
+      }
+
     });
 
     return (
       <div className="welcome-message__text">
-        Welcome to the private conversation between
-        <span className="welcome-message__name">{userNameText}</span>
+        Welcome to the private conversation between {userNameText}
       </div>
     );
   }
 
-  render() {
+  renderWelcomeMessage() {
     const { groupStore } = this.props;
     const { group } = groupStore;
 
     return (
-      <div className="welcome-message">
-        <div className="welcome-message__container">
-          <div className="welcome-message__title">
-            <h3>
-              <span>
-                {this.getIcon()}
-                {` ${groupStore.groupName}`}
-              </span>
-            </h3>
-          </div>
-          {group.type === "regular" ? this.renderForRoom() : this.renderForDM()}
+      <div className="welcome-message__container">
+        <div className="welcome-message__title">
+          <h3>
+            <span>
+              {this.getIcon()}
+              {` ${groupStore.groupName}`}
+            </span>
+          </h3>
         </div>
+        {group.type === "regular" ? this.renderForRoom() : this.renderForDM()}
+      </div>
+    )
+  }
+
+  render() {
+    const { groupStore } = this.props;
+
+    return (
+      <div className="welcome-message">
+        {groupStore.groupName != "Threads" && this.renderWelcomeMessage()}
       </div>
     );
   }

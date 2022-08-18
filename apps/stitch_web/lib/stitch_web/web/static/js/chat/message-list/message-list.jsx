@@ -7,19 +7,26 @@ import Message from "./message";
 import SystemMessage from "./system-message";
 import MessageInfoModal from "./message-info-modal";
 import FileShareModal from "./file-share-modal";
+import MessageShareModal from "./message-share-modal";
 
 @inject("messageStore")
 @observer
 class MessageList extends Component {
   componentDidMount() {
-    const { messageStore } = this.props;
+    const { messageStore, isThreadView } = this.props;
 
     messageStore.loadChatDiv(this.chatDiv);
+
+    if (isThreadView) {
+      setTimeout(() => {
+        messageStore.scrollToNewBanner();
+      }, 1000);
+
+    }
   }
 
   componentWillUnmount() {
     const { messageStore } = this.props;
-
     messageStore.unloadChatDiv();
   }
 
@@ -27,7 +34,7 @@ class MessageList extends Component {
     this.props.messageStore.onScrollTopReached();
   };
 
-  onLoseTopScroll = () => {};
+  onLoseTopScroll = () => { };
 
   onScrollBottom = () => {
     this.props.messageStore.onScrollBottomReached();
@@ -43,8 +50,9 @@ class MessageList extends Component {
   };
 
   render() {
-    const { messageStore } = this.props;
-    const { messagesByDate, newMessageLineMessage, highlightId } = messageStore;
+    const { messageStore, isThreadView } = this.props;
+    const { messagesByDate, messagesByDateDesc, newMessageLineMessage, highlightId, messages } = messageStore;
+    const orderBy = isThreadView ? messagesByDateDesc : messagesByDate;
 
     return (
       <div
@@ -53,17 +61,18 @@ class MessageList extends Component {
           this.chatDiv = div;
         }}
       >
-        {!messageStore.jumpMode && messageStore.loadedAll && <WelcomeMessage />}
+        {!messageStore.jumpMode && messageStore.loadedAll && !isThreadView && <WelcomeMessage />}
         {!messageStore.jumpMode &&
           messageStore.isLoadingPast && (
             <div className="loading-message">Loading messages...</div>
           )}
 
         {(!messageStore.jumpMode || messageStore.isJumpLoaded) &&
-          Object.keys(messagesByDate).map(date => (
+          !isThreadView ?
+          Object.keys(orderBy).map(date => (
             <div key={`${date}`}>
               <DateSeparator timestamp={date} />
-              {messagesByDate[date].map(
+              {orderBy[date].map(
                 message =>
                   message.type === "system" ? (
                     <SystemMessage
@@ -74,6 +83,7 @@ class MessageList extends Component {
                     <Message
                       // start of dummy prop so that message list react to message prop change
                       edited_at={message.edited_at}
+                      isThreadView={isThreadView}
                       pinned={message.pinned}
                       starred={message.starred}
                       status={message.status}
@@ -99,7 +109,44 @@ class MessageList extends Component {
                   )
               )}
             </div>
-          ))}
+          )) :
+          (<div key={`thread`}>
+            {messages.map(
+              (message, index) =>
+              ( <div className="message-container addon thread" key={index}>
+                  <div className="message message-thread">
+                    <Message
+                      // start of dummy prop so that message list react to message prop change
+                      edited_at={message.edited_at}
+                      isThreadView={isThreadView}
+                      pinned={message.pinned}
+                      starred={message.starred}
+                      status={message.status}
+                      is_sequential={message.is_sequential}
+                      reactions_web={message.reactions_web}
+                      link_previews={message.link_previews}
+                      // end of dummy prop
+                      key={`message_${message.id}`}
+                      message={message}
+                      hasNML={
+                        newMessageLineMessage &&
+                        newMessageLineMessage.id === message.id
+                      }
+                      lastOtherUserMessage={messageStore.lastOtherUserMessage}
+                      messageStore={messageStore}
+                      chatDiv={messageStore.chatDiv}
+                      onMounted={messageStore.onMessageMounted}
+                      onUnmounted={messageStore.onMessageUnmounted}
+                      onShow={messageStore.onMessageShow}
+                      onHide={messageStore.onMessageHide}
+                      isHighlighted={highlightId === message.id}
+                    />
+                  </div>
+                </div>
+              )
+            )}
+          </div>)
+        }
         {!messageStore.jumpMode &&
           messageStore.isLoadingRecent && (
             <div className="loading-message">Loading recent messages...</div>
@@ -128,9 +175,15 @@ class MessageList extends Component {
         />
         <MessageInfoModal />
         <FileShareModal />
+        <MessageShareModal />
       </div>
+
     );
   }
 }
+
+MessageList.defaultProps = {
+  isThreadView: false
+};
 
 export default MessageList;

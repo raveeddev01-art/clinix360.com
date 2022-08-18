@@ -1,57 +1,66 @@
-FROM elixir:1.6.4
+# ./Dockerfile
 
-RUN mix archive.install \
-  --force \
-  https://github.com/phoenixframework/archives/raw/master/phx_new.ez
+# Extend from the official Elixir image
+FROM elixir:1.10.4-alpine
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.12/main' >> /etc/apk/repositories
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.12/community' >> /etc/apk/repositories
+# FROM elixir:1.10.4
 
-WORKDIR /app
+# Install required libraries on Alpine
+# note: build-base required to run mix “make” for
+# one of my dependecies (appsignal)
+RUN apk update && apk upgrade && \
+  apk add git && \
+  apk add postgresql-client && \
+  apk add nodejs npm && \
+  apk add ghostscript && \
+  apk add fontconfig && \
+  apk add imagemagick && \
+  apk add xvfb && \
+  apk add wkhtmltopdf && \
+  apk add build-base && \
+  rm -rf /var/cache/apk/*
 
-# Even our staging app runs with MIX_ENV = prod on Enclave. I recommend
-# this because otherwise you'll be showing error stacktraces, etc.
+RUN npm install -g yarn
+
+# Set environment to production
 ENV MIX_ENV prod
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-RUN apt-get update && apt-get install -y --no-install-recommends locales
-RUN echo en_US.UTF-8 UTF-8 > /etc/locale.gen && locale-gen && \
-  update-locale LANG=en_US.UTF-8
 
-# Install Node, NPM, YARN
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-RUN apt-get install -y nodejs
-RUN npm install -g yarn
+# Install hex package manager and rebar
+# By using --force, we don’t need to type “Y” to confirm the installation
+RUN mix do local.hex --force, local.rebar --force
 
-RUN mix local.hex --force
-RUN mix local.rebar --force
-
-# Install project app dependencies.
-RUN apt-get update && apt-get install -y ghostscript
-RUN apt-get install -y imagemagick xvfb libfontconfig wkhtmltopdf
-
-# This precompiles your deps before adding your code, which lets you take advantage of Docker
-# caching while you iterate on your app.
+# Cache elixir dependecies and lock file
 ADD mix.exs mix.exs
 ADD mix.lock mix.lock
 ADD apps/stitch_web/mix.exs apps/stitch_web/mix.exs
 ADD apps/stitch/mix.exs apps/stitch/mix.exs
-RUN mix deps.get
-RUN rm -rf _build/prod
-RUN mix compile
 
-ADD apps/stitch_web/package.json apps/stitch_web/package.json
-ADD apps/stitch_web/yarn.lock apps/stitch_web/yarn.lock
-RUN cd apps/stitch_web && yarn
+# Install and compile production dependecies
+RUN HEX_HTTP_CONCURRENCY=1 HEX_HTTP_TIMEOUT=120 mix do deps.get --only prod
+RUN mix deps.compile
 
-# This actually adds the app
+# Cache and install node packages and dependencies
+ADD apps/stitch_web/package.json apps/stitch_web/
+RUN cd apps/stitch_web && \
+    yarn install
+
+# Copy all application files
 ADD . .
-WORKDIR /app/apps/stitch_web
 
-RUN npm run deploy
+# Run frontend build, compile, and digest assets
+RUN cd apps/stitch_web/ && \
+    yarn deploy && \
+    cd - && \
+    source docker.env && \
+    mix do phx.digest
 
-# Obviates the need for a Procfile
-CMD ["mix", "phx.server"]
+WORKDIR /
 
-# The default Elixir config looks up the port in the $PORT environment variable, so that works for us.
-ENV PORT 443
-EXPOSE 443
+# Run entrypoint.sh script
+RUN chmod +x entrypoint.sh
+# CMD ["/entrypoint.sh"]

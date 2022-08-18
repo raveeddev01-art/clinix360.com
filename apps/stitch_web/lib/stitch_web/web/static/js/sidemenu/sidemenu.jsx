@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { withRouter } from "react-router-dom";
+import { withRouter, NavLink } from "react-router-dom";
 import cx from "classnames";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -13,8 +13,10 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
 import { isMemberOrAdmin } from "../lib/utils";
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../lib/constants";
+import { Element } from "react-scroll";
 
-@inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
+@inject("presenceStore", "sidemenuStore", "userStore", "groupsStore", "usersStore")
 @observer
 class Sidemenu extends Component {
   componentDidMount() {
@@ -67,7 +69,7 @@ class Sidemenu extends Component {
 
   renderMenuItem(url, text, eventKey) {
     return (
-      <MenuItem eventKey={eventKey} href={url} target="_blank">
+      <MenuItem eventKey={eventKey} href={url} /*target="_blank"*/>
         {text}
       </MenuItem>
     );
@@ -134,8 +136,9 @@ class Sidemenu extends Component {
   }
 
   render() {
-    const { sidemenuStore, userStore, groupsStore } = this.props;
+    const { sidemenuStore, userStore, usersStore, groupsStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
+    const user = usersStore.getUserById(userStore.id);
 
     return (
       <div id="sidemenu">
@@ -165,17 +168,15 @@ class Sidemenu extends Component {
                   <Tooltip id="tooltip-preferences">Preferences</Tooltip>
                 }
               >
-                <i className="fa fa-chevron-down" />
+                <i className="fa fa-chevron-down dropdown-chevron"/>
               </OverlayTrigger>
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="super-colors">
               <div className="user-header m-b-20">
                 <Avatar
-                  user={{
-                    avatar_thumb: userStore.avatarThumb,
-                    username: userStore.username
-                  }}
+                  hideProfileDropDown={true}
+                  user={user}
                   size="sm"
                 />
 
@@ -203,7 +204,7 @@ class Sidemenu extends Component {
               {userStore.isAdmin && this.renderAdminOptions()}
 
               <div className="separator text-center">
-                <span>Stitch</span>
+                <span>InvoChat</span>
               </div>
 
               {userStore.canInvite && (
@@ -229,6 +230,20 @@ class Sidemenu extends Component {
               }}
             >
               <div className="rooms-menu__scroll-wrap">
+              <div className="menu-nav m-b-20">
+                <Element name={`${ROOM_MENU_ITEM_ANCHOR_PREFIX}threads`}>
+                  <NavLink
+                    to="/threads"
+                    className="item"
+                    activeClassName="active"
+                  >
+                    <div className="item-icon">
+                      <i className="fa fa-comment" />
+                    </div>
+                    <div className="item-text">Threads</div>
+                  </NavLink>
+                </Element>
+              </div>
                 <FavoritesList
                   heading={"Favorites"}
                   rooms={groupsStore.favoriteGroups}

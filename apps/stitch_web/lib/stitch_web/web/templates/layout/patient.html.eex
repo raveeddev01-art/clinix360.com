@@ -3,7 +3,7 @@
   <head>
     <%= render "_tag_manager_head.html" %>
     <%= render "_shared_head.html" %>
-    <title><%= if assigns[:title], do: @title, else: "Stitch" %></title>
+    <title><%= if assigns[:title], do: @title, else: "InvoChat" %></title>
     <meta name="description" content="<%= if assigns[:description], do: @description, else: "" %>" />
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/patient_app.css") %>">
     <%= render "_ie_compat.html" %>

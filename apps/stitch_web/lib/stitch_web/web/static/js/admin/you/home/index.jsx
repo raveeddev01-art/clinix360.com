@@ -16,7 +16,7 @@ export default class YouHome extends Component {
       <HomeItem
         icon="fa-database"
         title="Integrations"
-        description="Install applications that send notifications and events into Stitch rooms."
+        description="Install applications that send notifications and events into InvoChat rooms."
         openButtonText="Open"
         link="/admin/integrations"
         openExternal
@@ -38,7 +38,7 @@ export default class YouHome extends Component {
         <HomeItem
           icon="fa-shield"
           title="Security"
-          description="Access and download your team's HIPAA settings, BAA contract, and compliance exports."
+          description="Access and download your team's settings, BAA contract, and compliance exports."
           openButtonText="Open"
           link="/admin/team/security"
         />
@@ -60,7 +60,7 @@ export default class YouHome extends Component {
             <HomeItem
               icon="fa-credit-card"
               title="Billing"
-              description="Subscribe to Stitch plans across different products, edit your team payment details, and access invoice history."
+              description="Subscribe to InvoChat plans across different products, edit your team payment details, and access invoice history."
               openButtonText="Open"
               link="/admin/billing"
             />
@@ -80,7 +80,7 @@ export default class YouHome extends Component {
           <div className="admin-products-wrapper">
             <HomeItem
               icon="fa-comments"
-              title="Stitch Connect"
+              title="InvoChat"
               description="Team Communication: Send messages, write notes, upload files, and track tasks on any device."
               openButtonText="Launch"
               link="/"

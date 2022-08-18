@@ -70,9 +70,10 @@ class DotOptions extends React.Component {
             </MenuItem>
           )}
           <MenuItem
+            disabled
             target="_blank"
             rel="noopener noreferrer"
-            href="https://help.teamstitch.com"
+            href="/"
           >
             <i className="fa fa-question-circle m-r-5" /> Help Center
           </MenuItem>

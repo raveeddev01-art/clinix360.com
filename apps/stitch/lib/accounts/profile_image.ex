@@ -92,13 +92,6 @@ defmodule Stitch.Accounts.ProfileImage do
     }
   ]
 
-  @default_profile_images [
-    %{
-      image_url: S3.fullpath("default-avatar.png"),
-      thumb_url: S3.fullpath("default-avatar-thumb.png")
-    }
-  ]
-
   @doc """
   Given a user returns an S3 url pointing to a default avatar
   url that can be set for the user.

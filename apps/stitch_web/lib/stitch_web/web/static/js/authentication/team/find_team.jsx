@@ -22,7 +22,7 @@ class FindTeam extends Component {
   }
 
   componentWillMount() {
-    this.props.titleStore.setPageName("Find Carespace");
+    this.props.titleStore.setPageName("Find Workspace");
   }
 
   _onChange = event => {
@@ -51,21 +51,23 @@ class FindTeam extends Component {
 
     return (
       <OnboardPage
-        title="Find Your Carespace"
+        title="Find Your Workspace"
         headerCTA="signin"
         description={
           <span>
             We’ll send you an email to confirm your address and find existing
-            Carespaces you’ve joined or can join.
+            Workspaces you’ve joined or can join.
           </span>
         }
         onNext={this._onSubmit}
+        nextBtnId={"find-ws-next-btn"}
       >
         <ControlLabel>Email</ControlLabel>
         <FormGroup bsSize="large">
           <FormControl
             required
             autoFocus={!mobile}
+            id="find-ws-by-email-field"
             type="email"
             placeholder="Email"
             value={email}
@@ -73,8 +75,8 @@ class FindTeam extends Component {
           />
         </FormGroup>
         <div className="team-picker-find-team-helper">
-          Know your Carespace URL?{" "}
-          <Link to={singinUrl}>
+          Know your Workspace URL?{" "}
+          <Link id="singin-page-link" to={singinUrl}>
             <strong>Sign In</strong>
           </Link>
         </div>
@@ -94,8 +96,8 @@ class FindTeam extends Component {
         headerCTA="signin"
         description={
           <span>
-            We've emailed a confirmation link to {email}. Click the link to
-            confirm your address and get started. <br /> <br />Wrong email?{" "}
+            We sent an email to {email} if we found your account in our system.
+            This email will give you a link to find your workspace. <br /> <br />Wrong email?{" "}
             <a href={findTeamLink}>Please re-enter your address. </a>
           </span>
         }

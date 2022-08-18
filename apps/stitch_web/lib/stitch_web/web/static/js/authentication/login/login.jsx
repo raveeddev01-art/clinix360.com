@@ -27,7 +27,8 @@ class Login extends Component {
       password: "",
       loading: false,
       passwordReset: false,
-      errorMessage: ""
+      errorMessage: "",
+      showPassword: false,
     };
   }
 
@@ -112,20 +113,27 @@ class Login extends Component {
         </div>
 
         <div>
-          <b>Don't have an account with this Carespace?</b>
+          <b>Don't have an account with this Workspace?</b>
           <br />
-          Contact the Carespace administrator for an invitation.
+          Contact the Workspace administrator for an invitation.
         </div>
 
         <div>
           Just getting started?{" "}
           <a href={`https://${applicationHost}/signup/email`}>
-            Create a new Carespace.
+            Create a new Workspace.
           </a>
         </div>
       </div>
     );
   };
+
+  togglePasswordShow = () => {
+    const { showPassword } = this.state;
+    this.setState({
+      showPassword: !showPassword
+    });
+  }
 
   render() {
     const { teamName } = this.props.registrationStore;
@@ -151,6 +159,7 @@ class Login extends Component {
           >
             <FormControl
               name="email"
+              id="email-field"
               required
               autoFocus
               type="email"
@@ -160,25 +169,51 @@ class Login extends Component {
             />
           </FormGroup>
 
-          <FormGroup
+          <FormGroup 
+            bsSize="large" 
+            className="password-formgroup"
+            validationState={(this.state.errorMessage && "error") || null}
+          >
+            <FormControl
+              required
+              id="password-field"
+              name="password"
+              autoComplete="off"
+              type={this.state.showPassword ? "text" : "password"}
+              placeholder="Password"
+              maxLength={80}
+              value={this.state.password}
+              onChange={this.onChange}
+            />
+            <div className="password-icon" onClick={this.togglePasswordShow}>
+              <i className={this.state.showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} />
+            </div>
+          </FormGroup>
+
+          {/* <FormGroup
             bsSize="large"
             validationState={(this.state.errorMessage && "error") || null}
           >
             <FormControl
               name="password"
               required
-              type="password"
+              type={this.state.showPassword ? "text" : "password"}
               placeholder="Password"
               value={this.state.password}
               onChange={this.onChange}
             />
-          </FormGroup>
-
+            <PasswordInput onChange={this.onPasswordChange}/>
+            <a onClick={this.togglePasswordShow}>
+              <i className={this.state.showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} style={{marginRight: "5px"}}></i>
+              {this.state.showPasswordText}
+            </a>
+          </FormGroup> */}
           {this.state.errorMessage && (
             <InputErrorBlock> {this.state.errorMessage} </InputErrorBlock>
           )}
 
           <Button
+            id="signin-btn"
             type="submit"
             bsStyle="primary"
             bsSize="lg"

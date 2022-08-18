@@ -47,7 +47,7 @@ export default class CaseOrchardMedical extends Component {
           <div className="container">
             <div className="case-study-content">
               <h3>
-                Orchard Medical uses Stitch as a phone system replacement to
+                Orchard Medical uses InvoChat as a phone system replacement to
                 improve the efficiency of clinical coordination
               </h3>
 
@@ -72,8 +72,8 @@ export default class CaseOrchardMedical extends Component {
               </h4>
 
               <p className="m-b-30">
-                Most healthcare practices like Orchard Medical rely heavily on
-                phone and in-person communication. “Before using Stitch, we
+                Most InvoChat practices like Orchard Medical rely heavily on
+                phone and in-person communication. “Before using InvoChat, we
                 would beep everyone at their stations. Everyone has a phone at
                 their station, and so we would just beep them at their station
                 with whatever question we had,” says St. Marie.
@@ -107,13 +107,13 @@ export default class CaseOrchardMedical extends Component {
 
               <p className="m-b-40">
                 Orchard Medical wanted a better way for staff to coordinate
-                throughout the clinical day, and turned to Stitch as a solution.
+                throughout the clinical day, and turned to InvoChat as a solution.
                 St. Marie describes her experience spearheading adoption:
                 “Getting set up on the app and learning how to use it was really
                 pretty easy. It was myself and one of the other team members
                 here — we just downloaded it and installed it and started using
                 it right away. Then, we went around to all the stations and
-                installed Stitch. The rest is pretty self explanatory. It really
+                installed InvoChat. The rest is pretty self explanatory. It really
                 took no time at all and there wasn't an intense amount of
                 training.”
               </p>
@@ -121,7 +121,7 @@ export default class CaseOrchardMedical extends Component {
               <div className="quote text-center">
                 <i className="fa fa-quote-left fa-3x m-b-10" />
                 <h5 className="m-b-20">
-                  I would think anybody could learn how to use <br />Stitch in a
+                  I would think anybody could learn how to use <br />InvoChat in a
                   matter of minutes.
                 </h5>
 
@@ -134,12 +134,12 @@ export default class CaseOrchardMedical extends Component {
               <h4 className="m-b-30">Unblocking the clinical workflow</h4>
 
               <p className="m-b-40">
-                Stitch has changed the way care coordination happens at Orchard
-                Medical. “Now, we just Stitch the MA and say ‘Susan is returning
+                InvoChat has changed the way work coordination happens at Orchard
+                Medical. “Now, we just InvoChat the MA and say ‘Susan is returning
                 your call on Line 1.’ This way, when the MA is done, they have
                 the message in front of them and they'll just pick up the phone
                 and complete the waiting call. It saves us time from waiting and
-                waiting,” says St. Marie. Stitch has enabled the core workflow
+                waiting,” says St. Marie. InvoChat has enabled the core workflow
                 at Orchard Medical to become asynchronous, leading to gains in
                 efficiency and productivity.
               </p>
@@ -160,7 +160,7 @@ export default class CaseOrchardMedical extends Component {
                 has cut back on quite a bit of time. We don't have to get up and
                 go down the hall — we have a really big office — ask someone a
                 question and come back. When you have 3 people on hold, it's
-                just easier to send a Stitch, get your answer and move on,”
+                just easier to send a InvoChat, get your answer and move on,”
                 explains St. Marie.
               </p>
 
@@ -168,7 +168,7 @@ export default class CaseOrchardMedical extends Component {
 
               <p className="m-b-40">
                 Orchard Medical Associates sees over 17,000 patient visits a
-                year. Stitch now filters nearly all clinical communication about
+                year. InvoChat now filters nearly all clinical communication about
                 these patients: medical questions, patient intake, scheduling
                 logistics and billing clarifications. Ultimately, the effect has
                 been an improvement in the ability of Orchard Medical to deliver

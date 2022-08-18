@@ -5,7 +5,8 @@ import { animateScroll, scroller } from "react-scroll";
 import flow from "lodash/flow";
 import groupBy from "lodash/fp/groupBy";
 import mapValues from "lodash/fp/mapValues";
-import sortBy from "lodash/fp/sortBy";
+import orderBy from "lodash/fp/orderBy";
+
 import isFunction from "lodash/fp/isFunction";
 
 import REGEX from "lib/regex";
@@ -41,6 +42,7 @@ export default class BaseMessageStore {
   @action
   updateMessageData = (messageId, groupId, messageAttributes) => {
     const message = this.getMessageById(messageId);
+
     let updatedAttributes;
     if (message) {
       if (isFunction(messageAttributes)) {
@@ -109,8 +111,10 @@ export default class BaseMessageStore {
   // ===========================
 
   @action
-  startEdit(id) {
-    const message = this.getMessageById(id);
+  startEdit(id, message=null) {
+    if (!message) {
+      message = this.getMessageById(id);
+    }
 
     if (message) {
       this.messageInEdit = message;
@@ -240,6 +244,7 @@ export default class BaseMessageStore {
     this.updateMessageData(payload.message_id, payload.group_id, {
       reactions_web: payload.reactions_web
     });
+    this.rootStore.addonStore.updateThreadAddonPanel();
   };
 
   @action
@@ -277,9 +282,9 @@ export default class BaseMessageStore {
   // Utilities
   // ===========================
 
-  groupMessagesByDate(messagesToGroup) {
+  groupMessagesByDate(messagesToGroup, orderby = "asc") {
     return flow(
-      sortBy("inserted_at"),
+      orderBy("inserted_at", orderby),
       groupBy(sortableDateFromMessage),
       mapValues(msgGroup => {
         const [firstMsg, ...messages] = msgGroup;

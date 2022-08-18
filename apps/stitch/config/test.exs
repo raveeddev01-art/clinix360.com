@@ -4,10 +4,11 @@ config :bcrypt_elixir, :log_rounds, 4
 
 repo_opts = [
   adapter: Ecto.Adapters.Postgres,
-  password: System.get_env("STITCH_POSTGRES_PASSWORD"),
-  database: "stitch_test",
-  hostname: "localhost",
-  port: String.to_integer(System.get_env("PSQL_PORT") || "5432"),
+  port: String.to_integer(System.get_env("STITCH_CONNECT_POSTGRES_PORT") || "5432"),
+  hostname: System.get_env("STITCH_CONNECT_POSTGRES_HOSTNAME") || "localhost",
+  username: System.get_env("STITCH_CONNECT_POSTGRES_USERNAME") || "postgres",
+  password: System.get_env("STITCH_CONNECT_POSTGRES_PASSWORD") || "postgres",
+  database: System.get_env("STITCH_CONNECT_POSTGRES_DATABASE") || "stitch_connect_test",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_timeout: :timer.minutes(5),
   timeout: :timer.minutes(5)
@@ -18,7 +19,7 @@ config :stitch, Stitch.ReadReplicaRepo, repo_opts
 
 config :stitch, :read_repo, Stitch.Repo
 
-config :stitch, Stitch.Mailer, adapter: Bamboo.TestAdapter
+config :stitch, Stitch.NewMailer, adapter: Bamboo.TestAdapter
 
 config :stitch, Stitch.Exports, enabled: false
 

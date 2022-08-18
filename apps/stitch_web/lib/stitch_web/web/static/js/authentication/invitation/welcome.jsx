@@ -37,7 +37,7 @@ class Welcome extends Component {
           description={
             <span>
               Time to join the <strong>{invitationStore.teamName}</strong>{" "}
-              carespace.
+              workspace.
             </span>
           }
         >

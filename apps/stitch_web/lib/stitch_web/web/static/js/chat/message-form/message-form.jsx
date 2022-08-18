@@ -6,22 +6,22 @@ import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
 import some from "lodash/some";
 
-import { confirmModal } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
 import TypingUsers from "./components/typing-users";
-import FormattingGuide from "./components/formatting-guide";
+import FormattingCommands from "./components/formatting-commands";
 import JumpingIndicator from "./components/jumping-indicator";
-import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
+import ConnectionError from "./components/connection-error";
 
-@inject("socketStore", "uploadStore", "billingStore", "sidemenuStore")
+@inject("socketStore", "uploadStore", "billingStore", "sidemenuStore", "socketStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
     super(props);
 
+    this.applyTextStyle = this.applyTextStyle.bind(this);
     this.state = {
       text: "",
       searchFilter: "",
@@ -29,6 +29,26 @@ class MessageForm extends Component {
       openEmojiSearch: false,
       isFocused: true
     };
+  }
+
+  applyTextStyle(event, style) {
+    const textStyles = {
+      bold: "**",
+      italic: "__",
+      strike: "~~",
+      highlight: "``",
+      quote: "> "
+    };
+
+    var cursorStart = this.textInput.selectionStart;
+    var cursorEnd = this.textInput.selectionEnd;
+    var formatedText = textStyles[style]
+    if (cursorStart != cursorEnd) {
+      formatedText = textStyles[style][0] + this.getCurrentSelection() + textStyles[style][1];
+    }
+
+    this.insertWord(formatedText, 1);
+    this.textInput.focus();
   }
 
   componentWillReceiveProps() {
@@ -67,53 +87,36 @@ class MessageForm extends Component {
   };
 
   onEnter = () => {
-    const { messageStore, socketStore } = this.props;
+    const { messageStore, socketStore, onEnterCallback } = this.props;
 
     // if not connected, just no send message at all
-    if (!socketStore.isConnected) {
-      return;
-    }
-
-    const trimmedText = this.state.text.trim();
-
-    if (messageStore.messageInEdit) {
-      if (!messageStore.textInEdit) {
-        confirmModal({
-          title: "Delete Message",
-          message:
-            "Are you sure you want to delete this message? This cannot be undone.",
-          okLabel: "Delete"
-        }).then(() => {
-          messageStore.delete(messageStore.messageInEdit.id);
-          messageStore.finishEdit();
-        });
-      } else {
-        messageStore.finishEdit();
+    if(navigator.onLine) {
+      if (!socketStore.isConnected) {
+        return;
       }
-    } else if (trimmedText) {
-      messageStore.sendMessage(trimmedText);
-
-      this.setState({ text: "" });
+  
+      const trimmedText = this.state.text.trim();
+      if (trimmedText) {
+        if (!onEnterCallback) {
+          messageStore.sendMessage(trimmedText);
+        }
+        else {
+          onEnterCallback(trimmedText);
+        }
+        this.setState({ text: "" });
+      }
     }
   };
 
   onKeyUp = evt => {
     const { messageStore, allowMention } = this.props;
-    const { messageInEdit } = messageStore;
     const { openMentionMenu, openEmojiSearch } = this.state;
 
     if (evt.keyCode === 27) {
       // escape
       if (openMentionMenu || openEmojiSearch) {
         this.setState({ openMentionMenu: false, openEmojiSearch: false });
-      } else if (messageInEdit) {
-        messageStore.cancelEdit();
-      }
-    } else if (evt.keyCode === 38) {
-      // Up arrow
-      if (!this.state.text && !messageInEdit) {
-        messageStore.editLastMessage();
-      }
+      } 
     } else if ([37, 38, 39, 40].indexOf(evt.keyCode) > -1) {
       // Do nothing for arrow keys
     } else {
@@ -215,11 +218,7 @@ class MessageForm extends Component {
   };
 
   getText = () => {
-    const { messageStore } = this.props;
-
-    return messageStore.messageInEdit
-      ? messageStore.textInEdit
-      : this.state.text;
+    return this.state.text;
   };
 
   getCurrentWord = () => {
@@ -232,15 +231,12 @@ class MessageForm extends Component {
     return `${preWord}${postWord}`;
   };
 
-  updateInputText = value => {
-    const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
+  getCurrentSelection = () => {
+    return this.getText().substring(this.textInput.selectionStart, this.textInput.selectionEnd)
+  }
 
-    if (messageInEdit) {
-      messageStore.editText(value);
-    } else {
-      this.setState({ text: value });
-    }
+  updateInputText = value => {
+    this.setState({ text: value });
   };
 
   typingStarted = () => {
@@ -249,19 +245,19 @@ class MessageForm extends Component {
     messageStore.startTyping();
   };
 
-  insertWord = word => {
+  insertWord = (word, setpBack = 0) => {
     const cursorPos = this.textInput.selectionStart;
     const text = this.getText();
     this.updateInputText(
       text.substring(0, this.textInput.selectionStart) +
-        word +
-        text.substring(this.textInput.selectionEnd)
+      word +
+      text.substring(this.textInput.selectionEnd)
     );
 
     setTimeout(() => {
       this.textInput.setSelectionRange(
-        cursorPos + word.length,
-        cursorPos + word.length
+        cursorPos + word.length - setpBack,
+        cursorPos + word.length - setpBack
       );
       this.textInput.focus();
     });
@@ -311,28 +307,39 @@ class MessageForm extends Component {
     }, 100);
   };
 
+  renderExtras() {
+    if(navigator.onLine) {
+      if(this.props.allowTypingUsers) {
+        return <TypingUsers />;
+      } else {
+        return "";
+      }
+    } else {
+      return <ConnectionError />;
+    }
+  }
+
   renderInput() {
     const {
-      messageStore: { messageInEdit },
       socketStore,
-      allowMention
+      allowMention,
+      inThread
     } = this.props;
     const { isFocused } = this.state;
-
     const text = this.getText();
+
     const className = classNames("form-control", "message-text", {
-      disconnected: !socketStore.isConnected,
-      editing: !!messageInEdit
+      disconnected: !socketStore.isConnected
     });
 
     const inputWrapperClass = classNames("message-input-wrapper", {
-      isFocused: isFocused || messageInEdit
+      isFocused: isFocused
     });
 
     return (
       <div className={inputWrapperClass}>
         <div className="message-form-upload">
-          <InsertMenu />
+          <InsertMenu isComment={inThread ? true : false}/>
         </div>
 
         <Textarea
@@ -373,7 +380,6 @@ class MessageForm extends Component {
       allowTypingUsers,
       allowMention,
       allowJumpingIndicator,
-      messageStore,
       currentGroup
     } = this.props;
 
@@ -395,16 +401,15 @@ class MessageForm extends Component {
           <EmojiSearch filter={searchFilter} onSelect={this.onSelectEmoji} />
         )}
 
+        <FormattingCommands applyStyleEvent={this.applyTextStyle} />
         {this.renderInput()}
 
-        {text && text.length < 4000 && <FormattingGuide />}
         {text.length > 3999 && (
           <div className="character-limit">
             You have reached the 4000 character limit per message.
           </div>
         )}
-        {allowTypingUsers && <TypingUsers />}
-        <EditingCommand messageStore={messageStore} />
+        { this.renderExtras() }
       </div>
     );
   }

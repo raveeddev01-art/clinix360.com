@@ -16,14 +16,14 @@ class DrChronoSetupInstructions extends Component {
               Now go to the section titled 'Webhook'. Set a name for your
               webhook. We recommend 'Stitch'. Then, copy and paste 'Your
               Callback URL' (on the right) into drchrono. Set your webhook
-              secret token to ‘stitch’.
+              secret token to InvoChat.
             </p>
           </Col>
           <Col sm={7}>
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 4"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-4-new.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-4-invochat-600.png"
               />
             </div>
             <DrChronoWebhookUrl />
@@ -48,7 +48,7 @@ class DrChronoSetupInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 5"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-5-new.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-5-invochat-600.png"
               />
             </div>
           </Col>
@@ -60,8 +60,8 @@ class DrChronoSetupInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 3</h4>
             <p>
-              Finally, in Stitch, select which notifications you want to display
-              and confirm your room. Then click 'Save Integration' in Stitch to
+              Finally, in InvoChat, select which notifications you want to display
+              and confirm your room. Then click 'Save Integration' in InvoChat to
               complete. Note that when you are done, drcrhrono will continue to
               list the app as in 'Restricted Mode', which is expected for the
               integration.

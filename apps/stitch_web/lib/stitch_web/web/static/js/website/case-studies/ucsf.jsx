@@ -44,7 +44,7 @@ export default class CaseUCSF extends Component {
           <div className="container">
             <div className="case-study-content">
               <h3>
-                UCSF Citywide implements Stitch to unite team communication
+                UCSF Citywide implements InvoChat to unite team communication
                 across the city and improve client care
               </h3>
 
@@ -105,20 +105,20 @@ export default class CaseUCSF extends Component {
 
               <p className="m-b-40">
                 Citywide recognized the need for a better way to communicate,
-                and turned to Stitch.
+                and turned to InvoChat.
               </p>
 
-              <h4 className="m-b-30">A quick transition to using Stitch</h4>
+              <h4 className="m-b-30">A quick transition to using InvoChat</h4>
 
               <p className="m-b-40">
                 Organizations often face challenges in adopting new
                 technologies, and one of the best approaches is to utilize a
                 product champion. At Citywide, that was Collins. “Making sure
-                everyone used Stitch boiled down to me going around to
-                everyone's desk and saying, ‘Did you put Stitch on your phone? I
-                can show you how. Did you know you can use Stitch on a computer
+                everyone used InvoChat boiled down to me going around to
+                everyone's desk and saying, ‘Did you put InvoChat on your phone? I
+                can show you how. Did you know you can use InvoChat on a computer
                 too? Let me should you how to do that.’ Following a successful
-                rollout, Citywide began benefiting from the impacts of Stitch.
+                rollout, Citywide began benefiting from the impacts of InvoChat.
               </p>
 
               <h4 className="m-b-30">
@@ -141,14 +141,14 @@ export default class CaseUCSF extends Component {
                 Collins recalls a specific example of working with Lightell, “I
                 remember you were at a primary care appointment with a client
                 and needed the meds list. So I just sent you the meds list on
-                Stitch and you were able to take it in immediately. You can just
-                send it because it's HIPAA compliant. I don't have to attach it
+                InvoChat and you were able to take it in immediately. You can just
+                send it because it's compliant. I don't have to attach it
                 to an email or scan it or do anything else to it. I can just
                 send it and it's there. Quick.”
               </p>
 
               <p className="m-b-40">
-                Stitch has also helped Citywide case managers feel more secure
+                InvoChat has also helped Citywide case managers feel more secure
                 in their work while out in the city. Lightell explains, “In more
                 emergency situations, there might be more risk if you're out in
                 the community and a client becomes hostile. You can utilize a
@@ -156,7 +156,7 @@ export default class CaseUCSF extends Component {
                 there to be with you. At least just let your team know what's
                 going on so someone has an idea. You're insulated and it can
                 feel like anything goes sometimes. Being able to have that
-                connection to your team through Stitch is very valuable.”
+                connection to your team through InvoChat is very valuable.”
               </p>
 
               <h4 className="m-b-30">
@@ -171,16 +171,16 @@ export default class CaseUCSF extends Component {
                 to get in touch with me about medications – and a lot of times
                 there's an urgent situation such as a missing medications or a
                 client needs to pick it up early – they can get in touch with me
-                really quickly through Stitch.” By having a real-time line of
+                really quickly through InvoChat.” By having a real-time line of
                 communication to Collins, nurses can quickly service patients
-                and improve their experience in the healthcare system.
+                and improve their experience in the InvoChat system.
               </p>
 
               <div className="quote dssi-quote text-center">
                 <i className="fa fa-quote-left fa-3x m-b-10" />
                 <h5 className="m-b-20">
                   I can get all the information I need immediately, right in
-                  Stitch.
+                  InvoChat.
                 </h5>
 
                 <div className="name">
@@ -192,20 +192,20 @@ export default class CaseUCSF extends Component {
               </div>
 
               <p className="m-b-40">
-                Stitch also lets Citywide health care providers operate more
+                InvoChat also lets Citywide health care providers operate more
                 asynchronously. “Sometimes you're in a situation where you can't
                 pick up the phone but you can send a message. I can send
-                messages on Stitch when I'm seeing someone. I can take a break
+                messages on InvoChat when I'm seeing someone. I can take a break
                 and send a message. You can't really take a break if you're in a
                 room with a client to make a phone call and talk about another
                 client's PHI. But you can do this really quickly through
-                Stitch,” says Collins.
+                InvoChat,” says Collins.
               </p>
 
               <h4 className="m-b-30">Generating results across the board</h4>
 
               <p className="m-b-40">
-                Citywide implemented Stitch to help coordinate care across their
+                Citywide implemented InvoChat to help coordinate care across their
                 patient population, and in several months saw significant
                 benefits on the platform:
               </p>
@@ -220,16 +220,16 @@ export default class CaseUCSF extends Component {
 
               <p className="m-b-40">
                 Asked if there’s anything other behavioral health programs
-                should know about Stitch, Collins replied, “Simply that it's
+                should know about InvoChat, Collins replied, “Simply that it's
                 easy to use and it gets the job done.” Lightell added, “It's
                 reliable and great software.” Asked about what he looks forward
-                to in the future of Stitch, Lightell expressed interest about
-                the upcoming release of Stitch Manage: “I'm always looking for
+                to in the future of InvoChat, Lightell expressed interest about
+                the upcoming release of InvoChat Manage: “I'm always looking for
                 ways to organize the work I need to do for clients. Blood draws,
                 labs, etc. It would be interesting to try patient-centric task
-                management.” The mission of Stitch is to enable healthcare teams
+                management.” The mission of InvoChat is to enable InvoChat teams
                 to easily provide quality patient experiences. As Citywide looks
-                to add tools that improve the quality of care, Stitch aims to be
+                to add tools that improve the quality of care, InvoChat aims to be
                 an enduring and powerful partner.
               </p>
             </div>

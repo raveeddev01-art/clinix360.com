@@ -22,7 +22,7 @@ class RoleChangedModal extends Component {
         <Modal.Body className="role-change-modal-body">
           <h5>
             Your account permissions has been changed. You are now&nbsp;
-            <RoleText roles={roles} /> of the carespace. You must reload for the
+            <RoleText roles={roles} /> of the workspace. You must reload for the
             changes to take effect.
           </h5>
         </Modal.Body>

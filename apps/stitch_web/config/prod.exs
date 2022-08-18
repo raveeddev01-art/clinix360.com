@@ -16,10 +16,11 @@ use Mix.Config
 config :stitch_web, Stitch.Web.Endpoint,
   load_from_system_env: true,
   http: [
-    port: {:system, "PORT"},
+    port: {:system, "STITCH_CONNECT_APP_PORT"},
+    # protocol_options: [timeout: 5_000_000],
     compress: true
   ],
-  url: [scheme: "https", host: System.get_env("APP_HOST"), port: 443],
+  url: [scheme: "https", host: System.get_env("STITCH_CONNECT_APP_HOST"), port: 443],
   force_ssl: [
     rewrite_on: [:x_forwarded_proto],
     # Adds Strict-Transport-Security. Note, Aptible also does that but we don't want to

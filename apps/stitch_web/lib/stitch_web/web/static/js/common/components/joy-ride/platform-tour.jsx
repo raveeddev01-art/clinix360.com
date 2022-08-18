@@ -2,7 +2,7 @@ import Joyride from "react-joyride";
 
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { ACTIONS, EVENTS } from "react-joyride/es/constants";
+import { ACTIONS, EVENTS } from "react-joyride/lib/constants";
 
 import JoyRideToolTip from "./tooltip";
 
@@ -39,11 +39,11 @@ class PlatformTour extends Component {
       {
         placement: "center",
         disableBeacon: true,
-        title: "Welcome to Stitch",
+        title: "Welcome to InvoChat",
         target: ".admin-content-wrapper",
         content: (
           <p>
-            Stitch is a care coordination platform for healthcare teams.
+            InvoChat is a work coordination platform for InvoChat teams.
             Communicate, write notes, track tasks and upload files on any
             device.
           </p>
@@ -80,7 +80,7 @@ class PlatformTour extends Component {
         target: ".admin-admin-wrapper",
         content: (
           <p>
-            Manage and view your Carespace settings, security, membership, and
+            Manage and view your Workspace settings, security, membership, and
             more.
           </p>
         )
@@ -88,7 +88,7 @@ class PlatformTour extends Component {
       {
         placement: "right",
         disableBeacon: true,
-        title: "Stitch Controls",
+        title: "InvoChat Controls",
         target: ".switcher__bottom",
         content: <p>Sign out or lock the app.</p>
       }

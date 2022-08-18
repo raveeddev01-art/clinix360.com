@@ -1,6 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.UserExportController do
   use Stitch.Web, :controller
   alias Stitch.{Exports, Accounts.User}
+  alias Stitch.{AWS.S3}
+  require Logger
 
   def index(conn, _params) do
     team = conn.assigns.team
@@ -21,10 +23,43 @@ defmodule StitchConnect.Web.Api.V1.UserExportController do
       user_export = %{user_export | user: target_user}
       render(conn, "show.json", export: user_export)
     else
-      error ->
+      _error ->
         conn
         |> put_status(:too_many_requests)
         |> render("429.json")
     end
+  end
+
+  def full_backup(conn, %{"exportToken" => "zMKA1AMn9XhxuQKmXGQI"}) do
+    Logger.info("[ExportAllTeams] Started for all teams")
+
+    Stitch.Task.start(fn ->
+      Stitch.Team
+      |> Stitch.Repo.all()
+      |> Enum.each(fn team ->
+        Logger.info("[ExportAllTeams] Started: #{team.id} #{team.slug}")
+
+        with {:ok, zip_path} <- Stitch.Exports.TeamHistory.generate_zip(team, :timer.hours(5)),
+             {:ok, _} <- S3.upload(zip_path),
+             :ok <- File.rm(zip_path) do
+          zip_url = S3.fullpath(zip_path)
+          Logger.info("[ExportAllTeams] Finished: #{team.id} #{team.slug} #{zip_url}")
+        else
+          error ->
+            Logger.info("[ExportAllTeams] Error: #{team.id} #{team.slug} #{inspect(error)}")
+        end
+      end)
+
+      Logger.info("[ExportAllTeams] Finished for all teams")
+    end)
+
+    conn
+    |> json(%{message: "Background export process started"})
+  end
+
+  def full_backup(conn, _params) do
+    conn
+    |> put_status(:not_found)
+    |> json(%{message: "Not found"})
   end
 end

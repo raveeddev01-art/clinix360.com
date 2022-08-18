@@ -8,7 +8,7 @@ import Button from "react-bootstrap/lib/Button";
 import { inject, observer } from "mobx-react";
 import { isAdminOrOwner } from "lib/utils";
 
-import FileAttachment from "common/components/messages/message-content/file-attachment";
+import FileAttachment from "common/components/messages/message-content/file-attachments/file-attachment";
 import FileHeading from "common/components/file/FileHeading";
 import FileInfo from "common/components/file/FileInfo";
 import FileComment from "common/components/file/FileComment";
@@ -53,6 +53,13 @@ class FileDetailPage extends Component {
     });
   };
 
+  downloadFile = () => {
+    const { teamFileStore } = this.props;
+    const { file } = this.props.teamFileStore;
+
+    teamFileStore.downloadFile(file.url, file.filename);
+  }
+
   renderPublicLink(file) {
     const url = file.public_url;
 
@@ -79,7 +86,7 @@ class FileDetailPage extends Component {
         pullRight
       >
         {!desktopStore.isElectron && (
-          <MenuItem eventKey="1" href={file.url} target="_blank">
+          <MenuItem eventKey="1" onClick={this.downloadFile}>
             Download
           </MenuItem>
         )}
@@ -126,7 +133,6 @@ class FileDetailPage extends Component {
               file.comments.map(comment => (
                 <FileComment comment={comment} key={comment.id} />
               ))}
-            <FileCommentInput file={file} />
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ defmodule Stitch.FindYourTeam.Email do
   """
 
   import Bamboo.Email
-  import Bamboo.MandrillHelper
+  # import Bamboo.MandrillHelper
 
   alias Stitch.FindYourTeam.Token
 
@@ -16,16 +16,10 @@ defmodule Stitch.FindYourTeam.Email do
   @spec email(Token.t, binary) :: Bamboo.Email.t
   def email(%Token{} = token, endpoint_base_url) do
     new_email()
-    |> template("Find Your Team")
     |> to(token.email)
-    |> from({"Stitch", "support@teamstitch.com"})
+    |> from({"InvoChat", "hello@#{System.get_env("MAILGUN_DOMAIN")}"})
     |> subject("Find Your Team")
-    |> put_param("global_merge_vars", [
-      %{
-        "name": "findYourTeam",
-        "content": "#{endpoint_base_url}/find-your-team/#{token.token}"
-      },
-    ])
-    |> Stitch.Mailer.deliver_later
+    |> text_body("Find your workspace here: #{endpoint_base_url}/find-your-team/#{token.token}")
+    |> Stitch.NewMailer.deliver_now()
   end
 end

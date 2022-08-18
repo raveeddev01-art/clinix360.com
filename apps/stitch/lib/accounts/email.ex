@@ -8,8 +8,7 @@ defmodule Stitch.Accounts.Email do
   alias Stitch.Accounts.{User, Role}
 
   @guest_roles Role.guests()
-  @from_address {"Stitch", "support@teamstitch.com"}
-
+  @from_address {"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"}
   @doc """
   Sends confirmation code email to the user.
   """
@@ -21,17 +20,11 @@ defmodule Stitch.Accounts.Email do
       |> List.to_string()
 
     new_email()
-    |> template("Sign-Up 1: Authenticate Provider Code (Connect)")
+    |> text_body("Sign-Up 1: Authenticate Provider Code (Connect)")
     |> to(user.email)
     |> from(@from_address)
-    |> subject("Stitch confirmation code: #{code_string}")
-    |> put_param("global_merge_vars", [
-      %{
-        name: "confirmationCode",
-        content: code_string
-      }
-    ])
-    |> Stitch.Mailer.deliver_later()
+    |> subject("InvoChat confirmation code: #{code_string}")
+    |> Stitch.NewMailer.deliver_now()
   end
 
   @doc """
@@ -40,21 +33,13 @@ defmodule Stitch.Accounts.Email do
   @spec reset_password_email(User.t(), binary) :: Bamboo.Email.t()
   def reset_password_email(user, reset_url) do
     new_email()
-    |> template("Password Reset (Connect)")
     |> to(user.email)
     |> from(@from_address)
     |> subject("Reset Your Password")
-    |> put_param("global_merge_vars", [
-      %{
-        name: "resetPasswordUrl",
-        content: reset_url
-      },
-      %{
-        name: "receiverFirstName",
-        content: user.first_name
-      }
-    ])
-    |> Stitch.Mailer.deliver_later()
+    |> text_body("Hello #{user.first_name}
+    Hit to reset your password: #{reset_url}
+    ")
+    |> Stitch.NewMailer.deliver_now()
   end
 
   def role_changed_email(%User{email: to_address, first_name: first_name}, [old_role], [new_role]) do
@@ -77,7 +62,7 @@ defmodule Stitch.Accounts.Email do
         content: Role.display_name(new_role)
       }
     ])
-    |> Stitch.Mailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   defp role_change_subject(old_role, new_role)
@@ -96,21 +81,13 @@ defmodule Stitch.Accounts.Email do
   @spec temporary_password_reset(Stitch.Accounts.User.t(), binary) :: {:ok}
   def temporary_password_reset(user, reset_url) do
     new_email()
-    |> template("Security Password Reset (Phoenix)")
     |> to(user.email)
-    |> from({"Stitch", "support@teamstitch.com"})
-    |> subject("ACTION REQUIRED: Please reset your Stitch password")
-    |> put_param("global_merge_vars", [
-      %{
-        name: "resetPasswordUrl",
-        content: reset_url
-      },
-      %{
-        name: "receiverFirstName",
-        content: user.first_name
-      }
-    ])
-    |> Stitch.Mailer.deliver_later()
+    |> from({"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
+    |> subject("ACTION REQUIRED: Please reset your Invochat password")
+    |> text_body("Hello #{user.first_name}
+    Please hit the link to chnage password #{reset_url}
+    ")
+    |> Stitch.NewMailer.deliver_now()
   end
 
   def unread_messages_email([], _team), do: nil
@@ -120,9 +97,12 @@ defmodule Stitch.Accounts.Email do
     |> template("Message Waiting - Offline Email (Connect)")
     |> to(Enum.map(recipients, & &1.email))
     |> from(@from_address)
-    |> subject("[Stitch Connect] Notifications from #{team_name} *|userTime|*")
+    |> subject("[InvoChat Messaging] Notifications from #{team_name}")
+    |> text_body("Hello,
+    There are some unread messages, please check these
+    ")
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
-    |> Stitch.Mailer.deliver_later()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   defp unread_messages_for_recipient(%{

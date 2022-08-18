@@ -13,16 +13,16 @@
 				<table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
 				<tr>
 				<![endif]-->
-			    
+
 				<!--[if mso]>
 				<td valign="top" width="600" style="width:600px;">
 				<![endif]-->
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
-                        
+
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
-                        
-                            <div style="text-align: left;"><a href="http://teamstitch.com" target="_blank"><img align="center" height="50" src="https://gallery.mailchimp.com/5fbbcf9bc8ed5ff1328134d1e/images/6918962f-cbf4-485d-9e45-e9688303cd7c.png" style="width: 50px; height: 50px; margin: 0px 0px 15px;" width="50"></a></div>
+
+                            <div style="text-align: left;"><a href="http://invochat.io" target="_blank"><img align="center" height="250" src="https://invochat.io/images/invochat-logo-blue.png" style="margin: 0px 0px 15px;" width="250"></a></div>
 
                         </td>
                     </tr>
@@ -30,7 +30,7 @@
 				<!--[if mso]>
 				</td>
 				<![endif]-->
-                
+
 				<!--[if mso]>
 				</tr>
 				</table>
@@ -57,19 +57,19 @@
 				<table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
 				<tr>
 				<![endif]-->
-			    
+
 				<!--[if mso]>
 				<td valign="top" width="600" style="width:600px;">
 				<![endif]-->
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
-                        
+
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: Verdana, Geneva, sans-serif;">
-                        
+
                             <h2><br>
 <font color="#003366" face="source sans pro, helvetica neue, helvetica, arial, sans-serif"><span style="font-size:30px"><strong>Manage your notifications</strong></span></font></h2>
 <br>
-<font color="#000000" face="source sans pro, helvetica neue, helvetica, arial, sans-serif"><span style="font-size:18px">Notifications in Stitch are key to staying in sync with conversations across rooms and direct messages. You can control how you want your notifications to appear on desktop and mobile:</span></font><br>
+<font color="#000000" face="source sans pro, helvetica neue, helvetica, arial, sans-serif"><span style="font-size:18px">Notifications in InvoChat are key to staying in sync with conversations across rooms and direct messages. You can control how you want your notifications to appear on desktop and mobile:</span></font><br>
 &nbsp;
                         </td>
                     </tr>
@@ -77,7 +77,7 @@
 				<!--[if mso]>
 				</td>
 				<![endif]-->
-                
+
 				<!--[if mso]>
 				</tr>
 				</table>
@@ -123,7 +123,7 @@
                         </td>
                     </tr>
                 </tbody></table>
-<!--            
+<!--
                 <td class="mcnDividerBlockInner" style="padding: 18px;">
                 <hr class="mcnDividerContent" style="border-bottom-color:none; border-left-color:none; border-right-color:none; border-bottom-width:0; border-left-width:0; border-right-width:0; margin-top:0; margin-right:0; margin-bottom:0; margin-left:0;" />
 -->
@@ -137,15 +137,15 @@
 	<tbody class="mcnBoxedTextBlockOuter">
         <tr>
             <td valign="top" class="mcnBoxedTextBlockInner">
-                
+
 				<!--[if gte mso 9]>
 				<td align="center" valign="top" ">
 				<![endif]-->
                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;" class="mcnBoxedTextContentContainer">
                     <tbody><tr>
-                        
+
                         <td style="padding-top:9px; padding-left:18px; padding-bottom:9px; padding-right:18px;">
-                        
+
                             <table border="0" cellspacing="0" class="mcnTextContentContainer" width="100%" style="min-width: 100% !important;background-color: #FFFFFF;border: 1px dashed;">
                                 <tbody><tr>
 <td valign="top" class="mcnTextContent" style="padding: 18px;color: #F2F2F2;font-family: &quot;Source Sans Pro&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size: 14px;font-weight: normal;text-align: center;">
@@ -163,7 +163,7 @@ Email:&nbsp;</span><font color="#000000"><a href="<%=@user_email%>" target="_bla
 				<!--[if gte mso 9]>
 				</td>
 				<![endif]-->
-                
+
 				<!--[if gte mso 9]>
                 </tr>
                 </table>
@@ -179,19 +179,19 @@ Email:&nbsp;</span><font color="#000000"><a href="<%=@user_email%>" target="_bla
 				<table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
 				<tr>
 				<![endif]-->
-			    
+
 				<!--[if mso]>
 				<td valign="top" width="600" style="width:600px;">
 				<![endif]-->
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
-                        
+
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
-                        
-                            <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">If you need anything, we're here for you. Simply <a href="mailto:support@teamstitch.com" target="_blank">c</a><span style="color:#000000"><a href="mailto:support@teamstitch.com" target="_blank">ontact us</a> with feedback or a support request. We love to hear from you :)</span><br>
+
+                            <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">If you need anything, we're here for you. Simply <a href="mailto:info@invozone.com" target="_blank">c</a><span style="color:#000000"><a href="mailto:info@invozone.com" target="_blank">ontact us</a> with feedback or a support request. We love to hear from you :)</span><br>
 <br>
 See you inside!<br>
-<span style="color:#000000">— Team Stitch&nbsp;</span></span></span><br>
+<span style="color:#000000">— Team InvoChat&nbsp;</span></span></span><br>
 &nbsp;
                         </td>
                     </tr>
@@ -199,7 +199,7 @@ See you inside!<br>
 				<!--[if mso]>
 				</td>
 				<![endif]-->
-                
+
 				<!--[if mso]>
 				</tr>
 				</table>
@@ -226,17 +226,18 @@ See you inside!<br>
 				<table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
 				<tr>
 				<![endif]-->
-			    
+
 				<!--[if mso]>
 				<td valign="top" width="600" style="width:600px;">
 				<![endif]-->
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
-                        
+
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: Verdana, Geneva, sans-serif; line-height: 200%;">
-                        
+
                             <div style="text-align: center;"><br>
-<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://teamstitch.com" target="_blank">Stitch Technologies, Inc.</a><br>
+
+<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://InvoChat.io" target="_blank">InvoChat Technologies, Inc.</a><br>
 156 2nd Street, 2nd Floor&nbsp;• San Francisco, CA 94105</span></span></div>
 
                         </td>
@@ -245,7 +246,7 @@ See you inside!<br>
 				<!--[if mso]>
 				</td>
 				<![endif]-->
-                
+
 				<!--[if mso]>
 				</tr>
 				</table>
@@ -260,4 +261,3 @@ See you inside!<br>
                                 </td>
                             </tr>
                         </table>
-                        

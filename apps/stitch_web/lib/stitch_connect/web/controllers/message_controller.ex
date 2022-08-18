@@ -4,7 +4,7 @@ defmodule StitchConnect.Web.MessageController do
 
   def download(conn, %{"id" => message_id}) do
     current_user = conn.assigns.current_user
-    message = MessageQueries.get_by_id(message_id)
+    message = MessageQueries.load_message(message_id, current_user)
 
     case GroupAuthorization.can_view?(message.group, current_user) do
       true ->

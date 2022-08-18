@@ -6,9 +6,9 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
-const title = "Carespace Name";
+const title = "Workspace Name";
 const description =
-  "Your carespace's name will be shown in menus and headings. It will usually be or include the name of your organization.";
+  "Your workspace's name will be shown in menus and headings. It will usually be or include the name of your organization.";
 
 @inject("teamStore")
 @observer
@@ -37,7 +37,7 @@ class TeamNamePanel extends Component {
     return teamStore
       .editTeamName(this.state.teamName)
       .then(() => {
-        onSuccess("Carespace name has been successfully updated.");
+        onSuccess("Workspace name has been successfully updated.");
       })
       .catch(err => {
         onError(err.data.message);
@@ -54,7 +54,7 @@ class TeamNamePanel extends Component {
         onEdit={this._onToggleEdit}
       >
         <FormGroup controlId="teamName" bsSize="large">
-          <ControlLabel>Carespace Name</ControlLabel>
+          <ControlLabel>Workspace Name</ControlLabel>
           <FormControl
             type="text"
             value={teamName}

@@ -62,7 +62,7 @@ export default class Demo extends Component {
           </h3>
           <img
             src="/images/homepage-platform.png"
-            alt="Stitch Platform"
+            alt="InvoChat Platform"
             className="img-responsive hidden-xs hidden-sm"
           />
         </div>
@@ -98,7 +98,7 @@ export default class Demo extends Component {
                   <FormControl
                     name="email"
                     required
-                    placeholder="hello@stitch.health"
+                    placeholder="hello@dvlcloud.com"
                     type="email"
                     value={this.state.email}
                     onChange={this.handleChange}
@@ -126,7 +126,7 @@ export default class Demo extends Component {
                   <FormControl
                     name="companyName"
                     required
-                    placeholder="Stitch Health"
+                    placeholder="InvoZone"
                     type="text"
                     value={this.state.companyName}
                     onChange={this.handleChange}

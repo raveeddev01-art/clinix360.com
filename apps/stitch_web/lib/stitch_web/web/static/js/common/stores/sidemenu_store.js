@@ -5,6 +5,7 @@
  */
 
 import { observable, computed, action } from "mobx";
+import _ from 'lodash';
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 import browserDetails from "lib/browser_details";
@@ -226,6 +227,19 @@ class SidemenuStore {
     }
   }
 
+  showThreadComments = (message) => () => {
+    const { addonStore } = this.rootStore
+
+    parent.focus();
+    window.focus();
+
+    addonStore.setAddonPanel('thread');
+    addonStore.toggleAddons(true);
+    addonStore.toggleAddonDetail(false);
+    addonStore.setAddonDetailPanel('Message Details', message);
+  }
+
+
   playNotificationAudio() {
     this.notificationAudio.play();
   }
@@ -261,6 +275,27 @@ class SidemenuStore {
     }
   }
 
+  showNotificationCardForNewComment(message) {
+    if (this.commentNotificationAllowed(message)) {
+      const { groupsStore } = this.rootStore;
+      
+      const comment = this.getLatestComment(message);
+      const group = groupsStore.getGroupById(comment.group_id);
+
+      // show notification if not own message
+      if (!this.isOwnMessage(comment)) {
+        this.showNotificationCard(
+          this.getNotificationTitle(group),
+          this.getNotificationText(comment, group, false, true),
+          `message-${comment.id}`,
+          this.showThreadComments(message),
+        );
+      }
+
+    }
+
+  }
+
   showNotificationCardForNewMessage(message) {
     if (
       this.isOwnMessage(message) ||
@@ -268,7 +303,7 @@ class SidemenuStore {
       this.isCurrentlyInRoom(message.group_id) ||
       this.isSystemMessage(message)
     ) {
-      return;
+      return
     }
 
     const { notificationStore, groupsStore } = this.rootStore;
@@ -306,14 +341,17 @@ class SidemenuStore {
     return `${this.rootStore.groupsStore.getGroupName(group)}`;
   }
 
-  getNotificationText(message, group, isMention) {
+  getNotificationText(message, group, isMention, isReply = false) {
     const senderName = `${message.user.first_name} ${message.user.last_name}`;
-    const messageBody = this.getMessageBody(message, group, isMention);
-
+    const messageBody = this.getMessageBody(message, group, isMention, isReply);
     return `${senderName} ${messageBody}`;
   }
 
-  getMessageBody(message, group, isMention) {
+  getMessageBody(message, group, isMention, isReply) {
+    if (isReply) {
+      return 'also replied to message in ' + this.rootStore.groupsStore.getGroupName(group) + '.';
+    }
+    
     if (this.isUpload(message)) {
       return "uploaded a file.";
     }
@@ -341,6 +379,17 @@ class SidemenuStore {
 
   notificationNotAllowed() {
     return window.Notification && Notification.permission !== "granted";
+  }
+
+  getLatestComment(message) {
+    const { usersStore } = this.rootStore;
+    var comment = _.orderBy(message.thread_messages, ['inserted_at'], ['asc']).pop();
+    comment.user = usersStore.getUserById(comment.user_id);
+    return comment;
+  }
+
+  commentNotificationAllowed(message) {
+    return message.notify_user_ids.includes(currentUser.id);
   }
 
   isOwnMessage(message) {
@@ -391,26 +440,22 @@ class SidemenuStore {
 
   @action
   onNewMessage = message => {
-    const { groupStore, groupsStore, messageStore } = this.rootStore;
+    const { groupStore, groupsStore, messageStore, mentionsStore } = this.rootStore;
 
     messageStore.messageCache.addNew(message);
-
-    // If the message is system message or for the current group, ignore
-    if (
-      message.type === "system" ||
-      (groupStore.group &&
-        message.group_id === groupStore.group.id &&
-        this.isInChat) ||
-      message.user_id === currentUser.id
-    ) {
-      return;
-    }
 
     const group = groupsStore.getGroupById(message.group_id);
     const isMention = message.mentioned_user_ids.includes(currentUser.id);
 
+    if (isMention) {
+      mentionsStore.concatNewMention(message);
+    }
+
     if (group) {
-      group.unread_messages_count += 1;
+      
+      if(message.user_id !== currentUser.id) {
+        group.unread_messages_count += 1;
+      }
 
       if (isMention) {
         group.mentions_count += 1;
@@ -421,6 +466,17 @@ class SidemenuStore {
         // just make it unhidden by assuming it's already unhidden when new msg is broadcasted over dm
         groupsStore.updateGroupData(group.id, { is_hidden: false });
       }
+    }
+
+    // If the message is system message or for the current group, ignore
+    if (
+      message.type === "system" ||
+      (groupStore.group &&
+        message.group_id === groupStore.group.id &&
+        this.isInChat) ||
+      message.user_id === currentUser.id
+    ) {
+      return;
     }
 
     // Update Favicon

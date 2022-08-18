@@ -34,19 +34,19 @@ const YourTeams = ({ asPatient, teams }) => {
 
   return (
     <div>
-      <h1>Your Carespaces</h1>
-      <p>{`You are a ${userType} these Stitch carespaces:`}</p>
+      <h1>Your Workspaces</h1>
+      <p>{`You are a ${userType} these InvoChat workspaces:`}</p>
       <div className="select-team-list m-b-40">
         {teams.map(team => (
           <TeamLink asPatient={asPatient} key={team.slug} {...team} />
         ))}
       </div>
       <p>
-        If you are looking for a different carespace, you can try a{" "}
+        If you are looking for a different workspace, you can try a{" "}
         <Link to={findTeamLink}> different email address</Link>
         {asPatient
           ? "."
-          : " or request an invitation from your carespace administrator."}
+          : " or request an invitation from your workspace administrator."}
       </p>
     </div>
   );
@@ -82,12 +82,12 @@ class GetStartedCard extends Component {
           title="Get Started"
           description={
             <span>
-              A Stitch Connect Carespace is a place for healthcare teams to
+              A InvoChat Workspace is a place for InvoChat teams to
               collaborate in real-time through messaging, file sharing, video
               calling and more.
               <br />
               <br />
-              Are you looking to join an existing Carespace or create a new one?
+              Are you looking to join an existing Workspace or create a new one?
             </span>
           }
           headerCTA="signin"
@@ -99,10 +99,10 @@ class GetStartedCard extends Component {
                   to="/signup/email"
                   className="btn btn-onboarding btn-onboarding-primary"
                 >
-                  Create a New Carespace
+                  Create a New Workspace
                 </Link>
                 <div className="get-started-card-link-description">
-                  Set up your Carespace on Stitch
+                  Set up your Workspace on InvoChat
                 </div>
               </div>
             )}
@@ -112,10 +112,10 @@ class GetStartedCard extends Component {
                 to={findTeamLink}
                 className="btn btn-onboarding btn-onboarding-inverse"
               >
-                Find Your Carespace
+                Find Your Workspace
               </Link>
               <div className="get-started-card-link-description">
-                Join or sign in to an existing Carespace
+                Join or sign in to an existing Workspace
               </div>
             </div>
           </div>

@@ -9,6 +9,7 @@ defmodule Stitch.Message.MessageCreation do
     Files.UploadComment,
     Files.FileAuthorization,
     GroupUser,
+    Group,
     Message,
     Message.Mention,
     Message.Notification,
@@ -25,7 +26,28 @@ defmodule Stitch.Message.MessageCreation do
   @spec create(Group.t(), User.t(), map, map | nil) ::
           {:ok, map} | {:error, atom, Ecto.Changeset.t(), any}
 
-  def create(group, user, attrs, presence \\ %{})
+  def create(
+        %Message{} = message,
+        user,
+        %{"text_content" => _, "thread" => true, "type" => "upload", "fields" => fields} = attrs,
+        presence
+      ) do
+    with {:ok, uploads} <-
+           Upload.create_and_share_with_group(message.group, user, fields) do
+      message = %Message{
+        parent_message: message,
+        group: message.group,
+        user: user
+      }
+
+      attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
+      do_create(message, attrs, presence)
+    else
+      _ ->
+        changeset = %Message{} |> change() |> add_error(:upload_id, "Error creating file")
+        {:error, :message, changeset, nil}
+    end
+  end
 
   def create(
         group,
@@ -37,7 +59,7 @@ defmodule Stitch.Message.MessageCreation do
         opts
       ) do
     with {:authorized, true} <- {:authorized, FileAuthorization.can_view?(upload, user)} do
-      message = %Message{group: group, user: user, upload: upload, upload_comment: upload_comment}
+      message = %Message{group: group, user: user, upload: upload, parent_message: upload_comment}
       attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload)})
       do_create(message, attrs, presence, opts)
     else
@@ -47,10 +69,12 @@ defmodule Stitch.Message.MessageCreation do
     end
   end
 
+  def create(group, user, attrs, presence \\ %{})
+
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
-    with {:ok, upload, _} <- Upload.create_and_share_with_group(group, user, fields) do
-      message = %Message{group: group, user: user, upload: upload}
-      attrs = Map.merge(attrs, %{"fields" => Upload.fields(upload), "type" => "file_share"})
+    with {:ok, uploads} <- Upload.create_and_share_with_group(group, user, fields) do
+      message = %Message{group: group, user: user, notify_user_ids: [user.id]}
+      attrs = Map.merge(attrs, %{"fields" => Upload.fields(uploads), "type" => "file_share"})
       do_create(message, attrs, presence)
     else
       _ ->
@@ -64,9 +88,31 @@ defmodule Stitch.Message.MessageCreation do
     do_create(message, attrs, presence)
   end
 
+  def create(group, user, %{"type" => "meet_link"} = attrs, presence) do
+    message = %Message{group: group, user: user, notify_user_ids: [user.id]}
+    do_create(message, attrs, presence)
+  end
+
+  def create(message, user, %{"type" => "internal_link", "thread" => true} = attrs, presence) do
+    message = %Message{parent_message: message, user: user, group: message.group}
+    do_create(message, attrs, presence)
+  end
+
+  def create(group, user, %{"type" => "internal_link"} = attrs, presence) do
+    message = %Message{group: group, user: user, notify_user_ids: [user.id]}
+    do_create(message, attrs, presence)
+  end
+
+  # will use when thread key sent from FE
+  def create(message, user, %{"text_content" => _, "thread" => true} = attrs, presence) do
+    attrs = Map.put(attrs, "type", "chat")
+    message = %Message{parent_message: message, user: user, group: message.group}
+    do_create(message, attrs, presence)
+  end
+
   def create(group, user, %{"text_content" => _} = attrs, presence) do
     attrs = Map.put(attrs, "type", "chat")
-    message = %Message{group: group, user: user}
+    message = %Message{group: group, user: user, notify_user_ids: [user.id]}
     do_create(message, attrs, presence)
   end
 
@@ -79,7 +125,7 @@ defmodule Stitch.Message.MessageCreation do
     user = message.user
     group = Repo.preload(message.group, :users)
     users = group.users
-    text_content = attrs["text_content"] || ""
+    text_content = attrs["text_content"]
 
     mentioned_user_ids =
       Mention.get_mentioned_user_ids(user, text_content, presence.online, group)
@@ -97,23 +143,25 @@ defmodule Stitch.Message.MessageCreation do
       })
 
     mention_users = Message.mention_users(group, mentioned_user_ids, recipients)
-
     increment_unread_counter = ReadStatus.increment_unread_counter(:message, group.id, recipients)
 
-    if opts[:silent] == true do
-      Multi.new()
-      |> Multi.insert(:message, Message.message_changeset(message, attrs))
-      |> Repo.transaction()
-      |> silent_post_creation()
-    else
-      Multi.new()
-      |> Multi.insert(:message, Message.message_changeset(message, attrs))
-      |> Multi.update_all(:mention_users, mention_users, [])
-      |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
-      |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
-      |> Repo.transaction()
-      |> post_creation(notify_user_ids)
-    end
+    _last =
+      if opts[:silent] == true do
+        Multi.new()
+        |> Multi.insert(:message, Message.message_changeset(message, attrs))
+        |> Repo.transaction()
+        |> silent_post_creation()
+      else
+        if attrs["type"] != "file_comment" do
+          Multi.new()
+          |> Multi.insert(:message, Message.message_changeset(message, attrs))
+          |> Multi.update_all(:mention_users, mention_users, [])
+          |> Multi.update_all(:increment_unread_counter, increment_unread_counter, [])
+          |> multi_mark_as_read_on_creation_if_member(group.id, user.id, :message)
+          |> Repo.transaction()
+          |> post_creation(notify_user_ids)
+        end
+      end
   end
 
   def multi_mark_as_read_on_creation_if_member(multi, group_id, user_id, :message) do
@@ -130,6 +178,7 @@ defmodule Stitch.Message.MessageCreation do
     NotificationQueue.async_enqueue_for_users(notify_user_ids.mobile_active, message.id)
     Stitch.Elasticsearch.MessageSearch.add_to_index(message)
     Stitch.AnalyticsMessageCount.create(message)
+    Stitch.MessageNotification.update_parent_notify_user_ids(message)
     result_map = Map.put(result_map, :notify_user_ids, notify_user_ids)
     {:ok, result_map}
   end

@@ -17,7 +17,7 @@ class PeopleListItem extends Component {
           )}
         </div>
         <div className="item-text">
-          <Avatar user={user} />
+          <Avatar user={user} hideProfileDropDown={true} />
           <span>{displayName}</span>
           <small>{user.username}</small>
         </div>

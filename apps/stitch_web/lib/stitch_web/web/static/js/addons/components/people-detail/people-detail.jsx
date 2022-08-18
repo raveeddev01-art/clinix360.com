@@ -21,7 +21,7 @@ class PeopleDetail extends Component {
         <div className="user-avatar m-b-20">
           <AvatarImage
             useThumb={false}
-            className="img-responsive img-circle"
+            className="img-responsive img-rounded"
             user={user}
           />
         </div>

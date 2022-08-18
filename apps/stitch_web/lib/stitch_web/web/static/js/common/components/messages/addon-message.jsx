@@ -75,6 +75,7 @@ class AddonMessage extends Component {
                 inSearch={this.props.inSearch}
                 user={user}
                 messageStore={messageStore}
+                mediaSize={"media-size-sm"}
                 message={Object.assign({}, message, { reactions_web: null })}
               />
             </div>

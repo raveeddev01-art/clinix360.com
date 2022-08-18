@@ -141,7 +141,7 @@ class Sidebar extends Component {
               <ListGroupItem>
                 <Link to="/">
                   <i className="fa fa-comments" />
-                  <span>Stitch Connect</span>
+                  <span>InvoChat</span>
                 </Link>
               </ListGroupItem>
             </ListGroup>
@@ -186,16 +186,18 @@ class Sidebar extends Component {
               {isMemberOrAdmin() && this._nonGuestOptions()}
 
               <ListGroupItem>
-                <Link to="https://help.teamstitch.com" target="_blank">
-                  <i className="fa fa-question-circle" />Help{" "}
-                  <i className="fa fa-external-link sm" />
+                <Link to="#" >  
+                {/* we have to add help link with target _blank for new window open */}
+                {/* target="_blank" */}
+                  <i disabled className="fa fa-question-circle" />Help{" "}
+                  <i disabled className="fa fa-external-link sm" />
                 </Link>
               </ListGroupItem>
             </ListGroup>
 
             {isAdmin() && this._adminTeamsOptions()}
 
-            <h5>Stitch</h5>
+            <h5>InvoChat</h5>
             <ListGroup>
               {userStore.canInvite && (
                 <ListGroupItem href="#" onClick={this.showInviteModal}>

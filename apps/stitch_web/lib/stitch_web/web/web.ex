@@ -82,11 +82,14 @@ defmodule Stitch.Web do
       transport(
         :websocket,
         Phoenix.Transports.WebSocket,
-        timeout: 45_000,
+        timeout: 5_000_000,
         check_origin: [
+          "//*.invochat.io",
+          "//*.dev.invochat.io",
+          "//*.localhost.app",
           "//*.teamstitch-staging.com",
           "//*.teamstitchapp.com",
-          "//*.teamstitch.com",
+          "//*.dvlcloud.com",
           "//*.#{Application.fetch_env!(:stitch_web, :application_host)}"
         ]
       )

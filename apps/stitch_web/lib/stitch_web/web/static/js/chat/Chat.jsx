@@ -37,15 +37,15 @@ class Chat extends Component {
     const { groupsStore, sidemenuStore } = this.props;
     const { currentGroup } = groupsStore;
 
-    let title = "Stitch Connect";
+    let title = "InvoChat";
 
     if (currentGroup) {
-      title = `${groupsStore.getGroupName(currentGroup)} | Stitch Connect`;
+      title = `${groupsStore.getGroupName(currentGroup)} | InvoChat`;
 
       if (currentGroup.type === "regular") {
         title = `${groupsStore.getGroupName(
           currentGroup
-        )} | ${sidemenuStore.teamName} | Stitch Connect`;
+        )} | ${sidemenuStore.teamName} | InvoChat`;
       }
     }
 
@@ -57,7 +57,7 @@ class Chat extends Component {
         <div id="main">
           <TopNav />
           <div className="flex-content">
-            <MessagePanel />
+            <MessagePanel isThreadView={false}/>
             <Addons />
           </div>
         </div>

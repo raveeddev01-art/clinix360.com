@@ -41,15 +41,16 @@ export default class Footer extends Component {
                 </li>
                 <li>
                   <a
+                    disabled
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://help.teamstitch.com"
+                    href="/"
                   >
                     Help Center
                   </a>
                 </li>
                 <li>
-                  <a href={`https://${applicationHost}/hipaa`}>HIPAA</a>
+                  <a href={`https://${applicationHost}.io/`}>Home</a>
                 </li>
                 <li>
                   <a
@@ -85,13 +86,13 @@ export default class Footer extends Component {
             <Col xs={6} md={3}>
               <h5>Contact</h5>
               <address>
-                <strong>Stitch Technologies, Inc.</strong>
+                <strong>InvoChat Technologies, Inc.</strong>
                 <br />
                 156 2nd Street<br />
                 San Francisco, CA 94105<br />
                 <a href="tel:+16502823388">+1 (650) 282-3388</a>
-                <a href="mailto:support@teamstitch.com">
-                  support@teamstitch.com
+                <a href="mailto:info@invozone.com">
+                  support@InvoChat.io
                 </a>
               </address>
             </Col>

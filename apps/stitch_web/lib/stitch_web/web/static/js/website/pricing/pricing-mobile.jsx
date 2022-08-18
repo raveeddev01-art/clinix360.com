@@ -8,7 +8,7 @@ import PricingRowMobile from "./pricing-row-mobile";
 
 import { PRICING_TABLE_MOBILE } from "../pricing_constants";
 
-export default class PricingDesktop extends Component {
+export default class PricingMobile extends Component {
   constructor(props) {
     super(props);
     this.state = { monthlyPricing: false };
@@ -25,7 +25,7 @@ export default class PricingDesktop extends Component {
 
     return (
       <div>
-        <Panel className="m-b-40">
+        {/* <Panel className="m-b-40">
           <Panel.Body>
             <div className="pricing-table">
               <div className="pricing-table__row tiers">
@@ -163,7 +163,7 @@ export default class PricingDesktop extends Component {
               )}
             </div>
           </Panel.Body>
-        </Panel>
+        </Panel> */}
 
         <Panel className="m-b-40">
           <Panel.Body>
@@ -174,15 +174,20 @@ export default class PricingDesktop extends Component {
 
                   <h2>
                     <span>$</span>
-                    {monthlyPricing ? 12 : 10}
+                    {monthlyPricing ? 48 : 40}
                   </h2>
 
                   <p className="text-muted">
-                    per user per month <br />billed{" "}
+                    per month <br />billed{" "}
                     <a role="button" onClick={this.handleClick}>
                       {monthlyPricing ? "monthly" : "annually"}
                     </a>
                   </p>
+
+                  <a className="trial-link m-b-10" href="/getstarted/">
+                    <i className="fa fa-external-link"></i>
+                    Start with a 14 day free trail now.
+                  </a>
 
                   <Button
                     href={appSettings.hasLogin ? "/signin" : "/getstarted"}
@@ -193,16 +198,36 @@ export default class PricingDesktop extends Component {
                   >
                     Buy Premium
                   </Button>
-
+{/* 
                   <p className="m-b-0">
                     Includes everything in <strong>Standard</strong> and:
-                  </p>
+                  </p> */}
                 </div>
               </div>
 
               <div className="pricing-table__row header">
+                <div className="pricing-table__item">Platform</div>
+              </div>
+
+              {PRICING_TABLE_MOBILE.PREMIUM.PLATFORM.map((row, index) => (
+                <PricingRowMobile key={`row_${index}`} feature={row.feature} />
+              ))}
+
+              <div className="pricing-table__row header">
                 <div className="pricing-table__item">Communication</div>
               </div>
+
+              {PRICING_TABLE_MOBILE.PREMIUM.FILE_SHARING.map((row, index) => (
+                <PricingRowMobile key={`row_${index}`} feature={row.feature} />
+              ))}
+
+              <div className="pricing-table__row header">
+                <div className="pricing-table__item">Productivity</div>
+              </div>
+
+              {PRICING_TABLE_MOBILE.PREMIUM.PRODUCTIVITY.map((row, index) => (
+                <PricingRowMobile key={`row_${index}`} feature={row.feature} />
+              ))}
 
               {PRICING_TABLE_MOBILE.PREMIUM.COMMUNICATION.map((row, index) => (
                 <PricingRowMobile key={`row_${index}`} feature={row.feature} />

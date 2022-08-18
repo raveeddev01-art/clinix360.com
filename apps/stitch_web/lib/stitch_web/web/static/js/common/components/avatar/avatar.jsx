@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import AvatarImage from "./avatar-image";
-
+import UserProfileMenu from "../user-profile-menu";
 class Avatar extends Component {
-  render() {
+
+  renderAvatar = () => {
     const { user, size } = this.props;
     const wrapperClass = size === "sm" ? "avatar" : "";
     const avatarClass = size === "sm" ? "img-circle" : "img-responsive";
@@ -14,6 +15,24 @@ class Avatar extends Component {
         <AvatarImage useThumb className={avatarClass} user={user} />
       </div>
     );
+  };
+
+  renderProfileMenu = () => {
+    const { user, size } = this.props;
+    const wrapperClass = size === "sm" ? "avatar" : "";
+    const avatarClass = size === "sm" ? "img-circle" : "img-responsive";
+
+    return (
+      <div className={wrapperClass}>
+        <UserProfileMenu user={user}>
+          <AvatarImage useThumb className={avatarClass} user={user} />
+        </UserProfileMenu>
+      </div>
+    );
+  };
+
+  render() {
+    return this.props.hideProfileDropDown ? this.renderAvatar() : this.renderProfileMenu();
   }
 }
 

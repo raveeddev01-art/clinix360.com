@@ -50,17 +50,17 @@ class SelectTeam extends Component {
 
     return (
       <AuthenticationPage
-        title="Your Carespaces"
+        title="Your Workspaces"
         headerCTA="no-cta"
-        description="You are a member of of these Stitch carespaces:"
+        description="You are a member of of these InvoChat workspaces:"
       >
         <div className="select-team-list m-b-40">
           {this.state.teams.map(this.renderTeamLink)}
         </div>
         <HelpBlock className="onboarding-hint m-b-20">
-          If you are looking for a different carespace, you can{" "}
+          If you are looking for a different workspace, you can{" "}
           <a href="/find-your-team">try a different email address</a> or request
-          an invitation from your Carespace Administrator.
+          an invitation from your Workspace Administrator.
         </HelpBlock>
       </AuthenticationPage>
     );

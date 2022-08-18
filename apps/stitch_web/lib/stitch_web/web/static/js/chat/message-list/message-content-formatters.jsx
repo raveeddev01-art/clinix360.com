@@ -1,6 +1,7 @@
 import React from "react";
 import { Emoji } from "emoji-mart";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
+import data from 'emoji-mart/data/all.json';
 import REGEX from "lib/regex";
 import Linkify from "linkifyjs/react";
 import UserMentionById from "../../common/components/messages/message-content/user-mention-by-id";
@@ -33,6 +34,7 @@ import messageTextToComponents from "./message-text-to-components";
 const emojiRegex = REGEX.getEmoji();
 const userMentionRegex = REGEX.getUserMentionDecode();
 const groupMentionRegex = REGEX.getGroupMentionDecode();
+const internalLinkRegex = REGEX.getIntenalLink();
 const searchDelimiter = "%&$&%";
 
 // ============================
@@ -111,9 +113,13 @@ const standardTagRules = tag => (string, opts) => {
 };
 
 const hasEmoji = content => {
-  const emoji = getEmoji(content);
+  const emoji = getEmoji(content, undefined, undefined, data);
   return emoji && emoji.name;
 };
+
+const hasInternalLink = content => {
+  return content.match(internalLinkRegex) ? true : false;
+}
 
 // recall the formatter on content within tags
 const renderNestedContent = (content, opts) => {
@@ -339,9 +345,12 @@ export const potentialFormatterMatch = char => {
   return potentialFormatterChars.has(char);
 };
 
-export const formatUnmatched = (content, i) => (
-  <Linkify key={`link_${i}`}>{content}</Linkify>
-);
+export const formatUnmatched = (content, i) => {
+  if(!hasInternalLink(content)) {
+    return <Linkify key={`link_${i}`}>{content}</Linkify>
+  }
+  return content;
+}
 
 export const nestableFormatters = [
   emoji,

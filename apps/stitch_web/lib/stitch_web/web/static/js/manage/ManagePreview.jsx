@@ -15,7 +15,7 @@ class ManagePreview extends Component {
     return (
       <p>
         Create tasks, assign them to team members and know when they’re
-        completed. Stitch Manage is the easiest way to keep all your patient
+        completed. InvoChat Manage is the easiest way to keep all your patient
         tasks organized. Never miss a beat delivering seamless, on-time care to
         your patients.
       </p>

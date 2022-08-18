@@ -58,7 +58,7 @@ class EmailNotification extends Component {
         onEdit={this.onToggleEdit}
       >
         <HelpBlock className="m-b-20">
-          Stitch can send an email about new, unread messages you receive while
+        InvoChat can send an email about new, unread messages you receive while
           you’re offline. You can set the frequency below. You won’t be notified
           twice about the same message.
         </HelpBlock>

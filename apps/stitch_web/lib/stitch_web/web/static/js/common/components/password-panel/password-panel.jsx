@@ -11,7 +11,7 @@ import SettingPanel from "../../../admin/components/setting-panel/setting-panel"
 
 const title = "Password";
 const description =
-  "Set a new password. You'll be prompted to meet HIPAA security requirements.";
+  "Set a new password. You'll be prompted to meet security requirements.";
 
 class PasswordPanel extends Component {
   constructor(props) {
@@ -20,7 +20,9 @@ class PasswordPanel extends Component {
     this.state = {
       oldPassword: "",
       newPassword: "",
-      formInvalid: false
+      formInvalid: false,
+      showNewPassword: false,
+      showOldPassword: false
     };
   }
 
@@ -31,6 +33,20 @@ class PasswordPanel extends Component {
       formInvalid: false
     });
   };
+
+  toggleOldPasswordShow = () => {
+    const { showOldPassword } = this.state;
+    this.setState({
+      showOldPassword: !showOldPassword
+    });
+  }
+
+  toggleNewPasswordShow = () => {
+    const { showNewPassword } = this.state;
+    this.setState({
+      showNewPassword: !showNewPassword
+    });
+  }
 
   _onSave = () => {
     const { hideAlert, onSuccess, onError, savePassword } = this.props;
@@ -82,23 +98,57 @@ class PasswordPanel extends Component {
         <Row>
           <Col sm={6} componentClass={FormGroup}>
             <ControlLabel>Old Password</ControlLabel>
-            <FormControl
+            {/* <FormControl
               type="password"
               bsSize="large"
               placeholder="Old Password"
               value={oldPassword}
               onChange={this._onChangeOldPassword}
-            />
+            /> */}
+            <FormGroup 
+              bsSize="large" 
+              className="password-formgroup"
+            >
+              <FormControl
+                name='password'
+                autoComplete="off"
+                type={this.state.showOldPassword ? "text" : "password"}
+                placeholder="Old Password"
+                maxLength={80}
+                value={oldPassword}
+                onChange={this._onChangeOldPassword}
+              />
+              <div className="password-icon" onClick={this.toggleOldPasswordShow}>
+                <i className={this.state.showOldPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} />
+              </div>
+            </FormGroup>
           </Col>
           <Col sm={6} componentClass={FormGroup}>
             <ControlLabel>New Password</ControlLabel>
-            <FormControl
+            <FormGroup 
+              bsSize="large" 
+              className="password-formgroup"
+            >
+              <FormControl
+                name='password'
+                autoComplete="off"
+                type={this.state.showNewPassword ? "text" : "password"}
+                placeholder="New Password"
+                maxLength={80}
+                value={newPassword}
+                onChange={this._onChangeNewPassword}
+              />
+              <div className="password-icon" onClick={this.toggleNewPasswordShow}>
+                <i className={this.state.showNewPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} />
+              </div>
+            </FormGroup>
+            {/* <FormControl
               type="password"
               bsSize="large"
               placeholder="New Password"
               value={newPassword}
               onChange={this._onChangeNewPassword}
-            />
+            /> */}
             <PasswordValidator
               password={newPassword}
               onChangeValid={this._onChangeValid}

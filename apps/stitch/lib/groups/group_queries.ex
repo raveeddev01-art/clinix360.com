@@ -124,6 +124,7 @@ defmodule Stitch.GroupQueries do
   end
 
   def get_by_id(%Team{id: team_id}, group_id) do
+
     Repo.get_by(Group, id: group_id, team_id: team_id)
   end
 

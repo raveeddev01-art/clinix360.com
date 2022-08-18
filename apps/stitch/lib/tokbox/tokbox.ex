@@ -11,8 +11,8 @@ defmodule Tokbox do
   @endpoint "https://api.opentok.com"
 
   @role_publisher "publisher"
-  @role_subscriber "subscriber"
-  @role_moderator "moderator"
+  # @role_subscriber "subscriber"
+  # @role_moderator "moderator"
 
   @token_prefix "T1=="
 
@@ -77,14 +77,14 @@ defmodule Tokbox do
     jwt
   end
 
-  defp process_url(url) do
-    @endpoint <> url
-  end
+# defp process_url(url) do
+  #   @endpoint <> url
+  # end
 
-  @spec process_request_headers(map() | Keyword.t()) :: [{binary, term}]
-  defp process_request_headers(headers) when is_map(headers) do
-    process_request_headers(Enum.into(headers, []))
-  end
+  # @spec process_request_headers(map() | Keyword.t()) :: [{binary, term}]
+  # defp process_request_headers(headers) when is_map(headers) do
+  #   process_request_headers(Enum.into(headers, []))
+  # end
 
   defp process_request_headers(headers) do
     auth_headers = [
@@ -126,7 +126,7 @@ defmodule Tokbox do
     Map.merge(%{"alg" => hd(allowed_algos())}, headers)
   end
 
-  defp jose_jwk(the_secret = %JOSE.JWK{}), do: the_secret
+  # defp jose_jwk(the_secret = %JOSE.JWK{}), do: the_secret
   defp jose_jwk(the_secret) when is_binary(the_secret), do: JOSE.JWK.from_oct(the_secret)
   defp jose_jwk(the_secret) when is_map(the_secret), do: JOSE.JWK.from_map(the_secret)
   defp jose_jwk({mod, fun}), do: jose_jwk(:erlang.apply(mod, fun, []))

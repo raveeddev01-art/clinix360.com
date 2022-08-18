@@ -95,7 +95,7 @@ defmodule Stitch.Web.Files.FileController do
            {:authenticated, EngageFileAuthorization.can_view?(engage_upload, current_user)} do
       true
     else
-      e -> false
+      _e -> false
     end
   end
 

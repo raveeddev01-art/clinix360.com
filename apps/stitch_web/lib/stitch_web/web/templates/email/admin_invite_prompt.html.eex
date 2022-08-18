@@ -22,7 +22,7 @@
 
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
 
-                            <div style="text-align: left;"><a href="http://teamstitch.com" target="_blank"><img align="center" height="50" src="https://gallery.mailchimp.com/5fbbcf9bc8ed5ff1328134d1e/images/6918962f-cbf4-485d-9e45-e9688303cd7c.png" style="width: 50px; height: 50px; margin: 0px 0px 15px;" width="50"></a></div>
+                            <div style="text-align: left;"><a href="http://invochat.io" target="_blank"><img align="center" height="250" src="https://invochat.io/images/invochat-logo-blue.png" style="margin: 0px 0px 15px;" width="250"></a></div>
 
                         </td>
                     </tr>
@@ -69,7 +69,7 @@
                             <h2><br>
 <font color="#003366" face="source sans pro, helvetica neue, helvetica, arial, sans-serif"><span style="font-size:30px"><strong>Invite your team</strong></span></font></h2>
 <br>
-<span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">Stitch works best when you invite your entire team in to start communicating. Here's a direct link to invite your team members to your team:</font></span></span><br>
+<span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif"><font color="#000000">InvoChat works best when you invite your entire team in to start communicating. Here's a direct link to invite your team members to your team:</font></span></span><br>
 &nbsp;
                         </td>
                     </tr>
@@ -188,10 +188,10 @@ Email:&nbsp;</span><font color="#000000"><a href="<%=@user_email%>" target="_bla
 
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
 
-                            <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">If you need anything, we're here for you. Simply <a href="mailto:support@teamstitch.com" target="_blank">c</a><span style="color:#000000"><a href="mailto:support@teamstitch.com" target="_blank">ontact us</a> with feedback or a support request. We love to hear from you :)</span><br>
+                            <span style="font-size:18px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">If you need anything, we're here for you. Simply <a href="mailto:info@invozone.com" target="_blank">c</a><span style="color:#000000"><a href="mailto:info@invozone.com" target="_blank">ontact us</a> with feedback or a support request. We love to hear from you :)</span><br>
 <br>
 See you inside!<br>
-<span style="color:#000000">— Team Stitch&nbsp;</span></span></span><br>
+<span style="color:#000000">— Team InvoChat&nbsp;</span></span></span><br>
 &nbsp;
                         </td>
                     </tr>
@@ -236,7 +236,9 @@ See you inside!<br>
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: Verdana, Geneva, sans-serif; line-height: 200%;">
 
                             <div style="text-align: center;"><br>
-<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://teamstitch.com" target="_blank">Stitch Technologies, Inc.</a><br>
+
+<span style="font-size:16px"><span style="font-family:source sans pro,helvetica neue,helvetica,arial,sans-serif">Made by <a href="http://InvoChat.io" target="_blank">InvoChat Technologies, Inc.</a><br>
+
 156 2nd Street, 2nd Floor • San Francisco, CA 94105</span></span></div>
 
                         </td>

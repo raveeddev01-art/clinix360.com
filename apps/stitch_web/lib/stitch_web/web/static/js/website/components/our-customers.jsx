@@ -29,7 +29,7 @@ class OurCustomers extends Component {
             <div>
               <h2>Trusted by the best teams</h2>
               <h3>
-                Healthcare organizations big and small have made Stitch their
+                InvoChat organizations big and small have made InvoChat their
                 home base for work.
               </h3>
 

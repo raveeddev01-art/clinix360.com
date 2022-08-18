@@ -1,7 +1,7 @@
 defmodule Stitch.Web.Api.V1.TeamController do
   use Stitch.Web, :controller
   alias Stitch.Team.Admin
-  alias Stitch.{Team, TeamQueries, TeamAuthorization}
+  alias Stitch.{Team, TeamQueries, TeamAuthorization, Coupons}
   alias Stitch.Web.TeamChannel
 
   action_fallback(Stitch.Web.Api.FallbackController)
@@ -20,8 +20,9 @@ defmodule Stitch.Web.Api.V1.TeamController do
     })
   end
 
-  def create(conn, %{"name" => name, "url" => slug}) do
+  def create(conn, %{"name" => name, "url" => slug, "code" => coupon_code}) do
     with {:team, {:ok, %{team: team}}} <- {:team, Team.Onboarding.create_team(name, slug)} do
+      Coupons.update_signup_coupon(%{code: coupon_code, team_id: team.id, is_used: true})
       conn
       |> json(%{id: team.id, name: team.name, slug: team.slug})
     else
@@ -169,8 +170,19 @@ defmodule Stitch.Web.Api.V1.TeamController do
     end
   end
 
+  def limit_check(params) do
+    if Keyword.get(params, :limit) > 50 do
+      list =
+      Keyword.drop(params, [:limit])
+      list ++ [limit: 50]
+    else
+      params
+    end
+  end
+
   def access_log(conn, %{"id" => _} = params) do
-    pagination_opts = parse_pagination_params(params, [:limit, :skip])
+
+    pagination_opts = parse_pagination_params(params, [:limit, :skip]) |> limit_check()
     team = conn.assigns.team
     paginated_result = Stitch.Accounts.AccessLog.list(team, pagination_opts)
     render(conn, "access_log.json", access_log: paginated_result)

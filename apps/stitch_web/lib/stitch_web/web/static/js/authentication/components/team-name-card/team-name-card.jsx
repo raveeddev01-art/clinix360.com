@@ -31,7 +31,7 @@ class CarespaceNameCard extends Component {
   renderDesc() {
     return (
       <span>
-        Name your Carespace after your practice, organization or group (you can
+        Name your Workspace after your practice, organization or group (you can
         change this later).
       </span>
     );
@@ -43,18 +43,18 @@ class CarespaceNameCard extends Component {
     return (
       <OnboardPage
         {...this.props}
-        title="What is your Carespace name?"
+        title="What is your Workspace name?"
         onNext={this._onNext}
         description={this.renderDesc()}
         disableNext={!value}
       >
         <FormGroup bsSize="large">
-          <ControlLabel>Carespace Name</ControlLabel>
+          <ControlLabel>Workspace Name</ControlLabel>
           <FormControl
             required
             autoFocus={!mobile}
             type="text"
-            placeholder="Ex. Care Clinic."
+            placeholder="Ex. InvoZone"
             value={value}
             onChange={this._onChange}
             maxLength={80}

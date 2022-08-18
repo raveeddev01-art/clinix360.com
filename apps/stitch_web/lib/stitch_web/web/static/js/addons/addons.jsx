@@ -6,6 +6,7 @@ import Info from "./components/info/info";
 import Directory from "./components/directory/directory";
 import MessageSearch from "./components/message-search/message-search";
 import FileDetails from "./components/file-details/FileDetails";
+import MessageDetails from "./components/message-details/messageDetails";
 import GlobalStarredMessages from "./components/global-starred-messages/global-starred-messages";
 
 import PeopleDetail from "./components/people-detail/people-detail";
@@ -17,11 +18,15 @@ import Updates from "./components/updates/updates";
 @inject("addonStore", "searchStore", "desktopStore")
 @observer
 class Addons extends Component {
-  toggleAddons = () => {
-    this.props.addonStore.toggleAddons();
 
-    if (this.props.addonStore.addonPanelType === "Search Results") {
-      this.props.searchStore.reset();
+  toggleAddons = () => {
+    const { addonStore, searchStore } = this.props;
+
+    addonStore.toggleAddons();
+    addonStore.reset();
+
+    if (addonStore.addonPanelType === "Search Results") {
+      searchStore.reset();
     }
   };
 
@@ -41,11 +46,13 @@ class Addons extends Component {
       return null;
     }
 
+    const showAddonDetail = addonStore.addonPanelType === "thread" ? true : addonStore.showAddonDetail;
+
     const leftPanelClass = cx("addon-left-panel", {
-      opened: !addonStore.showAddonDetail
+      opened: !showAddonDetail
     });
     const rightPanelClass = cx("addon-right-panel", {
-      opened: addonStore.showAddonDetail
+      opened: showAddonDetail
     });
 
     const addonPanelTitle = addonStore.addonPanelType;
@@ -72,7 +79,7 @@ class Addons extends Component {
         </div>
 
         <div className="flex-content">
-          <div className={leftPanelClass}>
+          <div className={leftPanelClass} >
             {addonStore.addonPanelType === "Room Information" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
             {addonStore.addonPanelType === "Search Results" && (
@@ -83,18 +90,23 @@ class Addons extends Component {
               <GlobalStarredMessages />
             )}
             {addonStore.addonPanelType === "files" && <Files />}
+            {addonStore.addonPanelType === "thread" && <MessageDetails message={addonStore.detailPanelData} />}
             {addonStore.addonPanelType === "Updates" && <Updates />}
             {addonStore.addonPanelType === "downloads" && <FileDrawer />}
           </div>
 
-          <div className={rightPanelClass}>
-            {addonStore.detailPanelType === "File Details" && (
-              <FileDetails fileId={addonStore.detailPanelData} />
-            )}
-            {addonStore.detailPanelType === "people" && (
-              <PeopleDetail user={addonStore.detailPanelData} />
-            )}
-          </div>
+          {(showAddonDetail || addonStore.detailPanelType === "people") && 
+            <div className={rightPanelClass}>
+              {addonStore.detailPanelType === "File Details" && (
+                <FileDetails message={addonStore.detailPanelData}/>
+              )}
+              {addonStore.detailPanelType === "Message Details" && (
+                <MessageDetails message={addonStore.detailPanelData}/>
+              )}
+              {addonStore.detailPanelType === "people" && (
+                <PeopleDetail user={addonStore.detailPanelData} />
+              )}
+            </div>}
         </div>
       </div>
     );

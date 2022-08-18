@@ -43,8 +43,10 @@ export default class DownloadApps extends Component {
 
   render() {
     const { shouldRedirect, os, mobile } = this.state;
+    
+    // add not operator again once we have our application launched
     return (
-      !shouldRedirect && (
+      shouldRedirect && (
         <div>
           <div className="authentication-card">
             <AuthenticationHeader type="no-cta" />

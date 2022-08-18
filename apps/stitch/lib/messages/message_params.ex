@@ -35,6 +35,7 @@ defmodule Stitch.Message.Params do
   def with_client_attrs(conn, params) do
     ua = parse_conn(conn)
 
+
     client_params = %{
       "client_device_type" => device_type(ua),
       "client_os" => os(ua),

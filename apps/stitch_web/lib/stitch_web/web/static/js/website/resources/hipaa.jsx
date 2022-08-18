@@ -11,12 +11,12 @@ export default class Hipaa extends Component {
         <Header />
 
         <Subheader
-          title="HIPAA Compliance"
-          subtitle="Take a look at how we’ve made Stitch HIPAA compliant right out of the box."
+          title="Compliance"
+          subtitle="Take a look at how we’ve made InvoChat compliant right out of the box."
         />
 
         <div className="container">
-          <div className="copy-section">
+          {/* <div className="copy-section">
             <h2>What is HIPAA?</h2>
 
             <p>
@@ -27,10 +27,10 @@ export default class Hipaa extends Component {
               standards intended to secure the sharing of medical data – also
               known protected health information (PHI).
             </p>
-          </div>
+          </div> */}
 
-          <div className="copy-section">
-            <h2>Why is Stitch HIPAA compliant?</h2>
+          {/* <div className="copy-section">
+            <h2>Why is InvoChat HIPAA compliant?</h2>
 
             <p>
               In September of 2013, the{" "}
@@ -39,40 +39,40 @@ export default class Hipaa extends Component {
               </a>. It expanded the applicability of HIPAA from the traditional
               entities like hospitals and insurers to anyone who stores, manages
               or transmits PHI. These entities are now called Business
-              Associates So, companies like Stitch.
+              Associates So, companies like InvoChat.
             </p>
-          </div>
+          </div> */}
 
-          <div className="copy-section">
+          {/* <div className="copy-section">
             <h2>Do I need HIPAA compliance?</h2>
 
             <p>
               All Covered Entities need to be HIPAA compliant. A Covered Entity
               is anyone who provides treatment, payment and operations in
-              healthcare. So, this includes clinics, hospitals, independent
+              InvoChat. So, this includes clinics, hospitals, independent
               practices, home health agencies, pharmacies and insurance
               companies.{" "}
               <a href="https://www.federalregister.gov/articles/2013/01/25/2013-01073/modifications-to-the-hipaa-privacy-security-enforcement-and-breach-notification-rules-under-the#h-95">
                 The fines for HIPAA violations
               </a>{" "}
               can be pretty severe, up to $50,000 for a single incident. That’s
-              why we’ve built Stitch. We want to provide a world-class
+              why we’ve built InvoChat. We want to provide a world-class
               communication experience where you don’t have to worry about
               security and can focus on what you do best: care for patients.
             </p>
-          </div>
+          </div> */}
 
-          <div className="copy-section">
-            <h2>How does Stitch achieve HIPAA compliance?</h2>
+          {/* <div className="copy-section">
+            <h2>How does InvoChat achieve HIPAA compliance?</h2>
 
             <p className="m-b-20">
-              We take security very seriously at Stitch. We know you’re relying
+              We take security very seriously at InvoChat. We know you’re relying
               on us to protect your patient data, so we use only the highest
               levels of security and strictest practices to secure your PHI. To
               help us do this, we use{" "}
               <a href="https://www.aptible.com">Aptible</a>, a world-class HIPAA
               compliance deployment and management platform. Specifically, there
-              are 4 HIPAA Rules that Stitch complies with to achieve the highest
+              are 4 HIPAA Rules that InvoChat complies with to achieve the highest
               level of HIPAA compliance:
             </p>
 
@@ -82,7 +82,7 @@ export default class Hipaa extends Component {
                 <span>
                   This breaks down to three layers: physical, technical and
                   administrative. Physical safeguards pertain to who can access
-                  PHI and how that access is controlled. Stitch is hosted with{" "}
+                  PHI and how that access is controlled. InvoChat is hosted with{" "}
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
@@ -155,16 +155,16 @@ export default class Hipaa extends Component {
                 </span>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           <div className="copy-section">
-            <h2>Can I see more information on Stitch’s technical security?</h2>
+            <h2>Can I see more information on InvoChat’s technical security?</h2>
 
             <p>
               Absolutely. Here’s a dedicated risk assessment prepared for our
               specific technology:{" "}
-              <a href="https://www.dropbox.com/s/9oe9qgr1vduvfmc/Stitch%20Risk%20Assessment%20v3.0.pdf?dl=1">
-                Stitch Risk Assessment
+              <a href="https://www.dropbox.com/s/9oe9qgr1vduvfmc/InvoChat%20Risk%20Assessment%20v3.0.pdf?dl=1">
+                InvoChat Risk Assessment
               </a>.
             </p>
           </div>
@@ -175,7 +175,7 @@ export default class Hipaa extends Component {
             <p className="m-b-20">
               A Business Associate is a vendor or subcontractor who has access
               to PHI transmitted or stored by a covered entity. So, if you’re a
-              medical clinic and you send patient data through Stitch, you’re a
+              medical clinic and you send patient data through InvoChat, you’re a
               Covered Entity and we’re a Business Associate.
             </p>
 
@@ -184,7 +184,7 @@ export default class Hipaa extends Component {
               and managing patient data properly. It will also clearly outline
               what services you should expect us to render, and what we are
               responsible for. A BAA is necessary for you to complete your HIPAA
-              compliance. If you’re the admin for your carespace, you’ll be
+              compliance. If you’re the admin for your workspace, you’ll be
               prompted to complete the BAA after creating your account.
             </p>
           </div>

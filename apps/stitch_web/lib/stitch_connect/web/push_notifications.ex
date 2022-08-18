@@ -173,7 +173,7 @@ defmodule StitchConnect.Web.PushNotifications do
     message
     |> Repo.preload(:user)
     |> StitchConnect.Web.Api.V1.MessageView.message_json()
-    |> Map.drop([:text_content, :fields])
+    |> Map.drop([:text_content, :fields, :thread_messages])
   end
 
   # Notification Text Bodies
@@ -196,6 +196,19 @@ defmodule StitchConnect.Web.PushNotifications do
       name_for_notification(author) <> " mentioned you in a direct message."
     else
       name_for_notification(author) <> " sent a direct message."
+    end
+  end
+
+  # Message - Comment
+  defp notification_text_body(
+         group,
+         %{comment: comment},
+         receiver
+       ) do
+    if user_was_mentioned(receiver, comment) do
+      name_for_notification(comment.user) <> " mentioned you in a message reply."
+    else
+      name_for_notification(comment.user) <> " also replied to a message in " <> group.name
     end
   end
 

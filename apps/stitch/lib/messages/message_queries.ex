@@ -105,6 +105,44 @@ defmodule Stitch.MessageQueries do
     Message.Reaction.apply_reactions(messages, :message)
   end
 
+  def threads_latest_messages(user, opts \\ []) do
+    limit = Enum.min([Keyword.get(opts, :limit), 60])
+    offset = Keyword.get(opts, :skip, 0)
+    ignore_types = ["system", "call"]
+
+    messages =
+      from(
+        m in Message,
+        left_join: g in assoc(m, :group),
+        left_join: u in assoc(m, :user),
+        left_join: pb in assoc(m, :pinned_by),
+        left_join: tmm in assoc(m, :thread_messages),
+        preload: [
+          user: u,
+          group: g,
+          pinned_by: pb,
+          thread_messages:
+            ^from(
+              tm in Message,
+              order_by: [asc: tm.inserted_at]
+            )
+        ],
+        where: is_nil(m.parent_message_id),
+        where: m.user_id == ^user.id or ^user.id in m.mentioned_user_ids,
+        where: m.type not in ^ignore_types,
+        having: fragment("COUNT(?) > 0", tmm.id),
+        order_by: [desc: fragment("MAX(?)", tmm.inserted_at)],
+        limit: ^limit,
+        offset: ^offset,
+        group_by: [m.id, u.id, g.id, pb.id, tmm.id],
+        select: m
+      )
+      |> Repo.all()
+
+    messages = MessageAction.apply_user_message_actions(user, messages)
+    Message.Reaction.apply_reactions(messages, :message)
+  end
+
   @doc """
   Return the latest 30 messages for a group.
   """
@@ -134,10 +172,18 @@ defmodule Stitch.MessageQueries do
       from(
         m in query,
         where: m.group_id == ^group_id,
+        where: is_nil(m.parent_message_id),
         order_by: [desc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        select: m
+        select: m,
+        preload: [
+          thread_messages:
+            ^from(
+              tm in Message,
+              order_by: [asc: tm.inserted_at]
+            )
+        ]
       )
 
     query =
@@ -177,10 +223,18 @@ defmodule Stitch.MessageQueries do
       from(
         m in query,
         where: m.group_id == ^group_id,
+        where: is_nil(m.parent_message_id),
         order_by: [asc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        select: m
+        select: m,
+        preload: [
+          thread_messages:
+            ^from(
+              tm in Message,
+              order_by: [asc: tm.inserted_at]
+            )
+        ]
       )
 
     query =
@@ -202,15 +256,14 @@ defmodule Stitch.MessageQueries do
       from(
         m in Message,
         join: a in MessageAction,
-        on: a.message_id == m.id,
+        on: a.message_id == m.id or m.upload_id == a.upload_id,
         left_join: u in assoc(m, :user),
         where: a.category == "star",
         where: a.user_id == ^user_id,
-        where: m.type != ^"file_share",
         order_by: [desc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        preload: [user: u]
+        preload: [:upload, user: u]
       )
 
     Repo.all(query)
@@ -247,29 +300,52 @@ defmodule Stitch.MessageQueries do
     Paginator.new(query, skip: offset, limit: limit)
   end
 
-  def get_by_id(id) do
-    query =
-      from(
-        m in Message,
-        left_join: u in assoc(m, :user),
-        left_join: g in assoc(m, :group),
-        left_join: pb in assoc(m, :pinned_by),
-        where: m.id == ^id,
-        preload: [
-          group: g,
-          user: u,
-          pinned_by: pb
-        ]
-      )
+  def load_message(id, user) do
+    message = get_by_id(id, true)
 
-    Repo.one(query)
+    MessageAction.apply_user_message_actions(user, [message])
+    |> Message.Reaction.apply_reactions(:message)
+    |> Enum.at(0)
+  end
+
+  def get_by_id(id) do
+    from(
+      m in Message,
+      left_join: u in assoc(m, :user),
+      left_join: g in assoc(m, :group),
+      left_join: pb in assoc(m, :pinned_by),
+      where: m.id == ^id,
+      preload: [
+        group: g,
+        user: u,
+        pinned_by: pb,
+        thread_messages:
+          ^from(
+            tm in Message,
+            order_by: [asc: tm.inserted_at]
+          )
+      ]
+    )
+    |> Repo.one()
   end
 
   def get_by_id(id, false), do: Repo.get(Message, id)
   def get_by_id(id, true), do: get_by_id(id)
 
   def load_info(message) do
-    Repo.preload(message, [:pinned_by, :user], force: true)
+    Repo.preload(
+      message,
+      [
+        :pinned_by,
+        :user,
+        thread_messages:
+          from(
+            tm in Message,
+            order_by: [asc: tm.inserted_at]
+          )
+      ],
+      force: true
+    )
   end
 
   # For a specific group.

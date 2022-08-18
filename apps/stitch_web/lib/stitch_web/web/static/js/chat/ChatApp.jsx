@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
-import ConnectTour from "common/components/joy-ride/connect-tour";
+// import ConnectTour from "common/components/joy-ride/connect-tour";
 import { AppAlert, Loading } from "common/components";
 import RoleChangedModal from "common/modals/role-changed-modal";
 import UploadZone from "file-upload/upload-zone";
 import Sidemenu from "sidemenu/sidemenu";
 import Chat from "./Chat";
+import Threads from "./Threads";
 
 @inject("sidemenuStore", "groupsStore", "messageStore")
 @observer
@@ -50,11 +51,12 @@ class ChatApp extends Component {
         {messageStore.loadedInitialMessages || <Loading />}
 
         <UploadZone>
-          <ConnectTour />
+          {/* <ConnectTour /> */}
           <AppAlert />
           <div className="appContainer">
             <Sidemenu />
             <Switch>
+              <Route path={`/threads`} component={Threads} />
               <Route path={`/rooms/:slug`} component={Chat} />
               <Route path={`/direct/:usernames`} component={Chat} />
               {defaultGroup &&

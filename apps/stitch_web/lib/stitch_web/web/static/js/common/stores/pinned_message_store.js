@@ -76,8 +76,17 @@ class PinnedMessageStore {
 
   @action
   add(message) {
-    this.messages.push(message);
+    this.messages.splice(this.indexOf(message), 0, message);
   }
+
+
+  indexOf(message) {
+    return this.messages.findIndex(m => 
+      new Date(m.inserted_at).valueOf() < new Date(message.inserted_at).valueOf()
+    );
+  }
+
+
 
   @action
   remove(id) {

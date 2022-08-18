@@ -13,14 +13,14 @@ export default class Footer extends Component {
             <Col sm={2} md={3}>
               <img
                 className="stitch-logo"
-                src="/images/logo-blue.svg"
-                alt="Stitch"
+                src="favicon.ico"
+                alt="InvoChat"
               />
             </Col>
 
             <Col sm={10} md={9}>
               <Row>
-                <Col xs={6} sm={3} md={3}>
+                {/* <Col xs={6} sm={3} md={3}>
                   <h5>Resources</h5>
                   <ul className="list-unstyled">
                     <li>
@@ -28,15 +28,13 @@ export default class Footer extends Component {
                     </li>
                     <li>
                       <a
+                      disabled
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="https://help.teamstitch.com"
+                        href="/"
                       >
                         Help Center
                       </a>
-                    </li>
-                    <li>
-                      <Link to="/hipaa">HIPAA</Link>
                     </li>
                     <li>
                       <a
@@ -47,17 +45,8 @@ export default class Footer extends Component {
                         Blog
                       </a>
                     </li>
-                    <li>
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="https://stitch.readme.io/"
-                      >
-                        API Docs
-                      </a>
-                    </li>
                   </ul>
-                </Col>
+                </Col> */}
 
                 <Col xs={6} sm={3} md={3}>
                   <h5>Platform</h5>
@@ -65,9 +54,9 @@ export default class Footer extends Component {
                     <li>
                       <Link to="/connect">Product</Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link to="/downloads">Downloads</Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link to="/pricing">Pricing</Link>
                     </li>
@@ -83,20 +72,16 @@ export default class Footer extends Component {
                     <li>
                       <Link to="/terms-of-service">Terms of Service</Link>
                     </li>
-                    <li>
-                      <Link to="/baa">BAA</Link>
-                    </li>
                   </ul>
                 </Col>
 
                 <Col xs={6} sm={3} xsPull={6} smPull={0}>
                   <h5>Contact</h5>
                   <address>
-                    Stitch Health
+                    InvoChat 
                     <br />
                     156 2nd Street<br />
                     San Francisco, CA<br />
-                    <a href="tel:+16502823388">(650) 282-3388</a>
                   </address>
                 </Col>
               </Row>

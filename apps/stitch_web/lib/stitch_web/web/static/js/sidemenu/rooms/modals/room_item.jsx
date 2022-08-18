@@ -41,7 +41,7 @@ class RoomItem extends Component {
 
           <div className="member-count text-muted">
             <i className="fa fa-users" />
-            {room.users.filter(user => !user.disabled).length}
+            {room.id !== 0 && (room.users.filter(user => !user.disabled).length)}
           </div>
         </div>
       </div>

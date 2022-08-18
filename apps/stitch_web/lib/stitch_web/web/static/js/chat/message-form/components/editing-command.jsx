@@ -2,7 +2,12 @@ import React, { Component } from "react";
 
 class EditingCommand extends Component {
   finishEdit = () => {
-    const { messageStore } = this.props;
+    const { messageStore, isReply } = this.props;
+    if (isReply) {
+      messageStore.finishCommentEdit();
+    } else {
+      messageStore.finishEdit();
+    }
     messageStore.finishEdit();
   };
 
@@ -17,25 +22,23 @@ class EditingCommand extends Component {
 
     return (
       messageInEdit && (
-        <div className="editing-commands">
+        <div className="editing-commands" style={{right: "2px", bottom: "2px", left: "unset", background: "transparent"}}>
           <div className="editing-commands-cancel">
-            <kbd>Esc</kbd> to{" "}
             <button
               type="button"
               className="btn-fancy btn-default btn-small"
               onClick={this.cancelEdit}
             >
-              Cancel Editing
+              Cancel
             </button>
           </div>
           <div className="editing-commands-save">
-            <kbd>Enter</kbd> to{" "}
             <button
               type="button"
               className="btn-fancy btn-default btn-small"
               onClick={this.finishEdit}
             >
-              Save Changes
+              Save
             </button>
           </div>
         </div>

@@ -80,12 +80,12 @@ class Subscription extends Component {
     const { plan } = this.state;
 
     billingStore.subscribe(plan).then(subscription => {
-      const text = `Your carespace is now changed to ${capitalize(
+      const text = `Your workspace is now changed to ${capitalize(
         subscription.tier
       )} tier`;
 
       alertModal({
-        title: "Thanks for using Stitch!",
+        title: "Thanks for using InvoChat!",
         message: (
           <p>
             We successfully saved your card info. <br /> <b>{text}</b>
@@ -142,7 +142,7 @@ class Subscription extends Component {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://teamstitch.com/pricing"
+          href="https://dvlcloud.com/pricing"
         >
           here
         </a>.{" "}
@@ -150,7 +150,7 @@ class Subscription extends Component {
           planRemainingDays > 0 && (
             <span>
               Click{" "}
-              <a href="mailto:support@teamstitch.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch Connect subscription for the following reasons:">
+              <a href="mailto:info@invozone.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our InvoChat subscription for the following reasons:">
                 here
               </a>{" "}
               to cancel your subscription.

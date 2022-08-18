@@ -14,6 +14,9 @@ class Reactions extends Component {
     const hasYou = userIds.indexOf(currentUser.id) > -1;
     const userList = userIds.filter(id => id !== currentUser.id).map(id => {
       const u = users[id];
+      if (!u) {
+        return ``;
+      }
       return `${u.first_name} ${u.last_name}`;
     });
 
@@ -40,7 +43,7 @@ class Reactions extends Component {
     return (
       <div className="message-reactions">
         {Object.keys(reactions).map(emoji => {
-          const active = reactions[emoji].indexOf(currentUser.id) > -1;
+          const active = reactions[emoji].indexOf(currentUser.id.toString()) > -1;
           return (
             <OverlayTrigger
               placement="top"

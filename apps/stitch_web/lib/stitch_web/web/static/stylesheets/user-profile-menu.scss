@@ -20,8 +20,8 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid $border-color;
-    padding: 0 12px 12px;
-    margin: 12px;
+    // padding: 0 12px 12px;
+    // margin: 12px;
 
     .avatar {
       margin-right: 10px;
@@ -30,20 +30,41 @@
         width: 36px;
       }
     }
+  }
 
-    .content {
-      flex: 1;
+  .content {
+    flex: 1;
 
-      .full-name {
-        color: $brand-primary;
-        font-size: 16px;
-        font-weight: 700;
-        line-height: 1.2;
+    .full-name {
+      color: $brand-primary;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.5;
+      padding-left: 8px;
+      padding-right: 8px;
+      padding-bottom: 0;
+      margin: 8px;
+      margin-top: 12px;
+      margin-bottom: 0;
+
+      span {
+        vertical-align: middle;
+        font-size: 8px;
+        margin: 4px;
+        padding: 4px;
       }
 
-      .username {
-        line-height: 1.2;
-      }
+    }
+
+    .user-title {
+      padding-left: 8px;
+      padding-right: 8px;
+      margin: 8px;
+      margin-top: 0;
+    }
+
+    .username {
+      line-height: 1.5;
     }
   }
 

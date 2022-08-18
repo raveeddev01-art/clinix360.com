@@ -6,17 +6,17 @@
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-MMLMP6C');</script>
+    })(window,document,'script','dataLayer','GTM-5FJVD27');</script>
     <!-- End Google Tag Manager -->
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://teamstitch.com" rel="canonical">
+    <link href="https://dvlcloud.com" rel="canonical">
     <meta name="author" content="">
     <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token %>">
 
-    <title><%= if assigns[:title], do: @title, else: "Care Coordination | Stitch" %></title>
+    <title><%= if assigns[:title], do: @title, else: "Work Coordination | InvoChat" %></title>
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -164,8 +164,9 @@
   <body>
 
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MMLMP6C"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5FJVD27" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div class="content">
       <%= render @view_module, @view_template, assigns %>

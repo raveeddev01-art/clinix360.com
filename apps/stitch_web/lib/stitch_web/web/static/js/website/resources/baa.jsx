@@ -11,7 +11,7 @@ export default class Baa extends Component {
         <Header />
 
         <Subheader
-          title="HIPAA Business Associate Agreement (BAA)"
+          title="Business Associate Agreement (BAA)"
           subtitle=""
         />
 
@@ -64,7 +64,7 @@ export default class Baa extends Component {
                 shall mean you.
               </li>
               <li>
-                <strong>HIPAA Rules</strong>. “HIPAA Rules” shall mean the
+                <strong>Rules</strong>. “Rules” shall mean the
                 Privacy, Security, Breach Notification, and Enforcement Rules at
                 45 CFR Part 160 and Part 164.
               </li>
@@ -72,7 +72,7 @@ export default class Baa extends Component {
 
             <p>
               The following terms used in this Agreement shall have the same
-              meaning as those terms in the HIPAA Rules: <strong>Breach</strong>,{" "}
+              meaning as those terms in the Rules: <strong>Breach</strong>,{" "}
               <strong>Data Aggregation</strong>,{" "}
               <strong>Designated Record Set</strong>,{" "}
               <strong>Disclosure</strong>,{" "}

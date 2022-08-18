@@ -44,7 +44,7 @@ defmodule Stitch.Web.Mixfile do
       {:phoenix_live_reload, "~> 1.1", only: :dev},
       {:phoenix_ecto, "~> 3.0"},
       {:phoenix_etag, "~> 0.1"},
-      {:gettext, "~> 0.13"},
+      {:gettext, "~> 0.18"},
       {:cowboy, "~> 1.1"},
       {:guardian, "~> 0.14"},
       {:poison, "~> 3.1"},
@@ -52,7 +52,7 @@ defmodule Stitch.Web.Mixfile do
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.3"},
       {:quantum, ">= 2.2.7"},
-      {:sweet_xml, "~> 0.6.5"},
+      {:sweet_xml, "~> 0.7"},
       {:stitch, in_umbrella: true},
       {:appsignal, "~> 1.5"},
       {:wallaby, "~> 0.19.2", only: :test},
@@ -63,7 +63,8 @@ defmodule Stitch.Web.Mixfile do
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
       {:remote_ip, "~> 0.1.4"},
-      {:phoenix_swagger, "~> 0.8"}
+      {:phoenix_swagger, "~> 0.8"},
+      {:not_qwerty123, "~> 2.4.1"}
     ]
   end
 

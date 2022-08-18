@@ -21,7 +21,7 @@ class ProductCards extends Component {
               </h3>
               <p className="m-b-20">
                 Keep everyone in sync with real-time messaging designed for
-                healthcare teams.
+                InvoChat teams.
               </p>
 
               <div className="learn-more">

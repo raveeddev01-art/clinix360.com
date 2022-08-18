@@ -12,9 +12,9 @@ class PricingEnterprise extends Component {
     return (
       <div className="m-b-40">
         <h3 className="pricing-table-heading text-center">
-          <strong>Stitch for Enterprise</strong> scales the power of team
+          <strong>InvoChat for Enterprise</strong> scales the power of team
           collaboration to the nation’s largest hospitals, health systems and
-          healthcare organizations.
+          InvoChat organizations.
         </h3>
 
         <Row>
@@ -24,8 +24,8 @@ class PricingEnterprise extends Component {
                 <div className="enterprise-contact-us">
                   <img
                     className="stitch-logo m-b-50"
-                    src="/images/logo-blue.svg"
-                    alt="Stitch"
+                    src="/images/invochat-600.png"
+                    alt="InvoChat"
                   />
                 </div>
               </Col>

@@ -34,6 +34,11 @@ defmodule Stitch.AWS.S3 do
   end
 
   def fullpath(file \\ "", dir \\ "") do
+    # # if object == "" do
+    # # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}"
+    # # else
+    # "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
+    # # end
     object = Path.join(dir, Path.basename(file))
     "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
   end

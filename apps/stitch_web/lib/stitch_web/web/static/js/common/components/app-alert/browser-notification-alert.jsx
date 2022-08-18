@@ -42,7 +42,7 @@ export default class BrowserNotificationAlert extends Component {
           We recommend you&nbsp;
           <a role="link" onClick={this.enableNotification}>
             enable desktop notifications
-          </a>&nbsp;for Stitch.
+          </a>&nbsp;for InvoChat.
         </span>
         <i
           role="link"

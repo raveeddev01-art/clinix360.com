@@ -4,16 +4,16 @@ import history from "lib/history";
 import { inject, observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import { UserProfileMenu } from "common/components";
-import AttachmentActions from "common/components/messages/message-content/file-attachment/components/attachment-actions";
+import AttachmentActions from "../../messages/message-content/file-attachments/file-attachment/components/attachment-actions";
 import FileInfo from "../FileInfo";
 import FileCommentGroup from "../FileCommentGroup";
 import FileThumb from "./file-thumb";
 
-@inject("usersStore", "desktopStore")
+@inject("usersStore", "desktopStore", "teamFileStore")
 @observer
 class FileItem extends Component {
   onFileDownload = e => {
-    const { desktopStore, file } = this.props;
+    const { desktopStore, file, teamFileStore } = this.props;
 
     if (desktopStore.isElectron) {
       e.stopPropagation();
@@ -28,6 +28,8 @@ class FileItem extends Component {
         filetype: file.filetype,
         previewUrl: file.preview_url
       });
+    } else {
+      teamFileStore.downloadFile(file.url, file.filename)
     }
   };
 
@@ -54,12 +56,12 @@ class FileItem extends Component {
   };
 
   render() {
-    const { file, usersStore, isActionsVisible, onFileClick } = this.props;
+    const { file, usersStore, isActionsVisible, onFileClick, message } = this.props;
     const user = usersStore.usersById[file.user_id];
     const username = user && this.renderName(user);
 
     return (
-      <div className="file-item" onClick={this.onClick}>
+      <div className="file-item" /* onClick={this.onClick} */>
         <FileThumb mimetype={file.mimetype} previewUrl={file.preview_url} />
         <div className="file-item__content">
           {isActionsVisible && (
@@ -69,6 +71,7 @@ class FileItem extends Component {
                 file_id={file.id}
                 user_id={file.user_id}
                 encoded_id={file.encoded_id}
+                message={message}
                 isOriginalOpenVisible={false}
                 commentCount={file.comment_count}
                 onFileDownload={this.onFileDownload}
@@ -76,18 +79,18 @@ class FileItem extends Component {
             </div>
           )}
 
-          {onFileClick ? (
-            <a onClick={() => onFileClick(file.id)} className="file-item__link">
+          {
+            <a onClick={this.onFileDownload} className="file-item__link">
               {file.filename}
             </a>
-          ) : (
-            <Link
+          }
+          {/* <Link
               className="file-item__link"
               to={`/admin/files/${file.encoded_id}`}
+              target='_blank'
             >
               {file.filename}
-            </Link>
-          )}
+          </Link> */}
 
           <div className="file-item__content-user">
             <span onClick={e => e.stopPropagation()}>
@@ -100,9 +103,8 @@ class FileItem extends Component {
               )}
             </span>
           </div>
-
           <FileInfo file={file} />
-          <span className="file-dot" />
+          <br></br>
           <FileCommentGroup file={file} showClose={false} />
         </div>
       </div>

@@ -33,11 +33,13 @@ class UsersStore {
     const userIDs = [];
 
     groups.forEach(g => {
-      g.users.forEach(u => {
-        if (u && userIDs.indexOf(u.id) === -1) {
-          userIDs.push(u.id);
-        }
-      });
+      if (g.id !== 0) {
+        g.users.forEach(u => {
+          if (u && userIDs.indexOf(u.id) === -1) {
+            userIDs.push(u.id);
+          }
+        });
+      }
     });
 
     return this.users.filter(u => userIDs.indexOf(u.id) > -1);

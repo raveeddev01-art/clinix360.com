@@ -20,7 +20,6 @@ class MessageNav extends Component {
           />{" "}
           {groupsStore.getGroupName(group)}
         </NavLink>
-
         <span className="m-l-10">
           {moment
             .utc(message.inserted_at)

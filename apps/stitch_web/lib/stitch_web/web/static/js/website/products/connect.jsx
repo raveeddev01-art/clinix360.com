@@ -8,9 +8,7 @@ import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
 
-import TopBanner from "../components/top-banner";
 import Header from "../components/header";
-import CreateTeam from "../components/create-team";
 import Feature from "../components/feature";
 import Footer from "../components/footer";
 import VideoModal from "../components/video-modal";
@@ -55,85 +53,124 @@ export default class Connect extends Component {
 
     return (
       <div className="product-page">
-        <TopBanner />
         <Header />
         <div className="subheader">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <h4 className="product-heading">
-                  <i className="fa fa-comments" /> Stitch Connect
-                </h4>
-
-                <h1>{header}</h1>
+                <h2>{header}</h2>
 
                 <h3 className="m-b-30">{subHeader}</h3>
 
-                <a
-                  className="play-video-link hidden-xs hidden-sm"
-                  onClick={this.videoModal}
-                >
-                  <span className="play-btn">
-                    <i className="fa fa-play" />
-                  </span>
-                  <span>See how it works</span>
+                <Button bsStyle="primary" href="mailto:info@invozone.com?subject=InvoChat: Request Information">Request Demo</Button>
+
+                <a className="trial-link" href="/getstarted/">
+                  <i className="fa fa-external-link"></i>
+                  Sign up for a free 14 days trail
                 </a>
               </div>
 
               <div className="flex-item">
                 <img
                   src="/images/connect-header.png"
-                  alt="Stitch Platform"
+                  alt="InvoChat Platform"
                   className="img-responsive"
                 />
               </div>
+            </div>
+            <div>
+              <h4>Already using InvoChat?              
+                <a className="signin-link" href="/signin">
+                  Sign in
+                </a>
+              </h4>
             </div>
           </div>
         </div>
 
         <Feature
           featureClassName={flipped ? "" : "alt"}
-          heading="Get to the right person at the right time"
+          heading="Simplify problem-solving & decision-making with topic-specific chat rooms"
           image="/images/connect-feature-1.png"
         >
-          Public and private rooms bring healthcare teams together for powerful
-          team dialogue. Easily discuss patients, events, tasks and more. Direct
-          messages enable instant 1-to-1 communication. No more pagers, texting,
-          email or phone calls.
+          Bring down email clutter and messy chats with dedicated
+          chat rooms and threads around projects, topics, and teams. 
+          Public and private chat rooms bring teams together for a 
+          powerful dialogue or just spitballing creative ideas. 
+          You can easily:
+          <ul>
+            <li>Discuss what’s important</li>
+            <li>Check task progress and updates</li>
+            <li>Notify specific members relevant to a given discussion through tags</li>
+            <li>Connect with your team via google meet integration on the go.</li>
+          </ul>
         </Feature>
 
         <Feature
           featureClassName={flipped ? "alt" : ""}
-          heading="Share information across your entire team"
+          heading="Make company-wide communication trouble-free through instant file sharing"
           image="/images/connect-feature-2.png"
         >
-          Easily upload files of any type into Stitch — JPEG, PNG, PDF, MP3,
-          Word, Excel, PowerPoint, and more. Make them instantly available to
-          your team members, and drop the headache of tedious email attachments.
-          Start sharing patient charts, labs, images, intake forms and more.
+          Easily upload files of any type into InvoChat —  
+          JPEG, PNG, PDF, MP3, Word, Excel, PowerPoint, and more. 
+          Make them instantly available to your team members, and 
+          drop the headache of tedious email attachments. 
+          <ul>
+            <li>Upload and share files with your whole team or specific people</li>
+            <li>All the documents are safely stored on InvoChat</li>
+            <li>Search functionality allows you to find files within seconds</li>
+            <li>Pin or mark documents as favorites for later viewing</li>
+          </ul>
         </Feature>
 
         <Feature
           featureClassName={flipped ? "" : "alt"}
-          heading="Choose notifications that matter to you"
+          heading="Personalized notifications that matter to you with custom options to stay focused"
           image="/images/connect-feature-3.png"
         >
-          With Stitch, you can apply custom notification preferences to every
-          conversation, so you can stay focused and in the loop. Say goodbye to
-          cluttered inboxes, noisy pagers and unruly text threads. Best of all,
-          Stitch goes wherever you go with native Mac, Windows, iOS and Android
-          apps.
+          With InvoChat, you can apply the custom notification 
+          preferences to every conversation, so you can stay
+          focused and in the loop.
+          <ul>
+            <li>Manage your chat notifications across all browsers, OS, and apps (iOS and Android )</li>
+            <li>Turn chat room notifications on and off as needed</li>
+            <li>Prioritize only notifications that are relevant to you</li>
+            <li>Automatically get notifications when you create, respond, or are mentioned in a message</li>
+          </ul>
         </Feature>
 
         <Feature
           featureClassName={flipped ? "alt" : ""}
-          heading="Instantly find answers when you need them"
+          heading="Enable instant and direct communication through 1:1 chat with your team members"
           image="/images/connect-feature-4.png"
         >
-          Stitch turns historical conversations into the ultimate source of
-          answers: it’s built from the ground up for deep search. Every message,
-          every file, every comment is carefully archived and made searchable.
-          Team knowledge at your fingertips, whenever you need it.
+          Quicker and more efficient communication leads to higher productivity. 
+          Instant messaging allows you to better communicate with your entire team 
+          in real-time without any delays. No more texting, email, or phone calls.
+          <ul>
+            <li>Securely share files, documents, and high-resolution images/videos</li>
+            <li>Read receipts for when someone has read or received your message</li>
+            <li>Mute notifications during important meetings</li>
+            <li>Mark your top conversations as favorites and pin important messages</li>
+          </ul>
+        </Feature>
+
+        <Feature
+          featureClassName={flipped ? "" : "alt"}
+          heading="Create collaborative workspaces to stay on top of things"
+          image="/images/connect-feature-3.png"
+        >
+          InvoChat workspaces offer a single most centralized 
+          platform for companies and it’s employees who require
+          constant collaboration and communication with clients 
+          and each other on projects and tasks.​​
+
+          <ul>
+            <li>Manage and track multiple projects asynchronously</li>
+            <li>Tools for better support, safe file storage, and swift data availability</li>
+            <li>Exchange or spitball ideas through topic-based chat rooms</li>
+            <li>Enable hybrid working, and reduce geographical barriers</li>
+          </ul>
         </Feature>
 
         <div className="additional-features">
@@ -148,10 +185,10 @@ export default class Connect extends Component {
                   </h4>
                   <p className="m-b-15">
                     View engagement statistics to understand the how, when and
-                    who of your team’s Stitch usage.
+                    who of your team’s InvoChat usage.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/articles/360010902353">
+                  <a href="https://help.dvlcloud.com/hc/en-us/articles/360010902353">
                     Learn more about Analytics
                   </a>
                 </div>
@@ -167,7 +204,7 @@ export default class Connect extends Component {
                     interval, password requirements and user invite ability.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/categories/360000720214-Security-and-Compliance">
+                  <a href="https://help.dvlcloud.com/hc/en-us/categories/360000720214-Security-and-Compliance">
                     Learn more about Security
                   </a>
                 </div>
@@ -183,7 +220,7 @@ export default class Connect extends Component {
                     notification settings for each chat room. Never miss a beat.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/articles/360007604194-About-notifications">
+                  <a href="https://help.dvlcloud.com/hc/en-us/articles/360007604194-About-notifications">
                     Learn more about Notifications
                   </a>
                 </div>
@@ -199,7 +236,7 @@ export default class Connect extends Component {
                     easy-to-access read receipts for every message.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/articles/235554867-Message-info">
+                  <a href="https://help.dvlcloud.com/hc/en-us/articles/235554867-Message-info">
                     Learn more about Read Receipts
                   </a>
                 </div>
@@ -215,7 +252,7 @@ export default class Connect extends Component {
                     logs and create data exports with the click of a button.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/categories/360000723973-Carespace-Administration">
+                  <a href="https://help.dvlcloud.com/hc/en-us/categories/360000723973-Carespace-Administration">
                     Learn more about Administration
                   </a>
                 </div>
@@ -224,14 +261,14 @@ export default class Connect extends Component {
               <Col sm={6} md={4}>
                 <div className="feature-block">
                   <h4 className="m-b-20">
-                    <i className="far fa-refresh" /> EHR Integrations
+                    <i className="far fa-video-camera" /> Google Meet Integrations
                   </h4>
                   <p className="m-b-15">
-                    Tie Stitch into your existing toolset with a seamless EHR
-                    integration. Get alerts for key updates right in Stitch.
+                    Effortlessly start google meet calls in any chat room with a single click 
+                    without having to create and share meet links.
                   </p>
 
-                  <a href="https://help.teamstitch.com/hc/en-us/articles/360007574334-EHR-Integrations">
+                  <a href="https://help.dvlcloud.com/hc/en-us/articles/360007574334-EHR-Integrations">
                     Learn more about Integrations
                   </a>
                 </div>
@@ -258,8 +295,8 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Create an account</h4>
 
                     <p>
-                      Stitch is 100% free to start. Pick a team name and a
-                      custom URL you can use to access Stitch easily.
+                      InvoChat is 100% free to start. Pick a team name and a
+                      custom URL you can use to access InvoChat easily.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -269,8 +306,8 @@ export default class Connect extends Component {
                     <div className="number m-b-30">2</div>
                     <h4 className="m-b-20">Invite your team</h4>
                     <p>
-                      Stitch works best when your entire team is inside. Use
-                      Stitch with an unlimited number of users.
+                      InvoChat works best when your entire team is inside. Use
+                      InvoChat with an unlimited number of users.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -281,7 +318,7 @@ export default class Connect extends Component {
                     <h4 className="m-b-20">Add chat rooms</h4>
                     <p>
                       Pick a few major topics that your team talks about
-                      frequently, and create your Stitch rooms to get started.
+                      frequently, and create your InvoChat rooms to get started.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -291,8 +328,8 @@ export default class Connect extends Component {
                     <div className="number m-b-30">4</div>
                     <h4 className="m-b-20">Message securely</h4>
                     <p>
-                      Directly name patients and share patient files to
-                      collaborate more efficiently with HIPAA compliance.
+                      InvoChat is secured with end-to-end encryption. 
+                      Securely chat and share files for efficient collaboration.
                     </p>
                   </Panel.Body>
                 </Panel>
@@ -322,8 +359,8 @@ Connect.propTypes = {
 
 Connect.defaultProps = {
   flipped: false,
-  header: "Collaboration hub for healthcare",
+  header: "Effortless online collaboration tool for in-house and remote teams",
   subHeader:
-    "Message your team, from any device. Stitch Connect is HIPAA compliant and free to use with an unlimited number of people."
-  // industryBodyText: "healthcare"
+    "Catch up on important conversations and say hi to quick and productive collaboration on tasks & projects through secure chat with your teammates, file attachments, video calls, and more - all through a single platform."
+  // industryBodyText: "InvoChat"
 };

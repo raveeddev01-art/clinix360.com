@@ -20,7 +20,8 @@ class MessageActions extends PureComponent {
 
     this.state = {
       dropup: false,
-      isEmojiPickerOpen: false
+      isEmojiPickerOpen: false,
+      emojiPickerOffset: {}
     };
   }
 
@@ -39,11 +40,21 @@ class MessageActions extends PureComponent {
     }
   };
 
+  subscribeMessageNotifications = () => {
+    const { messageStore, message, user } = this.props;
+    messageStore.subscribeMessageNotifications(message, user.id, true);
+  }
+
+  unsubscribeMessageNotifications = () => {
+    const { messageStore, message, user } = this.props;
+    messageStore.subscribeMessageNotifications(message, user.id, false);
+  }
+
   onSelectEmoji = emoji => {
     const { messageStore, message, setSelected } = this.props;
     this.setState({ isEmojiPickerOpen: false }, () => {
       if (emoji) {
-        messageStore.toggleReaction(message.id, emoji.colons);
+        messageStore.toggleReaction(message.id, emoji.colons, message.group_id);
       }
       setSelected({ isSelected: false, isActionsVisible: false });
     });
@@ -62,7 +73,7 @@ class MessageActions extends PureComponent {
     if (pos.bottom < window.innerHeight / 2) {
       martStyles.top = "24px";
     } else {
-      martStyles.bottom = "calc(100% + 14px)";
+      martStyles.bottom = "-14px";
     }
 
     return martStyles;
@@ -89,23 +100,23 @@ class MessageActions extends PureComponent {
     messageStore.toggleStar(message.id);
   };
 
-  toggleReaction = () => {
+  toggleReaction = (e) => {
+    this.setState({ emojiPickerOffset: e.target.getBoundingClientRect(), isEmojiPickerOpen: true })
     this.props.setSelected({ isSelected: true });
-    this.setState({ isEmojiPickerOpen: true });
   };
 
-  shareFile = () => {
-    const { message } = this.props;
-    this.props.teamFileStore.openShareModal(message.upload_id);
+  shareMessage = () => {
+    const { message, messageStore } = this.props;
+    messageStore.openShareModal(message.id);
   };
 
-  showComments = () => {
+  showMessageComments = () => {
     const { addonStore, message } = this.props;
 
-    addonStore.setAddonPanel("files");
+    addonStore.setAddonPanel("thread");
     addonStore.toggleAddons(true);
-    addonStore.toggleAddonDetail(true);
-    addonStore.setAddonDetailPanel("File Details", message.upload_id);
+    addonStore.toggleAddonDetail(false);
+    addonStore.setAddonDetailPanel("Message Details", message);
   };
 
   markAsUnread = () => {
@@ -116,12 +127,11 @@ class MessageActions extends PureComponent {
 
   edit = () => {
     const { message, messageStore } = this.props;
-
-    messageStore.startEdit(message.id);
+    messageStore.startEdit(message.id, message);
   };
 
   delete = () => {
-    const { message, messageStore } = this.props;
+    const { message, messageStore, isReply } = this.props;
     let confirmMsg =
       "Are you sure you want to delete this message? This cannot be undone.";
 
@@ -148,25 +158,48 @@ class MessageActions extends PureComponent {
       message: confirmMsg,
       okLabel: "Delete"
     }).then(() => {
-      messageStore.delete(message.id);
+      if (isReply) {
+        messageStore.deleteMessageComment(message.id);
+      } else {
+        messageStore.delete(message.id);
+      }
     });
   };
+
+  renderNotificationSetting() {
+    const { isReply, message } = this.props;
+    if (!isReply && message.status !== "failed" && message.notify_user_ids.includes(currentUser.id)) {
+      return (
+        <div>
+          <MenuItem onClick={this.unsubscribeMessageNotifications}>Turn off notifications for replies</MenuItem>
+          <MenuItem divider />
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <MenuItem onClick={this.subscribeMessageNotifications}>Get notified about new replies</MenuItem>
+          <MenuItem divider />
+        </div>
+      );
+    }
+  }
 
   render() {
     const {
       lastOtherUserMessage,
       message,
       user,
-      isConversationMessage
+      isConversationMessage,
+      isReply,
+      parentMessageId
     } = this.props;
     const mine = user.id === currentUser.id;
     const unsent = message.status === "sending" || message.status === "failed";
-    const { dropup, isEmojiPickerOpen } = this.state;
+    const { dropup, isEmojiPickerOpen, emojiPickerOffset } = this.state;
     const starredCX = message.starred ? "" : "-o";
-    const detailPageUrl =
-      message.fields &&
-      message.fields.encoded_id &&
-      getFullUrl(`/admin/files/${message.fields.encoded_id}`);
+    const notificationsEnabled = message.status !== "failed" && !isReply && message.notify_user_ids.includes(currentUser.id) ? true : false;
+    const detailPageUrl = getFullUrl(`/archives-m${btoa(message.group_id)}-m${btoa(message.id)}-m${btoa(parentMessageId)}`);
 
     // disabling context menu
     if (unsent) {
@@ -199,33 +232,33 @@ class MessageActions extends PureComponent {
           </Button>
         </OverlayTrigger>
 
-        {!isConversationMessage &&
-          (message.type === "upload" || message.type === "file_comment") && (
+        {!isConversationMessage && !isReply &&
+          (
             <OverlayTrigger
               placement="top"
               delayShow={150}
-              overlay={<Tooltip id="file-comments">Add Comment</Tooltip>}
+              overlay={<Tooltip id="file-comments">Reply in Thread</Tooltip>}
             >
-              <Button onClick={this.showComments}>
+              <Button onClick={this.showMessageComments}>
                 <i className="fa fa-comments" />
               </Button>
             </OverlayTrigger>
           )}
 
-        {!isConversationMessage &&
+        {!isConversationMessage && !isReply &&
           message.type === "upload" && (
             <OverlayTrigger
               placement="top"
               delayShow={150}
-              overlay={<Tooltip id="message-react">Share file</Tooltip>}
+              overlay={<Tooltip id="message-react">Share message</Tooltip>}
             >
-              <Button onClick={this.shareFile}>
+              <Button onClick={this.shareMessage}>
                 <i className="fa fa-share" />
               </Button>
             </OverlayTrigger>
           )}
 
-        {!isConversationMessage && (
+        {!isConversationMessage && !isReply && (
           <OverlayTrigger
             placement="top"
             delayShow={150}
@@ -242,7 +275,7 @@ class MessageActions extends PureComponent {
           </OverlayTrigger>
         )}
 
-        {!isConversationMessage && (
+        {!isConversationMessage && !isReply && (
           <OverlayTrigger
             placement="top"
             delayShow={150}
@@ -272,23 +305,22 @@ class MessageActions extends PureComponent {
             id="actions-dropdown"
             onToggle={this.onToggleContextualMenu}
           >
+            {this.renderNotificationSetting()}
+
             {(!mine ||
               (lastOtherUserMessage &&
                 message.id < lastOtherUserMessage.id)) && (
                 <MenuItem onClick={this.markAsUnread}>Mark as unread</MenuItem>
               )}
 
+
             {message.type !== "call" && (
               <CopyToClipboard
-                text={
-                  message.type === "upload"
-                    ? detailPageUrl
-                    : message.text_content
-                }
+                text={detailPageUrl}
                 onCopy={this.copy}
               >
                 <MenuItem>
-                  Copy {message.type === "upload" ? "Link" : "Message"}
+                  Copy Link
                 </MenuItem>
               </CopyToClipboard>
             )}
@@ -300,8 +332,8 @@ class MessageActions extends PureComponent {
               )}
 
             {(mine || isAdmin()) && (
-                <MenuItem onClick={this.delete}>Delete message</MenuItem>
-              )}
+              <MenuItem onClick={this.delete}>Delete message</MenuItem>
+            )}
           </DropdownButton>
         </OverlayTrigger>
       </ButtonGroup>,
@@ -311,7 +343,7 @@ class MessageActions extends PureComponent {
         message={message}
         onSelectReaction={this.onSelectEmoji}
         show={isEmojiPickerOpen}
-        style={this.getEmojiMartStyle()}
+        pos={emojiPickerOffset}
       />
     ];
   }

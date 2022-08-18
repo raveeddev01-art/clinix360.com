@@ -61,7 +61,7 @@ class AvatarImage extends Component {
   }
 
   get useFallback() {
-    return this.state.useFallback || !this.userAvatar(this.props);
+    return !this.userAvatar(this.props);
   }
 
   userAvatar(props) {

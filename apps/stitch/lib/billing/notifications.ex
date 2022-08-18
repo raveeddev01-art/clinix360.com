@@ -6,7 +6,6 @@ defmodule Stitch.Billing.Notifications do
   import Bamboo.MandrillHelper
   alias Stitch.Accounts.User
   alias Stitch.Team
-  alias Stitch.Mailer
 
   @doc """
   Sends an email for a successful payment.
@@ -15,8 +14,8 @@ defmodule Stitch.Billing.Notifications do
     new_email()
     |> template("Payment Monthly Invoice (Connect)")
     |> to(email_address)
-    |> from({"Stitch", "support@teamstitch.com"})
-    |> subject("Stitch Payment Received")
+    |> from({"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
+    |> subject("InvoChat Payment Received")
     |> put_param("global_merge_vars", [
       %{
         name: "orgName",
@@ -27,7 +26,7 @@ defmodule Stitch.Billing.Notifications do
         content: first_name
       }
     ])
-    |> Mailer.deliver_later()
+    |> NewMailer.deliver_now()
   end
 
   @doc """
@@ -37,8 +36,8 @@ defmodule Stitch.Billing.Notifications do
     new_email()
     |> template("Payment Subscription Failed (Connect)")
     |> to(user.email)
-    |> from({"Stitch", "support@teamstitch.com"})
-    |> subject("Stitch Payment Failed")
+    |> from({"InvoChat", "support@#{System.get_env("MAILGUN_DOMAIN")}"})
+    |> subject("InvoChat Payment Failed")
     |> put_param("global_merge_vars", [
       %{
         name: "orgName",
@@ -57,6 +56,6 @@ defmodule Stitch.Billing.Notifications do
         content: days_until_retry
       }
     ])
-    |> Mailer.deliver_later()
+    |> NewMailer.deliver_now()
   end
 end

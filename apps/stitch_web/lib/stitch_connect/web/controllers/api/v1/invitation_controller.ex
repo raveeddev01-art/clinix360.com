@@ -176,7 +176,6 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
 
           Map.put(map, email, result)
         end)
-
       json(conn, results)
     else
       conn

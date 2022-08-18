@@ -30,13 +30,13 @@ export default class PricingDesktop extends Component {
             <div className="pricing-table__row tiers">
               <div className="pricing-table__item">
                 <img
-                  src="/images/logo-blue.svg"
-                  alt="Stitch"
+                  src="/images/invochat-logo-blue.png"
+                  alt="InvoChat"
                   className="img img-responsive"
                 />
               </div>
 
-              <div className="pricing-table__item">
+              {/* <div className="pricing-table__item">
                 <h4>Basic</h4>
 
                 <h2>
@@ -66,22 +66,26 @@ export default class PricingDesktop extends Component {
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>
                 </p>
-              </div>
+              </div> */}
 
               <div className="pricing-table__item">
                 <h4>Premium</h4>
 
                 <h2>
                   <span>$</span>
-                  {monthlyPricing ? 12 : 10}
+                  {monthlyPricing ? 48 : 40}
                 </h2>
 
                 <p className="text-muted">
-                  per user per month <br />billed{" "}
+                  per month <br />billed{" "}
                   <a role="button" onClick={this.handleClick}>
                     {monthlyPricing ? "monthly" : "annually"}
                   </a>
                 </p>
+                <a className="trial-link" href="/getstarted/">
+                  <i className="fa fa-external-link"></i>
+                  Start with a 14 day free trail now.
+                </a>
               </div>
             </div>
 

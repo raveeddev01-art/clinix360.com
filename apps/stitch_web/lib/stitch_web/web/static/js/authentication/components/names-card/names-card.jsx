@@ -24,7 +24,15 @@ function formatName(givenUsername) {
 }
 
 function isValidUsername(username) {
-  if (/[^a-z0-9]/.test(username)) {
+  if (/[^a-z0-9_]/.test(username)) {
+    return false;
+  }
+
+  return true;
+}
+
+function isValidName(name) {
+  if (/[^a-zA-Z ]/.test(username)) {
     return false;
   }
 
@@ -202,7 +210,7 @@ class NamesCards extends Component {
             )}
         </FormGroup>
         <HelpBlock className="onboarding-hint m-b-20">
-          Usernames must be lowercase and contian only letters, numbers,
+          Usernames must be lowercase and contain only letters, numbers,
           periods, hyphens, and underscores.
         </HelpBlock>
       </div>
@@ -222,7 +230,7 @@ class NamesCards extends Component {
 
     const description = asPatient
       ? ""
-      : "Your name will appear alongside your messages, files, tasks, and more in Stitch Connect.";
+      : "Your name will appear alongside your messages, files, tasks, and more in InvoChat.";
 
     const disableNext = !firstName || !lastName || (!asPatient && !username);
     const nextCb = asPatient ? this.onPatientNext : this.onNext;

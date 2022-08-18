@@ -2,11 +2,14 @@ defmodule StitchConnect.Web.GroupChannel do
   use Stitch.Web, :channel
   import Ecto.Query
   alias Stitch.Accounts.{User, ActivityTracker}
+  alias Stitch.LinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
   alias Stitch.Web.Api.V1.FileView
+  # alias StitchConnect.MessageLinkPreviewGenerator
+  alias Stitch.FilesPreviewGenerator
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
-
+  alias StitchConnect.Web.Api.V1.MessageController
   alias StitchConnect.Web.{
     MessageEventsService
   }
@@ -176,7 +179,7 @@ defmodule StitchConnect.Web.GroupChannel do
     limit = Map.get(params, "limit", 60)
     fetch_users = get_fetch_users_param(params)
 
-    case MessageQueries.get_by_id(message_id, fetch_users) do
+    case MessageQueries.load_message(message_id, user) do
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
 
@@ -202,6 +205,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
     message_params_with_client = Message.Params.with_client_attrs("channel", params)
     do_new_msg(socket, group, user, message_params_with_client)
+    # MessageController.create(socket, group)
   end
 
   @decorate channel_action()
@@ -233,6 +237,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
     case message && Message.update(message, params) do
       {:ok, message} ->
+        LinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
         MessageEventsService.message_edit_events(message)
         json = MessageView.render("show.json", %{message: message})
@@ -315,7 +320,10 @@ defmodule StitchConnect.Web.GroupChannel do
 
       {message, true} ->
         {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
-        broadcast_reactions_updated(group, message)
+        case message.parent_message_id do
+          nil -> broadcast_reactions_updated(group, message)
+          _ -> broadcast_comment_reactions_updated(message, user)
+        end
         {:reply, :ok, socket}
     end
   end
@@ -382,6 +390,12 @@ defmodule StitchConnect.Web.GroupChannel do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message, true)
     endpoint_broadcast(group, "new_msg", message_json)
+  end
+
+  def broadcast_message_comment_created(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message, true)
+    endpoint_broadcast(group, "new_comment", message_json)
   end
 
   def broadcast_message_pinned(message) do
@@ -478,6 +492,31 @@ defmodule StitchConnect.Web.GroupChannel do
     end)
   end
 
+  def broadcast_message_comment_added(message) do
+    message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(message.group, "message_comment_added", message_json)
+    @endpoint.broadcast("groups:id:#{message.group_id}", "message_comment_added", message_json)
+  end
+
+  def broadcast_message_comment_edited(message) do
+    message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(message.group, "message_comment_edited", message_json)
+    @endpoint.broadcast("groups:id:#{message.group_id}", "message_comment_edited", message_json)
+  end
+
+  def broadcast_comment_reactions_updated(message, user) do
+    message = MessageQueries.load_message(message.parent_message_id, user)
+    message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(message.group, "comment_reactions_updated", message_json)
+    @endpoint.broadcast("groups:id:#{message.group_id}", "comment_reactions_updated", message_json)
+  end
+
+  def broadcast_message_comment_deleted(message) do
+    message_json = MessageView.render("show.json", %{message: message})
+    broadcast_in_event_channel(message.group, "message_comment_deleted", message_json)
+    @endpoint.broadcast("groups:id:#{message.group_id}", "message_comment_deleted", message_json)
+  end
+
   def broadcast_in_event_channel(%Group{} = group, event_name, payload) do
     for group_user <- GroupUser.group_users_for(group.id) do
       @endpoint.broadcast("events:#{group_user.user_id}", event_name, payload)
@@ -570,25 +609,26 @@ defmodule StitchConnect.Web.GroupChannel do
 
       case Message.create(group, user, attrs, presence_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
+          LinkPreviewGenerator.queue(message)
+          FilesPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
           message = Repo.preload(message, :upload, force: true)
 
-          StitchConnect.Web.Api.V1.MessageController.create_optional_upload_comment(
-            message,
-            group,
-            user,
-            presence_user_ids,
-            attrs
-          )
+          # StitchConnect.Web.Api.V1.MessageController.create_optional_upload_comment(
+          #   message,
+          #   group,
+          #   user,
+          #   presence_user_ids,
+          #   attrs
+          # )
 
           Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
-
           Stitch.Task.start(fn ->
+            Stitch.EmailNotification.create(message.id, notify_user_ids.email)
             broadcast_message_created(message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
             PushNotifications.notify_users(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-            Stitch.EmailNotification.create(message.id, notify_user_ids.email)
           end)
 
           json = MessageView.render("show.json", %{message: message})

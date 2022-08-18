@@ -22,10 +22,13 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     Files,
     StarrableItems.StarringService,
     Message,
+    Message.MessageCreation,
     MessageAuthorization,
     MessageAction,
+    MessageNotification,
     MessageQueries,
-    Message.Upload,
+    Files.FileQueries,
+    Files.Upload,
     ReadStatus,
     Web.EventsChannel,
     Web.FileService
@@ -121,7 +124,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
-
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
 
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
@@ -130,8 +132,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(group, current_user, message_params_with_client, presence) do
       message = %{message | user: current_user}
-      create_optional_upload_comment(message, group, current_user, presence, message_params)
-      message = MessageQueries.get_by_id(message.id)
+      # create_optional_upload_comment(message, group, current_user, presence, message_params)
+      message = MessageQueries.load_message(message.id, current_user)
       MessageEventsService.message_creation_events(message, group, notify_user_ids)
 
       conn
@@ -229,7 +231,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     user = conn.assigns.current_user
 
     with {:message, %Message{type: "file_share"} = message} <-
-           {:message, MessageQueries.get_by_id(message_id)},
+           {:message, MessageQueries.load_message(message_id, user)},
          {:upload, %Files.Upload{} = upload} <-
            {:upload, Files.FileQueries.get_by_id(message.upload_id, preload_assoc: true)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)} do
@@ -287,7 +289,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def delete(conn, %{"id" => message_id}) do
     current_user = conn.assigns.current_user
-    team = conn.assigns.team
+    _team = conn.assigns.team
 
     with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id)},
          {:group, {:ok, group}} <-
@@ -322,7 +324,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     case GroupAuthorization.can_view?(group, user) do
       true ->
         case StarringService.toggle_star(message, user) do
-          {result, {:ok, changest}} ->
+          {result, {:ok, _changest}} ->
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
             StarringEventsService.star_events(message, user, result)
@@ -366,6 +368,79 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def share(conn, %{"id" => message_id, "group_id" => group_id, "text_content" => text_content}) do
+    current_user = conn.assigns.current_user
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
+
+    with {:message, %Message{} = message} <-
+           {:message, MessageQueries.get_by_id(message_id)},
+         {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:authorized, true} <- {:authorized, GroupAuthorization.can_view?(group, current_user)},
+         {:joined, _} <- {:joined, ensure_joined(group, current_user)},
+         {:shared, {:ok, %{message: message, notify_user_ids: notify_user_ids}}} <-
+           {:shared,
+            create_and_share_with_group(
+              conn,
+              message,
+              text_content,
+              group,
+              current_user,
+              presence
+            )} do
+      message = MessageQueries.get_by_id(message.id)
+      MessageEventsService.message_creation_events(message, group, notify_user_ids)
+
+      render(conn, "show.json", %{message: message})
+    else
+      {:upload, _} ->
+        {:error, :not_found}
+
+      {:group, _} ->
+        {:error, :not_found}
+
+      {:authorized, false} ->
+        {:error, :not_authorized}
+
+      {:shared, {:error, "not found"}} ->
+        {:error, :unprocessable_entity, "The file is not shared"}
+
+      _ ->
+        {:error, :unprocessable_entity, "Error sharing the file"}
+    end
+  end
+
+  defp create_and_share_with_group(conn, message, text_content, group, current_user, presence) do
+    Enum.map(message.upload_ids, fn upload_id ->
+      FileQueries.get_by_id(upload_id, preload_assoc: true)
+      |> Upload.share_with_group(group)
+    end)
+
+    attrs = %{
+      "text_content" => text_content,
+      "type" => message.type,
+      "fields" => message.fields,
+      "upload_ids" => message.upload_ids
+    }
+
+    message_params_with_client = Message.Params.with_client_attrs(conn, attrs)
+
+    %Message{group: group, user: current_user}
+    |> MessageCreation.do_create(message_params_with_client, presence)
+  end
+
+  def ensure_joined(group, user) do
+    with false <- Group.direct_message?(group),
+         false <- GroupAuthorization.is_member?(group.id, user.id) do
+      Group.add_user(group, user.id)
+
+      Stitch.Task.start(fn ->
+        GroupChannel.broadcast_members_update(group, [], [user])
+      end)
+    else
+      true -> :ok
+    end
+  end
+
   def delete_message_link_preview(conn, %{"id" => message_id, "link" => link} = _params) do
     current_user = conn.assigns.current_user
 
@@ -401,6 +476,18 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def subscribe_message_notifications(conn, %{
+        "id" => id,
+        "user_id" => user_id,
+        "subscribe" => subscribe
+      }) do
+    {:ok, message} =
+      MessageQueries.get_by_id(id)
+      |> MessageNotification.subscribe_notifications(user_id, subscribe)
+
+    render(conn, "show.json", %{message: message})
+  end
+
   def parse_query_params(conn, _opts) do
     types = %{
       skip: :integer,
@@ -414,5 +501,22 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     query_opts = Enum.into(changeset.changes, [])
     query_opts = Keyword.put(query_opts, :fetch_users, get_fetch_users_param(conn.params))
     assign(conn, :query_opts, query_opts)
+  end
+
+  def show(conn, %{"id" => message_id}) do
+    current_user = conn.assigns.current_user
+
+    with {:message, %Message{} = message} <-
+           {:message, MessageQueries.load_message(message_id, current_user)},
+         {:authorized?, true} <-
+           {:authorized?, GroupAuthorization.can_view?(message.group, current_user)} do
+      render(conn, "show.json", %{message: message, authenticated_urls: true})
+    else
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You can't see the messages for this room."}
+
+      _ ->
+        {:error, :not_found}
+    end
   end
 end

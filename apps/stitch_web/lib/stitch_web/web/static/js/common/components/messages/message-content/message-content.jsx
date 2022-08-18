@@ -4,17 +4,22 @@ import { inject, observer } from "mobx-react";
 import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-import FileAttachment from "./file-attachment";
+import FileAttachments from "./file-attachments";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
+import Replies from "./replies";
 import CallMessage from "./call-message";
+import MeetLinkMessage from "./meet-link-message";
+import InternalLinkMessage from "./internal-link-message";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
 @inject("usersStore", "addonStore")
 @observer
 class MessageContent extends Component {
+
   onToggle = emoji => {
-    this.props.messageStore.toggleReaction(this.props.message.id, emoji);
+    const { message } = this.props;
+    this.props.messageStore.toggleReaction(message.id, emoji, message.group_id);
   };
 
   onCommentsClick = () => {
@@ -23,7 +28,7 @@ class MessageContent extends Component {
     addonStore.setAddonPanel("files");
     addonStore.toggleAddons(true);
     addonStore.toggleAddonDetail(true);
-    addonStore.setAddonDetailPanel("File Details", message.upload_id);
+    addonStore.setAddonDetailPanel("File Details", message);
   };
 
   renderLinkPreviews() {
@@ -46,6 +51,28 @@ class MessageContent extends Component {
     }
 
     return null;
+  }
+
+  renderInternalLink(messageTextComponents) {
+    return (
+      <InternalLinkMessage {...this.props} messageTextComponents={messageTextComponents} />
+    );
+  }
+
+  renderMeetLink() {
+    return (
+      <MeetLinkMessage message={this.props.message} />
+    );
+  }
+
+  renderTextComp() {
+    const { message, inSearch } = this.props;
+    
+    const textContent = inSearch
+      ? message.highlighted_text_content || message.text_content
+      : message.text_content;
+
+    return messageTextToComponents(textContent || "", {inSearch});
   }
 
   renderEdited() {
@@ -96,62 +123,55 @@ class MessageContent extends Component {
     );
   };
 
-  render() {
-    const { inSearch, message, user, isConversationMessage } = this.props;
-    let messageContentComponents;
-
-    if (message.type === "call") {
-      messageContentComponents = <CallMessage message={message} />;
-    } else {
-      const textContent = inSearch
-        ? message.highlighted_text_content || message.text_content
-        : message.text_content;
-
-      messageContentComponents = messageTextToComponents(textContent || "", {
-        inSearch
-      });
-
-      if (
-        message.text_content &&
-        (message.type === "upload" ||
-          (message.type === "file_comment" && message.is_sequential))
-      ) {
-        messageContentComponents = (
-          <div className="attachment-comment">{messageContentComponents}</div>
+  renderAttchments() {
+    const { message } = this.props;
+    if (message.type === "upload" || message.type === "file_share") {
+      if (message.fields) {
+        return (
+          <FileAttachments
+            {...this.props}
+            onCommentsClick={this.onCommentsClick}
+          />
         );
       }
     }
+  }
 
+  render() {
+    const { message, user, addonStore } = this.props;
+    const messageId = !message.id ? addonStore.detailPanelData.id : message.id;
+    const messageTextComponents = this.renderTextComp();
+    let messageContentComponents = null;
+
+    if (message.type === "meet_link") {
+      messageContentComponents = this.renderMeetLink();
+    } else if (message.type === "internal_link") {
+      messageContentComponents = this.renderInternalLink(messageTextComponents);
+    } else {
+      messageContentComponents = messageTextComponents;
+    }
     return (
       <div
         properties={{ target: "_blank", className: "message-link" }}
         className="message-body-wrapper"
       >
-        {message.type === "upload" && (
-          <FileAttachment
-            {...message.fields}
-            message={message}
-            user_id={user.id}
-            file_id={message.upload_id}
-            isConversationMessage={isConversationMessage}
-            onCommentsClick={
-              isConversationMessage ? null : this.onCommentsClick
-            }
-          />
-        )}
         <div className="message-body">
-          {message.type === "file_comment" &&
-            !message.is_sequential &&
-            this.renderFileLink()}
           {messageContentComponents}
+        </div>
 
+        {this.renderAttchments()}
+
+        <div className="message-body">
           {user && user.is_bot ? this.renderIntegrationLink() : null}
           {this.renderLinkPreviews()}
           {this.renderEdited()}
           <Reactions
-            messageId={message.id}
+            messageId={messageId}
             reactions={message.reactions_web}
             onToggle={this.onToggle}
+          />
+          <Replies
+            message={message}
           />
         </div>
       </div>

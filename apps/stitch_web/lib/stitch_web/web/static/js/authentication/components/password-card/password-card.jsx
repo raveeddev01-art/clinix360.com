@@ -12,7 +12,8 @@ class PasswordCard extends Component {
     super(...args);
     this.state = {
       password: "",
-      formInvalid: true
+      formInvalid: true,
+      type: 'password'
     };
   }
 
@@ -32,6 +33,12 @@ class PasswordCard extends Component {
     }
   };
 
+  showHide = () => {
+    this.setState({
+        type: this.state.type === 'text' ? 'password' : 'text'
+    });
+  }
+
   render() {
     const { password, formInvalid } = this.state;
     return (
@@ -39,23 +46,26 @@ class PasswordCard extends Component {
         <OnboardPage
           {...this.props}
           title="Set your password"
-          description="Select a password for signing into Stitch Connect."
+          description="Select a password for signing into InvoChat."
           onNext={this._onNext}
           disableNext={formInvalid}
         >
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" className="password-formgroup">
             <ControlLabel>Password</ControlLabel>
             <FormControl
               required
               autoFocus={!mobile}
               name={`password_${new Date().getTime()}`}
               autoComplete="off"
-              type="password"
+              type={this.state.type}
               placeholder="Password"
               maxLength={80}
               value={password}
               onChange={this._onChange}
             />
+            <div className="password-icon" onClick={this.showHide}>
+              <i className={this.state.type === 'text' ? 'fa fa-eye' : 'fa fa-eye-slash'} />
+            </div>
           </FormGroup>
           <PasswordValidator
             password={password}

@@ -326,7 +326,7 @@ defmodule Stitch.Invitation do
 
         false ->
           Invitation.Email.team_invitation("#{user.first_name} #{user.last_name}", invitation)
-          |> Stitch.Mailer.deliver_later()
+          |> Stitch.NewMailer.deliver_now()
 
           {:ok, invitation}
       end

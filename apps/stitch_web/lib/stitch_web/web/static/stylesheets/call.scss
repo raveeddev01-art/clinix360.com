@@ -45,6 +45,18 @@
       a {
         color: #036;
       }
+
+      .copy-icon {
+        text-decoration: none;
+
+        i {
+          color: #036;
+          font-size: 16px;
+          font-weight: 600;
+          margin-left: 10px;
+        }
+      }
+
     }
 
     &-details {
@@ -61,6 +73,10 @@
       }
     }
   }
+}
+
+.internal-link{
+  cursor: pointer;
 }
 
 .call-modal {

@@ -18,7 +18,7 @@ class Feature extends Component {
             <div className="flex-item">
               <img
                 src={this.props.image}
-                alt="Stitch Connect"
+                alt="InvoChat"
                 className={cx("img-responsive", this.props.imageClassName)}
               />
             </div>

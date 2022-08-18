@@ -22,7 +22,7 @@ class PinnedMessages extends Component {
             ))}
           </div>
         ) : (
-          <div className="text-muted">Pin the first message!</div>
+          <div className="text-muted">There is no pinned message</div>
         )}
 
         <div className="footer text-center">

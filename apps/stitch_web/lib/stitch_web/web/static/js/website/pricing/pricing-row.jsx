@@ -2,6 +2,23 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 class PricingRow extends Component {
+
+  renderStringRow() {
+    return (
+      <div className="pricing-table__item">
+        {this.props.premium}
+      </div>
+    );
+  }
+
+  renderBooleanRow() {
+    return (
+      <div className="pricing-table__item">
+        {this.props.premium ? <i className="far fa-check-circle" /> : this.props.premium}
+      </div>
+    );
+  }
+
   render() {
     const { feature, basic, standard, premium } = this.props;
 
@@ -9,17 +26,15 @@ class PricingRow extends Component {
       <div className="pricing-table__row">
         <div className="pricing-table__item">{feature}</div>
 
-        <div className="pricing-table__item">
+        {/* <div className="pricing-table__item">
           {basic ? <i className="far fa-check-circle" /> : basic}
         </div>
 
         <div className="pricing-table__item">
           {standard ? <i className="far fa-check-circle" /> : standard}
-        </div>
+        </div> */}
 
-        <div className="pricing-table__item">
-          {premium ? <i className="far fa-check-circle" /> : premium}
-        </div>
+        {typeof(premium) === "boolean" ? this.renderBooleanRow() : this.renderStringRow()}
       </div>
     );
   }

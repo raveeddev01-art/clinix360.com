@@ -37,7 +37,7 @@ defmodule Stitch.Repo.Scripts.OldBillingHistory do
 
     case Stripe.Event.list(options) do
       {:ok, %{data: events}} -> do_import_payment_history(teams, events)
-      any -> IO.inspect(any)
+      any -> any
     end
   end
 
@@ -50,8 +50,6 @@ defmodule Stitch.Repo.Scripts.OldBillingHistory do
     Enum.map(events, fn %{data: %{object: object}} ->
       if team = teams[object.customer] do
         exists = Repo.one(PaymentHistory |> where(invoice_id: ^object.id))
-        # IO.inspect(object, limit: :infinity)
-        # IO.inspect(exists, limit: :infinity)
 
         if exists do
           Logger.info("==== Skipping because already saved invoice #{object.id}")

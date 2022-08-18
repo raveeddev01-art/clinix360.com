@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Modal } from 'react-bootstrap';
 import { Picker } from "emoji-mart";
 import cx from "classnames";
 
@@ -36,13 +37,48 @@ class EmojiPicker extends Component {
     }
   };
 
-  togglePicker = () => {
+  togglePicker = (e) => {
     this.setState({ showPicker: !this.state.showPicker });
   };
 
+  styleModal = () => {
+    var pos = this.pickerEl.getBoundingClientRect();
+    var root = document.getRootNode();
+    var modalDialog = root.getElementsByClassName("modal-dialog")[0];
+    var modalRect = modalDialog.getBoundingClientRect();
+
+    modalDialog.style.position = "absolute";
+    modalDialog.style.maxWidth = "max-content";
+    modalDialog.style.width = "fit-content";
+    modalDialog.style.left = `${pos.left - (modalRect.width/2 + 50)}px`;
+
+    if(window.innerHeight - pos.y > modalRect.height) {
+      modalDialog.style.top = `${pos.top}px`;
+    } else {
+      modalDialog.style.bottom = `${pos.bottom - pos.top}px`;
+    }
+  }
+
+  renderPicker() {
+    return (
+      <Modal
+        onShow={this.styleModal}
+        style={{position: "absolute"}} 
+        animation={false}
+        backdrop={false}
+        show
+      >
+        <Picker
+          set="apple"
+          autoFocus
+          onClick={this.onSelectEmoji}
+        />
+      </Modal>
+    )
+  }
+
   render() {
     const { showPicker } = this.state;
-    const { onSelectEmoji } = this;
 
     return (
       <div className="emoji-picker-container">
@@ -52,7 +88,7 @@ class EmojiPicker extends Component {
             this.pickerEl = node;
           }}
         >
-          {showPicker && <Picker set="apple" autoFocus onClick={onSelectEmoji} />}
+          {showPicker && this.renderPicker()}
         </div>
         <a
           role="link"

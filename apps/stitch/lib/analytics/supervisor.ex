@@ -12,7 +12,8 @@ defmodule Stitch.Analytics.Supervisor do
       supervisor(Task.Supervisor, [[name: Stitch.Analytics.Sync.Supervisor]], id: make_ref()),
       # Disabling DailyReports scheduler since we're switching to Mode.
       # supervisor(Task.Supervisor, [[name: Stitch.Analytics.DailyReports.Supervisor]], id: make_ref()),
-      worker(Stitch.Analytics.Sync.RecurringSync, [])
+      worker(Stitch.Analytics.Sync.RecurringSync, []),
+      worker(PlugAttack.Storage.Ets, [Stitch.Web.Plug.PlugAttack.Storage])
       # Disabling DailyReports scheduler since we're switching to Mode.
       # worker(Stitch.Analytics.DailyReports.Scheduler, [])
     ]

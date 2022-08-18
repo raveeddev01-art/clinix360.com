@@ -20,16 +20,35 @@ import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 import SearchInput from "./search-input";
 import BrowserWindow from "../../util/windows";
+import { GOOGLE_MEETS_BASE_URL } from "../../lib/constants";
 
-@inject("addonStore", "groupStore", "groupsStore", "newsStore")
+@inject("addonStore", "groupStore", "groupsStore", "newsStore", "messageStore")
 @observer
 class TopNav extends Component {
+  // onInitCall = () => {
+  //   const { groupStore } = this.props;
+  //   BrowserWindow.open(`/call/init/${groupStore.group.id}`, {
+  //     name: "calling"
+  //   });
+  // };
+
   onInitCall = () => {
-    const { groupStore } = this.props;
-    BrowserWindow.open(`/call/init/${groupStore.group.id}`, {
-      name: "calling"
-    });
+    const { messageStore } = this.props;
+    messageStore.sendMessage(this.generateMeetingLink(), {type: "meet_link"});
   };
+
+  generateMeetingLink = () => {
+    return GOOGLE_MEETS_BASE_URL + this.generateMeetUID();
+  }
+
+  generateMeetUID = () => {
+    var firstPart = (Math.random() * 46656) | 0;
+    var secondPart = (Math.random() * 46656) | 0;
+    firstPart = ("000" + firstPart.toString(36)).slice(-3);
+    secondPart = ("0000" + secondPart.toString(36)).slice(-4);
+    return firstPart + "-" + secondPart;
+  }
+
 
   onToggleSettings = isOpen => {
     if (isOpen) {

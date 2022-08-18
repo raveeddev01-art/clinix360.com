@@ -1,7 +1,7 @@
 # Stitch Umbrella
 
 This is the main umbrella application for
-[Stitch](https://teamstitch.com/).
+[Stitch](https://dvlcloud.com/).
 
 It contains two Elixir applications:
 
@@ -19,6 +19,8 @@ Set up node. Install yarn globally with `npm install -g yarn` if you have not ye
 Set up and launch postgres if you have not yet done so.
 
 Install external dependencies
+- `libreoffice` (https://www.libreoffice.org/get-help/install-howto/) LibreOffice must be installed in order to generate thumbnails and previews for word documents.
+
 
 - `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
 
@@ -55,20 +57,19 @@ variables.
 Ask the team for the environment values you need to set here:
 
 ```sh
-export APP_HOST=localhost.app
-
-export MANDRILL_API_KEY=keygoeshere
+export STITCH_CONNECT_APP_HOST=localhost.app
 
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
-export S3_BUCKET_NAME=
+
 export S3_REGION=us-east-1
+export S3_CONTENT_BUCKET_NAME="stitch-content"
 
 export S3_AVATAR_BUCKET_NAME="stitch-avatars"
-export AVATAR_ORIGIN="https://avatars.teamstitch.com"
+export AVATAR_ORIGIN="https://avatars.dvlcloud.com"
 
-export S3_PUBLIC_BUCKET_NAME="stitch-content-public"
-export PUBLIC_CDN_ORIGIN="https://public.teamstitch.com"
+export S3_PUBLIC_BUCKET_NAME="stitch-public"
+export PUBLIC_CDN_ORIGIN="https://public.dvlcloud.com"
 
 export APNS_TOPIC=
 export APNS_CERT_B64=
@@ -95,6 +96,8 @@ export ELASTICSEARCH_URL= # optional
 
 export TOKBOX_API_KEY=
 export TOKBOX_SECRET=
+
+export STITCH_CONNECT_POSTGRES_DATABASE=stitch_connect_dev
 ```
 
 Optional

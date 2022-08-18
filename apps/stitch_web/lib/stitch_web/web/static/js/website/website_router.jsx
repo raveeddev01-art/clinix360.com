@@ -29,16 +29,16 @@ import Industry from "./industries/industry";
 
 // PAGE TITLES
 // if changed, sync with backend (home_controller)
-const defaultTitle = "Care Coordination | Stitch Connect";
-const demoTitle = "Request a Demo | Stitch Connect";
-const connectTitle = "Care Coordination | Stitch Connect";
-const engageTitle = "Engage | Stitch Connect";
-const manageTitle = "Manage | Stitch Connect";
-const pricingTitle = "Pricing | Stitch Connect";
-const downloadsTitle = "Downloads | Stitch Connect";
-const jobsTitle = "Jobs | Stitch Connect";
-const customersTitle = "Customers | Stitch Connect";
-const hipaaTitle = "HIPAA Compliance | Stitch Connect";
+const defaultTitle = "Work Coordination | InvoChat";
+const demoTitle = "Request a Demo | InvoChat";
+const connectTitle = "Work Coordination | InvoChat";
+const engageTitle = "Engage | InvoChat";
+const manageTitle = "Manage | InvoChat";
+const pricingTitle = "Pricing | InvoChat";
+const downloadsTitle = "Downloads | InvoChat";
+const jobsTitle = "Jobs | InvoChat";
+const customersTitle = "Customers | InvoChat";
+const hipaaTitle = "HIPAA Compliance | InvoChat";
 const notFoundTitle = "404 | Page Not Found";
 
 class WebsiteRouter extends Component {
@@ -85,7 +85,7 @@ class WebsiteRouter extends Component {
               path="/customers"
               component={withTitle(customersTitle, Customers)}
             />
-            <Route exact path="/blog" component={Blog} />
+            {/* <Route exact path="/blog" component={Blog} /> */}
             <Route
               exact
               path="/customers/luminance-recovery"
@@ -111,12 +111,12 @@ class WebsiteRouter extends Component {
               path="/customers/orchard-medical-associates"
               component={withTitle(customersTitle, CaseOrchardMedical)}
             />
-            <Route exact path="/baa" component={Baa} />
+            {/* <Route exact path="/baa" component={Baa} />
             <Route
               exact
               path="/hipaa"
               component={withTitle(hipaaTitle, Hipaa)}
-            />
+            /> */}
             <Route exact path="/privacy-policy" component={PrivacyPolicy} />
             <Route exact path="/terms-of-service" component={TermsOfService} />
 

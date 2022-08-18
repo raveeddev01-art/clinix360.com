@@ -76,7 +76,12 @@ class MessageInfoModal extends Component {
 
             <div className="message-content">
               <MessageHeader timestamp={message.inserted_at} user={user} />
-              <MessageContent message={message} />
+              <MessageContent
+                messageStore={messageStore}
+                message={message}
+                user={user}
+              />
+
             </div>
           </div>
         </div>

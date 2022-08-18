@@ -6,7 +6,7 @@ defmodule Stitch.Web.Api.V1.UserController do
   alias Stitch.Web.EventsChannel
   alias StitchConnect.Web.GroupChannel
   alias Stitch.Analytics.User, as: UserAnalytics
-
+  alias NotQwerty123.PasswordStrength, as: Pwd_check
   alias Stitch.{
     AWS.S3,
     Accounts,
@@ -19,7 +19,8 @@ defmodule Stitch.Web.Api.V1.UserController do
     Team,
     TeamQueries,
     TimedMessage,
-    UserQueries
+    UserQueries,
+    Coupons
   }
 
   import Stitch.UserAuthorization, only: [can_update_user?: 2]
@@ -135,7 +136,7 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def create(conn, %{"email" => email}) do
+  def create(conn, %{"email" => email, "code" => coupon_code}) do
     case Accounts.create_user_with_email_only(email) do
       {:error, %Ecto.Changeset{errors: [email: {_, [host: host]}]}} ->
         conn
@@ -152,6 +153,8 @@ defmodule Stitch.Web.Api.V1.UserController do
         |> unprocessable_entity_error(%{message: message})
 
       user ->
+        %{user_id: user.id, code: coupon_code}
+        |> Coupons.update_signup_coupon()
         conn
         |> put_session(:user_id, user.id)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
@@ -228,7 +231,9 @@ defmodule Stitch.Web.Api.V1.UserController do
         "new_password" => new_password,
         "old_password" => old_password
       }) do
-    case Stitch.User.Authentication.update_password(
+    case Pwd_check.strong_password?(new_password) do
+      {:ok, _} ->
+      case Stitch.User.Authentication.update_password(
            conn.assigns.current_user,
            old_password,
            new_password
@@ -245,6 +250,10 @@ defmodule Stitch.Web.Api.V1.UserController do
 
       {:error, message} ->
         {:error, message}
+      end
+      {:error, message} ->
+        {:error, message}
+
     end
   end
 
@@ -281,11 +290,12 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
+  def upload_profile_image(conn, %{"url" => url, "id" => user_id} = _op) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Accounts.update_profile_image(user_id, url) do
-      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+
+    TeamChannel.broadcast_user_info(conn.assigns.team, user)
       conn |> render("show.json", user: user)
     else
       false ->

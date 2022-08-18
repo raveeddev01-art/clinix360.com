@@ -93,7 +93,7 @@ export default class MessagePanel extends Component {
               {moment
                 .utc(messageStore.lastReadAt)
                 .local()
-                .format("h:mm A on MMMM Do")}
+                .format("h:mm A MMMM Do")}
             </div>
           </div>
 
@@ -152,18 +152,20 @@ export default class MessagePanel extends Component {
       );
     }
 
-    return (
-      <div className="flex-footer">
-        <MessageForm
-          messageStore={messageStore}
-          currentGroup={groupsStore.currentGroup}
-        />
-      </div>
-    );
+    if (groupStore.group.id) {
+      return (
+        <div className="flex-footer">
+          <MessageForm
+            messageStore={messageStore}
+            currentGroup={groupsStore.currentGroup}
+          />
+        </div>
+      );
+    }
   }
 
   render() {
-    const { messageStore } = this.props;
+    const { messageStore, isThreadView } = this.props;
     const chatContainerClassName = classNames({
       loaded: messageStore.loadedInitial
     });
@@ -175,7 +177,7 @@ export default class MessagePanel extends Component {
           <UploadProgress />
         </div>
 
-        <MessageList />
+        <MessageList isThreadView={isThreadView}/>
         {this.renderFooter()}
       </div>
     );

@@ -13,6 +13,8 @@ class UploadStore {
   @observable conversationId = null;
   @observable isUploadModalVisible = false;
   @observable from = "connect";
+  @observable commentUpload = false;
+  @observable messageId = null;
   xhrs = {};
   dropzoneRef = null;
   file = null;
@@ -21,16 +23,21 @@ class UploadStore {
     this.rootStore = rootStore;
   }
 
-  openFileDialog = () => {
+  openFileDialog = (isComment) => {
+    this.commentUpload = isComment;
+    if (this.commentUpload) {
+      this.messageId = this.rootStore.messageStore.message.id;
+    }
+
     if (this.dropzoneRef) {
       this.dropzoneRef.open();
     }
   };
 
   @action
-  openUploadModal = (file, fileName, from = "connect") => {
-    this.file = file;
-    this.title = fileName || file.name;
+  openUploadModal = (files, fileName, from = "connect") => {
+    this.files = files;
+    this.title = files.map(file => file.name).join(", ");  /*fileName || file.name;*/
     this.description = "";
     this.isUploadModalVisible = true;
     this.from = from;
@@ -158,8 +165,28 @@ class UploadStore {
   };
 
   @action
-  uploadFile = apiUrl => {
-    const { file, title, description } = this;
+  uploadFiles = apiUrl => {
+    const { files } = this;
+    let promises = [];
+
+    for (let file of files) {
+      promises.push(this.uploadFile(file));
+    }
+
+    Promise.all(promises)
+      .then((results) => {
+        const fields = results.filter((result) => result);
+        if (fields.length) {
+          return post(`${this.rootStore.apiBasePath}${apiUrl}`, {
+            body: this.uploadBody(fields)
+          });
+        }
+      }) 
+  }
+
+  @action
+  uploadFile = (file) => {
+    const title = file.name;
     const filenameSplit = file.name.split(".");
     const ext = filenameSplit.length
       ? `.${filenameSplit[filenameSplit.length - 1]}`
@@ -175,23 +202,15 @@ class UploadStore {
     })
       .then(url => {
         this.uploadProgress.set(key, "done");
-        return post(`${this.rootStore.apiBasePath}${apiUrl}`, {
-          body: {
-            message: {
-              type: "upload",
-              fields: {
-                filename: title,
-                mimetype: file.type,
-                size_in_bytes: file.size,
-                url
-              },
-              text_content: description
-            }
-          }
-        });
-      })
-      .then(() => {
-        this.removeProgress(key);
+        setTimeout(() => {
+          this.removeProgress(key);
+        }, 2000); 
+        return {
+          filename: title,
+          mimetype: file.type,
+          size_in_bytes: file.size,
+          url
+        };
       })
       .catch(e => {
         if (e === "aborted") {
@@ -199,8 +218,32 @@ class UploadStore {
             this.removeProgress(key);
           }, 1000); // show cancelling for a blink
         }
+        return false;
       });
   };
+
+  uploadBody = (fileFields) => {
+    const { file, title, description } = this;
+    if (this.commentUpload) {
+      return {
+        message_comment: {
+          type: "upload",
+          fields: fileFields,
+          text_content: description,
+          thread: true
+        }
+      }
+    } else {
+      return {
+        message: {
+          type: "upload",
+          fields: fileFields,
+          text_content: description
+        }
+      };
+    }
+
+  }
 
   @action
   removeProgress = key => {

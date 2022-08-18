@@ -4,8 +4,9 @@ import { inject, observer } from "mobx-react";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import { Avatar, SmartDropdown, PortalDropdownMenu } from "common/components";
+import AvatarImage from "../avatar/avatar-image";
 
-@inject("addonStore", "groupsStore")
+@inject("addonStore", "groupsStore", "presenceStore")
 @observer
 class UserProfileMenu extends Component {
   goToDirectMessaging = () => {
@@ -26,7 +27,7 @@ class UserProfileMenu extends Component {
   };
 
   render() {
-    const { user, className, children, disabledMenu } = this.props;
+    const { user, className, children, disabledMenu, showMutedUsername, presenceStore } = this.props;
 
     if (!user) {
       return <div />;
@@ -35,6 +36,8 @@ class UserProfileMenu extends Component {
     if (window.currentPatient || user.mrn) {
       return <span>{children}</span>;
     }
+
+    let online = presenceStore.isOnline(`${user.id}`);
 
     return (
       <SmartDropdown
@@ -50,12 +53,22 @@ class UserProfileMenu extends Component {
           className="user-profile-menu-dropdown"
         >
           <div className="header">
-            <Avatar user={user} size="sm" />
-
-            <div className="content">
-              <div className="full-name">{user.full_name}</div>
-              <div className="username text-muted">{user.username}</div>
+            {/* <Avatar user={user} class="img-responsive img-rounded" hideProfileDropDown={true} /> */}
+            <div className="user-avatar">
+              <AvatarImage
+                useThumb={false}
+                className="img-responsive img-profile-dropdown"
+                user={user}
+              />
             </div>
+          </div>
+          <div className="content">
+              <div className="full-name">
+                {user.full_name}
+                <span>{online ? (<i className="fa fa-circle" />) : (<i className="fa fa-circle-o" />)}</span>
+              </div>
+              <div className="user-title text-muted">{user.title}</div>
+              {/* {showMutedUsername && <div className="username text-muted">{user.username}</div>} */}
           </div>
           <MenuItem onClick={this._toggleAddonMenu}>View Profile</MenuItem>
 
@@ -80,7 +93,8 @@ UserProfileMenu.propTypes = {
 
 UserProfileMenu.defaultProps = {
   className: "",
-  disabledMenu: false
+  disabledMenu: false,
+  showMutedUsername: true
 };
 
 export default UserProfileMenu;

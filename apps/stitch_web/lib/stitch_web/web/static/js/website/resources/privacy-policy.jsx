@@ -18,8 +18,8 @@ export default class PrivacyPolicy extends Component {
             <h2>Introduction</h2>
 
             <p>
-              Welcome to Stitch! Your privacy is important to us. Stitch
-              Technologies, Inc. (“Stitch”) provides this Privacy Policy to
+              Welcome to InvoChat! Your privacy is important to us. InvoChat
+              Technologies, Inc. (“InvoChat”) provides this Privacy Policy to
               inform you of our policies and procedures regarding the
               collection, use and disclosure of personal information we receive
               from users of&nbsp;(the “Site”) and our application for web,
@@ -88,7 +88,7 @@ export default class PrivacyPolicy extends Component {
             <p>
               We also collect other information that you provide as part of
               registration and the administration and personalization of your
-              account (e.g., without limitation, the name of the healthcare
+              account (e.g., without limitation, the name of the InvoChat
               institution where you work and/or are affiliated (the “Indicated
               Entity”) and individual preferences) (“Non-Identifying
               Information”). Some of this information is optional.
@@ -110,7 +110,7 @@ export default class PrivacyPolicy extends Component {
               non-identifying information (for example, your viewing
               preferences). We may combine your Personal Information with
               Non-Identifying Information and aggregate it with information
-              collected from other Stitch Users (defined below) to attempt to
+              collected from other InvoChat Users (defined below) to attempt to
               provide you with a better experience, to improve the quality and
               value of the Service and to analyze and understand how our Site,
               App and Service are used. We may also use the combined information
@@ -120,7 +120,7 @@ export default class PrivacyPolicy extends Component {
             </p>
 
             <p>
-              We also use your Personal Information to contact you with Stitch
+              We also use your Personal Information to contact you with InvoChat
               newsletters, marketing or promotional materials and other
               information that may be of interest to you. If you decide at any
               time that you no longer wish to receive such communications from
@@ -134,9 +134,9 @@ export default class PrivacyPolicy extends Component {
             </p>
 
             <p>
-              The Services may include certain communications from Stitch, such
+              The Services may include certain communications from InvoChat, such
               as administrative messages; these communications are considered
-              part of Stitch membership and you will not be able to opt out of
+              part of InvoChat membership and you will not be able to opt out of
               receiving them.
             </p>
           </div>
@@ -146,7 +146,7 @@ export default class PrivacyPolicy extends Component {
 
             <p>
               When you visit the Service, whether as a Registered User or a
-              non-registered user just browsing (any of these, a “Stitch User”),
+              non-registered user just browsing (any of these, a “InvoChat User”),
               our servers automatically record information that your browser
               sends whenever you visit a website (“Log Data”). This Log Data may
               include information such as your computer’s Internet Protocol
@@ -181,7 +181,7 @@ export default class PrivacyPolicy extends Component {
               information for future logins to the Service. Second, we utilize
               session ID cookies to enable certain features of the Service, to
               better understand how you interact with the Service and to monitor
-              aggregate usage by Stitch users and web traffic routing on the
+              aggregate usage by InvoChat users and web traffic routing on the
               Service. Unlike persistent cookies, session cookies are deleted
               from your computer when you log off from the Site, App and Service
               and then close your browser. You can instruct your browser, by
@@ -197,7 +197,7 @@ export default class PrivacyPolicy extends Component {
 
             <p>
               Identity theft and the practice currently known as “phishing” are
-              of great concern to Stitch. Safeguarding information to help
+              of great concern to InvoChat. Safeguarding information to help
               protect you from identity theft is a top priority. We do not and
               will not, at any time, request your credit card information, your
               account login information, or social security or national
@@ -216,18 +216,18 @@ export default class PrivacyPolicy extends Component {
                 <span>
                   When you register through the Site or App and submit your
                   Personal Information, you are applying to become a member of a
-                  group of Registered Users who have registered with Stitch as
+                  group of Registered Users who have registered with InvoChat as
                   working at and/or as being affiliated with your Indicated
-                  Entity (each a “Stitch Group”). If one or more Registered
-                  Users acts as an administrator for your Stitch Group, those
+                  Entity (each a “InvoChat Group”). If one or more Registered
+                  Users acts as an administrator for your InvoChat Group, those
                   Registered User administrators will see your first and last
                   name, your Indicated Entity, your role and department to
                   enable such Registered User administrators to assess whether
-                  to accept you as a member of such Stitch Group. If you are not
-                  accepted as a member of such Stitch Group, we will not share
+                  to accept you as a member of such InvoChat Group. If you are not
+                  accepted as a member of such InvoChat Group, we will not share
                   your Personal Information with any other Registered Users.
-                  Once you have been accepted into your Stitch Group, the
-                  Registered Users part of your Stitch Group will see your first
+                  Once you have been accepted into your InvoChat Group, the
+                  Registered Users part of your InvoChat Group will see your first
                   and last name, your Indicated Entity, your role and
                   department. Such Registered Users will also be able to see the
                   status and availability of updates that you may choose to post
@@ -241,7 +241,7 @@ export default class PrivacyPolicy extends Component {
                   preferences you set in your account. You must provide truthful
                   and accurate information about yourself but any information
                   you choose to provide should reflect how much you want other
-                  Stitch users to know about you. We recommend that you guard
+                  InvoChat users to know about you. We recommend that you guard
                   carefully any sensitive information.
                 </span>
               </li>
@@ -276,13 +276,13 @@ export default class PrivacyPolicy extends Component {
               <li>
                 Compliance with Laws and Law Enforcement:{" "}
                 <span>
-                  Stitch cooperates with government and law enforcement
+                  InvoChat cooperates with government and law enforcement
                   officials and private parties to enforce and comply with the
                   law. We will disclose any information about you to government
                   or law enforcement officials or private parties as we, in our
                   sole discretion, believe necessary or appropriate to respond
                   to claims and legal process (including but not limited to
-                  subpoenas), to protect the property and rights of Stitch or a
+                  subpoenas), to protect the property and rights of InvoChat or a
                   third party, to protect the safety of the public or any
                   person, or to prevent or stop activity we may consider to be,
                   or to pose a risk of being, illegal, unethical or legally
@@ -293,7 +293,7 @@ export default class PrivacyPolicy extends Component {
               <li>
                 Business Transfers:{" "}
                 <span>
-                  Stitch may sell, transfer or otherwise share some or all of
+                  InvoChat may sell, transfer or otherwise share some or all of
                   its assets, including your Personal Information, in connection
                   with a merger, acquisition, reorganization or sale of assets
                   or in the event of bankruptcy.
@@ -303,12 +303,12 @@ export default class PrivacyPolicy extends Component {
           </div>
 
           <div className="copy-section">
-            <h2>Communicating Via a Stitch Account</h2>
+            <h2>Communicating Via a InvoChat Account</h2>
 
             <p>
               As part of the Service, Registered Users may communicate with
               other Registered Users through use of the Service. Any messages
-              you create as a Registered User will be sent from Stitch on your
+              you create as a Registered User will be sent from InvoChat on your
               behalf to one or more Registered Users specified by you. Messages
               received and sent by a Registered User can be viewed by the
               Registered User in their account either on the Site or the App.
@@ -317,13 +317,13 @@ export default class PrivacyPolicy extends Component {
             <p>
               If a Registered User designates a communication that such
               Registered User is sending via the Service as being a “high
-              priority” or important communication, Stitch may send the intended
+              priority” or important communication, InvoChat may send the intended
               recipients of such communication an email and/or text message (if
               the intended recipient has provided their mobile phone number to
-              Stitch) to notify the intended recipients that such communication
-              has been received via the Service. You consent to Stitch notifying
+              InvoChat) to notify the intended recipients that such communication
+              has been received via the Service. You consent to InvoChat notifying
               you by email and/or text message (if you have provided your mobile
-              phone number to Stitch) that certain communications have been
+              phone number to InvoChat) that certain communications have been
               received by you via the Service. If you choose to use our referral
               services to tell a colleague about our Services, we will ask you
               for your colleague’s name and email address. You can do this by
@@ -337,7 +337,7 @@ export default class PrivacyPolicy extends Component {
               this information for the sole purpose of sending this one-time
               email and tracking the success of our referral program. Your
               colleague may contact us at{" "}
-              <a href="mailto:support@teamstitch.com">support@teamstitch.com</a>
+              <a href="mailto:info@invozone.com">info@invozone.com</a>
               to request that we remove this information from our database.
             </p>
           </div>
@@ -346,10 +346,10 @@ export default class PrivacyPolicy extends Component {
             <h2>Changing or Deleting Your Information</h2>
 
             <p>
-              Stitch will retain an archived copy of the contents of
+              InvoChat will retain an archived copy of the contents of
               communications that have been sent using the Service, the
               identities of the sender(s) and the recipient(s) of such
-              communications and any other information which Stitch is required
+              communications and any other information which InvoChat is required
               to retain by law or legitimate business purpose.
             </p>
 
@@ -359,8 +359,8 @@ export default class PrivacyPolicy extends Component {
               all such information, then your account may become deactivated. If
               you would like us to delete your account in our system, please
               contact us at{" "}
-              <a href="mailto:support@teamstitch.com">
-                support@teamstitch.com
+              <a href="mailto:info@invozone.com">
+                info@invozone.com
               </a>{" "}
               with a request that we delete your Personal Information from our
               database. We will use commercially reasonable efforts to honor
@@ -374,7 +374,7 @@ export default class PrivacyPolicy extends Component {
             <h2>Security</h2>
 
             <p>
-              Stitch is very concerned with safeguarding your information. The
+              InvoChat is very concerned with safeguarding your information. The
               security of your personal information is important to us. But
               remember that no method of transmission over the Internet, or
               method of electronic storage, is 100% secure.
@@ -402,7 +402,7 @@ export default class PrivacyPolicy extends Component {
               other governmental jurisdiction where the privacy laws may not be
               as protective as those in your jurisdiction. If you are located
               outside the United States and choose to provide information to us,
-              Stitch transfers Personal Information to the United States and
+              InvoChat transfers Personal Information to the United States and
               processes it there. Your consent to this Privacy Policy followed
               by your submission of such information represents your agreement
               to that transfer.
@@ -437,8 +437,8 @@ export default class PrivacyPolicy extends Component {
               children under 13. If a parent or guardian becomes aware that his
               or her child has provided us with Personal Information without
               their consent, he or she should contact us at{" "}
-              <a href="mailto:support@teamstitch.com">
-                support@teamstitch.com
+              <a href="mailto:info@invozone.com">
+                info@invozone.com
               </a>. If we become aware that a child under 13 has provided us
               with Personal Information, we will delete such information from
               our files.
@@ -446,22 +446,22 @@ export default class PrivacyPolicy extends Component {
           </div>
 
           <div className="copy-section">
-            <h2>Contacting Stitch</h2>
+            <h2>Contacting InvoChat</h2>
 
             <p>
               If you have any questions about this Policy or any App Store
-              Sourced App, please contact Stitch at
+              Sourced App, please contact InvoChat at
             </p>
             <p />
 
             <address className="m-b-30">
-              Stitch Health
+              InvoChat Health
               <br />
               156 2nd Street<br />
               San Francisco, CA 94105<br />
               <a href="tel:+16502823388">+1 (650) 282-3388</a>
               <br />
-              <a href="mailto:support@teamstitch.com">support@teamstitch.com</a>
+              <a href="mailto:info@invozone.com">info@invozone.com</a>
             </address>
           </div>
         </div>

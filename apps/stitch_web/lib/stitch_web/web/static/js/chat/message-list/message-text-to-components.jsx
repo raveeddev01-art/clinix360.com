@@ -70,7 +70,6 @@ const getNodeList = (messageContent, opts) => {
       remainingMessageContent,
       Object.assign({}, opts, { atStartOfLine, followingSpaceOrNewline })
     );
-
     // CASE 1: AT END OF CONTENT
     // push any leftover unformatted content into the nodeList
     if (atEnd) {

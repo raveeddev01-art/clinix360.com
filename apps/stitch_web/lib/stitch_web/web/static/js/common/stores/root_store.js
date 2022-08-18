@@ -44,6 +44,7 @@ class RootStore {
     this.createStores();
     this.joinChannels();
     this.onStoreInit();
+
   }
 
   createStores() {

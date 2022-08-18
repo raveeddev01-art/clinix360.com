@@ -16,6 +16,14 @@ import { Groups } from "common/components";
 @inject("uploadStore")
 @observer
 export default class UploadModal extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fileUploaded: false
+    };
+  }
+
   onChangeGroup = groupId => {
     this.props.uploadStore.changeUploadGroup(groupId);
   };
@@ -23,7 +31,15 @@ export default class UploadModal extends Component {
   onSubmit = evt => {
     evt.preventDefault();
     evt.stopPropagation();
-    this.uploadFile();
+
+    const text = this.props.uploadStore.files > 1 ? "files" : "file";
+
+    if (!this.state.fileUploaded && navigator.onLine){
+      this.setState({ fileUploaded: true });
+      this.uploadFile();
+    } else {
+      notify.show(`No Connection. Unable to upload ${text}.`, "error");
+    }
   };
 
   uploadFile = () => {
@@ -34,16 +50,19 @@ export default class UploadModal extends Component {
         return;
       }
 
-      uploadStore.uploadFile(
+      uploadStore.uploadFiles(
         `/conversations/${uploadStore.conversationId}/messages`
       );
     } else {
       if (!uploadStore.groupId) {
         notify.show("Please select a room to upload file.", "error");
         return;
+      } else if (uploadStore.commentUpload) {
+        uploadStore.uploadFiles(`/messages/${uploadStore.messageId}/comments`);
+      } else {
+        uploadStore.uploadFiles(`/groups/${uploadStore.groupId}/messages`)
       }
 
-      uploadStore.uploadFile(`/groups/${uploadStore.groupId}/messages`);
     }
 
     this.toggleModal();
@@ -52,6 +71,10 @@ export default class UploadModal extends Component {
   toggleModal = () => {
     const { uploadStore } = this.props;
     uploadStore.isUploadModalVisible = false;
+    setTimeout(
+      () => this.setState({ fileUploaded: false }), 
+      3000
+    );
   };
 
   handleChange = fieldName => evt => {
@@ -100,7 +123,7 @@ export default class UploadModal extends Component {
               <FormGroup bsSize="large">
                 <Row>
                   <Col componentClass={ControlLabel} sm={3}>
-                    Comment
+                    Message
                     <br />
                     <small>(optional)</small>
                   </Col>
