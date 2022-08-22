@@ -53,7 +53,7 @@ defmodule Stitch.Import.Slack.UserImport do
       if Repo.get_by(User, team_id: team.id, email: attributes.email) == nil do
         Repo.insert(%{
           attributes
-          | password_hash: Comeonin.Bcrypt.hashpwsalt(Stitch.Rand.token(32))
+          | password_hash: Bcrypt.hash_pwd_salt(Stitch.Rand.token(32))
         })
         |> log_if_error(user_json)
       else

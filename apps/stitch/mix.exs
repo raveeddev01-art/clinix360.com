@@ -59,7 +59,7 @@ defmodule Stitch.Mixfile do
       {:appsignal, "~> 2.0"},
       {:mogrify, "~> 0.5.6"},
       {:floki, "~> 0.20.3"},
-      {:exmoji, github: "mroth/exmoji"},
+      {:exmoji, "~> 0.3.0"},
       {:pdf_generator, " ~> 0.3.7"},
       {:ua_inspector, "~> 0.17"},
       {:murmur, "~> 1.0.1"},

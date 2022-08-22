@@ -14,7 +14,7 @@ defmodule Stitch.User.Authentication do
   }
 
   def hash_password(password) do
-    Comeonin.Bcrypt.hashpwsalt(password)
+    Bcrypt.hash_pwd_salt(password)
   end
 
   @spec validate_user_email_and_password(binary, binary, Team.t()) :: User.t() | boolean
@@ -34,7 +34,7 @@ defmodule Stitch.User.Authentication do
   defp do_validate_email_and_password(nil = _user_or_patient, _), do: false
 
   defp do_validate_email_and_password(user_or_patient, password) do
-    Comeonin.Bcrypt.checkpw(password, user_or_patient.password_hash) && user_or_patient
+    Bcrypt.verify_pass(password, user_or_patient.password_hash) && user_or_patient
   end
 
   @spec password_update_changeset(User.t() | Patient.t(), map) :: Changeset.t()
@@ -52,7 +52,7 @@ defmodule Stitch.User.Authentication do
           changeset
       ) do
     if user_or_patient.password_hash != nil and
-         Comeonin.Bcrypt.checkpw(new_password, user_or_patient.password_hash) do
+      Bcrypt.verify_pass(new_password, user_or_patient.password_hash) do
       changeset
       |> add_error(:password, "The new password must be different from the old one")
     else
@@ -71,7 +71,7 @@ defmodule Stitch.User.Authentication do
   def update_password(user_or_patient, current_password, new_password) do
     with {:authenticated?, true} <-
            {:authenticated?,
-            Comeonin.Bcrypt.checkpw(current_password, user_or_patient.password_hash)} do
+            Bcrypt.verify_pass(current_password, user_or_patient.password_hash)} do
       user_or_patient
       |> password_update_changeset(%{password: new_password})
       |> Repo.update()

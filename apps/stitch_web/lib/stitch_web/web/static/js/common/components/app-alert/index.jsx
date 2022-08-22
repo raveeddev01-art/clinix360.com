@@ -18,7 +18,7 @@ export default class AppAlert extends Component {
     return (
       <div>
         {window.Notification && <BrowserNotificationAlert />}
-        <SlowInternetAlert />
+        {/* <SlowInternetAlert /> */}
       </div>
     )
   }
