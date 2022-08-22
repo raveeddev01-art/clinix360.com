@@ -18,7 +18,7 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
 
   def submit_login(conn, %{"email" => email, "password" => password}) do
     team = conn.assigns.team
-
+    IO.inspect("here is in for login")
     case Authentication.validate_user_email_and_password(email, password, team) do
       false ->
         {:error, :not_authorized, "Email or password is incorrect."}
@@ -27,8 +27,10 @@ defmodule Stitch.Web.Api.V1.AuthenticationController do
         {:error, :not_authorized, "This account is disabled - contact your workspace admin."}
 
       user ->
-        path = get_session(conn, :redirect_url) || "/apps"
-
+        IO.inspect("check")
+        IO.inspect(get_session(conn, :redirect_url), label: "session")
+        path = get_session(conn, :redirect_url) || "/login"
+        IO.inspect(path, label: "here is path for check")
         conn
         |> login_user(user)
         |> render(UserView, "login.json", %{user: user, redirect_url: path})
