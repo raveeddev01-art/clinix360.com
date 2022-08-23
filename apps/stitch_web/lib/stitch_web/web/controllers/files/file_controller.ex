@@ -104,6 +104,7 @@ defmodule Stitch.Web.Files.FileController do
   # =================
 
   def download(conn, %{"file_id" => "f" <> _ = encoded_file_id} = params) do
+    IO.inspect(conn, label: "File Controller Conn")
     with {:file_id, {:ok, file_id}} <- {:file_id, Upload.decode_url_id(encoded_file_id)},
          {:file, %Upload{} = file} <-
            {:file, FileQueries.get_by_id(file_id, preload_assoc: true)},
@@ -154,13 +155,11 @@ defmodule Stitch.Web.Files.FileController do
     do: {:authenticated, true}
 
   def authenticated(conn, %Upload{} = upload, params) do
-    with {:user_token, user_token} when is_binary(user_token) <-
-           {:user_token,
-            get_user_token_from_team(conn, upload.team_id) || params["authenticationToken"]},
+    with {auth, user_token} when is_binary(user_token) <- get_user_auth_token(conn),
          {:team_user, current_user = %User{}} <-
            {:team_user, UserQueries.team_member_by_token(upload.team_id, user_token)},
          {:authenticated, true} <-
-           {:authenticated, FileAuthorization.can_view?(upload, current_user)} do
+           {:authenticated, FileAuthorization.can_view?(upload, current_user) |> IO.inspect(label: "File Doenload Authorized")} do
       {:authenticated, true}
     else
       _ -> {:authenticated, false, upload}

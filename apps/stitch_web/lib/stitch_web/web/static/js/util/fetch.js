@@ -8,11 +8,6 @@ if (metaElem) window.csrfToken = metaElem.getAttribute("content");
 
 window.CSRFFetch = function CSRFFetch(url, options = {}) {
   if (!(options.body instanceof FormData)) {
-    if (window.authenticationToken) {
-      options.body = merge(options.body, {
-        authenticationToken: window.authenticationToken
-      });
-    }
     options.body = JSON.stringify(options.body);
   }
 
@@ -26,7 +21,8 @@ window.CSRFFetch = function CSRFFetch(url, options = {}) {
       {
         headers: {
           "x-csrf-token": window.csrfToken,
-          "X-Requested-With": "XMLHttpRequest"
+          "X-Requested-With": "XMLHttpRequest",
+          "Authorization": window.authenticationToken
         },
         credentials: "same-origin"
       },
@@ -36,19 +32,11 @@ window.CSRFFetch = function CSRFFetch(url, options = {}) {
 };
 
 window.jCSRFFetch = function jCSRFFetch(url, params = {}) {
-  let modifiedUrl = url;
-  if (window.authenticationToken) {
-    modifiedUrl = `${url +
-      (url.indexOf("?") > -1
-        ? "&"
-        : "?")}authenticationToken=${window.authenticationToken}`;
-  }
-
   const { hideNotify, ...options } = params;
 
   return window
     .CSRFFetch(
-      modifiedUrl,
+      url,
       merge(
         {
           headers: merge(

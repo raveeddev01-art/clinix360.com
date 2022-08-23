@@ -16,7 +16,7 @@ class TeamFileStore {
         post(`/api/v1/files/${fileId || this.file.id}/create_public_link`, {
             hideNotify: true
         }).then(response => {
-            this.file = {...this.file, ...response.data };
+            this.file = { ...this.file, ...response.data };
 
             readonlyInputModal({
                 title: "Public Link to This File",
@@ -45,7 +45,7 @@ class TeamFileStore {
                 post(
                     `/api/v1/files/${fileId || this.file.id}/revoke_public_link`
                 ).then(response => {
-                    this.file = {...this.file, ...response.data };
+                    this.file = { ...this.file, ...response.data };
                 });
             })
             .catch(() => {
@@ -77,17 +77,17 @@ class TeamFileStore {
     @action
     deleteFile = fileId => {
         return confirmModal({
-                title: "Delete File",
-                message: "Are you sure you want to delete this file? This cannot be undone.",
-                okLabel: "Delete"
-            })
+            title: "Delete File",
+            message: "Are you sure you want to delete this file? This cannot be undone.",
+            okLabel: "Delete"
+        })
             .then(() => {
                 return remove(`/api/v1/files/${fileId || this.file.id}`);
             })
             .then(() => {
                 this.rootStore.addonStore.toggleAddons("files");
             })
-            .catch(() => {});
+            .catch(() => { });
     };
 
     @action
@@ -180,21 +180,35 @@ class TeamFileStore {
 
 
     downloadFile = (url, name) => {
-        const file_url = `${url}?authenticationToken=${window.authenticationToken}`;
-        fetch(file_url)
-          .then(response => response.blob())
-          .then(blob => {
-            const blobURL = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = blobURL;
-            a.style = "display: none";
-    
-            if (name && name.length) a.download = name;
-            document.body.appendChild(a);
-            a.click();
-          })
-          .catch(() => "Resource not downloaded!");
+        console.log("here is file url: ", url);
+        this.fetchFile(url)
+            .then(response => response.blob())
+            .then(blob => {
+                const blobURL = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = blobURL;
+                a.style = "display: none";
+
+                if (name && name.length) a.download = name;
+                document.body.appendChild(a);
+                a.click();
+            })
+            .catch(() => "Resource not found!")
     };
+
+    fetchFile = (url) => {
+        const options = {
+            headers: {
+                "x-csrf-token": window.csrfToken,
+                "Authorization": `${window.authenticationToken}`,
+                "X-Requested-With": "XMLHttpRequest",
+            }
+        };
+
+        return fetch(url, options)
+    }
+
+
 }
 
 export default TeamFileStore;

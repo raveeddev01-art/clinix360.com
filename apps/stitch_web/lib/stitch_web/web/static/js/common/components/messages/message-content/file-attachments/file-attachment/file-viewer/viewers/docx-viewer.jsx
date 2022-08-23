@@ -1,16 +1,38 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject } from "mobx-react";
+// import * as docx from "docx-preview";
 
+@inject("teamFileStore")
 class DocxViewer extends Component {
-  render() {
-    const { url } = this.props;
-    const file_url = `${url}?authenticationToken=${window.authenticationToken}`;
+  constructor() {
+    super();
+    this.state = {
+      document: null
+    };
+  }
 
+  componentWillReceiveProps() {
+    this.loadDocument();
+  }
+
+  loadDocument() {
+    // this.props.teamFileStore.fetchFile(this.props.url)
+    //   .then(response => response.arrayBuffer())
+    //   .then(buffer => {
+    //     docx
+    //       .renderAsync(buffer, document.getElementById("docx-viewer"))
+    //       .then((x) => console.log(x, "docx: finished"));
+    //   })
+    //   .catch(err => console.error(err));
+  }
+
+  render() {
     return (
-      <div className="word-document-body">
-        <iframe className="word-document" frameBorder="0" src={`https://docs.google.com/gview?url=${encodeURIComponent(file_url)}&embedded=true`}></iframe>
+      <div className="word-document-body" id="docx-viewer">
       </div>
     );
+
   }
 }
 
