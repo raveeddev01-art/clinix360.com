@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
-import * as docx from "docx-preview";
+// import * as docx from "docx-preview";
 
 @inject("teamFileStore")
 class DocxViewer extends Component {
@@ -17,14 +17,14 @@ class DocxViewer extends Component {
   }
 
   loadDocument() {
-    this.props.teamFileStore.fetchFile(this.props.url)
-      .then(response => response.arrayBuffer())
-      .then(buffer => {
-        docx
-          .renderAsync(buffer, document.getElementById("docx-viewer"))
-          .then((x) => console.log(x, "docx: finished"));
-      })
-      .catch(err => console.error(err));
+    // this.props.teamFileStore.fetchFile(this.props.url)
+    //   .then(response => response.arrayBuffer())
+    //   .then(buffer => {
+    //     docx
+    //       .renderAsync(buffer, document.getElementById("docx-viewer"))
+    //       .then((x) => console.log(x, "docx: finished"));
+    //   })
+    //   .catch(err => console.error(err));
   }
 
   render() {
