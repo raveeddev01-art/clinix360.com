@@ -301,7 +301,7 @@ defmodule Stitch.Web.Api.V1.UserController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You are not unauthorized to upload profile image."})
+        |> json(%{message: "You are not unauthorized to change settings."})
         |> halt
 
       {:error, error} ->
