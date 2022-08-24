@@ -290,6 +290,27 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
+  def update_status(conn, %{"user_id" => user_id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time}) do
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, user} <- Accounts.update_status(user_id, status_text, status_emoji, status_time) do
+
+    TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      conn |> render("show.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to upload profile image."})
+        |> halt
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
   def upload_profile_image(conn, %{"url" => url, "id" => user_id} = _op) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),

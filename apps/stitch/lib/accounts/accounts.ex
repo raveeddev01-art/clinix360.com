@@ -120,6 +120,13 @@ defmodule Stitch.Accounts do
     end
   end
 
+  def update_status(user_id, status_text, status_emoji, status_time) do
+    User
+    |> Repo.get(user_id)
+    |> User.status_changeset(%{status_text: status_text, status_emoji: status_emoji, status_time: status_time})
+    |> Repo.update()
+  end
+
   def update_profile_image(user_id, url) do
     User
     |> Repo.get(user_id)
