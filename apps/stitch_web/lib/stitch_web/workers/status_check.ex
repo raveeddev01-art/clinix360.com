@@ -15,13 +15,13 @@ defmodule Stitch.StatusChecker do
   def fetch(user_id) do
     case get(user_id) do
       {:not_found} ->
-        error
+        :error
 
       time ->
         if time_now() > time do
           IO.inspect(:ok, label: "Reset time")
         else
-          result
+          IO.inspect(:ok, label: "Time calculating")
         end
     end
   end
@@ -30,7 +30,7 @@ defmodule Stitch.StatusChecker do
   def get(user_id) do
     case Repo.get(User, user_id) do
       user -> user.status_time
-      _ -> {:not_found}
+      _ -> :not_found
     end
   end
 
@@ -43,7 +43,7 @@ defmodule Stitch.StatusChecker do
 
   def init(_) do
     schedule_queue_processing()
-    {:ok, queue}
+    {:ok, %{}}
   end
 
   defp time_now, do: :erlang.system_time(:seconds)
