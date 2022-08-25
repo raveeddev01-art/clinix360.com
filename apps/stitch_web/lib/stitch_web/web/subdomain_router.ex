@@ -268,6 +268,10 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_api)
 
+    get("/get_history", HistoryCache, :index)
+    post("/save_history", HistoryCache, :save)
+    delete("/delete_history", HistoryCache, :delete)
+
     get("/users/", UserController, :index)
     post("/users/deactivate-my-account", UserController, :deactivate_my_account)
     get("/users/:id", UserController, :show)
