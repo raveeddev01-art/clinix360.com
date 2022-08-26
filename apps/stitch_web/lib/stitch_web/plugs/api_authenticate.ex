@@ -51,7 +51,7 @@ defmodule Stitch.Web.Plug.ApiAuthenticate do
         token
 
       nil ->
-        List.keyfind(conn.req_cookies, "Authorization", 0)
+        Map.get(conn.req_cookies, "Authorization")
         |> case do
           nil -> nil
           {_, token} -> token

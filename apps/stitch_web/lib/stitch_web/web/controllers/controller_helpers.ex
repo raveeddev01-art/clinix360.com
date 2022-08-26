@@ -38,7 +38,7 @@ defmodule Stitch.Web.ControllerHelpers do
     List.keyfind(conn.req_headers, "authorization", 0)
     |> case do
       nil ->
-        List.keyfind(conn.req_cookies, "Authorization", 0)
+        Map.get(conn.req_cookies, "Authorization")
         |> case do
           nil -> nil
           {_, token} -> token
