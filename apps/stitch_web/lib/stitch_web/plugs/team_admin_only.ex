@@ -7,6 +7,7 @@ defmodule Stitch.Web.Plug.TeamAdminOnly do
     conn = fetch_query_params(conn)
 
     parse_authentication_token(conn)
+    |> IO.inspect(label: "here is team admin token")
     |> Stitch.UserQueries.get_active_by_token()
     |> case do
       nil ->
@@ -32,8 +33,17 @@ defmodule Stitch.Web.Plug.TeamAdminOnly do
   defp parse_authentication_token(conn) do
     List.keyfind(conn.req_headers, "authorization", 0)
     |> case do
-      {_, token} -> token
-      nil -> nil
+      {_, token} ->
+        token
+
+      nil ->
+        List.keyfind(conn.req_cookies, "authorization", 0)
+
+        List.keyfind(conn.req_cookies, "authorization", 0)
+        |> case do
+          nil -> nil
+          {_, token} -> token
+        end
     end
   end
 end

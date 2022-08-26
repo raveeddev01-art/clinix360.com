@@ -8,7 +8,8 @@ defmodule Stitch.Web.Plug.ApiAuthenticate do
   def call(conn, opts) do
     conn = fetch_query_params(conn)
 
-    with token when is_binary(token) <- parse_authentication_token(conn) |> IO.inspect(label: "here is api token"),
+    with token when is_binary(token) <-
+           parse_authentication_token(conn) |> IO.inspect(label: "here is api token"),
          %User{} = user <- UserQueries.get_active_by_token(token) do
       conn
       |> authenticate_user(user, opts)
@@ -46,8 +47,15 @@ defmodule Stitch.Web.Plug.ApiAuthenticate do
   defp parse_authentication_token(conn) do
     List.keyfind(conn.req_headers, "authorization", 0)
     |> case do
-      {_, token} -> token
-      nil -> nil
+      {_, token} ->
+        token
+
+      nil ->
+        List.keyfind(conn.req_cookies, "authorization", 0)
+        |> case do
+          nil -> nil
+          {_, token} -> token
+        end
     end
   end
 end

@@ -36,6 +36,17 @@ defmodule Stitch.Web.ControllerHelpers do
 
   def get_user_auth_token(conn) do
     List.keyfind(conn.req_headers, "authorization", 0)
+    |> case do
+      nil ->
+        List.keyfind(conn.req_cookies, "authorization", 0)
+        |> case do
+          nil -> nil
+          {_, token} -> token
+        end
+
+      {_, token} ->
+        token
+    end
   end
 
   def create_access_log_record(conn, user) do
