@@ -41,11 +41,11 @@ defmodule Stitch.Web.ControllerHelpers do
         Map.get(conn.req_cookies, "Authorization")
         |> case do
           nil -> nil
-          token -> token
+          {_, token} -> {"auth", token}
         end
 
-      {_, token} ->
-        token
+      {auth, token} ->
+        {auth, token}
     end
   end
 
