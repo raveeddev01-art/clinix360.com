@@ -22,8 +22,8 @@ defmodule StitchConnect.Web.Api.V1.MessageCommentController do
 
   def create(conn, %{
         "message_comment" => %{
-          "text_content" => text_content,
-          "thread" => thread
+          "text_content" => _text_content,
+          "thread" => _thread
         } = params,
         "id" => message_id
       }) do

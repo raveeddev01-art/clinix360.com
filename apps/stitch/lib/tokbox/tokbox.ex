@@ -86,14 +86,14 @@ defmodule Tokbox do
   #   process_request_headers(Enum.into(headers, []))
   # end
 
-  defp process_request_headers(headers) do
-    auth_headers = [
-      {"X-OPENTOK-AUTH", get_jwt()},
-      {"Accept", "application/json"}
-    ]
+  # defp process_request_headers(headers) do
+  #   auth_headers = [
+  #     {"X-OPENTOK-AUTH", get_jwt()},
+  #     {"Accept", "application/json"}
+  #   ]
 
-    auth_headers ++ headers
-  end
+  #   auth_headers ++ headers
+  # end
 
   @spec opentok_process_response(%HTTPoison.Response{}) :: opentok_response
   defp opentok_process_response({_, response}) do

@@ -3,10 +3,7 @@ defmodule Stitch.Web.StarringEventsService do
     GroupChannel
   }
 
-  alias Stitch.{
-    Message,
-    MessageQueries
-  }
+  alias Stitch.Message
 
   def star_events(%Message{type: "file_share"} = message, user, result) do
     # message.upload_id

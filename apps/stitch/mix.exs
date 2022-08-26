@@ -13,7 +13,8 @@ defmodule Stitch.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      xref: [exclude: [JOSE.JWK, JOSE.JWS, JOSE.JWT, Phoenix.HTML, Phoenix.HTML.Link, Stitch.PresignedUrlCache, Stitch.Web.Endpoint, Stitch.Web.EventsChannel, Stitch.Web.TeamChannel, StitchConnect.Web.GroupChannel, StitchConnect.Web.UserStatusService, StitchEngage.Web.InboxChannel, Poison]]
     ]
   end
 

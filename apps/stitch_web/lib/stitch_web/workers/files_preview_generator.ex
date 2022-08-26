@@ -7,8 +7,7 @@ defmodule Stitch.FilesPreviewGenerator do
 
   use GenServer
   alias Stitch.Files.Upload
-  alias Stitch.{Repo, Message, MessageQueries}
-  alias Stitch.Engage.{Conversation, ConversationMessage, ConversationQueries}
+  alias Stitch.{Message, MessageQueries}
   alias StitchConnect.Web.GroupChannel
   use Appsignal.Instrumentation.Decorators
 

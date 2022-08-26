@@ -70,7 +70,6 @@ defmodule Stitch.Message.MessageCreation do
   end
 
   def create(group, user, attrs, presence \\ %{})
-
   def create(group, user, %{"type" => "upload", "fields" => fields} = attrs, presence) do
     with {:ok, uploads} <- Upload.create_and_share_with_group(group, user, fields) do
       message = %Message{group: group, user: user, notify_user_ids: [user.id]}

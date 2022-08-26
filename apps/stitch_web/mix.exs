@@ -15,7 +15,8 @@ defmodule Stitch.Web.Mixfile do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      dialyzer: [plt_add_deps: :transitive]
+      dialyzer: [plt_add_deps: :transitive],
+      xref: [exclude: [JOSE.JWK, JOSE.JWS, JOSE.JWT, Phoenix.HTML, Phoenix.HTML.Link, Stitch.PresignedUrlCache, Stitch.Web.Endpoint, Stitch.Web.EventsChannel, Stitch.Web.TeamChannel, StitchConnect.Web.GroupChannel, StitchConnect.Web.UserStatusService, StitchEngage.Web.InboxChannel]]
     ]
   end
 

@@ -86,18 +86,18 @@ defmodule Stitch.Message.Notification do
 
   defp apply_intersect(a, b), do: a -- (a -- b)
 
-  @doc """
-  Takes id of a group and returns a map that splits group users into different notificatin categories
-  based on their group-specific and global settings.
-  If group-specific setting isn't "default", it takes precedence over the global setting.
+  # @doc """
+  # Takes id of a group and returns a map that splits group users into different notificatin categories
+  # based on their group-specific and global settings.
+  # If group-specific setting isn't "default", it takes precedence over the global setting.
 
-      %{
-        desktop_everything: [], // users that want to receive desktop notifications on every message in this group
-        desktop_nothing: [],    // users that disabled desktop notification for this group
-        mobile_everything: [],  // users that want to receive mobile notifications on every message in this group
-        mobile_nothing: [],     // users that disabled mobile notification for this group
-      }
-  """
+  #     %{
+  #       desktop_everything: [], // users that want to receive desktop notifications on every message in this group
+  #       desktop_nothing: [],    // users that disabled desktop notification for this group
+  #       mobile_everything: [],  // users that want to receive mobile notifications on every message in this group
+  #       mobile_nothing: [],     // users that disabled mobile notification for this group
+  #     }
+  # """
   defp notify_categories(group_id) do
     GroupUser
     |> join(:inner, [gu], u in User, on: gu.user_id == u.id)
@@ -116,9 +116,9 @@ defmodule Stitch.Message.Notification do
     |> Repo.one
   end
 
-  @doc """
-  For dm and multi-dm, we want to notify all users whose global notification settings aren't set to "nothing".
-  """
+  # @doc """
+  # For dm and multi-dm, we want to notify all users whose global notification settings aren't set to "nothing".
+  # """
   defp dm_notify_categories(group_id) do
     GroupUser
     |> join(:inner, [gu], u in User, on: gu.user_id == u.id)

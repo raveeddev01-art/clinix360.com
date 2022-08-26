@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias Stitch.FilesPreviewGenerator
   alias StitchConnect.Web.PushNotifications
   alias Stitch.Web.EventsChannel
-  alias StitchConnect.Web.Api.V1.MessageController
+  # alias StitchConnect.Web.Api.V1.MessageController
   alias StitchConnect.Web.{
     MessageEventsService
   }
@@ -333,9 +333,9 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-  def handle_in(_supported_event, _params, socket) do
-    {:noreply, socket}
-  end
+  # def handle_in(_supported_event, _params, socket) do
+  #   {:noreply, socket}
+  # end
 
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)

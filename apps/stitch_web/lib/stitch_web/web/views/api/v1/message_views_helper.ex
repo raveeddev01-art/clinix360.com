@@ -57,12 +57,12 @@ defmodule Stitch.Web.Api.V1.MessagesHelper do
 
   def render_fields(%{fields: fields}, _authenticated_urls, _files_endpoint), do: fields
 
-  defp put_upload_id(nil, _upload_id), do: nil
+  # defp put_upload_id(nil, _upload_id), do: nil
 
-  defp put_upload_id(fields, upload_id) do
-    fields
-    |> Map.merge(%{"id" => upload_id})
-  end
+  # defp put_upload_id(fields, upload_id) do
+  #   fields
+  #   |> Map.merge(%{"id" => upload_id})
+  # end
 
   defp put_download_link(fields, true, message_id, files_endpoint) do
     filename = Map.get(fields, "filename", fn -> Stitch.Rand.token(8) end)
