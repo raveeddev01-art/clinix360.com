@@ -54,7 +54,7 @@ defmodule Stitch.Web.Plug.ApiAuthenticate do
         Map.get(conn.req_cookies, "Authorization")
         |> case do
           nil -> nil
-          {_, token} -> token
+          token -> token
         end
     end
   end

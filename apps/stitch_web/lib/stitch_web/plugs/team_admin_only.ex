@@ -40,7 +40,7 @@ defmodule Stitch.Web.Plug.TeamAdminOnly do
         Map.get(conn.req_cookies, "Authorization")
         |> case do
           nil -> nil
-          {_, token} -> token
+          token -> token
         end
     end
   end
