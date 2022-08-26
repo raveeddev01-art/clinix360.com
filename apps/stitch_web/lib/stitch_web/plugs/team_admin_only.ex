@@ -37,9 +37,7 @@ defmodule Stitch.Web.Plug.TeamAdminOnly do
         token
 
       nil ->
-        List.keyfind(conn.req_cookies, "authorization", 0)
-
-        List.keyfind(conn.req_cookies, "authorization", 0)
+        List.keyfind(conn.req_cookies, "Authorization", 0)
         |> case do
           nil -> nil
           {_, token} -> token
