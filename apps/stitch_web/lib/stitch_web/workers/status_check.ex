@@ -9,7 +9,7 @@ defmodule Stitch.StatusChecker do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  @spec fetch(binary | nil) :: binary | nil
+  # @spec fetch(binary | nil) :: binary | nil
   def fetch(nil), do: nil
 
   def fetch(user_id) do
@@ -26,7 +26,7 @@ defmodule Stitch.StatusChecker do
     end
   end
 
-  @spec get(binary) :: {:not_found} | {:found, {pos_integer, binary}}
+  # @spec get(binary) :: {:not_found} | {:found, {pos_integer, binary}}
   def get(user_id) do
     case Repo.get(User, user_id) do
       user -> user.status_time
@@ -34,7 +34,7 @@ defmodule Stitch.StatusChecker do
     end
   end
 
-  @spec set(binary) :: {pos_integer, binary}
+  # @spec set(binary) :: {pos_integer, binary}
   def set(user_id) do
     Account.update_status(user_id, "", "", "")
   end
