@@ -54,6 +54,12 @@ defmodule Stitch.Accounts.User do
     field(:status_emoji, :string)
     field(:status_time, :naive_datetime)
     #################
+
+    ######### schedule msg ##############
+    field(:schedule_msg, :string)
+    field(:schedule_time, :naive_datetime)
+    ####################################
+
     field(:whats_new_last_seen_at, :utc_datetime)
     field(:slack_import_id, :string)
     field(:desktop_sound, :string, default: "pop")
@@ -153,6 +159,11 @@ defmodule Stitch.Accounts.User do
     end)
   end
 
+  def schedule_msg_changeset(struct, attrs) do
+    struct
+    |> cast(attrs, [:schedule_msg, :schedule_time])
+    |> validate_required([:schedule_msg, :schedule_time])
+  end
   def status_changeset(struct, attrs) do
     struct
     |> cast(attrs, [:status_text, :status_emoji, :status_time])
