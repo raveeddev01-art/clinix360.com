@@ -261,7 +261,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       # TODO: Deprecate once most client start using the new file API.
       {:message, %Message{type: "file_comment"} = message} ->
         text_content = message_params["text_content"]
-        upload_comment_id = message.upload_comment_id
+        upload_comment_id = Map.get(message, :upload_comment_id)
 
         file_comment_update_result =
           FileService.update_file_comment(text_content, upload_comment_id, current_user)

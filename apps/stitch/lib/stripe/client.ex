@@ -267,7 +267,7 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def cancel_subscription(_customer_id, subscription_id) do
-    case Stripe.Subscription.delete(subscription_id, %{at_period_end: true}) do
+    case Stripe.Subscription.update(subscription_id, %{cancel_at_period_end: false}) do
       {:ok, sub} -> {:ok, transform_subscription(sub)}
       _ -> :error
     end
