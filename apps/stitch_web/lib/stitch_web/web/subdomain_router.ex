@@ -269,6 +269,7 @@ defmodule Stitch.Web.SubdomainRouter do
     pipe_through(:authenticated_api)
 
     get("/users/", UserController, :index)
+    post("/users/schedule_msg", ScheduleMsgController, :update)
     post("/users/deactivate-my-account", UserController, :deactivate_my_account)
     get("/users/:id", UserController, :show)
     put("/users/:id", UserController, :update)

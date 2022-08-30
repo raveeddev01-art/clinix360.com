@@ -27,10 +27,40 @@ defmodule Stitch.Web.Api.V1.ScheduleMsgController do
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
 
-  # def index(conn, _) do
-  #   users = User.users_for_team(conn.assigns.current_user.id)
-  #   render(conn, "index.json", users: users)
-  # end
+
+  def index(conn, _) do
+    users = Accounts.get_schedule_msg(conn.assigns.current_user.id)
+    render(conn, "index.json", users: users)
+  end
+
+  def update(conn, %{user_id: user_id, schedule_msg: schedule_msg, schedule_time: schedule_time} = params) do
+    # updated = Accounts.update_schedule_msg(user, schedule_msg, schedule_time)
+    # render(conn, "index.json", users: users)
+
+    current_user = conn.assigns.current_user
+
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(current_user, user_id),
+         {:ok, user} <- Accounts.update_schedule_msg(user, schedule_msg, schedule_time) do
+          # _updated = Accounts.update_schedule_msg(user, schedule_msg, schedule_time)
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      render(conn, "update.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to update user profile."})
+        |> halt
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+
+
+  end
+
+
+
 
   # def search(conn, %{"term" => term}) do
   #   result_users = UserQueries.search(conn.assigns.current_user, term)
@@ -88,25 +118,25 @@ defmodule Stitch.Web.Api.V1.ScheduleMsgController do
   #   end
   # end
 
-  # def update(conn, %{"id" => user_id} = params) do
-  #   current_user = conn.assigns.current_user
+  def update(conn, %{"id" => user_id} = params) do
+    current_user = conn.assigns.current_user
 
-  #   with user_id <- String.to_integer(user_id),
-  #        true <- can_update_user?(current_user, user_id),
-  #        {:ok, user} <- Admin.update_user(user_id, params, user_id == current_user.id) do
-  #     TeamChannel.broadcast_user_info(conn.assigns.team, user)
-  #     render(conn, "update.json", user: user)
-  #   else
-  #     false ->
-  #       conn
-  #       |> put_status(:unauthorized)
-  #       |> json(%{message: "You are not unauthorized to update user profile."})
-  #       |> halt
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(current_user, user_id),
+         {:ok, user} <- Admin.update_user(user_id, params, user_id == current_user.id) do
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      render(conn, "update.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to update user profile."})
+        |> halt
 
-  #     {:error, changeset} ->
-  #       {:error, changeset}
-  #   end
-  # end
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
 
   # def promote_admin(conn, %{"id" => user_id}) do
   #   case Admin.promote_admin(conn.assigns.current_user, user_id) do

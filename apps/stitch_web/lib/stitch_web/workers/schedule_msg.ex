@@ -19,7 +19,7 @@ defmodule Stitch.ScheduleMsg do
 
       time ->
         if time_now() > time do
-          IO.inspect(:ok, label: "Reset time")
+          Account.update_schedule_msg(user_id, "", "")
         else
           IO.inspect(:ok, label: "Time calculating")
         end
@@ -29,14 +29,14 @@ defmodule Stitch.ScheduleMsg do
   # @spec get(binary) :: {:not_found} | {:found, {pos_integer, binary}}
   def get(user_id) do
     case Repo.get(User, user_id) do
-      user -> user.status_time
+      user -> user.schedule_time
       _ -> :not_found
     end
   end
 
   # @spec set(binary) :: {pos_integer, binary}
   def set(user_id) do
-    Account.update_status(user_id, "", "", "")
+    Account.update_schedule_msg(user_id, "", "")
   end
 
   # Server

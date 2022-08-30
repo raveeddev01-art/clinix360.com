@@ -127,6 +127,18 @@ defmodule Stitch.Accounts do
     |> Repo.update()
   end
 
+  def update_schedule_msg(user_id, schedule_msg, schedule_time) do
+    User
+    |> Repo.get(user_id)
+    |> User.status_changeset(%{schedule_msg: schedule_msg, schedule_time: schedule_time})
+    |> Repo.update()
+  end
+
+  def get_schedule_msg(user_id) do
+    User
+    |> Repo.get(user_id)
+  end
+
   def update_profile_image(user_id, url) do
     User
     |> Repo.get(user_id)
