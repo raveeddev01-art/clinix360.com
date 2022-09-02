@@ -122,7 +122,7 @@ defmodule Stitch.Accounts do
   end
 
   def update_status(user_id, text, emoji, time, history) do
-    User
+    Status
     |> Repo.get(user_id)
     |> Status.changeset(%{text: text, emoji: emoji, time: time, history: history})
     |> Repo.update()

@@ -291,15 +291,16 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def status(conn,  %{"user_id" => user_id}) do
-    Accounts.status(user_id)
+    {:ok, status} = Accounts.status(user_id)
+    conn |> render("status.json", status: status)
   end
 
   def history_status(conn,  %{"user_id" => user_id}) do
     with user_id <- String.to_integer(user_id),
       true <- can_update_user?(conn.assigns.current_user, user_id),
       {:ok, history_status} <- Accounts.history_status(user_id) do
-        TeamChannel.broadcast_user_info(conn.assigns.team, history_status)
-        conn |> render("show.json", history_status: history_status)
+        # TeamChannel.broadcast_user_info(conn.assigns.team, history_status)
+        conn |> render("history_status.json", history_status: history_status)
       else
         false ->
           conn
@@ -317,10 +318,10 @@ defmodule Stitch.Web.Api.V1.UserController do
   def update_status(conn, %{"user_id" => user_id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time, "status_history" => status_history}) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, update_status} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
+         {:ok, user} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
 
-    TeamChannel.broadcast_user_info(conn.assigns.team, update_status)
-      conn |> render("show.json", update_status: update_status)
+    # TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      conn |> render("update_status.json", update_status: update_status)
     else
       false ->
         conn
