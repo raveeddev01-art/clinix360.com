@@ -291,14 +291,8 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def status(conn,  params) do
-    # {:ok, status} = Accounts.status(user_id)
-    IO.inspect(params["id"], label: "here is user_id")
     user_id = params["id"]
-    # {:ok, status} = Accounts.status(user_id)
-    IO.inspect(conn.assigns.current_user, label: "here is user in conn")
-    with user_id <- String.to_integer(user_id),
-      true <- can_update_user?(conn.assigns.current_user, user_id),
-      {:ok, status} = Accounts.status(user_id) do
+    with status <- Accounts.status(user_id) do
       conn |> render("status.json", status: status)
     else
       false ->

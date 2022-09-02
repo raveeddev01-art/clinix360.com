@@ -12,8 +12,9 @@ defmodule Stitch.Accounts.Status do
     field(:text, :string)
     field(:emoji, :string)
     field(:time, :utc_datetime)
-    field(:history, {:array, :integer}, default: [])
-    belongs_to(:user, User)
+    field(:history, {:array, :string}, default: [])
+    # belongs_to(:user, User)
+    field :user_id, :id
     #################
 
     timestamps()

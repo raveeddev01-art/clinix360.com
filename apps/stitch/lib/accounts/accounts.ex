@@ -129,8 +129,11 @@ defmodule Stitch.Accounts do
   end
 
   def status(user_id) do
-    Status
-    |> Repo.get(user_id)
+    # Status
+    from(s in Status, where: s.user_id == ^user_id)
+    # |> Repo.get(user_id)
+    |> Repo.all
+    |> IO.inspect(label: "repo")
   end
 
   def history_status(user_id) do

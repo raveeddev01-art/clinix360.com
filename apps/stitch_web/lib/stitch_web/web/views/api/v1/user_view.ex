@@ -3,7 +3,7 @@ defmodule Stitch.Web.Api.V1.UserView do
   alias Stitch.Accounts.User
 
   def render("status.json", %{status: status}) do
-    status(status)
+    Enum.map(status, &status/1)
   end
 
   def render("update_status.json", %{status: status}) do
