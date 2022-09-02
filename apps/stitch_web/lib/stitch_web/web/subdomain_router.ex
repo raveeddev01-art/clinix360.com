@@ -270,7 +270,13 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/users/", UserController, :index)
     post("/users/deactivate-my-account", UserController, :deactivate_my_account)
+
+    ########## status ########
     post("/users/update_status", UserController, :update_status)
+    get("/users/status", UserController, :status)
+    get("/users/history_status", UserController,  :history_status)
+    ##########################
+
     get("/users/:id", UserController, :show)
     put("/users/:id", UserController, :update)
     get("/users/:id/avatar", UserController, :profile_image)

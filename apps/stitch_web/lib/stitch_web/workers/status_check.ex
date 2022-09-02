@@ -20,6 +20,7 @@ defmodule Stitch.StatusChecker do
       time ->
         if time_now() > time do
           IO.inspect(:ok, label: "Reset time")
+          set(user_id)
         else
           IO.inspect(:ok, label: "Time calculating")
         end
@@ -47,11 +48,6 @@ defmodule Stitch.StatusChecker do
   end
 
   defp time_now, do: :erlang.system_time(:seconds)
-
-  defp expires_at do
-    :erlang.system_time(:seconds)
-    |> Kernel.+(Stitch.AWS.S3.expires_in())
-  end
 
   defp schedule_queue_processing do
     Process.send_after(self(), :fetch, 500)

@@ -2,9 +2,10 @@ defmodule Stitch.Accounts do
   @moduledoc """
   The Accounts context.
   """
-
+  import Ecto.Query
   alias Stitch.{Repo, Patient}
   alias Stitch.Accounts.User
+  alias Stitch.Accounts.Status
   alias Stitch.Analytics.Accounts, as: AccountsAnalytics
 
   @doc """
@@ -120,11 +121,21 @@ defmodule Stitch.Accounts do
     end
   end
 
-  def update_status(user_id, status_text, status_emoji, status_time) do
+  def update_status(user_id, text, emoji, time, history) do
     User
     |> Repo.get(user_id)
-    |> User.status_changeset(%{status_text: status_text, status_emoji: status_emoji, status_time: status_time})
+    |> Status.changeset(%{text: text, emoji: emoji, time: time, history: history})
     |> Repo.update()
+  end
+
+  def status(user_id) do
+    Status
+    |> Repo.get(user_id)
+  end
+
+  def history_status(user_id) do
+    from(s in Status, select: %{user_id: s.user_id, history: s.history})
+    |> Repo.all
   end
 
   def update_profile_image(user_id, url) do
