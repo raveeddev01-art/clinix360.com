@@ -269,6 +269,30 @@ defmodule Stitch.MessageQueries do
     Repo.all(query)
   end
 
+  #Unread Messages Function
+  def user_unread_messages(user_id, opts \\ []) do
+    query =
+      from(
+        m in Message,
+        left_join: u in assoc(m, :user),
+        left_join: g in assoc(m, :group),
+        left_join: pb in assoc(m, :pinned_by),
+        where: fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}),
+        preload: [
+          group: g,
+          user: u,
+          pinned_by: pb,
+          thread_messages:
+            ^from(
+              tm in Message,
+              order_by: [asc: tm.inserted_at]
+            )
+        ],
+        order_by: [desc: :inserted_at]
+      )
+    Repo.all(query)
+  end
+
   def pinned_messages(%Group{id: group_id}, opts \\ []) do
     limit = Keyword.get(opts, :limit, 30)
     offset = Keyword.get(opts, :skip, 0)
