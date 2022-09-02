@@ -290,12 +290,32 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def status(conn,  %{"user_id" => user_id}) do
-    {:ok, status} = Accounts.status(user_id)
-    conn |> render("status.json", status: status)
+  def status(conn,  params) do
+    # {:ok, status} = Accounts.status(user_id)
+    IO.inspect(params["id"], label: "here is user_id")
+    user_id = params["id"]
+    # {:ok, status} = Accounts.status(user_id)
+    IO.inspect(conn.assigns.current_user, label: "here is user in conn")
+    with user_id <- String.to_integer(user_id),
+      true <- can_update_user?(conn.assigns.current_user, user_id),
+      {:ok, status} = Accounts.status(user_id) do
+      conn |> render("status.json", status: status)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to change settings."})
+        |> halt
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
   end
 
-  def history_status(conn,  %{"user_id" => user_id}) do
+  def history_status(conn, params) do
+    user_id = params["id"]
     with user_id <- String.to_integer(user_id),
       true <- can_update_user?(conn.assigns.current_user, user_id),
       {:ok, history_status} <- Accounts.history_status(user_id) do
@@ -315,7 +335,8 @@ defmodule Stitch.Web.Api.V1.UserController do
       end
   end
 
-  def update_status(conn, %{"user_id" => user_id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time, "status_history" => status_history}) do
+  def update_status(conn, params) do
+    user_id = params["id"]
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, update_status} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
