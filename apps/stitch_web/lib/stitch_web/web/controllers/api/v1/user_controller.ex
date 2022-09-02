@@ -318,7 +318,7 @@ defmodule Stitch.Web.Api.V1.UserController do
   def update_status(conn, %{"user_id" => user_id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time, "status_history" => status_history}) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, user} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
+         {:ok, update_status} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
 
     # TeamChannel.broadcast_user_info(conn.assigns.team, user)
       conn |> render("update_status.json", update_status: update_status)
