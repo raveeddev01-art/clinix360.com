@@ -314,8 +314,7 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def history_status(conn, params) do
-    user_id = params["id"]
+  def history_status(conn,  %{"user_id" => user_id}) do
     with user_id <- String.to_integer(user_id),
       true <- can_update_user?(conn.assigns.current_user, user_id),
       {:ok, history_status} <- Accounts.history_status(user_id) do
@@ -335,8 +334,7 @@ defmodule Stitch.Web.Api.V1.UserController do
       end
   end
 
-  def update_status(conn, params) do
-    user_id = params["id"]
+  def update_status(conn, %{"user_id" => user_id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time, "status_history" => status_history}) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, update_status} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
