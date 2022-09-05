@@ -123,17 +123,14 @@ defmodule Stitch.Accounts do
 
   def update_status(user_id, text, emoji, time, history) do
     Status
-    |> Repo.get(user_id)
+    |> Repo.get_by([user_id: user_id])
     |> Status.changeset(%{text: text, emoji: emoji, time: time, history: history})
     |> Repo.update()
   end
 
   def status(user_id) do
-    # Status
     from(s in Status, where: s.user_id == ^user_id)
-    # |> Repo.get(user_id)
     |> Repo.all
-    |> IO.inspect(label: "repo")
   end
 
   def history_status(user_id) do

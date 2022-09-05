@@ -59,10 +59,10 @@ defmodule Stitch.Web.Api.V1.UserView do
 
   def history_status(status) do
 
-    %{
+    [%{
       user_id: status.user_id,
       history: status.history
-    }
+    }]
 
   end
 
