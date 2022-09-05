@@ -12,7 +12,7 @@ RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.12/community' >> /etc/apk/repo
 RUN apk update && apk upgrade && \
   apk add git && \
   apk add postgresql-client && \
-  apk add nodejs npm && \
+  apk add nodejs-current npm && \
   apk add ghostscript && \
   apk add fontconfig && \
   apk add imagemagick && \

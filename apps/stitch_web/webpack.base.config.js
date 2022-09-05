@@ -28,7 +28,7 @@ module.exports = [
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
           loader: "babel-loader",
-          query: {
+          options: {
             plugins: ["transform-decorators-legacy"],
             presets: ["env", "react", "stage-2"]
           }
@@ -72,59 +72,72 @@ module.exports = [
           use: [MiniCssExtractPlugin.loader, 'css-loader', "sass-loader"],
         },
         {
-          test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-          loader: "file-loader?name=fonts/[name].[ext]"
+          // test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+          // loader: "file-loader?name=fonts/[name].[ext]"
+         
+          test: /\.(jpe?g|png|gif|woff|woff2|otf|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
+          use: [
+              {
+                  loader: 'url-loader',
+                  options: {
+                      name : 'file-loader?name=fonts/[name].[ext]'
+                  }
+              }
+          ]
+        
         }
       ]
     },
     plugins: [
       new MiniCssExtractPlugin({
         filename: '[name].css',
-        chunkFilename: '[id].[hash].css',
-        sourceMapFilename: '[name].[hash].map',
+        chunkFilename: '[id].[contenthash].css',
+        // sourceMapFilename: '[name].[contenthash].map',
       }),
-      new CopyWebpackPlugin([
-        {
-          from: "./lib/stitch_web/web/static/favicon.ico",
-          to: path.resolve(__dirname, "priv/static")
-        },
-        {
-          from: "./lib/stitch_web/web/static/notification.png",
-          to: path.resolve(__dirname, "priv/static")
-        },
-        {
-          from: "./lib/stitch_web/web/static/notification-staging.png",
-          to: path.resolve(__dirname, "priv/static")
-        },
-        {
-          from: "./lib/stitch_web/web/static/robots.txt",
-          to: path.resolve(__dirname, "priv/static")
-        },
-        {
-          from: "./lib/stitch_web/web/static/sitemap.xml",
-          to: path.resolve(__dirname, "priv/static")
-        },
-        {
-          from: "./lib/stitch_web/web/static/audios/pop.mp3",
-          to: path.resolve(__dirname, "priv/static/audios")
-        },
-        {
-          from: "./lib/stitch_web/web/static/audios/calling.mp3",
-          to: path.resolve(__dirname, "priv/static/audios")
-        },
-        {
-          from: "./lib/stitch_web/web/static/images",
-          to: path.resolve(__dirname, "priv/static/images")
-        },
-        {
-          from: "./swagger.json",
-          to: path.resolve(__dirname, "priv/static")
-        },
-        {
-          from: "./carespace-swagger.json",
-          to: path.resolve(__dirname, "priv/static")
-        }
-      ])
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: "./lib/stitch_web/web/static/favicon.ico",
+            to: path.resolve(__dirname, "priv/static")
+          },
+          {
+            from: "./lib/stitch_web/web/static/notification.png",
+            to: path.resolve(__dirname, "priv/static")
+          },
+          {
+            from: "./lib/stitch_web/web/static/notification-staging.png",
+            to: path.resolve(__dirname, "priv/static")
+          },
+          {
+            from: "./lib/stitch_web/web/static/robots.txt",
+            to: path.resolve(__dirname, "priv/static")
+          },
+          {
+            from: "./lib/stitch_web/web/static/sitemap.xml",
+            to: path.resolve(__dirname, "priv/static")
+          },
+          {
+            from: "./lib/stitch_web/web/static/audios/pop.mp3",
+            to: path.resolve(__dirname, "priv/static/audios")
+          },
+          {
+            from: "./lib/stitch_web/web/static/audios/calling.mp3",
+            to: path.resolve(__dirname, "priv/static/audios")
+          },
+          {
+            from: "./lib/stitch_web/web/static/images",
+            to: path.resolve(__dirname, "priv/static/images")
+          },
+          {
+            from: "./swagger.json",
+            to: path.resolve(__dirname, "priv/static")
+          },
+          {
+            from: "./carespace-swagger.json",
+            to: path.resolve(__dirname, "priv/static")
+          }
+        ],
+      })
     ]
   }
 ];

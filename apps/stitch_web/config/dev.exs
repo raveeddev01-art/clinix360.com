@@ -22,7 +22,8 @@ config :stitch_web, Stitch.Web.Endpoint,
     node: [
       "node_modules/webpack/bin/webpack.js",
       "--mode=development",
-      "--watch-stdin",
+      "--watch",
+      "--watch-options-stdin",
       "--progress",
       "--color",
       cd: Path.expand("../", __DIR__)
