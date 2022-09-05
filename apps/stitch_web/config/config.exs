@@ -73,7 +73,7 @@ config :pigeon,
     {Stitch.Pigeon, :engage_apns_config}
   ]
 
-config :stitch_web, :phoenix_swagger,
+config :stitch_web, :phoenix_swagger, json_library: Jason,
   swagger_files: %{
     "swagger.json" => [router: Stitch.Web.Router],
     "carespace-swagger.json" => [router: Stitch.Web.SubdomainRouter]

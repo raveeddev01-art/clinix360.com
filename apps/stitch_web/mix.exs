@@ -11,7 +11,7 @@ defmodule Stitch.Web.Mixfile do
       lockfile: "../../mix.lock",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext, :phoenix_swagger] ++ Mix.compilers(),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers ++ [:phoenix_swagger],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
@@ -67,7 +67,7 @@ defmodule Stitch.Web.Mixfile do
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
       {:remote_ip, "~> 0.1.4"},
-      {:phoenix_swagger, "~> 0.8.0"},
+      {:phoenix_swagger, "~> 0.8"},
       {:ex_json_schema, "~> 0.5"},
       {:not_qwerty123, "~> 2.4.1"}
     ]
