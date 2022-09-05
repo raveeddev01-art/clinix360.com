@@ -11,7 +11,7 @@ defmodule Stitch.Web.Api.V1.UserView do
   end
 
   def render("history_status.json", %{status: status}) do
-    history_status(status)
+    Enum.map(status, &history_status/1)
   end
 
   def render("index.json", %{users: users}) do

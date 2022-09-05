@@ -122,10 +122,16 @@ defmodule Stitch.Accounts do
   end
 
   def update_status(user_id, text, emoji, time, history) do
-    Status
-    |> Repo.get_by([user_id: user_id])
-    |> Status.changeset(%{text: text, emoji: emoji, time: time, history: history})
+    history = String.split(history, ",", trim: true)
+    params = %{text: text, emoji: emoji, time: time, history: history}
+    from(s in Status, where: s.user_id == ^user_id)
+    |> Repo.all
+    |> Enum.at(0)
+    |> IO.inspect(label: "here is that user")
+    |> Status.changeset(params)
+    |> IO.inspect(label: "here is after changeset")
     |> Repo.update()
+    |> IO.inspect(label: "here is after update")
   end
 
   def status(user_id) do
