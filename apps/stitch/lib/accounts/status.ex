@@ -21,6 +21,7 @@ defmodule Stitch.Accounts.Status do
   end
 
   def changeset(struct, attrs) do
+
     struct
     |> cast(attrs, [:text, :emoji, :time, :history])
     |> validate_required([:text, :emoji, :time, :history])
