@@ -293,9 +293,9 @@ defmodule StitchConnect.Web.ThreadsChannel do
   end
 
   # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-  def handle_in(_supported_event, _params, socket) do
-    {:noreply, socket}
-  end
+  # def handle_in(_supported_event, _params, socket) do
+  #   {:noreply, socket}
+  # end
 
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
@@ -668,8 +668,8 @@ defmodule StitchConnect.Web.ThreadsChannel do
   end
 
   # TODO: remove once web and mobile apps don't rely on messages in channel feed.
-  defp get_fetch_messages_param(%{"fetchMessages" => "false"}), do: false
-  defp get_fetch_messages_param(_params), do: true
+  # defp get_fetch_messages_param(%{"fetchMessages" => "false"}), do: false
+  # defp get_fetch_messages_param(_params), do: true
 
   # Note: remove once all clients are updated and don't rely on embedded users.
   defp get_fetch_users_param(%{"fetchUsers" => "false"}), do: false

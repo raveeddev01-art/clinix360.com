@@ -73,7 +73,7 @@ defmodule Stitch.Engage.ConversationQueries do
       :inner,
       [c],
       cp in ConversationPatient,
-      cp.patient_id == ^patient.id and c.id == cp.conversation_id
+      on: cp.patient_id == ^patient.id and c.id == cp.conversation_id
     )
     |> order_by([c, cp], desc: c.updated_at)
     |> preload(latest_conversation_message: ^latest_conversation_message_query)

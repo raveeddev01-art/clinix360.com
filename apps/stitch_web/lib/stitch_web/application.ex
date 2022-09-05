@@ -2,38 +2,36 @@ defmodule Stitch.Web.Application do
   use Application
 
   def start(_type, _args) do
-    import Supervisor.Spec
-
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
-      supervisor(Stitch.Web.Endpoint, []),
-      supervisor(Stitch.Web.Presence, [])
+      {Phoenix.PubSub, name: StitchConnect.PubSub},
+      Stitch.Web.Presence,
+      Stitch.Web.Endpoint,
       # Start your own worker by calling: StitchConnect.Worker.start_link(arg1, arg2, arg3)
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
     ]
 
     background_jobs = [
-      worker(StitchConnect.MessageMailer, []),
-      worker(Stitch.PresignedUrlCache, []),
-      worker(StitchConnect.ActivityTrackerWorker, []),
-      worker(Stitch.FilesPreviewGenerator, [])
+      StitchConnect.MessageMailer,
+      Stitch.PresignedUrlCache,
+      StitchConnect.ActivityTrackerWorker,
+      Stitch.FilesPreviewGenerator
     ]
 
     background_jobs =
       if Application.get_env(:stitch_web, :env) == :test do
         background_jobs
       else
-        background_jobs = background_jobs ++
-          [
-            worker(StitchConnect.MobileBadgeUpdater, [])
-          ]
         background_jobs =
-          if Application.get_env(:stitch_web, :start_message_link_preview_generator, true) do
-            background_jobs ++ [worker(Stitch.LinkPreviewGenerator, [])]
-          else
-            background_jobs
-          end
+          background_jobs ++
+            [
+              {StitchConnect.MobileBadgeUpdater, []}
+            ]
+
+        if Application.get_env(:stitch_web, :start_message_link_preview_generator, true) do
+          background_jobs ++ [Stitch.LinkPreviewGenerator]
+        end
       end
 
     children =

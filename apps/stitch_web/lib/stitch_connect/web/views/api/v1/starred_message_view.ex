@@ -26,12 +26,8 @@ defmodule StitchConnect.Web.Api.V1.StarredMessageView do
   end
 
   def starred_item_fields(%Upload{} = upload), do: Upload.fields(upload)
-  def starred_item_fields(message) do
-    if message.upload != nil do
-      MessagesHelper.render_fields(message, true, @endpoint.files_struct_url())
-    else
-      nil
-    end
+  def starred_item_fields(message) when message.upload != nil do
+    MessagesHelper.render_fields(message, true, @endpoint.files_struct_url())
   end
   def starred_item_fields(_upload), do: nil
 end

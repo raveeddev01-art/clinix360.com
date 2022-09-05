@@ -14,7 +14,7 @@ defmodule Stitch.LinkPreviewGenerator do
   alias StitchEngage.Web.ConversationChannel
   use Appsignal.Instrumentation.Decorators
 
-  def start_link do
+  def start_link(_) do
     GenServer.start_link(
       __MODULE__,
       LinkPreview.all_messages_with_ungenerated_link_previews(),

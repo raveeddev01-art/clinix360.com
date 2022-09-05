@@ -13,7 +13,7 @@
   <body>
     <%= render "_tag_manager_body.html" %>
     <div id="toastr" data-component="Toastr"></div>
-    <%= render @view_module, @view_template, assigns %>
+    <%= @inner_content %>
     <%= render "_js_variables.html", conn: @conn %>
     <%= render "_user_js_variables.html", conn: @conn %>
     <%= render "_sentry.html", conn: @conn %>

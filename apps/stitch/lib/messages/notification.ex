@@ -31,7 +31,7 @@ defmodule Stitch.Message.Notification do
       |> without_author_or_active.()
 
     mobile_active_user_ids_to_notify = mobile
-      |> intersect(active_user_ids)
+      |> apply_intersect(active_user_ids)
       |> without_author.()
 
     %{
@@ -74,7 +74,7 @@ defmodule Stitch.Message.Notification do
 
     mobile_active_user_ids_to_notify = mobile_enabled
       |> with_mentioned.()
-      |> intersect(active_user_ids)
+      |> apply_intersect(active_user_ids)
       |> without_author.()
       |> without_mobile_disabled.()
 
@@ -84,23 +84,23 @@ defmodule Stitch.Message.Notification do
       email: email_user_ids_to_notify}
   end
 
-  defp intersect(a, b), do: a -- (a -- b)
+  defp apply_intersect(a, b), do: a -- (a -- b)
 
-  @doc """
-  Takes id of a group and returns a map that splits group users into different notificatin categories
-  based on their group-specific and global settings.
-  If group-specific setting isn't "default", it takes precedence over the global setting.
+  # @doc """
+  # Takes id of a group and returns a map that splits group users into different notificatin categories
+  # based on their group-specific and global settings.
+  # If group-specific setting isn't "default", it takes precedence over the global setting.
 
-      %{
-        desktop_everything: [], // users that want to receive desktop notifications on every message in this group
-        desktop_nothing: [],    // users that disabled desktop notification for this group
-        mobile_everything: [],  // users that want to receive mobile notifications on every message in this group
-        mobile_nothing: [],     // users that disabled mobile notification for this group
-      }
-  """
+  #     %{
+  #       desktop_everything: [], // users that want to receive desktop notifications on every message in this group
+  #       desktop_nothing: [],    // users that disabled desktop notification for this group
+  #       mobile_everything: [],  // users that want to receive mobile notifications on every message in this group
+  #       mobile_nothing: [],     // users that disabled mobile notification for this group
+  #     }
+  # """
   defp notify_categories(group_id) do
     GroupUser
-    |> join(:inner, [gu], u in User, gu.user_id == u.id)
+    |> join(:inner, [gu], u in User, on: gu.user_id == u.id)
     |> where([gu, u], gu.group_id == ^group_id)
     |> select([gu, u], %{
       desktop_everything: fragment("coalesce (array_agg(?) filter (where (case ? when 'default' then ? = 'everything' else ? = 'everything' end)), array[]::int[])",
@@ -116,12 +116,12 @@ defmodule Stitch.Message.Notification do
     |> Repo.one
   end
 
-  @doc """
-  For dm and multi-dm, we want to notify all users whose global notification settings aren't set to "nothing".
-  """
+  # @doc """
+  # For dm and multi-dm, we want to notify all users whose global notification settings aren't set to "nothing".
+  # """
   defp dm_notify_categories(group_id) do
     GroupUser
-    |> join(:inner, [gu], u in User, gu.user_id == u.id)
+    |> join(:inner, [gu], u in User, on: gu.user_id == u.id)
     |> where([gu, u], gu.group_id == ^group_id)
     |> select([gu, u], %{
       desktop: fragment("coalesce (array_agg(?) filter (where (? != 'nothing')), array[]::int[])",
@@ -135,8 +135,8 @@ defmodule Stitch.Message.Notification do
 
   def for_user(user_id) do
     GroupUser
-    |> join(:inner, [gu], g in Group, gu.group_id == g.id)
-    |> join(:inner, [gu, g], u in User, gu.user_id == u.id and u.id == ^user_id)
+    |> join(:inner, [gu], g in Group, on: gu.group_id == g.id)
+    |> join(:inner, [gu, g], u in User, on: gu.user_id == u.id and u.id == ^user_id)
     |> where([gu, g, u], gu.user_id == ^user_id)
     |> where([gu, g, u], g.name != "__dm_group__" and g.name != "__multi_dm_group__")
     |> select([gu, g, u], %{

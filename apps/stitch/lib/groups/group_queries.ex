@@ -37,7 +37,7 @@ defmodule Stitch.GroupQueries do
   def visible_group_ids(%User{} = user, group_ids \\ nil) do
     query =
       Group
-      |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
+      |> join(:left, [g], gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id)
 
     query =
       if User.guest?(user) do
@@ -280,7 +280,7 @@ defmodule Stitch.GroupQueries do
       |> Repo.all()
     else
       Group
-      |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
+      |> join(:left, [g], gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id)
       |> where([g], g.id in ^group_ids)
       |> where([g, gu], not is_nil(gu.id))
       |> Repo.all()

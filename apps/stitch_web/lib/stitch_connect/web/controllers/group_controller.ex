@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.GroupController do
   use Stitch.Web, :controller
-  alias Stitch.Web.PageView
   alias Stitch.Web.PageService
   alias Stitch.GroupQueries
 
@@ -9,7 +8,9 @@ defmodule StitchConnect.Web.GroupController do
 
     case GroupQueries.find_by_slug(slug, current_user) do
       {:ok, _} ->
-        render(conn, PageView, "index.html", app_params: PageService.app_params(conn))
+        conn
+        |> put_view(Stitch.Web.PageView)
+        |> render("index.html", app_params: PageService.app_params(conn))
 
       {:error, _} ->
         default_group = GroupQueries.default_group(current_user)

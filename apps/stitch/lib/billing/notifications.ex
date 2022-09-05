@@ -26,7 +26,7 @@ defmodule Stitch.Billing.Notifications do
         content: first_name
       }
     ])
-    |> NewMailer.deliver_now()
+    |> Stitch.NewMailer.deliver_now()
   end
 
   @doc """
@@ -56,6 +56,6 @@ defmodule Stitch.Billing.Notifications do
         content: days_until_retry
       }
     ])
-    |> NewMailer.deliver_now()
+    |> Stitch.NewMailer.deliver_now()
   end
 end

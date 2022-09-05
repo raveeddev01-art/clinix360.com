@@ -167,8 +167,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   def mark_as_read(conn, %{"group_id" => group_id}) do
     current_user = conn.assigns.current_user
 
-    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:ok, response} <- ReadStatus.mark_as_read(:message, current_user.id, group.id) do
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id) |> IO.inspect(label: "got group")},
+         {:ok, response} <- ReadStatus.mark_as_read(:message, current_user.id, group.id) |> IO.inspect(label: "markin result") do
       %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}} = response
       messages_json = MessageView.render("index.json", %{messages: messages})
 
@@ -177,6 +177,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           messages_json: messages_json,
           group_user: group_user
         })
+        |> IO.inspect(label: "Marked payload")
 
       mark_as_read_events(group, current_user, messages_json, mark_as_read_json)
       json(conn, mark_as_read_json)
@@ -260,7 +261,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       # TODO: Deprecate once most client start using the new file API.
       {:message, %Message{type: "file_comment"} = message} ->
         text_content = message_params["text_content"]
-        upload_comment_id = message.upload_comment_id
+        upload_comment_id = Map.get(message, :upload_comment_id)
 
         file_comment_update_result =
           FileService.update_file_comment(text_content, upload_comment_id, current_user)

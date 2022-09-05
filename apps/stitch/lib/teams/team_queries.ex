@@ -8,7 +8,7 @@ defmodule Stitch.TeamQueries do
   @spec all_with_user_email(binary) :: [Team.t()]
   def all_with_user_email(email) do
     Team
-    |> join(:inner, [t], u in User, u.team_id == t.id and u.email == ^email)
+    |> join(:inner, [t], u in User, on: u.team_id == t.id and u.email == ^email)
     |> select([t, u], t)
     |> Repo.all()
   end
@@ -16,7 +16,7 @@ defmodule Stitch.TeamQueries do
   @spec all_with_patient_email(binary) :: [Team.t()]
   def all_with_patient_email(email) do
     Team
-    |> join(:inner, [t], p in Patient, p.team_id == t.id and p.email == ^email)
+    |> join(:inner, [t], p in Patient, on: p.team_id == t.id and p.email == ^email)
     |> select([t, p], t)
     |> Repo.all()
   end

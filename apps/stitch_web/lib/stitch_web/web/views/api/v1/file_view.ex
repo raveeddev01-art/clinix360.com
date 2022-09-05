@@ -4,7 +4,6 @@ defmodule Stitch.Web.Api.V1.FileView do
   alias Stitch.{
     Files.Upload,
     Paginator,
-    Web.Api.V1.FileCommentView,
     Web.UrlService
   }
 
