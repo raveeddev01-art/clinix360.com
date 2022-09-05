@@ -1,7 +1,7 @@
 # ./Dockerfile
 
 # Extend from the official Elixir image
-FROM elixir:1.10.4-alpine
+FROM elixir:1.14-alpine
 RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.12/main' >> /etc/apk/repositories
 RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.12/community' >> /etc/apk/repositories
 # FROM elixir:1.10.4
