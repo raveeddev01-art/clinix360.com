@@ -56,8 +56,8 @@ ADD . .
 RUN cd apps/stitch_web/ && \
     yarn deploy && \
     cd - && \
-    source docker.env
-RUN mix do phx.digest
+    source docker.env && \
+    mix do phx.digest
 
 WORKDIR /
 
