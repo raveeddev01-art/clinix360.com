@@ -49,6 +49,7 @@ defmodule Stitch.Accounts.User do
     field(:is_bot, :boolean, default: false)
     field(:groups_as_guest, {:array, :integer}, default: [])
     field(:timezone, :map, default: %{})
+
     field(:whats_new_last_seen_at, :utc_datetime)
     field(:slack_import_id, :string)
     field(:desktop_sound, :string, default: "pop")
@@ -57,6 +58,7 @@ defmodule Stitch.Accounts.User do
     field(:platform_tour_status, :string, default: "pending")
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
+    has_one(:status, Stitch.Accounts.Status, on_delete: :delete_all)
     has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)
 
     field(:password, :string, virtual: true)
@@ -147,6 +149,7 @@ defmodule Stitch.Accounts.User do
       end
     end)
   end
+
 
   @doc """
   Applies the attributes: email, confirmation_code and token

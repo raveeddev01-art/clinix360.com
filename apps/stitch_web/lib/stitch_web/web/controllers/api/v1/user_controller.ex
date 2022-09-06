@@ -290,6 +290,63 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
+  def status(conn,  params) do
+    user_id = params["id"]
+    with status <- Accounts.status(user_id) do
+      conn |> render("status.json", status: status)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to change settings."})
+        |> halt
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
+
+  def history_status(conn,  params) do
+    user_id = params["id"]
+    with status <- Accounts.history_status(user_id) do
+      conn |> render("history_status.json", status: status)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to change settings."})
+        |> halt
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
+  def update_status(conn, %{"id" => id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time, "status_history" => status_history}) do
+    with user_id <- String.to_integer(id),
+        #  true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, status} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
+
+      conn |> render("update_status.json", status: status)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to change settings."})
+        |> halt
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
   def upload_profile_image(conn, %{"url" => url, "id" => user_id} = _op) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),

@@ -233,6 +233,11 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/api/v1", Stitch.Web.Api.V1, as: :api_v1 do
     pipe_through(:api)
 
+    post("/users/:id/update_status", UserController, :update_status)
+    get("/users/:id/status", UserController, :status)
+    get("/users/:id/history_status", UserController,  :history_status)
+
+
     get("/users/validate-username", UserController, :validate_username)
     post("/users/exists", UserController, :exists?)
     post("/users/validate-phone-number", UserController, :validate_phone_number)
@@ -270,6 +275,13 @@ defmodule Stitch.Web.SubdomainRouter do
 
     get("/users/", UserController, :index)
     post("/users/deactivate-my-account", UserController, :deactivate_my_account)
+
+    ########## status ########
+    # post("/users/:id/update_status", UserController, :update_status)
+    # get("/users/:id/status", UserController, :status)
+    # get("/users/:id/history_status", UserController,  :history_status)
+    ##########################
+
     get("/users/:id", UserController, :show)
     put("/users/:id", UserController, :update)
     get("/users/:id/avatar", UserController, :profile_image)
