@@ -75,6 +75,12 @@ config :pigeon,
 
 config :stitch_web, :phoenix_swagger, json_library: Jason,
   swagger_files: %{
-    "swagger.json" => [router: Stitch.Web.Router],
-    "carespace-swagger.json" => [router: Stitch.Web.SubdomainRouter]
+    "swagger.json" => [
+      router: Stitch.Web.Router,
+      endpoint: Stitch.Web.Endpoint
+    ],
+    "carespace-swagger.json" => [
+      router: Stitch.Web.SubdomainRouter,
+      endpoint: Stitch.Web.Endpoint
+    ]
   }

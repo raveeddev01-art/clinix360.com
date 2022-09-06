@@ -1,5 +1,9 @@
 {
   "swagger": "2.0",
+  "schemes": [
+    "https",
+    "http"
+  ],
   "paths": {
     "/api/v1/patient/find-your-team/{token}": {
       "delete": {
