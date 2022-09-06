@@ -327,9 +327,8 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def update_status(conn, %{"user_id" => user_id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time, "status_history" => status_history}) do
-    IO.inspect(user_id, label: "here is in update_status")
-    with user_id <- String.to_integer(user_id),
+  def update_status(conn, %{"id" => id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time, "status_history" => status_history}) do
+    with user_id <- String.to_integer(id),
         #  true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, status} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
 
