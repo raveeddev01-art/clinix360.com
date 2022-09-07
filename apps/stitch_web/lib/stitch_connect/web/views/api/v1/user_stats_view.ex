@@ -2,6 +2,55 @@ defmodule StitchConnect.Web.Api.V1.UserStatsView do
   use Stitch.Web, :view
   alias Stitch.Message
 
+  def render("user_groups.json", %{user_groups: user_groups}) do
+    Enum.map(user_groups, &group_user_json/1)
+  end
+
+  def group_user_json(user_groups) do
+    %{
+      id: user_groups.id,
+      group_id: user_groups.group_id,
+      group: group_json(user_groups.group),
+      is_hidden: user_groups.is_hidden,
+      is_favorite: user_groups.is_favorite,
+      unread_messages_count: user_groups.unread_messages_count,
+      mentions_count: user_groups.mentions_count,
+      last_read_at: user_groups.last_read_at,
+      inserted_at: user_groups.inserted_at,
+      updated_at: user_groups.updated_at,
+      mobile_notification_preference: user_groups.mobile_notification_preference,
+      desktop_notification_preference: user_groups.desktop_notification_preference,
+      user_id: user_groups.user_id
+
+    }
+  end
+
+  def group_json(group) do
+    %{
+      name: group.name,
+      slug: group.slug,
+      public: group.public,
+      description: group.description,
+      is_default: group.is_default,
+      creator_user_id: group.creator_user_id
+    }
+  end
+
+  def render("starred.json", %{starred_messages: starred_messages}) do
+    Enum.map(starred_messages, &starred_message_json/1)
+  end
+
+  def starred_message_json(starred_item) do
+    %{
+      id: starred_item.id,
+      text_content: starred_item.text_content,
+      user: user_info(starred_item),
+      inserted_at: starred_item.inserted_at,
+      group_id: starred_item.group_id,
+      type: starred_item.type
+    }
+  end
+
   def render("unread.json", %{messages: messages}) do
     Enum.map(messages, &message_json(&1))
   end

@@ -489,7 +489,10 @@ defmodule Stitch.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through(:authenticated_api)
 
+    #More Features API
     get("/unread/:user_id", UserStatsController, :unread)
+    get("/starred/:user_id", UserStatsController, :starred)
+    get("/user_groups/:user_id", UserStatsController, :groups)
 
     scope "/messages/:id" do
       resources("/comments", MessageCommentController, only: [:create])
