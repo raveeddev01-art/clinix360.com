@@ -66,6 +66,16 @@ defmodule Stitch.Files.Upload do
     |> put_filetype()
   end
 
+  def user_uploads(user_id) do
+    query =
+      from(
+        u in Upload,
+        where: u.user_id == ^user_id,
+        order_by: [desc: u.inserted_at]
+      )
+    Repo.all(query)
+  end
+
   @spec create(User.t(), map) :: {:ok, Upload.t()} | {:error, Ecto.Changeset.t()}
   def create(%User{} = user, attrs) do
     %Upload{user_id: user.id, team_id: user.team_id}

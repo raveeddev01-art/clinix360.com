@@ -1,6 +1,48 @@
 defmodule StitchConnect.Web.Api.V1.UserStatsView do
   use Stitch.Web, :view
   alias Stitch.Message
+  alias Stitch.{
+    Files.Upload,
+    Web.UrlService
+  }
+
+  def render("user_uploads.json", %{files: files}) do
+    Enum.map(files, &file_json/1)
+  end
+
+  def file_json(file) do
+    %{
+      id: file.id,
+      filename: file.filename,
+      public: file.public,
+      public_token: file.public_token,
+      shared_in: file.shared_in,
+      user_id: file.user_id,
+      inserted_at: file.inserted_at,
+      updated_at: file.updated_at,
+      mimetype: file.mimetype,
+      filetype: file.filetype,
+      size_in_bytes: file.size_in_bytes,
+      preview_url: preview_url(file),
+      preview_height: file.preview_height,
+      preview_width: file.preview_width,
+      encoded_id: Upload.encode_url_id(file),
+      url: UrlService.file_download_url(file),
+      public_url: public_url(file),
+      comment_count: file.comment_count,
+      starred: Map.get(file, :starred, false)
+    }
+  end
+
+  def public_url(%Upload{public_token: token} = file) when not is_nil(token) do
+    UrlService.public_download_page(file, token)
+  end
+
+  def public_url(_upload), do: nil
+
+  def preview_url(file) do
+    UrlService.file_preview_url(file)
+  end
 
   def render("user_groups.json", %{user_groups: user_groups}) do
     Enum.map(user_groups, &group_user_json/1)

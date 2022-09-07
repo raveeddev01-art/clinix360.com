@@ -493,6 +493,7 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/unread/:user_id", UserStatsController, :unread)
     get("/starred/:user_id", UserStatsController, :starred)
     get("/user_groups/:user_id", UserStatsController, :groups)
+    get("/user_files/:user_id", UserStatsController, :files)
 
     scope "/messages/:id" do
       resources("/comments", MessageCommentController, only: [:create])
