@@ -7,6 +7,7 @@ defmodule Stitch.Web.Api.V1.UserController do
   alias StitchConnect.Web.GroupChannel
   alias Stitch.Analytics.User, as: UserAnalytics
   alias NotQwerty123.PasswordStrength, as: Pwd_check
+
   alias Stitch.{
     AWS.S3,
     Accounts,
@@ -155,6 +156,7 @@ defmodule Stitch.Web.Api.V1.UserController do
       user ->
         %{user_id: user.id, code: coupon_code}
         |> Coupons.update_signup_coupon()
+
         conn
         |> put_session(:user_id, user.id)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
@@ -233,27 +235,27 @@ defmodule Stitch.Web.Api.V1.UserController do
       }) do
     case Pwd_check.strong_password?(new_password) do
       {:ok, _} ->
-      case Stitch.User.Authentication.update_password(
-           conn.assigns.current_user,
-           old_password,
-           new_password
-         ) do
-      {:ok, user} ->
-        EventsChannel.broadcast_logout_from_all_sessions(user, get_session(conn, :session_id))
+        case Stitch.User.Authentication.update_password(
+               conn.assigns.current_user,
+               old_password,
+               new_password
+             ) do
+          {:ok, user} ->
+            EventsChannel.broadcast_logout_from_all_sessions(user, get_session(conn, :session_id))
 
-        conn
-        |> update_user_session_token(user)
-        |> json(%{token: user.token})
+            conn
+            |> update_user_session_token(user)
+            |> json(%{token: user.token})
 
-      {:error, message} when is_binary(message) ->
-        {:error, :unprocessable_entity, message}
+          {:error, message} when is_binary(message) ->
+            {:error, :unprocessable_entity, message}
+
+          {:error, message} ->
+            {:error, message}
+        end
 
       {:error, message} ->
         {:error, message}
-      end
-      {:error, message} ->
-        {:error, message}
-
     end
   end
 
@@ -290,15 +292,15 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def status(conn,  params) do
-    user_id = params["id"]
-    with status <- Accounts.status(user_id) do
+  def user_status(conn, %{"user_id" => user_id}) do
+    with user_id <- String.to_integer(user_id) do
+      status = Accounts.UserStatus.user_status(user_id)
       conn |> render("status.json", status: status)
     else
-      false ->
+      nil ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You are not unauthorized to change settings."})
+        |> json(%{message: "You are not unauthorized to view status."})
         |> halt
 
       {:error, error} ->
@@ -308,16 +310,15 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-
-  def history_status(conn,  params) do
-    user_id = params["id"]
-    with status <- Accounts.history_status(user_id) do
-      conn |> render("history_status.json", status: status)
+  def status_history(conn, %{"user_id" => user_id}) do
+    with user_id <- String.to_integer(user_id) do
+      history = Accounts.UserStatus.user_status_history(user_id)
+      render(conn, "status_history.json", status_history: history)
     else
-      false ->
+      nil ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You are not unauthorized to change settings."})
+        |> json(%{message: "You are not unauthorized to view status history."})
         |> halt
 
       {:error, error} ->
@@ -327,17 +328,37 @@ defmodule Stitch.Web.Api.V1.UserController do
     end
   end
 
-  def update_status(conn, %{"id" => id, "status_text" => status_text, "status_emoji" => status_emoji, "status_time" => status_time, "status_history" => status_history}) do
-    with user_id <- String.to_integer(id),
-        #  true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, status} <- Accounts.update_status(user_id, status_text, status_emoji, status_time, status_history) do
-
-      conn |> render("update_status.json", status: status)
+  def create_user_status(conn, %{"user_id" => user_id} = params) do
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, status} <- Accounts.UserStatus.set_user_status(params) do
+      # TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      render(conn, "status.json", status: status)
     else
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You are not unauthorized to change settings."})
+        |> json(%{message: "You are not unauthorized to set status."})
+        |> halt
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
+  def clear_user_status(conn, %{"user_id" => user_id}) do
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, status} <- Accounts.UserStatus.clear_user_status(user_id) do
+      # TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      render(conn, "status.json", status: status)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to clear status."})
         |> halt
 
       {:error, error} ->
@@ -351,8 +372,7 @@ defmodule Stitch.Web.Api.V1.UserController do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Accounts.update_profile_image(user_id, url) do
-
-    TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
       conn |> render("show.json", user: user)
     else
       false ->

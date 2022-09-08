@@ -5,7 +5,6 @@ defmodule Stitch.Accounts do
   import Ecto.Query
   alias Stitch.{Repo, Patient}
   alias Stitch.Accounts.User
-  alias Stitch.Accounts.Status
   alias Stitch.Analytics.Accounts, as: AccountsAnalytics
 
   @doc """
@@ -119,29 +118,6 @@ defmodule Stitch.Accounts do
       _ ->
         {:error, "Patient does not exist"}
     end
-  end
-
-  def update_status(user_id, text, emoji, time, history) do
-    history = String.split(history, ",", trim: true)
-    params = %{text: text, emoji: emoji, time: time, history: history}
-    from(s in Status, where: s.user_id == ^user_id)
-    |> Repo.all
-    |> Enum.at(0)
-    |> IO.inspect(label: "here is that user")
-    |> Status.changeset(params)
-    |> IO.inspect(label: "here is after changeset")
-    |> Repo.update()
-    |> IO.inspect(label: "here is after update")
-  end
-
-  def status(user_id) do
-    from(s in Status, where: s.user_id == ^user_id)
-    |> Repo.all
-  end
-
-  def history_status(user_id) do
-    from(s in Status, select: %{user_id: s.user_id, history: s.history})
-    |> Repo.all
   end
 
   def update_profile_image(user_id, url) do

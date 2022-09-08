@@ -279,6 +279,64 @@
   }
 }
 
+.user-status-modal {
+  .modal-dialog {
+    max-width: 610px;
+  }
+
+  .modal-body {
+    max-height: 90vh;
+    overflow-y: auto;
+    @include stitch-scroll();
+
+    h4 {
+      padding: 8px;
+      margin-top: 0;
+      margin-bottom: 0;
+      text-transform: uppercase;
+    }
+
+    .status-input-wrapper {
+      width: 100%;
+      position: relative;
+
+        .status-form-actions {
+          border-right: 2px solid $border-color;
+          right: auto;
+          left: 2px;
+          top: 0px;
+          bottom: 0px;
+          -webkit-transition: all ease-in-out 0.15s;
+          -moz-transition: all ease-in-out 0.15s;
+          transition: all ease-in-out 0.15s;
+  
+          .status-form-action-item {
+            width: 35px;
+            height: 44px;
+            line-height: 44px;
+          }
+        }
+
+        .status-text {
+          display: block;
+          // color: #333;
+          color: aqua;
+          min-height: 44px;
+          max-height: 50vh;
+          font-size: 16px;
+          border-width: 2px;
+          box-shadow: none;
+          border-color: $border-color;
+          padding: 8px 72px 8px 43px;
+          border-top-right-radius: 0;
+          border-top-left-radius: 0;
+          resize: none;
+        }
+    }
+
+  }
+}
+
 .edit-profile-modal {
   a.btn-back {
     margin-right: 12px;

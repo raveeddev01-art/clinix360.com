@@ -22,6 +22,8 @@ class UserStore {
   @observable lastName = currentUser.lastName;
   @observable fullName = `${this.firstName} ${this.lastName}`;
   @observable avatar = currentUser.avatar;
+  @observable status = {};
+  @observable showUserStatusModal = null;
   @observable avatarThumb = currentUser.avatar_thumb;
   @observable roles = currentUser.roles;
   @observable timezone = getTimezone();
@@ -190,7 +192,7 @@ class UserStore {
       window.authenticationToken = resp.data.token;
     });
   };
-
+  
   @action
   deactivateAccount = () => {
     return post(`/api/v1/users/deactivate-my-account`, {
@@ -198,6 +200,44 @@ class UserStore {
       hideNotify: true
     });
   };
+
+  @action
+  userStatus = () => {
+    return get(`/api/v1/users/${this.id}/user_status`, {})
+    .then(resp => {
+      console.log("resp", resp);
+    });    
+  }
+
+  @action
+  saveStatus = (text, emoji, expiring_time) => {
+    return post(`/api/v1/users/${this.id}/user_status`, {
+      body: {
+        text: text,
+        emoji: emoji,
+        expiring_time: expiring_time
+      }
+    }).then(resp => {
+      console.log("resp", resp);
+    });
+  }
+
+  @action
+  clearStatus = () => {
+    return put(`/api/v1/users/${this.id}/clear_status`, {})
+    .then(resp => {
+      console.log("resp", resp);
+    });
+  }
+
+  @action
+  statusHistory = () => {
+    return get(`/api/v1/users/${this.id}/status_history`, {})
+    .then(resp => {
+      console.log("resp", resp);
+    });
+  }
+
 }
 
 export default UserStore;
