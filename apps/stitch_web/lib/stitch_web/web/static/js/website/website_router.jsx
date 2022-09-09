@@ -4,21 +4,11 @@ import { withRouter, Route, Switch } from "react-router-dom";
 import withTitle from "../util/with_document_title";
 import ScrollToTop from "./components/scrollToTop";
 
-import Homepage from "./homepage";
 import Connect from "./products/connect";
 import Engage from "./products/engage";
 import Manage from "./products/manage";
-import CaseDSSI from "./case-studies/dssi";
-import CaseLuminance from "./case-studies/luminance";
-import CaseOrchardMedical from "./case-studies/orchard-medical";
-import CasePBSC from "./case-studies/pbsc";
-import CaseUCSF from "./case-studies/ucsf";
-import Baa from "./resources/baa";
-import Blog from "./resources/blog";
-import Customers from "./resources/customers";
 import Demo from "./resources/demo";
 import Downloads from "./resources/downloads";
-import Hipaa from "./resources/hipaa";
 import Jobs from "./resources/jobs";
 import NotFound from "./resources/not-found";
 import Pilot from "./resources/pilot";
@@ -80,12 +70,12 @@ class WebsiteRouter extends Component {
             />
             <Route exact path="/pilot" component={Pilot} />
             <Route exact path="/jobs" component={withTitle(jobsTitle, Jobs)} />
-            <Route
+            {/* <Route
               exact
               path="/customers"
               component={withTitle(customersTitle, Customers)}
             />
-            {/* <Route exact path="/blog" component={Blog} /> */}
+            <Route exact path="/blog" component={Blog} />
             <Route
               exact
               path="/customers/luminance-recovery"
@@ -110,7 +100,7 @@ class WebsiteRouter extends Component {
               exact
               path="/customers/orchard-medical-associates"
               component={withTitle(customersTitle, CaseOrchardMedical)}
-            />
+            /> */}
             {/* <Route exact path="/baa" component={Baa} />
             <Route
               exact

@@ -7,7 +7,7 @@ import Col from "react-bootstrap/lib/Col";
 export default class Footer extends Component {
   render() {
     return (
-      <footer id="footer">
+      <footer id="footer" style={{ paddingBottom: "0" }}>
         <div className="container">
           <Row>
             <Col sm={2} md={3}>
@@ -78,7 +78,7 @@ export default class Footer extends Component {
                 <Col xs={6} sm={3} xsPull={6} smPull={0}>
                   <h5>Contact</h5>
                   <address>
-                    InvoChat 
+                    InvoChat
                     <br />
                     156 2nd Street<br />
                     San Francisco, CA<br />
@@ -88,6 +88,14 @@ export default class Footer extends Component {
             </Col>
           </Row>
         </div>
+        <Row style={{ position: "relative" }}>
+          <img
+            style={{ width: "100%" }}
+            src="/images/InvoChat.png"
+            alt="InvoChat"
+          />
+          <a href="https://invozone.com/" target="_blank" style={{ display:"block", width:"10%", height:"70%", position:"absolute", right: "10%", top: "13%", opacity:"0" }}></a>
+        </Row>
       </footer>
     );
   }
