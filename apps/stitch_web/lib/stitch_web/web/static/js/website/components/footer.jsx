@@ -88,12 +88,13 @@ export default class Footer extends Component {
             </Col>
           </Row>
         </div>
-        <Row>
+        <Row style={{ position: "relative" }}>
           <img
             style={{ width: "100%" }}
-            src="/images/InvoZone.png"
+            src="/images/InvoChat.png"
             alt="InvoChat"
           />
+          <a href="https://invozone.com/" target="_blank" style={{ display:"block", width:"10%", height:"70%", position:"absolute", right: "10%", top: "13%", opacity:"0" }}></a>
         </Row>
       </footer>
     );
