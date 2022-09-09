@@ -15,9 +15,14 @@ defmodule StitchConnect.Web.Api.V1.UserStatsController do
     render(conn, "starred.json", starred_messages: messages)
   end
 
-  def groups(conn, %{"user_id" => user_id}) do
+  def user_groups(conn, %{"user_id" => user_id}) do
     user_groups = GroupQueries.get_groups(user_id)
     render(conn, "user_groups.json", user_groups: user_groups)
+  end
+
+  def groups(conn, %{"user_id" => user_id}) do
+    groups = GroupQueries.get_all_groups()
+    render(conn, "groups.json", groups: groups)
   end
 
   def files(conn, %{"user_id" => user_id}) do

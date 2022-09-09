@@ -44,8 +44,31 @@ defmodule StitchConnect.Web.Api.V1.UserStatsView do
     UrlService.file_preview_url(file)
   end
 
+  def render("groups.json", %{groups: groups}) do
+    Enum.map(groups, &group_all_json/1)
+  end
+
   def render("user_groups.json", %{user_groups: user_groups}) do
     Enum.map(user_groups, &group_user_json/1)
+  end
+
+  def group_all_json(group) do
+    %{
+      id: group.id,
+      name: group.name,
+      slug: group.slug,
+      public: group.public,
+      description: group.description,
+      is_default: group.is_default,
+      creator_user_id: group.creator_user_id,
+      inserted_at: group.inserted_at,
+      updated_at: group.updated_at,
+      user_ids: user_ids(group.users)
+    }
+  end
+
+  def user_ids(users) do
+    Enum.map(users, fn user -> user.id end)
   end
 
   def group_user_json(user_groups) do
