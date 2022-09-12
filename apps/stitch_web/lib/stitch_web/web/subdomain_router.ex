@@ -278,6 +278,10 @@ defmodule Stitch.Web.SubdomainRouter do
     delete("/users/:id/delete_profile_image", UserController, :delete_profile_image)
     post("/users/search", UserController, :search)
     post("/users/access", UserController, :access)
+    post("/users/:user_id/user_status", UserController, :create_user_status)
+    get("/users/:user_id/user_status", UserController, :user_status)
+    get("/users/:user_id/status_history", UserController, :status_history)
+    put("/users/:user_id/clear_status", UserController, :clear_user_status)
 
     scope "/files/:upload_id" do
       resources("/comments", FileCommentController, only: [:create])

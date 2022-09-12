@@ -2,6 +2,14 @@ defmodule Stitch.Web.Api.V1.UserView do
   use Stitch.Web, :view
   alias Stitch.Accounts.User
 
+  def render("status.json", %{status: status}) do
+    status_json(status)
+  end
+
+  def render("status_history.json", %{status_history: history}) do
+    Enum.map(history, &status_json/1)
+  end
+
   def render("index.json", %{users: users}) do
     Enum.map(users, &user_json/1)
   end
@@ -66,6 +74,17 @@ defmodule Stitch.Web.Api.V1.UserView do
       groups_as_guest: user.groups_as_guest,
       timezone: user.timezone,
       whats_new_last_seen_at: user.whats_new_last_seen_at
+    }
+  end
+
+  def status_json(status) do
+    %{
+      id: status.id,
+      text: status.text,
+      user_id: status.user_id,
+      emoji: status.emoji,
+      expiring_time: status.expiring_time,
+      active: status.active
     }
   end
 

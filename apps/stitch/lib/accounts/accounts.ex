@@ -2,7 +2,7 @@ defmodule Stitch.Accounts do
   @moduledoc """
   The Accounts context.
   """
-
+  import Ecto.Query
   alias Stitch.{Repo, Patient}
   alias Stitch.Accounts.User
   alias Stitch.Analytics.Accounts, as: AccountsAnalytics

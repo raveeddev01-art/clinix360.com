@@ -12,7 +12,7 @@ class DesktopStore {
     this.rootStore = rootStore;
     this.electronEnv = window.electronEnv;
     this.electronOS = window.electronOS;
-    this.isElectron = window.electronApp;
+    this.isElectron = false;
     this.downloadManager = window.downloadManager;
 
     if (this.isElectron && this.downloadManager) {
