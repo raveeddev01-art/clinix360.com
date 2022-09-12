@@ -210,12 +210,13 @@ class UserStore {
   }
 
   @action
-  saveStatus = (text, emoji, expiring_time) => {
+  saveStatus = (text, emoji, clearAfter, customTime = "") => {
     return post(`/api/v1/users/${this.id}/user_status`, {
       body: {
         text: text,
-        emoji: emoji,
-        expiring_time: expiring_time
+        emoji: emoji.colons,
+        clear_after: clearAfter,
+        custom_time: customTime
       }
     }).then(resp => {
       console.log("resp", resp);

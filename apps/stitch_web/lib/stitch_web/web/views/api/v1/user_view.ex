@@ -2,6 +2,12 @@ defmodule Stitch.Web.Api.V1.UserView do
   use Stitch.Web, :view
   alias Stitch.Accounts.User
 
+  def render("status.json", %{status: nil}) do
+    %{
+      message: "No active status found for the user."
+    }
+  end
+
   def render("status.json", %{status: status}) do
     status_json(status)
   end

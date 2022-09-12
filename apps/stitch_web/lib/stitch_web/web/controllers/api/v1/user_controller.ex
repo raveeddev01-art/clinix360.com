@@ -293,21 +293,12 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def user_status(conn, %{"user_id" => user_id}) do
-    with user_id <- String.to_integer(user_id) do
-      status = Accounts.UserStatus.user_status(user_id)
-      conn |> render("status.json", status: status)
-    else
-      nil ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "You are not unauthorized to view status."})
-        |> halt
+    status =
+      user_id
+      |> String.to_integer()
+      |> Accounts.UserStatus.user_status()
 
-      {:error, error} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: changeset_errors_to_string(error)})
-    end
+    render(conn, "status.json", status: status)
   end
 
   def status_history(conn, %{"user_id" => user_id}) do
@@ -329,9 +320,10 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def create_user_status(conn, %{"user_id" => user_id} = params) do
+    IO.inspect(params, label: "params")
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, status} <- Accounts.UserStatus.set_user_status(params) do
+         {:ok, status} <- Accounts.UserStatus.save_user_status(params) |> IO.inspect(label: "save result") do
       # TeamChannel.broadcast_user_info(conn.assigns.team, user)
       render(conn, "status.json", status: status)
     else
