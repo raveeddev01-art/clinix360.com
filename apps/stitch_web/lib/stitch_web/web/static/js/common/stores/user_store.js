@@ -23,6 +23,7 @@ class UserStore {
   @observable fullName = `${this.firstName} ${this.lastName}`;
   @observable avatar = currentUser.avatar;
   @observable status = {};
+  @observable status = {active: false};
   @observable statusHistory = [];
   @observable showUserStatusModal = null;
   @observable avatarThumb = currentUser.avatar_thumb;

@@ -36,6 +36,7 @@ class UserStatus extends Component {
     renderButtonPanel() {
         const { userStore } = this.props;
         const showStatus = userStore.status.active;
+        console.log(showStatus);
         return (
             <div>
                 {!showStatus && 
