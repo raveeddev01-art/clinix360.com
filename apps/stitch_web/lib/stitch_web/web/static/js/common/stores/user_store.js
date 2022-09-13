@@ -23,6 +23,7 @@ class UserStore {
   @observable fullName = `${this.firstName} ${this.lastName}`;
   @observable avatar = currentUser.avatar;
   @observable status = {};
+  @observable statusHistory = [];
   @observable showUserStatusModal = null;
   @observable avatarThumb = currentUser.avatar_thumb;
   @observable roles = currentUser.roles;
@@ -62,8 +63,11 @@ class UserStore {
 
   @action
   onUserInfo = user => {
+    console.log("current", this.status);
     this.avatar = user.avatar;
     this.avatarThumb = user.avatar_thumb;
+    this.status = user.status;
+    console.log("new", this.status);
 
     // show role change modal if groups assigned as guests or roles has changed
     if (
@@ -206,6 +210,7 @@ class UserStore {
     return get(`/api/v1/users/${this.id}/user_status`, {})
     .then(resp => {
       console.log("resp", resp);
+      this.status = resp.data;
     });    
   }
 
@@ -218,17 +223,12 @@ class UserStore {
         clear_after: clearAfter,
         custom_time: customTime
       }
-    }).then(resp => {
-      console.log("resp", resp);
     });
   }
 
   @action
   clearStatus = () => {
-    return put(`/api/v1/users/${this.id}/clear_status`, {})
-    .then(resp => {
-      console.log("resp", resp);
-    });
+    return put(`/api/v1/users/${this.id}/clear_status`, {});
   }
 
   @action
@@ -236,6 +236,7 @@ class UserStore {
     return get(`/api/v1/users/${this.id}/status_history`, {})
     .then(resp => {
       console.log("resp", resp);
+      this.statusHistory = resp.data;
     });
   }
 

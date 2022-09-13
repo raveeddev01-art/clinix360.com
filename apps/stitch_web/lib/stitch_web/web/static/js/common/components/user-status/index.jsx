@@ -12,23 +12,47 @@ class UserStatus extends Component {
     };
 
     clearStatus = () => {
-        // this.props.userStore.clearStatus();
-        // this.props.userStore.userStatus();
-        this.props.userStore.statusHistory();
+        this.props.userStore.clearStatus();
+    }
+
+    renderStatus() {
+        const { userStore } = this.props;
+
+        return (
+            <div>
+                {!showStatus && 
+                <Button onClick={this.toggleUpdateStatusModal} bsStyle="primary">
+                    Set a status
+                </Button>}
+                {showStatus && 
+                <Button onClick={this.clearStatus} bsStyle="primary">
+                    Clear status
+                </Button>}
+                <UserStatusModal />
+            </div>
+        );                
+    }
+
+    renderButtonPanel() {
+        const { userStore } = this.props;
+        const showStatus = userStore.status.active;
+        return (
+            <div>
+                {!showStatus && 
+                <Button onClick={this.toggleUpdateStatusModal} bsStyle="primary">
+                    Set a status
+                </Button>}
+                {showStatus && 
+                <Button onClick={this.clearStatus} bsStyle="primary">
+                    Clear status
+                </Button>}
+                <UserStatusModal />
+            </div>
+        );        
     }
 
     render() {
-        return (
-            <div>
-                <Button onClick={this.toggleUpdateStatusModal} bsStyle="primary">
-                    Set a status
-                </Button>
-                <Button onClick={this.clearStatus} bsStyle="primary">
-                    Clear status
-                </Button>
-                <UserStatusModal />
-            </div>
-        );
+        return this.renderButtonPanel();
     }
 }
 
