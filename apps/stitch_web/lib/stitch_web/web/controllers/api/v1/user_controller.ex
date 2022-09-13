@@ -320,11 +320,13 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def create_user_status(conn, %{"user_id" => user_id} = params) do
-    IO.inspect(params, label: "params")
+    team = conn.assigns.team
+
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, status} <- Accounts.UserStatus.save_user_status(params) |> IO.inspect(label: "save result") do
-      # TeamChannel.broadcast_user_info(conn.assigns.team, user)
+         {:ok, status} <- Accounts.UserStatus.save_user_status(params),
+         %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
+      TeamChannel.broadcast_user_info(team, user)
       render(conn, "status.json", status: status)
     else
       false ->
@@ -341,11 +343,14 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def clear_user_status(conn, %{"user_id" => user_id}) do
+    team = conn.assigns.team
+
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, status} <- Accounts.UserStatus.clear_user_status(user_id) do
-      # TeamChannel.broadcast_user_info(conn.assigns.team, user)
-      render(conn, "status.json", status: status)
+         {:ok, _transaction} <- Accounts.UserStatus.clear_user_status(user_id),
+         %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
+      TeamChannel.broadcast_user_info(team, user)
+      json(conn, %{message: "status cleared"})
     else
       false ->
         conn
