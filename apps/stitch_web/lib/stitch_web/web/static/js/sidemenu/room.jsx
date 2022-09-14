@@ -9,6 +9,7 @@ import classNames from "classnames";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
+import UserStatus from "../common/components/user-status";
 import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../lib/constants";
 
 @inject("presenceStore", "sidemenuStore", "groupsStore")
@@ -72,6 +73,19 @@ class Room extends Component {
     );
   }
 
+  getUserStatus() {
+    const { room, groupsStore } = this.props;
+    const dmUser = groupsStore.getDMUser(room);
+
+    if (!dmUser) {
+      return <div />;
+    }
+
+    return (
+      <UserStatus user={dmUser} readOnly={true} iconOnly={true} />
+    );
+  }
+
   hideDM = event => {
     event.preventDefault();
 
@@ -113,7 +127,16 @@ class Room extends Component {
               <div className="item-icon">
                 <i className={this.getIconClass()} />
               </div>
-              <div className="item-text">{groupsStore.getGroupName(room)}</div>
+              <div className="item-text">
+                <div className="row">
+                  <div className="col-sm-8" style={{ maxWidth: "fit-content" }}>
+                    {groupsStore.getGroupName(room)}
+                  </div>
+                  <div className="col-sm-2" style={{textAlign: "left", padding: "2px 10px 0 0"}}>
+                    {this.getUserStatus()}
+                  </div>
+                </div>
+              </div>
               {this.getHideDMIcon()}
               {badge > 0 && (
                 <div className="item-badge text-center">

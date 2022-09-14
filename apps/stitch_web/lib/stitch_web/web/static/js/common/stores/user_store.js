@@ -22,7 +22,6 @@ class UserStore {
   @observable lastName = currentUser.lastName;
   @observable fullName = `${this.firstName} ${this.lastName}`;
   @observable avatar = currentUser.avatar;
-  @observable status = {};
   @observable status = {active: false};
   @observable statusHistory = [];
   @observable showUserStatusModal = null;
@@ -36,6 +35,7 @@ class UserStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.userStatus();
   }
 
   userHasAvatar() {
@@ -64,11 +64,9 @@ class UserStore {
 
   @action
   onUserInfo = user => {
-    console.log("current", this.status);
     this.avatar = user.avatar;
     this.avatarThumb = user.avatar_thumb;
     this.status = user.status;
-    console.log("new", this.status);
 
     // show role change modal if groups assigned as guests or roles has changed
     if (

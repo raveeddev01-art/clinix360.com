@@ -254,6 +254,20 @@ class GroupsStore {
             .join(",");
     };
 
+    getDMUser = group => {
+        if (group.type === "regular") {
+            return;
+        }
+
+        if (group.users.length === 1) {
+            return group.users[0];
+        }
+
+        let users = group.users.filter(u => u.id !== currentUser.id);
+
+        return users.length === 1 ? users[0] : undefined;
+    }
+
     @action
     updateGroupData = (id, data) => {
         const group = this.getGroupById(id);

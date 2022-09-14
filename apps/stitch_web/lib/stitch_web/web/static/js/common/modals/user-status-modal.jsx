@@ -16,15 +16,6 @@ import { getCustomTimeOptions } from "../../lib/utils";
 @observer
 class UserStatusModal extends Component {
 
-    // dayLocale = [
-    //     { label: "Don't clear", value: "never" },
-    //     { label: "30 minutes", value: moment().utc().add(0.5, 'hour') },
-    //     { label: "1 hour", value: moment().utc().add(1, 'hour') },
-    //     { label: "4 hour", value: moment().utc().add(4, 'hour') },
-    //     { label: "Today", value: moment().utc().endOf('day') },
-    //     { label: "This Week", value: moment().utc().endOf('week') },
-    //     { label: "Choose date and time", value: "Choose date and time" }
-    // ]
     clearAfterOpts = [
         { label: "Don't clear", value: 0 },
         { label: "30 minutes", value: 1 },
@@ -78,7 +69,6 @@ class UserStatusModal extends Component {
     }
 
     onTimeChanged = (e) => {
-        console.log("time", e);
         this.setState({ customTime: e });
     }
 

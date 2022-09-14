@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import { inject } from "mobx-react";
+import Button from "react-bootstrap/lib/Button";
 import AvatarImage from "../../../common/components/avatar/avatar-image";
 import UserStatus from "../../../common/components/user-status";
+import UserStatusModal from "../../../common/modals/user-status-modal";
 
 // @TODO load time zone from user
 @inject("presenceStore", "userStore")
@@ -13,18 +15,13 @@ class PeopleDetail extends Component {
     this.props.userStore.showUserStatusModal = true;
   };
 
-  clearStatus = () => {
-    // this.props.userStore.clearStatus();
-    // this.props.userStore.userStatus();
-    this.props.userStore.statusHistory();
-  }
-
   render() {
     const timezone = moment().format("hh:mm A (Z)");
     const { user } = this.props;
     const { full_name, title, username, email, phone, is_bot } = user;
     const displayName = is_bot ? username : full_name;
 
+    const isOwnProfile = currentUser.id === this.props.user.id;
     const online = this.props.presenceStore.isOnline(`${this.props.user.id}`);
 
     return (
@@ -49,7 +46,11 @@ class PeopleDetail extends Component {
             {displayName}
           </h4>
           <div className="user-title text-muted">{title}</div>
-          <UserStatus />
+          <UserStatus user={user} readOnly={!isOwnProfile} showFullText={true}/>
+          <Button bsStyle="primary" onClick={this.toggleUpdateStatusModal}>
+            {user.status.active ? "Edit status" : "Set a status"}
+          </Button>
+          <UserStatusModal />
         </div>
 
         <ul className="userinfo">

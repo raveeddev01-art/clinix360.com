@@ -5,6 +5,7 @@ import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import { Avatar, SmartDropdown, PortalDropdownMenu } from "common/components";
 import AvatarImage from "../avatar/avatar-image";
+import UserStatus from "../user-status";
 
 @inject("addonStore", "groupsStore", "presenceStore")
 @observer
@@ -33,9 +34,9 @@ class UserProfileMenu extends Component {
       return <div />;
     }
 
-    if (window.currentPatient || user.mrn) {
-      return <span>{children}</span>;
-    }
+    // if (window.currentPatient || user.mrn) {
+    //   return <span>{children}</span>;
+    // }
 
     let online = presenceStore.isOnline(`${user.id}`);
 
@@ -68,6 +69,7 @@ class UserProfileMenu extends Component {
                 <span>{online ? (<i className="fa fa-circle" />) : (<i className="fa fa-circle-o" />)}</span>
               </div>
               <div className="user-title text-muted">{user.title}</div>
+              <UserStatus user={user} readOnly={true} showFullText={false}/>
               {/* {showMutedUsername && <div className="username text-muted">{user.username}</div>} */}
           </div>
           <MenuItem onClick={this._toggleAddonMenu}>View Profile</MenuItem>
