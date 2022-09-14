@@ -31,7 +31,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     Files.Upload,
     ReadStatus,
     Web.EventsChannel,
-    Web.FileService
+    Web.FileService,
+    ScheduleMessageManager
   }
 
   action_fallback(Stitch.Web.Api.V1.FallbackController)
@@ -125,12 +126,12 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
-
+    IO.inspect(message_params_with_client, label: "Message Params")
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <-
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(group, current_user, message_params_with_client, presence) do
+           Message.create(group, current_user, message_params_with_client, presence) |> IO.inspect(label: "Get Message") do
       message = %{message | user: current_user}
       # create_optional_upload_comment(message, group, current_user, presence, message_params)
       message = MessageQueries.load_message(message.id, current_user)
@@ -149,6 +150,19 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       {:error, :message, changeset, _changeset_so_far} ->
         {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
     end
+  end
+
+  def create_schedule(conn, %{"group_id" => group_id, "schedule_message" => %{"scheduled_at" => scheduled_at}} = message_params) do
+    current_user = conn.assigns.current_user
+    presence = UserStatusService.presence_user_ids(current_user.team_id)
+    authenticated_urls = get_authenticated_urls(message_params)
+    message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
+    data = %{"message_params" => message_params_with_client, "user" => current_user, "presence" => presence}
+    IO.inspect(data)
+    ScheduleMessageManager.queue(data)
+    conn
+    |> put_status(:created)
+    |> render("empty.json", message: %{})
   end
 
   def create_optional_upload_comment(

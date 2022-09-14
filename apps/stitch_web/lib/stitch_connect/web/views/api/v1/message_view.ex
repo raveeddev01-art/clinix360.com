@@ -19,6 +19,10 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     message_json(message, authenticated_urls, @endpoint.files_struct_url())
   end
 
+  def render("empty.json",  %{message: message} = opts) do
+    %{response: "Sent to Queue"}
+  end
+
   def render("feed_surrounding.json", %{
         more_before: more_before,
         more_after: more_after,
