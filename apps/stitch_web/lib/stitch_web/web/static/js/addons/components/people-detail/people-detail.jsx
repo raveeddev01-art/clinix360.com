@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import Button from "react-bootstrap/lib/Button";
 import { inject } from "mobx-react";
-import UserStatusModal from "../../../common/modals/user-status-modal";
 import AvatarImage from "../../../common/components/avatar/avatar-image";
+import UserStatus from "../../../common/components/user-status";
 
 // @TODO load time zone from user
 @inject("presenceStore", "userStore")
@@ -16,7 +15,8 @@ class PeopleDetail extends Component {
 
   clearStatus = () => {
     // this.props.userStore.clearStatus();
-    this.props.userStore.userStatus();
+    // this.props.userStore.userStatus();
+    this.props.userStore.statusHistory();
   }
 
   render() {
@@ -49,13 +49,7 @@ class PeopleDetail extends Component {
             {displayName}
           </h4>
           <div className="user-title text-muted">{title}</div>
-          <Button onClick={this.toggleUpdateStatusModal} bsStyle="primary">
-            Set a status
-          </Button>
-          <Button onClick={this.clearStatus} bsStyle="primary">
-            Clear status
-          </Button>
-          <UserStatusModal />
+          <UserStatus />
         </div>
 
         <ul className="userinfo">

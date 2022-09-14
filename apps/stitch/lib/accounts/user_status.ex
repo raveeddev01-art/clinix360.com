@@ -5,7 +5,8 @@ defmodule Stitch.Accounts.UserStatus do
   use Ecto.Schema
   import Ecto.Query
   import Ecto.Changeset
-  alias Stitch.{Repo, Accounts.UserStatus}
+  alias Ecto.Multi
+  alias Stitch.{Repo, Accounts.UserStatus, Accounts.User}
 
   schema "user_status" do
     field(:text, :string)
@@ -16,62 +17,31 @@ defmodule Stitch.Accounts.UserStatus do
     timestamps()
   end
 
-  def changeset(struct, attrs) do
-    struct
+  def changeset(attrs) do
+    %UserStatus{}
     |> cast(attrs, [:user_id, :text, :emoji, :expiring_time])
-    |> validate_required([:user_id, :expiring_time])
-  end
-
-  def clear_user_status_changeset(struct, attrs) do
-    struct
-    |> cast(attrs, [:active])
-    |> validate_required([:active])
-  end
-
-  # def cast_date(%{"expiring_time" => date_string} = params) do
-  #   IO.inspect(date_string)
-  #   # "Sat Aug 04 11:48:27 +0000 2012"
-  #   # "Thu Sep 08 2022 07:00:00 GMT+0000"
-  #   date_string
-  #   |> Timex.parse!("%a %b %d %Y %T %Z", :strftime)
-  #   |> Ecto.DateTime.utc()
-  #   |> IO.inspect(label: "casting done")
-  #   {:ok, dt_struct, _utc_offset} = DateTime.from_iso8601(date_string)
-  #   Map.replace(params, "expiring_time", dt_struct)
-  # end
-
-  "Thu Sep 08 2022 07:00:00 GMT+0000"
-  def clear_status(nil), do: nil
-  def clear_status(struct) do
-    struct
-    |> clear_user_status_changeset(%{active: false})
-    |> IO.inspect(label: "clear status chageset")
-    |> Repo.update()
-    |> IO.inspect(label: "status updated")
+    |> validate_required([:user_id])
   end
 
   def clear_user_status(user_id) do
-    user_status(user_id)
-    |> IO.inspect(label: "user status to clear")
-    |> clear_status()
+    clear_status(user_id)
   end
 
-  def set_user_status(%{"user_id" => user_id} = params) do
-    clear_user_status(user_id)
-    |> IO.inspect(label: "user status cleared")
-
-    %UserStatus{}
-    |> changeset(params)
-    |> IO.inspect(label: "chageset")
+  def save_user_status(params) do
+    params
+    |> validate_expiring_time()
+    |> changeset()
     |> Repo.insert()
-    |> IO.inspect(label: "inserted")
+    |> activate_new_status()
   end
 
   def user_status(user_id) do
     from(
       s in UserStatus,
       where: s.user_id == ^user_id,
-      where: s.active == true
+      where: s.active == true,
+      order_by: fragment("? DESC", s.inserted_at),
+      limit: 1
     )
     |> Repo.one()
   end
@@ -80,23 +50,104 @@ defmodule Stitch.Accounts.UserStatus do
     from(
       s in UserStatus,
       where: s.user_id == ^user_id,
+      order_by: fragment("? DESC", s.updated_at),
       limit: 5
     )
     |> Repo.all()
   end
 
   def clear_expired_status() do
-    clear_expired_statuses_query()
-    |> Repo.update_all([])
-  end
-
-  def clear_expired_statuses_query() do
     from(
       s in UserStatus,
       where: s.active == true,
       where: s.expiring_time < ^DateTime.utc_now(),
       update: [set: [active: false]]
     )
+    |> Repo.update_all([])
   end
 
+  defp decativate_last_status_query(status) do
+    from(
+      s in UserStatus,
+      where: s.user_id == ^status.user_id,
+      where: s.id != ^status.id,
+      update: [set: [active: false]]
+    )
+  end
+
+  defp decativate_current_status_query(user_id) do
+    from(
+      s in UserStatus,
+      where: s.user_id == ^user_id,
+      update: [set: [active: false]]
+    )
+  end
+
+  defp remove_status_from_user(user_id) do
+    from(
+      u in User,
+      where: u.id == ^user_id,
+      update: [
+        set: [
+          status_fields: ^%{}
+        ]
+      ]
+    )
+  end
+
+  defp insert_status_in_user(status) do
+    status = user_status(status.user_id)
+
+    from(
+      u in User,
+      where: u.id == ^status.user_id,
+      update: [
+        set: [
+          status_fields:
+            ^%{
+              text: status.text,
+              emoji: status.emoji,
+              active: status.active,
+              expiring_time: status.expiring_time
+            }
+        ]
+      ]
+    )
+  end
+
+  defp activate_new_status({:ok, status}) do
+    deactivate_status_query = decativate_last_status_query(status)
+    add_user_status_query = insert_status_in_user(status)
+
+    Multi.new()
+    |> Multi.update_all(:disable_previous_status, deactivate_status_query, [])
+    |> Multi.update_all(:add_status_in_user, add_user_status_query, [], returning: true)
+    |> Repo.transaction()
+
+    {:ok, user_status(status.user_id)}
+  end
+
+  defp clear_status(user_id) do
+    deactivate_status_query = decativate_current_status_query(user_id)
+    remove_user_status_query = remove_status_from_user(user_id)
+
+    Multi.new()
+    |> Multi.update_all(:disable_status, deactivate_status_query, [])
+    |> Multi.update_all(:add_status_in_user, remove_user_status_query, [])
+    |> Repo.transaction()
+  end
+
+  defp validate_expiring_time(%{"clear_after" => clear_after} = params) do
+    case clear_after do
+      0 -> Map.delete(params, "expiring_time")
+      6 -> Map.put(params, "expiring_time", params["custom_time"])
+      _ -> Map.put(params, "expiring_time", params |> expiring_time())
+    end
+  end
+
+  defp expiring_time(%{"clear_after" => 1}), do: Timex.now() |> Timex.shift(hours: 0, minutes: 30)
+  defp expiring_time(%{"clear_after" => 2}), do: Timex.now() |> Timex.shift(hours: 1, minutes: 0)
+  defp expiring_time(%{"clear_after" => 3}), do: Timex.now() |> Timex.shift(hours: 4, minutes: 0)
+  defp expiring_time(%{"clear_after" => 4}), do: Timex.now() |> Timex.end_of_day()
+  defp expiring_time(%{"clear_after" => 5}), do: Timex.now() |> Timex.end_of_week()
 end

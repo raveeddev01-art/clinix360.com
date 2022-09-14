@@ -172,3 +172,20 @@ export function getFullUrl(url) {
   anchor.href = url;
   return anchor.href;
 }
+
+export function getCustomTimeOptions() {
+  let timeOptions = [];
+  for (let index = 0; index < 24; index++) {
+      if (index >= 12) {
+          let hr = index === 12 ? 12 : index - 12;
+          timeOptions.push({ label: `${hr}:00 PM`, value: `${index}:00:00` });
+          timeOptions.push({ label: `${hr}:30 PM`, value: `${index}:30:00` });
+      } else {
+          let hr = index === 0 ? 12 : index;
+          timeOptions.push({ label: `${hr}:00 AM`, value: `${index}:00:00` });
+          timeOptions.push({ label: `${hr}:30 AM`, value: `${index}:30:00` });
+      }
+  }
+
+  return timeOptions;
+}

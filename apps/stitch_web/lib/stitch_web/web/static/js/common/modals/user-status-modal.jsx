@@ -10,19 +10,29 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 import moment from "moment";
+import { getCustomTimeOptions } from "../../lib/utils";
 
-@inject("userStore", "messageStore")
+@inject("userStore")
 @observer
 class UserStatusModal extends Component {
 
-    dayLocale = [
-        { label: "Don't clear", value: moment().utc().endOf('year') },
-        { label: "30 minutes", value: moment().utc().add(0.5, 'hour') },
-        { label: "1 hour", value: moment().utc().add(1, 'hour') },
-        { label: "4 hour", value: moment().utc().add(4, 'hour') },
-        { label: "Today", value: moment().utc().endOf('day') },
-        { label: "This Week", value: moment().utc().endOf('week') }
-        // { label: "Choose date and time", value: "Choose date and time" }
+    // dayLocale = [
+    //     { label: "Don't clear", value: "never" },
+    //     { label: "30 minutes", value: moment().utc().add(0.5, 'hour') },
+    //     { label: "1 hour", value: moment().utc().add(1, 'hour') },
+    //     { label: "4 hour", value: moment().utc().add(4, 'hour') },
+    //     { label: "Today", value: moment().utc().endOf('day') },
+    //     { label: "This Week", value: moment().utc().endOf('week') },
+    //     { label: "Choose date and time", value: "Choose date and time" }
+    // ]
+    clearAfterOpts = [
+        { label: "Don't clear", value: 0 },
+        { label: "30 minutes", value: 1 },
+        { label: "1 hour", value: 2 },
+        { label: "4 hour", value: 3 },
+        { label: "Today", value: 4 },
+        { label: "This Week", value: 5 },
+        { label: "Choose date and time", value: 6 }
     ]
 
     constructor(...args) {
@@ -35,36 +45,33 @@ class UserStatusModal extends Component {
             showEmojiPicker: false,
             statusEmoji: "",
             statusText: "",
-            expiringTimeLabel: "",
+            clearAfter: "",
             showDatetimeField: false,
             customTime: "12:00:00",
-            customDate: moment().format("DD MMM YYYY")
+            customDate: moment().format("DD MMM YYYY"),
         };
     }
 
     reset = () => {
-        this.state = this.getInitialState();
+        this.setState(this.getInitialState());
     }
 
     onSave = (e) => {
-        const { statusEmoji, statusText, expiringTime, showDatetimeField } = this.state;
+        const { statusEmoji, statusText, clearAfter } = this.state;
         if(statusEmoji || statusText) {
-            if(showDatetimeField) {
-                this.setExpiringTime();
-            }
-            this.props.userStore.saveStatus(statusText, statusEmoji, expiringTime);
+            let customTime = this.getExpiringTime();
+            this.props.userStore.saveStatus(statusText, statusEmoji, clearAfter, customTime);
         }
         this.closeModal();
     }
 
     onStatusTextChanged = (e) => {
-        console.log(e.target.value);
         this.setState({ statusText: e.target.value });
     }
 
-    onExpiringTimeChanged = (e) => {
-        this.setState({ expiringTime: e, expiringTimeLabel: e.toString() });
-        if (e === "Choose date and time") {
+    onClearAfterChanged = (e) => {
+        this.setState({ clearAfter: e });
+        if (e === 6) {
             this.setState({ showDatetimeField: !this.state.showDatetimeField })
         }
         console.log(e);
@@ -93,29 +100,10 @@ class UserStatusModal extends Component {
         console.log(e);
     }
 
-    setExpiringTime() {
-        const { customDate, customTime } = this.state;
-
-        let datetime = `${customDate} ${customTime}`;
-        let utc_datetime = new moment(datetime, "DD MMM YYYY k:mm:ss").utc();
-        this.setState({expiringTime: utc_datetime});
-    }
-
-    getTimeOptions = () => {
-        let timeOptions = [];
-        for (let index = 0; index < 24; index++) {
-            if (index >= 12) {
-                let hr = index === 12 ? 12 : index - 12;
-                timeOptions.push({ label: `${hr}:00 PM`, value: `${index}:00:00` });
-                timeOptions.push({ label: `${hr}:30 PM`, value: `${index}:30:00` });
-            } else {
-                let hr = index === 0 ? 12 : index;
-                timeOptions.push({ label: `${hr}:00 AM`, value: `${index}:00:00` });
-                timeOptions.push({ label: `${hr}:30 AM`, value: `${index}:30:00` });
-            }
-        }
-
-        return timeOptions;
+    getExpiringTime() {
+        const { customDate, customTime, showDatetimeField } = this.state;
+        const datetime = `${customDate} ${customTime}`;
+        return showDatetimeField ? new moment(datetime, "DD MMM YYYY k:mm:ss").utc() : "";
     }
 
     renderEmojiPicker() {
@@ -134,9 +122,9 @@ class UserStatusModal extends Component {
                 <Select
                     placeholder="Clear status after"
                     className="multi-select-large"
-                    options={this.dayLocale}
-                    value={this.state.expiringTimeLabel}
-                    onChange={this.onExpiringTimeChanged}
+                    options={this.clearAfterOpts}
+                    value={this.state.clearAfter}
+                    onChange={this.onClearAfterChanged}
                     clearable={false}
                     searchable={false}
                     simpleValue
@@ -166,7 +154,7 @@ class UserStatusModal extends Component {
                         placeholder="12:00 AM"
                         className="multi-select-large"
                         value={this.state.customTime}
-                        options={this.getTimeOptions()}
+                        options={getCustomTimeOptions()}
                         onChange={this.onTimeChanged}
                         clearable={false}
                         searchable={false}

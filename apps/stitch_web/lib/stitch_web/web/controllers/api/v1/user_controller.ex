@@ -293,21 +293,12 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def user_status(conn, %{"user_id" => user_id}) do
-    with user_id <- String.to_integer(user_id) do
-      status = Accounts.UserStatus.user_status(user_id)
-      conn |> render("status.json", status: status)
-    else
-      nil ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "You are not unauthorized to view status."})
-        |> halt
+    status =
+      user_id
+      |> String.to_integer()
+      |> Accounts.UserStatus.user_status()
 
-      {:error, error} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: changeset_errors_to_string(error)})
-    end
+    render(conn, "status.json", status: status)
   end
 
   def status_history(conn, %{"user_id" => user_id}) do
@@ -329,10 +320,13 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def create_user_status(conn, %{"user_id" => user_id} = params) do
+    team = conn.assigns.team
+
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, status} <- Accounts.UserStatus.set_user_status(params) do
-      # TeamChannel.broadcast_user_info(conn.assigns.team, user)
+         {:ok, status} <- Accounts.UserStatus.save_user_status(params),
+         %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
+      TeamChannel.broadcast_user_info(team, user)
       render(conn, "status.json", status: status)
     else
       false ->
@@ -349,11 +343,14 @@ defmodule Stitch.Web.Api.V1.UserController do
   end
 
   def clear_user_status(conn, %{"user_id" => user_id}) do
+    team = conn.assigns.team
+
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
-         {:ok, status} <- Accounts.UserStatus.clear_user_status(user_id) do
-      # TeamChannel.broadcast_user_info(conn.assigns.team, user)
-      render(conn, "status.json", status: status)
+         {:ok, _transaction} <- Accounts.UserStatus.clear_user_status(user_id),
+         %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
+      TeamChannel.broadcast_user_info(team, user)
+      json(conn, %{message: "status cleared"})
     else
       false ->
         conn

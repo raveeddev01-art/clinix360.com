@@ -2,6 +2,12 @@ defmodule Stitch.Web.Api.V1.UserView do
   use Stitch.Web, :view
   alias Stitch.Accounts.User
 
+  def render("status.json", %{status: nil}) do
+    %{
+      message: "No active status found for the user."
+    }
+  end
+
   def render("status.json", %{status: status}) do
     status_json(status)
   end
@@ -73,7 +79,8 @@ defmodule Stitch.Web.Api.V1.UserView do
       disabled: user.disabled,
       groups_as_guest: user.groups_as_guest,
       timezone: user.timezone,
-      whats_new_last_seen_at: user.whats_new_last_seen_at
+      whats_new_last_seen_at: user.whats_new_last_seen_at,
+      status: user.status_fields
     }
   end
 

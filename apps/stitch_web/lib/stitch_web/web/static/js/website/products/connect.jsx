@@ -66,7 +66,7 @@ export default class Connect extends Component {
 
                 <a className="trial-link" href="/getstarted/">
                   <i className="fa fa-external-link"></i>
-                  Sign up for a free 14 days trail
+                  Sign up for a free 14 days trial
                 </a>
               </div>
 
