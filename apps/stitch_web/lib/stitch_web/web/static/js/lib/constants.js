@@ -261,3 +261,26 @@ export const FILE_VIEW_SIZE_LIMIT = {
 };
 
 export const GOOGLE_MEETS_BASE_URL = "https://meet.google.com/lookup/";
+
+export const DEFAULT_STATUS_EMOJI = {
+  id: "speech_balloon",
+  name: "Speech Balloon",
+  short_names: [
+    "speech_balloon"
+  ],
+  colons: ":speech_balloon:",
+  emoticons: [],
+  unified: "1f4ac",
+  skin: null,
+  native: "💬"
+};
+
+export const STATUS_CLEAR_AFTER_OPTS = [
+  { label: "Don't clear", value: 0 },
+  { label: "30 minutes", value: 1 },
+  { label: "1 hour", value: 2 },
+  { label: "4 hour", value: 3 },
+  { label: "Today", value: 4 },
+  { label: "This Week", value: 5 },
+  { label: "Choose date and time", value: 6 }
+]

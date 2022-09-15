@@ -82,7 +82,7 @@ class Room extends Component {
     }
 
     return (
-      <UserStatus user={dmUser} readOnly={true} iconOnly={true} />
+      <UserStatus user={dmUser} type={"icon"} />
     );
   }
 

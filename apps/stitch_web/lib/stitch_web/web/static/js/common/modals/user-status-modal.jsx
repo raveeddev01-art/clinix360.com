@@ -11,21 +11,11 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 import moment from "moment";
 import { getCustomTimeOptions } from "../../lib/utils";
+import { DEFAULT_STATUS_EMOJI, STATUS_CLEAR_AFTER_OPTS } from "../../lib/constants";
 
 @inject("userStore")
 @observer
 class UserStatusModal extends Component {
-
-    clearAfterOpts = [
-        { label: "Don't clear", value: 0 },
-        { label: "30 minutes", value: 1 },
-        { label: "1 hour", value: 2 },
-        { label: "4 hour", value: 3 },
-        { label: "Today", value: 4 },
-        { label: "This Week", value: 5 },
-        { label: "Choose date and time", value: 6 }
-    ]
-
     constructor(...args) {
         super(...args);
         this.state = this.getInitialState();
@@ -43,21 +33,36 @@ class UserStatusModal extends Component {
         };
     }
 
+    componentDidMount() {
+        const { status } = this.props.user;
+        if (status.active) {
+            this.setState({
+                statusEmoji: status.emoji,
+                statusText: status.text,
+                clearAfter: status.clear_after
+            });
+        }
+    }
+
     reset = () => {
         this.setState(this.getInitialState());
     }
 
     onSave = (e) => {
         const { statusEmoji, statusText, clearAfter } = this.state;
-        if(statusEmoji || statusText) {
+        if((statusEmoji && statusText)) {
             let customTime = this.getExpiringTime();
-            this.props.userStore.saveStatus(statusText, statusEmoji, clearAfter, customTime);
+            let clearOption = clearAfter ? clearAfter : 0;
+            this.props.userStore.saveStatus(statusText, statusEmoji, clearOption, customTime);
         }
         this.closeModal();
     }
 
     onStatusTextChanged = (e) => {
         this.setState({ statusText: e.target.value });
+        if(!this.state.statusEmoji) {
+            this.setState({ statusEmoji: DEFAULT_STATUS_EMOJI });
+        }
     }
 
     onClearAfterChanged = (e) => {
@@ -65,7 +70,6 @@ class UserStatusModal extends Component {
         if (e === 6) {
             this.setState({ showDatetimeField: !this.state.showDatetimeField })
         }
-        console.log(e);
     }
 
     onTimeChanged = (e) => {
@@ -87,7 +91,6 @@ class UserStatusModal extends Component {
 
     onSelectStatusEmoji = (e) => {
         this.setState({ showEmojiPicker: !this.state.showEmojiPicker, statusEmoji: e });
-        console.log(e);
     }
 
     getExpiringTime() {
@@ -112,7 +115,7 @@ class UserStatusModal extends Component {
                 <Select
                     placeholder="Clear status after"
                     className="multi-select-large"
-                    options={this.clearAfterOpts}
+                    options={STATUS_CLEAR_AFTER_OPTS}
                     value={this.state.clearAfter}
                     onChange={this.onClearAfterChanged}
                     clearable={false}

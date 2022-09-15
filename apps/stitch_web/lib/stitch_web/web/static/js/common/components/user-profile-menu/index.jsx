@@ -69,7 +69,7 @@ class UserProfileMenu extends Component {
                 <span>{online ? (<i className="fa fa-circle" />) : (<i className="fa fa-circle-o" />)}</span>
               </div>
               <div className="user-title text-muted">{user.title}</div>
-              <UserStatus user={user} readOnly={true} showFullText={false}/>
+              <UserStatus user={user} type={"readonly"} showFullText={false}/>
               {/* {showMutedUsername && <div className="username text-muted">{user.username}</div>} */}
           </div>
           <MenuItem onClick={this._toggleAddonMenu}>View Profile</MenuItem>

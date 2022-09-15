@@ -227,7 +227,12 @@ class UserStore {
 
   @action
   clearStatus = () => {
-    return put(`/api/v1/users/${this.id}/clear_status`, {});
+    return put(`/api/v1/users/${this.id}/clear_status`, {})
+    .then(resp => {
+      if(resp.data.status === "ok") {
+        this.status = {};
+      }
+    });
   }
 
   @action

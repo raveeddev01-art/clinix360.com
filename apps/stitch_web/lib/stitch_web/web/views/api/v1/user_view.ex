@@ -91,7 +91,8 @@ defmodule Stitch.Web.Api.V1.UserView do
       user_id: status.user_id,
       emoji: status.emoji,
       expiring_time: status.expiring_time,
-      active: status.active
+      active: status.active,
+      clear_after: status.clear_after
     }
   end
 

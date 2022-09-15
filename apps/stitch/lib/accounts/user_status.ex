@@ -14,12 +14,13 @@ defmodule Stitch.Accounts.UserStatus do
     field(:expiring_time, :utc_datetime)
     field(:user_id, :integer)
     field(:active, :boolean)
+    field(:clear_after, :integer)
     timestamps()
   end
 
   def changeset(attrs) do
     %UserStatus{}
-    |> cast(attrs, [:user_id, :text, :emoji, :expiring_time])
+    |> cast(attrs, [:user_id, :text, :emoji, :expiring_time, :clear_after])
     |> validate_required([:user_id])
   end
 
@@ -83,7 +84,7 @@ defmodule Stitch.Accounts.UserStatus do
     )
   end
 
-  defp remove_status_from_user(user_id) do
+  defp remove_status_from_user_query(user_id) do
     from(
       u in User,
       where: u.id == ^user_id,
@@ -95,8 +96,8 @@ defmodule Stitch.Accounts.UserStatus do
     )
   end
 
-  defp insert_status_in_user(status) do
-    status = user_status(status.user_id)
+  defp update_status_in_user_query(status) do
+    status = user_status(status.user_id) |> IO.inspect(label: "status to update in user")
 
     from(
       u in User,
@@ -108,7 +109,8 @@ defmodule Stitch.Accounts.UserStatus do
               text: status.text,
               emoji: status.emoji,
               active: status.active,
-              expiring_time: status.expiring_time
+              expiring_time: status.expiring_time,
+              clear_after: status.clear_after
             }
         ]
       ]
@@ -117,7 +119,7 @@ defmodule Stitch.Accounts.UserStatus do
 
   defp activate_new_status({:ok, status}) do
     deactivate_status_query = decativate_last_status_query(status)
-    add_user_status_query = insert_status_in_user(status)
+    add_user_status_query = update_status_in_user_query(status)
 
     Multi.new()
     |> Multi.update_all(:disable_previous_status, deactivate_status_query, [])
@@ -129,7 +131,7 @@ defmodule Stitch.Accounts.UserStatus do
 
   defp clear_status(user_id) do
     deactivate_status_query = decativate_current_status_query(user_id)
-    remove_user_status_query = remove_status_from_user(user_id)
+    remove_user_status_query = remove_status_from_user_query(user_id)
 
     Multi.new()
     |> Multi.update_all(:disable_status, deactivate_status_query, [])
