@@ -20,7 +20,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   end
 
   def render("empty.json",  %{message: message} = opts) do
-    %{response: "Sent to Queue"}
+    %{response: "Message Scheduled!"}
   end
 
   def render("feed_surrounding.json", %{

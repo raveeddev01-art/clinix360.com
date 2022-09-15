@@ -122,6 +122,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
+    IO.inspect(message_params, label: "Create Message Params---->>>>")
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
@@ -152,14 +153,13 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  def create_schedule(conn, %{"group_id" => group_id, "schedule_message" => %{"scheduled_at" => scheduled_at}} = message_params) do
+  def create_schedule(conn, %{"group_id" => group_id,"message" => message_params, "scheduled_at" => scheduled_at} = _data) do
     current_user = conn.assigns.current_user
     presence = UserStatusService.presence_user_ids(current_user.team_id)
     authenticated_urls = get_authenticated_urls(message_params)
     message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
-    data = %{"message_params" => message_params_with_client, "user" => current_user, "presence" => presence}
-    IO.inspect(data)
-    ScheduleMessageManager.queue(data)
+    payload = %{"group_id" => group_id, "schedule_at" => scheduled_at, "message_payload" => message_params_with_client, "user" => current_user, "presence" => presence}
+    ScheduleMessageManager.queue(payload)
     conn
     |> put_status(:created)
     |> render("empty.json", message: %{})
