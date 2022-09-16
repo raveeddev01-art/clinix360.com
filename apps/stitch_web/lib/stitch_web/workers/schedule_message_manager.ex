@@ -16,7 +16,7 @@ defmodule Stitch.ScheduleMessageManager do
     Message,
     MessageQueries
   }
-  @wait_time 60 #Seconds
+  @wait_time 15 #Seconds
 
   def start_link do
     GenServer.start_link(
@@ -98,6 +98,6 @@ defmodule Stitch.ScheduleMessageManager do
   end
 
   defp schedule_queue_processing do
-    Process.send_after(self(), :process_queue, @wait_time * 1000) #1 Minute Delay Before Recheck
+    Process.send_after(self(), :process_queue, @wait_time * 1000) #15 Seconds Delay Before Recheck
   end
 end
