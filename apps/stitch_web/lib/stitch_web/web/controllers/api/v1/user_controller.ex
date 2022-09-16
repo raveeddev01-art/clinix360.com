@@ -552,7 +552,7 @@ defmodule Stitch.Web.Api.V1.UserController do
 
   defp boradcast_user_status_history(team, user_id) do
     history = Accounts.UserStatus.user_status_history(user_id)
-    TeamChannel.broadcast_user_status_history(team, user)
+    TeamChannel.broadcast_user_status_history(team, history)
   end
 
   # TODO: Can be moved to some common helper later
