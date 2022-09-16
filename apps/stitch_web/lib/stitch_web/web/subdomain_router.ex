@@ -282,6 +282,7 @@ defmodule Stitch.Web.SubdomainRouter do
     get("/users/:user_id/user_status", UserController, :user_status)
     get("/users/:user_id/status_history", UserController, :status_history)
     put("/users/:user_id/clear_status", UserController, :clear_user_status)
+    delete("/users/:user_id/delete_status", UserController, :delete_status)
 
     scope "/files/:upload_id" do
       resources("/comments", FileCommentController, only: [:create])

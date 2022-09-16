@@ -252,6 +252,11 @@ defmodule Stitch.Web.TeamChannel do
     @endpoint.broadcast("team:lobby:#{team.id}", "user_info", user_json)
   end
 
+  def broadcast_user_status_history(%Stitch.Team{} = team, history) do
+    history_json = UserView.render("status_history.json", %{status_history: history})
+    @endpoint.broadcast("team:lobby:#{team.id}", "status_history", %{status_history: history_json})
+  end
+
   def broadcast_deactivated(team, user_id) do
     @endpoint.broadcast("team:lobby:#{team.id}", "user_deactivated", %{user_id: user_id})
   end

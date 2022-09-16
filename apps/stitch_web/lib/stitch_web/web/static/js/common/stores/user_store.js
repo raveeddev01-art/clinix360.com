@@ -36,6 +36,7 @@ class UserStore {
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.userStatus();
+    this.statusHistory();
   }
 
   userHasAvatar() {
@@ -232,6 +233,17 @@ class UserStore {
       if(resp.data.status === "ok") {
         this.status = {};
       }
+    });
+  }
+
+  @action
+  deleteStatus = (status_id) => {
+    return remove(`/api/v1/users/${this.id}/delete_status`, {
+      body: {
+        status_id: status_id
+      }
+    }).then(resp => {
+      this.statusHistory = resp.data;
     });
   }
 

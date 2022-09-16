@@ -327,6 +327,7 @@ defmodule Stitch.Web.Api.V1.UserController do
          {:ok, status} <- Accounts.UserStatus.save_user_status(params),
          %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
       TeamChannel.broadcast_user_info(team, user)
+      TeamChannel.broadcast_user_status_history(team, user)
       render(conn, "status.json", status: status)
     else
       false ->
@@ -350,12 +351,37 @@ defmodule Stitch.Web.Api.V1.UserController do
          {:ok, _transaction} <- Accounts.UserStatus.clear_user_status(user_id),
          %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
       TeamChannel.broadcast_user_info(team, user)
+      boradcast_user_status_history(team, user_id)
       json(conn, %{message: "status cleared"})
     else
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "You are not unauthorized to clear status."})
+        |> halt
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
+  def delete_status(conn, %{"user_id" => user_id, "status_id" => status_id}) do
+    team = conn.assigns.team
+
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {_rows_deleted, _} <- Accounts.UserStatus.delete_status(status_id),
+         %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
+      boradcast_user_status_history(team, user_id)
+      history = Accounts.UserStatus.user_status_history(user_id)
+      render(conn, "status_history.json", status_history: history)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to delete status."})
         |> halt
 
       {:error, error} ->
@@ -522,6 +548,11 @@ defmodule Stitch.Web.Api.V1.UserController do
     unprocessable_entity_error(conn, %{
       message: ~s(Expected at least 1 group ids in "group_ids" list.)
     })
+  end
+
+  defp boradcast_user_status_history(team, user_id) do
+    history = Accounts.UserStatus.user_status_history(user_id)
+    TeamChannel.broadcast_user_status_history(team, user)
   end
 
   # TODO: Can be moved to some common helper later

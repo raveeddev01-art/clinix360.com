@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import EditableStatus from "./editable-status";
-import ReadOnlyStatus from "./read-only-status";
-import IconStatus from "./icon-status";
-
+import EditableStatus from "./components/editable-status";
+import IconStatus from "./components/icon-status";
+import ReadOnlyStatus from "./components/read-only-status";
+import StatusHistory from "./components/status-history";
 
 const StatusRenderer = {
     icon: IconStatus,
     readonly: ReadOnlyStatus,
-    editable: EditableStatus
+    editable: EditableStatus,
+    history: StatusHistory
 }
 
 @observer
@@ -17,7 +18,7 @@ class UserStatus extends Component {
     render() {
         const { user, type } = this.props;
 
-        if (!user.status.active) {
+        if ((!user || !user.status.active) && type !== "history") {
             return <div />;
         }
 

@@ -47,11 +47,22 @@ class PeopleDetail extends Component {
             {displayName}
           </h4>
           <div className="user-title text-muted">{title}</div>
-          <UserStatus key={`user-status-${user.id}`} user={user} type={isOwnProfile ? "editable" : "readonly"} showFullText={true}/>
-          <Button bsStyle="primary" onClick={this.toggleUpdateStatusModal}>
-            {user.status.active ? "Edit status" : "Set a status"}
-          </Button>
-          <UserStatusModal key={`user-status-modal`} user={user} />
+          <div>
+            <UserStatus
+              key={`user-status-${user.id}`}
+              type={isOwnProfile ? "editable" : "readonly"}
+              showFullText={true}
+              user={user}
+            />
+            {isOwnProfile &&
+              <div>
+                <Button bsStyle="primary" onClick={this.toggleUpdateStatusModal}>
+                  {user.status.active ? "Edit status" : "Set a status"}
+                </Button>
+                <UserStatusModal key={`user-status-modal`} user={user} />
+              </div>
+            }
+          </div>
         </div>
 
         <ul className="userinfo">

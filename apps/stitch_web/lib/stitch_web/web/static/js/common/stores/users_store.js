@@ -267,6 +267,16 @@ class UsersStore {
   };
 
   @action
+  onUserStatusHistory = statusHistory => {
+    const user_id = statusHistory[0].user_id;
+
+    if (user_id === currentUser.id) {
+      const { userStore } = this.rootStore;
+      userStore.statusHistory = statusHistory;
+    }
+  }
+
+  @action
   onUserDeactivated = payload => {
     const user = this.getUserById(payload.user_id);
     const { groupsStore, presenceStore } = this.rootStore;

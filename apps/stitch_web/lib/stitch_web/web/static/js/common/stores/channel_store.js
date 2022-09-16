@@ -412,6 +412,7 @@ class ChannelStore {
 
         this.teamChannel.on("user_joined", usersStore.onUserJoined);
         this.teamChannel.on("user_info", usersStore.onUserInfo);
+        this.teamChannel.on("user_status_history", usersStore.onUserStatusHistory);
 
         this.teamChannel.on("user_deactivated", usersStore.onUserDeactivated);
         this.teamChannel.on("user_activated", usersStore.onUserActivated);

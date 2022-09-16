@@ -28,6 +28,11 @@ defmodule Stitch.Accounts.UserStatus do
     clear_status(user_id)
   end
 
+  def delete_status(status_id) do
+    from(s in UserStatus, where: s.id == ^status_id)
+    |> Repo.delete_all()
+  end
+
   def save_user_status(params) do
     params
     |> validate_expiring_time()

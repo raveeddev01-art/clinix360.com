@@ -10,6 +10,7 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 import moment from "moment";
+import UserStatus from "../../common/components/user-status";
 import { getCustomTimeOptions } from "../../lib/utils";
 import { DEFAULT_STATUS_EMOJI, STATUS_CLEAR_AFTER_OPTS } from "../../lib/constants";
 
@@ -33,15 +34,27 @@ class UserStatusModal extends Component {
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const { status } = this.props.user;
         if (status.active) {
-            this.setState({
-                statusEmoji: status.emoji,
-                statusText: status.text,
-                clearAfter: status.clear_after
-            });
+            this.maybeSetActiveStatus(status);
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { status } = nextProps.user;
+        if (status.active) {
+            this.maybeSetActiveStatus(status);
+        }
+    }
+
+    maybeSetActiveStatus = (status) => {
+        this.setState({
+            statusEmoji: status.emoji,
+            statusText: status.text,
+            clearAfter: status.clear_after,
+            showDatetimeField: status.clear_after === 6 ? true : false
+        });
     }
 
     reset = () => {
@@ -88,6 +101,10 @@ class UserStatusModal extends Component {
         this.props.userStore.showUserStatusModal = null;
         this.reset();
     };
+
+    onHistoryStatusSelected = (e, status) => {
+        this.maybeSetActiveStatus(status);
+    }
 
     onSelectStatusEmoji = (e) => {
         this.setState({ showEmojiPicker: !this.state.showEmojiPicker, statusEmoji: e });
@@ -194,6 +211,17 @@ class UserStatusModal extends Component {
         );
     }
 
+    renderHistory() {
+        return(
+            <UserStatus
+                key={`user-status-history`}
+                type={"history"}
+                onCloseModal={this.closeModal}
+                onItemSelected={this.onHistoryStatusSelected}
+            />
+        );
+    }
+
     renderHeader() {
         return (
             <Modal.Header>
@@ -212,6 +240,7 @@ class UserStatusModal extends Component {
                     {this.renderStatusTextInput()}
                     {this.renderClearAfterField()}
                     {this.state.showDatetimeField && this.renderDateTimeField()}
+                    {!(this.state.clearAfter === 6) && this.renderHistory()}
                 </div>
             </Modal.Body>
         );
