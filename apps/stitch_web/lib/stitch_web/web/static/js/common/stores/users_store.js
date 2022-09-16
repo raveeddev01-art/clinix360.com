@@ -268,11 +268,12 @@ class UsersStore {
 
   @action
   onUserStatusHistory = statusHistory => {
-    const user_id = statusHistory[0].user_id;
+    const history = statusHistory.status_history;
+    const user_id = history[0].user_id;
 
     if (user_id === currentUser.id) {
       const { userStore } = this.rootStore;
-      userStore.statusHistory = statusHistory;
+      userStore.statusHistory = history;
     }
   }
 
