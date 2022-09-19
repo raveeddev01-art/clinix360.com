@@ -327,7 +327,7 @@ defmodule Stitch.Web.Api.V1.UserController do
          {:ok, status} <- Accounts.UserStatus.save_user_status(params),
          %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
       TeamChannel.broadcast_user_info(team, user)
-      TeamChannel.broadcast_user_status_history(team, user)
+      boradcast_user_status_history(team, user.id)
       render(conn, "status.json", status: status)
     else
       false ->
