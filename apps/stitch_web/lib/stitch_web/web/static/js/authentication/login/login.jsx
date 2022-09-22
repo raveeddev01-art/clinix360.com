@@ -8,6 +8,7 @@ import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
+import isEmail from "validator/lib/isEmail";
 import Cookies from "js-cookie";
 
 import {
@@ -28,7 +29,7 @@ class Login extends Component {
       loading: false,
       passwordReset: false,
       errorMessage: "",
-      showPassword: false,
+      showPassword: false
     };
   }
 
@@ -43,7 +44,7 @@ class Login extends Component {
     }
   }
 
-  onChange = event => {
+  handleChange = event => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
@@ -63,30 +64,36 @@ class Login extends Component {
 
     const loginPath = asPatient ? "/api/v1/patient/login" : "/api/v1/login";
 
-    post(loginPath, {
-      body: { email, password },
-      hideNotify: true
-    })
-      .then(response => {
-        Cookies.remove("last_activity");
-        if (window.electronApp) {
-          window.dispatchEvent(new CustomEvent("logged-in"));
-          window.location.href = "/";
-          return;
-        }
-
-        if (response.data.redirect_url === "/apps") {
-          history.push(response.data.redirect_url);
-        } else {
-          window.location = response.data.redirect_url;
-        }
+    this.validateForm() ?
+      post(loginPath, {
+        body: { email, password },
+        hideNotify: true
       })
-      .catch(err => {
-        this.setState({
-          saving: false,
-          passwordReset: false,
-          errorMessage: err.data ? err.data.message : err.message
-        });
+        .then(response => {
+          Cookies.remove("last_activity");
+          if (window.electronApp) {
+            window.dispatchEvent(new CustomEvent("logged-in"));
+            window.location.href = "/";
+            return;
+          }
+
+          if (response.data.redirect_url === "/apps") {
+            history.push(response.data.redirect_url);
+          } else {
+            window.location = response.data.redirect_url;
+          }
+        })
+        .catch(err => {
+          this.setState({
+            saving: false,
+            passwordReset: false,
+            errorMessage: err.data ? err.data.message : err.message
+          });
+        }) :
+      this.setState({
+        saving: false,
+        passwordReset: false,
+        errorMessage: "Invalid Email Address"
       });
   };
 
@@ -128,6 +135,11 @@ class Login extends Component {
     );
   };
 
+  validateForm = () => {
+    const { email, password } = this.state;
+    return password.length > 0 && isEmail(email);
+  }
+
   togglePasswordShow = () => {
     const { showPassword } = this.state;
     this.setState({
@@ -137,6 +149,7 @@ class Login extends Component {
 
   render() {
     const { teamName } = this.props.registrationStore;
+
     return (
       <AuthenticationPage
         headerCTA="create"
@@ -158,19 +171,19 @@ class Login extends Component {
             validationState={(this.state.errorMessage && "error") || null}
           >
             <FormControl
-              name="email"
-              id="email-field"
               required
               autoFocus
+              name="email"
+              id="email-field"
               type="email"
               placeholder="Email"
               value={this.state.email}
-              onChange={this.onChange}
+              onChange={this.handleChange}
             />
           </FormGroup>
 
-          <FormGroup 
-            bsSize="large" 
+          <FormGroup
+            bsSize="large"
             className="password-formgroup"
             validationState={(this.state.errorMessage && "error") || null}
           >
@@ -183,7 +196,7 @@ class Login extends Component {
               placeholder="Password"
               maxLength={80}
               value={this.state.password}
-              onChange={this.onChange}
+              onChange={this.handleChange}
             />
             <div className="password-icon" onClick={this.togglePasswordShow}>
               <i className={this.state.showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} />
