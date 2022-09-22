@@ -29,7 +29,13 @@ defmodule Stitch.Accounts.UserStatus do
   end
 
   def delete_status(status_id) do
-    from(s in UserStatus, where: s.id == ^status_id)
+    status = Repo.get(UserStatus, status_id)
+
+    from(s in UserStatus,
+      where: s.user_id == ^status.user_id,
+      where: s.text == ^status.text,
+      where: s.emoji == ^status.emoji
+    )
     |> Repo.delete_all()
   end
 
@@ -56,7 +62,8 @@ defmodule Stitch.Accounts.UserStatus do
     from(
       s in UserStatus,
       where: s.user_id == ^user_id,
-      order_by: fragment("? DESC", s.updated_at),
+      distinct: [desc: s.text, desc: s.emoji],
+      order_by: fragment("? DESC", s.text),
       limit: 5
     )
     |> Repo.all()
@@ -77,7 +84,7 @@ defmodule Stitch.Accounts.UserStatus do
       s in UserStatus,
       where: s.user_id == ^status.user_id,
       where: s.id != ^status.id,
-      update: [set: [active: false]]
+      update: [set: [active: false, updated_at: ^updated_at()]]
     )
   end
 
@@ -85,7 +92,7 @@ defmodule Stitch.Accounts.UserStatus do
     from(
       s in UserStatus,
       where: s.user_id == ^user_id,
-      update: [set: [active: false]]
+      update: [set: [active: false, updated_at: ^updated_at()]]
     )
   end
 
@@ -102,7 +109,7 @@ defmodule Stitch.Accounts.UserStatus do
   end
 
   defp update_status_in_user_query(status) do
-    status = user_status(status.user_id) |> IO.inspect(label: "status to update in user")
+    status = user_status(status.user_id)
 
     from(
       u in User,
@@ -150,6 +157,7 @@ defmodule Stitch.Accounts.UserStatus do
       6 -> Map.put(params, "expiring_time", params["custom_time"])
       _ -> Map.put(params, "expiring_time", params |> expiring_time())
     end
+    |> Map.delete("custom_time")
   end
 
   defp expiring_time(%{"clear_after" => 1}), do: Timex.now() |> Timex.shift(hours: 0, minutes: 30)
@@ -157,4 +165,6 @@ defmodule Stitch.Accounts.UserStatus do
   defp expiring_time(%{"clear_after" => 3}), do: Timex.now() |> Timex.shift(hours: 4, minutes: 0)
   defp expiring_time(%{"clear_after" => 4}), do: Timex.now() |> Timex.end_of_day()
   defp expiring_time(%{"clear_after" => 5}), do: Timex.now() |> Timex.end_of_week()
+
+  defp updated_at(), do: DateTime.utc_now() |> DateTime.to_naive()
 end

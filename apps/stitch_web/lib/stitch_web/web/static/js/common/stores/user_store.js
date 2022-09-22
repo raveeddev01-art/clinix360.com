@@ -219,7 +219,7 @@ class UserStore {
     return post(`/api/v1/users/${this.id}/user_status`, {
       body: {
         text: text,
-        emoji: emoji.colons,
+        emoji: emoji.colons? emoji.colons: emoji,
         clear_after: clearAfter,
         custom_time: customTime
       }
