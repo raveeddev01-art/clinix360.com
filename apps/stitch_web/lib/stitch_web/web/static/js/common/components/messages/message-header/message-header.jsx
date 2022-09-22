@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { TimestampTooltip, UserProfileMenu } from "common/components";
+import UserStatus from "../../user-status";
 
 class MessageHeader extends Component {
   _renderName = user => {
@@ -32,6 +33,7 @@ class MessageHeader extends Component {
             {this._renderName(user)}
           </UserProfileMenu>
         )}
+        <UserStatus user={user} type={"icon"} />
         <TimestampTooltip timestamp={timestamp} className="time" />
         {children}
       </div>

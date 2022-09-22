@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import { Avatar, SmartDropdown, PortalDropdownMenu } from "common/components";
+import { SmartDropdown, PortalDropdownMenu } from "common/components";
 import AvatarImage from "../avatar/avatar-image";
 import UserStatus from "../user-status";
 

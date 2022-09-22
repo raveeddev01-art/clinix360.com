@@ -6,7 +6,7 @@ defmodule Stitch.Accounts.UserStatus do
   import Ecto.Query
   import Ecto.Changeset
   alias Ecto.Multi
-  alias Stitch.{Repo, Accounts.UserStatus, Accounts.User}
+  alias Stitch.{Repo, Team, Accounts.UserStatus, Accounts.User}
 
   schema "user_status" do
     field(:text, :string)
@@ -69,14 +69,14 @@ defmodule Stitch.Accounts.UserStatus do
     |> Repo.all()
   end
 
-  def clear_expired_status() do
+  def users_with_expired_status() do
     from(
       s in UserStatus,
       where: s.active == true,
       where: s.expiring_time < ^DateTime.utc_now(),
-      update: [set: [active: false]]
+      select: s.user_id
     )
-    |> Repo.update_all([])
+    |> Repo.all()
   end
 
   defp decativate_last_status_query(status) do
