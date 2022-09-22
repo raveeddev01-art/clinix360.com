@@ -147,7 +147,7 @@ defmodule Stitch.Accounts.UserStatus do
 
     Multi.new()
     |> Multi.update_all(:disable_status, deactivate_status_query, [])
-    |> Multi.update_all(:add_status_in_user, remove_user_status_query, [])
+    |> Multi.update_all(:clear_status_in_user, remove_user_status_query, [])
     |> Repo.transaction()
   end
 
