@@ -35,7 +35,6 @@ class UserStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-    this.userStatus();
     this.statusHistory();
   }
 
@@ -209,7 +208,6 @@ class UserStore {
   userStatus = () => {
     return get(`/api/v1/users/${this.id}/user_status`, {})
     .then(resp => {
-      console.log("resp", resp);
       this.status = resp.data;
     });    
   }
@@ -251,7 +249,6 @@ class UserStore {
   statusHistory = () => {
     return get(`/api/v1/users/${this.id}/status_history`, {})
     .then(resp => {
-      console.log("resp", resp);
       this.statusHistory = resp.data;
     });
   }
