@@ -6,7 +6,7 @@ defmodule Stitch.Accounts.UserStatus do
   import Ecto.Query
   import Ecto.Changeset
   alias Ecto.Multi
-  alias Stitch.{Repo, Team, Accounts.UserStatus, Accounts.User}
+  alias Stitch.{Repo, Accounts.UserStatus, Accounts.User}
 
   schema "user_status" do
     field(:text, :string)
