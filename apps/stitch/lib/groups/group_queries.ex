@@ -33,6 +33,40 @@ defmodule Stitch.GroupQueries do
     {:ok, Repo.all(query)}
   end
 
+  def get_groups(user_id) do
+    query =
+      from(
+        gu in GroupUser,
+        join: g in assoc(gu, :group),
+        where: gu.user_id == ^user_id,
+        where: g.name not in ^@dm_groups,
+        preload: [group: g]
+      )
+    Repo.all(query)
+  end
+
+  def get_all_groups() do
+    query =
+      from(
+        g in Group,
+        where: g.name not in ^@dm_groups,
+        preload: [:users],
+        select: map(g, [
+          :id,
+          :name,
+          :slug,
+          :description,
+          :is_default,
+          :public,
+          :creator_user_id,
+          :inserted_at,
+          :updated_at,
+          users: [:id]
+        ])
+      )
+    Repo.all(query)
+  end
+
   @spec visible_group_ids(User.t(), [pos_integer] | nil) :: [pos_integer]
   def visible_group_ids(%User{} = user, group_ids \\ nil) do
     query =
