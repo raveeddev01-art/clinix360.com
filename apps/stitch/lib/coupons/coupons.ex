@@ -55,23 +55,6 @@ defmodule Stitch.Coupons do
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a signup_coupon.
-
-  ## Examples
-
-      iex> update_signup_coupon(signup_coupon, %{field: new_value})
-      {:ok, %SignupCoupon{}}
-
-      iex> update_signup_coupon(signup_coupon, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_signup_coupon(%SignupCoupon{} = signup_coupon, attrs) do
-    signup_coupon
-    |> SignupCoupon.changeset(attrs)
-    |> Repo.update()
-  end
 
   @doc """
   Deletes a SignupCoupon.
@@ -105,6 +88,14 @@ defmodule Stitch.Coupons do
   def get_coupon_by_code(code) do
     Repo.get_by(SignupCoupon, [code: code])
   end
+
+  def update_signup_coupon(%SignupCoupon{} = signup_coupon, attrs) do
+    signup_coupon
+    |> SignupCoupon.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_signup_coupon(nil, _), do: ""
 
   def update_signup_coupon(%{code: code} = params) do
     params = Map.drop(params, [:code])

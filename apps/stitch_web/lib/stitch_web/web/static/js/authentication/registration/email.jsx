@@ -24,30 +24,34 @@ class EmailCard extends Component {
     };
   }
 
-  onSubmitCouponCode = () => {
-    this.setState({ loading: true, errorMessage: "" });
-    post("/api/v1/validate-coupon-code", {
-      body: { code: this.state.code },
-      hideNotify: true
-    }).then(response => {
-        console.log(response);
-        if(response.data.success) {
-          this.props.registrationStore.setCookie(
-            response.data.id,
-            this.state.email,
-            this.state.code
-          );
-          this.setState({ loading: false, showCodePanel: false });          
-        } else {
-          this.setState({ loading: false, errorMessage: response.data.message });
-        }
-      })
-      .catch(err => {
-        this.setState({
-          loading: false,
-          errorMessage: err.data ? err.data.message : err.message
+  onSubmitCouponCode = (evt) => {
+    if(evt === 'skip') {
+      this.setState({ loading: false, showCodePanel: false });          
+    } else {
+      this.setState({ loading: true, errorMessage: "" });
+      post("/api/v1/validate-coupon-code", {
+        body: { code: this.state.code },
+        hideNotify: true
+      }).then(response => {
+          console.log(response);
+          if(response.data.success) {
+            this.props.registrationStore.setCookie(
+              response.data.id,
+              this.state.email,
+              this.state.code
+            );
+            this.setState({ loading: false, showCodePanel: false });          
+          } else {
+            this.setState({ loading: false, errorMessage: response.data.message });
+          }
+        })
+        .catch(err => {
+          this.setState({
+            loading: false,
+            errorMessage: err.data ? err.data.message : err.message
+          });
         });
-      });
+    }
   };
 
   onCodeChange = evt => {
@@ -91,6 +95,11 @@ class EmailCard extends Component {
     });
   };
 
+  onSkip = evt => {
+    evt.preventDefault();
+    this.onSubmitCouponCode('skip')
+  }
+
   renderCouponPanel() {
     const { errorMessage } = this.state;
     return (
@@ -105,6 +114,7 @@ class EmailCard extends Component {
           onNext={this.onSubmitCouponCode}
           loading={this.state.loading}
           disableNext={!this.state.formValid}
+          onSkip={this.onSkip}
         >
           <FormGroup
             bsSize="large"
