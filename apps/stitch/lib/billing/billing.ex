@@ -63,16 +63,10 @@ defmodule Stitch.Billing do
     team.subscription
     |> IO.inspect(label: "here is subscription")
     |> case do
-      nil -> %{
-        tier: "FREE",
-        valid_until: "subscription.valid_until",
-        renewal_frequency: "subscription.renewal_frequency",
-        renews: "subscription.renews",
-        estimated_invoice_amount: "subscription.estimated_invoice_amount",
-        updated_at: "subscription.updated_at"
-      }
+      nil -> create_missing_subscription(team)
       subscription -> subscription
     end
+    |> IO.inspect(label: "new subscription")
   end
 
   @spec get_subscription(String.t(), String.t()) :: Subscription.t() | nil
@@ -500,5 +494,13 @@ defmodule Stitch.Billing do
       )
 
     Repo.all(query)
+  end
+
+  defp create_missing_subscription(team) do
+    setup_new_team(team)
+    |> case do
+      {:ok, subscription} -> subscription
+      {:error, _} -> %Subscription{}
+    end
   end
 end
