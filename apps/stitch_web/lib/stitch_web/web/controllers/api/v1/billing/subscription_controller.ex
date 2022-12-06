@@ -9,7 +9,7 @@ defmodule Stitch.Web.Api.V1.Billing.SubscriptionController do
     team = conn.assigns.team
     Billing.get_subscription(team)
     |> case do
-      nil -> render(conn, "nil", nil)
+      nil -> render(conn, "nil.json", nil)
       subscription -> render(conn, "show.json", subscription: subscription)
     end
   end
