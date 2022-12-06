@@ -61,6 +61,18 @@ defmodule Stitch.Billing do
   def get_subscription(%Team{} = team) do
     team = Repo.preload(team, :subscription)
     team.subscription
+    |> IO.inspect(label: "here is subscription")
+    |> case do
+      nil -> %{
+        tier: "FREE",
+        valid_until: "subscription.valid_until",
+        renewal_frequency: "subscription.renewal_frequency",
+        renews: "subscription.renews",
+        estimated_invoice_amount: "subscription.estimated_invoice_amount",
+        updated_at: "subscription.updated_at"
+      }
+      subscription -> subscription
+    end
   end
 
   @spec get_subscription(String.t(), String.t()) :: Subscription.t() | nil

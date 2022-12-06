@@ -7,12 +7,6 @@ defmodule Stitch.Web.Api.V1.Billing.SubscriptionView do
     }
   end
 
-  def render("nil.json", nil) do
-    %{
-      data: {message: "empty subscription"}
-    }
-  end
-
   defp subscription(subscription) do
     %{
       tier: subscription.tier,
