@@ -19,8 +19,10 @@ defmodule Stitch.User.Authentication do
 
   @spec validate_user_email_and_password(binary, binary, Team.t()) :: User.t() | boolean
   def validate_user_email_and_password(email, password, team) do
-    user = UserQueries.team_member_with_email(team.id, email)
-    do_validate_email_and_password(user, password)
+    IO.inspect(email, label: "EMAIL")
+    IO.inspect(team.slug, label: "TEAM")
+    user = UserQueries.team_member_with_email(team.id, email) |> IO.inspect(label: "team member with email")
+    do_validate_email_and_password(user, password) |> IO.inspect(label: "validation response here")
   end
 
   @spec validate_patient_email_and_password(integer, binary, binary) :: Patient.t() | boolean
