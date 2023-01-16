@@ -116,6 +116,10 @@ class EmailCard extends Component {
           disableNext={!this.state.formValid}
           onSkip={this.onSkip}
         >
+          <link rel="canonical" href="https://invo.chat/signup/email/"/>
+          <meta name="title" content="Get 14 days FREE Trial - Invochat Workspace"></meta>
+          <meta name="description" content="Signup to Invochat and add teammates to your workspace. You can also try it free for 14 days all it takes is your email to get started."></meta>
+          <meta name="robots" content="index, follow"></meta>
           <FormGroup
             bsSize="large"
             validationState={(errorMessage && "error") || null}

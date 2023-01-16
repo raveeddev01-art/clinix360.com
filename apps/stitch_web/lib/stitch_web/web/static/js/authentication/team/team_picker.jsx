@@ -89,6 +89,10 @@ class TeamPicker extends Component {
           </span>
         }
       >
+        <link rel="canonical" href="https://invo.chat/signin/"/>
+        <meta name="title" content="Sign In - Invochat Workspace"></meta>
+        <meta name="description" content="Sign In. Use your Invochat account email. Forgot email? Check your email account we've sent an email with a link that will help you find your workspace"></meta>
+        <meta name="robots" content="index, follow"></meta>
         <Form onSubmit={this.onSubmit}>
           <FormGroup
             bsSize="large"

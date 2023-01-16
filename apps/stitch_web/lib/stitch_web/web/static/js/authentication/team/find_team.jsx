@@ -61,6 +61,10 @@ class FindTeam extends Component {
         }
         onNext={this._onSubmit}
       >
+        <link rel="canonical" href="https://invo.chat/find-your-team/"/>
+        <meta name="title" content="Find your team - Invochat Workspace"></meta>
+        <meta name="description" content="Find Your Team - Discover and connect with like-minded individuals to build a strong, collaborative team for your projects and goals."></meta>
+        <meta name="robots" content="index, follow"></meta>
         <ControlLabel>Email</ControlLabel>
         <FormGroup bsSize="large">
           <FormControl
