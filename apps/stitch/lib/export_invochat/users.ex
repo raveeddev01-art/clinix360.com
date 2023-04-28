@@ -3,16 +3,19 @@ defmodule Stitch.ExportInvochat.Users do
   alias Stitch.ExportInvochat.{Request, Groups}
   import Ecto.Query
 
+  @roles [["multi-room-guest"], ["single-room-guest"]]
+
+
   def create_user(user) do
     url = "/v4/users"
     body = %{"email" => user.email, "password" => "123456789", "username" => user.username}
 
-    Request.request_invochat(url, body)
+    Request.post_api(url, body)
     |> case do
       %{"status_code" => 400} ->
         url = "/checkemail"
         body = %{"email" => user.email}
-        id = Request.request_invochat(url, body)
+        id = Request.post_api(url, body)
         %{"id" => id}
 
       ok_case ->
@@ -61,7 +64,7 @@ defmodule Stitch.ExportInvochat.Users do
     ws_member_body = %{
       "workspace_id" => ws["workspace_id"],
       "user_id" => user_id,
-      "roles" => "System_User",
+      "roles" => role(user.roles),
       "delete_at" => 0,
       "scheme_guest" => false,
       "scheme_user" => true,
@@ -77,9 +80,13 @@ defmodule Stitch.ExportInvochat.Users do
       "channel_id" => ws["channel_id"]
     }
 
-    Request.request_invochat(ws_member, ws_member_body)
-    Request.request_invochat(team_channel, team_channel_body)
+    Request.post_api(ws_member, ws_member_body)
+    Request.post_api(team_channel, team_channel_body)
 
     %{"#{user.id}" => user_id}
   end
+
+  defp role(role) when (role in @roles), do: "system_guest"
+  defp role(_), do: "system_user"
+
 end
