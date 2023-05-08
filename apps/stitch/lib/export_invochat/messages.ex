@@ -47,33 +47,25 @@ defmodule Stitch.ExportInvochat.Messages do
     Map.merge(parent_message_ids, thread_message_ids)
   end
 
+  def post_messages_reaction(_invo_channel_id, [], _users_ids), do: %{}
   def post_messages_reaction(invo_channel_id, messages, users_ids) do
     messages
     |> Enum.map(fn message ->
-      url = "/v4/posts"
+      url = "/PostMessage"
 
       body = %{
-        "videocall" => %{
-          "room_id" => "",
-          "participant" => [""],
-          "topic" => "",
-          "call_diascription" => ""
-        },
-        "is_video_call" => false,
+        "user_id" => get_invo_user_id(message.user_id, users_ids),
         "channel_id" => invo_channel_id,
-        "create_at" => parse_timestamp(message.inserted_at),
-        "file_ids" => [],
-        "message" => message.text_content,
-        "metadata" => %{},
-        "pending_post_id" => "eoggzdbfojb8mgpwiazd818rxr:1680520625576",
-        "props" => %{"disable_group_highlight" => true},
-        "reply_count" => 0,
-        "update_at" => parse_timestamp(message.updated_at),
-        "user_id" => get_invo_user_id(message.user_id, users_ids)
+        "text" => message.text_content,
+        "type" => "",
+        "root_id" => "",
+        "file_name" => [""],
+        "file_ids" => [""],
+        "pending_post_id" => "",
+        "create_at" => parse_timestamp(message.inserted_at)
       }
 
       post_id = Request.post_api(url, body)["id"]
-
       reactions(message.reactions, users_ids, post_id)
       %{"#{message.id}" => post_id}
     end)
@@ -81,28 +73,25 @@ defmodule Stitch.ExportInvochat.Messages do
       Map.merge(acc, map)
     end)
   end
-
+  def thread_reactions(_invo_channel_id, [], _users_ids, _messages_ids), do: %{}
   def thread_reactions(invo_channel_id, messages, users_ids, messages_ids) do
     messages
     |> Enum.map(fn message ->
-      url = "/v4/posts"
+      url = "/PostMessage"
 
       body = %{
+        "user_id" => get_invo_user_id(message.user_id, users_ids),
         "channel_id" => invo_channel_id,
-        "create_at" => parse_timestamp(message.inserted_at),
-        "file_ids" => [],
-        "message" => message.text_content,
-        "metadata" => %{},
-        "pending_post_id" => "eoggzdbfojb8mgpwiazd818rxr:1682411376544",
-        "props" => %{},
-        "reply_count" => 1,
+        "text" => message.text_content,
+        "type" => "",
         "root_id" => get_invo_user_id(messages.parent_message_id, messages_ids),
-        "update_at" => parse_timestamp(message.updated_at),
-        "user_id" => get_invo_user_id(message.user_id, users_ids)
+        "file_name" => [""],
+        "file_ids" => [""],
+        "pending_post_id" => "",
+        "create_at" => parse_timestamp(message.inserted_at)
       }
-
       post_id = Request.post_api(url, body)["id"]
-
+      message.reactions
       reactions(message.reactions, users_ids, post_id)
       %{"#{message.id}" => post_id}
     end)
@@ -111,7 +100,7 @@ defmodule Stitch.ExportInvochat.Messages do
     end)
   end
 
-  def reactions(%{}, _users, _post_id), do: :skip
+  #def reactions(%{}, _users, _post_id), do: :skip
 
   def reactions(reactions, users, post_id) do
     reactions

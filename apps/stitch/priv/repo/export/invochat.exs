@@ -24,7 +24,7 @@ defmodule Stitch.Export.Invochat do
     user_file = "users_" <> Integer.to_string(team_id) <> ".json"
     store_in_file(%{Integer.to_string(admin.id) => owner_id}, user_file)
 
-    ws_data = Workspaces.create_workspace_team(admin)
+    ws_data = Workspaces.create_workspace_team(admin, owner_id)
     ws_file = "workspace_" <> Integer.to_string(team_id) <> ".json"
     store_in_file(ws_data, ws_file)
 
@@ -43,10 +43,10 @@ defmodule Stitch.Export.Invochat do
       read_file(file)
       |> Map.merge(users_ids)
 
-    users
+   users
     |> store_in_file(file)
 
-    users_ids
+    users
   end
 
   defp create_store_channel(team_id, ws_team, users_ids) do
@@ -77,7 +77,7 @@ defmodule Stitch.Export.Invochat do
   end
 
   defp read_file(file_name) do
-    {:ok, data} =
+    data =
       Path.join(@path, file_name)
       |> File.read!()
 
@@ -85,4 +85,4 @@ defmodule Stitch.Export.Invochat do
   end
 end
 
-Stitch.Export.Invochat.perform(27)
+Stitch.Export.Invochat.perform(80)

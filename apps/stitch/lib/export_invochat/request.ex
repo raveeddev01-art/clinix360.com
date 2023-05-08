@@ -14,9 +14,9 @@ defmodule Stitch.ExportInvochat.Request do
   end
 
   def send_req(url, body) do
-    req_body = Poison.encode!(body)
+    req_body = Poison.encode!(body) |> IO.inspect(label: " pre body.......")
 
-    case HTTPoison.post(url, req_body, @headers, recv_timeout: 80_000)
+    case HTTPoison.post(url, req_body, @headers) #, recv_timeout: 80_000)
          |> IO.inspect(label: "Hitting") do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         body

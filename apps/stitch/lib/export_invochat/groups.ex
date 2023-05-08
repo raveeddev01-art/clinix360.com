@@ -1,11 +1,11 @@
 defmodule Stitch.ExportInvochat.Groups do
-  alias Stitch.ExportInvochat.Request
+  alias Stitch.ExportInvochat.{Request, Users, Messages}
   alias Stitch.{Repo, Group, GroupUser}
 
   import Ecto.Query
 
   def team_common_channel(team_id) do
-    url = "/GetTeamChannelId "
+    url = "/GetTeamChannelId"
     body = %{"team_id" => team_id}
     Request.post_api(url, body)
   end
@@ -35,16 +35,16 @@ defmodule Stitch.ExportInvochat.Groups do
   def create_channel_add_users(channel, params, users) do
     creater_id = channel_creater(channel, params, users)
 
-    url = "/v4/channels"
+    url = "/CreateChannelsForOldInvochat"
 
     body = %{
       "team_id" => params["team_id"],
-      "name" => channel.name,
+      "name" => Users.name(channel.name),
       "display_name" => channel.slug,
       "purpose" => "",
       "header" => "",
       "type" => public(channel.public),
-      "create_at" => 0,
+      "create_at" => Messages.parse_timestamp(channel.inserted_at),
       "creator_id" => creater_id,
       "delete_at" => 0,
       "group_constrained" => false,
@@ -73,10 +73,9 @@ defmodule Stitch.ExportInvochat.Groups do
   def create_channel(url, body) do
     Request.post_api(url, body)
     |> case do
-      %{"message" => "Name must be" <> msg} ->
-        name_lowercase = String.downcase(body["name"])
-        name_without_space = Regex.replace(~r/\s/, name_lowercase, "")
-        body = Map.put(body, "name", name_without_space)
+      %{"message" => "Name must be" <> _msg} ->
+        name = Users.name(body["name"])
+        body = Map.put(body, "name", name)
         Request.post_api(url, body)["id"]
 
       ok ->
@@ -90,11 +89,18 @@ defmodule Stitch.ExportInvochat.Groups do
   end
 
   def add_user_in_channel(user_id, channal_map) do
-    team_id = channal_map["team_id"]
+    # team_id = channal_map["team_id"]
     channel_id = channal_map["invo_channel_id"]
 
-    url = "/AutoLandingPage"
-    body = %{"team_id" => team_id, "user_id" => user_id, "channel_id" => channel_id}
+    url = "/v4/channels/" <> channel_id <> "/members/AddChannelMemberForOldInvochat"
+
+    body = %{
+      "channel_id" => channel_id,
+      "post_root_id" => "",
+      "user_id" => user_id,
+      "creator" => channal_map["creater_id"]
+    }
+
     Request.post_api(url, body)
   end
 

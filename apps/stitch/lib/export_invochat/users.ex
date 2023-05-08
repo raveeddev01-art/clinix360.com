@@ -26,7 +26,7 @@ defmodule Stitch.ExportInvochat.Users do
   def add_all_users_in_ws_team(users, ws_team) do
     channel_id = Groups.team_common_channel(ws_team["team_id"])
 
-    ws_team_channel = Map.merge(ws_team, %{"channel_id" => channel_id})
+    ws_team_channel = Map.merge(ws_team, %{"channel_id" => channel_id}) |> IO.inspect(label: "Map.merge(ws_team, ")
 
     users
     |> Task.async_stream(&add_user_in_common_channel(&1, ws_team_channel), timeout: :infinity)
@@ -57,7 +57,15 @@ defmodule Stitch.ExportInvochat.Users do
     naive |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix()
   end
 
-  defp add_user_in_common_channel(user, ws) do
+  def name(string) do
+    Regex.replace(~r/\s/, string, "")
+    |> String.replace("_", "")
+    |> String.replace(".", "")
+    |> String.replace("-", "")
+    |> String.downcase()
+  end
+
+  def add_user_in_common_channel(user, ws) do
     user_id = create_user(user)["id"]
     ws_member = "/workspacemembers"
 
